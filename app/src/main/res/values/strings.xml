@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CollaborativeGroupOrder</string>
+    <string name="btn_newParty">Look for new heroes</string>
+    <string name="btn_joinParty_text">Join a party</string>
+</resources>
