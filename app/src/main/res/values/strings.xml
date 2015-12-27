@@ -11,4 +11,7 @@
     <string name="networkScanning">Tell your friends to join your party from the main menu. Their PCs will appear below.</string>
     <string name="txt_renamed_text">Looks like someone else is creating a party with the same name. I will use the name you have provided but I must use a different one to let your friends join. Tell them to look for</string>
     <string name="renamedService_text">You cannot read this!</string>
+    <string name="nullWifi_title">Network forbidden</string>
+    <string name="nullWifi_msg">Looks like the network cannot be initialized.\nI need to access the network so I can talk to other devices. No personal information will be sent.</string>
+    <string name="nullWifi_btn">I understand</string>
 </resources>
