@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">CollaborativeGroupOrder</string>
-    <string name="btn_newParty">Look for new heroes</string>
+    <string name="btn_newParty_text">Assemble a new party</string>
     <string name="btn_joinParty_text">Join a party</string>
+    <string name="txt_getGroupNameDesc_text">Party name:</string>
+    <string name="btn_startListening_text">Let adventurers join your party</string>
+    <string name="btn_generateParty">Generate party with the selected heroes</string>
+    <string name="groupNameIsEmpty_title">Party missing name</string>
+    <string name="groupNameIsEmpty_msg">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
+    <string name="groupName_retry">Modify party name</string>
+    <string name="networkScanning">Tell your friends to join your party from the main menu.</string>
+    <string name="txt_renamed_text">Looks like someone else is creating a party with the same name. I will use the name you have provided but I must use a different one to let your friends join. Tell them to look for</string>
+    <string name="renamedService_text">You cannot read this!</string>
 </resources>
