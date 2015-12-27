@@ -619,10 +619,13 @@ int string groupNameIsEmpty_msg 0x7f060019
 int string groupNameIsEmpty_title 0x7f06001a
 int string groupName_retry 0x7f06001b
 int string networkScanning 0x7f06001c
-int string renamedService_text 0x7f06001d
+int string nullWifi_btn 0x7f06001d
+int string nullWifi_msg 0x7f06001e
+int string nullWifi_title 0x7f06001f
+int string renamedService_text 0x7f060020
 int string status_bar_notification_info_overflow 0x7f060013
-int string txt_getGroupNameDesc_text 0x7f06001e
-int string txt_renamed_text 0x7f06001f
+int string txt_getGroupNameDesc_text 0x7f060021
+int string txt_renamed_text 0x7f060022
 int style AlertDialog_AppCompat 0x7f09007d
 int style AlertDialog_AppCompat_Light 0x7f09007e
 int style Animation_AppCompat_Dialog 0x7f09007f
