@@ -14,4 +14,10 @@
     <string name="nullWifi_title">Network forbidden</string>
     <string name="nullWifi_msg">Looks like the network cannot be initialized.\nI need to access the network so I can talk to other devices. No personal information will be sent.</string>
     <string name="nullWifi_btn">I understand</string>
+    <string name="discoveryFailed_title">WiFi Direct failure</string>
+    <string name="discoveryFailed_msg">Could not start network discovery (reason: %1).\\nThis is required.</string>
+    <string name="serviceInstallFailed_title">Service install failed</string>
+    <string name="serviceInstallFailed_msg">Could not install network service (reason: %1).\\nThis is required so players can join your party.</string>
+    <string name="unexpectedP2PStateChange_title">Unexpected connectivity change</string>
+    <string name="unexpectedP2PStateChange_msg">It looks like the system is jugglying with network state. I am not currently able to cope with that.\nHopefully this is a transient error, it is perhaps worth trying again.</string>
 </resources>
