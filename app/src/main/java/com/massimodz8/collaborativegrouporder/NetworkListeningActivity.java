@@ -194,14 +194,15 @@ public class NetworkListeningActivity extends AppCompatActivity {
         }
 
         AlertDialog.Builder build = new AlertDialog.Builder(this);
-        build.setTitle(R.string.discoveryFailed_title)
-                .setMessage(String.format(getString(R.string.discoveryFailed_msg), readable));
+        build.setTitle(R.string.serviceInstallFailed_title)
+                .setMessage(String.format(getString(R.string.serviceInstallFailed_msg), readable));
         build.show();
     }
 
     private void disableButtons() {
         findViewById(R.id.btn_closeGroup).setEnabled(false);
         findViewById(R.id.progressBar).setEnabled(false);
+        findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
         findViewById(R.id.list_characters).setEnabled(false);
     }
 
@@ -217,8 +218,8 @@ public class NetworkListeningActivity extends AppCompatActivity {
         }
 
         AlertDialog.Builder build = new AlertDialog.Builder(this);
-        build.setTitle(R.string.serviceInstallFailed_title)
-                .setMessage(String.format(getString(R.string.serviceInstallFailed_msg), readable));
+        build.setTitle(R.string.discoveryFailed_title)
+                .setMessage(String.format(getString(R.string.discoveryFailed_msg), readable));
         build.show();
     }
     private void p2pFailed() {
