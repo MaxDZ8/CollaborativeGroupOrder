@@ -24,7 +24,8 @@
         android:inputType="textNoSuggestions"
         android:layout_below="@+id/txt_getGroupNameDesc"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:gravity="center_horizontal" />
 
     <Button
         android:layout_width="fill_parent"
@@ -36,24 +37,26 @@
         android:onClick="initiatePartyHandshake" />
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/sameNetworkVisibilityInfo"
+        android:id="@+id/textView2"
+        android:layout_below="@+id/btn_startListening"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" />
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/networkScanning"
         android:id="@+id/txt_scanning"
-        android:layout_below="@+id/btn_startListening"
-        android:layout_centerHorizontal="true"
-        android:visibility="invisible" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/txt_renamed_text"
-        android:id="@+id/textView"
         android:visibility="gone"
-        android:layout_below="@+id/txt_scanning"
-        android:layout_centerHorizontal="true" />
+        android:layout_below="@+id/textView2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -61,9 +64,9 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/renamedService_text"
         android:id="@+id/txt_renamedService"
-        android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_below="@+id/txt_scanning"
+        android:layout_centerHorizontal="true" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -76,6 +79,15 @@
         android:layout_alignRight="@+id/txt_scanning"
         android:layout_alignEnd="@+id/txt_scanning" />
 
+    <ListView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/list_characters"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@+id/btn_closeGroup"
+        android:visibility="invisible"
+        android:layout_below="@+id/progressBar" />
+
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -84,14 +96,5 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:visibility="invisible" />
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/list_characters"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/btn_closeGroup"
-        android:visibility="invisible"
-        android:layout_below="@+id/progressBar" />
 
 </RelativeLayout>

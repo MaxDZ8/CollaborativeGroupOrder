@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ordine Gruppo GDR</string>
+    <string name="btn_generateParty">Crea gruppo con gli eroi selezionati</string>
+    <string name="btn_joinParty_text">Unisciti ad un gruppo</string>
+    <string name="btn_newParty_text">Forma un nuovo gruppo</string>
+    <string name="btn_startListening_text">Permetti agli avventurieri di trovarti</string>
+    <string name="groupNameIsEmpty_msg">Ogni gruppo deve avere un nome.\nI tuoi amici hanno bisogno di sapere a che gruppo unirsi; il nome serve anche a salvare i dati del gruppo per recuperarli in seguito.</string>
+    <string name="groupNameIsEmpty_title">Gruppo senza nome</string>
+    <string name="groupName_retry">Modifica il nome del gruppo</string>
+    <string name="networkScanning">I tuoi amici possono ora unirsi al gruppo. Compariranno sotto.</string>
+    <string name="nullNSDService_msg">Il servizio "Network Discovery" non è disponibile. Ne ho bisogno per permettere ad i tuoi amici di collegarsi.</string>
+    <string name="nullNSDService_title">NSD non disponibile</string>
+    <string name="renamedGroup">I tuoi amici si devono unire al gruppo\n%1$s.</string>
+    <string name="sameNetworkVisibilityInfo">Il gruppo sarà visibile a tutti i dispositivi sulla stessa rete.</string>
+    <string name="serverSocketFailed_msg">Non riesco a creare il socket "listen", necessario per permettere agli altri dispositivi di collegarsi. Non ha nemmeno senso andare avanti.</string>
+    <string name="serverSocketFailed_title">Errore di rete</string>
+    <string name="serviceRegFailed_msg">Non posso creare il servizio "eroi incontriamoci qui". Non posso fare nulla.\n(Error %1$s)</string>
+    <string name="serviceRegFailed_title">Registrazione servizio fallita</string>
+    <string name="txt_getGroupNameDesc_text">Nome gruppo:</string>
+</resources>

@@ -1,16 +1,15 @@
 <resources>
-    <string name="app_name">CollaborativeGroupOrder</string>
+    <string name="app_name">RPG Party Order</string>
     <string name="btn_newParty_text">Assemble a new party</string>
     <string name="btn_joinParty_text">Join a party</string>
     <string name="txt_getGroupNameDesc_text">Party name:</string>
     <string name="btn_startListening_text">Let adventurers join your party</string>
-    <string name="btn_generateParty">Generate party with the selected heroes</string>
+    <string name="btn_generateParty">Make party with selected heroes</string>
     <string name="groupNameIsEmpty_title">Party missing name</string>
     <string name="groupNameIsEmpty_msg">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
     <string name="groupName_retry">Modify party name</string>
     <string name="networkScanning">Tell your friends to join your party from the main menu. They will appear below.</string>
-    <string name="txt_renamed_text">Looks like someone else is creating a party with the same name. I will use the name you have provided but I must use a different one to let your friends join. Tell them to look for</string>
-    <string name="renamedService_text">You cannot read this!</string>
+    <string name="renamedService_text" translatable="false">You cannot read this!</string>
     <string name="serverSocketFailed_title">Network error</string>
     <string name="serverSocketFailed_msg">Something prevented creation of the "listen" socket. This is required to let other devices talk to me. Without it, I cannot even start creating the party.</string>
     <string name="serviceRegFailed_title">Service registration failed</string>
@@ -18,4 +17,5 @@
     <string name="nullNSDService_title">Failed to get NSD</string>
     <string name="nullNSDService_msg">Looks like the Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
     <string name="renamedGroup">Tell your friends to join\n%1$s.</string>
+    <string name="sameNetworkVisibilityInfo">The party will be visible to all devices on the same network.</string>
 </resources>
