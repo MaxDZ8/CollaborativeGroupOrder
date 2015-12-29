@@ -8,16 +8,14 @@
     <string name="groupNameIsEmpty_title">Party missing name</string>
     <string name="groupNameIsEmpty_msg">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
     <string name="groupName_retry">Modify party name</string>
-    <string name="networkScanning">Tell your friends to join your party from the main menu. Their PCs will appear below.</string>
+    <string name="networkScanning">Tell your friends to join your party from the main menu. They will appear below.</string>
     <string name="txt_renamed_text">Looks like someone else is creating a party with the same name. I will use the name you have provided but I must use a different one to let your friends join. Tell them to look for</string>
     <string name="renamedService_text">You cannot read this!</string>
-    <string name="nullWifi_title">Network forbidden</string>
-    <string name="nullWifi_msg">Looks like the network cannot be initialized.\nI need to access the network so I can talk to other devices. No personal information will be sent.</string>
-    <string name="nullWifi_btn">I understand</string>
-    <string name="discoveryFailed_title">WiFi Direct failure</string>
-    <string name="discoveryFailed_msg">Could not start network discovery (reason: %1$s).\nThis is required.</string>
-    <string name="serviceInstallFailed_title">Service install failed</string>
-    <string name="serviceInstallFailed_msg">Could not install network service (reason: %1$s).\nThis is required so players can join your party.</string>
-    <string name="unexpectedP2PStateChange_title">Unexpected connectivity change</string>
-    <string name="unexpectedP2PStateChange_msg">It looks like the system is jugglying with network state. I am not currently able to cope with that.\nHopefully this is a transient error, it is perhaps worth trying again.</string>
+    <string name="serverSocketFailed_title">Network error</string>
+    <string name="serverSocketFailed_msg">Something prevented creation of the "listen" socket. This is required to let other devices talk to me. Without it, I cannot even start creating the party.</string>
+    <string name="serviceRegFailed_title">Service registration failed</string>
+    <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
+    <string name="nullNSDService_title">Failed to get NSD</string>
+    <string name="nullNSDService_msg">Looks like the Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
+    <string name="renamedGroup">Tell your friends to join\n%1$s.</string>
 </resources>
