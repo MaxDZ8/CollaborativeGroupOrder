@@ -1615,7 +1615,7 @@ containing a value of this type.
         public static final int alertTitle=0x7f0c0030;
         public static final int always=0x7f0c001b;
         public static final int beginning=0x7f0c0018;
-        public static final int btn_closeGroup=0x7f0c0059;
+        public static final int btn_closeGroup=0x7f0c005a;
         public static final int btn_joinParty=0x7f0c0051;
         public static final int btn_newParty=0x7f0c0050;
         public static final int btn_startListening=0x7f0c0054;
@@ -1645,7 +1645,7 @@ containing a value of this type.
         public static final int line1=0x7f0c0060;
         public static final int line3=0x7f0c0064;
         public static final int listMode=0x7f0c0009;
-        public static final int list_characters=0x7f0c005a;
+        public static final int list_characters=0x7f0c0059;
         public static final int list_item=0x7f0c0028;
         public static final int media_actions=0x7f0c005e;
         public static final int middle=0x7f0c001a;
@@ -1688,14 +1688,14 @@ containing a value of this type.
         public static final int text=0x7f0c0065;
         public static final int text2=0x7f0c0063;
         public static final int textSpacerNoButtons=0x7f0c0034;
-        public static final int textView=0x7f0c0056;
+        public static final int textView2=0x7f0c0055;
         public static final int time=0x7f0c0061;
         public static final int title=0x7f0c002a;
         public static final int title_template=0x7f0c002f;
         public static final int topPanel=0x7f0c002e;
         public static final int txt_getGroupNameDesc=0x7f0c0052;
         public static final int txt_renamedService=0x7f0c0057;
-        public static final int txt_scanning=0x7f0c0055;
+        public static final int txt_scanning=0x7f0c0056;
         public static final int up=0x7f0c0008;
         public static final int useLogo=0x7f0c0012;
         public static final int withText=0x7f0c001f;
@@ -1785,13 +1785,13 @@ containing a value of this type.
         public static final int nullNSDService_title=0x7f06001e;
         public static final int renamedGroup=0x7f06001f;
         public static final int renamedService_text=0x7f060020;
-        public static final int serverSocketFailed_msg=0x7f060021;
-        public static final int serverSocketFailed_title=0x7f060022;
-        public static final int serviceRegFailed_msg=0x7f060023;
-        public static final int serviceRegFailed_title=0x7f060024;
+        public static final int sameNetworkVisibilityInfo=0x7f060021;
+        public static final int serverSocketFailed_msg=0x7f060022;
+        public static final int serverSocketFailed_title=0x7f060023;
+        public static final int serviceRegFailed_msg=0x7f060024;
+        public static final int serviceRegFailed_title=0x7f060025;
         public static final int status_bar_notification_info_overflow=0x7f060013;
-        public static final int txt_getGroupNameDesc_text=0x7f060025;
-        public static final int txt_renamed_text=0x7f060026;
+        public static final int txt_getGroupNameDesc_text=0x7f060026;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f09007d;
