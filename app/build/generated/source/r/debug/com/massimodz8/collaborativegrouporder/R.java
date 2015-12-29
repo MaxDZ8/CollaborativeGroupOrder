@@ -1777,23 +1777,21 @@ containing a value of this type.
         public static final int btn_joinParty_text=0x7f060016;
         public static final int btn_newParty_text=0x7f060017;
         public static final int btn_startListening_text=0x7f060018;
-        public static final int discoveryFailed_msg=0x7f060019;
-        public static final int discoveryFailed_title=0x7f06001a;
-        public static final int groupNameIsEmpty_msg=0x7f06001b;
-        public static final int groupNameIsEmpty_title=0x7f06001c;
-        public static final int groupName_retry=0x7f06001d;
-        public static final int networkScanning=0x7f06001e;
-        public static final int nullWifi_btn=0x7f06001f;
-        public static final int nullWifi_msg=0x7f060020;
-        public static final int nullWifi_title=0x7f060021;
-        public static final int renamedService_text=0x7f060022;
-        public static final int serviceInstallFailed_msg=0x7f060023;
-        public static final int serviceInstallFailed_title=0x7f060024;
+        public static final int groupNameIsEmpty_msg=0x7f060019;
+        public static final int groupNameIsEmpty_title=0x7f06001a;
+        public static final int groupName_retry=0x7f06001b;
+        public static final int networkScanning=0x7f06001c;
+        public static final int nullNSDService_msg=0x7f06001d;
+        public static final int nullNSDService_title=0x7f06001e;
+        public static final int renamedGroup=0x7f06001f;
+        public static final int renamedService_text=0x7f060020;
+        public static final int serverSocketFailed_msg=0x7f060021;
+        public static final int serverSocketFailed_title=0x7f060022;
+        public static final int serviceRegFailed_msg=0x7f060023;
+        public static final int serviceRegFailed_title=0x7f060024;
         public static final int status_bar_notification_info_overflow=0x7f060013;
         public static final int txt_getGroupNameDesc_text=0x7f060025;
         public static final int txt_renamed_text=0x7f060026;
-        public static final int unexpectedP2PStateChange_msg=0x7f060027;
-        public static final int unexpectedP2PStateChange_title=0x7f060028;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f09007d;
