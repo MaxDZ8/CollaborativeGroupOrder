@@ -1690,13 +1690,13 @@ containing a value of this type.
         public static final int text=0x7f0c0068;
         public static final int text2=0x7f0c0066;
         public static final int textSpacerNoButtons=0x7f0c0034;
-        public static final int txt_helloHint =0x7f0c0050;
         public static final int textView2=0x7f0c0058;
         public static final int time=0x7f0c0064;
         public static final int title=0x7f0c002a;
         public static final int title_template=0x7f0c002f;
         public static final int topPanel=0x7f0c002e;
         public static final int txt_getGroupNameDesc=0x7f0c0055;
+        public static final int txt_helloHint=0x7f0c0050;
         public static final int txt_renamedService=0x7f0c005a;
         public static final int txt_scanning=0x7f0c0059;
         public static final int up=0x7f0c0008;

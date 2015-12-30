@@ -536,13 +536,13 @@ int id tabMode 0x7f0c000b
 int id text 0x7f0c0068
 int id text2 0x7f0c0066
 int id textSpacerNoButtons 0x7f0c0034
-int id textView 0x7f0c0050
 int id textView2 0x7f0c0058
 int id time 0x7f0c0064
 int id title 0x7f0c002a
 int id title_template 0x7f0c002f
 int id topPanel 0x7f0c002e
 int id txt_getGroupNameDesc 0x7f0c0055
+int id txt_helloHint 0x7f0c0050
 int id txt_renamedService 0x7f0c005a
 int id txt_scanning 0x7f0c0059
 int id up 0x7f0c0008
