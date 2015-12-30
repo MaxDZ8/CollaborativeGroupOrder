@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.channels.ClosedByInterruptException;
-import java.util.Vector;
 
 /* This activity is started by the MainMenuActivity when the user wants to assemble a new party.
 We open a Wi-Fi direct bubble and a proper service and listen to network to find users joining.
@@ -28,7 +26,6 @@ We open a Wi-Fi direct bubble and a proper service and listen to network to find
 public class NetworkListeningActivity extends AppCompatActivity implements NsdManager.RegistrationListener {
     private ServerSocket landing;
     private NsdManager nsdService;
-    private Thread acceptor;
     private FormingPlayerGroupHelper grouping; // composition is cooler mofo
 
 
@@ -120,13 +117,7 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
                         }
                         else {
                             AlertDialog.Builder build = new AlertDialog.Builder(self);
-                            String readable;
-                            switch(res.error) {
-                                case NsdManager.FAILURE_ALREADY_ACTIVE: readable = "FAILURE_ALREADY_ACTIVE"; break;
-                                case NsdManager.FAILURE_INTERNAL_ERROR: readable = "FAILURE_INTERNAL_ERROR"; break;
-                                case NsdManager.FAILURE_MAX_LIMIT: readable = "FAILURE_MAX_LIMIT"; break;
-                                default: readable = String.format("%1$d", res.error);
-                            }
+                            String readable = nsdErrorString(res.error);
                             build.setTitle(R.string.serviceRegFailed_title)
                                     .setMessage(String.format(getString(R.string.serviceRegFailed_msg), readable));
                             build.show();
@@ -152,20 +143,17 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
         groupNameView.setEnabled(false);
 
         grouping = new FormingPlayerGroupHelper(guiThreadHandler);
-        acceptor = new Thread(new Runnable() {
+        Thread acceptor = new Thread(new Runnable() {
             @Override
             public void run() {
                 boolean keepGoing = true;
-                Vector<GroupJoinHandshakingThread> survive = new Vector<>();
-                while(keepGoing) {
+                while (keepGoing) {
                     try {
                         Socket newComer = landing.accept();
-                        GroupJoinHandshakingThread hello = new GroupJoinHandshakingThread(newComer, grouping);
-                        survive.add(hello);
-                    //} catch(InterruptedException e) {
-                    } catch(ClosedByInterruptException e) {
-                        keepGoing = false;
-                    } catch(IOException e) {
+                        new GroupJoinHandshakingThread(newComer, grouping).run();
+                        //} catch(InterruptedException e) {
+                    } catch (IOException e) {
+                        // Also identical to ClosedByInterruptException
                         /// TODO: notify user?
                         keepGoing = false;
                     }
@@ -175,13 +163,15 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
         acceptor.start();
     }
 
-
-    private void disableButtons() {
-        findViewById(R.id.btn_closeGroup).setEnabled(false);
-        findViewById(R.id.progressBar).setEnabled(false);
-        findViewById(R.id.progressBar).setVisibility(View.INVISIBLE);
-        findViewById(R.id.list_characters).setEnabled(false);
+    private static String nsdErrorString(int error) {
+        switch(error) {
+            case NsdManager.FAILURE_ALREADY_ACTIVE: return "FAILURE_ALREADY_ACTIVE";
+            case NsdManager.FAILURE_INTERNAL_ERROR: return "FAILURE_INTERNAL_ERROR";
+            case NsdManager.FAILURE_MAX_LIMIT: return "FAILURE_MAX_LIMIT";
+        }
+        return String.format("%1$d", error);
     }
+
 
     // NsdManager.RegistrationListener() is async AND on a different thread so I cannot just
     // modify the various controls from there. Instead, wait for success/fail and then

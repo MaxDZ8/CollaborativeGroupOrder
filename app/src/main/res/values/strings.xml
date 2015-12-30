@@ -20,4 +20,8 @@
     <string name="sameNetworkVisibilityInfo">The party will be visible to all devices on the same network.</string>
     <string name="joinGreetings">Say something so the party owner can recognize you</string>
     <string name="sayHelloJoin">Start looking for a party</string>
+    <string name="scanningForGroupsOngoing">I\'m scanning the network for hero groups. Groups will appear below.</string>
+    <string name="explicitConnect">Explicit connect</string>
+    <string name="cannotSeeThemTryConnect">Cannot find your group? Try an explicit connection!</string>
+    <string name="serviceDiscoveryFailed_msg">Something has gone wrong with network discovery (error %1$s)</string>
 </resources>
