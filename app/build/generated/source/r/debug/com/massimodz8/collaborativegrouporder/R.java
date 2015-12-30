@@ -1784,14 +1784,14 @@ containing a value of this type.
         public static final int nullNSDService_msg=0x7f06001d;
         public static final int nullNSDService_title=0x7f06001e;
         public static final int renamedGroup=0x7f06001f;
-        public static final int renamedService_text=0x7f060020;
-        public static final int sameNetworkVisibilityInfo=0x7f060021;
-        public static final int serverSocketFailed_msg=0x7f060022;
-        public static final int serverSocketFailed_title=0x7f060023;
-        public static final int serviceRegFailed_msg=0x7f060024;
-        public static final int serviceRegFailed_title=0x7f060025;
+        public static final int renamedService_text=0x7f060026;
+        public static final int sameNetworkVisibilityInfo=0x7f060020;
+        public static final int serverSocketFailed_msg=0x7f060021;
+        public static final int serverSocketFailed_title=0x7f060022;
+        public static final int serviceRegFailed_msg=0x7f060023;
+        public static final int serviceRegFailed_title=0x7f060024;
         public static final int status_bar_notification_info_overflow=0x7f060013;
-        public static final int txt_getGroupNameDesc_text=0x7f060026;
+        public static final int txt_getGroupNameDesc_text=0x7f060025;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f09007d;
