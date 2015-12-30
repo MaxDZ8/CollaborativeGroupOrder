@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.massimodz8.collaborativegrouporder.NetworkListeningActivity">
+    tools:context="com.massimodz8.collaborativegrouporder.NetworkListeningActivity"
+    android:gravity="center_horizontal">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/txt_getGroupNameDesc_text"
-        android:id="@+id/txt_getGroupNameDesc"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:id="@+id/txt_getGroupNameDesc" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/in_partyName"
         android:inputType="textNoSuggestions"
-        android:layout_below="@+id/txt_getGroupNameDesc"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:gravity="center_horizontal" />
 
     <Button
@@ -32,8 +29,6 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_startListening_text"
         android:id="@+id/btn_startListening"
-        android:layout_below="@+id/in_partyName"
-        android:layout_centerHorizontal="true"
         android:onClick="initiatePartyHandshake" />
 
     <TextView
@@ -42,8 +37,6 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/sameNetworkVisibilityInfo"
         android:id="@+id/textView2"
-        android:layout_below="@+id/btn_startListening"
-        android:layout_centerHorizontal="true"
         android:gravity="center_horizontal" />
 
     <TextView
@@ -52,9 +45,6 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/txt_scanning"
         android:visibility="gone"
-        android:layout_below="@+id/textView2"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:gravity="center_horizontal"
         android:text="@string/networkScanning" />
 
@@ -65,8 +55,6 @@
         android:text="@string/renamedService_text"
         android:id="@+id/txt_renamedService"
         android:visibility="gone"
-        android:layout_below="@+id/txt_scanning"
-        android:layout_centerHorizontal="true"
         android:gravity="center_horizontal" />
 
     <ProgressBar
@@ -75,27 +63,27 @@
         android:layout_height="wrap_content"
         android:id="@+id/progressBar"
         android:indeterminate="true"
-        android:visibility="invisible"
-        android:layout_below="@+id/txt_renamedService"
-        android:layout_alignRight="@+id/txt_scanning"
-        android:layout_alignEnd="@+id/txt_scanning" />
+        android:visibility="gone" />
 
     <ListView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:id="@+id/list_characters"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/btn_closeGroup"
-        android:visibility="invisible"
-        android:layout_below="@+id/progressBar" />
+        android:visibility="gone" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_generateParty"
         android:id="@+id/btn_closeGroup"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:visibility="invisible" />
+        android:visibility="gone" />
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/FYI_port"
+        android:id="@+id/txt_FYI_port"
+        android:visibility="gone" />
+
+</LinearLayout>

@@ -1,90 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.massimodz8.collaborativegrouporder.JoinGroupActivity">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/joinGreetings"
-        android:id="@+id/txt_helloHint"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/helloMaster"
-        android:layout_below="@+id/txt_helloHint"
-        android:layout_centerHorizontal="true"
-        android:inputType="textAutoComplete|textAutoCorrect"
-        android:gravity="center_horizontal" />
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/sayHelloJoin"
-        android:id="@+id/btn_beginScanningGJ"
-        android:layout_below="@+id/helloMaster"
-        android:layout_centerHorizontal="true"
-        android:onClick="initiateGroupJoin" />
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar2"
-        android:layout_below="@+id/btn_beginScanningGJ"
-        android:layout_centerHorizontal="true"
-        android:visibility="invisible"
-        android:indeterminate="true"
-        android:indeterminateOnly="false" />
+    tools:context="com.massimodz8.collaborativegrouporder.JoinGroupActivity"
+    android:gravity="center_horizontal">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/scanningForGroupsOngoing"
-        android:id="@+id/textView"
-        android:layout_below="@+id/btn_beginScanningGJ"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        android:visibility="invisible" />
+        android:id="@+id/txt_lookingForGroups"
+        android:gravity="center_horizontal" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar2"
+        android:indeterminate="true"
+        android:indeterminateOnly="false" />
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/groupList"
-        android:layout_below="@+id/textView"
-        android:layout_above="@+id/textView3"
-        android:visibility="invisible" />
+        android:id="@+id/groupList" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/cannotSeeThemTryConnect"
-        android:id="@+id/textView3"
-        android:layout_above="@+id/button"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        android:visibility="invisible" />
+        android:id="@+id/txt_explicitConnectHint"
+        android:gravity="center_horizontal" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/explicitConnect"
-        android:id="@+id/button"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:visibility="invisible" />
+        android:id="@+id/btn_startExplicitConnection" />
 
-</RelativeLayout>
+</LinearLayout>

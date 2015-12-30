@@ -25,14 +25,8 @@ public class JoinGroupActivity extends AppCompatActivity {
                     .setMessage(R.string.nullNSDService_msg);
             build.show();
         }
-    }
 
-    public void initiateGroupJoin(View btn) {
-        btn.setEnabled(false);
-        findViewById(R.id.helloMaster).setVisibility(View.GONE);
-        findViewById(R.id.txt_helloHint).setVisibility(View.GONE);
         findViewById(R.id.progressBar2).setVisibility(View.VISIBLE);
-
         final JoinGroupActivity self = this;
         guiThreadHandler = new Handler(new Handler.Callback() {
             @Override
@@ -42,7 +36,16 @@ public class JoinGroupActivity extends AppCompatActivity {
                     case MSG_SERVICE_DISCOVERY_STOPPED: {
                         ServiceDiscoveryStartStop meh = (ServiceDiscoveryStartStop) msg.obj;
                         if (meh == null) break; // wut? Impossible for the time being
-                        if (meh.successful) break; // ignore successful start/stop, we don't care
+                        if (meh.successful) {
+                            findViewById(R.id.txt_lookingForGroups).setVisibility(View.VISIBLE);
+                            findViewById(R.id.groupList).setVisibility(View.VISIBLE);
+                            findViewById(R.id.txt_explicitConnectHint).setVisibility(View.VISIBLE);
+                            findViewById(R.id.btn_startExplicitConnection).setVisibility(View.VISIBLE);
+                            break;
+                        }
+                        else {
+                            findViewById(R.id.progressBar2).setEnabled(false);
+                        }
                         AlertDialog.Builder build = new AlertDialog.Builder(self);
                         build.setTitle("Service discovery error")
                                 .setMessage(String.format(getString(R.string.serviceDiscoveryFailed_msg), nsdErrorString(meh.error)));

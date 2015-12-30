@@ -102,12 +102,9 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
                                 note.setText(String.format(text, res.netName));
                                 note.setVisibility(View.VISIBLE);
                             }
-                            {// debug!!!
-                                AlertDialog.Builder build = new AlertDialog.Builder(self);
-                                build.setTitle("DEBUG!")
-                                        .setMessage(String.format("port: %1$d", landing.getLocalPort()));
-                                build.show();
-                            }
+                            TextView port = (TextView)findViewById(R.id.txt_FYI_port);
+                            port.setText(String.format(getString(R.string.FYI_port), landing.getLocalPort()));
+                            port.setVisibility(View.VISIBLE);
                             findViewById(R.id.txt_scanning).setVisibility(View.VISIBLE);
                             findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                             findViewById(R.id.list_characters).setVisibility(View.VISIBLE);

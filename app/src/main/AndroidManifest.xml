@@ -28,7 +28,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".NetworkListeningActivity" />
-        <activity android:name=".JoinGroupActivity"></activity>
+        <activity android:name=".JoinGroupActivity" />
+        <activity android:name=".ExplicitConnectionActivity"></activity>
     </application>
 
 </manifest>

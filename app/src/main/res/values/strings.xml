@@ -8,7 +8,7 @@
     <string name="groupNameIsEmpty_title">Party missing name</string>
     <string name="groupNameIsEmpty_msg">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
     <string name="groupName_retry">Modify party name</string>
-    <string name="networkScanning">Tell your friends to join your party from the main menu. Their devices appear below.</string>
+    <string name="networkScanning">Tell your friends to join your party from the main menu. Devices will appear below. Tap devices to add them to the group.</string>
     <string name="renamedService_text" translatable="false">You cannot read this!</string>
     <string name="serverSocketFailed_title">Network error</string>
     <string name="serverSocketFailed_msg">Something prevented creation of the "listen" socket. This is required to let other devices talk to me. Without it, I cannot even start creating the party.</string>
@@ -22,6 +22,7 @@
     <string name="sayHelloJoin">Start looking for a party</string>
     <string name="scanningForGroupsOngoing">I\'m scanning the network for hero groups. Groups will appear below.</string>
     <string name="explicitConnect">Explicit connect</string>
-    <string name="cannotSeeThemTryConnect">Cannot find your group? Try an explicit connection!</string>
+    <string name="cannotSeeThemTryConnect">Cannot find your group?\nTry an explicit connection!</string>
     <string name="serviceDiscoveryFailed_msg">Something has gone wrong with network discovery (error %1$s)</string>
+    <string name="FYI_port">FYI: listening on port %1$d</string>
 </resources>
