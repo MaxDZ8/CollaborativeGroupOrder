@@ -35,4 +35,9 @@ public class MainMenuActivity extends AppCompatActivity {
         Intent go = new Intent(this, NetworkListeningActivity.class);
         startActivity(go);
     }
+
+    public void startJoinGroupActivity(View btn) {
+        Intent go = new Intent(this, JoinGroupActivity.class);
+        startActivity(go);
+    }
 }

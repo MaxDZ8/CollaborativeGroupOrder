@@ -18,4 +18,6 @@
     <string name="nullNSDService_msg">Looks like the Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
     <string name="renamedGroup">Tell your friends to join\n%1$s.</string>
     <string name="sameNetworkVisibilityInfo">The party will be visible to all devices on the same network.</string>
+    <string name="joinGreetings">Say something so the party owner can recognize you</string>
+    <string name="sayHelloJoin">Start looking for a party</string>
 </resources>
