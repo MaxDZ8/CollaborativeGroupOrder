@@ -1,19 +1,14 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
-import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.format.Formatter;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -21,8 +16,9 @@ import android.widget.TextView;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.util.Collection;
-import java.util.Iterator;
+import java.net.Socket;
+import java.nio.channels.ClosedByInterruptException;
+import java.util.Vector;
 
 /* This activity is started by the MainMenuActivity when the user wants to assemble a new party.
 We open a Wi-Fi direct bubble and a proper service and listen to network to find users joining.
@@ -32,6 +28,8 @@ We open a Wi-Fi direct bubble and a proper service and listen to network to find
 public class NetworkListeningActivity extends AppCompatActivity implements NsdManager.RegistrationListener {
     private ServerSocket landing;
     private NsdManager nsdService;
+    private Thread acceptor;
+    private FormingPlayerGroupHelper grouping; // composition is cooler mofo
 
 
     @Override
@@ -93,7 +91,7 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
         }
 
         final NetworkListeningActivity self = this;
-        serviceRegistrationHandler = new Handler(new Handler.Callback() {
+        guiThreadHandler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 switch(msg.what) {
@@ -134,6 +132,12 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
                             build.show();
                         }
                         return true;
+                    case MSG_PLAYER_HANDSHAKE_FAILED:
+                    case MSG_PLAYER_WELCOME:
+                        AlertDialog.Builder build = new AlertDialog.Builder(self);
+                        build.setTitle("STUB")
+                                .setMessage("Something attempted to connect");
+                        build.show();
                 }
                 return false;
             }
@@ -146,6 +150,29 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
 
         view.setEnabled(false);
         groupNameView.setEnabled(false);
+
+        grouping = new FormingPlayerGroupHelper(guiThreadHandler);
+        acceptor = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean keepGoing = true;
+                Vector<GroupJoinHandshakingThread> survive = new Vector<>();
+                while(keepGoing) {
+                    try {
+                        Socket newComer = landing.accept();
+                        GroupJoinHandshakingThread hello = new GroupJoinHandshakingThread(newComer, grouping);
+                        survive.add(hello);
+                    //} catch(InterruptedException e) {
+                    } catch(ClosedByInterruptException e) {
+                        keepGoing = false;
+                    } catch(IOException e) {
+                        /// TODO: notify user?
+                        keepGoing = false;
+                    }
+                }
+            }
+        }, "Group join async acceptor");
+        acceptor.start();
     }
 
 
@@ -160,7 +187,10 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
     // modify the various controls from there. Instead, wait for success/fail and then
     // pass a notification to the UI thread.
     public static final int MSG_SERVICE_REGISTRATION_COMPLETE = 1;
-    class ServiceRegistrationResult {
+    public static final int MSG_PLAYER_HANDSHAKE_FAILED = 2;
+    public static final int MSG_PLAYER_WELCOME = 3;
+
+    static class ServiceRegistrationResult {
         public ServiceRegistrationResult(String netName) {
             this.netName = netName;
             successful = true;
@@ -174,21 +204,41 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
         public boolean successful;
         public String netName;
     }
-    Handler serviceRegistrationHandler;
+    static public class HandshakeFailureInfo {
+        public HandshakeFailureInfo(InetAddress byebye, int port, String reason) {
+            this.byebye = byebye;
+            this.port = port;
+            this.reason = reason;
+        }
+
+        public InetAddress byebye;
+        public int port;
+        public String reason;
+    }
+    static public class NewPlayerInfo {
+        public NewPlayerInfo(Socket sticker, String hello) {
+            this.sticker = sticker;
+            this.hello = hello;
+        }
+
+        public Socket sticker;
+        public String hello;
+    }
+    Handler guiThreadHandler;
 
     //
     // NsdManager.RegistrationListener() ___________________________________________________________
     @Override
     public void onServiceRegistered(NsdServiceInfo info) {
         final String netName = info.getServiceName();
-        Message msg = Message.obtain(serviceRegistrationHandler, MSG_SERVICE_REGISTRATION_COMPLETE, new ServiceRegistrationResult(netName));
-        serviceRegistrationHandler.sendMessage(msg);
+        Message msg = Message.obtain(guiThreadHandler, MSG_SERVICE_REGISTRATION_COMPLETE, new ServiceRegistrationResult(netName));
+        guiThreadHandler.sendMessage(msg);
     }
 
     @Override
     public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-        Message msg = Message.obtain(serviceRegistrationHandler, MSG_SERVICE_REGISTRATION_COMPLETE, new ServiceRegistrationResult(errorCode));
-        serviceRegistrationHandler.sendMessage(msg);
+        Message msg = Message.obtain(guiThreadHandler, MSG_SERVICE_REGISTRATION_COMPLETE, new ServiceRegistrationResult(errorCode));
+        guiThreadHandler.sendMessage(msg);
     }
 
     @Override
