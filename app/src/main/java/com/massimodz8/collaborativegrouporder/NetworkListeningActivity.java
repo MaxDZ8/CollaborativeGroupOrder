@@ -7,16 +7,19 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
+import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.util.Collection;
 import java.util.Iterator;
@@ -104,7 +107,12 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
                                 note.setText(String.format(text, res.netName));
                                 note.setVisibility(View.VISIBLE);
                             }
-
+                            {// debug!!!
+                                AlertDialog.Builder build = new AlertDialog.Builder(self);
+                                build.setTitle("DEBUG!")
+                                        .setMessage(String.format("port: %1$d", landing.getLocalPort()));
+                                build.show();
+                            }
                             findViewById(R.id.txt_scanning).setVisibility(View.VISIBLE);
                             findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                             findViewById(R.id.list_characters).setVisibility(View.VISIBLE);

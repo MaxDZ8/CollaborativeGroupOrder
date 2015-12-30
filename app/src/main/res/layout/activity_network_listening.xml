@@ -50,13 +50,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/networkScanning"
         android:id="@+id/txt_scanning"
         android:visibility="gone"
         android:layout_below="@+id/textView2"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:text="@string/networkScanning" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -66,7 +66,8 @@
         android:id="@+id/txt_renamedService"
         android:visibility="gone"
         android:layout_below="@+id/txt_scanning"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
