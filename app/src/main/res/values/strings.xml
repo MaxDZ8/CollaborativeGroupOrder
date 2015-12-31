@@ -25,9 +25,18 @@
     <string name="cannotSeeThemTryConnect">Cannot find your group?\nTry an explicit connection!</string>
     <string name="serviceDiscoveryFailed_msg">Something has gone wrong with network discovery (error %1$s)</string>
     <string name="FYI_explicitConnectInfo">Are your friends having trouble in finding your group? Here is data to use "explicit connect":\n</string>
-    <string name="txt_explicitConnectionInfo">To attempt a specific connection you need two pieces of information. The first is the address of the device you want to connect to. This isn\'t easy to get: the group owner might have to look for it in device settings. If a friend already connected you can ask him.</string>
+    <string name="txt_explicitConnectionInfo">To attempt a specific connection you need two pieces of information. They can be found at the bottom of the screen on group owner device. You might have to try this a few times.</string>
     <string name="txt_inetPort_desc">The second information you need is a port. It\'s the number at the bottom of the screen on group owner device.</string>
     <string name="btn_txt_attemptConnection">Connect</string>
     <string name="explicit_portInfo">Port: %1$d\n</string>
     <string name="explicit_address">Address: %1$s\n</string>
+    <string name="port">Port</string>
+    <string name="NetworkAddress">Network address</string>
+    <string name="serviceDiscErr">Service discovery error</string>
+    <string name="badPort_msg">This does not look like a valid port number. Ports are usually between 1024 and 65535. Try again.</string>
+    <string name="badHost_msg">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
+    <string name="explicitConn_IOException_title">I/O error</string>
+    <string name="explicitConn_IOException_msg">System message:\n%1$s</string>
+    <string name="badInitialServerReply_msg">Failed to parse server reply. This server is incompatible.</string>
+    <string name="unexpectedInitialServerReply_msg">Server replied in an unexpected way. This server is incompatible.</string>
 </resources>

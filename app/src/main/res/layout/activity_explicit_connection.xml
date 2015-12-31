@@ -18,10 +18,18 @@
         android:id="@+id/textView"
         android:gravity="center_horizontal" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/NetworkAddress"
+        android:id="@+id/textView3"
+        android:layout_gravity="center_horizontal" />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/inetAddr"
+        android:id="@+id/in_explicit_inetAddr"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
         android:inputType="textNoSuggestions" />
@@ -29,18 +37,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/txt_inetPort_desc"
-        android:id="@+id/textView3"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/port"
+        android:id="@+id/textView4"
+        android:layout_gravity="center_horizontal" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/in_explicit_port"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal" />
 
@@ -49,5 +56,6 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_txt_attemptConnection"
         android:id="@+id/button"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:onClick="startExplicitConnection" />
 </LinearLayout>

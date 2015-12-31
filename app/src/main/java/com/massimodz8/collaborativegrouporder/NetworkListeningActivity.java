@@ -33,6 +33,7 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
     private ServerSocket landing;
     private NsdManager nsdService;
     private FormingPlayerGroupHelper grouping; // composition is cooler mofo
+    private Thread acceptor;
 
 
     @Override
@@ -41,6 +42,7 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
         setContentView(R.layout.activity_network_listening);
     }
     protected void onDestroy() {
+        if(acceptor != null) acceptor.interrupt();
         nsdService.unregisterService(this);
         super.onDestroy();
     }
@@ -178,7 +180,7 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
         groupNameView.setEnabled(false);
 
         grouping = new FormingPlayerGroupHelper(guiThreadHandler);
-        Thread acceptor = new Thread(new Runnable() {
+        acceptor = new Thread(new Runnable() {
             @Override
             public void run() {
                 boolean keepGoing = true;
@@ -186,7 +188,6 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
                     try {
                         Socket newComer = landing.accept();
                         new GroupJoinHandshakingThread(newComer, grouping).run();
-
                         //} catch(InterruptedException e) {
                     } catch (IOException e) {
                         // Also identical to ClosedByInterruptException

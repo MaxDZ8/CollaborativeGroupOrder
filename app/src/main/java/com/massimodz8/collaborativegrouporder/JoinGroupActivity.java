@@ -1,6 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Handler;
@@ -9,6 +10,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+
+import java.net.Socket;
+import java.util.Vector;
 
 public class JoinGroupActivity extends AppCompatActivity {
     private NsdManager nsdService;
@@ -47,7 +51,7 @@ public class JoinGroupActivity extends AppCompatActivity {
                             findViewById(R.id.progressBar2).setEnabled(false);
                         }
                         AlertDialog.Builder build = new AlertDialog.Builder(self);
-                        build.setTitle("Service discovery error")
+                        build.setTitle(getString(R.string.serviceDiscErr))
                                 .setMessage(String.format(getString(R.string.serviceDiscoveryFailed_msg), nsdErrorString(meh.error)));
                         build.show();
                         break;
@@ -137,4 +141,32 @@ public class JoinGroupActivity extends AppCompatActivity {
     }
 
     Handler guiThreadHandler;
+
+    static final int EXPLICIT_CONNECTION_REQUEST = 1;
+
+    public void startExplicitConnectionActivity(View btn) {
+        Intent intent = new Intent(this, ExplicitConnectionActivity.class);
+        startActivityForResult(intent, EXPLICIT_CONNECTION_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode != EXPLICIT_CONNECTION_REQUEST) return;
+        if(resultCode != RESULT_OK) return; // RESULT_CANCELLED
+        final Bundle bundle = data.getBundleExtra(ExplicitConnectionActivity.RESULT_BUNDLE_NAME);
+        ConnectedGroup cg = (ConnectedGroup)bundle.get(ExplicitConnectionActivity.RESULT_BUNDLE_GROUP_INFO);
+        Socket sock = (Socket)bundle.get(ExplicitConnectionActivity.RESULT_BUNDLE_SOCKET);
+        candidates.add(new ReadyGroup(sock, cg));
+    }
+
+    private static class ReadyGroup {
+        public ConnectedGroup cg;
+        public Socket sock;
+
+        public ReadyGroup(Socket sock, ConnectedGroup cg) {
+            this.sock = sock;
+            this.cg = cg;
+        }
+    }
+    private Vector<ReadyGroup> candidates = new Vector<>();
 }
