@@ -82,7 +82,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/FYI_port"
+        android:text="@string/FYI_explicitConnectInfo"
         android:id="@+id/txt_FYI_port"
         android:visibility="gone" />
 

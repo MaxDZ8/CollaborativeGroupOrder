@@ -24,5 +24,10 @@
     <string name="explicitConnect">Explicit connect</string>
     <string name="cannotSeeThemTryConnect">Cannot find your group?\nTry an explicit connection!</string>
     <string name="serviceDiscoveryFailed_msg">Something has gone wrong with network discovery (error %1$s)</string>
-    <string name="FYI_port">FYI: listening on port %1$d</string>
+    <string name="FYI_explicitConnectInfo">Are your friends having trouble in finding your group? Here is data to use "explicit connect":\n</string>
+    <string name="txt_explicitConnectionInfo">To attempt a specific connection you need two pieces of information. The first is the address of the device you want to connect to. This isn\'t easy to get: the group owner might have to look for it in device settings. If a friend already connected you can ask him.</string>
+    <string name="txt_inetPort_desc">The second information you need is a port. It\'s the number at the bottom of the screen on group owner device.</string>
+    <string name="btn_txt_attemptConnection">Connect</string>
+    <string name="explicit_portInfo">Port: %1$d\n</string>
+    <string name="explicit_address">Address: %1$s\n</string>
 </resources>

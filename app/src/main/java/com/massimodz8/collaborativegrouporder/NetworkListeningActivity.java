@@ -14,9 +14,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Enumeration;
+import java.util.regex.Pattern;
 
 /* This activity is started by the MainMenuActivity when the user wants to assemble a new party.
 We open a Wi-Fi direct bubble and a proper service and listen to network to find users joining.
@@ -87,6 +93,7 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
             build.show();
         }
 
+
         final NetworkListeningActivity self = this;
         guiThreadHandler = new Handler(new Handler.Callback() {
             @Override
@@ -103,8 +110,39 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
                                 note.setVisibility(View.VISIBLE);
                             }
                             TextView port = (TextView)findViewById(R.id.txt_FYI_port);
-                            port.setText(String.format(getString(R.string.FYI_port), landing.getLocalPort()));
+                            String hostInfo = getString(R.string.FYI_explicitConnectInfo);
+                            hostInfo += String.format(getString(R.string.explicit_portInfo), landing.getLocalPort());
+
+                            Enumeration<NetworkInterface> nics = null;
+                            try {
+                                nics = NetworkInterface.getNetworkInterfaces();
+                            } catch (SocketException e) {
+                                AlertDialog.Builder build = new AlertDialog.Builder(self);
+                                build.setTitle("Network error")
+                                        .setMessage("Failed to get network information. This isn't really a problem but you'll have to find this device network address in some other way in case your friends need explicit connection data.");
+                                build.show();
+                            }
+                            if(nics != null) {
+                                while(nics.hasMoreElements()) {
+                                    NetworkInterface n = nics.nextElement();
+                                    Enumeration<InetAddress> addrs = n.getInetAddresses();
+                                    Inet4Address ipFour = null;
+                                    Inet6Address ipSix = null;
+                                    while(addrs.hasMoreElements()) {
+                                        InetAddress a = addrs.nextElement();
+                                        if(a.isAnyLocalAddress()) continue; // ~0.0.0.0 or ::, sure not useful
+                                        if(a.isLoopbackAddress()) continue; // ~127.0.0.1 or ::1, not useful
+                                        if(ipFour == null && a instanceof Inet4Address) ipFour = (Inet4Address)a;
+                                        if(ipSix == null && a instanceof Inet6Address) ipSix = (Inet6Address)a;
+                                    }
+                                    if(ipFour != null) hostInfo += String.format(getString(R.string.explicit_address), stripUselessChars(ipFour.toString()));
+                                    if(ipSix != null) hostInfo += String.format(getString(R.string.explicit_address), stripUselessChars(ipSix.toString()));
+                                }
+                            }
+
+                            port.setText(hostInfo);
                             port.setVisibility(View.VISIBLE);
+
                             findViewById(R.id.txt_scanning).setVisibility(View.VISIBLE);
                             findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
                             findViewById(R.id.list_characters).setVisibility(View.VISIBLE);
@@ -148,6 +186,7 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
                     try {
                         Socket newComer = landing.accept();
                         new GroupJoinHandshakingThread(newComer, grouping).run();
+
                         //} catch(InterruptedException e) {
                     } catch (IOException e) {
                         // Also identical to ClosedByInterruptException
@@ -158,6 +197,16 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
             }
         }, "Group join async acceptor");
         acceptor.start();
+    }
+
+    private static String stripUselessChars(String s) {
+        for(int i = 0; i < s.length(); i++) {
+            if(s.charAt(i) == '%') {
+                s = s.substring(0, i);
+                break;
+            }
+        }
+        return s.charAt(0) == '/'? s.substring(1) : s;
     }
 
     private static String nsdErrorString(int error) {
