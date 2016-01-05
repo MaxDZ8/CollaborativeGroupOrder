@@ -1,5 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -40,8 +42,10 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             Error(String title, String msg) { this.title = title; this.msg = msg; }
         }
         public Error ohno; // if this exists the rest is to be ignored
-        public Socket socket;
-        public ConnectedGroup cg;
+        // Android 17 cannot but Object in bundles so we cannot really save the socket.
+        //public Socket socket;
+        //public ConnectedGroup cg;
+        Attempt successful; // OFC it might not be able to suceed again... :(
     }
 
     public void startExplicitConnection(View btn) {
@@ -62,17 +66,10 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         new AsyncTask<Attempt, Void, Shaken>() {
             @Override
             protected Shaken doInBackground(Attempt... params) {
-                Socket pipe = null;
                 Shaken hello = new Shaken();
                 try {
-                    pipe = new Socket(params[0].addr, params[0].port);
-                    ObjectOutputStream writer = new ObjectOutputStream(pipe.getOutputStream());
-                    ServerInfoRequest tellme = new ServerInfoRequest();
-                    writer.writeObject(tellme);
-
-                    ObjectInputStream reader = new ObjectInputStream(pipe.getInputStream());
-                    Object reply = reader.readObject();
-                    hello.cg = (ConnectedGroup)reply;
+                    JoinGroupActivity.ReadyGroup group = JoinGroupActivity.initialConnect(params[0].addr, params[0].port);
+                    group.sock.close();
                 } catch (UnknownHostException e) {
                     hello.ohno = new Shaken.Error(null, getString(R.string.badHost_msg));
                     hello.ohno.refocus = R.id.in_explicit_inetAddr;
@@ -83,7 +80,8 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 } catch (ClassCastException e) {
                     hello.ohno = new Shaken.Error(null, getString(R.string.unexpectedInitialServerReply_msg));
                 }
-                hello.socket = pipe;
+                //hello.socket = pipe;
+                hello.successful = params[0];
                 return hello;
             }
 
@@ -97,18 +95,18 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                     build.show();
                     return;
                 }
-                AlertDialog.Builder build = new AlertDialog.Builder(self);
-                String yes_oh_yes = "";
-                yes_oh_yes += "Version is " + shaken.cg.version + '\n';
-                yes_oh_yes += "Group name is " + shaken.cg.name + '\n';
-                build.setMessage(yes_oh_yes);
-                build.show();
+                Intent result = new Intent(RESULT_ACTION);
+                result.putExtra(RESULT_EXTRA_INET_ADDR, shaken.successful.addr);
+                result.putExtra(RESULT_EXTRA_PORT, shaken.successful.port);
+                setResult(Activity.RESULT_OK, result);
+                finish();
             }
         }.execute(new Attempt(host, port));
     }
 
-    public static final String RESULT_BUNDLE_NAME = "ExplicitConnectionBundle";
-    public static final String RESULT_BUNDLE_SOCKET = "socket";
-    public static final String RESULT_BUNDLE_GROUP_INFO = "groupInfo";
-    //public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.EXPLICIT_CONNECTION_RESULT";
+
+
+    public static final String RESULT_EXTRA_INET_ADDR = "address";
+    public static final String RESULT_EXTRA_PORT = "port";
+    public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.EXPLICIT_CONNECTION_RESULT";
 }

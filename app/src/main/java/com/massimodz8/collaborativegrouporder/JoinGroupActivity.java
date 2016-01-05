@@ -1,17 +1,28 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
+import com.massimodz8.collaborativegrouporder.networkMessage.ServerInfoRequest;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Vector;
 
 public class JoinGroupActivity extends AppCompatActivity {
@@ -31,6 +42,13 @@ public class JoinGroupActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.progressBar2).setVisibility(View.VISIBLE);
+        candidates = new ArrayAdapter<ReadyGroup>(this, R.layout.group_view_layout) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                return super.getView(position, convertView, parent);
+            }
+        };
+        ((ListView)findViewById(R.id.groupList)).setAdapter(candidates);
         final JoinGroupActivity self = this;
         guiThreadHandler = new Handler(new Handler.Callback() {
             @Override
@@ -151,22 +169,77 @@ public class JoinGroupActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode != EXPLICIT_CONNECTION_REQUEST) return;
-        if(resultCode != RESULT_OK) return; // RESULT_CANCELLED
-        final Bundle bundle = data.getBundleExtra(ExplicitConnectionActivity.RESULT_BUNDLE_NAME);
-        ConnectedGroup cg = (ConnectedGroup)bundle.get(ExplicitConnectionActivity.RESULT_BUNDLE_GROUP_INFO);
-        Socket sock = (Socket)bundle.get(ExplicitConnectionActivity.RESULT_BUNDLE_SOCKET);
-        candidates.add(new ReadyGroup(sock, cg));
+        if(requestCode == EXPLICIT_CONNECTION_REQUEST) {
+            if (resultCode != RESULT_OK) return; // RESULT_CANCELLED
+            final String addr = data.getStringExtra(ExplicitConnectionActivity.RESULT_EXTRA_INET_ADDR);
+            final int port = data.getIntExtra(ExplicitConnectionActivity.RESULT_EXTRA_PORT, -1);
+            final JoinGroupActivity self = this;
+
+            new AsyncTask<Void, Void, ConnectionAttempt>() {
+                @Override
+                protected ConnectionAttempt doInBackground(Void... params) {
+                    ConnectionAttempt result = new ConnectionAttempt();
+                    try {
+                        result.group = initialConnect(addr, port);
+                    } catch (UnknownHostException e) {
+                        result.ohno = new ExplicitConnectionActivity.Shaken.Error(null, getString(R.string.badHost_msg));
+                        result.ohno.refocus = R.id.in_explicit_inetAddr;
+                    } catch (IOException e) {
+                        result.ohno = new ExplicitConnectionActivity.Shaken.Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
+                    } catch (ClassNotFoundException e) {
+                        result.ohno = new ExplicitConnectionActivity.Shaken.Error(null, getString(R.string.badInitialServerReply_msg));
+                    } catch (ClassCastException e) {
+                        result.ohno = new ExplicitConnectionActivity.Shaken.Error(null, getString(R.string.unexpectedInitialServerReply_msg));
+                    }
+                    return result;
+                }
+
+                @Override
+                protected void onPostExecute(ConnectionAttempt shaken) {
+                    if(shaken.ohno != null) {
+                        AlertDialog.Builder build = new AlertDialog.Builder(self);
+                        if(shaken.ohno.title != null && !shaken.ohno.title.isEmpty()) build.setTitle(shaken.ohno.title);
+                        if(shaken.ohno.msg != null && !shaken.ohno.msg.isEmpty()) build.setMessage(shaken.ohno.msg);
+                        if(shaken.ohno.refocus != null) findViewById(shaken.ohno.refocus).requestFocus();
+                        build.show();
+                        return;
+                    } // ^ same as ExplicitConnectionActivity
+                    candidates.add(shaken.group);
+                    candidates.notifyDataSetChanged();
+                }
+            }.execute();
+        }
     }
 
-    private static class ReadyGroup {
+
+    public static class ReadyGroup {
         public ConnectedGroup cg;
         public Socket sock;
+        public ObjectOutputStream writer;
+        public ObjectInputStream reader;
 
         public ReadyGroup(Socket sock, ConnectedGroup cg) {
             this.sock = sock;
             this.cg = cg;
         }
     }
-    private Vector<ReadyGroup> candidates = new Vector<>();
+    private static class ConnectionAttempt {
+        ExplicitConnectionActivity.Shaken.Error ohno;
+        ReadyGroup group;
+    }
+
+    private ArrayAdapter<ReadyGroup> candidates;
+
+    public static ReadyGroup initialConnect(String addr, int port) throws /*UnknownHostException,*/ IOException, ClassNotFoundException, ClassCastException {
+        Socket pipe = new Socket(addr, port);
+        ObjectOutputStream writer = new ObjectOutputStream(pipe.getOutputStream());
+        ServerInfoRequest tellme = new ServerInfoRequest();
+        writer.writeObject(tellme);
+
+        ObjectInputStream reader = new ObjectInputStream(pipe.getInputStream());
+        ReadyGroup result = new ReadyGroup(pipe, (ConnectedGroup)reader.readObject());
+        result.writer = writer;
+        result.reader = reader;
+        return result;
+    }
 }
