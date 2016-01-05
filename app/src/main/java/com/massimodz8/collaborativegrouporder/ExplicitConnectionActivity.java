@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import java.io.BufferedReader;
+import com.massimodz8.collaborativegrouporder.networkMessage.ServerInfoRequest;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -64,12 +66,16 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 Shaken hello = new Shaken();
                 try {
                     pipe = new Socket(params[0].addr, params[0].port);
+                    ObjectOutputStream writer = new ObjectOutputStream(pipe.getOutputStream());
+                    ServerInfoRequest tellme = new ServerInfoRequest();
+                    writer.writeObject(tellme);
+
                     ObjectInputStream reader = new ObjectInputStream(pipe.getInputStream());
                     Object reply = reader.readObject();
                     hello.cg = (ConnectedGroup)reply;
                 } catch (UnknownHostException e) {
                     hello.ohno = new Shaken.Error(null, getString(R.string.badHost_msg));
-                    hello.ohno.refocus = new Integer(R.id.in_explicit_inetAddr);
+                    hello.ohno.refocus = R.id.in_explicit_inetAddr;
                 } catch (IOException e) {
                     hello.ohno = new Shaken.Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
                 } catch (ClassNotFoundException e) {
@@ -87,7 +93,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                     AlertDialog.Builder build = new AlertDialog.Builder(self);
                     if(shaken.ohno.title != null && !shaken.ohno.title.isEmpty()) build.setTitle(shaken.ohno.title);
                     if(shaken.ohno.msg != null && !shaken.ohno.msg.isEmpty()) build.setMessage(shaken.ohno.msg);
-                    if(shaken.ohno.refocus != null) findViewById(shaken.ohno.refocus.intValue()).requestFocus();
+                    if(shaken.ohno.refocus != null) findViewById(shaken.ohno.refocus).requestFocus();
                     build.show();
                     return;
                 }

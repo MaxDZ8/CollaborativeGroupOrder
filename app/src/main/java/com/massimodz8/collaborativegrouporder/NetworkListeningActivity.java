@@ -13,7 +13,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.networkMessage.ServerInfoRequest;
+
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -30,6 +34,7 @@ We open a Wi-Fi direct bubble and a proper service and listen to network to find
 /** todo: this is an excellent moment to provide some ads: after the GM started scanning
  * he has to wait for users to join and I can push to him whatever I want.  */
 public class NetworkListeningActivity extends AppCompatActivity implements NsdManager.RegistrationListener {
+    public static final int PROTOCOL_VERSION = 1;
     private ServerSocket landing;
     private NsdManager nsdService;
     private FormingPlayerGroupHelper grouping; // composition is cooler mofo
@@ -160,12 +165,20 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
                             build.show();
                         }
                         return true;
-                    case MSG_PLAYER_HANDSHAKE_FAILED:
-                    case MSG_PLAYER_WELCOME:
+                    case MSG_PLAYER_HANDSHAKE_FAILED: {
                         AlertDialog.Builder build = new AlertDialog.Builder(self);
                         build.setTitle("STUB")
-                                .setMessage("Something attempted to connect");
+                                .setMessage("Something failed to connect");
                         build.show();
+                        break;
+                    }
+                    case MSG_PLAYER_WELCOME: {
+                        AlertDialog.Builder build = new AlertDialog.Builder(self);
+                        Socket client = (Socket)msg.obj;
+                        build.setTitle("STUB")
+                                .setMessage("Something attempted to connect " + client.getInetAddress() + ' ' + client.getPort());
+                        build.show();
+                    }
                 }
                 return false;
             }
@@ -186,8 +199,45 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
                 boolean keepGoing = true;
                 while (keepGoing) {
                     try {
-                        Socket newComer = landing.accept();
-                        new GroupJoinHandshakingThread(newComer, grouping).run();
+                        final Socket newComer = landing.accept();
+                        new Thread() {
+                            public void run() {
+                                boolean failed = false;
+                                try {
+                                    ObjectInputStream r = new ObjectInputStream(newComer.getInputStream());
+                                    Object o = r.readObject();
+                                    if(o instanceof ServerInfoRequest == false) {
+                                        newComer.close();
+                                        return;
+                                    }
+                                } catch (IOException e) {
+                                   failed = true;
+                                } catch (ClassNotFoundException e) {
+                                    // first message must be ServerInfoRequest
+                                    failed = true;
+                                }
+                                // Send back group info. Will require more work
+                                // but for the time being I take it easy.
+                                try {
+                                    if(failed == false) {
+                                        ObjectOutputStream w = new ObjectOutputStream(newComer.getOutputStream());
+                                        ConnectedGroup hey = new ConnectedGroup(PROTOCOL_VERSION, gname);
+                                        w.writeObject(hey);
+                                    }
+                                } catch (IOException e) {
+                                    failed = true;
+                                }
+                                if(failed) {
+                                    Message msg = Message.obtain(guiThreadHandler, MSG_PLAYER_HANDSHAKE_FAILED);
+                                    guiThreadHandler.sendMessage(msg);
+                                }
+                                // Now the client either closes the connection or sends us a
+                                // hello message. As the hello message is optional, we just
+                                // go forward and add this socket to the list of connected peers.
+                                Message msg = Message.obtain(guiThreadHandler, MSG_PLAYER_WELCOME, newComer);
+                                guiThreadHandler.sendMessage(msg);
+                            }
+                        }.start();
                         //} catch(InterruptedException e) {
                     } catch (IOException e) {
                         // Also identical to ClosedByInterruptException

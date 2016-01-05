@@ -11,4 +11,14 @@ import java.io.Serializable;
 public class ConnectedGroup implements Serializable {
     public int version;
     public String name;
+    /** Each of those strings is a group option enabled by server. Examples could be:
+     * 1- "player to master msg": send message to master for his/her eyes only
+     * 2- "master rolls": players won't roll for initiative, master does.
+     */
+    public String[] options;
+
+    public ConnectedGroup(int version, String name) {
+        this.version = version;
+        this.name = name;
+    }
 }
