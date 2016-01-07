@@ -44,4 +44,8 @@
     <string name="card_group_sameVersion">matching</string>
     <string name="card_group_oldProtocol_upgradeMe">group protocol is more recent, please update this installation</string>
     <string name="card_group_oldProtocol_upgradeGroupOwner">group protocol is obsolete, please update group owner installation</string>
+    <string name="joiningGroupIntro">Joining group</string>
+    <string name="joiningGroupMsgInfo">To join a group, write a message to group owner. You must do that at least once.</string>
+    <string name="joiningSendMsgBtn">Send</string>
+    <string name="sentMsgInformations">Wait until group owner confirms you being in the group.</string>
 </resources>

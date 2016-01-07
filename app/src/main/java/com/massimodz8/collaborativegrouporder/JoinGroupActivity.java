@@ -8,6 +8,7 @@ import android.net.nsd.NsdServiceInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,8 +17,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.networkMessage.PeerMessage;
 import com.massimodz8.collaborativegrouporder.networkMessage.ServerInfoRequest;
 
 import java.io.IOException;
@@ -28,6 +31,7 @@ import java.net.UnknownHostException;
 import java.util.Vector;
 
 public class JoinGroupActivity extends AppCompatActivity {
+    public static final int SEND_MESSAGE_PERIOD_MS = 2000;
     private RecyclerView.Adapter groupListAdapter;
 
     @Override
@@ -155,7 +159,7 @@ public class JoinGroupActivity extends AppCompatActivity {
         @Override
         public GroupViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inf = getLayoutInflater();
-            View layout = inf.inflate(R.layout.card_joinanble_group, parent, false);
+            View layout = inf.inflate(R.layout.card_joinable_group, parent, false);
             return new GroupViewHolder(layout);
         }
 
@@ -320,9 +324,39 @@ public class JoinGroupActivity extends AppCompatActivity {
 
     void sayHello(int index) {
         AlertDialog.Builder build = new AlertDialog.Builder(this);
-        ReadyGroup rg =  candidates.elementAt(index).rg;
-        build.setTitle("STUB")
-                .setMessage("Say hello to \"" + rg.cg.name + "\"!");
+        final ReadyGroup rg =  candidates.elementAt(index).rg;
+        final View body = getLayoutInflater().inflate(R.layout.dialog_joining_hello, null);
+        final TextView name = (TextView)body.findViewById(R.id.groupName);
+        name.setText(rg.cg.name);
+        final EditText msg = (EditText)body.findViewById(R.id.masterMessage);
+        final View btn = body.findViewById(R.id.sendHelloBtn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    rg.writer.writeObject(new PeerMessage(msg.getText().toString()));
+                } catch (IOException e) {
+                    return; // let's forget about this. Hopefully user will try again.
+                }
+                body.findViewById(R.id.postSendInfos).setVisibility(View.VISIBLE);
+                msg.setEnabled(false);
+                btn.setEnabled(false);
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        SystemClock.sleep(SEND_MESSAGE_PERIOD_MS);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        msg.setEnabled(true);
+                        btn.setEnabled(true);
+                    }
+                }.execute();
+            }
+        });
+        build.setView(body);
         build.show();
     }
 }
