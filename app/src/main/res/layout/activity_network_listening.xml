@@ -52,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/renamedService_text"
+        android:text="@string/generic_unreadable_at_start"
         android:id="@+id/txt_renamedService"
         android:visibility="gone"
         android:gravity="center_horizontal" />

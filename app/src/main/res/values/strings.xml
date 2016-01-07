@@ -9,7 +9,7 @@
     <string name="groupNameIsEmpty_msg">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
     <string name="groupName_retry">Modify party name</string>
     <string name="networkScanning">Tell your friends to join your party from the main menu. Devices will appear below. Tap devices to add them to the group.</string>
-    <string name="renamedService_text" translatable="false">You cannot read this!</string>
+    <string name="generic_unreadable_at_start" translatable="false">You cannot read this!</string>
     <string name="serverSocketFailed_title">Network error</string>
     <string name="serverSocketFailed_msg">Something prevented creation of the "listen" socket. This is required to let other devices talk to me. Without it, I cannot even start creating the party.</string>
     <string name="serviceRegFailed_title">Service registration failed</string>
@@ -39,4 +39,9 @@
     <string name="explicitConn_IOException_msg">System message:\n%1$s</string>
     <string name="badInitialServerReply_msg">Failed to parse server reply. This server is incompatible.</string>
     <string name="unexpectedInitialServerReply_msg">Server replied in an unexpected way. This server is incompatible.</string>
+    <string name="card_group_version">Version: %1$d (%2$s)</string>
+    <string name="card_group_options">Options: </string>
+    <string name="card_group_sameVersion">matching</string>
+    <string name="card_group_oldProtocol_upgradeMe">group protocol is more recent, please update this installation</string>
+    <string name="card_group_oldProtocol_upgradeGroupOwner">group protocol is obsolete, please update group owner installation</string>
 </resources>
