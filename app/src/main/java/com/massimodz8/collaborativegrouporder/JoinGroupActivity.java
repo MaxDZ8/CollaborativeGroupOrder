@@ -189,11 +189,6 @@ public class JoinGroupActivity extends AppCompatActivity {
         public int getItemCount() {
             return candidates.size();
         }
-
-        @Override
-        public long getItemId(int position) {
-            return super.getItemId(position);
-        }
     }
 
 
@@ -282,14 +277,11 @@ public class JoinGroupActivity extends AppCompatActivity {
     }
 
 
-    public static class ReadyGroup {
+    public static class ReadyGroup extends OOSocket {
         public ConnectedGroup cg;
-        public Socket sock;
-        public ObjectOutputStream writer;
-        public ObjectInputStream reader;
 
-        public ReadyGroup(Socket sock, ConnectedGroup cg) {
-            this.sock = sock;
+        public ReadyGroup(Socket sock, ConnectedGroup cg) throws IOException {
+            super(sock);
             this.cg = cg;
         }
     }
@@ -312,8 +304,7 @@ public class JoinGroupActivity extends AppCompatActivity {
     public static ReadyGroup initialConnect(String addr, int port) throws /*UnknownHostException,*/ IOException, ClassNotFoundException, ClassCastException {
         Socket pipe = new Socket(addr, port);
         ObjectOutputStream writer = new ObjectOutputStream(pipe.getOutputStream());
-        ServerInfoRequest tellme = new ServerInfoRequest();
-        writer.writeObject(tellme);
+        writer.writeObject(new ServerInfoRequest());
 
         ObjectInputStream reader = new ObjectInputStream(pipe.getInputStream());
         ReadyGroup result = new ReadyGroup(pipe, (ConnectedGroup)reader.readObject());

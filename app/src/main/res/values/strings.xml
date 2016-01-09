@@ -48,4 +48,12 @@
     <string name="joiningGroupMsgInfo">To join a group, write a message to group owner. You must do that at least once.</string>
     <string name="joiningSendMsgBtn">Send</string>
     <string name="sentMsgInformations">Wait until group owner confirms you being in the group.</string>
+    <string name="joiningDeviceWithHello_details">Device %1$d, connected from %2$s said:</string>
+    <string name="joiningDeviceHello_acceptedCheckbox_nope">Not a party member</string>
+    <string name="joinindDevice_kick">Reject</string>
+    <string name="anonDeviceStats">%1$d silent %2$s connected.</string>
+    <string name="talkingDeviceStats">%1$d %2$s talked, showing below.</string>
+    <string name="word_device_singular">device</string>
+    <string name="word_device_plural">devices</string>
+    <string name="probingDesc">Probing group owner, please wait.</string>
 </resources>

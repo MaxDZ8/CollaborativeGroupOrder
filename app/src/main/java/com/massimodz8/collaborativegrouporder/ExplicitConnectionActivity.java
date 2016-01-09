@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-
-import com.massimodz8.collaborativegrouporder.networkMessage.ServerInfoRequest;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -18,11 +18,18 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ExplicitConnectionActivity extends AppCompatActivity {
+    AsyncTask<Attempt, Void, Shaken> probe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explicit_connection);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(probe != null) probe.cancel(true);
     }
 
     private static class Attempt {
@@ -48,28 +55,36 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         Attempt successful; // OFC it might not be able to suceed again... :(
     }
 
-    public void startExplicitConnection(View btn) {
-        EditText view = (EditText)findViewById(R.id.in_explicit_inetAddr);
-        final String host = view.getText().toString();
-        view = (EditText)findViewById(R.id.in_explicit_port);
+    public void startExplicitConnection(View triggerer) {
+        final View btn = triggerer;
+        final EditText inetAddr = (EditText)findViewById(R.id.in_explicit_inetAddr);
+        final EditText inetPort = (EditText)findViewById(R.id.in_explicit_port);
+        final ProgressBar bar = (ProgressBar)findViewById(R.id.waitProbingEnd);
+        final TextView wait = (TextView)findViewById(R.id.probingUndergoing);
+        final String host = inetAddr.getText().toString();
         int port;
         try {
-            port = Integer.parseInt(view.getText().toString());
+            port = Integer.parseInt(inetPort.getText().toString());
         } catch(NumberFormatException e) {
             AlertDialog.Builder build = new AlertDialog.Builder(this);
             build.setMessage(R.string.badPort_msg);
             build.show();
-            view.requestFocus();
+            inetPort.requestFocus();
             return;
         }
+        btn.setVisibility(View.GONE);
+        inetAddr.setEnabled(false);
+        inetPort.setEnabled(false);
+        bar.setVisibility(View.VISIBLE);
+        wait.setVisibility(View.VISIBLE);
         final ExplicitConnectionActivity self = this;
-        new AsyncTask<Attempt, Void, Shaken>() {
+        probe = new AsyncTask<Attempt, Void, Shaken>() {
             @Override
             protected Shaken doInBackground(Attempt... params) {
                 Shaken hello = new Shaken();
                 try {
                     JoinGroupActivity.ReadyGroup group = JoinGroupActivity.initialConnect(params[0].addr, params[0].port);
-                    group.sock.close();
+                    group.s.close();
                 } catch (UnknownHostException e) {
                     hello.ohno = new Shaken.Error(null, getString(R.string.badHost_msg));
                     hello.ohno.refocus = R.id.in_explicit_inetAddr;
@@ -93,6 +108,11 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                     if(shaken.ohno.msg != null && !shaken.ohno.msg.isEmpty()) build.setMessage(shaken.ohno.msg);
                     if(shaken.ohno.refocus != null) findViewById(shaken.ohno.refocus).requestFocus();
                     build.show();
+                    btn.setVisibility(View.VISIBLE);
+                    inetAddr.setEnabled(true);
+                    inetPort.setEnabled(true);
+                    bar.setVisibility(View.GONE);
+                    wait.setVisibility(View.GONE);
                     return;
                 }
                 Intent result = new Intent(RESULT_ACTION);
