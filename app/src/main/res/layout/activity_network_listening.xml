@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/sameNetworkVisibilityInfo"
-        android:id="@+id/textView2"
+        android:id="@+id/txt_privacyWarning"
         android:gravity="center_horizontal" />
 
     <TextView

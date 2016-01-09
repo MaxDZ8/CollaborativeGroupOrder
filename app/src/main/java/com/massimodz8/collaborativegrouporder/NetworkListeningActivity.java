@@ -191,6 +191,9 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
 
         view.setEnabled(false);
         groupNameView.setEnabled(false);
+        groupNameView.setVisibility(View.GONE);
+        findViewById(R.id.txt_getGroupNameDesc).setVisibility(View.GONE);
+        getSupportActionBar().setTitle(String.format(getString(R.string.networkListening_groupNameTitle), gname));
 
         grouping = new FormingPlayerGroupHelper(guiThreadHandler);
         acceptor = new Thread(new Runnable() {
