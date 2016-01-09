@@ -65,10 +65,29 @@
         android:indeterminate="true"
         android:visibility="gone" />
 
-    <ListView
-        android:layout_width="fill_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/list_characters"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/generic_unreadable_at_start"
+        android:id="@+id/txt_connectedDeviceCounts"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/generic_unreadable_at_start"
+        android:id="@+id/txt_talkingDeviceCounts"
+        android:layout_gravity="center_horizontal"
+        android:visibility="invisible" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/groupList"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
         android:visibility="gone" />
 
     <Button

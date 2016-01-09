@@ -84,7 +84,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 Shaken hello = new Shaken();
                 try {
                     JoinGroupActivity.ReadyGroup group = JoinGroupActivity.initialConnect(params[0].addr, params[0].port);
-                    group.s.close();
+                    group.s.s.close();
                 } catch (UnknownHostException e) {
                     hello.ohno = new Shaken.Error(null, getString(R.string.badHost_msg));
                     hello.ohno.refocus = R.id.in_explicit_inetAddr;

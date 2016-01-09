@@ -58,4 +58,22 @@
         android:id="@+id/button"
         android:layout_gravity="center_horizontal"
         android:onClick="startExplicitConnection" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/probingDesc"
+        android:id="@+id/probingUndergoing"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/waitProbingEnd"
+        android:layout_gravity="center_horizontal"
+        android:indeterminate="true"
+        android:visibility="gone" />
 </LinearLayout>

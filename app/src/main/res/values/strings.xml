@@ -56,4 +56,5 @@
     <string name="word_device_singular">device</string>
     <string name="word_device_plural">devices</string>
     <string name="probingDesc">Probing group owner, please wait.</string>
+    <string name="networkListening_groupNameTitle">Gathering party \"%1$s\"</string>
 </resources>

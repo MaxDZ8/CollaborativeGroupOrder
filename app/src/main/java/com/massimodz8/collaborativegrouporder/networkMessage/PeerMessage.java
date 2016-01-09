@@ -9,6 +9,6 @@ import java.io.Serializable;
  * to display / identify active devices.
  */
 public class PeerMessage implements Serializable {
-    String text;
+    public String text;
     public PeerMessage(String txt) { text = txt; }
 }

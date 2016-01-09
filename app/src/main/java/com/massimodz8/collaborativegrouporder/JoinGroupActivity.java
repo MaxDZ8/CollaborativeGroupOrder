@@ -277,11 +277,12 @@ public class JoinGroupActivity extends AppCompatActivity {
     }
 
 
-    public static class ReadyGroup extends OOSocket {
+    public static class ReadyGroup {
+        public OOSocket s;
         public ConnectedGroup cg;
 
-        public ReadyGroup(Socket sock, ConnectedGroup cg) throws IOException {
-            super(sock);
+        public ReadyGroup(OOSocket sock, ConnectedGroup cg) {
+            s = sock;
             this.cg = cg;
         }
     }
@@ -302,14 +303,9 @@ public class JoinGroupActivity extends AppCompatActivity {
     private Vector<EnumeratedGroup> candidates = new Vector<>();
 
     public static ReadyGroup initialConnect(String addr, int port) throws /*UnknownHostException,*/ IOException, ClassNotFoundException, ClassCastException {
-        Socket pipe = new Socket(addr, port);
-        ObjectOutputStream writer = new ObjectOutputStream(pipe.getOutputStream());
-        writer.writeObject(new ServerInfoRequest());
-
-        ObjectInputStream reader = new ObjectInputStream(pipe.getInputStream());
-        ReadyGroup result = new ReadyGroup(pipe, (ConnectedGroup)reader.readObject());
-        result.writer = writer;
-        result.reader = reader;
+        OOSocket s = new OOSocket(new Socket(addr, port));
+        s.writer.writeObject(new ServerInfoRequest());
+        ReadyGroup result = new ReadyGroup(s, (ConnectedGroup)s.reader.readObject());
         return result;
     }
 
@@ -324,17 +320,18 @@ public class JoinGroupActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    rg.writer.writeObject(new PeerMessage(msg.getText().toString()));
-                } catch (IOException e) {
-                    return; // let's forget about this. Hopefully user will try again.
-                }
+                final PeerMessage sending = new PeerMessage(msg.getText().toString());
                 body.findViewById(R.id.postSendInfos).setVisibility(View.VISIBLE);
                 msg.setEnabled(false);
                 btn.setEnabled(false);
                 new AsyncTask<Void, Void, Void>() {
                     @Override
                     protected Void doInBackground(Void... params) {
+                        try {
+                            rg.s.writer.writeObject(msg);
+                        } catch (IOException e) {
+                            return null; // let's forget about this. Hopefully user will try again.
+                        }
                         SystemClock.sleep(SEND_MESSAGE_PERIOD_MS);
                         return null;
                     }
@@ -342,6 +339,8 @@ public class JoinGroupActivity extends AppCompatActivity {
                     @Override
                     protected void onPostExecute(Void aVoid) {
                         msg.setEnabled(true);
+                        msg.setText("");
+                        msg.requestFocus();
                         btn.setEnabled(true);
                     }
                 }.execute();
