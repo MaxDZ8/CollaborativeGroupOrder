@@ -20,7 +20,7 @@ import java.util.Vector;
  *
  * The underlying goal is to funnel various threads to a single Handler by provided Callbacks.
  */
-public abstract class Server<ClientInfo extends Server.Client> {
+public abstract class Server<ClientInfo extends Client> {
     public static final int MAX_MSG_FROM_WIRE_BYTES = 4 * 1024;
     protected final Handler handler;
     private final int disconnectMessageCode;
@@ -64,6 +64,14 @@ public abstract class Server<ClientInfo extends Server.Client> {
         }
     }
 
+    public synchronized boolean yours(MessageChannel c) {
+        for(int i = 0; i < clients.size(); i++) {
+            Managed el = clients.elementAt(i);
+            if(el.smart.pipe == c) return true;
+        }
+        return false;
+    }
+
 
     protected abstract ClientInfo allocate(MessageChannel c);
 
@@ -83,19 +91,6 @@ public abstract class Server<ClientInfo extends Server.Client> {
     }
 
 
-    static protected class Client {
-        public final MessageChannel pipe;
-        public Client(MessageChannel client) {
-            this.pipe = client;
-        }
-        public void shutdown(boolean leakSocket) {
-            if(!leakSocket) {
-                try {
-                    pipe.socket.close();
-                } catch (IOException e) { } // uhm... what?
-            }
-        }
-    }
     private final Vector<Managed> clients = new Vector<>();
     private final Map<Integer, Callbacks> allowed = new HashMap<>();
 
@@ -133,7 +128,7 @@ public abstract class Server<ClientInfo extends Server.Client> {
         }
     }
 
-    void shutdown() {
+    public void shutdown() {
         synchronized(clients) {
             for(Managed c : clients) c.shutdown(false);
             clients.clear();
@@ -232,4 +227,6 @@ public abstract class Server<ClientInfo extends Server.Client> {
     protected void message(int code, Object payload) {
         handler.sendMessage(handler.obtainMessage(code, payload));
     }
+
+    public int getClientCount() { return clients.size(); }
 }

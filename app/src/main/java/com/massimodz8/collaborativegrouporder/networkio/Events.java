@@ -8,8 +8,8 @@ import java.net.Socket;
  */
 public interface Events {
     class SocketDisconnected {
-        MessageChannel which;
-        Exception reason;
+        public final MessageChannel which;
+        public final Exception reason;
 
         public SocketDisconnected(MessageChannel which, Exception reason) {
             this.which = which;

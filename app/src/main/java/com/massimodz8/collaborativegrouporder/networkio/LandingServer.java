@@ -13,7 +13,7 @@ import java.util.Vector;
  * on what the callbacks do. This takes a server socket managed by something else, spawns a thread
  * to wait on connections and then for each connection spawns a thread to wait for bytes.
  */
-public abstract class LandingServer {
+public class LandingServer {
     private final ServerSocket landing;
     private final Thread acceptor;
     private final Callbacks hooks;

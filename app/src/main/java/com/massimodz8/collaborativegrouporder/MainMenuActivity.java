@@ -3,9 +3,7 @@ package com.massimodz8.collaborativegrouporder;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Xml;
 import android.view.View;
-import android.widget.Button;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -32,7 +30,7 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     public void startNetworkListeningActivity(View btn) {
-        Intent go = new Intent(this, NetworkListeningActivity.class);
+        Intent go = new Intent(this, CreatePartyActivity.class);
         startActivity(go);
     }
 

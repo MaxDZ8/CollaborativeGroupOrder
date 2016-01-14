@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder.networkio.formingServer;
 
 import android.os.Handler;
 
+import com.massimodz8.collaborativegrouporder.networkio.Client;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -75,7 +76,7 @@ public class TalkingDevices extends Server<TalkingDevices.TalkingClient> {
         return new TalkingClient(c, MSG_CHAR_BUDGET_TARGET);
     }
 
-    protected static class TalkingClient extends Server.Client {
+    protected static class TalkingClient extends Client {
         public String lastMessage;
         Client info;
         int charBudget, pendingBudget;

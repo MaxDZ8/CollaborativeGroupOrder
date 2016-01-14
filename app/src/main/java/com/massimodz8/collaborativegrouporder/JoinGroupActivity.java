@@ -24,8 +24,6 @@ import com.massimodz8.collaborativegrouporder.networkMessage.PeerMessage;
 import com.massimodz8.collaborativegrouporder.networkMessage.ServerInfoRequest;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Vector;
@@ -180,8 +178,8 @@ public class JoinGroupActivity extends AppCompatActivity {
             }
             final String ver = getString(R.string.card_group_version);
             String comparison = getString(R.string.card_group_sameVersion);
-            if(NetworkListeningActivity.PROTOCOL_VERSION < cg.version) comparison = getString(R.string.card_group_oldProtocol_upgradeMe);
-            else if(NetworkListeningActivity.PROTOCOL_VERSION > cg.version) comparison = getString(R.string.card_group_oldProtocol_upgradeGroupOwner);
+            if(CreatePartyActivity.PROTOCOL_VERSION < cg.version) comparison = getString(R.string.card_group_oldProtocol_upgradeMe);
+            else if(CreatePartyActivity.PROTOCOL_VERSION > cg.version) comparison = getString(R.string.card_group_oldProtocol_upgradeGroupOwner);
             holder.version.setText(String.format(ver, cg.version, comparison));
         }
 

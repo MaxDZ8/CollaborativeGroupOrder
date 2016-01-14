@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder.networkio.formingServer;
 
 import android.os.Handler;
 
+import com.massimodz8.collaborativegrouporder.networkio.Client;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -14,7 +15,7 @@ import java.io.IOException;
  * Created by Massimo on 13/01/2016.
  * Initial phase, bring devices from silent to talking stage.
  */
-public class SilentDevices extends Server<Server.Client> {
+public class SilentDevices extends Server<Client> {
     final String name;
     final int wroteSomething;
 

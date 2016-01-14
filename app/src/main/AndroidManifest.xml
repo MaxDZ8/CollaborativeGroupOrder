@@ -30,7 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".NetworkListeningActivity" />
+        <activity android:name=".CreatePartyActivity" />
         <activity android:name=".JoinGroupActivity" />
         <activity android:name=".ExplicitConnectionActivity"></activity>
     </application>

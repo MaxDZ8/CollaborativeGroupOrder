@@ -57,4 +57,9 @@
     <string name="word_device_plural">devices</string>
     <string name="probingDesc">Probing group owner, please wait.</string>
     <string name="networkListening_groupNameTitle">Gathering party \"%1$s\"</string>
+    <string name="cannotEnumerateNICs">Failed to get network information. This isn\'t really a problem but you\'ll have to find this device network address in some other way in case your friends need explicit connection data.</string>
+    <string name="cannotStartSilentForming">"An error occured while attempting to start accepting connections. I suggest to start again, possibly after rebooting device."</string>
+    <string name="cannotAccept">A device tried to connect to the group but something went wrong in the process.</string>
+    <string name="ohNo_pgsAreGone">Lost connection to device managing characters %1$s.</string>
+    <string name="ohNo_talkingIsGone">Lost connection to device, last words: %1$s</string>
 </resources>

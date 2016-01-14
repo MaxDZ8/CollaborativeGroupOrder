@@ -15,6 +15,8 @@ import java.net.Socket;
 public class MessageChannel {
     /// Can be changed in case we want to reuse an MessageChannel after player reconnects.
     public Socket socket;
+    public final long unique = ++generatedSoFar;
+    private static long generatedSoFar = 0;
 
     MessageChannel(Socket s) {
         socket = s;

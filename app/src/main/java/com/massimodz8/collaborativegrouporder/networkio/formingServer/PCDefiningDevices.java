@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder.networkio.formingServer;
 
 import android.os.Handler;
 
+import com.massimodz8.collaborativegrouporder.networkio.Client;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Server;
@@ -16,7 +17,7 @@ import java.io.IOException;
  * Remember: this just collects the character definition messages and pushes them to the GUI
  * thread for sequential processing.
  */
-public class PCDefiningDevices extends Server<Server.Client> {
+public class PCDefiningDevices extends Server<Client> {
     final int definedCharacter;
 
     public PCDefiningDevices(Handler handler, int disconnectMessageCode, int definedCharacter_) {
