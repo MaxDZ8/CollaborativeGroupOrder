@@ -271,59 +271,7 @@ public class NetworkListeningActivity extends AppCompatActivity implements NsdMa
         final ActionBar actionBar = getSupportActionBar();
         if(actionBar != null) actionBar.setTitle(String.format(getString(R.string.networkListening_groupNameTitle), gname));
 
-        acceptor = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean keepGoing = true;
-                while (keepGoing) {
-                    try {
-                        final Socket newComer = landing.accept();
-                        new Thread() {
-                            public void run() {
-                                boolean failed = false;
-                                OOSocket gotta = null;
-                                try {
-                                    gotta = new OOSocket(newComer);
-                                    Object o = gotta.reader.readObject();
-                                    if(!(o instanceof ServerInfoRequest)) {
-                                        newComer.close();
-                                        return;
-                                    }
-                                } catch (IOException | ClassNotFoundException e) {
-                                   failed = true;
-                                }
-                                // Send back group info. Will require more work
-                                // but for the time being I take it easy.
-                                try {
-                                    if(!failed) {
-                                        gotta.writer.writeObject(new ConnectedGroup(PROTOCOL_VERSION, gname));
-                                    }
-                                } catch (IOException e) {
-                                    failed = true;
-                                }
-                                if(failed) return;
-                                /* Is a smartphone user really interested in knowing that? I think not.
-                                if(failed) {
-                                    Message msg = Message.obtain(guiThreadHandler, MSG_PLAYER_HANDSHAKE_FAILED);
-                                    guiThreadHandler.sendMessage(msg);
-                                } */
-                                // Now the client either closes the connection or sends us a
-                                // hello message. As the hello message is optional, we just
-                                // go forward and add this socket to the list of connected peers.
-                                Message msg = Message.obtain(guiThreadHandler, MSG_PLAYER_WELCOME, gotta);
-                                guiThreadHandler.sendMessage(msg);
-                            }
-                        }.start();
-                        //} catch(InterruptedException e) {
-                    } catch (IOException e) {
-                        // Also identical to ClosedByInterruptException
-                        /// TODO: notify user?
-                        keepGoing = false;
-                    }
-                }
-            }
-        }, "Group join async acceptor");
-        acceptor.start();
+
     }
 
     private Map<Class, Integer> getProtocolFilters() {
