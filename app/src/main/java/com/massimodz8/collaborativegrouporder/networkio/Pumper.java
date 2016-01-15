@@ -20,12 +20,12 @@ import java.util.Vector;
  *
  * The underlying goal is to funnel various threads to a single Handler by provided Callbacks.
  */
-public abstract class Server<ClientInfo extends Client> {
+public abstract class Pumper<ClientInfo extends Client> {
     public static final int MAX_MSG_FROM_WIRE_BYTES = 4 * 1024;
     protected final Handler handler;
     private final int disconnectMessageCode;
 
-    public Server(Handler handler, int disconnectMessageCode) {
+    public Pumper(Handler handler, int disconnectMessageCode) {
         this.handler = handler;
         this.disconnectMessageCode = disconnectMessageCode;
     }
@@ -41,7 +41,7 @@ public abstract class Server<ClientInfo extends Client> {
     }
 
     // Call this before starting to mangle stuff so it does not need to be thread protected.
-    public Server<ClientInfo> add(int key, Callbacks funcs) {
+    public Pumper<ClientInfo> add(int key, Callbacks funcs) {
         allowed.put(key, funcs);
         return this;
     }

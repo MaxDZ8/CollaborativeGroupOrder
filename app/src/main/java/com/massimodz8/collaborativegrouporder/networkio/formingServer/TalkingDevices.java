@@ -6,7 +6,7 @@ import com.massimodz8.collaborativegrouporder.networkio.Client;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
-import com.massimodz8.collaborativegrouporder.networkio.Server;
+import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.IOException;
@@ -17,7 +17,7 @@ import java.io.IOException;
  * The goal of this thing is to filter the PeerMessages and update the character budget until
  * we pull the clients out, when the group is formed.
  */
-public class TalkingDevices extends Server<TalkingDevices.TalkingClient> {
+public class TalkingDevices extends Pumper<TalkingDevices.TalkingClient> {
     final int wroteSomething;
     final Handler charQueue;
     public static final int NEW_MSG_DELAY_MS = 2000;

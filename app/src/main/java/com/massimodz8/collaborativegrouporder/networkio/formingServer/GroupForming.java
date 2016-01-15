@@ -1,20 +1,15 @@
 package com.massimodz8.collaborativegrouporder.networkio.formingServer;
 
-import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AlertDialog;
 
-import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.LandingServer;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
-import com.massimodz8.collaborativegrouporder.networkio.Server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Vector;
 
 /**
  * Created by Massimo on 14/01/2016.

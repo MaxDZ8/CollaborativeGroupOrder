@@ -6,7 +6,7 @@ import com.massimodz8.collaborativegrouporder.networkio.Client;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
-import com.massimodz8.collaborativegrouporder.networkio.Server;
+import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import java.io.IOException;
  * Created by Massimo on 13/01/2016.
  * Initial phase, bring devices from silent to talking stage.
  */
-public class SilentDevices extends Server<Client> {
+public class SilentDevices extends Pumper<Client> {
     final String name;
     final int wroteSomething;
 

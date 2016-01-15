@@ -18,10 +18,10 @@ public class MessageChannel {
     public final long unique = ++generatedSoFar;
     private static long generatedSoFar = 0;
 
-    MessageChannel(Socket s) {
+    public MessageChannel(Socket s) {
         socket = s;
-        in = new byte[Server.MAX_MSG_FROM_WIRE_BYTES];
-        out = new byte[Server.MAX_MSG_FROM_WIRE_BYTES];
+        in = new byte[Pumper.MAX_MSG_FROM_WIRE_BYTES];
+        out = new byte[Pumper.MAX_MSG_FROM_WIRE_BYTES];
         send = CodedOutputByteBufferNano.newInstance(out);
         recv = CodedInputByteBufferNano.newInstance(in);
     }
