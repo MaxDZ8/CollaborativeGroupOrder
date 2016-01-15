@@ -8,7 +8,7 @@ import java.io.Serializable;
  * The server will reply with a server version and a group name.
  * If it's compatible with us the connection is considered up.
  */
-public class ConnectedGroup implements Serializable {
+public class ConnectedGroup {
     public int version;
     public String name;
     /** Each of those strings is a group option enabled by server. Examples could be:

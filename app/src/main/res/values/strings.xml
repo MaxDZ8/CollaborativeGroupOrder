@@ -36,7 +36,7 @@
     <string name="badPort_msg">This does not look like a valid port number. Ports are usually between 1024 and 65535. Try again.</string>
     <string name="badHost_msg">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
     <string name="explicitConn_IOException_title">I/O error</string>
-    <string name="explicitConn_IOException_msg">System message:\n%1$s</string>
+    <string name="explicitConn_IOException_msg">Could not connect to host. System message:\n%1$s</string>
     <string name="badInitialServerReply_msg">Failed to parse server reply. This server is incompatible.</string>
     <string name="unexpectedInitialServerReply_msg">Server replied in an unexpected way. This server is incompatible.</string>
     <string name="card_group_version">Version: %1$d (%2$s)</string>
@@ -62,4 +62,8 @@
     <string name="cannotAccept">A device tried to connect to the group but something went wrong in the process.</string>
     <string name="ohNo_pgsAreGone">Lost connection to device managing characters %1$s.</string>
     <string name="ohNo_talkingIsGone">Lost connection to device, last words: %1$s</string>
+    <string name="lostConnectionToServer">Connection to server lost or closed unexpectedly.</string>
+    <string name="protocolVersionMismatch">Server is running protocol %1$d but client requires %2$d.\nPlease update %3$s device.</string>
+    <string name="protocolVersionMismatch_upgradeThis">this</string>
+    <string name="protocolVersionMismatch_upgradeServer">party owner</string>
 </resources>
