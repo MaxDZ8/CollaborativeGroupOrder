@@ -66,4 +66,5 @@
     <string name="protocolVersionMismatch">Server is running protocol %1$d but client requires %2$d.\nPlease update %3$s device.</string>
     <string name="protocolVersionMismatch_upgradeThis">this</string>
     <string name="protocolVersionMismatch_upgradeServer">party owner</string>
+    <string name="networkDiscoveryStartFailed">Cannot start network discovery. Error %1$s.</string>
 </resources>

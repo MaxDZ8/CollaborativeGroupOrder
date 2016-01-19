@@ -64,6 +64,18 @@ public abstract class Pumper<ClientInfo extends Client> {
         }
     }
 
+    public void removeClearing(MessageChannel c) {
+        try {
+            remove(c, true);
+        } catch (IOException e) {
+            try {
+                remove(c, false);
+            } catch (IOException e1) {
+                // impossible, just suppress
+            }
+        }
+    }
+
     public synchronized boolean yours(MessageChannel c) {
         for(int i = 0; i < clients.size(); i++) {
             Managed el = clients.elementAt(i);
@@ -85,14 +97,20 @@ public abstract class Pumper<ClientInfo extends Client> {
         }
 
         public void shutdown(boolean leakSocket) {
-            sleeper.interrupt(); // we don't need this in any case, going to another server.
+            sleeper.interrupt(); // we don't need this inputBuffer any case, going to another server.
             smart.shutdown(leakSocket);
         }
     }
-
-
     private final Vector<Managed> clients = new Vector<>();
     private final Map<Integer, Callbacks> allowed = new HashMap<>();
+
+    private ClientInfo getClient(final MessageChannel c) {
+        ClientInfo match = null;
+        for(Managed m : clients) {
+            if(m.smart.pipe == c) return m.smart;
+        }
+        return null;
+    }
 
 
     private class MessagePumpingThread extends Thread {
@@ -109,7 +127,7 @@ public abstract class Pumper<ClientInfo extends Client> {
                     readAndDispatch(allowed, me.smart.pipe);
                 }
             } catch (IOException | BigMessageException | InvalidMessageException |
-                    EmptyMessageException | BytesRemainingException e) {
+                    EmptyMessageException | ByteCountMismatchException e) {
                 synchronized(me) {
                     me.quitError = e;
                 }
@@ -124,11 +142,14 @@ public abstract class Pumper<ClientInfo extends Client> {
                     // WTF?? We're fucked. Not really possible.
                 }
             }
-            quitting(me.smart, me.quitError);
+            if(!silence) quitting(me.smart, me.quitError);
         }
     }
 
+    private volatile boolean silence = false;
+
     public void shutdown() {
+        silence = true;
         synchronized(clients) {
             for(Managed c : clients) c.shutdown(false);
             clients.clear();
@@ -174,44 +195,50 @@ public abstract class Pumper<ClientInfo extends Client> {
         }
     }
 
-    static public class BytesRemainingException extends Exception {
+    static public class ByteCountMismatchException extends Exception {
         final int type;
         final int expected;
+        final int got;
 
-        public BytesRemainingException(int type, int expected) {
+        public ByteCountMismatchException(int type, int expected, int got) {
             this.type = type;
             this.expected = expected;
+            this.got = got;
         }
 
         @Override
         public String toString() {
-            return "message type " + type + ", trailing bytes found after " + expected;
+            return "message type " + type + ", expecting " + expected + "byte(s), got " + got;
         }
     }
 
 
     // This is supposed to be called only from its own thread pumper sleeping on the socket so
     // it does not need to be sync'ed.
-    private void readAndDispatch(Map<Integer, Callbacks> allowed, MessageChannel me) throws IOException, BigMessageException, EmptyMessageException, InvalidMessageException, BytesRemainingException {
+    private void readAndDispatch(Map<Integer, Callbacks> allowed, MessageChannel me) throws IOException, BigMessageException, EmptyMessageException, InvalidMessageException, ByteCountMismatchException {
         long takes;
-        int got = readBytes(me.socket.getInputStream(), me.in, 4);
+        InputStream input = me.socket.getInputStream();
+        int got = readBytes(input, me.inputBuffer, 4);
         if(got == -1) throw new IOException();
 
         takes = me.recv.readFixed32();
         if(takes > MAX_MSG_FROM_WIRE_BYTES) throw new BigMessageException(takes);
         if(takes == 0) throw new EmptyMessageException();
         int expect = (int) takes;
-        got = readBytes(me.socket.getInputStream(), me.in, expect);
+        got = readBytes(input, me.inputBuffer, expect);
         if(got == -1) throw new IOException();
 
+        me.recv.rewindToPosition(0);
         final int type = me.recv.readUInt32();
         final Callbacks real = allowed.get(type);
         if(real == null) throw new InvalidMessageException(type);
         final MessageNano wire = real.make();
         me.recv.readMessage(wire);
-        if(!me.recv.isAtEnd()) throw new BytesRemainingException(type, expect);
-        me.recv.resetSizeCounter();
-        real.mangle(me, wire);
+        if(me.recv.getPosition() != expect) throw new ByteCountMismatchException(type, expect, me.recv.getPosition());
+        me.recv.rewindToPosition(0);
+        ClientInfo data = getClient(me);
+        if(data == null) return; // might happen if we pull off a client while we're mangling it. Just discard.
+        real.mangle(data, wire);
     }
 
     private static int readBytes(InputStream input, byte[] dst, int count) throws IOException {

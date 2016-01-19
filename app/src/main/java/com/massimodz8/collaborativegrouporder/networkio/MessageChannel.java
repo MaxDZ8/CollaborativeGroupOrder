@@ -13,17 +13,17 @@ import java.net.Socket;
  * now for google protobuf.
  */
 public class MessageChannel {
-    /// Can be changed in case we want to reuse an MessageChannel after player reconnects.
+    /// Can be changed inputBuffer case we want to reuse an MessageChannel after player reconnects.
     public Socket socket;
     public final long unique = ++generatedSoFar;
     private static long generatedSoFar = 0;
 
     public MessageChannel(Socket s) {
         socket = s;
-        in = new byte[Pumper.MAX_MSG_FROM_WIRE_BYTES];
+        inputBuffer = new byte[Pumper.MAX_MSG_FROM_WIRE_BYTES];
         out = new byte[Pumper.MAX_MSG_FROM_WIRE_BYTES];
         send = CodedOutputByteBufferNano.newInstance(out);
-        recv = CodedInputByteBufferNano.newInstance(in);
+        recv = CodedInputByteBufferNano.newInstance(inputBuffer);
     }
 
     static class Message {
@@ -38,13 +38,15 @@ public class MessageChannel {
         }
     }
 
-    final byte[] in, out;
+    final byte[] inputBuffer, out;
     final CodedOutputByteBufferNano send;
     final CodedInputByteBufferNano recv;
 
     /// Use this with extreme care. You probably want writeSync instead.
     public void write(int type, MessageNano payload) throws IOException {
-        send.writeFixed32NoTag(payload.getSerializedSize());
+        final int typeExtra = send.computeUInt32SizeNoTag(type);
+        final int payloadSize = CodedOutputByteBufferNano.computeMessageSizeNoTag(payload);
+        send.writeFixed32NoTag(payloadSize + typeExtra);
         send.writeUInt32NoTag(type);
         send.writeMessageNoTag(payload);
         socket.getOutputStream().write(out, 0, send.position());

@@ -8,7 +8,6 @@ import android.net.nsd.NsdServiceInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,11 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
-import android.widget.EditText;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.networkMessage.PeerMessage;
-import com.massimodz8.collaborativegrouporder.networkMessage.ServerInfoRequest;
+import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.networkio.joiningClient.GroupJoining;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -29,166 +27,95 @@ import java.net.UnknownHostException;
 import java.util.Vector;
 
 public class JoinGroupActivity extends AppCompatActivity {
-    public static final int SEND_MESSAGE_PERIOD_MS = 2000;
+    public static final int CLIENT_PROTOCOL_VERSION = 1;
+    GroupJoining helper;
+    Handler guiThreadHandler;
     private RecyclerView.Adapter groupListAdapter;
+
+
+    public static String mismatchAdvice(int version, AppCompatActivity activity) {
+        if(version == CLIENT_PROTOCOL_VERSION) return null;
+        String desc = activity.getString(R.string.protocolVersionMismatch);
+        String which = activity.getString(CLIENT_PROTOCOL_VERSION < version ? R.string.protocolVersionMismatch_upgradeThis : R.string.protocolVersionMismatch_upgradeServer);
+        return String.format(desc, version, CLIENT_PROTOCOL_VERSION, which);
+    }
+
+    public static class GroupConnection {
+        MessageChannel channel;
+        ConnectedGroup group;
+
+        public GroupConnection(MessageChannel channel, ConnectedGroup group) {
+            this.channel = channel;
+            this.group = group;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_group);
-
-        NsdManager nsdService = (NsdManager) getSystemService(Context.NSD_SERVICE);
-        if(nsdService == null) {
+        NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
+        if(nsd == null) {
             AlertDialog.Builder build = new AlertDialog.Builder(this);
             build.setTitle(R.string.nullNSDService_title)
                     .setMessage(R.string.nullNSDService_msg);
             build.show();
+            return;
         }
-
-        findViewById(R.id.progressBar2).setVisibility(View.VISIBLE);
-        groupListAdapter = new GroupListAdapter();
-        RecyclerView groupList = (RecyclerView) findViewById(R.id.groupList);
-        groupList.setLayoutManager(new LinearLayoutManager(this));
-        groupList.setAdapter(groupListAdapter);
         final JoinGroupActivity self = this;
         guiThreadHandler = new Handler(new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
                 switch(msg.what) {
-                    case MSG_SERVICE_DISCOVERY_STARTED:
-                    case MSG_SERVICE_DISCOVERY_STOPPED: {
-                        ServiceDiscoveryStartStop meh = (ServiceDiscoveryStartStop) msg.obj;
-                        if (meh == null) break; // wut? Impossible for the time being
-                        if (meh.successful) {
-                            findViewById(R.id.txt_lookingForGroups).setVisibility(View.VISIBLE);
-                            findViewById(R.id.groupList).setVisibility(View.VISIBLE);
-                            findViewById(R.id.txt_explicitConnectHint).setVisibility(View.VISIBLE);
-                            findViewById(R.id.btn_startExplicitConnection).setVisibility(View.VISIBLE);
-                            break;
-                        }
-                        else {
-                            findViewById(R.id.progressBar2).setEnabled(false);
-                        }
-                        AlertDialog.Builder build = new AlertDialog.Builder(self);
-                        build.setTitle(getString(R.string.serviceDiscErr))
-                                .setMessage(String.format(getString(R.string.serviceDiscoveryFailed_msg), nsdErrorString(meh.error)));
-                        build.show();
+                    case MSG_GROUP_FOUND: {
+                        final GroupConnection real = (GroupConnection)msg.obj;
+                        candidates.add(new GroupState(real.channel, real.group));
+                        groupListAdapter.notifyDataSetChanged();
                         break;
                     }
-                    case MSG_SERVICE_FOUND:
-                    case MSG_SERVICE_LOST: {
-                        NsdServiceInfo info = (NsdServiceInfo) msg.obj;
-                        if (info == null) break;
-                        AlertDialog.Builder build = new AlertDialog.Builder(self);
-                        build.setTitle("Service " + (msg.what == MSG_SERVICE_FOUND? "found" : "lost"))
-                                .setMessage(
-                                        info.toString()
-                                );
-                        build.show();
+                    case MSG_DISCONNECTED_WHILE_NEGOTIATING: {
+                        // Uhm, is this a problem? Do the user cares?
+                        // For the time being, just drop the thing.
+                        break;
+                    }
+                    case MSG_GROUP_GONE: {
+                        final MessageChannel c = (MessageChannel)msg.obj;
+                            AlertDialog.Builder build = new AlertDialog.Builder(self);
+                            build.setMessage("group is gone!"); /// TODO! Add behaviour for group disconnect.
+                            build.show();
                         break;
                     }
                 }
                 return false;
             }
         });
-        nsdService.discoverServices("_groupInitiative._tcp", NsdManager.PROTOCOL_DNS_SD, new DiscoveryPumper());
-    }
-
-    private class DiscoveryPumper implements NsdManager.DiscoveryListener {
-        @Override
-        public void onStartDiscoveryFailed(String serviceType, int errorCode) {
-            Message msg = Message.obtain(guiThreadHandler, MSG_SERVICE_DISCOVERY_STARTED, new ServiceDiscoveryStartStop(errorCode));
-            guiThreadHandler.sendMessage(msg);
-        }
-
-        @Override
-        public void onDiscoveryStarted(String serviceType) {
-            Message msg = Message.obtain(guiThreadHandler, MSG_SERVICE_DISCOVERY_STARTED, new ServiceDiscoveryStartStop());
-            guiThreadHandler.sendMessage(msg);
-        }
-
-        @Override
-        public void onStopDiscoveryFailed(String serviceType, int errorCode) {
-            Message msg = Message.obtain(guiThreadHandler, MSG_SERVICE_DISCOVERY_STOPPED, new ServiceDiscoveryStartStop(errorCode));
-            guiThreadHandler.sendMessage(msg);
-        }
-
-        @Override
-        public void onDiscoveryStopped(String serviceType) {
-            Message msg = Message.obtain(guiThreadHandler, MSG_SERVICE_DISCOVERY_STOPPED, new ServiceDiscoveryStartStop());
-            guiThreadHandler.sendMessage(msg);
-        }
-
-        @Override
-        public void onServiceFound(NsdServiceInfo serviceInfo) {
-            Message msg = Message.obtain(guiThreadHandler, MSG_SERVICE_FOUND, serviceInfo);
-            guiThreadHandler.sendMessage(msg);
-
-        }
-
-        @Override
-        public void onServiceLost(NsdServiceInfo serviceInfo) {
-            Message msg = Message.obtain(guiThreadHandler, MSG_SERVICE_LOST, serviceInfo);
-            guiThreadHandler.sendMessage(msg);
-        }
-    }
-
-    private class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.GroupViewHolder> {
-        // View holder pattern <-> keep handles to internal Views so I don't need to look em up.
-        protected class GroupViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            TextView name;
-            TextView options;
-            TextView version;
-            int index = -1;
-            public GroupViewHolder(View itemView) {
-                super(itemView);
-                name = (TextView)itemView.findViewById(R.id.card_groupName);
-                options = (TextView)itemView.findViewById(R.id.card_options);
-                version = (TextView)itemView.findViewById(R.id.card_protoVersion);
-                itemView.setOnClickListener(this);
+        helper = new GroupJoining(guiThreadHandler, true, nsd, MSG_DISCONNECTED_WHILE_NEGOTIATING, MSG_GROUP_FOUND, MSG_GROUP_GONE) {
+            @Override
+            protected void onDiscoveryStart(ServiceDiscoveryStartStop status) {
+                if(status.successful) {
+                    findViewById(R.id.progressBar2).setVisibility(View.VISIBLE);
+                    groupListAdapter = new GroupListAdapter(self);
+                    RecyclerView groupList = (RecyclerView) findViewById(R.id.groupList);
+                    groupList.setLayoutManager(new LinearLayoutManager(self));
+                    groupList.setAdapter(groupListAdapter);
+                }
+                else {
+                    AlertDialog.Builder build = new AlertDialog.Builder(self);
+                    build.setMessage(String.format(getString(R.string.networkDiscoveryStartFailed), nsdErrorString(status.error)));
+                    build.show();
+                }
             }
 
             @Override
-            public void onClick(View v) {
-                sayHello(index);
+            protected void onDiscoveryStop(ServiceDiscoveryStartStop status) {
+
             }
-        }
-
-        @Override
-        public GroupViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            LayoutInflater inf = getLayoutInflater();
-            View layout = inf.inflate(R.layout.card_joinable_group, parent, false);
-            return new GroupViewHolder(layout);
-        }
-
-        @Override
-        public void onBindViewHolder(GroupViewHolder holder, int position) {
-            holder.index = position;
-            final ConnectedGroup cg = candidates.elementAt(position).rg.cg;
-            holder.name.setText(cg.name);
-            if(cg.options == null) holder.options.setVisibility(View.GONE);
-            else {
-                String total = getString(R.string.card_group_options);
-                for(int app = 0; app < cg.options.length; app++) {
-                    if(app != 0) total += ", ";
-                    total += cg.options[app]; /// TODO this should be localized by device language! Not server language! Map enums/tokens to localized strings somehow!
-                }
-                holder.options.setText(total);
-                holder.options.setVisibility(View.VISIBLE);
-            }
-            final String ver = getString(R.string.card_group_version);
-            String comparison = getString(R.string.card_group_sameVersion);
-            if(CreatePartyActivity.PROTOCOL_VERSION < cg.version) comparison = getString(R.string.card_group_oldProtocol_upgradeMe);
-            else if(CreatePartyActivity.PROTOCOL_VERSION > cg.version) comparison = getString(R.string.card_group_oldProtocol_upgradeGroupOwner);
-            holder.version.setText(String.format(ver, cg.version, comparison));
-        }
-
-        @Override
-        public int getItemCount() {
-            return candidates.size();
-        }
+        };
     }
 
+    public static final int MSG_DISCONNECTED_WHILE_NEGOTIATING = 5;
+    public static final int MSG_GROUP_FOUND = 6;
+    public static final int MSG_GROUP_GONE = 7;
 
     private static String nsdErrorString(int error) {
         switch(error) {
@@ -199,116 +126,82 @@ public class JoinGroupActivity extends AppCompatActivity {
         return String.format("%1$d", error);
     }
 
-    public static final int MSG_SERVICE_DISCOVERY_STARTED = 1;
-    public static final int MSG_SERVICE_DISCOVERY_STOPPED = 2;
-    public static final int MSG_SERVICE_FOUND = 3;
-    public static final int MSG_SERVICE_LOST = 4;
+    private static class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.GroupViewHolder> {
+        final JoinGroupActivity activity;
 
-    static class ServiceDiscoveryStartStop {
-        public ServiceDiscoveryStartStop() { successful = true; }
-        public ServiceDiscoveryStartStop(int err) {
-            error = err;
-            successful = false;
+        public GroupListAdapter(JoinGroupActivity activity) {
+            this.activity = activity;
         }
 
-        public int error;
-        public boolean successful;
-    }
+        // View holder pattern <-> keep handles to internal Views so I don't need to look em up.
+        protected class GroupViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+            TextView name;
+            TextView options;
+            TextView version;
+            long index = -1;
+            public GroupViewHolder(View itemView) {
+                super(itemView);
+                name = (TextView)itemView.findViewById(R.id.card_groupName);
+                options = (TextView)itemView.findViewById(R.id.card_options);
+                version = (TextView)itemView.findViewById(R.id.card_protoVersion);
+                itemView.setOnClickListener(this);
+            }
 
-    Handler guiThreadHandler;
-
-    static final int EXPLICIT_CONNECTION_REQUEST = 1;
-
-    public void startExplicitConnectionActivity(View btn) {
-        Intent intent = new Intent(this, ExplicitConnectionActivity.class);
-        startActivityForResult(intent, EXPLICIT_CONNECTION_REQUEST);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode) {
-            case EXPLICIT_CONNECTION_REQUEST: {
-                if (resultCode != RESULT_OK) return; // RESULT_CANCELLED
-                final String addr = data.getStringExtra(ExplicitConnectionActivity.RESULT_EXTRA_INET_ADDR);
-                final int port = data.getIntExtra(ExplicitConnectionActivity.RESULT_EXTRA_PORT, -1);
-                final JoinGroupActivity self = this;
-
-                new AsyncTask<Void, Void, ConnectionAttempt>() {
-                    @Override
-                    protected ConnectionAttempt doInBackground(Void... params) {
-                        ConnectionAttempt result = new ConnectionAttempt();
-                        try {
-                            result.group = initialConnect(addr, port);
-                        } catch (UnknownHostException e) {
-                            result.ohno = new ExplicitConnectionActivity.Shaken.Error(null, getString(R.string.badHost_msg));
-                            result.ohno.refocus = R.id.in_explicit_inetAddr;
-                        } catch (IOException e) {
-                            result.ohno = new ExplicitConnectionActivity.Shaken.Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
-                        } catch (ClassNotFoundException e) {
-                            result.ohno = new ExplicitConnectionActivity.Shaken.Error(null, getString(R.string.badInitialServerReply_msg));
-                        } catch (ClassCastException e) {
-                            result.ohno = new ExplicitConnectionActivity.Shaken.Error(null, getString(R.string.unexpectedInitialServerReply_msg));
-                        }
-                        return result;
-                    }
-
-                    @Override
-                    protected void onPostExecute(ConnectionAttempt shaken) {
-                        if (shaken.ohno != null) {
-                            AlertDialog.Builder build = new AlertDialog.Builder(self);
-                            if (shaken.ohno.title != null && !shaken.ohno.title.isEmpty())
-                                build.setTitle(shaken.ohno.title);
-                            if (shaken.ohno.msg != null && !shaken.ohno.msg.isEmpty())
-                                build.setMessage(shaken.ohno.msg);
-                            if (shaken.ohno.refocus != null)
-                                findViewById(shaken.ohno.refocus).requestFocus();
-                            build.show();
-                            return;
-                        } // ^ same as ExplicitConnectionActivity
-                        candidates.add(new EnumeratedGroup(shaken.group));
-                        groupListAdapter.notifyDataSetChanged();
-                    }
-                }.execute();
+            @Override
+            public void onClick(View v) {
+                activity.sayHello(index);
             }
         }
 
-    }
+        @Override
+        public GroupViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inf = activity.getLayoutInflater();
+            View layout = inf.inflate(R.layout.card_joinable_group, parent, false);
+            return new GroupViewHolder(layout);
+        }
 
+        @Override
+        public void onBindViewHolder(GroupViewHolder holder, int position) {
+            final GroupState info = activity.candidates.elementAt(position);
+            holder.index = info.pipe.unique;
+            holder.name.setText(info.group.name);
+            if(info.group.options == null) holder.options.setVisibility(View.GONE);
+            else {
+                String total = activity.getString(R.string.card_group_options);
+                for(int app = 0; app < info.group.options.length; app++) {
+                    if(app != 0) total += ", ";
+                    total += info.group.options[app]; /// TODO this should be localized by device language! Not server language! Map enums/tokens to localized strings somehow!
+                }
+                holder.options.setText(total);
+                holder.options.setVisibility(View.VISIBLE);
+            }
+            String mismatch = mismatchAdvice(info.group.version, activity);
+            if(mismatch != null) holder.version.setText(mismatch);
+        }
 
-    public static class ReadyGroup {
-        public OOSocket s;
-        public ConnectedGroup cg;
-
-        public ReadyGroup(OOSocket sock, ConnectedGroup cg) {
-            s = sock;
-            this.cg = cg;
+        @Override
+        public int getItemCount() {
+            return activity.candidates.size();
         }
     }
-    private static class ConnectionAttempt {
-        ExplicitConnectionActivity.Shaken.Error ohno;
-        ReadyGroup group;
-    }
-    private static class EnumeratedGroup {
-        ReadyGroup rg;
-        final long index;
-        static long generated = 0;
-        EnumeratedGroup(ReadyGroup rg) {
-            this.rg = rg;
-            index = generated++;
+
+    static class GroupState {
+        MessageChannel pipe;
+        ConnectedGroup group;
+        int charBudget;
+
+        public GroupState(MessageChannel pipe, ConnectedGroup group) {
+            this.pipe = pipe;
+            this.group = group;
         }
     }
 
-    private Vector<EnumeratedGroup> candidates = new Vector<>();
+    private Vector<GroupState> candidates = new Vector<>();
 
-    public static ReadyGroup initialConnect(String addr, int port) throws /*UnknownHostException,*/ IOException, ClassNotFoundException, ClassCastException {
-        OOSocket s = new OOSocket(new Socket(addr, port));
-        s.writer.writeObject(new ServerInfoRequest());
-        ReadyGroup result = new ReadyGroup(s, (ConnectedGroup)s.reader.readObject());
-        return result;
-    }
 
-    void sayHello(int index) {
+    void sayHello(long index) {
         AlertDialog.Builder build = new AlertDialog.Builder(this);
+        /*
         final ReadyGroup rg =  candidates.elementAt(index).rg;
         final View body = getLayoutInflater().inflate(R.layout.dialog_joining_hello, null);
         final TextView name = (TextView)body.findViewById(R.id.groupName);
@@ -344,7 +237,72 @@ public class JoinGroupActivity extends AppCompatActivity {
                 }.execute();
             }
         });
-        build.setView(body);
+        build.setView(body);*/
+        build.setMessage("TODO_MOFO! STUB TODO!");
         build.show();
+    }
+
+
+    static final int EXPLICIT_CONNECTION_REQUEST = 1;
+
+    public void startExplicitConnectionActivity(View btn) {
+        Intent intent = new Intent(this, ExplicitConnectionActivity.class);
+        startActivityForResult(intent, EXPLICIT_CONNECTION_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case EXPLICIT_CONNECTION_REQUEST: {
+                if (resultCode != RESULT_OK) return; // RESULT_CANCELLED
+                final String addr = data.getStringExtra(ExplicitConnectionActivity.RESULT_EXTRA_INET_ADDR);
+                final int port = data.getIntExtra(ExplicitConnectionActivity.RESULT_EXTRA_PORT, -1);
+                new AsyncTask<Void, Void, ExplicitConnectionActivity.Error>() {
+                    @Override
+                    protected ExplicitConnectionActivity.Error doInBackground(Void... params) {
+                        ExplicitConnectionActivity.Error ohno = null;
+                        Socket socket = null;
+                        try {
+                            socket = new Socket(addr, port);
+                        } catch (UnknownHostException e) {
+                            ohno = new ExplicitConnectionActivity.Error(null, getString(R.string.badHost_msg));
+                            ohno.refocus = R.id.in_explicit_inetAddr;
+                        } catch (IOException e) {
+                            ohno = new ExplicitConnectionActivity.Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
+                        }
+                        if(ohno != null) return ohno;
+
+                        try {
+                            helper.beginHandshake(socket);
+                        } catch (IOException e) {
+                            ohno = new ExplicitConnectionActivity.Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
+                        } catch (ClassCastException e) {
+                            ohno = new ExplicitConnectionActivity.Error(null, getString(R.string.unexpectedInitialServerReply_msg));
+                        }
+                        return ohno;
+                    }
+
+                    /*
+                    @Override
+                    protected void onPostExecute(ConnectionAttempt shaken) {
+                        if (shaken.ohno != null) {
+                            AlertDialog.Builder build = new AlertDialog.Builder(self);
+                            if (shaken.ohno.title != null && !shaken.ohno.title.isEmpty())
+                                build.setTitle(shaken.ohno.title);
+                            if (shaken.ohno.msg != null && !shaken.ohno.msg.isEmpty())
+                                build.setMessage(shaken.ohno.msg);
+                            if (shaken.ohno.refocus != null)
+                                findViewById(shaken.ohno.refocus).requestFocus();
+                            build.show();
+                            return;
+                        } // ^ same as ExplicitConnectionActivity
+                        candidates.add(new EnumeratedGroup(shaken.group));
+                        groupListAdapter.notifyDataSetChanged();
+                    }
+                    */
+                }.execute();
+            }
+        }
+
     }
 }

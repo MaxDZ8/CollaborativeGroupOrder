@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -12,7 +13,10 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.joiningClient.InitialConnect;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -74,9 +78,15 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 result.putExtra(RESULT_EXTRA_PORT, port);
                 setResult(Activity.RESULT_OK, result);
                 finish();
-
             }
         });
+        helper = new InitialConnect(handler, MSG_DISCONNECTED, true) {
+            @Override
+            public void onGroupFound(MessageChannel c, ConnectedGroup group) {
+                final JoinGroupActivity.GroupConnection info = new JoinGroupActivity.GroupConnection(c, group);
+                handler.sendMessage(handler.obtainMessage(MSG_GOT_REPLY, info));
+            }
+        };
     }
 
     @Override
@@ -88,8 +98,6 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     public void startExplicitConnection(View triggerer) {
         final EditText inetAddr = (EditText)findViewById(R.id.in_explicit_inetAddr);
         final EditText inetPort = (EditText)findViewById(R.id.in_explicit_port);
-        final ProgressBar bar = (ProgressBar)findViewById(R.id.waitProbingEnd);
-        final TextView wait = (TextView)findViewById(R.id.probingUndergoing);
         addr = inetAddr.getText().toString();
         try {
             port = Integer.parseInt(inetPort.getText().toString());
@@ -100,37 +108,53 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             inetPort.requestFocus();
             return;
         }
-        triggerer.setVisibility(View.GONE);
-        inetAddr.setEnabled(false);
-        inetPort.setEnabled(false);
-        bar.setVisibility(View.VISIBLE);
-        wait.setVisibility(View.VISIBLE);
+        viewVisibility(false);
         if(helper != null) helper.shutdown(); // one at a time
-        Error fail = null; // only sent if something goes wrong
-        Socket s = null;
-        try {
-            s = new Socket(addr, port);
-        } catch (UnknownHostException e) {
-            fail = new Error(null, getString(R.string.badHost_msg));
-            fail.refocus = R.id.in_explicit_inetAddr;
+        new AsyncTask<Void, Void, MessageChannel>() {
+            @Override
+            protected MessageChannel doInBackground(Void... params) {
+                Error fail = null; // only used if something goes wrong
+                Socket s = null;
+                try {
+                    s = new Socket(addr, port);
+                } catch (UnknownHostException e) {
+                    fail = new Error(null, getString(R.string.badHost_msg));
+                    fail.refocus = R.id.in_explicit_inetAddr;
 
-        } catch (IOException e) {
-            fail = new Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
-        }
+                } catch (IOException e) {
+                    fail = new Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
+                }
+                if(fail != null) {
+                    dialog(fail);
+                    return null;
+                }
+                MessageChannel chan = new MessageChannel(s);
+                Network.Hello payload = new Network.Hello();
+                payload.version = JoinGroupActivity.CLIENT_PROTOCOL_VERSION;
+                try {
+                    chan.write(ProtoBufferEnum.HELLO, payload);
+                } catch (IOException e) {
+                    fail = new Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
+                    dialog(fail);
+                    return null;
+                }
+                return chan;
+            }
 
-        if(fail != null) {
-            dialog(fail);
-            return;
-        }
+            @Override
+            protected void onPostExecute(MessageChannel pipe) {
+                if(pipe != null) helper.add(pipe);
+                else viewVisibility(true);
+            }
+        }.execute();
+    }
 
-        try {
-            if(helper != null) helper.shutdown();
-            helper = JoinGroupActivity.initialConnect(handler, s, MSG_DISCONNECTED, MSG_GOT_REPLY);
-        } catch (IOException e) {
-            fail = new Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
-        }
-
-        if(fail != null) dialog(fail);
+    private void viewVisibility(boolean usable) {
+        findViewById(R.id.attemptExplicitConnection).setVisibility(usable? View.VISIBLE : View.GONE);
+        findViewById(R.id.in_explicit_inetAddr).setEnabled(usable);
+        findViewById(R.id.in_explicit_port).setEnabled(usable);
+        findViewById(R.id.waitProbingEnd).setVisibility(usable? View.GONE : View.VISIBLE);
+        findViewById(R.id.probingUndergoing).setVisibility(usable? View.GONE: View.VISIBLE);
     }
 
     private void dialog(Error result) {
@@ -152,7 +176,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     public static final String RESULT_EXTRA_PORT = "port";
     public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.EXPLICIT_CONNECTION_RESULT";
 
-    private static class Error {
+    static class Error {
         String title;
         String msg;
         Integer refocus;

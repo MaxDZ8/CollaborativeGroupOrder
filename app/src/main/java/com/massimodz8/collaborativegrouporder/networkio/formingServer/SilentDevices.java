@@ -30,7 +30,7 @@ public class SilentDevices extends Pumper<Client> {
 
             @Override
             public void mangle(Client from, Network.Hello msg) throws IOException {
-                from.pipe.write(ProtoBufferEnum.GROUP_INFO, makeGroupInfo(msg));
+                from.pipe.writeSync(ProtoBufferEnum.GROUP_INFO, makeGroupInfo(msg));
             }
         }).add(ProtoBufferEnum.PEER_MESSAGE, new Callbacks<Client, Network.PeerMessage>() {
             @Override

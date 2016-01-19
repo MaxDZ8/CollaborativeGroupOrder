@@ -208,42 +208,6 @@ public class CreatePartyActivity extends AppCompatActivity {
                 case MSG_SOCKET_DEAD: onSocketDead((Events.SocketDisconnected)msg.obj); break;
             }
         }
-        /*
-        handler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                switch(msg.what) {
-                    case MSG_SOCKET_DEAD:
-                        forgetSocket(((OOSocket)msg.obj).s);
-                        break;
-                    case MSG_PEER_MESSAGE_EXPECTED: {
-                        final OOSocket real = (OOSocket)msg.obj;
-                        forgetSocket(real.s);
-                    } break;
-                    case MSG_PEER_MESSAGE_UPDATED: {
-                        final ThreadedSocketPump.Message pumped = (ThreadedSocketPump.Message)msg.obj;
-                        update(pumped.origin, (PeerMessage)pumped.msg);
-                        break;
-                    }
-                    case MSG_GROUP_INFO_REQUESTED: {
-                        final ThreadedSocketPump.Message pumped = (ThreadedSocketPump.Message)msg.obj;
-                        new AsyncTask<Void, Void, Void>() {
-                            @Override
-                            protected Void doInBackground(Void... params) {
-                                try {
-                                    pumped.origin.writer.writeObject(new ConnectedGroup(PROTOCOL_VERSION, gname));
-                                } catch (IOException e) {
-                                    forgetSocket(pumped.origin.s); // protocol is stop-n-wait anyway. If I cannot reply I'm busted.
-                                }
-                                return null;
-                            }
-                        }.execute();
-                    }
-                }
-                return false;
-            }
-        });
-        */
     }
 
     static class PlayingCharacter {
@@ -322,7 +286,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         if(count == 0) target.setVisibility(View.INVISIBLE);
         else {
             String show = getString(count < 2? R.string.word_device_singular : R.string.word_device_plural);
-            target.setText(String.format(show, count, show));
+            target.setText(String.format(getString(R.string.anonDeviceStats), count, show));
             target.setVisibility(View.VISIBLE);
         }
     }
