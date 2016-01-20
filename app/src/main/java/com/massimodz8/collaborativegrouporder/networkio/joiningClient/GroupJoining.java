@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 
 import com.massimodz8.collaborativegrouporder.ConnectedGroup;
 import com.massimodz8.collaborativegrouporder.JoinGroupActivity;
+import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.formingServer.GroupForming;
@@ -49,7 +50,7 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
     }
     private PlaceHolder shaken;
 
-    public GroupJoining(Handler handler, boolean groupBeingFormed, NsdManager nsd, int earlyDisconnect, final int foundGroup, final int lostGroup) {
+    public GroupJoining(Handler handler, boolean groupBeingFormed, NsdManager nsd, int earlyDisconnect, final int foundGroup, final int lostGroup, final int charBudget) {
         this.handler = handler;
         this.groupBeingFormed = groupBeingFormed;
         this.nsd = nsd;
@@ -58,7 +59,12 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
         helper = new InitialConnect(handler, earlyDisconnect, groupBeingFormed) {
             @Override
             public void onGroupFound(MessageChannel c, ConnectedGroup group) {
-                handler.sendMessage(handler.obtainMessage(foundGroup, new JoinGroupActivity.GroupConnection(c, group)));
+                message(foundGroup, new JoinGroupActivity.GroupConnection(c, group));
+            }
+
+            @Override
+            public void onBudgetReceived(MessageChannel c, int newBudget, int delay) {
+                message(charBudget, new Events.CharBudget(c, newBudget, delay));
             }
         };
         shaken = new PlaceHolder(lostGroup);

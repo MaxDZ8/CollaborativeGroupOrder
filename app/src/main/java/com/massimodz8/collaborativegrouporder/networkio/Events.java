@@ -17,6 +17,19 @@ public interface Events {
         }
     }
 
+    class CharBudget {
+        public final MessageChannel which;
+        public int count;
+        public int delay_ms;
+
+        public CharBudget(MessageChannel c) { this(c, 0, 0); }
+        public CharBudget(MessageChannel c, int count, int delay_ms) {
+            this.which = c;
+            this.count = count;
+            this.delay_ms = delay_ms;
+        }
+    }
+
     class PeerMessage {
         public final MessageChannel which;
         public final String msg;

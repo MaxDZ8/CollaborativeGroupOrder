@@ -3,14 +3,19 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +23,11 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.joiningClient.GroupJoining;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -38,16 +46,6 @@ public class JoinGroupActivity extends AppCompatActivity {
         String desc = activity.getString(R.string.protocolVersionMismatch);
         String which = activity.getString(CLIENT_PROTOCOL_VERSION < version ? R.string.protocolVersionMismatch_upgradeThis : R.string.protocolVersionMismatch_upgradeServer);
         return String.format(desc, version, CLIENT_PROTOCOL_VERSION, which);
-    }
-
-    public static class GroupConnection {
-        MessageChannel channel;
-        ConnectedGroup group;
-
-        public GroupConnection(MessageChannel channel, ConnectedGroup group) {
-            this.channel = channel;
-            this.group = group;
-        }
     }
 
     @Override
@@ -80,16 +78,25 @@ public class JoinGroupActivity extends AppCompatActivity {
                     }
                     case MSG_GROUP_GONE: {
                         final MessageChannel c = (MessageChannel)msg.obj;
-                            AlertDialog.Builder build = new AlertDialog.Builder(self);
-                            build.setMessage("group is gone!"); /// TODO! Add behaviour for group disconnect.
-                            build.show();
+                                AlertDialog.Builder build = new AlertDialog.Builder(self);
+                                build.setMessage("group is gone!"); /// TODO! Add behaviour for group disconnect.
+                                build.show();
+                        break;
+                    }
+                    case MSG_CHAR_BUDGET: {
+                        Events.CharBudget real = (Events.CharBudget)msg.obj;
+                        GroupState group = getByChannel(real.which);
+                        if(group == null) break; // just ignore
+                        group.charBudget = real.count;
+                        group.nextMsgDelay_ms = real.delay_ms;
+                        groupListAdapter.notifyDataSetChanged();
                         break;
                     }
                 }
                 return false;
             }
         });
-        helper = new GroupJoining(guiThreadHandler, true, nsd, MSG_DISCONNECTED_WHILE_NEGOTIATING, MSG_GROUP_FOUND, MSG_GROUP_GONE) {
+        helper = new GroupJoining(guiThreadHandler, true, nsd, MSG_DISCONNECTED_WHILE_NEGOTIATING, MSG_GROUP_FOUND, MSG_GROUP_GONE, MSG_CHAR_BUDGET) {
             @Override
             protected void onDiscoveryStart(ServiceDiscoveryStartStop status) {
                 if(status.successful) {
@@ -116,6 +123,10 @@ public class JoinGroupActivity extends AppCompatActivity {
     public static final int MSG_DISCONNECTED_WHILE_NEGOTIATING = 5;
     public static final int MSG_GROUP_FOUND = 6;
     public static final int MSG_GROUP_GONE = 7;
+    public static final int MSG_CHAR_BUDGET = 8;
+
+
+    private static final int COLOR_FORBIDDEN_INVALID_TEXT = 0xFF0000FF;
 
     private static String nsdErrorString(int error) {
         switch(error) {
@@ -134,30 +145,63 @@ public class JoinGroupActivity extends AppCompatActivity {
         }
 
         // View holder pattern <-> keep handles to internal Views so I don't need to look em up.
-        protected class GroupViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            TextView name;
-            TextView options;
-            TextView budget;
+        protected class GroupViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, TextWatcher {
+            TextView name, options; // those two change only when rebound.
+            TextView curLen, lenLimit; // the first changes when message.getText() changes, lenLimit changes on send or receive of CharBudget message.
             TextView message;
             Button send;
+            final Typeface usual;
 
-            MessageChannel channel;
+            GroupState source;
             public GroupViewHolder(View itemView) {
                 super(itemView);
                 name = (TextView)itemView.findViewById(R.id.card_group_name);
                 options = (TextView)itemView.findViewById(R.id.card_group_options);
-                budget = (TextView)itemView.findViewById(R.id.card_group_charBudget);
+                curLen = (TextView)itemView.findViewById(R.id.card_group_currentLength);
+                lenLimit = (TextView)itemView.findViewById(R.id.card_group_lengthLimit);
                 message = (TextView)itemView.findViewById(R.id.card_group_message);
                 message.setEnabled(false);
                 send = (Button)itemView.findViewById(R.id.card_group_buttonSend);
                 send.setEnabled(false);
                 send.setOnClickListener(this);
+                message.addTextChangedListener(this);
+                usual = curLen.getTypeface();
             }
 
             @Override
             public void onClick(View v) {
-                activity.sayHello(channel);
+                final CharSequence msg = message.getText();
+                if(msg.length() == 0) {
+                    new AlertDialog.Builder(activity)
+                            .setMessage(R.string.saySomethingToServer_emptyForbidden)
+                            .show();
+                    return;
+                }
+                if(msg.length() > source.charBudget) {
+                    new AlertDialog.Builder(activity)
+                            .setMessage(R.string.saySomethingToServer_tooLong)
+                            .show();
+                    return;
+                }
+                activity.sayHello(source, msg);
+                message.setHint(msg);
+                message.setText("");
+                message.setEnabled(false);
+                send.setEnabled(false);
             }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() > source.charBudget) curLen.setTypeface(usual, Typeface.BOLD);
+                else curLen.setTypeface(usual, Typeface.NORMAL);
+                curLen.setText(String.valueOf(s.length()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
         }
 
         @Override
@@ -172,9 +216,10 @@ public class JoinGroupActivity extends AppCompatActivity {
             final GroupState info = activity.candidates.elementAt(position);
             final int current = holder.message.getText().length();
             final int allowed = info.charBudget;
-            holder.channel = info.pipe;
+            holder.source = info;
             holder.name.setText(info.group.name);
-            holder.budget.setText(String.format(activity.getString(R.string.card_group_charCount), current, allowed));
+            holder.curLen.setText("" + current);
+            holder.lenLimit.setText("" + allowed);
             if(info.group.options == null) holder.options.setVisibility(View.GONE);
             else {
                 String total = activity.getString(R.string.card_group_options);
@@ -185,6 +230,9 @@ public class JoinGroupActivity extends AppCompatActivity {
                 holder.options.setText(total);
                 holder.options.setVisibility(View.VISIBLE);
             }
+            final boolean status = allowed != 0 && info.nextEnabled_ms < SystemClock.elapsedRealtime();
+            holder.message.setEnabled(status);
+            holder.send.setEnabled(status);
         }
 
         @Override
@@ -193,61 +241,68 @@ public class JoinGroupActivity extends AppCompatActivity {
         }
     }
 
-    static class GroupState {
-        MessageChannel pipe;
+    public static class GroupConnection {
+        MessageChannel channel;
         ConnectedGroup group;
-        int charBudget;
 
-        public GroupState(MessageChannel pipe, ConnectedGroup group) {
-            this.pipe = pipe;
+        public GroupConnection(MessageChannel channel, ConnectedGroup group) {
+            this.channel = channel;
             this.group = group;
         }
     }
 
+    static class GroupState extends GroupConnection {
+        int charBudget;
+        int nextMsgDelay_ms;
+        volatile long nextEnabled_ms = 0; // SystemClock.elapsedRealtime(); /// if now() is >= this, controls are updated if charBudget > 0
+
+        public GroupState(MessageChannel pipe, ConnectedGroup group) { super(pipe, group); }
+    }
+
     private Vector<GroupState> candidates = new Vector<>();
 
+    GroupState getByChannel(MessageChannel pipe) {
+        for(GroupState gs : candidates) {
+            if(gs.channel == pipe) return gs;
+        }
+        return null;
+    }
 
-    void sayHello(MessageChannel pipe) {
-        AlertDialog.Builder build = new AlertDialog.Builder(this);
-        /*
-        final ReadyGroup rg =  candidates.elementAt(index).rg;
-        final View body = getLayoutInflater().inflate(R.layout.dialog_joining_hello, null);
-        final TextView name = (TextView)body.findViewById(R.id.groupName);
-        name.setText(rg.cg.name);
-        final EditText msg = (EditText)body.findViewById(R.id.masterMessage);
-        final View btn = body.findViewById(R.id.sendHelloBtn);
-        btn.setOnClickListener(new View.OnClickListener() {
+
+    void sayHello(final GroupState gs, final CharSequence newMsg) {
+        gs.charBudget -= newMsg.length();
+        gs.nextEnabled_ms = SystemClock.elapsedRealtime() + gs.nextMsgDelay_ms;
+        final String send = newMsg.toString();
+        final AppCompatActivity self = this;
+        new AsyncTask<Void, Void, Exception>() {
             @Override
-            public void onClick(View v) {
-                final PeerMessage sending = new PeerMessage(msg.getText().toString());
-                body.findViewById(R.id.postSendInfos).setVisibility(View.VISIBLE);
-                msg.setEnabled(false);
-                btn.setEnabled(false);
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        try {
-                            rg.s.writer.writeObject(msg);
-                        } catch (IOException e) {
-                            return null; // let's forget about this. Hopefully user will try again.
-                        }
-                        SystemClock.sleep(SEND_MESSAGE_PERIOD_MS);
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        msg.setEnabled(true);
-                        msg.setText("");
-                        msg.requestFocus();
-                        btn.setEnabled(true);
-                    }
-                }.execute();
+            protected Exception doInBackground(Void... params) {
+                Network.PeerMessage payload = new Network.PeerMessage();
+                payload.text = send;
+                try {
+                    gs.channel.writeSync(ProtoBufferEnum.PEER_MESSAGE, payload);
+                } catch (IOException e) {
+                    return e;
+                }
+                try {
+                    Thread.sleep(gs.nextMsgDelay_ms);
+                } catch (InterruptedException e) {
+                    return e; // Very unlikely
+                }
+                return null;
             }
-        });
-        build.setView(body);*/
-        build.setMessage("TODO_MOFO! STUB TODO!");
-        build.show();
+
+            @Override
+            protected void onPostExecute(Exception error) {
+                if(error != null) {
+                    new AlertDialog.Builder(self)
+                            .setMessage(getString(R.string.sendMessageErrorDesc) + error.getLocalizedMessage())
+                            .show();
+                    return;
+                }
+                groupListAdapter.notifyDataSetChanged(); // maybe not, but time elapsed maybe restore those buttons
+            }
+        }.execute();
     }
 
 

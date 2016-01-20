@@ -19,12 +19,14 @@ public class SilentDevices extends Pumper<Client> {
     final String name;
     final int wroteSomething;
     final int charBudget;
+    final int initialDelay;
 
-    public SilentDevices(Handler handler, int disconnectCode, int wroteSomethingCode_, String name, int initialCharBudget) throws IOException {
+    public SilentDevices(Handler handler, int disconnectCode, int wroteSomethingCode_, String name, int initialCharBudget, int initialCharDelay_ms) throws IOException {
         super(handler, disconnectCode);
         this.name = name;
         wroteSomething = wroteSomethingCode_;
         charBudget = initialCharBudget;
+        this.initialDelay = initialCharDelay_ms;
 
         add(ProtoBufferEnum.HELLO, new Callbacks<Client, Network.Hello>() {
             @Override
@@ -32,8 +34,8 @@ public class SilentDevices extends Pumper<Client> {
 
             @Override
             public void mangle(Client from, Network.Hello msg) throws IOException {
-                from.pipe.writeSync(ProtoBufferEnum.GROUP_INFO, makeGroupInfo(msg));
-                        //.writeSync(ProtoBufferEnum.CHAR_BUDGET, makeInitialCharBudget());
+                from.pipe.writeSync(ProtoBufferEnum.GROUP_INFO, makeGroupInfo(msg))
+                        .writeSync(ProtoBufferEnum.CHAR_BUDGET, makeInitialCharBudget());
             }
         }).add(ProtoBufferEnum.PEER_MESSAGE, new Callbacks<Client, Network.PeerMessage>() {
             @Override
@@ -58,6 +60,7 @@ public class SilentDevices extends Pumper<Client> {
     private Network.CharBudget makeInitialCharBudget() {
         Network.CharBudget ret = new Network.CharBudget();
         ret.total = charBudget;
+        ret.period = initialDelay;
         return ret;
     }
 

@@ -18,6 +18,7 @@ import java.net.ServerSocket;
  */
 public abstract class GroupForming implements NsdManager.RegistrationListener {
     public static final int INITIAL_CHAR_BUDGET = 20;
+    public static final int INITIAL_CHAR_DELAY = 2000;
 
     public void shutdown() throws IOException {
         if(forming != null) forming.shutdown();
@@ -98,7 +99,7 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
                 }
             }
         });
-        silent = new SilentDevices(handler, disconnect, peerMessage, userName, INITIAL_CHAR_BUDGET);
+        silent = new SilentDevices(handler, disconnect, peerMessage, userName, INITIAL_CHAR_BUDGET, INITIAL_CHAR_DELAY);
     }
 
     /// Listen for the various events, do your mangling and promote peers to a different stage.

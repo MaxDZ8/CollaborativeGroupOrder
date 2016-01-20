@@ -70,4 +70,8 @@
     <string name="card_group_talkHint">Send a message to join this group.</string>
     <string name="card_group_sayButton">Send</string>
     <string name="card_group_charCount">%1$d / %2$d</string>
+    <string name="sendMessageErrorDesc">"Error detected while attempting to send message to party owner. Details: "</string>
+    <string name="saySomethingToServer_emptyForbidden">Empty messages are forbidden.</string>
+    <string name="saySomethingToServer_tooLong">Message too long. It might be displayed partially or not at all. Go back and fit the given budget.</string>
+    <string name="card_group_lengthMaxDivisor"> / </string>
 </resources>

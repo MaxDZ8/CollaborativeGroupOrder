@@ -86,6 +86,11 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 final JoinGroupActivity.GroupConnection info = new JoinGroupActivity.GroupConnection(c, group);
                 handler.sendMessage(handler.obtainMessage(MSG_GOT_REPLY, info));
             }
+
+            @Override
+            public void onBudgetReceived(MessageChannel c, int newBudget, int delay) {
+                // For explicit connection, just ignore this. We're going out anyway!
+            }
         };
     }
 

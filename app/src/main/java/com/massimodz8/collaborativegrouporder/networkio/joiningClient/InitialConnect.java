@@ -34,6 +34,15 @@ public abstract class InitialConnect extends Pumper<Client> {
             public void mangle(Client from, Network.GroupInfo msg) throws IOException {
                 onGroupFound(from.pipe, makeGroupInfo(msg));
             }
+        }).add(ProtoBufferEnum.CHAR_BUDGET, new Callbacks<Client, Network.CharBudget>() {
+            @Override
+            public Network.CharBudget make() { return new Network.CharBudget(); }
+
+            @Override
+            public void mangle(Client from, Network.CharBudget msg) throws IOException {
+                onBudgetReceived(from.pipe, msg.total, msg.period);
+
+            }
         });
     }
 
@@ -51,4 +60,5 @@ public abstract class InitialConnect extends Pumper<Client> {
     }
 
     public abstract void onGroupFound(MessageChannel c, ConnectedGroup group);
+    public abstract void onBudgetReceived(MessageChannel c, int newBudget, int delay);
 }

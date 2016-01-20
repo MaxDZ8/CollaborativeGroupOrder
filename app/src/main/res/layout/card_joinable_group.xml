@@ -48,11 +48,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/card_group_charCount"
-        android:id="@+id/card_group_charBudget"
-        android:layout_below="@+id/card_group_buttonSend"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentStart="true" />
+        android:id="@+id/card_group_currentLength"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/card_group_buttonSend" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/card_group_lengthMaxDivisor"
+        android:id="@+id/textView2"
+        android:layout_toEndOf="@+id/card_group_currentLength"
+        android:layout_toRightOf="@+id/card_group_currentLength"
+        android:layout_alignBaseline="@+id/card_group_currentLength" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/card_group_lengthLimit"
+        android:layout_alignBaseline="@+id/textView2"
+        android:layout_toRightOf="@+id/textView2" />
 
 </RelativeLayout>
