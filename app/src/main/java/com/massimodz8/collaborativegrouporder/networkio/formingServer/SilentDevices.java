@@ -18,11 +18,13 @@ import java.io.IOException;
 public class SilentDevices extends Pumper<Client> {
     final String name;
     final int wroteSomething;
+    final int charBudget;
 
-    public SilentDevices(Handler handler, int disconnectCode, int wroteSomethingCode_, String name) throws IOException {
+    public SilentDevices(Handler handler, int disconnectCode, int wroteSomethingCode_, String name, int initialCharBudget) throws IOException {
         super(handler, disconnectCode);
         this.name = name;
         wroteSomething = wroteSomethingCode_;
+        charBudget = initialCharBudget;
 
         add(ProtoBufferEnum.HELLO, new Callbacks<Client, Network.Hello>() {
             @Override
@@ -31,6 +33,7 @@ public class SilentDevices extends Pumper<Client> {
             @Override
             public void mangle(Client from, Network.Hello msg) throws IOException {
                 from.pipe.writeSync(ProtoBufferEnum.GROUP_INFO, makeGroupInfo(msg));
+                        //.writeSync(ProtoBufferEnum.CHAR_BUDGET, makeInitialCharBudget());
             }
         }).add(ProtoBufferEnum.PEER_MESSAGE, new Callbacks<Client, Network.PeerMessage>() {
             @Override
@@ -39,6 +42,7 @@ public class SilentDevices extends Pumper<Client> {
             @Override
             public void mangle(Client from, Network.PeerMessage msg) throws IOException {
                 message(wroteSomething, new Events.PeerMessage(from.pipe, msg.text));
+                // char budget re-estabilished by callback.
             }
         });
     }
@@ -48,6 +52,12 @@ public class SilentDevices extends Pumper<Client> {
         ret.forming = true;
         ret.name = name;
         ret.version = SERVER_VERSION;
+        return ret;
+    }
+
+    private Network.CharBudget makeInitialCharBudget() {
+        Network.CharBudget ret = new Network.CharBudget();
+        ret.total = charBudget;
         return ret;
     }
 

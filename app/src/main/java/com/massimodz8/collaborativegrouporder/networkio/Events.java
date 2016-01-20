@@ -18,8 +18,8 @@ public interface Events {
     }
 
     class PeerMessage {
-        MessageChannel which;
-        String msg;
+        public final MessageChannel which;
+        public final String msg;
 
         public PeerMessage(MessageChannel which, String msg) {
             this.which = which;

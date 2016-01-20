@@ -31,8 +31,7 @@ The various messages are assumed by peers to be correctly processed. If the serv
 A device is considered **silent** immediately after TCP connection is estabilished. At the time being those devices have no way to be identified.
 Besides normal TCP keepalive, no data is transferred by server in this phase by its own initiative. Communication is initiated by client.
 
-The first message MUST be Hello. Any other device will cause the connection to be terminated. Server replies by sending a GroupInfo object indicating group is open. This object is guaranteed to be constructed before the TCP listen socket
-is even initiated.
+The first message MUST be Hello. Any other device will cause the connection to be terminated. Server replies by sending a GroupInfo object indicating group is open. This object is guaranteed to be constructed before the TCP listen socket is even initiated.
 
 After the server has sent GroupInfo, it sends a CharBudget message. This tells the client how many PeerMessage the server will consider from the client. The client needs to send one PeerMessage to end the silent phase by providing a way for the group owner user to identify the client device. The client can send as many message as it wants, as long as it wants but the server will just ignore them at a certain point and eventually kill the connection.
 

@@ -9,5 +9,6 @@ public interface ProtoBufferEnum {
     int HELLO = 1;
     int GROUP_INFO = 2;
     int PEER_MESSAGE = 3;
-    int PLAYING_CHARACTER_DEFINITION = 4;
+    int CHAR_BUDGET = 4;
+    int PLAYING_CHARACTER_DEFINITION = 5;
 }

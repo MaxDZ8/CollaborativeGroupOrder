@@ -21,9 +21,12 @@ import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.formingServer.GroupForming;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -100,7 +103,7 @@ public class CreatePartyActivity extends AppCompatActivity {
 
         final CreatePartyActivity self = this;
         try {
-            gathering = new GroupForming(gname, nsd, new MyHandler(), MSG_SERVICE_REGISTRATION_COMPLETE) {
+            gathering = new GroupForming(gname, nsd, new MyHandler(this), MSG_SERVICE_REGISTRATION_COMPLETE) {
                 @Override
                 public void onFailedAccept() {
                     AlertDialog.Builder build = new AlertDialog.Builder(self);
@@ -199,16 +202,46 @@ public class CreatePartyActivity extends AppCompatActivity {
         }
     }
 
-    class MyHandler extends Handler {
+    static class MyHandler extends Handler {
+        final WeakReference<CreatePartyActivity> target;
+
+        public MyHandler(CreatePartyActivity target) {
+            this.target = new WeakReference<>(target);
+        }
+
         @Override
         public void handleMessage(Message msg) {
+            final CreatePartyActivity target = this.target.get();
             switch(msg.what) {
-                case MSG_SERVICE_REGISTRATION_COMPLETE: onNSRegistrationComplete((GroupForming.ServiceRegistrationResult) msg.obj); break;
-                case MSG_SILENT_DEVICE_COUNT: onSilentCountChanged(); break;
-                case MSG_SOCKET_DEAD: onSocketDead((Events.SocketDisconnected)msg.obj); break;
+                case MSG_SERVICE_REGISTRATION_COMPLETE: target.onNSRegistrationComplete((GroupForming.ServiceRegistrationResult) msg.obj); break;
+                case MSG_SILENT_DEVICE_COUNT: target.onSilentCountChanged(); break;
+                case MSG_SOCKET_DEAD: target.onSocketDead((Events.SocketDisconnected) msg.obj); break;
+                case MSG_PEER_MESSAGE_UPDATED: target.messageUpdate((Events.PeerMessage) msg.obj);
             }
         }
     }
+
+    private void messageUpdate(Events.PeerMessage msg) {
+        final DeviceStatus dst = get(msg.which);
+        if(dst == null) return; // impossible, we build those as soon as they connect
+        if(dst.charBudget < 1) return; // ignore
+        dst.lastMessage = msg.msg.substring(0, dst.charBudget);
+        dst.charBudget = dst.groupMember? CHAR_BUDGET_GROUP_MEMBER : CHAR_BUDGET_TALKING;
+        groupListAdapter.notifyDataSetChanged();
+        final Network.CharBudget credits = new Network.CharBudget();
+        credits.total = dst.charBudget;
+        credits.period = dst.groupMember? CHAR_BUDGET_DELAY_MS_GROUP_MEMBER : CHAR_BUDGET_DELAY_MS_TALKING;
+        try {
+            msg.which.writeSync(ProtoBufferEnum.CHAR_BUDGET, credits);
+        } catch (IOException e) {
+            /// TODO: figure out what to do in this case.
+        }
+    }
+
+    static final int CHAR_BUDGET_GROUP_MEMBER = 20;
+    static final int CHAR_BUDGET_TALKING = 10;
+    static final int CHAR_BUDGET_DELAY_MS_TALKING = 2000;
+    static final int CHAR_BUDGET_DELAY_MS_GROUP_MEMBER = 500;
 
     static class PlayingCharacter {
         String name;
@@ -218,6 +251,7 @@ public class CreatePartyActivity extends AppCompatActivity {
     static class DeviceStatus {
         public final MessageChannel source;
         public String lastMessage; // if null still not talking
+        public int charBudget;
         public boolean groupMember;
         Vector<PlayingCharacter> chars = new Vector<>(); // if contains something we have been promoted
         String names() {
@@ -260,7 +294,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         }
         // Else an unidentified has gone away. Not much of a problem.
 
-        group.remove(obj.which);
+        group.remove(dev);
         if(dev.lastMessage == null) onSilentCountChanged();
         else if(dev.chars.isEmpty()) {
             groupListAdapter.notifyDataSetChanged();

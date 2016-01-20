@@ -4,7 +4,6 @@ package com.massimodz8.collaborativegrouporder;
 import android.content.Context;
 import android.content.Intent;
 import android.net.nsd.NsdManager;
-import android.net.nsd.NsdServiceInfo;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -137,19 +137,26 @@ public class JoinGroupActivity extends AppCompatActivity {
         protected class GroupViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             TextView name;
             TextView options;
-            TextView version;
-            long index = -1;
+            TextView budget;
+            TextView message;
+            Button send;
+
+            MessageChannel channel;
             public GroupViewHolder(View itemView) {
                 super(itemView);
-                name = (TextView)itemView.findViewById(R.id.card_groupName);
-                options = (TextView)itemView.findViewById(R.id.card_options);
-                version = (TextView)itemView.findViewById(R.id.card_protoVersion);
-                itemView.setOnClickListener(this);
+                name = (TextView)itemView.findViewById(R.id.card_group_name);
+                options = (TextView)itemView.findViewById(R.id.card_group_options);
+                budget = (TextView)itemView.findViewById(R.id.card_group_charBudget);
+                message = (TextView)itemView.findViewById(R.id.card_group_message);
+                message.setEnabled(false);
+                send = (Button)itemView.findViewById(R.id.card_group_buttonSend);
+                send.setEnabled(false);
+                send.setOnClickListener(this);
             }
 
             @Override
             public void onClick(View v) {
-                activity.sayHello(index);
+                activity.sayHello(channel);
             }
         }
 
@@ -163,8 +170,11 @@ public class JoinGroupActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(GroupViewHolder holder, int position) {
             final GroupState info = activity.candidates.elementAt(position);
-            holder.index = info.pipe.unique;
+            final int current = holder.message.getText().length();
+            final int allowed = info.charBudget;
+            holder.channel = info.pipe;
             holder.name.setText(info.group.name);
+            holder.budget.setText(String.format(activity.getString(R.string.card_group_charCount), current, allowed));
             if(info.group.options == null) holder.options.setVisibility(View.GONE);
             else {
                 String total = activity.getString(R.string.card_group_options);
@@ -175,8 +185,6 @@ public class JoinGroupActivity extends AppCompatActivity {
                 holder.options.setText(total);
                 holder.options.setVisibility(View.VISIBLE);
             }
-            String mismatch = mismatchAdvice(info.group.version, activity);
-            if(mismatch != null) holder.version.setText(mismatch);
         }
 
         @Override
@@ -199,7 +207,7 @@ public class JoinGroupActivity extends AppCompatActivity {
     private Vector<GroupState> candidates = new Vector<>();
 
 
-    void sayHello(long index) {
+    void sayHello(MessageChannel pipe) {
         AlertDialog.Builder build = new AlertDialog.Builder(this);
         /*
         final ReadyGroup rg =  candidates.elementAt(index).rg;
@@ -303,6 +311,5 @@ public class JoinGroupActivity extends AppCompatActivity {
                 }.execute();
             }
         }
-
     }
 }

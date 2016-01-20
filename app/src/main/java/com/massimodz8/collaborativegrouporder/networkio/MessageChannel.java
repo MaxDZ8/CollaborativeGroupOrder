@@ -43,7 +43,7 @@ public class MessageChannel {
     final CodedInputByteBufferNano recv;
 
     /// Use this with extreme care. You probably want writeSync instead.
-    public void write(int type, MessageNano payload) throws IOException {
+    public MessageChannel write(int type, MessageNano payload) throws IOException {
         final int typeExtra = send.computeUInt32SizeNoTag(type);
         final int payloadSize = CodedOutputByteBufferNano.computeMessageSizeNoTag(payload);
         send.writeFixed32NoTag(payloadSize + typeExtra);
@@ -51,10 +51,11 @@ public class MessageChannel {
         send.writeMessageNoTag(payload);
         socket.getOutputStream().write(out, 0, send.position());
         send.reset();
+        return this;
     }
 
     /// Strongly suggested to use it from an AsyncTask.
-    public synchronized void writeSync(int type, MessageNano payload) throws IOException {
-        write(type, payload);
+    public synchronized MessageChannel writeSync(int type, MessageNano payload) throws IOException {
+        return write(type, payload);
     }
 }

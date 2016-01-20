@@ -17,6 +17,8 @@ import java.net.ServerSocket;
  * higher level GUI hooks with no thread hazards.
  */
 public abstract class GroupForming implements NsdManager.RegistrationListener {
+    public static final int INITIAL_CHAR_BUDGET = 20;
+
     public void shutdown() throws IOException {
         if(forming != null) forming.shutdown();
         if(talking != null) talking.shutdown();
@@ -96,7 +98,7 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
                 }
             }
         });
-        silent = new SilentDevices(handler, disconnect, peerMessage, userName);
+        silent = new SilentDevices(handler, disconnect, peerMessage, userName, INITIAL_CHAR_BUDGET);
     }
 
     /// Listen for the various events, do your mangling and promote peers to a different stage.

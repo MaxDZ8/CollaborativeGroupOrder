@@ -21,6 +21,8 @@ message GroupInfo {
 // This is not a 'token' to be added to a list. It's the maximum amount of characters the server will consider from the client.
 // The client can send as many messages it wants as long as it fits the budget but can only do so by waiting at least period
 // between successive messages. This avoids flooding. A message (n+1) after less than period will be discarded.
+// Honoring delay is not required with the first PeerMessage sent.
+// A message of this type will always be replied after a PeerMessage to estabilish a delay in other cases.
 message CharBudget {
     uint32 total = 1;
     uint32 period = 2; // in milliseconds, clients are suggested to wait slightly more before re-enabling messaging

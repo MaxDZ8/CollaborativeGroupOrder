@@ -34,7 +34,7 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
     final boolean groupBeingFormed;
     final NsdManager nsd;
     InitialConnect helper;
-    Map<NsdServiceInfo, MessageChannel> probing = new IdentityHashMap<NsdServiceInfo, MessageChannel>();
+    Map<NsdServiceInfo, MessageChannel> probing = new IdentityHashMap<>();
 
     class PlaceHolder {
         public final int lostGroup;
@@ -74,7 +74,7 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
     /// Most likely to be called from an AsyncTask or some other thread.
     /// In general you don't need to call this except when you need an explicit connection.
     public MessageChannel beginHandshake(Socket sock) throws IOException {
-        if(helper != null) return null; // we already transitioned to something else
+        if(helper == null) return null; // we already transitioned to something else
         MessageChannel peer = new MessageChannel(sock);
         Network.Hello hi = new Network.Hello();
         hi.version = JoinGroupActivity.CLIENT_PROTOCOL_VERSION;
