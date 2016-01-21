@@ -49,7 +49,7 @@
     <string name="joiningSendMsgBtn">Send</string>
     <string name="sentMsgInformations">Wait until group owner confirms you being in the group.</string>
     <string name="joiningDeviceWithHello_details">Device %1$d, connected from %2$s said:</string>
-    <string name="joiningDeviceHello_acceptedCheckbox_nope">Not a party member</string>
+    <string name="joiningDeviceHello_acceptedCheckbox_nope">Tap to let in group</string>
     <string name="joinindDevice_kick">Reject</string>
     <string name="anonDeviceStats">%1$d silent %2$s connected.</string>
     <string name="talkingDeviceStats">%1$d %2$s talked, showing below.</string>

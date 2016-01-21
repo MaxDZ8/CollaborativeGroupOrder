@@ -222,10 +222,15 @@ public class CreatePartyActivity extends AppCompatActivity {
     }
 
     private void messageUpdate(Events.PeerMessage msg) {
-        final DeviceStatus dst = get(msg.which);
-        if(dst == null) return; // impossible, we build those as soon as they connect
+        DeviceStatus dst = get(msg.which);
+        if(dst == null) {
+            dst = new DeviceStatus(msg.which);
+            dst.charBudget = GroupForming.INITIAL_CHAR_BUDGET;
+            group.add(dst);
+        }
         if(dst.charBudget < 1) return; // ignore
-        dst.lastMessage = msg.msg.substring(0, dst.charBudget);
+        final int len = msg.msg.length();
+        dst.lastMessage = msg.msg.substring(0, len < dst.charBudget? len : dst.charBudget);
         dst.charBudget = dst.groupMember? CHAR_BUDGET_GROUP_MEMBER : CHAR_BUDGET_TALKING;
         groupListAdapter.notifyDataSetChanged();
         final Network.CharBudget credits = new Network.CharBudget();
@@ -236,6 +241,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         } catch (IOException e) {
             /// TODO: figure out what to do in this case.
         }
+        groupListAdapter.notifyDataSetChanged();
     }
 
     static final int CHAR_BUDGET_GROUP_MEMBER = 20;
@@ -368,13 +374,11 @@ public class CreatePartyActivity extends AppCompatActivity {
         protected class DeviceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
             public TextView msg;
             public CheckBox accepted;
-            TextView details;
             MessageChannel key;
 
             public DeviceViewHolder(View itemView) {
                 super(itemView);
                 msg = (TextView)itemView.findViewById(R.id.card_joiningDevice_msg);
-                details = (TextView)itemView.findViewById(R.id.card_joiningDevice_details);
                 accepted = (CheckBox)itemView.findViewById(R.id.card_joiningDevice_accepted);
                 itemView.findViewById(R.id.card_joiningDevice_kick).setOnClickListener(this);
                 accepted.setOnCheckedChangeListener(this);
@@ -415,9 +419,6 @@ public class CreatePartyActivity extends AppCompatActivity {
             holder.key = dev.source;
             holder.msg.setText(dev.lastMessage);
             holder.accepted.setChecked(dev.groupMember);
-            String format = getString(R.string.joiningDeviceWithHello_details);
-            format = String.format(format, dev.source.unique, dev.source.socket.getInetAddress().toString());
-            holder.details.setText(format);
         }
 
         @Override
