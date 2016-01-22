@@ -25,7 +25,17 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
         if(talking != null) talking.shutdown();
         if(silent != null) silent.shutdown();
         nsd.unregisterService(this);
-        landing.close();
+        acceptor.shutdown();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    landing.close();
+                } catch (IOException e) {
+                    // If it dies, we just give up and crash.
+                }
+            }
+        }.start();
     }
 
     public void kick(MessageChannel device) {

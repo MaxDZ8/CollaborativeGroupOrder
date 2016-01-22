@@ -3,6 +3,7 @@ package com.massimodz8.collaborativegrouporder.networkio;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -17,6 +18,7 @@ public class LandingServer {
     private final ServerSocket landing;
     private final Thread acceptor;
     private final Callbacks hooks;
+    private volatile boolean shuttingDown = false;
 
     public interface Callbacks {
         /// Called if we cannot create a connection for a new client.
@@ -37,7 +39,7 @@ public class LandingServer {
                     try {
                         newComer = new MessageChannel(landing.accept());
                     } catch (IOException e) {
-                        hooks.failedAccept();
+                        if(shuttingDown == false) hooks.failedAccept();
                         return;
                     }
                     hooks.connected(newComer);
@@ -49,9 +51,7 @@ public class LandingServer {
 
 
     public void shutdown() {
+        shuttingDown = true;
         acceptor.interrupt();
-        try {
-            landing.close();
-        } catch(IOException e ) {} // wut?
     }
 }
