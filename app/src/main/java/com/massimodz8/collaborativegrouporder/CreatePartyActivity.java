@@ -285,7 +285,13 @@ public class CreatePartyActivity extends AppCompatActivity {
 
     private void onSocketDead(Events.SocketDisconnected obj) {
         DeviceStatus dev = get(obj.which);
-        if(dev == null) return; // impossible by construction...almost but might happen in some rare case if we parse a socket dead before a connect... uhm
+        if(dev == null) {
+            /* devices are added to list processed by get(MessageChannel) only after they produced a message as well so this is silent.
+            Unfortunately, because of the way our stuff is mangled in a modular fashion we won't get a MSG_SILENT_DEVICE_COUNT (because the Pumper
+            does not know about the extended semantics) so we trigger manually. */
+            onSilentCountChanged();
+            return;
+        }
         if(dev.lastMessage != null) {
             dev.lastMessage = String.format(getString(R.string.ohNo_talkingIsGone), dev.lastMessage);
             AlertDialog.Builder build = new AlertDialog.Builder(this);
@@ -302,8 +308,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         // Else an unidentified has gone away. Not much of a problem.
 
         group.remove(dev);
-        if(dev.lastMessage == null) onSilentCountChanged();
-        else if(dev.chars.isEmpty()) {
+        if(dev.chars.isEmpty()) {
             groupListAdapter.notifyDataSetChanged();
             onTalkingCountChanged();
         }
