@@ -39,9 +39,9 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
     }
 
     public void kick(MessageChannel device) {
-        if(forming != null) forming.removeClearing(device);
-        if(talking != null) talking.removeClearing(device);
-        if(silent != null) silent.removeClearing(device);
+        if(forming != null) forming.silentShutdown(device);
+        if(talking != null) talking.silentShutdown(device);
+        if(silent != null) silent.silentShutdown(device);
     }
 
 
@@ -120,12 +120,14 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
 
     /// Listen for the various events, do your mangling and promote peers to a different stage.
     /// When not matched the function call is NOP, so you can just call this blindly.
-    public void promoteSilent(MessageChannel peer, int disconnect, int peerMessage) throws IOException {
+    public boolean promoteSilent(MessageChannel peer, int disconnect, int peerMessage) {
         if(talking == null) talking = new TalkingDevices(handler, disconnect, peerMessage);
         if(silent.yours(peer)) {
             talking.add(peer);
-            silent.remove(peer, true);
+            silent.leak(peer);
+            return true;
         }
+        return false;
     }
 
     /// Brings a talking devices to group forming phase and terminates connections to others.
@@ -133,7 +135,18 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
         if(forming == null) forming = new PCDefiningDevices(handler, disconnect, definedCharacter);
         acceptor.shutdown();
         acceptor = null;
-        landing.close();
+        final ServerSocket capture = landing;
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    capture.close();
+                } catch (IOException e) {
+                    // well, nothing. Just leak it. Maybe we can at least finish defining group.
+                }
+            }
+        }.start();
+        for(MessageChannel leak : members) silent.leak(leak);
         silent.shutdown();
         silent = null;
 
@@ -174,5 +187,4 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
 
     @Override
     public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) { }
-
 }

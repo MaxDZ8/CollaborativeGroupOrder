@@ -130,7 +130,7 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
     public void onServiceLost(NsdServiceInfo info) {
         if(helper == null) return;
         MessageChannel stop = probing.remove(info);
-        if(stop != null) helper.removeClearing(stop);
+        if(stop != null) helper.silentShutdown(stop);
         if(shaken.yours(stop)) {
             shaken.removeCleaning(stop);
             handler.sendMessage(handler.obtainMessage(shaken.lostGroup, stop));

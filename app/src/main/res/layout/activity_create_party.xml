@@ -95,7 +95,8 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_generateParty"
         android:id="@+id/btn_closeGroup"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:onClick="createGroup" />
 
     <TextView
         android:layout_width="wrap_content"

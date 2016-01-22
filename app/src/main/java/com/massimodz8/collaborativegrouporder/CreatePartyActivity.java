@@ -34,8 +34,6 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
-import java.util.IdentityHashMap;
-import java.util.Map;
 import java.util.Vector;
 
 /* This activity is started by the MainMenuActivity when the user wants to assemble a new party.
@@ -50,7 +48,7 @@ public class CreatePartyActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_network_listening);
+        setContentView(R.layout.activity_create_party);
     }
     protected void onDestroy() {
         if(gathering != null) try {
@@ -229,6 +227,7 @@ public class CreatePartyActivity extends AppCompatActivity {
             dst.charBudget = GroupForming.INITIAL_CHAR_BUDGET;
             group.add(dst);
         }
+        gathering.promoteSilent(dst.source, MSG_SOCKET_DEAD, MSG_PEER_MESSAGE_UPDATED);
         if(dst.charBudget < 1) return; // ignore
         final int len = msg.msg.length();
         dst.lastMessage = msg.msg.substring(0, len < dst.charBudget? len : dst.charBudget);
@@ -364,6 +363,7 @@ public class CreatePartyActivity extends AppCompatActivity {
     public static final int MSG_SILENT_DEVICE_COUNT = 2;
     public static final int MSG_SOCKET_DEAD = 3;
     public static final int MSG_PEER_MESSAGE_UPDATED = 4;
+    public static final int MSG_CHARACTER_DEFINITION = 5;
 
 
     /** Compared to JoinGroupActivity.GroupListAdapter this is a bit different. Why?
@@ -468,16 +468,39 @@ public class CreatePartyActivity extends AppCompatActivity {
     private void kickDevice(final MessageChannel device) {
         AlertDialog.Builder build = new AlertDialog.Builder(this);
         build.setTitle(R.string.kickDevice_title)
-            .setMessage(R.string.kickDevice_msg)
-            .setPositiveButton(R.string.kickDevice_positive, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if(which == AlertDialog.BUTTON_POSITIVE) {
-                        gathering.kick(device);
-                        group.remove(get(device));
-                        groupListAdapter.notifyDataSetChanged();
+                .setMessage(R.string.kickDevice_msg)
+                .setPositiveButton(R.string.kickDevice_positive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == AlertDialog.BUTTON_POSITIVE) {
+                            gathering.kick(device);
+                            group.remove(get(device));
+                            groupListAdapter.notifyDataSetChanged();
+                        }
                     }
-                }
-            }).show();
+                }).show();
+    }
+
+    public void createGroup(View button) {
+        for(int clear = 0; clear < group.size(); clear++) {
+            if(!group.elementAt(clear).groupMember) {
+                group.remove(clear);
+                clear--;
+            }
+        }
+        MessageChannel[] good = new MessageChannel[group.size()];
+        for(int cp = 0; cp < group.size(); cp++) good[cp] = group.elementAt(cp).source;
+        try {
+            gathering.promoteTalking(good, MSG_SOCKET_DEAD, MSG_CHARACTER_DEFINITION);
+        } catch (IOException e) {
+            // Sockets couldn't be released. It doesn't matter: I'm not following those guys.
+        }
+
+        // Now boring stuff, all the UI so far must go.
+        int[] gone = new int[] {
+                R.id.progressBar, R.id.txt_connectedDeviceCounts, R.id.txt_talkingDeviceCounts,
+                R.id.groupList, R.id.btn_closeGroup, R.id.txt_FYI_port, R.id.txt_scanning
+        };
+        for(int id : gone) findViewById(id).setVisibility(View.GONE);
     }
 }

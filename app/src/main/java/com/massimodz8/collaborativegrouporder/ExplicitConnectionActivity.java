@@ -97,7 +97,11 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(helper != null) helper.shutdown();
+        if(helper != null) try {
+            helper.shutdown();
+        } catch (IOException e) {
+            // urhm... nothing? We tried.
+        }
     }
 
     public void startExplicitConnection(View triggerer) {
@@ -114,7 +118,13 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             return;
         }
         viewVisibility(false);
-        if(helper != null) helper.shutdown(); // one at a time
+        if(helper != null) {
+            try {
+                helper.shutdown(); // one at a time
+            } catch (IOException e) {
+                // uhm...
+            }
+        }
         new AsyncTask<Void, Void, MessageChannel>() {
             @Override
             protected MessageChannel doInBackground(Void... params) {

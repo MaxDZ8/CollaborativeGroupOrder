@@ -53,26 +53,33 @@ public abstract class Pumper<ClientInfo extends Client> {
         newComer.sleeper.start();
     }
 
-    public synchronized void remove(MessageChannel c, boolean leaking) throws IOException {
+    public synchronized void remove(MessageChannel c) throws IOException {
         for(int i = 0; i < clients.size(); i++) {
             Managed el = clients.elementAt(i);
             if(el.smart.pipe == c) {
-                el.shutdown(leaking);
+                el.shutdown();
                 clients.remove(i--);
                 break;
             }
         }
     }
 
-    public void removeClearing(MessageChannel c) {
-        try {
-            remove(c, false);
-        } catch (IOException e) {
-            try {
-                remove(c, true);
-            } catch (IOException e1) {
-                // impossible, just suppress
+    public void leak(MessageChannel leak) {
+        for(int i = 0; i < clients.size(); i++) {
+            Managed el = clients.elementAt(i);
+            if(el.smart.pipe == leak) {
+                el.leak();
+                clients.remove(i--);
+                break;
             }
+        }
+    }
+
+    public void silentShutdown(MessageChannel c) {
+        try {
+            remove(c);
+        } catch (IOException e) {
+            leak(c);
         }
     }
 
@@ -96,9 +103,14 @@ public abstract class Pumper<ClientInfo extends Client> {
             this.smart = smart;
         }
 
-        public void shutdown(boolean leakSocket) {
+        public void leak() {
+            sleeper.interrupt();
+            smart.leak();
+        }
+
+        public void shutdown() throws IOException {
             sleeper.interrupt(); // we don't need this inputBuffer any case, going to another server.
-            smart.shutdown(leakSocket);
+            smart.shutdown();
         }
     }
     private final Vector<Managed> clients = new Vector<>();
@@ -132,26 +144,17 @@ public abstract class Pumper<ClientInfo extends Client> {
                     me.quitError = e;
                 }
             }
-            try {
-                remove(me.smart.pipe, false);
-            } catch (IOException e) {
-                // Will hopefully never happen. Get the rid of it without releasing anything.
-                try {
-                    remove(me.smart.pipe, true);
-                } catch (IOException e1) {
-                    // WTF?? We're fucked. Not really possible.
-                }
-            }
+            silentShutdown(me.smart.pipe);
             if(!silence) quitting(me.smart, me.quitError);
         }
     }
 
     private volatile boolean silence = false;
 
-    public void shutdown() {
+    public void shutdown() throws IOException {
         silence = true;
         synchronized(clients) {
-            for(Managed c : clients) c.shutdown(false);
+            for(Managed c : clients) c.shutdown();
             clients.clear();
         }
     }

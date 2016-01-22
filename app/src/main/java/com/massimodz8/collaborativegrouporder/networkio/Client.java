@@ -17,12 +17,6 @@ public class Client {
         this.pipe = client;
     }
 
-    public void shutdown(boolean leakSocket) {
-        if (!leakSocket) {
-            try {
-                pipe.socket.close();
-            } catch (IOException e) {
-            } // uhm... what?
-        }
-    }
+    public void shutdown() throws IOException { pipe.socket.close(); }
+    public void leak() { }
 }
