@@ -58,7 +58,7 @@ public abstract class Pumper<ClientInfo extends Client> {
             Managed el = clients.elementAt(i);
             if(el.smart.pipe == c) {
                 el.shutdown(leaking);
-                clients.remove(i);
+                clients.remove(i--);
                 break;
             }
         }
@@ -66,10 +66,10 @@ public abstract class Pumper<ClientInfo extends Client> {
 
     public void removeClearing(MessageChannel c) {
         try {
-            remove(c, true);
+            remove(c, false);
         } catch (IOException e) {
             try {
-                remove(c, false);
+                remove(c, true);
             } catch (IOException e1) {
                 // impossible, just suppress
             }

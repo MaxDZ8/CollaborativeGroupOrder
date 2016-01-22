@@ -28,6 +28,12 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
         landing.close();
     }
 
+    public void kick(MessageChannel device) {
+        if(forming != null) forming.removeClearing(device);
+        if(talking != null) talking.removeClearing(device);
+        if(silent != null) silent.removeClearing(device);
+    }
+
 
     public static class ServiceRegistrationResult {
         public ServiceRegistrationResult(String netName) {

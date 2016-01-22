@@ -74,4 +74,8 @@
     <string name="saySomethingToServer_emptyForbidden">Empty messages are forbidden.</string>
     <string name="saySomethingToServer_tooLong">Message too long. It might be displayed partially or not at all. Go back and fit the given budget.</string>
     <string name="card_group_lengthMaxDivisor"> / </string>
+    <string name="kickDevice_title">Kick device?</string>
+    <string name="kickDevice_msg">This device connection will be terminated. The device can still attempt to join again, this is just a temporary ban.</string>
+    <string name="kickDevice_positive">Kick away</string>
+    <string name="card_joining_device_groupMemberCheck">Group member!</string>
 </resources>

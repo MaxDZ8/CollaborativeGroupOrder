@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
 import android.os.Handler;
 import android.os.Message;
@@ -375,6 +376,7 @@ public class CreatePartyActivity extends AppCompatActivity {
             public TextView msg;
             public CheckBox accepted;
             MessageChannel key;
+            final Typeface original;
 
             public DeviceViewHolder(View itemView) {
                 super(itemView);
@@ -382,6 +384,7 @@ public class CreatePartyActivity extends AppCompatActivity {
                 accepted = (CheckBox)itemView.findViewById(R.id.card_joiningDevice_accepted);
                 itemView.findViewById(R.id.card_joiningDevice_kick).setOnClickListener(this);
                 accepted.setOnCheckedChangeListener(this);
+                original = accepted.getTypeface();
             }
 
             @Override
@@ -391,8 +394,23 @@ public class CreatePartyActivity extends AppCompatActivity {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                final int res = isChecked? R.string.card_joining_device_groupMemberCheck : R.string.joiningDeviceHello_acceptedCheckbox_nope;
+                final int weight = isChecked? Typeface.BOLD : Typeface.NORMAL;
+                accepted.setText(res);
+                accepted.setTypeface(original, weight);
                 setGroupMember(key, isChecked);
             }
+        }
+
+        @Override
+        public long getItemId(int position) {
+            int good = 0;
+            for(DeviceStatus d : group) {
+                if(d.lastMessage == null) continue;
+                if(good == position) return d.source.unique;
+                good++;
+            }
+            return RecyclerView.NO_ID;
         }
 
         @Override
@@ -432,13 +450,29 @@ public class CreatePartyActivity extends AppCompatActivity {
     }
 
     private void setGroupMember(MessageChannel key, boolean isChecked) {
-
+        DeviceStatus dev = get(key);
+        if(dev == null) return; // impossible
+        dev.groupMember = isChecked;
+        int count = 0;
+        for(DeviceStatus d : group) {
+            if(d.groupMember) count++;
+        }
+        findViewById(R.id.btn_closeGroup).setEnabled(count != 0);
     }
 
-    private void kickDevice(MessageChannel device) {
+    private void kickDevice(final MessageChannel device) {
         AlertDialog.Builder build = new AlertDialog.Builder(this);
-        build.setTitle("TODO: STUB")
-                .setMessage("Kicking device is not currently implemented.");
-        build.show();
+        build.setTitle(R.string.kickDevice_title)
+            .setMessage(R.string.kickDevice_msg)
+            .setPositiveButton(R.string.kickDevice_positive, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if(which == AlertDialog.BUTTON_POSITIVE) {
+                        gathering.kick(device);
+                        group.remove(get(device));
+                        groupListAdapter.notifyDataSetChanged();
+                    }
+                }
+            }).show();
     }
 }
