@@ -78,4 +78,6 @@
     <string name="kickDevice_msg">This device connection will be terminated. The device can still attempt to join again, this is just a temporary ban.</string>
     <string name="kickDevice_positive">Kick away</string>
     <string name="card_joining_device_groupMemberCheck">Group member!</string>
+    <string name="joinForming_earlyDisconnect">Disconnected from a party before I could identify it.</string>
+    <string name="joinForming_groupLostReport">Disconnected from group %1$s (hosted at %2$s).</string>
 </resources>

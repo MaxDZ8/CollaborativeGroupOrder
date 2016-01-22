@@ -3,7 +3,6 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
 import android.os.AsyncTask;
@@ -71,16 +70,24 @@ public class JoinGroupActivity extends AppCompatActivity {
                         groupListAdapter.notifyDataSetChanged();
                         break;
                     }
-                    case MSG_DISCONNECTED_WHILE_NEGOTIATING: {
-                        // Uhm, is this a problem? Do the user cares?
-                        // For the time being, just drop the thing.
-                        break;
-                    }
-                    case MSG_GROUP_GONE: {
-                        final MessageChannel c = (MessageChannel)msg.obj;
-                                AlertDialog.Builder build = new AlertDialog.Builder(self);
-                                build.setMessage("group is gone!"); /// TODO! Add behaviour for group disconnect.
-                                build.show();
+                    case MSG_SOCKET_DISCONNECTED: {
+                        final Events.SocketDisconnected real = (Events.SocketDisconnected)msg.obj;
+                        final GroupState gone = getByChannel(real.which);
+                        if(gone == null) { // can happen if something is an "early disconnect" before we get GroupInfo --> MSG_GROUP_FOUND
+                            new AlertDialog.Builder(self)
+                                    .setMessage(R.string.joinForming_earlyDisconnect)
+                                    .show();
+                            break;
+                        }
+                        candidates.remove(gone);
+                        String readme = getString(R.string.joinForming_groupLostReport);
+                        String addr = gone.channel.socket.getInetAddress().toString();
+                        if(addr.charAt(0) == '/') addr = addr.substring(1);
+                        readme = String.format(readme, gone.group.name, addr);
+                        new AlertDialog.Builder(self)
+                                .setMessage(readme)
+                                .show();
+                        self.groupListAdapter.notifyDataSetChanged();
                         break;
                     }
                     case MSG_CHAR_BUDGET: {
@@ -96,7 +103,7 @@ public class JoinGroupActivity extends AppCompatActivity {
                 return false;
             }
         });
-        helper = new GroupJoining(guiThreadHandler, true, nsd, MSG_DISCONNECTED_WHILE_NEGOTIATING, MSG_GROUP_FOUND, MSG_GROUP_GONE, MSG_CHAR_BUDGET) {
+        helper = new GroupJoining(guiThreadHandler, true, nsd, MSG_SOCKET_DISCONNECTED, MSG_GROUP_FOUND, MSG_CHAR_BUDGET) {
             @Override
             protected void onDiscoveryStart(ServiceDiscoveryStartStop status) {
                 if(status.successful) {
@@ -120,9 +127,8 @@ public class JoinGroupActivity extends AppCompatActivity {
         };
     }
 
-    public static final int MSG_DISCONNECTED_WHILE_NEGOTIATING = 5;
+    public static final int MSG_SOCKET_DISCONNECTED = 5;
     public static final int MSG_GROUP_FOUND = 6;
-    public static final int MSG_GROUP_GONE = 7;
     public static final int MSG_CHAR_BUDGET = 8;
 
 

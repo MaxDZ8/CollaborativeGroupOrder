@@ -50,13 +50,13 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
     }
     private PlaceHolder shaken;
 
-    public GroupJoining(Handler handler, boolean groupBeingFormed, NsdManager nsd, int earlyDisconnect, final int foundGroup, final int lostGroup, final int charBudget) {
+    public GroupJoining(Handler handler, boolean groupBeingFormed, NsdManager nsd, int disconnected, final int foundGroup, final int charBudget) {
         this.handler = handler;
         this.groupBeingFormed = groupBeingFormed;
         this.nsd = nsd;
         nsd.discoverServices(GroupForming.SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, this);
         final GroupJoining self = this;
-        helper = new InitialConnect(handler, earlyDisconnect, groupBeingFormed) {
+        helper = new InitialConnect(handler, disconnected, groupBeingFormed) {
             @Override
             public void onGroupFound(MessageChannel c, ConnectedGroup group) {
                 message(foundGroup, new JoinGroupActivity.GroupConnection(c, group));
@@ -67,7 +67,7 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
                 message(charBudget, new Events.CharBudget(c, newBudget, delay));
             }
         };
-        shaken = new PlaceHolder(lostGroup);
+        shaken = new PlaceHolder(disconnected);
     }
 
     public void shutdown() {
