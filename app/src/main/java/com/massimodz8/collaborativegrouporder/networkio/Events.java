@@ -40,8 +40,13 @@ public interface Events {
         }
     }
 
-    class PlayingCharacterDefinition {
-        String name;
-        int initiativeBonus;
+    class ChannelMessage<Type> {
+        public final MessageChannel origin;
+        public final Type payload;
+
+        public ChannelMessage(MessageChannel origin, Type payload) {
+            this.origin = origin;
+            this.payload = payload;
+        }
     }
 }

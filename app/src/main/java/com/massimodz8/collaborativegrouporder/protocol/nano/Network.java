@@ -269,6 +269,9 @@ public interface Network {
     // optional uint32 period = 2;
     public int period;
 
+    // optional uint32 charSpecific = 3;
+    public int charSpecific;
+
     public CharBudget() {
       clear();
     }
@@ -276,6 +279,7 @@ public interface Network {
     public CharBudget clear() {
       total = 0;
       period = 0;
+      charSpecific = 0;
       cachedSize = -1;
       return this;
     }
@@ -288,6 +292,9 @@ public interface Network {
       }
       if (this.period != 0) {
         output.writeUInt32(2, this.period);
+      }
+      if (this.charSpecific != 0) {
+        output.writeUInt32(3, this.charSpecific);
       }
       super.writeTo(output);
     }
@@ -302,6 +309,10 @@ public interface Network {
       if (this.period != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(2, this.period);
+      }
+      if (this.charSpecific != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(3, this.charSpecific);
       }
       return size;
     }
@@ -327,6 +338,10 @@ public interface Network {
           }
           case 16: {
             this.period = input.readUInt32();
+            break;
+          }
+          case 24: {
+            this.charSpecific = input.readUInt32();
             break;
           }
         }
@@ -365,12 +380,16 @@ public interface Network {
     // optional string text = 1;
     public java.lang.String text;
 
+    // optional uint32 charSpecific = 2;
+    public int charSpecific;
+
     public PeerMessage() {
       clear();
     }
 
     public PeerMessage clear() {
       text = "";
+      charSpecific = 0;
       cachedSize = -1;
       return this;
     }
@@ -381,6 +400,9 @@ public interface Network {
       if (!this.text.equals("")) {
         output.writeString(1, this.text);
       }
+      if (this.charSpecific != 0) {
+        output.writeUInt32(2, this.charSpecific);
+      }
       super.writeTo(output);
     }
 
@@ -390,6 +412,10 @@ public interface Network {
       if (!this.text.equals("")) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeStringSize(1, this.text);
+      }
+      if (this.charSpecific != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(2, this.charSpecific);
       }
       return size;
     }
@@ -411,6 +437,10 @@ public interface Network {
           }
           case 10: {
             this.text = input.readString();
+            break;
+          }
+          case 16: {
+            this.charSpecific = input.readUInt32();
             break;
           }
         }
@@ -446,15 +476,23 @@ public interface Network {
       return _emptyArray;
     }
 
-    // optional string salt = 1;
-    public java.lang.String salt;
+    // optional bytes salt = 1;
+    public byte[] salt;
+
+    // optional string peerKey = 2;
+    public java.lang.String peerKey;
+
+    // optional bool accepted = 3;
+    public boolean accepted;
 
     public GroupFormed() {
       clear();
     }
 
     public GroupFormed clear() {
-      salt = "";
+      salt = com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES;
+      peerKey = "";
+      accepted = false;
       cachedSize = -1;
       return this;
     }
@@ -462,8 +500,14 @@ public interface Network {
     @Override
     public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
         throws java.io.IOException {
-      if (!this.salt.equals("")) {
-        output.writeString(1, this.salt);
+      if (!java.util.Arrays.equals(this.salt, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
+        output.writeBytes(1, this.salt);
+      }
+      if (!this.peerKey.equals("")) {
+        output.writeString(2, this.peerKey);
+      }
+      if (this.accepted != false) {
+        output.writeBool(3, this.accepted);
       }
       super.writeTo(output);
     }
@@ -471,9 +515,17 @@ public interface Network {
     @Override
     protected int computeSerializedSize() {
       int size = super.computeSerializedSize();
-      if (!this.salt.equals("")) {
+      if (!java.util.Arrays.equals(this.salt, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeStringSize(1, this.salt);
+            .computeBytesSize(1, this.salt);
+      }
+      if (!this.peerKey.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(2, this.peerKey);
+      }
+      if (this.accepted != false) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeBoolSize(3, this.accepted);
       }
       return size;
     }
@@ -494,7 +546,15 @@ public interface Network {
             break;
           }
           case 10: {
-            this.salt = input.readString();
+            this.salt = input.readBytes();
+            break;
+          }
+          case 18: {
+            this.peerKey = input.readString();
+            break;
+          }
+          case 24: {
+            this.accepted = input.readBool();
             break;
           }
         }
@@ -536,6 +596,15 @@ public interface Network {
     // optional uint32 initiativeBonus = 2;
     public int initiativeBonus;
 
+    // optional uint32 healthPoints = 3;
+    public int healthPoints;
+
+    // optional uint32 experience = 4;
+    public int experience;
+
+    // optional string peerKey = 5;
+    public java.lang.String peerKey;
+
     public PlayingCharacterDefinition() {
       clear();
     }
@@ -543,6 +612,9 @@ public interface Network {
     public PlayingCharacterDefinition clear() {
       name = "";
       initiativeBonus = 0;
+      healthPoints = 0;
+      experience = 0;
+      peerKey = "";
       cachedSize = -1;
       return this;
     }
@@ -555,6 +627,15 @@ public interface Network {
       }
       if (this.initiativeBonus != 0) {
         output.writeUInt32(2, this.initiativeBonus);
+      }
+      if (this.healthPoints != 0) {
+        output.writeUInt32(3, this.healthPoints);
+      }
+      if (this.experience != 0) {
+        output.writeUInt32(4, this.experience);
+      }
+      if (!this.peerKey.equals("")) {
+        output.writeString(5, this.peerKey);
       }
       super.writeTo(output);
     }
@@ -569,6 +650,18 @@ public interface Network {
       if (this.initiativeBonus != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(2, this.initiativeBonus);
+      }
+      if (this.healthPoints != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(3, this.healthPoints);
+      }
+      if (this.experience != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(4, this.experience);
+      }
+      if (!this.peerKey.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(5, this.peerKey);
       }
       return size;
     }
@@ -594,6 +687,18 @@ public interface Network {
           }
           case 16: {
             this.initiativeBonus = input.readUInt32();
+            break;
+          }
+          case 24: {
+            this.healthPoints = input.readUInt32();
+            break;
+          }
+          case 32: {
+            this.experience = input.readUInt32();
+            break;
+          }
+          case 42: {
+            this.peerKey = input.readString();
             break;
           }
         }

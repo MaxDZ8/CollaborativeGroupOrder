@@ -26,6 +26,7 @@ message GroupInfo {
 message CharBudget {
     uint32 total = 1;
     uint32 period = 2; // in milliseconds, clients are suggested to wait slightly more before re-enabling messaging
+	uint32 charSpecific = 3; // when this is != 0 then this is index+1 of the character on device gaining the budget.
 }
 
 
@@ -35,19 +36,27 @@ message CharBudget {
 // The first non-empty string sent causes the server to promote the client to Identified phase.
 message PeerMessage {
     string text = 1;
+	uint32 charSpecific = 2; // when this is != 0 then this is index+1 of the character on device gaining the budget.
 }
 
 
 // Server to client. This would be better sent over cryptographic security channels as the data is to be hashed.
 message GroupFormed {
-    string salt = 1; // Required to be not empty. Concatenate salt to group name and hash to obtain a device key for later joining the group.
+    bytes salt = 1; // Concatenate salt to group name and hash to obtain a device key for later joining the group.
+	
+	// This message is also re-used to confirm characters to peers.
+	string peerKey = 2; // key corresponding to character definition
+	bool accepted = 3; // false: server kicked character, start from scratch. True: server recorded character, lock it up.
 }
 
 
-// Client to server.
+// Client <-> server.
 message PlayingCharacterDefinition {
     string name = 1;
     uint32 initiativeBonus = 2;
+	uint32 healthPoints = 3;
+	uint32 experience = 4;
+	string peerKey = 5; // When client sends a new proposal to server, this will be used to identify the PC relative to the peer, must be unique. Reusing the same key re-defines a character.
 }
 
 

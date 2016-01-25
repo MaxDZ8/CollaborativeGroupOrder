@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
@@ -33,6 +34,9 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -43,7 +47,7 @@ We publish a service and listen to network to find users joining.
  * he has to wait for users to join and I can push to him whatever I want.  */
 public class CreatePartyActivity extends AppCompatActivity {
     private GroupForming gathering;
-    private RecyclerView.Adapter groupListAdapter;
+    private RecyclerView.Adapter groupListAdapter, characterListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +94,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         }
         view.setVisibility(View.GONE);
         findViewById(R.id.txt_privacyWarning).setVisibility(View.GONE);
+        building = new Forming(gname);
 
         NsdManager nsd = (NsdManager)getSystemService(Context.NSD_SERVICE);
         if(nsd == null) {
@@ -215,17 +220,91 @@ public class CreatePartyActivity extends AppCompatActivity {
                 case MSG_SERVICE_REGISTRATION_COMPLETE: target.onNSRegistrationComplete((GroupForming.ServiceRegistrationResult) msg.obj); break;
                 case MSG_SILENT_DEVICE_COUNT: target.onSilentCountChanged(); break;
                 case MSG_SOCKET_DEAD: target.onSocketDead((Events.SocketDisconnected) msg.obj); break;
-                case MSG_PEER_MESSAGE_UPDATED: target.messageUpdate((Events.PeerMessage) msg.obj);
+                case MSG_PEER_MESSAGE_UPDATED: target.messageUpdate((Events.PeerMessage) msg.obj); break;
+                case MSG_CHARACTER_DEFINITION: target.characterUpdate((Events.ChannelMessage<Network.PlayingCharacterDefinition>)msg.obj); break;
             }
         }
     }
 
+    private void characterUpdate(final Events.ChannelMessage<Network.PlayingCharacterDefinition> obj) {
+        final String badThing = good(obj.payload);
+        if(badThing != null) {
+            final CreatePartyActivity self = this;
+            new AsyncTask<Void, Void, Exception>() {
+                @Override
+                protected Exception doInBackground(Void... params) {
+                    Network.GroupFormed reject = new Network.GroupFormed();
+                    reject.peerKey = obj.payload.peerKey;
+                    try {
+                        obj.origin.writeSync(ProtoBufferEnum.GROUP_FORMED, reject);
+                    } catch (IOException e) {
+                        return e;
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Exception e) {
+                    if(e == null) return;
+                    new AlertDialog.Builder(self)
+                            .setMessage(e.getLocalizedMessage())
+                            .show();
+                }
+            }.execute();
+            return;
+        }
+        DeviceStatus owner = building.get(obj.origin);
+        if(owner == null) return; // must have been pushed out of group and trying to make something odd.
+        // Can this even happen? It's highly unlikely (a message must be sent by client before we disconnect it
+        // but after it received a group forming.
+        // That's not very likely to happen as disconnects are sent before we even promote message channels
+        // but due to the async nature of things I am defensive.
+        DeviceStatus.PlayingCharacter character = owner.getCharByKey(obj.payload.peerKey);
+        if(character == null) {
+            character = new DeviceStatus.PlayingCharacter(obj.payload.peerKey);
+            character.experience = obj.payload.experience;
+            character.initiativeBonus = obj.payload.initiativeBonus;
+            character.name = obj.payload.name;
+            owner.chars.add(character);
+            characterListAdapter.notifyDataSetChanged();
+            return;
+        }
+        if(character.status == character.STATUS_CONFIRMED) {
+            /*
+            Cannot happen in current client implementation
+            What do we do here? We must restart validation... but the protocol does not support anything like this at the time,
+            especially because a confirm/reject message could already be flying... So what do I do?
+            I consider the client malicious and ignore the thing. He will have a surprise when the group goes adventure later.
+            */
+            return;
+        }
+        /*
+        If I am here then STATUS_RECEIVED, so I just update the thing.
+        OFC there's the chance a player sends two messages in rapid succession (impossible in current client) resulting in the second spec
+        being accepted instead of the first if the latter is received while the DM is hitting the accept button.
+        This is borderline malicious, the players will have to sort it out when going adventure.
+        However, for the sake of protocol flexibility, I currently allow that.
+        */
+        character.experience = obj.payload.experience;
+        character.initiativeBonus = obj.payload.initiativeBonus;
+        character.name = obj.payload.name;
+        owner.chars.add(character);
+        characterListAdapter.notifyDataSetChanged();
+    }
+
+    private static String good(Network.PlayingCharacterDefinition def) {
+        if(def.experience < 0) return "Bad character: experience must be positive.";
+        if(def.healthPoints < 0) return "Bad character: health points must be positive.";
+        if(def.name.isEmpty()) return "Bad character: must have a name.";
+        return null;
+    }
+
     private void messageUpdate(Events.PeerMessage msg) {
-        DeviceStatus dst = get(msg.which);
+        DeviceStatus dst = building.get(msg.which);
         if(dst == null) {
             dst = new DeviceStatus(msg.which);
             dst.charBudget = GroupForming.INITIAL_CHAR_BUDGET;
-            group.add(dst);
+            building.group.add(dst);
         }
         gathering.promoteSilent(dst.source, MSG_SOCKET_DEAD, MSG_PEER_MESSAGE_UPDATED);
         if(dst.charBudget < 1) return; // ignore
@@ -249,41 +328,68 @@ public class CreatePartyActivity extends AppCompatActivity {
     static final int CHAR_BUDGET_DELAY_MS_TALKING = 2000;
     static final int CHAR_BUDGET_DELAY_MS_GROUP_MEMBER = 500;
 
-    static class PlayingCharacter {
-        String name;
-        int initiativeBonus;
-    }
-
     static class DeviceStatus {
         public final MessageChannel source;
         public String lastMessage; // if null still not talking
         public int charBudget;
         public boolean groupMember;
+
+        static class PlayingCharacter extends FormedGroup.PlayingCharacter {
+            static final int STATUS_RECEIVED = 0;
+            static final int STATUS_CONFIRMED = 1;
+            static final int STATUS_REJECTED = 2;
+
+            int status = STATUS_RECEIVED;
+
+            public PlayingCharacter(String key) {
+                super(key);
+            }
+        };
         Vector<PlayingCharacter> chars = new Vector<>(); // if contains something we have been promoted
         String names() {
             String names = "";
-            for(PlayingCharacter pc : chars) names += (names.length() != 0? ", " : "") + pc.name;
+            for(FormedGroup.PlayingCharacter pc : chars) names += (names.length() != 0? ", " : "") + pc.name;
             return names;
         }
 
         public DeviceStatus(MessageChannel source) {
             this.source = source;
         }
-    }
 
-    /// This must be a vector, not a map because we need the ids to be in a predictable relationship
-    /// with what's being displayed by the talking device list, which indices this by index. MOFO
-    Vector<DeviceStatus> group = new Vector<>();
-
-    private DeviceStatus get(MessageChannel c) {
-        for(DeviceStatus d : group) {
-            if(d.source == c) return d;
+        public PlayingCharacter getCharByKey(String key) {
+            for(PlayingCharacter pc : chars) {
+                if(pc.status == PlayingCharacter.STATUS_REJECTED) continue;
+                if(pc.key == key) return pc;
+            }
+            return null;
         }
-        return null; // impossible most of the time
     }
+
+
+    static class Forming {
+        public Forming(String presentationName) {
+            this.presentationName = presentationName;
+        }
+
+        public final String presentationName;
+        public volatile byte[] unique;
+        /// This must be a vector, not a map because we need the ids to be in a predictable relationship
+        /// with what's being displayed by the talking device list, which indices this by index. MOFO
+        Vector<DeviceStatus> group = new Vector<>();
+
+        public DeviceStatus get(MessageChannel c) {
+            for(DeviceStatus d : group) {
+                if(d.source == c) return d;
+            }
+            return null; // impossible most of the time
+        }
+    }
+    Forming building;
+
+
 
     private void onSocketDead(Events.SocketDisconnected obj) {
-        DeviceStatus dev = get(obj.which);
+        DeviceStatus dev = building.get(obj.which);
         if(dev == null) {
             /* devices are added to list processed by get(MessageChannel) only after they produced a message as well so this is silent.
             Unfortunately, because of the way our stuff is mangled in a modular fashion we won't get a MSG_SILENT_DEVICE_COUNT (because the Pumper
@@ -306,7 +412,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         }
         // Else an unidentified has gone away. Not much of a problem.
 
-        group.remove(dev);
+        building.group.remove(dev);
         if(dev.chars.isEmpty()) {
             groupListAdapter.notifyDataSetChanged();
             onTalkingCountChanged();
@@ -410,7 +516,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         @Override
         public long getItemId(int position) {
             int good = 0;
-            for(DeviceStatus d : group) {
+            for(DeviceStatus d : building.group) {
                 if(d.lastMessage == null) continue;
                 if(good == position) return d.source.unique;
                 good++;
@@ -429,7 +535,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         public void onBindViewHolder(DeviceViewHolder holder, int position) {
             int count = 0;
             DeviceStatus dev = null;
-            for(DeviceStatus d : group) {
+            for(DeviceStatus d : building.group) {
                 if(d.lastMessage != null) {
                     if(count == position) {
                         dev = d;
@@ -447,7 +553,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             int count = 0;
-            for(DeviceStatus d : group) {
+            for(DeviceStatus d : building.group) {
                 if(d.lastMessage != null) count++;
             }
             return count;
@@ -455,11 +561,11 @@ public class CreatePartyActivity extends AppCompatActivity {
     }
 
     private void setGroupMember(MessageChannel key, boolean isChecked) {
-        DeviceStatus dev = get(key);
+        DeviceStatus dev = building.get(key);
         if(dev == null) return; // impossible
         dev.groupMember = isChecked;
         int count = 0;
-        for(DeviceStatus d : group) {
+        for(DeviceStatus d : building.group) {
             if(d.groupMember) count++;
         }
         findViewById(R.id.btn_closeGroup).setEnabled(count != 0);
@@ -474,7 +580,7 @@ public class CreatePartyActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == AlertDialog.BUTTON_POSITIVE) {
                             gathering.kick(device);
-                            group.remove(get(device));
+                            building.group.remove(building.get(device));
                             groupListAdapter.notifyDataSetChanged();
                         }
                     }
@@ -482,14 +588,14 @@ public class CreatePartyActivity extends AppCompatActivity {
     }
 
     public void createGroup(View button) {
-        for(int clear = 0; clear < group.size(); clear++) {
-            if(!group.elementAt(clear).groupMember) {
-                group.remove(clear);
+        for(int clear = 0; clear < building.group.size(); clear++) {
+            if(!building.group.elementAt(clear).groupMember) {
+                building.group.remove(clear);
                 clear--;
             }
         }
-        MessageChannel[] good = new MessageChannel[group.size()];
-        for(int cp = 0; cp < group.size(); cp++) good[cp] = group.elementAt(cp).source;
+        MessageChannel[] good = new MessageChannel[building.group.size()];
+        for(int cp = 0; cp < building.group.size(); cp++) good[cp] = building.group.elementAt(cp).source;
         try {
             gathering.promoteTalking(good, MSG_SOCKET_DEAD, MSG_CHARACTER_DEFINITION);
         } catch (IOException e) {
@@ -502,5 +608,50 @@ public class CreatePartyActivity extends AppCompatActivity {
                 R.id.groupList, R.id.btn_closeGroup, R.id.txt_FYI_port, R.id.txt_scanning
         };
         for(int id : gone) findViewById(id).setVisibility(View.GONE);
+
+        final CreatePartyActivity self = this;
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+                final int groupCount = 0;
+                /// TODO: Let's load the group list and count how many groups we have.
+                final Date creation = new Date();
+                final String message = String.format("[%1$d] %2$s", groupCount, creation.toString());
+                MessageDigest hasher = null;
+                try {
+                    hasher = MessageDigest.getInstance("SHA-256");
+                } catch (NoSuchAlgorithmException e) {
+                    return e;
+                }
+
+                Network.GroupFormed forming = new Network.GroupFormed();
+                forming.salt = hasher.digest(message.getBytes());
+                building.unique = forming.salt;
+                int failures = 0;
+                for(DeviceStatus dev : building.group) {
+                    try {
+                        dev.source.writeSync(ProtoBufferEnum.GROUP_FORMED, forming);
+                    } catch (IOException e) {
+                        failures++;
+                    }
+                }
+                if(failures != 0) return new Exception(String.format(getString(R.string.atLeastOneFailedWriteSync)));
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Exception e) {
+                if(e != null) {
+                    new AlertDialog.Builder(self)
+                            .setMessage(String.format(getString(R.string.createPartyActivity_failedPCDefinitionSwitch), e.toString()))
+                            .show();
+                    return;
+                }
+                findViewById(R.id.pcList).setVisibility(View.VISIBLE);
+                final String localized = getString(R.string.createPartyActivity_phaseDefiningCharacters);
+                final ActionBar actionBar = self.getSupportActionBar();
+                if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", building.presentationName, localized));
+            }
+        }.execute();
     }
 }

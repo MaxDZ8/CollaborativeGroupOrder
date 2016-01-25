@@ -80,4 +80,18 @@
     <string name="card_joining_device_groupMemberCheck">Group member!</string>
     <string name="joinForming_earlyDisconnect">Disconnected from a party before I could identify it.</string>
     <string name="joinForming_groupLostReport">Disconnected from group %1$s (hosted at %2$s).</string>
+    <string name="createParty_charTableHeader_charName">Name</string>
+    <string name="createParty_charTableHeader_initBonus">Initiative</string>
+    <string name="createParty_charTableHeader_createdBy">Creator</string>
+    <string name="card_joiningCharacter_nameHint">Character name</string>
+    <string name="card_joiningCharacter_healthPoints">Health points</string>
+    <string name="card_joiningCharacter_initBonus">Initiative bonus</string>
+    <string name="card_joiningCharacter_sendButton">Send</string>
+    <string name="atLeastOneFailedWriteSync">At least one failed .writeSync calls.</string>
+    <string name="createPartyActivity_failedPCDefinitionSwitch">Could not switch to playing character definition mode. I suggest starting from scratch. Details:\n%1$s</string>
+    <string name="card_joiningCharacter_experience">Experience</string>
+    <string name="createPartyActivity_phaseDefiningCharacters">Defining characters</string>
+    <string name="card_joiningCharacter_accepted">Accepted!</string>
+    <string name="card_joiningCharacter_refuseButton">Refuse</string>
+    <string name="card_joiningCharacter_acceptButton">Accept</string>
 </resources>
