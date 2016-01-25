@@ -2,7 +2,9 @@ package com.massimodz8.collaborativegrouporder.networkio.formingServer;
 
 import android.os.Handler;
 
+import com.massimodz8.collaborativegrouporder.PlayingCharacter;
 import com.massimodz8.collaborativegrouporder.networkio.Client;
+import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
@@ -31,7 +33,7 @@ public class PCDefiningDevices extends Pumper<Client> {
 
             @Override
             public void mangle(Client from, Network.PlayingCharacterDefinition msg) throws IOException {
-                message(definedCharacter, msg);
+                message(definedCharacter, new Events.CharacterDefinition(from.pipe, msg));
             }
         });
     }

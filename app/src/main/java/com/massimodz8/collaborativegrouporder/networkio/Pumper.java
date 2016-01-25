@@ -91,6 +91,12 @@ public abstract class Pumper<ClientInfo extends Client> {
         return false;
     }
 
+    public MessageChannel[] get() {
+        MessageChannel[] out = new MessageChannel[clients.size()];
+        for(int cp = 0; cp < clients.size(); cp++) out[cp] = clients.elementAt(cp).smart.pipe;
+        return out;
+    }
+
 
     protected abstract ClientInfo allocate(MessageChannel c);
 

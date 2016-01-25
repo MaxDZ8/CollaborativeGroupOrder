@@ -1,5 +1,7 @@
 package com.massimodz8.collaborativegrouporder.networkio;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+
 import java.net.Socket;
 
 /**
@@ -40,13 +42,36 @@ public interface Events {
         }
     }
 
-    class ChannelMessage<Type> {
-        public final MessageChannel origin;
-        public final Type payload;
 
-        public ChannelMessage(MessageChannel origin, Type payload) {
+    class GroupKey {
+        public final MessageChannel origin;
+        public final byte[] key;
+
+        public GroupKey(MessageChannel origin, byte[] key) {
             this.origin = origin;
-            this.payload = payload;
+            this.key = key;
+        }
+    }
+
+    class CharacterDefinition {
+        public CharacterDefinition(MessageChannel origin, Network.PlayingCharacterDefinition character) {
+            this.origin = origin;
+            this.character = character;
+        }
+
+        public final MessageChannel origin;
+        public final Network.PlayingCharacterDefinition character;
+    }
+
+    class CharacterAcceptStatus {
+        public final MessageChannel origin;
+        public final String key;
+        public final boolean accepted; // if false then rejected.
+
+        public CharacterAcceptStatus(MessageChannel origin, String key, boolean accepted) {
+            this.origin = origin;
+            this.key = key;
+            this.accepted = accepted;
         }
     }
 }

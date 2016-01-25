@@ -221,20 +221,20 @@ public class CreatePartyActivity extends AppCompatActivity {
                 case MSG_SILENT_DEVICE_COUNT: target.onSilentCountChanged(); break;
                 case MSG_SOCKET_DEAD: target.onSocketDead((Events.SocketDisconnected) msg.obj); break;
                 case MSG_PEER_MESSAGE_UPDATED: target.messageUpdate((Events.PeerMessage) msg.obj); break;
-                case MSG_CHARACTER_DEFINITION: target.characterUpdate((Events.ChannelMessage<Network.PlayingCharacterDefinition>)msg.obj); break;
+                case MSG_CHARACTER_DEFINITION: target.characterUpdate((Events.CharacterDefinition)msg.obj); break;
             }
         }
     }
 
-    private void characterUpdate(final Events.ChannelMessage<Network.PlayingCharacterDefinition> obj) {
-        final String badThing = good(obj.payload);
+    private void characterUpdate(final Events.CharacterDefinition obj) {
+        final String badThing = good(obj.character);
         if(badThing != null) {
             final CreatePartyActivity self = this;
             new AsyncTask<Void, Void, Exception>() {
                 @Override
                 protected Exception doInBackground(Void... params) {
                     Network.GroupFormed reject = new Network.GroupFormed();
-                    reject.peerKey = obj.payload.peerKey;
+                    reject.peerKey = obj.character.peerKey;
                     try {
                         obj.origin.writeSync(ProtoBufferEnum.GROUP_FORMED, reject);
                     } catch (IOException e) {
@@ -259,12 +259,12 @@ public class CreatePartyActivity extends AppCompatActivity {
         // but after it received a group forming.
         // That's not very likely to happen as disconnects are sent before we even promote message channels
         // but due to the async nature of things I am defensive.
-        DeviceStatus.PlayingCharacter character = owner.getCharByKey(obj.payload.peerKey);
+        DeviceStatus.PlayingCharacter character = owner.getCharByKey(obj.character.peerKey);
         if(character == null) {
-            character = new DeviceStatus.PlayingCharacter(obj.payload.peerKey);
-            character.experience = obj.payload.experience;
-            character.initiativeBonus = obj.payload.initiativeBonus;
-            character.name = obj.payload.name;
+            character = new DeviceStatus.PlayingCharacter(obj.character.peerKey);
+            character.experience = obj.character.experience;
+            character.initiativeBonus = obj.character.initiativeBonus;
+            character.name = obj.character.name;
             owner.chars.add(character);
             characterListAdapter.notifyDataSetChanged();
             return;
@@ -285,9 +285,9 @@ public class CreatePartyActivity extends AppCompatActivity {
         This is borderline malicious, the players will have to sort it out when going adventure.
         However, for the sake of protocol flexibility, I currently allow that.
         */
-        character.experience = obj.payload.experience;
-        character.initiativeBonus = obj.payload.initiativeBonus;
-        character.name = obj.payload.name;
+        character.experience = obj.character.experience;
+        character.initiativeBonus = obj.character.initiativeBonus;
+        character.name = obj.character.name;
         owner.chars.add(character);
         characterListAdapter.notifyDataSetChanged();
     }
@@ -648,7 +648,7 @@ public class CreatePartyActivity extends AppCompatActivity {
                     return;
                 }
                 findViewById(R.id.pcList).setVisibility(View.VISIBLE);
-                final String localized = getString(R.string.createPartyActivity_phaseDefiningCharacters);
+                final String localized = getString(R.string.phaseDefiningCharacters);
                 final ActionBar actionBar = self.getSupportActionBar();
                 if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", building.presentationName, localized));
             }

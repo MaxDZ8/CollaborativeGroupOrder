@@ -59,6 +59,6 @@ public abstract class InitialConnect extends Pumper<Client> {
         return new ConnectedGroup(recvd.version, recvd.name);
     }
 
-    public abstract void onGroupFound(MessageChannel c, ConnectedGroup group);
-    public abstract void onBudgetReceived(MessageChannel c, int newBudget, int delay);
+    protected abstract void onGroupFound(MessageChannel c, ConnectedGroup group);
+    protected abstract void onBudgetReceived(MessageChannel c, int newBudget, int delay);
 }

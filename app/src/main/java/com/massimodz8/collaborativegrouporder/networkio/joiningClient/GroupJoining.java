@@ -34,29 +34,17 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
     final Handler handler;
     final boolean groupBeingFormed;
     final NsdManager nsd;
-    InitialConnect helper;
+    GroupConnect helper;
     Map<NsdServiceInfo, MessageChannel> probing = new IdentityHashMap<>();
+    boolean nsdDeregister = true;
 
-    class PlaceHolder {
-        public final int lostGroup;
 
-        public PlaceHolder(int lostGroup) {
-            this.lostGroup = lostGroup;
-        }
-
-        public boolean yours(MessageChannel c ) { return false; }
-        public void removeCleaning(MessageChannel c ) {
-        }
-    }
-    private PlaceHolder shaken;
-
-    public GroupJoining(Handler handler, boolean groupBeingFormed, NsdManager nsd, int disconnected, final int foundGroup, final int charBudget) {
+    public GroupJoining(Handler handler, boolean groupBeingFormed, NsdManager nsd, int disconnected, final int foundGroup, final int charBudget, final int goPCDefinitionMode, final int pcAcceptance) {
         this.handler = handler;
         this.groupBeingFormed = groupBeingFormed;
         this.nsd = nsd;
         nsd.discoverServices(GroupForming.SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, this);
-        final GroupJoining self = this;
-        helper = new InitialConnect(handler, disconnected, groupBeingFormed) {
+        helper = new GroupConnect(handler, disconnected, groupBeingFormed) {
             @Override
             public void onGroupFound(MessageChannel c, ConnectedGroup group) {
                 message(foundGroup, new JoinGroupActivity.GroupConnection(c, group));
@@ -66,12 +54,21 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
             public void onBudgetReceived(MessageChannel c, int newBudget, int delay) {
                 message(charBudget, new Events.CharBudget(c, newBudget, delay));
             }
+
+            @Override
+            protected void onGroupFormed(MessageChannel c, byte[] salt) {
+                message(goPCDefinitionMode, new Events.GroupKey(c, salt));
+            }
+
+            @Override
+            protected void onPlayingCharacterReply(MessageChannel c, String peerKey, boolean accepted) {
+                message(pcAcceptance, new Events.CharacterAcceptStatus(c, peerKey, accepted));
+            }
         };
-        shaken = new PlaceHolder(disconnected);
     }
 
     public void shutdown() {
-        nsd.stopServiceDiscovery(this);
+        stopDiscovering();
     }
 
     protected abstract void onDiscoveryStart(ServiceDiscoveryStartStop status);
@@ -87,6 +84,25 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
         peer.writeSync(ProtoBufferEnum.HELLO, new Network.Hello());
         helper.add(peer);
         return peer;
+    }
+
+
+    public void stopDiscovering() {
+        if(nsdDeregister) nsd.stopServiceDiscovery(this);
+        nsdDeregister = false;
+    }
+
+    /// Call this the first time a group key is received from a group owner.
+    public void keepOnly(MessageChannel origin) {
+        final MessageChannel[] all = helper.get();
+        for(MessageChannel c : all) {
+            if(c != origin) try {
+                helper.remove(c);
+            } catch (IOException e) {
+               // Uhm... what to?
+                helper.leak(c); // just in case
+            }
+        }
     }
 
     //
@@ -131,10 +147,6 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
         if(helper == null) return;
         MessageChannel stop = probing.remove(info);
         if(stop != null) helper.silentShutdown(stop);
-        if(shaken.yours(stop)) {
-            shaken.removeCleaning(stop);
-            handler.sendMessage(handler.obtainMessage(shaken.lostGroup, stop));
-        }
     }
 
     public static class ServiceDiscoveryStartStop {

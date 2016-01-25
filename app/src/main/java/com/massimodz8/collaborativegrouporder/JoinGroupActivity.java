@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -33,11 +34,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
-public class JoinGroupActivity extends AppCompatActivity {
+public class JoinGroupActivity extends AppCompatActivity implements PlayingCharacterListAdapter.PlayingCharacterPuller {
     public static final int CLIENT_PROTOCOL_VERSION = 1;
     GroupJoining helper;
     Handler guiThreadHandler;
-    private RecyclerView.Adapter groupListAdapter;
+    private RecyclerView.Adapter groupListAdapter, pcListAdapter;
 
 
     public static String mismatchAdvice(int version, AppCompatActivity activity) {
@@ -99,11 +100,13 @@ public class JoinGroupActivity extends AppCompatActivity {
                         groupListAdapter.notifyDataSetChanged();
                         break;
                     }
+                    case MSG_GROUP_FORMING: beginDefiningPC((Events.GroupKey) msg.obj); break;
+                    case MSG_PLAYING_CHARACTER_CONFIRM_STATUS: characterConfirmationStatus((Events.CharacterAcceptStatus)msg.obj); break;
                 }
                 return false;
             }
         });
-        helper = new GroupJoining(guiThreadHandler, true, nsd, MSG_SOCKET_DISCONNECTED, MSG_GROUP_FOUND, MSG_CHAR_BUDGET) {
+        helper = new GroupJoining(guiThreadHandler, true, nsd, MSG_SOCKET_DISCONNECTED, MSG_GROUP_FOUND, MSG_CHAR_BUDGET, MSG_GROUP_FORMING, MSG_PLAYING_CHARACTER_CONFIRM_STATUS) {
             @Override
             protected void onDiscoveryStart(ServiceDiscoveryStartStop status) {
                 if(status.successful) {
@@ -130,6 +133,8 @@ public class JoinGroupActivity extends AppCompatActivity {
     public static final int MSG_SOCKET_DISCONNECTED = 5;
     public static final int MSG_GROUP_FOUND = 6;
     public static final int MSG_CHAR_BUDGET = 8;
+    public static final int MSG_GROUP_FORMING = 9;
+    public static final int MSG_PLAYING_CHARACTER_CONFIRM_STATUS = 10;
 
 
     private static final int COLOR_FORBIDDEN_INVALID_TEXT = 0xFF0000FF;
@@ -148,6 +153,7 @@ public class JoinGroupActivity extends AppCompatActivity {
 
         public GroupListAdapter(JoinGroupActivity activity) {
             this.activity = activity;
+            setHasStableIds(true);
         }
 
         // View holder pattern <-> keep handles to internal Views so I don't need to look em up.
@@ -242,6 +248,11 @@ public class JoinGroupActivity extends AppCompatActivity {
         }
 
         @Override
+        public long getItemId(int position) {
+            return activity.candidates.elementAt(position).channel.unique;
+        }
+
+        @Override
         public int getItemCount() {
             return activity.candidates.size();
         }
@@ -264,8 +275,26 @@ public class JoinGroupActivity extends AppCompatActivity {
 
         public GroupState(MessageChannel pipe, ConnectedGroup group) { super(pipe, group); }
     }
+    static class PlayingCharacter {
+        public com.massimodz8.collaborativegrouporder.PlayingCharacter payload;
+        final String peerKey; /// TODO: deprecate this and use unique ints directly, they're local to peer anyway!
+        final int unique;
+        public int status = STATUS_BUILDING;
+        static final int STATUS_BUILDING = 0;
+        static final int STATUS_SENT = 1;
+        static final int STATUS_ACCEPTED = 2;
+        static final int STATUS_REJECTED = 3;
+        private static int count = 0;
+
+        PlayingCharacter() {
+            unique = count++;
+            peerKey = String.valueOf(unique);
+        }
+    }
 
     private Vector<GroupState> candidates = new Vector<>();
+    private byte[] groupKey;
+    private Vector<PlayingCharacter> pcs;
 
     GroupState getByChannel(MessageChannel pipe) {
         for(GroupState gs : candidates) {
@@ -372,5 +401,140 @@ public class JoinGroupActivity extends AppCompatActivity {
                 }.execute();
             }
         }
+    }
+
+
+    private void beginDefiningPC(Events.GroupKey obj) {
+        if(groupKey != null) {
+            if (obj.origin != candidates.elementAt(0).channel) {
+                new AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.joinGroupActivity_multiKeyMismatching))
+                        .show();
+                return;
+            } else {
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.joinGroupActivity_multipleGroupKeys)
+                        .show();
+            }
+        }
+        else {
+            helper.stopDiscovering();
+            helper.keepOnly(obj.origin);
+            final GroupState gs = getByChannel(obj.origin);
+            candidates.clear();
+            candidates.add(gs);
+        }
+        final GroupState connected = candidates.elementAt(0);
+        groupKey = obj.key; // it doesn't really change a thing!
+        int hide[] = new int[] {
+                R.id.txt_lookingForGroups, R.id.progressBar2, R.id.groupList,
+                R.id.txt_explicitConnectHint, R.id.btn_startExplicitConnection
+        };
+        for(int h : hide) findViewById(h).setVisibility(View.GONE);
+
+        findViewById(R.id.pcList).setVisibility(View.VISIBLE);
+        final String localized = getString(R.string.phaseDefiningCharacters);
+        final ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", connected.group.name, localized));
+
+        int show[] = new int[] {
+                R.id.button, R.id.pcList
+        };
+
+        pcListAdapter = new PlayingCharacterListAdapter(this, PlayingCharacterListAdapter.MODE_CLIENT_INPUT);
+        addCharacterCard();
+    }
+
+    public void addCharacterCard() {
+        pcs.add(new PlayingCharacter()); pcListAdapter.notifyDataSetChanged();
+    }
+    public void addCharacterCardCallback(View unused) { addCharacterCard(); }
+
+
+
+    private void characterConfirmationStatus(Events.CharacterAcceptStatus obj) {
+        PlayingCharacter match = null;
+        for(PlayingCharacter test : pcs) {
+            if(test.peerKey == obj.key) {
+                match = test;
+                break;
+            }
+        }
+        if(null == match) return;
+        match.status = obj.accepted? PlayingCharacter.STATUS_ACCEPTED : PlayingCharacter.STATUS_REJECTED;
+        pcListAdapter.notifyDataSetChanged();
+    }
+
+    //
+    // PlayingCharacterListAdapter.PlayingCharacterPuller __________________________________________
+    @Override
+    public int getVisibleCount() {
+        int count = 0;
+        for(PlayingCharacter c : pcs) {
+            if(PlayingCharacter.STATUS_REJECTED != c.status) count++;
+        }
+        return count;
+    }
+
+    @Override
+    public void action(final com.massimodz8.collaborativegrouporder.PlayingCharacter who, String peerKey, int what) {
+        // PlayingCharacterListAdapter.SEND: {
+        for(PlayingCharacter c : pcs) {
+            if(c.payload == who) {
+                final PlayingCharacter captured = c;
+                final MessageChannel channel = candidates.elementAt(0).channel;
+                final JoinGroupActivity self = this;
+                new AsyncTask<Void, Void, Exception>() {
+                    @Override
+                    protected Exception doInBackground(Void... params) {
+                        Network.PlayingCharacterDefinition wire = new Network.PlayingCharacterDefinition();
+                        wire.name = who.name;
+                        wire.initiativeBonus = who.initiativeBonus;
+                        wire.healthPoints = who.fullHealth;
+                        wire.experience = who.experience;
+                        try {
+                            channel.writeSync(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, wire);
+                        } catch (IOException e) {
+                            return e;
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Exception e) {
+                        if(e != null) {
+                            new AlertDialog.Builder(self)
+                                    .setMessage(getString(R.string.joinGroupActivity_failedPCSend) + e.getLocalizedMessage());
+                            return;
+                        }
+                        captured.status = PlayingCharacter.STATUS_SENT;
+                        pcListAdapter.notifyDataSetChanged();
+                    }
+                }.execute();
+                break;
+            }
+        }
+    }
+
+    @Override
+    public AlertDialog.Builder makeDialog() {
+        return new AlertDialog.Builder(this);
+    }
+
+    @Override
+    public View inflate(int resource, ViewGroup root, boolean attachToRoot) {
+        return getLayoutInflater().inflate(resource, root, attachToRoot);
+    }
+
+    @Override
+    public PlayingCharacter get(int position) {
+        int count = 0;
+        for(PlayingCharacter c : pcs) {
+            if(PlayingCharacter.STATUS_REJECTED != c.status) {
+                if(count == position) return c;
+                count++;
+            }
+        }
+        return null; // uhm
     }
 }
