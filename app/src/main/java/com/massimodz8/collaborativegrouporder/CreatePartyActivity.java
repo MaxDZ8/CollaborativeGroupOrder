@@ -56,6 +56,7 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
 
         characterListAdapter = new PlayingCharacterListAdapter(this, PlayingCharacterListAdapter.MODE_SERVER_ACCEPTANCE);
         RecyclerView target = (RecyclerView) findViewById(R.id.pcList);
+        target.setLayoutManager(new LinearLayoutManager(this));
         target.setAdapter(characterListAdapter);
     }
     protected void onDestroy() {
@@ -640,6 +641,7 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
                     return;
                 }
                 findViewById(R.id.pcList).setVisibility(View.VISIBLE);
+                findViewById(R.id.createPartyActivity_definingCharactersFeedback).setVisibility(View.VISIBLE);
                 final String localized = getString(R.string.phaseDefiningCharacters);
                 final ActionBar actionBar = self.getSupportActionBar();
                 if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", building.presentationName, localized));

@@ -107,6 +107,15 @@
         android:id="@+id/txt_FYI_port"
         android:visibility="gone" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/CreatePartyActivity_definingCharactersFeedback"
+        android:id="@+id/createPartyActivity_definingCharactersFeedback"
+        android:gravity="center_horizontal"
+        android:visibility="gone" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pcList"
         android:scrollbars="vertical"

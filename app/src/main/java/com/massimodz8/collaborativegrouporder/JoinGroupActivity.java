@@ -54,7 +54,9 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
         setContentView(R.layout.activity_join_group);
 
         RecyclerView pcList = (RecyclerView)findViewById(R.id.pcList);
-        pcList.setAdapter(new PlayingCharacterListAdapter(this, PlayingCharacterListAdapter.MODE_CLIENT_INPUT));
+        pcListAdapter = new PlayingCharacterListAdapter(this, PlayingCharacterListAdapter.MODE_CLIENT_INPUT);
+        pcList.setLayoutManager(new LinearLayoutManager(this));
+        pcList.setAdapter(pcListAdapter);
 
         NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
         if(nsd == null) {
@@ -428,13 +430,14 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
         int show[] = new int[] {
                 R.id.button, R.id.pcList
         };
-
-        pcListAdapter = new PlayingCharacterListAdapter(this, PlayingCharacterListAdapter.MODE_CLIENT_INPUT);
+        for(int h : show) findViewById(h).setVisibility(View.VISIBLE);
         addCharacterCard();
     }
 
     public void addCharacterCard() {
-        pcs.add(new BuildingPlayingCharacter()); pcListAdapter.notifyDataSetChanged();
+        if(pcs == null) pcs = new Vector<>();
+        pcs.add(new BuildingPlayingCharacter());
+        pcListAdapter.notifyDataSetChanged();
     }
     public void addCharacterCardCallback(View unused) { addCharacterCard(); }
 
