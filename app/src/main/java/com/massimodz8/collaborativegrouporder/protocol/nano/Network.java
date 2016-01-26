@@ -479,8 +479,8 @@ public interface Network {
     // optional bytes salt = 1;
     public byte[] salt;
 
-    // optional string peerKey = 2;
-    public java.lang.String peerKey;
+    // optional uint32 peerKey = 2;
+    public int peerKey;
 
     // optional bool accepted = 3;
     public boolean accepted;
@@ -491,7 +491,7 @@ public interface Network {
 
     public GroupFormed clear() {
       salt = com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES;
-      peerKey = "";
+      peerKey = 0;
       accepted = false;
       cachedSize = -1;
       return this;
@@ -503,8 +503,8 @@ public interface Network {
       if (!java.util.Arrays.equals(this.salt, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
         output.writeBytes(1, this.salt);
       }
-      if (!this.peerKey.equals("")) {
-        output.writeString(2, this.peerKey);
+      if (this.peerKey != 0) {
+        output.writeUInt32(2, this.peerKey);
       }
       if (this.accepted != false) {
         output.writeBool(3, this.accepted);
@@ -519,9 +519,9 @@ public interface Network {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeBytesSize(1, this.salt);
       }
-      if (!this.peerKey.equals("")) {
+      if (this.peerKey != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeStringSize(2, this.peerKey);
+            .computeUInt32Size(2, this.peerKey);
       }
       if (this.accepted != false) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
@@ -549,8 +549,8 @@ public interface Network {
             this.salt = input.readBytes();
             break;
           }
-          case 18: {
-            this.peerKey = input.readString();
+          case 16: {
+            this.peerKey = input.readUInt32();
             break;
           }
           case 24: {
@@ -602,8 +602,8 @@ public interface Network {
     // optional uint32 experience = 4;
     public int experience;
 
-    // optional string peerKey = 5;
-    public java.lang.String peerKey;
+    // optional uint32 peerKey = 5;
+    public int peerKey;
 
     public PlayingCharacterDefinition() {
       clear();
@@ -614,7 +614,7 @@ public interface Network {
       initiativeBonus = 0;
       healthPoints = 0;
       experience = 0;
-      peerKey = "";
+      peerKey = 0;
       cachedSize = -1;
       return this;
     }
@@ -634,8 +634,8 @@ public interface Network {
       if (this.experience != 0) {
         output.writeUInt32(4, this.experience);
       }
-      if (!this.peerKey.equals("")) {
-        output.writeString(5, this.peerKey);
+      if (this.peerKey != 0) {
+        output.writeUInt32(5, this.peerKey);
       }
       super.writeTo(output);
     }
@@ -659,9 +659,9 @@ public interface Network {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(4, this.experience);
       }
-      if (!this.peerKey.equals("")) {
+      if (this.peerKey != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeStringSize(5, this.peerKey);
+            .computeUInt32Size(5, this.peerKey);
       }
       return size;
     }
@@ -697,8 +697,8 @@ public interface Network {
             this.experience = input.readUInt32();
             break;
           }
-          case 42: {
-            this.peerKey = input.readString();
+          case 40: {
+            this.peerKey = input.readUInt32();
             break;
           }
         }

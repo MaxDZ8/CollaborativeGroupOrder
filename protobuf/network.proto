@@ -44,8 +44,9 @@ message PeerMessage {
 message GroupFormed {
     bytes salt = 1; // Concatenate salt to group name and hash to obtain a device key for later joining the group.
 	
+	// The following is valid only if salt is empty.
 	// This message is also re-used to confirm characters to peers.
-	string peerKey = 2; // key corresponding to character definition
+	uint32 peerKey = 2; // key corresponding to character definition
 	bool accepted = 3; // false: server kicked character, start from scratch. True: server recorded character, lock it up.
 }
 
@@ -56,7 +57,7 @@ message PlayingCharacterDefinition {
     uint32 initiativeBonus = 2;
 	uint32 healthPoints = 3;
 	uint32 experience = 4;
-	string peerKey = 5; // When client sends a new proposal to server, this will be used to identify the PC relative to the peer, must be unique. Reusing the same key re-defines a character.
+	uint32 peerKey = 5; // When client sends a new proposal to server, this will be used to identify the PC relative to the peer, must be unique. Reusing the same key re-defines a character.
 }
 
 

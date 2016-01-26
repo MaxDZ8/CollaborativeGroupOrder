@@ -275,26 +275,10 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
 
         public GroupState(MessageChannel pipe, ConnectedGroup group) { super(pipe, group); }
     }
-    static class PlayingCharacter {
-        public com.massimodz8.collaborativegrouporder.PlayingCharacter payload;
-        final String peerKey; /// TODO: deprecate this and use unique ints directly, they're local to peer anyway!
-        final int unique;
-        public int status = STATUS_BUILDING;
-        static final int STATUS_BUILDING = 0;
-        static final int STATUS_SENT = 1;
-        static final int STATUS_ACCEPTED = 2;
-        static final int STATUS_REJECTED = 3;
-        private static int count = 0;
-
-        PlayingCharacter() {
-            unique = count++;
-            peerKey = String.valueOf(unique);
-        }
-    }
 
     private Vector<GroupState> candidates = new Vector<>();
     private byte[] groupKey;
-    private Vector<PlayingCharacter> pcs;
+    private Vector<BuildingPlayingCharacter> pcs;
 
     GroupState getByChannel(MessageChannel pipe) {
         for(GroupState gs : candidates) {
@@ -446,22 +430,22 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
     }
 
     public void addCharacterCard() {
-        pcs.add(new PlayingCharacter()); pcListAdapter.notifyDataSetChanged();
+        pcs.add(new BuildingPlayingCharacter()); pcListAdapter.notifyDataSetChanged();
     }
     public void addCharacterCardCallback(View unused) { addCharacterCard(); }
 
 
 
     private void characterConfirmationStatus(Events.CharacterAcceptStatus obj) {
-        PlayingCharacter match = null;
-        for(PlayingCharacter test : pcs) {
-            if(test.peerKey == obj.key) {
+        BuildingPlayingCharacter match = null;
+        for(BuildingPlayingCharacter test : pcs) {
+            if(test.id == obj.key) {
                 match = test;
                 break;
             }
         }
         if(null == match) return;
-        match.status = obj.accepted? PlayingCharacter.STATUS_ACCEPTED : PlayingCharacter.STATUS_REJECTED;
+        match.status = obj.accepted? BuildingPlayingCharacter.STATUS_ACCEPTED : BuildingPlayingCharacter.STATUS_REJECTED;
         pcListAdapter.notifyDataSetChanged();
     }
 
@@ -470,18 +454,15 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
     @Override
     public int getVisibleCount() {
         int count = 0;
-        for(PlayingCharacter c : pcs) {
-            if(PlayingCharacter.STATUS_REJECTED != c.status) count++;
+        for(BuildingPlayingCharacter c : pcs) {
+            if(BuildingPlayingCharacter.STATUS_REJECTED != c.status) count++;
         }
         return count;
     }
 
     @Override
-    public void action(final com.massimodz8.collaborativegrouporder.PlayingCharacter who, String peerKey, int what) {
+    public void action(final BuildingPlayingCharacter who, int what) {
         // PlayingCharacterListAdapter.SEND: {
-        for(PlayingCharacter c : pcs) {
-            if(c.payload == who) {
-                final PlayingCharacter captured = c;
                 final MessageChannel channel = candidates.elementAt(0).channel;
                 final JoinGroupActivity self = this;
                 new AsyncTask<Void, Void, Exception>() {
@@ -507,13 +488,10 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
                                     .setMessage(getString(R.string.joinGroupActivity_failedPCSend) + e.getLocalizedMessage());
                             return;
                         }
-                        captured.status = PlayingCharacter.STATUS_SENT;
+                who.status = BuildingPlayingCharacter.STATUS_SENT;
                         pcListAdapter.notifyDataSetChanged();
                     }
                 }.execute();
-                break;
-            }
-        }
     }
 
     @Override
@@ -527,14 +505,23 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
     }
 
     @Override
-    public PlayingCharacter get(int position) {
+    public BuildingPlayingCharacter get(int position) {
+        if(pcs == null) return null;
         int count = 0;
-        for(PlayingCharacter c : pcs) {
-            if(PlayingCharacter.STATUS_REJECTED != c.status) {
+        for(BuildingPlayingCharacter c : pcs) {
+            if(BuildingPlayingCharacter.STATUS_REJECTED != c.status) {
                 if(count == position) return c;
                 count++;
             }
         }
         return null; // uhm
     }
+
+    @Override
+    public long getStableId(int position) {
+        if(pcs == null) return RecyclerView.NO_ID;
+        long stable = 0;
+        for(BuildingPlayingCharacter c : pcs) stable++;
+        return stable;
+}
 }

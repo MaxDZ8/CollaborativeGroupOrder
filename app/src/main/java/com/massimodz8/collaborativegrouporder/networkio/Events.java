@@ -65,10 +65,10 @@ public interface Events {
 
     class CharacterAcceptStatus {
         public final MessageChannel origin;
-        public final String key;
+        public final int key;
         public final boolean accepted; // if false then rejected.
 
-        public CharacterAcceptStatus(MessageChannel origin, String key, boolean accepted) {
+        public CharacterAcceptStatus(MessageChannel origin, int key, boolean accepted) {
             this.origin = origin;
             this.key = key;
             this.accepted = accepted;

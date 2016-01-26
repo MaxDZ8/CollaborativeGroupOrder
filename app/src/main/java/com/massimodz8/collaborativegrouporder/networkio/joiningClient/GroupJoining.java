@@ -61,7 +61,7 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
             }
 
             @Override
-            protected void onPlayingCharacterReply(MessageChannel c, String peerKey, boolean accepted) {
+            protected void onPlayingCharacterReply(MessageChannel c, int peerKey, boolean accepted) {
                 message(pcAcceptance, new Events.CharacterAcceptStatus(c, peerKey, accepted));
             }
         };

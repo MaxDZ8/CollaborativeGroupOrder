@@ -32,5 +32,5 @@ public abstract class GroupConnect extends InitialConnect {
         });
     }
     protected abstract void onGroupFormed(MessageChannel origin, byte[] salt);
-    protected abstract void onPlayingCharacterReply(MessageChannel origin, String peerKey, boolean accepted);
+    protected abstract void onPlayingCharacterReply(MessageChannel origin, int peerKey, boolean accepted);
 }
