@@ -107,5 +107,6 @@
     <string name="charInputValidation_badCharacter_msgHint">Go back and try again.</string>
     <string name="joinGroupActivity_failedPCSend">Failed to send character data to party owner, detailed error follows:\n</string>
     <string name="CreatePartyActivity_definingCharactersFeedback">Players can now define playing characters. They can define more than one for each device part of the group.\nTheir characters will appear below.</string>
+    <string name="card_joiningCharacter_sentFeedback">Sent. Waiting reply.</string>
     >
 </resources>

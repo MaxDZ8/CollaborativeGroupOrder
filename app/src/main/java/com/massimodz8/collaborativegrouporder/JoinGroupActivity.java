@@ -428,7 +428,7 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
         if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", connected.group.name, localized));
 
         int show[] = new int[] {
-                R.id.button, R.id.pcList
+                R.id.activity_join_group_addCharacterButton, R.id.pcList
         };
         for(int h : show) findViewById(h).setVisibility(View.VISIBLE);
         addCharacterCard();
@@ -497,6 +497,14 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
                 }
                 who.status = BuildingPlayingCharacter.STATUS_SENT;
                 pcListAdapter.notifyDataSetChanged();
+                boolean status = true;
+                for(BuildingPlayingCharacter c : pcs) {
+                    if (BuildingPlayingCharacter.STATUS_BUILDING == c.status) {
+                        status = false;
+                        break;
+                    }
+                }
+                findViewById(R.id.activity_join_group_addCharacterButton).setEnabled(status);
             }
         }.execute();
     }

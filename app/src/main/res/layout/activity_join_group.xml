@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/activity_join_group_addCharacterButton"
-        android:id="@+id/button"
+        android:id="@+id/activity_join_group_addCharacterButton"
         android:layout_gravity="center_horizontal"
         android:enabled="false"
         android:onClick="addCharacterCardCallback"

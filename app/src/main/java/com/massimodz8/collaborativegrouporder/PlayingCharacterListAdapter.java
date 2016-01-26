@@ -53,7 +53,7 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
 
     @Override
     public PCViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layout = puller.inflate(R.layout.card_joinable_group, parent, false);
+        View layout = puller.inflate(R.layout.card_joining_character, parent, false);
         return new PCViewHolder(layout);
     }
 
@@ -65,15 +65,22 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
         holder.check.setVisibility(BuildingPlayingCharacter.STATUS_ACCEPTED == holder.who.status ? View.VISIBLE : View.GONE);
         if(mode == MODE_CLIENT_INPUT) {
             holder.send.setVisibility(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status ? View.VISIBLE : View.GONE);
+            holder.check.setVisibility(BuildingPlayingCharacter.STATUS_ACCEPTED == holder.who.status? View.VISIBLE : View.GONE);
+            holder.sentFeedback.setVisibility(BuildingPlayingCharacter.STATUS_SENT == holder.who.status? View.VISIBLE : View.GONE);
         }
         else { // MODE_SERVER_ACCEPTANCE
             holder.accept.setVisibility(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status? View.VISIBLE : View.GONE);
             holder.refuse.setVisibility(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status? View.VISIBLE : View.GONE);
         }
-        holder.initiative.setText(String.valueOf(holder.who.initiativeBonus));
-        holder.health.setText(String.valueOf(holder.who.fullHealth));
-        holder.experience.setText(String.valueOf(holder.who.experience));
-        holder.name.setText(String.valueOf(holder.who.name));
+        holder.initiative.setText(valueof(holder.who.initiativeBonus));
+        holder.health.setText(valueof(holder.who.fullHealth));
+        holder.experience.setText(valueof(holder.who.experience));
+        holder.name.setText(holder.who.name);
+    }
+
+    static String valueof(int x) {
+        if(x == Integer.MIN_VALUE) return "";
+        return String.valueOf(x);
     }
 
     @Override
@@ -93,6 +100,7 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
         Button send; // client
         Button refuse, accept; // server
         CheckBox check; // client
+        TextView sentFeedback;
 
         BuildingPlayingCharacter who;
 
@@ -106,6 +114,7 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
             refuse = (Button) container.findViewById(R.id.card_joiningCharacter_refuseButton);
             accept = (Button) container.findViewById(R.id.card_joiningCharacter_acceptButton);
             check = (CheckBox) container.findViewById(R.id.card_joiningCharacter_accepted);
+            sentFeedback = (TextView) container.findViewById(R.id.card_joiningCharacter_sentFeedback);
             send.setOnClickListener(this);
             refuse.setOnClickListener(this);
             accept.setOnClickListener(this);
