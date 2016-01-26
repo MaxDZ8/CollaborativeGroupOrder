@@ -34,7 +34,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
-public class JoinGroupActivity extends AppCompatActivity implements PlayingCharacterListAdapter.PlayingCharacterPuller {
+public class JoinGroupActivity extends AppCompatActivity implements PlayingCharacterListAdapter.DataPuller {
     public static final int CLIENT_PROTOCOL_VERSION = 1;
     GroupJoining helper;
     Handler guiThreadHandler;
@@ -52,6 +52,10 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_join_group);
+
+        RecyclerView pcList = (RecyclerView)findViewById(R.id.pcList);
+        pcList.setAdapter(new PlayingCharacterListAdapter(this, PlayingCharacterListAdapter.MODE_CLIENT_INPUT));
+
         NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
         if(nsd == null) {
             AlertDialog.Builder build = new AlertDialog.Builder(this);
@@ -463,35 +467,35 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
     @Override
     public void action(final BuildingPlayingCharacter who, int what) {
         // PlayingCharacterListAdapter.SEND: {
-                final MessageChannel channel = candidates.elementAt(0).channel;
-                final JoinGroupActivity self = this;
-                new AsyncTask<Void, Void, Exception>() {
-                    @Override
-                    protected Exception doInBackground(Void... params) {
-                        Network.PlayingCharacterDefinition wire = new Network.PlayingCharacterDefinition();
-                        wire.name = who.name;
-                        wire.initiativeBonus = who.initiativeBonus;
-                        wire.healthPoints = who.fullHealth;
-                        wire.experience = who.experience;
-                        try {
-                            channel.writeSync(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, wire);
-                        } catch (IOException e) {
-                            return e;
-                        }
-                        return null;
-                    }
+        final MessageChannel channel = candidates.elementAt(0).channel;
+        final JoinGroupActivity self = this;
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+                Network.PlayingCharacterDefinition wire = new Network.PlayingCharacterDefinition();
+                wire.name = who.name;
+                wire.initiativeBonus = who.initiativeBonus;
+                wire.healthPoints = who.fullHealth;
+                wire.experience = who.experience;
+                try {
+                    channel.writeSync(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, wire);
+                } catch (IOException e) {
+                    return e;
+                }
+                return null;
+            }
 
-                    @Override
-                    protected void onPostExecute(Exception e) {
-                        if(e != null) {
-                            new AlertDialog.Builder(self)
-                                    .setMessage(getString(R.string.joinGroupActivity_failedPCSend) + e.getLocalizedMessage());
-                            return;
-                        }
+            @Override
+            protected void onPostExecute(Exception e) {
+                if(e != null) {
+                    new AlertDialog.Builder(self)
+                            .setMessage(getString(R.string.joinGroupActivity_failedPCSend) + e.getLocalizedMessage());
+                    return;
+                }
                 who.status = BuildingPlayingCharacter.STATUS_SENT;
-                        pcListAdapter.notifyDataSetChanged();
-                    }
-                }.execute();
+                pcListAdapter.notifyDataSetChanged();
+            }
+        }.execute();
     }
 
     @Override
@@ -523,5 +527,5 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
         long stable = 0;
         for(BuildingPlayingCharacter c : pcs) stable++;
         return stable;
-}
+    }
 }

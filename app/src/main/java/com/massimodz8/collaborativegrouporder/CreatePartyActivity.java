@@ -45,7 +45,7 @@ We publish a service and listen to network to find users joining.
  */
 /** todo: this is an excellent moment to provide some ads: after the GM started scanning
  * he has to wait for users to join and I can push to him whatever I want.  */
-public class CreatePartyActivity extends AppCompatActivity {
+public class CreatePartyActivity extends AppCompatActivity implements PlayingCharacterListAdapter.DataPuller {
     private GroupForming gathering;
     private RecyclerView.Adapter groupListAdapter, characterListAdapter;
 
@@ -53,6 +53,10 @@ public class CreatePartyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_party);
+
+        characterListAdapter = new PlayingCharacterListAdapter(this, PlayingCharacterListAdapter.MODE_SERVER_ACCEPTANCE);
+        RecyclerView target = (RecyclerView) findViewById(R.id.pcList);
+        target.setAdapter(characterListAdapter);
     }
     protected void onDestroy() {
         if(gathering != null) try {
@@ -259,9 +263,9 @@ public class CreatePartyActivity extends AppCompatActivity {
         // but after it received a group forming.
         // That's not very likely to happen as disconnects are sent before we even promote message channels
         // but due to the async nature of things I am defensive.
-        DeviceStatus.PlayingCharacter character = owner.getCharByKey(obj.character.peerKey);
+        BuildingPlayingCharacter character = owner.getCharByKey(obj.character.peerKey);
         if(character == null) {
-            character = new DeviceStatus.PlayingCharacter(obj.character.peerKey);
+            character = new BuildingPlayingCharacter(obj.character.peerKey);
             character.experience = obj.character.experience;
             character.initiativeBonus = obj.character.initiativeBonus;
             character.name = obj.character.name;
@@ -269,7 +273,7 @@ public class CreatePartyActivity extends AppCompatActivity {
             characterListAdapter.notifyDataSetChanged();
             return;
         }
-        if(character.status == character.STATUS_CONFIRMED) {
+        if(character.status == BuildingPlayingCharacter.STATUS_ACCEPTED) {
             /*
             Cannot happen in current client implementation
             What do we do here? We must restart validation... but the protocol does not support anything like this at the time,
@@ -333,22 +337,10 @@ public class CreatePartyActivity extends AppCompatActivity {
         public String lastMessage; // if null still not talking
         public int charBudget;
         public boolean groupMember;
-
-        static class PlayingCharacter extends FormedGroup.PlayingCharacter {
-            static final int STATUS_RECEIVED = 0;
-            static final int STATUS_CONFIRMED = 1;
-            static final int STATUS_REJECTED = 2;
-
-            int status = STATUS_RECEIVED;
-
-            public PlayingCharacter(String key) {
-                super(key);
-            }
-        };
-        Vector<PlayingCharacter> chars = new Vector<>(); // if contains something we have been promoted
+        Vector<BuildingPlayingCharacter> chars = new Vector<>(); // if contains something we have been promoted
         String names() {
             String names = "";
-            for(FormedGroup.PlayingCharacter pc : chars) names += (names.length() != 0? ", " : "") + pc.name;
+            for(BuildingPlayingCharacter pc : chars) names += (names.length() != 0? ", " : "") + pc.name;
             return names;
         }
 
@@ -356,10 +348,10 @@ public class CreatePartyActivity extends AppCompatActivity {
             this.source = source;
         }
 
-        public PlayingCharacter getCharByKey(String key) {
-            for(PlayingCharacter pc : chars) {
-                if(pc.status == PlayingCharacter.STATUS_REJECTED) continue;
-                if(pc.key == key) return pc;
+        public BuildingPlayingCharacter getCharByKey(int key) {
+            for(BuildingPlayingCharacter pc : chars) {
+                if(pc.status == BuildingPlayingCharacter.STATUS_REJECTED) continue;
+                if(pc.id == key) return pc;
             }
             return null;
         }
@@ -653,5 +645,61 @@ public class CreatePartyActivity extends AppCompatActivity {
                 if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", building.presentationName, localized));
             }
         }.execute();
+    }
+
+    //
+    // PlayingCharacterListAdapter.DataPuller ______________________________________________________
+    @Override
+    public int getVisibleCount() {
+        if(building == null) return 0;
+        int count = 0;
+        final int filter = BuildingPlayingCharacter.STATUS_REJECTED;
+        for(DeviceStatus dev : building.group) {
+            for(BuildingPlayingCharacter pc : dev.chars) {
+                if(filter != pc.status) count++;
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public void action(BuildingPlayingCharacter who, int what) {
+        who.status = what == PlayingCharacterListAdapter.ACCEPT? BuildingPlayingCharacter.STATUS_ACCEPTED : BuildingPlayingCharacter.STATUS_REJECTED;
+        characterListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public AlertDialog.Builder makeDialog() {
+        return new AlertDialog.Builder(this);
+    }
+
+    @Override
+    public View inflate(int resource, ViewGroup root, boolean attachToRoot) {
+        return inflate(resource, root, attachToRoot);
+    }
+
+    @Override
+    public BuildingPlayingCharacter get(int position) {
+        if(building == null) return null;
+        int count = 0;
+        final int filter = BuildingPlayingCharacter.STATUS_REJECTED;
+        for(DeviceStatus dev : building.group) {
+            for(BuildingPlayingCharacter pc : dev.chars) {
+                if(filter == pc.status) continue;
+                if(position == count) return pc;
+                count++;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public long getStableId(int position) {
+        if(building == null) return RecyclerView.NO_ID;
+        long stable = 0;
+        for(DeviceStatus dev : building.group) {
+            for(BuildingPlayingCharacter pc : dev.chars) stable++;
+        }
+        return stable;
     }
 }

@@ -3,12 +3,10 @@ package com.massimodz8.collaborativegrouporder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
-import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
 
 /**
@@ -19,14 +17,14 @@ import android.widget.TextView;
  * The server will enable/disable/show/hide various buttons.
  */
 class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterListAdapter.PCViewHolder> {
-    interface PlayingCharacterPuller {
+    interface DataPuller {
         int getVisibleCount();
         /** The values you get there enumerate the action to perform, which is basically the button
          * hit to trigger this callbacks. The values depend on what you have instantiated this for.
          * MODE_CLIENT_INPUT will send only SEND.
          * MODE_SERVER_ACCEPTANCE sends only ACCEPT and REJECT.
          */
-        void action(PlayingCharacter who, String peerKey, int what);
+        void action(BuildingPlayingCharacter who, int what);
 
         AlertDialog.Builder makeDialog();
         String getString(int r);
@@ -34,7 +32,8 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
         /// Forwarding to a LayoutInflater
         View inflate(int resource, ViewGroup root, boolean attachToRoot);
 
-        JoinGroupActivity.PlayingCharacter get(int position);
+        BuildingPlayingCharacter get(int position);
+        long getStableId(int position);
     }
     static final int MODE_CLIENT_INPUT = 1;
     static final int MODE_SERVER_ACCEPTANCE = 2;
@@ -43,14 +42,14 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
     static final int ACCEPT = 1;
     static final int REJECT = 2;
 
-    public PlayingCharacterListAdapter(PlayingCharacterPuller puller, int mode) {
+    public PlayingCharacterListAdapter(DataPuller puller, int mode) {
         this.puller = puller;
         setHasStableIds(true);
         this.mode = mode;
     }
 
     private final int mode;
-    private final PlayingCharacterPuller puller;
+    private final DataPuller puller;
 
     @Override
     public PCViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -63,18 +62,18 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
         holder.who = puller.get(position);
         // Ok so, stuff is here or maybe it's not. Since those can be cycled I need to assume
         // everything must be enabled/disabled/shown/hidden.
-        holder.check.setVisibility(JoinGroupActivity.PlayingCharacter.STATUS_ACCEPTED == holder.who.status ? View.VISIBLE : View.GONE);
+        holder.check.setVisibility(BuildingPlayingCharacter.STATUS_ACCEPTED == holder.who.status ? View.VISIBLE : View.GONE);
         if(mode == MODE_CLIENT_INPUT) {
-            holder.send.setVisibility(JoinGroupActivity.PlayingCharacter.STATUS_BUILDING == holder.who.status ? View.VISIBLE : View.GONE);
+            holder.send.setVisibility(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status ? View.VISIBLE : View.GONE);
         }
         else { // MODE_SERVER_ACCEPTANCE
-            holder.accept.setVisibility(JoinGroupActivity.PlayingCharacter.STATUS_BUILDING == holder.who.status? View.VISIBLE : View.GONE);
-            holder.refuse.setVisibility(JoinGroupActivity.PlayingCharacter.STATUS_BUILDING == holder.who.status? View.VISIBLE : View.GONE);
+            holder.accept.setVisibility(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status? View.VISIBLE : View.GONE);
+            holder.refuse.setVisibility(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status? View.VISIBLE : View.GONE);
         }
-        holder.initiative.setText(String.valueOf(holder.who.payload.initiativeBonus));
-        holder.health.setText(String.valueOf(holder.who.payload.fullHealth));
-        holder.experience.setText(String.valueOf(holder.who.payload.experience));
-        holder.name.setText(String.valueOf(holder.who.payload.name));
+        holder.initiative.setText(String.valueOf(holder.who.initiativeBonus));
+        holder.health.setText(String.valueOf(holder.who.fullHealth));
+        holder.experience.setText(String.valueOf(holder.who.experience));
+        holder.name.setText(String.valueOf(holder.who.name));
     }
 
     @Override
@@ -84,7 +83,7 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
 
     @Override
     public long getItemId(int position) {
-        return puller.get(position).unique;
+        return puller.getStableId(position);
     }
 
 
@@ -95,7 +94,7 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
         Button refuse, accept; // server
         CheckBox check; // client
 
-        JoinGroupActivity.PlayingCharacter who;
+        BuildingPlayingCharacter who;
 
         public PCViewHolder(View container) {
             super(container);
@@ -131,18 +130,18 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
             boolean changeStatus = false, newStatus = false;
             if(v == send) {
                 if(validate()) {
-                    puller.action(who.payload, who.peerKey, SEND);
+                    puller.action(who, SEND);
                     changeStatus = true;
                     newStatus = false;
                 }
             }
             else if(v == refuse) {
-                puller.action(who.payload, who.peerKey, REJECT);
+                puller.action(who, REJECT);
                 changeStatus = true;
                 newStatus = true;
             }
             else if(v == accept) {
-                puller.action(who.payload, who.peerKey, ACCEPT);
+                puller.action(who, ACCEPT);
                 refuse.setVisibility(View.GONE);
                 accept.setVisibility(View.GONE);
                 check.setVisibility(View.VISIBLE);
@@ -183,10 +182,10 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
                         .show();
             }
             else {
-                who.payload.experience = xp;
-                who.payload.fullHealth = hp;
-                who.payload.initiativeBonus = init;
-                who.payload.name = name.getText().toString();
+                who.experience = xp;
+                who.fullHealth = hp;
+                who.initiativeBonus = init;
+                who.name = name.getText().toString();
             }
             return errors.isEmpty();
         }
