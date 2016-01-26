@@ -20,11 +20,13 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
     public static final int INITIAL_CHAR_BUDGET = 20;
     public static final int INITIAL_CHAR_DELAY = 2000;
 
+    private boolean nsdUnregister = true;
+
     public void shutdown() throws IOException {
         if(forming != null) forming.shutdown();
         if(talking != null) talking.shutdown();
         if(silent != null) silent.shutdown();
-        nsd.unregisterService(this);
+        if(nsdUnregister) nsd.unregisterService(this);
         acceptor.shutdown();
         new Thread() {
             @Override
@@ -146,15 +148,18 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
                 }
             }
         }.start();
-        for(MessageChannel leak : members) silent.leak(leak);
+        for(MessageChannel leak : members) {
+            silent.leak(leak); // if they're talking they shouldn't even be here
+            talking.leak(leak);
+        }
         silent.shutdown();
         silent = null;
-
-        for(MessageChannel c : members) forming.add(c);
-
         talking.shutdown();
         talking = null;
+
+        for(MessageChannel c : members) forming.add(c);
         nsd.unregisterService(this);
+        nsdUnregister = false;
     }
 
     public int getSilentCount() {
