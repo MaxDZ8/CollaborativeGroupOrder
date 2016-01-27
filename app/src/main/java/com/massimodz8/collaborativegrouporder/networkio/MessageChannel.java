@@ -44,12 +44,13 @@ public class MessageChannel {
 
     /// Use this with extreme care. You probably want writeSync instead.
     public MessageChannel write(int type, MessageNano payload) throws IOException {
-        final int typeExtra = send.computeUInt32SizeNoTag(type);
+        final int typeExtra = CodedOutputByteBufferNano.computeUInt32SizeNoTag(type);
         final int payloadSize = CodedOutputByteBufferNano.computeMessageSizeNoTag(payload);
         send.writeFixed32NoTag(payloadSize + typeExtra);
         send.writeUInt32NoTag(type);
         send.writeMessageNoTag(payload);
-        socket.getOutputStream().write(out, 0, send.position());
+        final int produced = send.position();
+        socket.getOutputStream().write(out, 0, produced);
         send.reset();
         return this;
     }

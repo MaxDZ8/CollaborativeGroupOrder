@@ -81,7 +81,7 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
         MessageChannel peer = new MessageChannel(sock);
         Network.Hello hi = new Network.Hello();
         hi.version = JoinGroupActivity.CLIENT_PROTOCOL_VERSION;
-        peer.writeSync(ProtoBufferEnum.HELLO, new Network.Hello());
+        peer.writeSync(ProtoBufferEnum.HELLO, hi);
         helper.add(peer);
         return peer;
     }
