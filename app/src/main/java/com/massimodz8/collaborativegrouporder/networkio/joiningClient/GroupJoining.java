@@ -82,7 +82,7 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
         Network.Hello hi = new Network.Hello();
         hi.version = JoinGroupActivity.CLIENT_PROTOCOL_VERSION;
         peer.writeSync(ProtoBufferEnum.HELLO, hi);
-        helper.add(peer);
+        helper.pump(peer);
         return peer;
     }
 
@@ -97,7 +97,7 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
         final MessageChannel[] all = helper.get();
         for(MessageChannel c : all) {
             if(c != origin) try {
-                helper.remove(c);
+                helper.close(c);
             } catch (IOException e) {
                // Uhm... what to?
                 helper.leak(c); // just in case

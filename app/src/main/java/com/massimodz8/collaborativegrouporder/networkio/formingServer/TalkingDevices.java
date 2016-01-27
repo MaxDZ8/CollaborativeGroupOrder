@@ -27,14 +27,16 @@ public class TalkingDevices extends Pumper<TalkingDevices.TalkingClient> {
         super(handler, disconnectMessageCode);
         wroteSomething = wroteSomethingCode;
         charQueue = new Handler();
-        add(ProtoBufferEnum.PEER_MESSAGE, new Callbacks<TalkingClient, Network.PeerMessage>() {
+        add(ProtoBufferEnum.PEER_MESSAGE, new Callbacks<Network.PeerMessage>() {
             @Override
             public Network.PeerMessage make() {
                 return new Network.PeerMessage();
             }
 
             @Override
-            public void mangle(TalkingClient from, Network.PeerMessage msg) throws IOException {
+            public void mangle(MessageChannel chan, Network.PeerMessage msg) throws IOException {
+                TalkingClient from = getClient(chan);
+                if(from == null) return;
                 synchronized (from) {
                     if(msg.text.length() > from.charBudget) {
                         if (from.charBudget > 3)

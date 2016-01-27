@@ -24,23 +24,23 @@ public abstract class InitialConnect extends Pumper<Client> {
     public InitialConnect(Handler handler, int disconnectMessageCode, boolean forming) {
         super(handler, disconnectMessageCode);
         this.forming = forming;
-        add(ProtoBufferEnum.GROUP_INFO, new Callbacks<Client, Network.GroupInfo>() {
+        add(ProtoBufferEnum.GROUP_INFO, new Callbacks<Network.GroupInfo>() {
             @Override
             public Network.GroupInfo make() {
                 return new Network.GroupInfo();
             }
 
             @Override
-            public void mangle(Client from, Network.GroupInfo msg) throws IOException {
-                onGroupFound(from.pipe, makeGroupInfo(msg));
+            public void mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+                onGroupFound(from, makeGroupInfo(msg));
             }
-        }).add(ProtoBufferEnum.CHAR_BUDGET, new Callbacks<Client, Network.CharBudget>() {
+        }).add(ProtoBufferEnum.CHAR_BUDGET, new Callbacks<Network.CharBudget>() {
             @Override
             public Network.CharBudget make() { return new Network.CharBudget(); }
 
             @Override
-            public void mangle(Client from, Network.CharBudget msg) throws IOException {
-                onBudgetReceived(from.pipe, msg.total, msg.period);
+            public void mangle(MessageChannel from, Network.CharBudget msg) throws IOException {
+                onBudgetReceived(from, msg.total, msg.period);
 
             }
         });

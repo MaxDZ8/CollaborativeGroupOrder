@@ -6,6 +6,7 @@ import com.google.protobuf.nano.MessageNano;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
@@ -20,7 +21,7 @@ import java.util.Vector;
  *
  * The underlying goal is to funnel various threads to a single Handler by provided Callbacks.
  */
-public abstract class Pumper<ClientInfo extends Client> {
+public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
     public static final int MAX_MSG_FROM_WIRE_BYTES = 4 * 1024;
     protected final Handler handler;
     private final int disconnectMessageCode;
@@ -30,71 +31,103 @@ public abstract class Pumper<ClientInfo extends Client> {
         this.disconnectMessageCode = disconnectMessageCode;
     }
 
-    public interface Callbacks<ClientInfo, ExtendedMessage extends MessageNano> {
-        /** Generate a new message for parsing a blob of data. Must be 'cleared'.
-         * Can be called by multiple threads at once.
-         */
-        ExtendedMessage make();
-        /** Consume a blob of data produced by a previous call to make().
-         * Note: no way to reply to a message, send something like it is a new message. */
-        void mangle(ClientInfo from, ExtendedMessage msg) throws IOException;
-    }
-
     // Call this before starting to mangle stuff so it does not need to be thread protected.
     public Pumper<ClientInfo> add(int key, Callbacks funcs) {
         allowed.put(key, funcs);
         return this;
     }
 
-    public synchronized void add(MessageChannel c) {
+    /// Give up ownership of c. It will now managed by this object and you must de-register it.
+    /// OFC you can keep a reference to it to match against signals.
+    public MessageChannel pump(MessageChannel c) {
         Managed newComer = new Managed(allocate(c));
-        newComer.sleeper = new MessagePumpingThread(newComer);
-        clients.add(newComer);
+        newComer.sleeper = new MessagePumpingThread(newComer.smart.pipe, this);
+        synchronized(clients) {
+            clients.add(newComer);
+        }
         newComer.sleeper.start();
+        return c;
     }
 
-    public synchronized void remove(MessageChannel c) throws IOException {
-        for(int i = 0; i < clients.size(); i++) {
-            Managed el = clients.elementAt(i);
-            if(el.smart.pipe == c) {
-                el.shutdown();
-                clients.remove(i--);
-                break;
+    //// Give up ownership of both objects.
+    public void pump(MessageChannel c, MessagePumpingThread rebind) {
+        Managed newComer = new Managed(allocate(c));
+        newComer.sleeper = rebind;
+        synchronized(clients) {
+            clients.add(newComer);
+        }
+        rebind.destination = this;
+    }
+
+    public boolean close(MessageChannel c) throws IOException {
+        synchronized(clients) {
+            for (int i = 0; i < clients.size(); i++) {
+                Managed el = clients.get(i);
+                if (el.smart.pipe == c) {
+                    el.shutdown();
+                    clients.remove(i);
+                    return true;
+                }
             }
+        }
+        return false;
+    }
+
+    public boolean leak(MessageChannel leak) {
+        synchronized(clients) {
+            for (int i = 0; i < clients.size(); i++) {
+                Managed el = clients.get(i);
+                if (el.smart.pipe == leak) {
+                    el.leak();
+                    clients.remove(i);
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
-    public void leak(MessageChannel leak) {
-        for(int i = 0; i < clients.size(); i++) {
-            Managed el = clients.elementAt(i);
-            if(el.smart.pipe == leak) {
-                el.leak();
-                clients.remove(i--);
-                break;
+    /// Give up ownership of something identified by channel without releasing anything so
+    /// it can be moved to something else.
+    public MessagePumpingThread move(MessageChannel c) {
+        synchronized(clients) {
+            for (int i = 0; i < clients.size(); i++) {
+                Managed el = clients.get(i);
+                if (el.smart.pipe == c) {
+                    final MessagePumpingThread ret = el.sleeper;
+                    el.sleeper = null;
+                    el.leak();
+                    clients.remove(i);
+                    return ret;
+                }
             }
         }
+        return null;
     }
 
     public void silentShutdown(MessageChannel c) {
         try {
-            remove(c);
+            close(c);
         } catch (IOException e) {
             leak(c);
         }
     }
 
-    public synchronized boolean yours(MessageChannel c) {
-        for(int i = 0; i < clients.size(); i++) {
-            Managed el = clients.elementAt(i);
-            if(el.smart.pipe == c) return true;
+    public boolean yours(MessageChannel c) {
+        synchronized(clients) {
+            for (Managed el : clients) {
+                if (el.smart.pipe == c) return true;
+            }
         }
         return false;
     }
 
     public MessageChannel[] get() {
-        MessageChannel[] out = new MessageChannel[clients.size()];
-        for(int cp = 0; cp < clients.size(); cp++) out[cp] = clients.elementAt(cp).smart.pipe;
-        return out;
+        synchronized(clients) {
+            MessageChannel[] out = new MessageChannel[clients.size()];
+            for (int cp = 0; cp < clients.size(); cp++) out[cp] = clients.get(cp).smart.pipe;
+            return out;
+        }
     }
 
 
@@ -102,56 +135,78 @@ public abstract class Pumper<ClientInfo extends Client> {
 
     private class Managed {
         public ClientInfo smart;
-        Thread sleeper;
-        Exception quitError;
+        MessagePumpingThread sleeper;
 
         public Managed(ClientInfo smart) {
             this.smart = smart;
         }
 
         public void leak() {
-            sleeper.interrupt();
+            if(sleeper != null) sleeper.interrupt();
             smart.leak();
         }
 
         public void shutdown() throws IOException {
-            sleeper.interrupt(); // we don't need this inputBuffer any case, going to another server.
+            if(sleeper != null) sleeper.interrupt(); // we don't need this inputBuffer any case, going to another server.
             smart.shutdown();
         }
     }
-    private final Vector<Managed> clients = new Vector<>();
+    private final ArrayList<Managed> clients = new ArrayList<>();
     private final Map<Integer, Callbacks> allowed = new HashMap<>();
 
-    private ClientInfo getClient(final MessageChannel c) {
-        ClientInfo match = null;
-        for(Managed m : clients) {
-            if(m.smart.pipe == c) return m.smart;
-        }
-        return null;
-    }
 
+    private static class MessagePumpingThread extends Thread {
+        private final MessageChannel source;
+        public volatile PumpTarget destination;
 
-    private class MessagePumpingThread extends Thread {
-        private final Managed me;
-
-        public MessagePumpingThread(Managed me) {
+        public MessagePumpingThread(MessageChannel mine, PumpTarget sink) {
             super();
-            this.me = me;
+            source = mine;
+            destination = sink;
         }
 
         public void run() {
+            Exception quitError = null;
             try {
                 while(!isInterrupted()) {
-                    readAndDispatch(allowed, me.smart.pipe);
+                    long takes;
+                    InputStream input = source.socket.getInputStream();
+                    int got = MessagePumpingThread.readBytes(input, source.inputBuffer, 4);
+                    if(got == -1) throw new IOException();
+
+                    takes = source.recv.readFixed32();
+                    if(takes > MAX_MSG_FROM_WIRE_BYTES) throw new BigMessageException(takes);
+                    if(takes == 0) throw new EmptyMessageException();
+                    int expect = (int) takes;
+                    got = MessagePumpingThread.readBytes(input, source.inputBuffer, expect);
+                    if(got == -1) throw new IOException();
+
+                    source.recv.rewindToPosition(0);
+                    final int type = source.recv.readUInt32();
+                    final Callbacks real = destination.callbacks().get(type);
+                    if(real == null) throw new InvalidMessageException(type);
+                    final MessageNano wire = real.make();
+                    source.recv.readMessage(wire);
+                    if(source.recv.getPosition() != expect) throw new ByteCountMismatchException(type, expect, source.recv.getPosition());
+                    source.recv.rewindToPosition(0);
+                    real.mangle(source, wire);
                 }
             } catch (IOException | BigMessageException | InvalidMessageException |
                     EmptyMessageException | ByteCountMismatchException e) {
-                synchronized(me) {
-                    me.quitError = e;
-                }
+                quitError = e;
             }
-            silentShutdown(me.smart.pipe);
-            if(!silence) quitting(me.smart, me.quitError);
+            if(!destination.signalExit()) destination.quitting(source, quitError);
+        }
+
+
+        private static int readBytes(InputStream input, byte[] dst, int count) throws IOException {
+            int got = 0;
+            while(got != count) {
+                int r = input.read(dst, got, count - got);
+                if(r == -1) return -1;
+                got += r;
+            }
+            return got;
         }
     }
 
@@ -160,14 +215,14 @@ public abstract class Pumper<ClientInfo extends Client> {
     public void shutdown() throws IOException {
         silence = true;
         synchronized(clients) {
-            for(Managed c : clients) c.shutdown();
+            for (Managed c : clients) c.shutdown();
             clients.clear();
         }
     }
 
     /** Called when a pumper thread exits, possibly due to an error. When this is called the
      * message channel has already been removed from the managed list by calling this.remove(MessageChannel, false). */
-    protected void quitting(Client gone, Exception error) {
+    protected void quitting(ClientInfo gone, Exception error) {
         handler.sendMessage(handler.obtainMessage(disconnectMessageCode, new Events.SocketDisconnected(gone.pipe, error)));
     }
 
@@ -221,48 +276,46 @@ public abstract class Pumper<ClientInfo extends Client> {
         }
     }
 
-
-    // This is supposed to be called only from its own thread pumper sleeping on the socket so
-    // it does not need to be sync'ed.
-    private void readAndDispatch(Map<Integer, Callbacks> allowed, MessageChannel me) throws IOException, BigMessageException, EmptyMessageException, InvalidMessageException, ByteCountMismatchException {
-        long takes;
-        InputStream input = me.socket.getInputStream();
-        int got = readBytes(input, me.inputBuffer, 4);
-        if(got == -1) throw new IOException();
-
-        takes = me.recv.readFixed32();
-        if(takes > MAX_MSG_FROM_WIRE_BYTES) throw new BigMessageException(takes);
-        if(takes == 0) throw new EmptyMessageException();
-        int expect = (int) takes;
-        got = readBytes(input, me.inputBuffer, expect);
-        if(got == -1) throw new IOException();
-
-        me.recv.rewindToPosition(0);
-        final int type = me.recv.readUInt32();
-        final Callbacks real = allowed.get(type);
-        if(real == null) throw new InvalidMessageException(type);
-        final MessageNano wire = real.make();
-        me.recv.readMessage(wire);
-        if(me.recv.getPosition() != expect) throw new ByteCountMismatchException(type, expect, me.recv.getPosition());
-        me.recv.rewindToPosition(0);
-        ClientInfo data = getClient(me);
-        if(data == null) return; // might happen if we pull off a client while we're mangling it. Just discard.
-        real.mangle(data, wire);
-    }
-
-    private static int readBytes(InputStream input, byte[] dst, int count) throws IOException {
-        int got = 0;
-        while(got != count) {
-            int r = input.read(dst, got, count - got);
-            if(r == -1) return -1;
-            got += r;
-        }
-        return got;
-    }
-
     protected void message(int code, Object payload) {
         handler.sendMessage(handler.obtainMessage(code, payload));
     }
 
-    public int getClientCount() { return clients.size(); }
+    protected ClientInfo getClient(MessageChannel c) {
+        synchronized(clients) {
+            for(Managed test : clients) {
+                if(c == test.smart.pipe) return test.smart;
+            }
+        }
+        return null;
+    }
+
+    public int getClientCount() {
+        synchronized(clients) {
+            return clients.size();
+        }
+    }
+
+    @Override
+    public Map<Integer, Callbacks> callbacks() {
+        return allowed; // maps are thread safe for reads and non-structure-modifying
+    }
+
+    @Override
+    public boolean signalExit() {
+        return !silence;
+    }
+
+    @Override
+    public void quitting(MessageChannel source, Exception error) {
+        Managed match = null;
+        synchronized(clients) {
+            for (Managed c : clients) {
+                if (source == c.smart.pipe) {
+                    match = c;
+                    break;
+                }
+            }
+        }
+        if(match != null) quitting(match.smart, error);
+    }
 }

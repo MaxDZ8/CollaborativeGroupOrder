@@ -158,7 +158,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(MessageChannel pipe) {
-                if(pipe != null) helper.add(pipe);
+                if(pipe != null) helper.pump(pipe);
                 else viewVisibility(true);
             }
         }.execute();

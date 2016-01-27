@@ -18,16 +18,16 @@ import java.io.IOException;
 public abstract class GroupConnect extends InitialConnect {
     public GroupConnect(Handler handler, int disconnectMessageCode, boolean forming) {
         super(handler, disconnectMessageCode, forming);
-        add(ProtoBufferEnum.GROUP_FORMED, new Callbacks<Client, Network.GroupFormed>() {
+        add(ProtoBufferEnum.GROUP_FORMED, new Callbacks<Network.GroupFormed>() {
             @Override
             public Network.GroupFormed make() {
                 return new Network.GroupFormed();
             }
 
             @Override
-            public void mangle(Client from, Network.GroupFormed msg) throws IOException {
-                if(msg.salt != com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES) onGroupFormed(from.pipe, msg.salt);
-                else onPlayingCharacterReply(from.pipe, msg.peerKey, msg.accepted);
+            public void mangle(MessageChannel from, Network.GroupFormed msg) throws IOException {
+                if(msg.salt != com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES) onGroupFormed(from, msg.salt);
+                else onPlayingCharacterReply(from, msg.peerKey, msg.accepted);
             }
         });
     }

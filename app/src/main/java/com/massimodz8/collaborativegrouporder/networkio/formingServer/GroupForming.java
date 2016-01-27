@@ -104,7 +104,7 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
             @Override
             public void connected(MessageChannel newComer) {
                 if(silent != null) {
-                    silent.add(newComer);
+                    silent.pump(newComer);
                     refreshSilentCount(silent.getClientCount());
                 }
                 else {
@@ -125,8 +125,7 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
     public boolean promoteSilent(MessageChannel peer, int disconnect, int peerMessage) {
         if(talking == null) talking = new TalkingDevices(handler, disconnect, peerMessage);
         if(silent.yours(peer)) {
-            talking.add(peer);
-            silent.leak(peer);
+            talking.pump(peer, silent.move(peer));
             return true;
         }
         return false;
@@ -148,16 +147,12 @@ public abstract class GroupForming implements NsdManager.RegistrationListener {
                 }
             }
         }.start();
-        for(MessageChannel leak : members) {
-            silent.leak(leak); // if they're talking they shouldn't even be here
-            talking.leak(leak);
-        }
+
+        for(MessageChannel c : members) forming.pump(c, talking.move(c));
         silent.shutdown();
         silent = null;
         talking.shutdown();
         talking = null;
-
-        for(MessageChannel c : members) forming.add(c);
         nsd.unregisterService(this);
         nsdUnregister = false;
     }

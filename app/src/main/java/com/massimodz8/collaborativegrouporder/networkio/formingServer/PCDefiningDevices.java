@@ -25,15 +25,15 @@ public class PCDefiningDevices extends Pumper<Client> {
     public PCDefiningDevices(Handler handler, int disconnectMessageCode, int definedCharacter_) {
         super(handler, disconnectMessageCode);
         definedCharacter = definedCharacter_;
-        add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new Callbacks<Client, Network.PlayingCharacterDefinition>() {
+        add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new Callbacks<Network.PlayingCharacterDefinition>() {
             @Override
             public Network.PlayingCharacterDefinition make() {
                 return new Network.PlayingCharacterDefinition();
             }
 
             @Override
-            public void mangle(Client from, Network.PlayingCharacterDefinition msg) throws IOException {
-                message(definedCharacter, new Events.CharacterDefinition(from.pipe, msg));
+            public void mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
+                message(definedCharacter, new Events.CharacterDefinition(from, msg));
             }
         });
     }

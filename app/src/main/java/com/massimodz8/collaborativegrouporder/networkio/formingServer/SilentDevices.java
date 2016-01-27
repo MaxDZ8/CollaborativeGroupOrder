@@ -28,22 +28,22 @@ public class SilentDevices extends Pumper<Client> {
         charBudget = initialCharBudget;
         this.initialDelay = initialCharDelay_ms;
 
-        add(ProtoBufferEnum.HELLO, new Callbacks<Client, Network.Hello>() {
+        add(ProtoBufferEnum.HELLO, new Callbacks<Network.Hello>() {
             @Override
             public Network.Hello make() { return new Network.Hello(); }
 
             @Override
-            public void mangle(Client from, Network.Hello msg) throws IOException {
-                from.pipe.writeSync(ProtoBufferEnum.GROUP_INFO, makeGroupInfo(msg))
+            public void mangle(MessageChannel from, Network.Hello msg) throws IOException {
+                from.writeSync(ProtoBufferEnum.GROUP_INFO, makeGroupInfo(msg))
                         .writeSync(ProtoBufferEnum.CHAR_BUDGET, makeInitialCharBudget());
             }
-        }).add(ProtoBufferEnum.PEER_MESSAGE, new Callbacks<Client, Network.PeerMessage>() {
+        }).add(ProtoBufferEnum.PEER_MESSAGE, new Callbacks<Network.PeerMessage>() {
             @Override
             public Network.PeerMessage make() { return new Network.PeerMessage(); }
 
             @Override
-            public void mangle(Client from, Network.PeerMessage msg) throws IOException {
-                message(wroteSomething, new Events.PeerMessage(from.pipe, msg.text));
+            public void mangle(MessageChannel from, Network.PeerMessage msg) throws IOException {
+                message(wroteSomething, new Events.PeerMessage(from, msg.text));
                 // char budget re-estabilished by callback.
             }
         });
