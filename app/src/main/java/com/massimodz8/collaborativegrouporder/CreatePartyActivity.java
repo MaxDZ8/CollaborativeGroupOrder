@@ -270,6 +270,7 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
             character.experience = obj.character.experience;
             character.initiativeBonus = obj.character.initiativeBonus;
             character.name = obj.character.name;
+            character.fullHealth = obj.character.healthPoints;
             owner.chars.add(character);
             characterListAdapter.notifyDataSetChanged();
             return;
@@ -677,7 +678,7 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
 
     @Override
     public View inflate(int resource, ViewGroup root, boolean attachToRoot) {
-        return inflate(resource, root, attachToRoot);
+        return getLayoutInflater().inflate(resource, root, attachToRoot);
     }
 
     @Override
