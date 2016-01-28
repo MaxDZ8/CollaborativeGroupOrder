@@ -1,5 +1,6 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -12,8 +13,7 @@ import android.widget.TextView;
 /**
  * Created by Massimo on 25/01/2016.
  * Displaying a list of characters is a bit more involved because I want to share code between client
- * and server.
- * Both use card_joining_character layout, which is by default in client mode.
+ * and server. Depending on mode, I select slightly different layouts.
  * The server will enable/disable/show/hide various buttons.
  */
 class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterListAdapter.PCViewHolder> {
@@ -53,8 +53,13 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
 
     @Override
     public PCViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View layout = puller.inflate(R.layout.card_joining_character, parent, false);
-        return new PCViewHolder(layout);
+        final int resid = mode == MODE_CLIENT_INPUT? R.layout.card_joining_character_client_input : R.layout.card_joining_character_server_output;
+        return new PCViewHolder(puller.inflate(resid, parent, false));
+    }
+
+    private static void visibility(View target, BuildingPlayingCharacter state, int match) {
+        if(null == target) return;
+        target.setVisibility(match == state.status? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -62,16 +67,12 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
         holder.who = puller.get(position);
         // Ok so, stuff is here or maybe it's not. Since those can be cycled I need to assume
         // everything must be enabled/disabled/shown/hidden.
-        holder.check.setVisibility(BuildingPlayingCharacter.STATUS_ACCEPTED == holder.who.status ? View.VISIBLE : View.GONE);
-        if(mode == MODE_CLIENT_INPUT) {
-            holder.send.setVisibility(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status ? View.VISIBLE : View.GONE);
-            holder.check.setVisibility(BuildingPlayingCharacter.STATUS_ACCEPTED == holder.who.status? View.VISIBLE : View.GONE);
-            holder.sentFeedback.setVisibility(BuildingPlayingCharacter.STATUS_SENT == holder.who.status? View.VISIBLE : View.GONE);
-        }
-        else { // MODE_SERVER_ACCEPTANCE
-            holder.accept.setVisibility(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status? View.VISIBLE : View.GONE);
-            holder.refuse.setVisibility(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status? View.VISIBLE : View.GONE);
-        }
+        visibility(holder.check, holder.who, BuildingPlayingCharacter.STATUS_ACCEPTED);
+        visibility(holder.send, holder.who, BuildingPlayingCharacter.STATUS_BUILDING);
+        visibility(holder.check, holder.who, BuildingPlayingCharacter.STATUS_ACCEPTED);
+        visibility(holder.sentFeedback, holder.who, BuildingPlayingCharacter.STATUS_SENT);
+        visibility(holder.accept, holder.who, BuildingPlayingCharacter.STATUS_BUILDING);
+        visibility(holder.refuse, holder.who, BuildingPlayingCharacter.STATUS_BUILDING);
         holder.initiative.setText(valueof(holder.who.initiativeBonus));
         holder.health.setText(valueof(holder.who.fullHealth));
         holder.experience.setText(valueof(holder.who.experience));
@@ -115,23 +116,9 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
             accept = (Button) container.findViewById(R.id.card_joiningCharacter_acceptButton);
             check = (CheckBox) container.findViewById(R.id.card_joiningCharacter_accepted);
             sentFeedback = (TextView) container.findViewById(R.id.card_joiningCharacter_sentFeedback);
-            send.setOnClickListener(this);
-            refuse.setOnClickListener(this);
-            accept.setOnClickListener(this);
-
-            switch(mode) {
-                case MODE_CLIENT_INPUT:
-                    refuse.setVisibility(View.GONE);
-                    accept.setVisibility(View.GONE);
-                    break;
-                case MODE_SERVER_ACCEPTANCE:
-                    name.setInputType(InputType.TYPE_NULL);
-                    experience.setInputType(InputType.TYPE_NULL);
-                    health.setInputType(InputType.TYPE_NULL);
-                    initiative.setInputType(InputType.TYPE_NULL);
-                    send.setVisibility(View.GONE);
-                    break;
-            }
+            if(null != send) send.setOnClickListener(this);
+            if(null != refuse) refuse.setOnClickListener(this);
+            if(null != accept) accept.setOnClickListener(this);
         }
 
         @Override
