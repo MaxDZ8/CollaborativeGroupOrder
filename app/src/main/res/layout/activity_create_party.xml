@@ -97,7 +97,7 @@
         android:text="@string/btn_generateParty"
         android:id="@+id/btn_closeGroup"
         android:visibility="gone"
-        android:onClick="createGroup" />
+        android:onClick="createDeviceGroup_callback" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -110,7 +110,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/CreatePartyActivity_definingCharactersFeedback"
         android:id="@+id/createPartyActivity_definingCharactersFeedback"
         android:gravity="center_horizontal"
@@ -122,6 +122,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:layout_weight=".5" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/createPartyActivity_allPCAreHereWeAreDone"
+        android:id="@+id/createPartyActivity_makeGroupButton"
+        android:onClick="createPlayingCharacterGroup_callback"
+        android:visibility="gone"
+        android:enabled="false" />
 
 </LinearLayout>

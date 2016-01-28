@@ -108,5 +108,11 @@
     <string name="joinGroupActivity_failedPCSend">Failed to send character data to party owner, detailed error follows:\n</string>
     <string name="CreatePartyActivity_definingCharactersFeedback">Players can now define playing characters. They can define more than one for each device part of the group.\nTheir characters will appear below.</string>
     <string name="card_joiningCharacter_sentFeedback">Sent. Waiting reply.</string>
+    <string name="createPartyActivity_failedAcceptRejectReplySend">Failed to signal character \"%1$s\", error: %2$s</string>
+    <string name="createPartyActivity_PCDefDiscarded_badExperience">Bad character: experience must be positive.</string>
+    <string name="createPartyActivity_PCDefDiscarded_badHealth">Bad character: health points must be positive.</string>
+    <string name="createPartyActivity_PCDefDiscarded_badName">Bad character: must have a name.</string>
+    <string name="joinGroupActivity_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
+    <string name="createPartyActivity_allPCAreHereWeAreDone">Make party</string>
     >
 </resources>

@@ -1,9 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -77,7 +75,13 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
         holder.health.setText(valueof(holder.who.fullHealth));
         holder.experience.setText(valueof(holder.who.experience));
         holder.name.setText(holder.who.name);
+
+        holder.initiative.setEnabled(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status);
+        holder.health.setEnabled(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status);
+        holder.experience.setEnabled(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status);
+        holder.name.setEnabled(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status);
     }
+
 
     static String valueof(int x) {
         if(x == Integer.MIN_VALUE) return "";
@@ -125,30 +129,10 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
         public void onClick(View v) {
             boolean changeStatus = false, newStatus = false;
             if(v == send) {
-                if(validate()) {
-                    puller.action(who, SEND);
-                    changeStatus = true;
-                    newStatus = false;
-                }
+                if(validate()) puller.action(who, SEND);
             }
-            else if(v == refuse) {
-                puller.action(who, REJECT);
-                changeStatus = true;
-                newStatus = true;
-            }
-            else if(v == accept) {
-                puller.action(who, ACCEPT);
-                refuse.setVisibility(View.GONE);
-                accept.setVisibility(View.GONE);
-                check.setVisibility(View.VISIBLE);
-            }
-
-            if(changeStatus) {
-                name.setEnabled(newStatus);
-                health.setEnabled(newStatus);
-                initiative.setEnabled(newStatus);
-                experience.setEnabled(newStatus);
-            }
+            else if(v == refuse) puller.action(who, REJECT);
+            else if(v == accept) puller.action(who, ACCEPT);
         }
 
         private boolean validate() {

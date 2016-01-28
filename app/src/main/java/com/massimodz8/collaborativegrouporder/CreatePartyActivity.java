@@ -298,10 +298,10 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
         characterListAdapter.notifyDataSetChanged();
     }
 
-    private static String good(Network.PlayingCharacterDefinition def) {
-        if(def.experience < 0) return "Bad character: experience must be positive.";
-        if(def.healthPoints < 0) return "Bad character: health points must be positive.";
-        if(def.name.isEmpty()) return "Bad character: must have a name.";
+    private String good(Network.PlayingCharacterDefinition def) {
+        if(def.experience < 0) return getString(R.string.createPartyActivity_PCDefDiscarded_badExperience);
+        if(def.healthPoints < 0) return getString(R.string.createPartyActivity_PCDefDiscarded_badHealth);
+        if(def.name.isEmpty()) return getString(R.string.createPartyActivity_PCDefDiscarded_badName);
         return null;
     }
 
@@ -426,7 +426,7 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
     }
 
     private void updateCount(int targetID, int count) {
-        TextView target = (TextView)findViewById(R.id.txt_connectedDeviceCounts);
+        TextView target = (TextView)findViewById(targetID);
         if(gathering == null) return; // impossible
         if(count == 0) target.setVisibility(View.INVISIBLE);
         else {
@@ -648,6 +648,13 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
                 if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", building.presentationName, localized));
             }
         }.execute();
+    }
+
+    public void createPlayingCharacterGroup_callback(View btn) {
+        new AlertDialog.Builder(this)
+                .setMessage("todo")
+                .show();
+
     }
 
     //
