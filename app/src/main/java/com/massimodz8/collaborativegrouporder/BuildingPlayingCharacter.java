@@ -16,7 +16,7 @@ public class BuildingPlayingCharacter extends PlayingCharacter {
     /// This ctor can be used by client to generate unique character id with ease.
     /// Remember the ids are unique by device, the server considers devices separately.
     BuildingPlayingCharacter() {
-        id = count++;
+        id = ++count;
     }
 
     /// This ctor is used by the server instead: the ids are provided over the wire.
