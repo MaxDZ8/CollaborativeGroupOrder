@@ -143,12 +143,6 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
             build.show();
             return;
         }
-        if(!res.netName.equals(gathering.userName)) {
-            TextView note = (TextView)findViewById(R.id.txt_renamedService);
-            String text = getString(R.string.renamedGroup);
-            note.setText(String.format(text, res.netName));
-            note.setVisibility(View.VISIBLE);
-        }
         TextView port = (TextView)findViewById(R.id.txt_FYI_port);
         String hostInfo = getString(R.string.FYI_explicitConnectInfo);
         hostInfo += String.format(getString(R.string.explicit_portInfo), gathering.getLocalPort());
@@ -198,7 +192,7 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
         findViewById(R.id.txt_scanning).setVisibility(View.VISIBLE);
         findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
         findViewById(R.id.groupList).setVisibility(View.VISIBLE);
-        View closeGroupBtn = findViewById(R.id.btn_closeGroup);
+        View closeGroupBtn = findViewById(R.id.createPartyActivity_makeDeviceGroup);
         closeGroupBtn.setVisibility(View.VISIBLE);
         closeGroupBtn.setEnabled(false);
 
@@ -418,20 +412,20 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
     }
 
     private void onTalkingCountChanged() {
-        updateCount(R.id.txt_talkingDeviceCounts, gathering.getTalkingCount());
+        updateCount(R.id.txt_talkingDeviceCounts, R.string.talkingDeviceStats, gathering.getTalkingCount());
     }
 
     private void onSilentCountChanged() {
-        updateCount(R.id.txt_connectedDeviceCounts, gathering.getSilentCount());
+        updateCount(R.id.txt_connectedDeviceCounts, R.string.anonDeviceStats, gathering.getSilentCount());
     }
 
-    private void updateCount(int targetID, int count) {
+    private void updateCount(int targetID, int stringRes, int count) {
         TextView target = (TextView)findViewById(targetID);
         if(gathering == null) return; // impossible
         if(count == 0) target.setVisibility(View.INVISIBLE);
         else {
             String show = getString(count < 2? R.string.word_device_singular : R.string.word_device_plural);
-            target.setText(String.format(getString(R.string.anonDeviceStats), count, show));
+            target.setText(String.format(getString(stringRes), count, show));
             target.setVisibility(View.VISIBLE);
         }
     }
@@ -599,7 +593,7 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
         // Now boring stuff, all the UI so far must go.
         int[] gone = new int[] {
                 R.id.progressBar, R.id.txt_connectedDeviceCounts, R.id.txt_talkingDeviceCounts,
-                R.id.groupList, R.id.btn_closeGroup, R.id.txt_FYI_port, R.id.txt_scanning
+                R.id.groupList, R.id.createPartyActivity_makeDeviceGroup, R.id.txt_FYI_port, R.id.txt_scanning
         };
         for(int id : gone) findViewById(id).setVisibility(View.GONE);
 
@@ -645,7 +639,8 @@ public class CreatePartyActivity extends AppCompatActivity implements PlayingCha
                 findViewById(R.id.createPartyActivity_definingCharactersFeedback).setVisibility(View.VISIBLE);
                 final String localized = getString(R.string.phaseDefiningCharacters);
                 final ActionBar actionBar = self.getSupportActionBar();
-                if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", building.presentationName, localized));
+                if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", gathering.userName, localized));
+                self.findViewById(R.id.createPartyActivity_makeGroupButton).setVisibility(View.VISIBLE);
             }
         }.execute();
     }

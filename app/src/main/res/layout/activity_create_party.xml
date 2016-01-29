@@ -49,15 +49,6 @@
         android:gravity="center_horizontal"
         android:text="@string/networkScanning" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/generic_unreadable_at_start"
-        android:id="@+id/txt_renamedService"
-        android:visibility="gone"
-        android:gravity="center_horizontal" />
-
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
@@ -95,7 +86,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_generateParty"
-        android:id="@+id/btn_closeGroup"
+        android:id="@+id/createPartyActivity_makeDeviceGroup"
         android:visibility="gone"
         android:onClick="createDeviceGroup_callback" />
 

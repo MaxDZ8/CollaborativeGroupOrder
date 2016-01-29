@@ -143,7 +143,6 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
     public static final int MSG_PLAYING_CHARACTER_CONFIRM_STATUS = 10;
 
 
-    private static final int COLOR_FORBIDDEN_INVALID_TEXT = 0xFF0000FF;
 
     private static String nsdErrorString(int error) {
         switch(error) {
@@ -236,8 +235,8 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
             final int allowed = info.charBudget;
             holder.source = info;
             holder.name.setText(info.group.name);
-            holder.curLen.setText("" + current);
-            holder.lenLimit.setText("" + allowed);
+            holder.curLen.setText(String.valueOf(current));
+            holder.lenLimit.setText(String.valueOf(allowed));
             if(info.group.options == null) holder.options.setVisibility(View.GONE);
             else {
                 String total = activity.getString(R.string.card_group_options);

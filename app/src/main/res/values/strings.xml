@@ -114,5 +114,7 @@
     <string name="createPartyActivity_PCDefDiscarded_badName">Bad character: must have a name.</string>
     <string name="joinGroupActivity_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
     <string name="createPartyActivity_allPCAreHereWeAreDone">Make party</string>
+    <string name="veryBadError">Very bad error</string>
+    <string name="noSuchAlgorithmExceptionAlertDialogMessage">Could not build party key. This is based on internal machinery which was supposed to be here by the standard, something is very wrong.</string>
     >
 </resources>
