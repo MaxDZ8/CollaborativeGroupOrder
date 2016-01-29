@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -42,7 +41,11 @@ public abstract class GroupForming extends RecyclerView.Adapter<GroupForming.Dev
     protected abstract void refreshCharacterData();
     protected abstract void onGroupMemberChange(int currentCount);
 
-    public String userName;
+    public String getUserName() {
+        return userName;
+    }
+
+    private String userName;
     public final Handler handler;
     public int serviceRegistrationCompleteCode;
 
@@ -178,11 +181,11 @@ public abstract class GroupForming extends RecyclerView.Adapter<GroupForming.Dev
         return hasher.digest(message.getBytes());
     }
 
-    public int broadcast(int typeCode, Network.GroupFormed payload) {
+    public int broadcast(int typeCode, MessageNano payload) {
         int fail = 0;
         for(DeviceStatus dev : clients) {
             try {
-                dev.source.writeSync(ProtoBufferEnum.GROUP_FORMED, payload);
+                dev.source.writeSync(typeCode, payload);
             } catch (IOException e) {
                 fail++;
             }

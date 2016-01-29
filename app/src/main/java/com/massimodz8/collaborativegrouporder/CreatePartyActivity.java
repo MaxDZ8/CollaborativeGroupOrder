@@ -174,7 +174,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         groupNameView.setVisibility(View.GONE);
         findViewById(R.id.txt_getGroupNameDesc).setVisibility(View.GONE);
         final ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) actionBar.setTitle(String.format(getString(R.string.networkListening_groupNameTitle), gathering.userName));
+        if(actionBar != null) actionBar.setTitle(String.format(getString(R.string.networkListening_groupNameTitle), gathering.getUserName()));
 
         Enumeration<NetworkInterface> nics;
         try {
@@ -397,7 +397,7 @@ public class CreatePartyActivity extends AppCompatActivity {
                 findViewById(R.id.createPartyActivity_definingCharactersFeedback).setVisibility(View.VISIBLE);
                 final String localized = getString(R.string.phaseDefiningCharacters);
                 final ActionBar actionBar = self.getSupportActionBar();
-                if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", gathering.userName, localized));
+                if(actionBar != null) actionBar.setTitle(String.format("%1$s - %2$s", gathering.getUserName(), localized));
                 self.findViewById(R.id.createPartyActivity_makeGroupButton).setVisibility(View.VISIBLE);
             }
         }.execute();
