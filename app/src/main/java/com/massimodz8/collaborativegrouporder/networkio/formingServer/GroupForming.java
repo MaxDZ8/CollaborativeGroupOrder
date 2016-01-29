@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.PlayingCharacterListAdapter;
 import com.massimodz8.collaborativegrouporder.R;
@@ -22,6 +23,7 @@ import com.massimodz8.collaborativegrouporder.networkio.LandingServer;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -47,7 +49,7 @@ public abstract class GroupForming extends RecyclerView.Adapter<GroupForming.Dev
 
     private String userName;
     public final Handler handler;
-    public int serviceRegistrationCompleteCode;
+    private int serviceRegistrationCompleteCode;
 
     public void shutdown() throws IOException {
         if(forming != null) forming.shutdown();
@@ -211,6 +213,53 @@ public abstract class GroupForming extends RecyclerView.Adapter<GroupForming.Dev
             }
         }
         return names;
+    }
+
+    /**
+     * This is a valid call only if there is at least one accepted playing character.
+     * @return Description of a new group from the current state.
+     */
+    public PersistentStorage.Group makeGroup() {
+        if(getUserName() == null) return null; // publish(...) (silent mode) not called.
+        if(uniqueKey == null) return null; // makeDeviceGroup(...) (PC defining mode) not called
+        if(countAcceptedCharacters() == 0) return null; // no empty groups thank you!
+
+        PersistentStorage.Group build = new PersistentStorage.Group();
+        build.name = getUserName();
+        build.salt = uniqueKey;
+        build.usually = new PersistentStorage.Group.Definition();
+        build.usually.party = new PersistentStorage.Actor[countAcceptedCharacters()];
+        int slot = 0;
+        for(DeviceStatus dev : clients) {
+            for(BuildingPlayingCharacter c : dev.chars) {
+                if(BuildingPlayingCharacter.STATUS_ACCEPTED == c.status) {
+                    build.usually.party[slot++] = buildActor(c);
+                }
+            }
+        }
+        return build;
+    }
+
+    private static PersistentStorage.Actor buildActor(BuildingPlayingCharacter c) {
+        PersistentStorage.Actor res = new PersistentStorage.Actor();
+        res.name = c.name;
+        res.level = 666; /// TODO: whoops! I totally forgot about character level!
+        res.stats = new PersistentStorage.ActorStatistics[1];
+        final PersistentStorage.ActorStatistics gen = res.stats[0] = new PersistentStorage.ActorStatistics();
+        gen.experience = c.experience;
+        gen.initBonus = c.initiativeBonus;
+        gen.healthPoints = c.fullHealth;
+        return res;
+    }
+
+    public void flush() {
+        for(DeviceStatus dev : clients) {
+            if(dev.source.socket.isConnected()) try {
+                dev.source.socket.getOutputStream().flush();
+            } catch (IOException e) {
+                // well, I just tried.
+            }
+        }
     }
 
 

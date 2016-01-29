@@ -116,5 +116,30 @@
     <string name="createPartyActivity_allPCAreHereWeAreDone">Make party</string>
     <string name="veryBadError">Very bad error</string>
     <string name="noSuchAlgorithmExceptionAlertDialogMessage">Could not build party key. This is based on internal machinery which was supposed to be here by the standard, something is very wrong.</string>
+    <string name="persistentStorage_cannotReadGroupList">File exists but cannot be read. This is unlikely to happen by accident so you\'re better check your system is fine.</string>
+    <string name="persistentStorage_failedReadGroupList">Failed to read groups from storage.</string>
+    <string name="persistentStorage_groupDataTooBig">Group data archive exceeds maximum size.</string>
+    <string name="createPartyActivity_badGroupInfoFromStorage">Failed to load already existing group data. New data will not be saved to preserve previous contents. Details: %1$s</string>
+    <string name="persistentStorage_groupDataVersionZero">group version 0 should have never been saved.</string>
+    <string name="persistentStorage_groupNameClash">Group %1$d clashes with %2$d, both are named \"%3$s\".</string>
+    <string name="createPartyActivity_couldNotStoreNewGroup">Could not store new group data. Error: %1$s</string>
+    <string name="persistentStorage_failedSerialization">failed to output data serialization, that was not supposed to happen and needs further investigation.</string>
+    <string name="persistentStorage_failedOutputStreamCreation">could not get an output stream to save new group definitions. This was not supposed to happen.</string>
+    <string name="persistentStorage_failedWrite">Failed to write new group definitions. Maybe you are just low on storage?</string>
+    <string name="persistentStorage_errorReport_premise">Group [%1$d]%2$s</string>
+    <string name="persistentStorage_missingName">: missing name.</string>
+    <string name="persistentStorage_missingKey">: missing key.</string>
+    <string name="persistentStorage_missingPartyDefinition">: missing party definition data.</string>
+    <string name="persistentStorage_failedRead">File cannot be read.</string>
+    <string name="persistentStorage_readSizeMismatch">read size mismatched.</string>
+    <string name="persistentStorage_partyDefValidationPremise">party definition data</string>
+    <string name="persistentStorage_playingCharacters">playing characters</string>
+    <string name="persistentStorage_NPC">NPC</string>
+    <string name="persistentStorage_groupWithNoActors">: empty list.</string>
+    <string name="persistentStorage_actorMissingName">: missing name.</string>
+    <string name="persistentStorage_badLevel">: level is 0.</string>
+    <string name="persistentStorage_preparedActionsForbidden">: prepared actions not allowed here.</string>
+    <string name="persistentStorage_actorStatsEmpty">: empty.</string>
+    <string name="persistentStorage_actorStatsPremise">" statistics"</string>
     >
 </resources>

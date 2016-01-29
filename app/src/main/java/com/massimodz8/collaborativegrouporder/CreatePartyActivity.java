@@ -1,7 +1,9 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.nsd.NsdManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -17,11 +19,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.formingServer.GroupForming;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.Inet4Address;
@@ -30,6 +35,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Objects;
 
@@ -39,6 +45,10 @@ We publish a service and listen to network to find users joining.
 /** todo: this is an excellent moment to provide some ads: after the GM started scanning
  * he has to wait for users to join and I can push to him whatever I want.  */
 public class CreatePartyActivity extends AppCompatActivity {
+    public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.CREATE_PARTY_RESULT";
+    public static final String RESULT_EXTRA_CREATED_PARTY_NAME = "lastCreated";
+    public static final String RESULT_EXTRA_GO_ADVENTURING = "goAdventuringRightAway";
+
     private GroupForming gathering;
     private RecyclerView.Adapter characterListAdapter;
 
@@ -403,10 +413,129 @@ public class CreatePartyActivity extends AppCompatActivity {
         }.execute();
     }
 
-    public void createPlayingCharacterGroup_callback(View btn) {
-        new AlertDialog.Builder(this)
-                .setMessage("todo")
-                .show();
+    public void createPlayingCharacterGroup_callback(final View btn) {
+        btn.setEnabled(false);
+        final CreatePartyActivity self = this;
+        final PersistentDataUtils helper = new PersistentDataUtils() {
+            @Override
+            protected String getString(int resource) {
+                return self.getString(resource);
+            }
+        };
+        new AsyncTask<Void, Void, ArrayList<String>>() {
+            volatile PersistentStorage.PartyOwnerData loaded;
+            volatile File previously;
 
+            @Override
+            protected ArrayList<String> doInBackground(Void... params) {
+                PersistentStorage.PartyOwnerData result = new PersistentStorage.PartyOwnerData();
+                previously = new File(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME);
+                if(previously.exists()) {
+                    ArrayList<String> error = new ArrayList<>();
+                    if(!previously.canRead()) {
+                        error.add(getString(R.string.persistentStorage_cannotReadGroupList));
+                        return error;
+                    }
+
+                    String loadError = helper.mergeExistingGroupData(result, self.getFilesDir());
+                    if(loadError != null) {
+                        error.add(loadError);
+                        return error;
+                    }
+                    error = helper.validateLoadedDefinitions(result);
+                    if(error != null) return error;
+                    helper.upgrade(result);
+                }
+                else result.version = PersistentDataUtils.DEFAULT_WRITE_VERSION;
+                loaded = result;
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<String> lotsa) {
+                if(lotsa != null) {
+                    StringBuilder concat = new StringBuilder();
+                    for(String err : lotsa) concat.append(err).append('\n');
+                    new AlertDialog.Builder(self)
+                            .setMessage(String.format(getString(R.string.createPartyActivity_badGroupInfoFromStorage), concat.toString()))
+                            .show();
+                    return;
+                }
+                // Almost there!
+                PersistentStorage.Group[] added = new PersistentStorage.Group[loaded.everything.length + 1];
+                added[loaded.everything.length] = gathering.makeGroup();
+                loaded.everything = added;
+                new AsyncTask<Void, Void, Exception>() {
+                    @Override
+                    protected Exception doInBackground(Void... params) {
+                        File store = null; // not temporary at all...
+                        try {
+                            store = File.createTempFile("groupList-", ".new", self.getFilesDir());
+                        } catch (IOException e) {
+                            return e;
+                        }
+                        helper.storeValidGroupData(store, loaded);
+                        previously.delete();
+                        store.renameTo(previously);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Exception e) {
+                        if(e != null) {
+                            new AlertDialog.Builder(self)
+                                    .setMessage(String.format(getString(R.string.createPartyActivity_couldNotStoreNewGroup), e.getLocalizedMessage()))
+                                    .show();
+                            return;
+                        }
+                        new AlertDialog.Builder(self)
+                                .setTitle("Success!")
+                                .setMessage("The new group was successfully saved to internal storage. We're almost done here and I will soon take you back to main menu. Do you want to go adventuring right away?")
+                                .setCancelable(false)
+                                .setPositiveButton("Go adventuring", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) { finishingTouches(true); }
+                                })
+                                .setNegativeButton("Main menu", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) { finishingTouches(false); }
+                                })
+                                .show();
+                    }
+                }.execute();
+            }
+        }.execute();
+        //PersistentStorage.PartyOwnerData current = loadExistingData();
+    }
+
+    void finishingTouches(final boolean goAdventuring) {
+        // This is mostly irrelevant. Mostly. Whole point is sending GroupReady message but that's just curtesy,
+        // the clients will decide what to do anyway when the connections go down.
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                final int sillyDelayMS = 250; // make sure the messages go through. Yeah, I should display a progress w/e
+                try {
+                    Network.GroupReady byebye = new Network.GroupReady();
+                    byebye.goAdventuring = true;
+                    gathering.broadcast(ProtoBufferEnum.GROUP_READY, byebye);
+                    gathering.flush();
+                    this.wait(sillyDelayMS);
+                    gathering.shutdown();
+                } catch (InterruptedException | IOException e) {
+                    // Sorry dudes, we're going down anyway.
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                Intent result = new Intent(RESULT_ACTION);
+                result.putExtra(RESULT_EXTRA_CREATED_PARTY_NAME, gathering.getUserName());
+                result.putExtra(RESULT_EXTRA_GO_ADVENTURING, goAdventuring);
+                setResult(Activity.RESULT_OK, result);
+                finish();
+            }
+        }.execute();
     }
 }
