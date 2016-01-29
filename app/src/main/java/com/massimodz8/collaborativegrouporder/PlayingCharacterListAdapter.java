@@ -14,8 +14,8 @@ import android.widget.TextView;
  * and server. Depending on mode, I select slightly different layouts.
  * The server will enable/disable/show/hide various buttons.
  */
-class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterListAdapter.PCViewHolder> {
-    interface DataPuller {
+public class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterListAdapter.PCViewHolder> {
+    public interface DataPuller {
         int getVisibleCount();
         /** The values you get there enumerate the action to perform, which is basically the button
          * hit to trigger this callbacks. The values depend on what you have instantiated this for.
@@ -33,12 +33,12 @@ class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCharacterL
         BuildingPlayingCharacter get(int position);
         long getStableId(int position);
     }
-    static final int MODE_CLIENT_INPUT = 1;
-    static final int MODE_SERVER_ACCEPTANCE = 2;
+    public static final int MODE_CLIENT_INPUT = 1;
+    public static final int MODE_SERVER_ACCEPTANCE = 2;
 
-    static final int SEND = 0;
-    static final int ACCEPT = 1;
-    static final int REJECT = 2;
+    public static final int SEND = 0;
+    public static final int ACCEPT = 1;
+    public static final int REJECT = 2;
 
     public PlayingCharacterListAdapter(DataPuller puller, int mode) {
         this.puller = puller;

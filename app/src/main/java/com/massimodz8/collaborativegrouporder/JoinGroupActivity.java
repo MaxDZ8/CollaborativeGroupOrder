@@ -443,6 +443,7 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
 
 
     private void characterConfirmationStatus(Events.CharacterAcceptStatus obj) {
+        if(pcs == null) return; // ignore bad formed input, can happen if a malicious server sends me a character accept before it sends the salt.
         BuildingPlayingCharacter match = null;
         for(BuildingPlayingCharacter test : pcs) {
             if(test.id == obj.key) {
@@ -451,19 +452,21 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
             }
         }
         if(null == match) return;
-        match.status = obj.accepted? BuildingPlayingCharacter.STATUS_ACCEPTED : BuildingPlayingCharacter.STATUS_REJECTED;
+        match.status = obj.accepted? BuildingPlayingCharacter.STATUS_ACCEPTED : BuildingPlayingCharacter.STATUS_BUILDING;
+        if(!obj.accepted) {
+            new AlertDialog.Builder(this)
+                    .setMessage(String.format(getString(R.string.joinGroupActivity_characterRejectedRetryMessage), match.name))
+                    .show();
+        }
         pcListAdapter.notifyDataSetChanged();
+        enableNewPCButton();
     }
 
     //
     // PlayingCharacterListAdapter.PlayingCharacterPuller __________________________________________
     @Override
     public int getVisibleCount() {
-        int count = 0;
-        for(BuildingPlayingCharacter c : pcs) {
-            if(BuildingPlayingCharacter.STATUS_REJECTED != c.status) count++;
-        }
-        return count;
+        return pcs != null? pcs.size() : 0;
     }
 
     @Override
@@ -497,16 +500,20 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
                 }
                 who.status = BuildingPlayingCharacter.STATUS_SENT;
                 pcListAdapter.notifyDataSetChanged();
-                boolean status = true;
-                for(BuildingPlayingCharacter c : pcs) {
-                    if (BuildingPlayingCharacter.STATUS_BUILDING == c.status) {
-                        status = false;
-                        break;
-                    }
-                }
-                findViewById(R.id.activity_join_group_addCharacterButton).setEnabled(status);
+                enableNewPCButton();
             }
         }.execute();
+    }
+
+    private void enableNewPCButton() {
+        boolean status = true;
+        for(BuildingPlayingCharacter c : pcs) {
+            if (BuildingPlayingCharacter.STATUS_BUILDING == c.status) {
+                status = false;
+                break;
+            }
+        }
+        findViewById(R.id.activity_join_group_addCharacterButton).setEnabled(status);
     }
 
     @Override
@@ -524,19 +531,15 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
         if(pcs == null) return null;
         int count = 0;
         for(BuildingPlayingCharacter c : pcs) {
-            if(BuildingPlayingCharacter.STATUS_REJECTED != c.status) {
-                if(count == position) return c;
-                count++;
-            }
+            if(count == position) return c;
+            count++;
         }
         return null; // uhm
     }
 
     @Override
     public long getStableId(int position) {
-        if(pcs == null) return RecyclerView.NO_ID;
-        long stable = 0;
-        for(BuildingPlayingCharacter c : pcs) stable++;
-        return stable;
+        if(pcs == null || position >= pcs.size()) return RecyclerView.NO_ID;
+        return pcs.get(position).id;
     }
 }

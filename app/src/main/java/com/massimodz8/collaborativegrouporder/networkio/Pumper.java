@@ -215,6 +215,10 @@ public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
     public void shutdown() throws IOException {
         silence = true;
         synchronized(clients) {
+            for (Managed c : clients) {
+                c.sleeper.interrupt();
+                c.sleeper = null;
+            }
             for (Managed c : clients) c.shutdown();
             clients.clear();
         }
