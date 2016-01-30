@@ -605,6 +605,9 @@ public interface Network {
     // optional uint32 peerKey = 5;
     public int peerKey;
 
+    // optional uint32 level = 6;
+    public int level;
+
     public PlayingCharacterDefinition() {
       clear();
     }
@@ -615,6 +618,7 @@ public interface Network {
       healthPoints = 0;
       experience = 0;
       peerKey = 0;
+      level = 0;
       cachedSize = -1;
       return this;
     }
@@ -636,6 +640,9 @@ public interface Network {
       }
       if (this.peerKey != 0) {
         output.writeUInt32(5, this.peerKey);
+      }
+      if (this.level != 0) {
+        output.writeUInt32(6, this.level);
       }
       super.writeTo(output);
     }
@@ -662,6 +669,10 @@ public interface Network {
       if (this.peerKey != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(5, this.peerKey);
+      }
+      if (this.level != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(6, this.level);
       }
       return size;
     }
@@ -699,6 +710,10 @@ public interface Network {
           }
           case 40: {
             this.peerKey = input.readUInt32();
+            break;
+          }
+          case 48: {
+            this.level = input.readUInt32();
             break;
           }
         }

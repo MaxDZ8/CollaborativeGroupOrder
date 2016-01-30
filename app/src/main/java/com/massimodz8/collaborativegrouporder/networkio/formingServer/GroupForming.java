@@ -116,6 +116,7 @@ public abstract class GroupForming extends RecyclerView.Adapter<GroupForming.Dev
         character.initiativeBonus = definition.initiativeBonus;
         character.name = definition.name;
         character.fullHealth = definition.healthPoints;
+        character.level = definition.level;
         if(add) owner.chars.add(character);
         refreshCharacterData();
     }

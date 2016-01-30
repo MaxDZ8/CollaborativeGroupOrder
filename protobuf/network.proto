@@ -58,6 +58,7 @@ message PlayingCharacterDefinition {
 	uint32 healthPoints = 3;
 	uint32 experience = 4;
 	uint32 peerKey = 5; // When client sends a new proposal to server, this will be used to identify the PC relative to the peer, must be unique. Reusing the same key re-defines a character.
+	uint32 level = 6;
 }
 
 

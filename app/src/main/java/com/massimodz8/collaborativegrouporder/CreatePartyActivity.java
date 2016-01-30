@@ -291,6 +291,7 @@ public class CreatePartyActivity extends AppCompatActivity {
         if(def.experience < 0) return getString(R.string.createPartyActivity_PCDefDiscarded_badExperience);
         if(def.healthPoints < 0) return getString(R.string.createPartyActivity_PCDefDiscarded_badHealth);
         if(def.name.isEmpty()) return getString(R.string.createPartyActivity_PCDefDiscarded_badName);
+        if(def.level < 1) return getString(R.string.createPartyActivity_PCDefDiscarded_badLevel);
         return null;
     }
 

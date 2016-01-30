@@ -100,6 +100,8 @@
     <string name="charInputValidation_badName">Must have a name.</string>
     <string name="charInputValidation_hpMustBePositive">Health points must be positive.\n</string>
     <string name="charInputValidation_hpMustBeInteger">Health points must be a number.\n</string>
+    <string name="charInputValidation_lvlMustBePositive">Level must be positive.\n</string>
+    <string name="charInputValidation_lvlMustBeInteger">Level must be a number.\n</string>
     <string name="charInputValidation_initMustBeNumber">Initiative must be a number.\n</string>
     <string name="charInputValidation_xpMustBePositive">Experience must be at least 0.\n</string>
     <string name="charInputValidation_xpMustBeNumeric">Experience points must be a number.\n</string>
@@ -110,7 +112,7 @@
     <string name="card_joiningCharacter_sentFeedback">Sent. Waiting reply.</string>
     <string name="createPartyActivity_failedAcceptRejectReplySend">Failed to signal character \"%1$s\", error: %2$s</string>
     <string name="createPartyActivity_PCDefDiscarded_badExperience">Bad character: experience must be positive.</string>
-    <string name="createPartyActivity_PCDefDiscarded_badHealth">Bad character: health points must be positive.</string>
+    <string name="createPartyActivity_PCDefDiscarded_badHealth">Bad character: health points must be at least 1.</string>
     <string name="createPartyActivity_PCDefDiscarded_badName">Bad character: must have a name.</string>
     <string name="joinGroupActivity_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
     <string name="createPartyActivity_allPCAreHereWeAreDone">Make party</string>
@@ -141,5 +143,7 @@
     <string name="persistentStorage_preparedActionsForbidden">: prepared actions not allowed here.</string>
     <string name="persistentStorage_actorStatsEmpty">: empty.</string>
     <string name="persistentStorage_actorStatsPremise">" statistics"</string>
+    <string name="card_joining_character_client_input_level">Level</string>
+    <string name="createPartyActivity_PCDefDiscarded_badLevel">Bad character: level must be at least 1.</string>
     >
 </resources>

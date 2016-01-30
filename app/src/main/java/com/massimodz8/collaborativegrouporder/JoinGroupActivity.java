@@ -483,6 +483,7 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
                 wire.healthPoints = who.fullHealth;
                 wire.experience = who.experience;
                 wire.peerKey = who.id;
+                wire.level = who.level;
                 try {
                     channel.writeSync(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, wire);
                 } catch (IOException e) {

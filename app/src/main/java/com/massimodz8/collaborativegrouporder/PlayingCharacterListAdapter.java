@@ -75,11 +75,13 @@ public class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCha
         holder.health.setText(valueof(holder.who.fullHealth));
         holder.experience.setText(valueof(holder.who.experience));
         holder.name.setText(holder.who.name);
+        holder.level.setText(valueof(holder.who.level));
 
         holder.initiative.setEnabled(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status);
         holder.health.setEnabled(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status);
         holder.experience.setEnabled(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status);
         holder.name.setEnabled(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status);
+        holder.level.setEnabled(BuildingPlayingCharacter.STATUS_BUILDING == holder.who.status);
     }
 
 
@@ -101,7 +103,7 @@ public class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCha
 
     // View holder pattern <-> keep handles to internal Views so I don't need to look em up.
     protected class PCViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView name, health, initiative, experience;
+        TextView name, level, health, initiative, experience;
         Button send; // client
         Button refuse, accept; // server
         CheckBox check; // client
@@ -112,6 +114,7 @@ public class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCha
         public PCViewHolder(View container) {
             super(container);
             name = (TextView) container.findViewById(R.id.card_joiningCharacter_name);
+            level = (TextView) container.findViewById(R.id.card_joiningCharacter_level);
             health = (TextView) container.findViewById(R.id.card_joiningCharacter_hp);
             initiative = (TextView) container.findViewById(R.id.card_joiningCharacter_initBonus);
             experience = (TextView) container.findViewById(R.id.card_joiningCharacter_xp);
@@ -138,12 +141,18 @@ public class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCha
         private boolean validate() {
             String errors = "";
             if(name.getText().length() < 1) errors += puller.getString(R.string.charInputValidation_badName);
-            int hp = 0, init = 0, xp = 0;
+            int hp = 0, lvl = 0, init = 0, xp = 0;
             try {
                 hp = Integer.parseInt(health.getText().toString());
                 if(hp <= 0) errors += puller.getString(R.string.charInputValidation_hpMustBePositive);
             } catch(NumberFormatException e) {
                 errors += puller.getString(R.string.charInputValidation_hpMustBeInteger);
+            }
+            try {
+                lvl = Integer.parseInt(level.getText().toString());
+                if(lvl <= 0) errors += puller.getString(R.string.charInputValidation_lvlMustBePositive);
+            } catch(NumberFormatException e) {
+                errors += puller.getString(R.string.charInputValidation_lvlMustBeInteger);
             }
             try {
                 init = Integer.parseInt(initiative.getText().toString());
@@ -166,6 +175,7 @@ public class PlayingCharacterListAdapter extends RecyclerView.Adapter<PlayingCha
                 who.fullHealth = hp;
                 who.initiativeBonus = init;
                 who.name = name.getText().toString();
+                who.level = lvl;
             }
             return errors.isEmpty();
         }
