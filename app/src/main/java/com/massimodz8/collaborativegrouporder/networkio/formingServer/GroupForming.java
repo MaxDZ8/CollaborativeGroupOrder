@@ -57,16 +57,18 @@ public abstract class GroupForming extends RecyclerView.Adapter<GroupForming.Dev
         if(silent != null) silent.shutdown();
         if(nsdUnregister) nsd.unregisterService(this);
         if(acceptor != null) acceptor.shutdown();
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    landing.close();
-                } catch (IOException e) {
-                    // If it dies, we just give up and crash.
-                }
-            }
-        }.start();
+        if(landing != null) {
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        landing.close();
+                    } catch (IOException e) {
+                        // If it dies, we just give up and crash.
+                    }
+                    }
+            }.start();
+        }
     }
 
     public void kick(MessageChannel device) {
@@ -220,15 +222,15 @@ public abstract class GroupForming extends RecyclerView.Adapter<GroupForming.Dev
      * This is a valid call only if there is at least one accepted playing character.
      * @return Description of a new group from the current state.
      */
-    public PersistentStorage.Group makeGroup() {
+    public PersistentStorage.PartyOwnerData.Group makeGroup() {
         if(getUserName() == null) return null; // publish(...) (silent mode) not called.
         if(uniqueKey == null) return null; // makeDeviceGroup(...) (PC defining mode) not called
         if(countAcceptedCharacters() == 0) return null; // no empty groups thank you!
 
-        PersistentStorage.Group build = new PersistentStorage.Group();
+        PersistentStorage.PartyOwnerData.Group build = new PersistentStorage.PartyOwnerData.Group();
         build.name = getUserName();
         build.salt = uniqueKey;
-        build.usually = new PersistentStorage.Group.Definition();
+        build.usually = new PersistentStorage.PartyOwnerData.Group.Definition();
         build.usually.party = new PersistentStorage.Actor[countAcceptedCharacters()];
         int slot = 0;
         for(DeviceStatus dev : clients) {
@@ -299,6 +301,7 @@ public abstract class GroupForming extends RecyclerView.Adapter<GroupForming.Dev
         servInfo.setServiceType(SERVICE_TYPE);
         servInfo.setPort(getLocalPort());
         nsd.registerService(servInfo, NsdManager.PROTOCOL_DNS_SD, this);
+        nsdUnregister = true;
         return true;
     }
 
@@ -454,7 +457,7 @@ public abstract class GroupForming extends RecyclerView.Adapter<GroupForming.Dev
 
     ServerSocket landing;
     NsdManager nsd;
-    boolean nsdUnregister = true;
+    boolean nsdUnregister;
     LandingServer acceptor;
 
     Vector<DeviceStatus> clients = new Vector<>();
