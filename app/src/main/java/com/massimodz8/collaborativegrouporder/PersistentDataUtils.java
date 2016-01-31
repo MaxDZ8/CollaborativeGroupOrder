@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -59,7 +60,7 @@ public abstract class PersistentDataUtils {
             for(int check = 0; check < loaded.everything.length; check++) {
                 final PersistentStorage.PartyOwnerData.Group ref = loaded.everything[check];
                 if(invalid(arr, ref, check)) continue;
-                for(int cmp = check; cmp < loaded.everything.length; cmp++) {
+                for(int cmp = check + 1; cmp < loaded.everything.length; cmp++) {
                     if(ref.name.equals(loaded.everything[cmp].name)) {
                         String err = getString(R.string.persistentStorage_groupNameClash);
                         arr.add(String.format(err, check, cmp, ref.name));
@@ -67,7 +68,7 @@ public abstract class PersistentDataUtils {
                 }
             }
         }
-        return arr;
+        return arr.isEmpty()? null : arr;
     }
 
     public ArrayList<String> validateLoadedDefinitions(PersistentStorage.PartyClientData loaded) {
@@ -80,16 +81,16 @@ public abstract class PersistentDataUtils {
             for(int check = 0; check < loaded.everything.length; check++) {
                 final PersistentStorage.PartyClientData.Group ref = loaded.everything[check];
                 if(invalid(arr, ref, check)) continue;
-                for(int cmp = check; cmp < loaded.everything.length; cmp++) {
+                for(int cmp = check + 1; cmp < loaded.everything.length; cmp++) {
                     if(ref.name.equals(loaded.everything[cmp].name) &&
-                            ref.key.equals(loaded.everything[cmp].key)) {
+                            Arrays.equals(ref.key, loaded.everything[cmp].key)) {
                         String err = getString(R.string.persistentStorage_groupKeyNameClash);
                         arr.add(String.format(err, check, cmp, ref.name));
                     }
                 }
             }
         }
-        return arr;
+        return arr.isEmpty()? null : arr;
     }
 
     private boolean invalid(ArrayList<String> errors, PersistentStorage.PartyOwnerData.Group group, int index) {
@@ -116,10 +117,10 @@ public abstract class PersistentDataUtils {
     }
 
     public <Container extends MessageNano> String storeValidGroupData(File store, Container valid) {
-        byte[] buff = new byte[CodedOutputByteBufferNano.computeMessageSizeNoTag(valid)];
+        byte[] buff = new byte[valid.getSerializedSize()];
         CodedOutputByteBufferNano output = CodedOutputByteBufferNano.newInstance(buff);
         try {
-            output.writeMessageNoTag(valid);
+            valid.writeTo(output);
         } catch (IOException e) {
             return getString(R.string.persistentStorage_failedSerialization);
         }
@@ -127,6 +128,7 @@ public abstract class PersistentDataUtils {
         try {
             out = new FileOutputStream(store);
             out.write(buff);
+            out.close();
         } catch (FileNotFoundException e) {
             return getString(R.string.persistentStorage_failedOutputStreamCreation);
         } catch (IOException e) {
