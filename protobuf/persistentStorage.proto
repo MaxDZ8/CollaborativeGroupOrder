@@ -5,18 +5,18 @@ option java_package = "com.massimodz8.collaborativegrouporder.protocol";
 message PartyOwnerData {
     uint32 version = 1;
 	repeated Group everything = 2;
-}
 
-message Group {
-    string name = 1;
-    bytes salt = 2; // players wanting to join a group must specify a group by name and select characters by guessing the salt.
-    Definition usually = 3; // "default" group settings, must exist
-	
-	// Note: there's no "current group state" anymore, store them somewhere else
-	
-	message Definition {
-	    repeated Actor party = 1; // must count at least one member, otherwise error
-		repeated Actor npcs = 2;
+	message Group {
+		string name = 1;
+		bytes salt = 2; // players wanting to join a group must specify a group by name and select characters by guessing the salt.
+		Definition usually = 3; // "default" group settings, must exist
+		
+		// Note: there's no "current group state" anymore, store them somewhere else
+		
+		message Definition {
+			repeated Actor party = 1; // must count at least one member, otherwise error
+			repeated Actor npcs = 2;
+		}
 	}
 }
 
@@ -40,4 +40,16 @@ message ActorStatistics {
 	uint32 experience = 1;
 	uint32 initBonus = 2;
 	int32 healthPoints = 3; // Group.usually -> full health, otherwise current health
+}
+
+
+// Client information about a group. I make it completely distinct to take it easy.
+message PartyClientData {
+    uint32 version = 1;
+	repeated Group everything = 2;
+	
+	message Group {
+		string name = 1;
+		bytes key = 2;
+	}
 }

@@ -38,31 +38,49 @@ public abstract class GroupJoining implements NsdManager.DiscoveryListener {
     Map<NsdServiceInfo, MessageChannel> probing = new IdentityHashMap<>();
     boolean nsdDeregister = true;
 
+    static public class MessageCodes {
+        final int disconnected;
+        final int foundGroup;
+        final int charBudget;
+        final int initiatePCDefinition;
+        final int pcAcceptance;
+        final int groupDone;
 
-    public GroupJoining(Handler handler, boolean groupBeingFormed, NsdManager nsd, int disconnected, final int foundGroup, final int charBudget, final int goPCDefinitionMode, final int pcAcceptance) {
+        public MessageCodes(int disconnected, int foundGroup, int charBudget, int initiatePCDefinition, int pcAcceptance, int groupDone) {
+            this.disconnected = disconnected;
+            this.foundGroup = foundGroup;
+            this.charBudget = charBudget;
+            this.initiatePCDefinition = initiatePCDefinition;
+            this.pcAcceptance = pcAcceptance;
+            this.groupDone = groupDone;
+        }
+    }
+
+
+    public GroupJoining(Handler handler, boolean groupBeingFormed, NsdManager nsd, final MessageCodes codes) {
         this.handler = handler;
         this.groupBeingFormed = groupBeingFormed;
         this.nsd = nsd;
         nsd.discoverServices(GroupForming.SERVICE_TYPE, NsdManager.PROTOCOL_DNS_SD, this);
-        helper = new GroupConnect(handler, disconnected, groupBeingFormed) {
+        helper = new GroupConnect(handler, codes.disconnected, groupBeingFormed, codes.groupDone) {
             @Override
             public void onGroupFound(MessageChannel c, ConnectedGroup group) {
-                message(foundGroup, new JoinGroupActivity.GroupConnection(c, group));
+                message(codes.foundGroup, new JoinGroupActivity.GroupConnection(c, group));
             }
 
             @Override
             public void onBudgetReceived(MessageChannel c, int newBudget, int delay) {
-                message(charBudget, new Events.CharBudget(c, newBudget, delay));
+                message(codes.charBudget, new Events.CharBudget(c, newBudget, delay));
             }
 
             @Override
             protected void onGroupFormed(MessageChannel c, byte[] salt) {
-                message(goPCDefinitionMode, new Events.GroupKey(c, salt));
+                message(codes.initiatePCDefinition, new Events.GroupKey(c, salt));
             }
 
             @Override
             protected void onPlayingCharacterReply(MessageChannel c, int peerKey, boolean accepted) {
-                message(pcAcceptance, new Events.CharacterAcceptStatus(c, peerKey, accepted));
+                message(codes.pcAcceptance, new Events.CharacterAcceptStatus(c, peerKey, accepted));
             }
         };
     }

@@ -58,7 +58,7 @@
     <string name="probingDesc">Probing group owner, please wait.</string>
     <string name="networkListening_groupNameTitle">Gathering party \"%1$s\"</string>
     <string name="cannotEnumerateNICs">Failed to get network information. This isn\'t really a problem but you\'ll have to find this device network address in some other way in case your friends need explicit connection data.</string>
-    <string name="cannotStartSilentForming">"An error occured while attempting to start accepting connections. I suggest to start again, possibly after rebooting device."</string>
+    <string name="cannotStartSilentForming">"An error occurred while attempting to start accepting connections. I suggest to start again, possibly after rebooting device."</string>
     <string name="cannotAccept">A device tried to connect to the group but something went wrong in the process.</string>
     <string name="ohNo_pgsAreGone">Lost connection to device managing characters %1$s.</string>
     <string name="ohNo_talkingIsGone">Lost connection to device, last words: %1$s</string>
@@ -114,17 +114,19 @@
     <string name="createPartyActivity_PCDefDiscarded_badExperience">Bad character: experience must be positive.</string>
     <string name="createPartyActivity_PCDefDiscarded_badHealth">Bad character: health points must be at least 1.</string>
     <string name="createPartyActivity_PCDefDiscarded_badName">Bad character: must have a name.</string>
-    <string name="joinGroupActivity_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
+    <string name="createPartyActivity_PCDefDiscarded_badLevel">Bad character: level must be at least 1.</string>
+    <string name="createPartyActivity_newGroupSaved_startSession">Start a new session</string>
     <string name="createPartyActivity_allPCAreHereWeAreDone">Make party</string>
+    <string name="joinPartyActivity_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
+    <string name="joinPartyActivity_newDataSaved_goAdventuring">Go adventuring</string>
     <string name="veryBadError">Very bad error</string>
     <string name="noSuchAlgorithmExceptionAlertDialogMessage">Could not build party key. This is based on internal machinery which was supposed to be here by the standard, something is very wrong.</string>
     <string name="persistentStorage_cannotReadGroupList">File exists but cannot be read. This is unlikely to happen by accident so you\'re better check your system is fine.</string>
     <string name="persistentStorage_failedReadGroupList">Failed to read groups from storage.</string>
     <string name="persistentStorage_groupDataTooBig">Group data archive exceeds maximum size.</string>
-    <string name="createPartyActivity_badGroupInfoFromStorage">Failed to load already existing group data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="persistentStorage_groupDataVersionZero">group version 0 should have never been saved.</string>
     <string name="persistentStorage_groupNameClash">Group %1$d clashes with %2$d, both are named \"%3$s\".</string>
-    <string name="createPartyActivity_couldNotStoreNewGroup">Could not store new group data. Error: %1$s</string>
+    <string name="persistentStorage_groupKeyNameClash">Group key %1$d clashes with %2$d, both are named \"%3$s\" and have the same key!</string>
     <string name="persistentStorage_failedSerialization">failed to output data serialization, that was not supposed to happen and needs further investigation.</string>
     <string name="persistentStorage_failedOutputStreamCreation">could not get an output stream to save new group definitions. This was not supposed to happen.</string>
     <string name="persistentStorage_failedWrite">Failed to write new group definitions. Maybe you are just low on storage?</string>
@@ -143,7 +145,13 @@
     <string name="persistentStorage_preparedActionsForbidden">: prepared actions not allowed here.</string>
     <string name="persistentStorage_actorStatsEmpty">: empty.</string>
     <string name="persistentStorage_actorStatsPremise">" statistics"</string>
+    <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
+    <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
+    <string name="dataLoadUpdate_newGroupSaved_msg">  The new group was successfully saved to internal storage. We\'re almost done here and I will soon take you back to main menu. Do you want to start a new session right away?</string>
+    <string name="dataLoadUpdate_finished_newDataSaved_mainMenu">Main menu</string>
+    <string name="dataLoadUpdate_couldNotStoreNewData">Could not store new group data. Error: %1$s</string>
+    <string name="dataLoadUpdate_failedPreviousDataDelete">failed to delete previous contents, new data will be discarded to maintain the old.</string>
+    <string name="dataLoadUpdate_failedNewDataRenamePreviousDestroyed">Failed to rename new data to to override old. Old data storage has been destroyed but data itself is preserved.</string>
     <string name="card_joining_character_client_input_level">Level</string>
-    <string name="createPartyActivity_PCDefDiscarded_badLevel">Bad character: level must be at least 1.</string>
-    >
+
 </resources>

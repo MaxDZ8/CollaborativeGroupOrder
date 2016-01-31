@@ -3,6 +3,7 @@ package com.massimodz8.collaborativegrouporder.networkio.joiningClient;
 import android.os.Handler;
 
 import com.massimodz8.collaborativegrouporder.networkio.Client;
+import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
@@ -16,8 +17,9 @@ import java.io.IOException;
  * mangles a couple of additional messages.
  */
 public abstract class GroupConnect extends InitialConnect {
-    public GroupConnect(Handler handler, int disconnectMessageCode, boolean forming) {
+    public GroupConnect(Handler handler, int disconnectMessageCode, boolean forming, int groupReadyEvent_) {
         super(handler, disconnectMessageCode, forming);
+        groupReadyEvent = groupReadyEvent_;
         add(ProtoBufferEnum.GROUP_FORMED, new Callbacks<Network.GroupFormed>() {
             @Override
             public Network.GroupFormed make() {
@@ -29,8 +31,18 @@ public abstract class GroupConnect extends InitialConnect {
                 if(msg.salt != com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES) onGroupFormed(from, msg.salt);
                 else onPlayingCharacterReply(from, msg.peerKey, msg.accepted);
             }
+        }).add(ProtoBufferEnum.GROUP_READY, new Callbacks<Network.GroupReady>() {
+            @Override
+            public Network.GroupReady make() { return new Network.GroupReady(); }
+
+            @Override
+            public void mangle(MessageChannel from, Network.GroupReady msg) throws IOException {
+                message(groupReadyEvent, new Events.GroupDone(from, msg.goAdventuring));
+            }
         });
     }
     protected abstract void onGroupFormed(MessageChannel origin, byte[] salt);
     protected abstract void onPlayingCharacterReply(MessageChannel origin, int peerKey, boolean accepted);
+
+    final int groupReadyEvent;
 }

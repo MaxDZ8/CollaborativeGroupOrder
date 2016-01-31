@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.formingServer.GroupForming;
@@ -37,7 +36,6 @@ import java.net.SocketException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Objects;
 
 /* This activity is started by the MainMenuActivity when the user wants to assemble a new party.
 We publish a service and listen to network to find users joining.
@@ -47,7 +45,8 @@ We publish a service and listen to network to find users joining.
 public class CreatePartyActivity extends AppCompatActivity {
     public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.CREATE_PARTY_RESULT";
     public static final String RESULT_EXTRA_CREATED_PARTY_NAME = "lastCreated";
-    public static final String RESULT_EXTRA_GO_ADVENTURING = "goAdventuringRightAway";
+    public static final String RESULT_EXTRA_START_SESSION = "goAdventuringRightAway";
+    public static final String RESULT_EXTRA_CREATED_PARTY_KEY = "newKey";
 
     private GroupForming gathering;
     private RecyclerView.Adapter characterListAdapter;
@@ -423,90 +422,41 @@ public class CreatePartyActivity extends AppCompatActivity {
                 return self.getString(resource);
             }
         };
-        new AsyncTask<Void, Void, ArrayList<String>>() {
-            volatile PersistentStorage.PartyOwnerData loaded;
-            volatile File previously;
-
+        new AsyncActivityLoadUpdateTask<PersistentStorage.PartyOwnerData>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", this) {
             @Override
-            protected ArrayList<String> doInBackground(Void... params) {
-                PersistentStorage.PartyOwnerData result = new PersistentStorage.PartyOwnerData();
-                previously = new File(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME);
-                if(previously.exists()) {
-                    ArrayList<String> error = new ArrayList<>();
-                    if(!previously.canRead()) {
-                        error.add(getString(R.string.persistentStorage_cannotReadGroupList));
-                        return error;
-                    }
+            protected void onCompletedSuccessfully() {
+                new AlertDialog.Builder(self)
+                        .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
+                        .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.joinPartyActivity_newDataSaved_goAdventuring, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) { finishingTouches(true); }
+                        })
+                        .setNegativeButton(R.string.dataLoadUpdate_finished_newDataSaved_mainMenu, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) { finishingTouches(false);     }
+                        })
+                        .show();
 
-                    String loadError = helper.mergeExistingGroupData(result, self.getFilesDir());
-                    if(loadError != null) {
-                        error.add(loadError);
-                        return error;
-                    }
-                    error = helper.validateLoadedDefinitions(result);
-                    if(error != null) return error;
-                    helper.upgrade(result);
-                }
-                else result.version = PersistentDataUtils.DEFAULT_WRITE_VERSION;
-                loaded = result;
-                return null;
             }
-
             @Override
-            protected void onPostExecute(ArrayList<String> lotsa) {
-                if(lotsa != null) {
-                    StringBuilder concat = new StringBuilder();
-                    for(String err : lotsa) concat.append(err).append('\n');
-                    new AlertDialog.Builder(self)
-                            .setMessage(String.format(getString(R.string.createPartyActivity_badGroupInfoFromStorage), concat.toString()))
-                            .show();
-                    return;
-                }
-                // Almost there!
-                PersistentStorage.Group[] added = new PersistentStorage.Group[loaded.everything.length + 1];
-                added[loaded.everything.length] = gathering.makeGroup();
-                loaded.everything = added;
-                new AsyncTask<Void, Void, Exception>() {
-                    @Override
-                    protected Exception doInBackground(Void... params) {
-                        File store = null; // not temporary at all...
-                        try {
-                            store = File.createTempFile("groupList-", ".new", self.getFilesDir());
-                        } catch (IOException e) {
-                            return e;
-                        }
-                        helper.storeValidGroupData(store, loaded);
-                        previously.delete();
-                        store.renameTo(previously);
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Exception e) {
-                        if(e != null) {
-                            new AlertDialog.Builder(self)
-                                    .setMessage(String.format(getString(R.string.createPartyActivity_couldNotStoreNewGroup), e.getLocalizedMessage()))
-                                    .show();
-                            return;
-                        }
-                        new AlertDialog.Builder(self)
-                                .setTitle("Success!")
-                                .setMessage("The new group was successfully saved to internal storage. We're almost done here and I will soon take you back to main menu. Do you want to go adventuring right away?")
-                                .setCancelable(false)
-                                .setPositiveButton("Go adventuring", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) { finishingTouches(true); }
-                                })
-                                .setNegativeButton("Main menu", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) { finishingTouches(false); }
-                                })
-                                .show();
-                    }
-                }.execute();
+            protected void appendNewEntry(PersistentStorage.PartyOwnerData loaded) {
+                PersistentStorage.PartyOwnerData.Group[] longer = new PersistentStorage.PartyOwnerData.Group[loaded.everything.length + 1];
+                for(int cp = 0; cp < loaded.everything.length; cp++) longer[cp] = loaded.everything[cp];
+                PersistentStorage.PartyClientData.Group gen = new PersistentStorage.PartyClientData.Group();
+                longer[loaded.everything.length] = gathering.makeGroup();
+                loaded.everything =  longer;
             }
+            @Override
+            protected void setVersion(PersistentStorage.PartyOwnerData result) { result.version = PersistentDataUtils.OWNER_DATA_WRITE_VERSION; }
+            @Override
+            protected void upgrade(PersistentDataUtils helper, PersistentStorage.PartyOwnerData result) { helper.upgrade(result); }
+            @Override
+            protected ArrayList<String> validateLoadedDefinitions(PersistentDataUtils helper, PersistentStorage.PartyOwnerData result) { return helper.validateLoadedDefinitions(result); }
+            @Override
+            protected PersistentStorage.PartyOwnerData allocate() { return new PersistentStorage.PartyOwnerData(); }
         }.execute();
-        //PersistentStorage.PartyOwnerData current = loadExistingData();
     }
 
     void finishingTouches(final boolean goAdventuring) {
@@ -521,7 +471,7 @@ public class CreatePartyActivity extends AppCompatActivity {
                     byebye.goAdventuring = true;
                     gathering.broadcast(ProtoBufferEnum.GROUP_READY, byebye);
                     gathering.flush();
-                    this.wait(sillyDelayMS);
+                    Thread.sleep(sillyDelayMS);
                     gathering.shutdown();
                 } catch (InterruptedException | IOException e) {
                     // Sorry dudes, we're going down anyway.
@@ -533,7 +483,8 @@ public class CreatePartyActivity extends AppCompatActivity {
             protected void onPostExecute(Void aVoid) {
                 Intent result = new Intent(RESULT_ACTION);
                 result.putExtra(RESULT_EXTRA_CREATED_PARTY_NAME, gathering.getUserName());
-                result.putExtra(RESULT_EXTRA_GO_ADVENTURING, goAdventuring);
+                result.putExtra(RESULT_EXTRA_CREATED_PARTY_KEY, gathering.makeGroup().salt);
+                result.putExtra(RESULT_EXTRA_START_SESSION, goAdventuring);
                 setResult(Activity.RESULT_OK, result);
                 finish();
             }

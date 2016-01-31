@@ -1,7 +1,9 @@
 package com.massimodz8.collaborativegrouporder;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
@@ -28,13 +30,21 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.joiningClient.GroupJoining;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Vector;
 
 public class JoinGroupActivity extends AppCompatActivity implements PlayingCharacterListAdapter.DataPuller {
+    public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.JOIN_PARTY_RESULT";
+    public static final String RESULT_EXTRA_JOINED_PARTY_NAME = "joined";
+    public static final String RESULT_EXTRA_GO_ADVENTURING = "goAdventuringRightAway";
+    public static final String RESULT_EXTRA_JOINED_PARTY_KEY = "newKey";
+
     public static final int CLIENT_PROTOCOL_VERSION = 1;
     GroupJoining helper;
     Handler guiThreadHandler;
@@ -108,11 +118,19 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
                     }
                     case MSG_GROUP_FORMING: beginDefiningPC((Events.GroupKey) msg.obj); break;
                     case MSG_PLAYING_CHARACTER_CONFIRM_STATUS: characterConfirmationStatus((Events.CharacterAcceptStatus)msg.obj); break;
+                    case MSG_GROUP_DONE: {
+                        Events.GroupDone real = (Events.GroupDone)msg.obj;
+                        GroupState group = getByChannel(real.origin);
+                        if(group == null) break; // not really possible
+                        groupStored(group.group.name, groupKey, real.goAdventuring);
+                        break;
+                    }
                 }
                 return false;
             }
         });
-        helper = new GroupJoining(guiThreadHandler, true, nsd, MSG_SOCKET_DISCONNECTED, MSG_GROUP_FOUND, MSG_CHAR_BUDGET, MSG_GROUP_FORMING, MSG_PLAYING_CHARACTER_CONFIRM_STATUS) {
+        GroupJoining.MessageCodes codes = new GroupJoining.MessageCodes(MSG_SOCKET_DISCONNECTED, MSG_GROUP_FOUND, MSG_CHAR_BUDGET, MSG_GROUP_FORMING, MSG_PLAYING_CHARACTER_CONFIRM_STATUS, MSG_GROUP_DONE);
+        helper = new GroupJoining(guiThreadHandler, true, nsd, codes) {
             @Override
             protected void onDiscoveryStart(ServiceDiscoveryStartStop status) {
                 if(status.successful) {
@@ -136,12 +154,63 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
         };
     }
 
+    private void groupStored(final String name, final byte[] groupKey, boolean goAdventuring) {
+        final JoinGroupActivity self = this;
+        new AsyncActivityLoadUpdateTask<PersistentStorage.PartyClientData>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self) {
+            @Override
+            protected void onCompletedSuccessfully() {
+                new AlertDialog.Builder(self)
+                        .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
+                        .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.joinPartyActivity_newDataSaved_goAdventuring, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) { finishingTouches(name, groupKey, true); }
+                        })
+                        .setNegativeButton(R.string.dataLoadUpdate_finished_newDataSaved_mainMenu, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) { finishingTouches(name, groupKey, false); }
+                        })
+                        .show();
+            }
+            @Override
+            protected void appendNewEntry(PersistentStorage.PartyClientData loaded) {
+                PersistentStorage.PartyClientData.Group[] longer = new PersistentStorage.PartyClientData.Group[loaded.everything.length + 1];
+                for(int cp = 0; cp < loaded.everything.length; cp++) longer[cp] = loaded.everything[cp];
+                PersistentStorage.PartyClientData.Group gen = new PersistentStorage.PartyClientData.Group();
+                gen.key = groupKey;
+                gen.name = candidates.elementAt(0).group.name;
+                longer[loaded.everything.length] = gen;
+                loaded.everything =  longer;
+            }
+            @Override
+            protected void setVersion(PersistentStorage.PartyClientData result) { result.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION; }
+            @Override
+            protected void upgrade(PersistentDataUtils helper, PersistentStorage.PartyClientData result) { helper.upgrade(result); }
+            @Override
+            protected ArrayList<String> validateLoadedDefinitions(PersistentDataUtils helper, PersistentStorage.PartyClientData result) { return helper.validateLoadedDefinitions(result); }
+            @Override
+            protected PersistentStorage.PartyClientData allocate() { return new PersistentStorage.PartyClientData(); }
+        }.execute();
+    }
+
+    private void finishingTouches(String name, byte[] groupKey, boolean goAdventuring) {
+        if(name != null || this.groupKey != null) {
+            Intent result = new Intent(RESULT_ACTION);
+            result.putExtra(RESULT_EXTRA_JOINED_PARTY_NAME, name);
+            result.putExtra(RESULT_EXTRA_JOINED_PARTY_KEY, this.groupKey);
+            result.putExtra(RESULT_EXTRA_GO_ADVENTURING, goAdventuring);
+            setResult(Activity.RESULT_OK, result);
+        }
+        finish();
+    }
+
     public static final int MSG_SOCKET_DISCONNECTED = 5;
     public static final int MSG_GROUP_FOUND = 6;
     public static final int MSG_CHAR_BUDGET = 8;
     public static final int MSG_GROUP_FORMING = 9;
     public static final int MSG_PLAYING_CHARACTER_CONFIRM_STATUS = 10;
-
+    public static final int MSG_GROUP_DONE = 11;
 
 
     private static String nsdErrorString(int error) {
@@ -455,7 +524,7 @@ public class JoinGroupActivity extends AppCompatActivity implements PlayingChara
         match.status = obj.accepted? BuildingPlayingCharacter.STATUS_ACCEPTED : BuildingPlayingCharacter.STATUS_BUILDING;
         if(!obj.accepted) {
             new AlertDialog.Builder(this)
-                    .setMessage(String.format(getString(R.string.joinGroupActivity_characterRejectedRetryMessage), match.name))
+                    .setMessage(String.format(getString(R.string.joinPartyActivity_characterRejectedRetryMessage), match.name))
                     .show();
         }
         pcListAdapter.notifyDataSetChanged();

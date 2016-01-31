@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder;
 
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
+import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.File;
@@ -20,15 +21,16 @@ import java.util.ArrayList;
 public abstract class PersistentDataUtils {
     protected abstract String getString(int resource);
 
-    public static final int DEFAULT_WRITE_VERSION = 1;
+    public static final int OWNER_DATA_WRITE_VERSION = 1;
+    public static final int CLIENT_DATA_WRITE_VERSION = 1;
     public static final int MAX_GROUP_DATA_BYTES = 1024 * 1024 * 4;
 
-    public String mergeExistingGroupData(PersistentStorage.PartyOwnerData dst, File from) {
+    public <Container extends MessageNano> String mergeExistingGroupData(Container dst, File from) {
         FileInputStream source;
         try {
             source = new FileInputStream(from);
         } catch (FileNotFoundException e) {
-            return getString(R.string.persistentStorage_cannotReadGroupList);
+            return null;
         }
         if(from.length() > MAX_GROUP_DATA_BYTES) return getString(R.string.persistentStorage_groupDataTooBig);
         byte[] everything = new byte[(int)from.length()];
@@ -55,11 +57,12 @@ public abstract class PersistentDataUtils {
         }
         if(loaded.version >= 1) {
             for(int check = 0; check < loaded.everything.length; check++) {
-                if(invalid(arr, loaded.everything[check], check)) continue;
+                final PersistentStorage.PartyOwnerData.Group ref = loaded.everything[check];
+                if(invalid(arr, ref, check)) continue;
                 for(int cmp = check; cmp < loaded.everything.length; cmp++) {
-                    if(loaded.everything[check].name.equals(loaded.everything[cmp].name)) {
+                    if(ref.name.equals(loaded.everything[cmp].name)) {
                         String err = getString(R.string.persistentStorage_groupNameClash);
-                        arr.add(String.format(err, check, cmp, loaded.everything[check].name));
+                        arr.add(String.format(err, check, cmp, ref.name));
                     }
                 }
             }
@@ -67,7 +70,29 @@ public abstract class PersistentDataUtils {
         return arr;
     }
 
-    private boolean invalid(ArrayList<String> errors, PersistentStorage.Group group, int index) {
+    public ArrayList<String> validateLoadedDefinitions(PersistentStorage.PartyClientData loaded) {
+        ArrayList<String> arr = new ArrayList<>();
+        if(loaded.version == 0) {
+            arr.add(getString(R.string.persistentStorage_groupDataVersionZero));
+            return arr;
+        }
+        if(loaded.version >= 1) {
+            for(int check = 0; check < loaded.everything.length; check++) {
+                final PersistentStorage.PartyClientData.Group ref = loaded.everything[check];
+                if(invalid(arr, ref, check)) continue;
+                for(int cmp = check; cmp < loaded.everything.length; cmp++) {
+                    if(ref.name.equals(loaded.everything[cmp].name) &&
+                            ref.key.equals(loaded.everything[cmp].key)) {
+                        String err = getString(R.string.persistentStorage_groupKeyNameClash);
+                        arr.add(String.format(err, check, cmp, ref.name));
+                    }
+                }
+            }
+        }
+        return arr;
+    }
+
+    private boolean invalid(ArrayList<String> errors, PersistentStorage.PartyOwnerData.Group group, int index) {
         final int start = errors.size();
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
@@ -82,7 +107,15 @@ public abstract class PersistentDataUtils {
         return start != errors.size();
     }
 
-    public String storeValidGroupData(File store, PersistentStorage.PartyOwnerData valid) {
+    private boolean invalid(ArrayList<String> errors, PersistentStorage.PartyClientData.Group group, int index) {
+        final int start = errors.size();
+        final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
+        if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
+        if(group.key.length < 1) errors.add(premise + getString(R.string.persistentStorage_missingKey));
+        return start != errors.size();
+    }
+
+    public <Container extends MessageNano> String storeValidGroupData(File store, Container valid) {
         byte[] buff = new byte[CodedOutputByteBufferNano.computeMessageSizeNoTag(valid)];
         CodedOutputByteBufferNano output = CodedOutputByteBufferNano.newInstance(buff);
         try {
@@ -100,7 +133,6 @@ public abstract class PersistentDataUtils {
             return getString(R.string.persistentStorage_failedWrite);
         }
         return null;
-
     }
 
     class ActorValidator {
@@ -143,5 +175,10 @@ public abstract class PersistentDataUtils {
         if(result.version == 0) result.version = 1; // free upgrade :P
     }
 
-    public static final String DEFAULT_GROUP_DATA_FILE_NAME = "groups.bin";
+    public void upgrade(PersistentStorage.PartyClientData result) {
+        if(result.version == 0) result.version = 1; // free upgrade :P
+    }
+
+    public static final String DEFAULT_GROUP_DATA_FILE_NAME = "groupDefs.bin";
+    public static final String DEFAULT_KEY_FILE_NAME = "keys.bin";
 }
