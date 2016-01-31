@@ -246,7 +246,7 @@ public abstract class GroupForming extends RecyclerView.Adapter<GroupForming.Dev
     private static PersistentStorage.Actor buildActor(BuildingPlayingCharacter c) {
         PersistentStorage.Actor res = new PersistentStorage.Actor();
         res.name = c.name;
-        res.level = 666; /// TODO: whoops! I totally forgot about character level!
+        res.level = c.level;
         res.stats = new PersistentStorage.ActorStatistics[1];
         final PersistentStorage.ActorStatistics gen = res.stats[0] = new PersistentStorage.ActorStatistics();
         gen.experience = c.experience;

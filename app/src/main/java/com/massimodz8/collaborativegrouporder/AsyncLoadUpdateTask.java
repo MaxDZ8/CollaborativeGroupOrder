@@ -45,7 +45,7 @@ public abstract class AsyncLoadUpdateTask<Container extends MessageNano> extends
                 return error;
             }
 
-            String loadError = helper.mergeExistingGroupData(result, dir);
+            String loadError = helper.mergeExistingGroupData(result, previously);
             if(loadError != null) {
                 error.add(loadError);
                 return error;
