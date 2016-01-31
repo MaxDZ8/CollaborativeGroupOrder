@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.massimodz8.collaborativegrouporder.NetworkListeningActivity"
+    tools:context=".CreatePartyActivity"
     android:gravity="center_horizontal">
 
     <TextView
@@ -37,7 +37,8 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/sameNetworkVisibilityInfo"
         android:id="@+id/txt_privacyWarning"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:visibility="visible" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,15 +48,6 @@
         android:visibility="gone"
         android:gravity="center_horizontal"
         android:text="@string/networkScanning" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/generic_unreadable_at_start"
-        android:id="@+id/txt_renamedService"
-        android:visibility="gone"
-        android:gravity="center_horizontal" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -87,15 +79,16 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".5"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:layout_weight=".5" />
 
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_generateParty"
-        android:id="@+id/btn_closeGroup"
-        android:visibility="gone" />
+        android:id="@+id/createPartyActivity_makeDeviceGroup"
+        android:visibility="gone"
+        android:onClick="createDeviceGroup_callback" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -104,5 +97,32 @@
         android:text="@string/FYI_explicitConnectInfo"
         android:id="@+id/txt_FYI_port"
         android:visibility="gone" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/CreatePartyActivity_definingCharactersFeedback"
+        android:id="@+id/createPartyActivity_definingCharactersFeedback"
+        android:gravity="center_horizontal"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pcList"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight=".5" />
+
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/createPartyActivity_allPCAreHereWeAreDone"
+        android:id="@+id/createPartyActivity_makeGroupButton"
+        android:onClick="createPlayingCharacterGroup_callback"
+        android:visibility="gone"
+        android:enabled="false" />
 
 </LinearLayout>

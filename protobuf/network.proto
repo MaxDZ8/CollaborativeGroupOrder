@@ -1,0 +1,176 @@
+syntax = "proto3";
+option java_package = "com.massimodz8.collaborativegrouporder.protocol";
+
+
+
+// Hello server, I am device (unknown), can you tell me which groups are you running?
+// If the server thinks the device version is compatible, it will reply GroupInfo. Otherwise it will terminate connection.
+message Hello {
+    uint32 version = 1; // default 0 is an invalid version, this must be set from code and sent across the wire.
+}
+
+
+message GroupInfo {
+    uint32 version = 1; // default --> invalid. This is compatible but can be used to give an hint to upgrade
+    string name = 2;
+    repeated string options = 3; // "master_initiative_rolls", "scribble", "health_points", "temporary_effects"
+    bool forming = 4; // if true we're going to accept new devices in the group, otherwise we go adventuring and the group is 'closed'
+}
+
+
+// This is not a 'token' to be added to a list. It's the maximum amount of characters the server will consider from the client.
+// The client can send as many messages it wants as long as it fits the budget but can only do so by waiting at least period
+// between successive messages. This avoids flooding. A message (n+1) after less than period will be discarded.
+// Honoring delay is not required with the first PeerMessage sent.
+// A message of this type will always be replied after a PeerMessage to estabilish a delay in other cases.
+message CharBudget {
+    uint32 total = 1;
+    uint32 period = 2; // in milliseconds, clients are suggested to wait slightly more before re-enabling messaging
+	uint32 charSpecific = 3; // when this is != 0 then this is index+1 of the character on device gaining the budget.
+}
+
+
+// For the purpose of computing char budget consumption this string has special rules.
+// If string is empty, cost of sending it is 50*number_of_empty_strings_sent_consecutively_before_this++.
+// Otherwise, cost is length, number_of_empty_strings_sent_consecutively_before_this = 0.
+// The first non-empty string sent causes the server to promote the client to Identified phase.
+message PeerMessage {
+    string text = 1;
+	uint32 charSpecific = 2; // when this is != 0 then this is index+1 of the character on device gaining the budget.
+}
+
+
+// Server to client. This would be better sent over cryptographic security channels as the data is to be hashed.
+message GroupFormed {
+    bytes salt = 1; // Concatenate salt to group name and hash to obtain a device key for later joining the group.
+	
+	// The following is valid only if salt is empty.
+	// This message is also re-used to confirm characters to peers.
+	uint32 peerKey = 2; // key corresponding to character definition
+	bool accepted = 3; // false: server kicked character, start from scratch. True: server recorded character, lock it up.
+}
+
+
+// Client <-> server.
+message PlayingCharacterDefinition {
+    string name = 1;
+    uint32 initiativeBonus = 2;
+	uint32 healthPoints = 3;
+	uint32 experience = 4;
+	uint32 peerKey = 5; // When client sends a new proposal to server, this will be used to identify the PC relative to the peer, must be unique. Reusing the same key re-defines a character.
+	uint32 level = 6;
+}
+
+
+// Server -> client
+message GroupReady {
+    bool go_adventuring = 1; // if true then terminate "join group" activity and open "go adventuring" activity right away.
+}
+
+
+// Client -> server
+message GroupKey {
+    string generator = 1; // a cheap form of automated identification (would be adeguate over SSL but not really there, it's todo.
+}
+
+
+// Server -> client
+message PlayingCharacterList {
+    message PersistentCharacter {
+        PlayingCharacterDefinition pc = 1;
+        uint32 groupIndex = 2; // uniquely identifying a specific character in the group, never repeating, can be 0
+    }
+    enum ListType {
+        READY = 0;
+        AVAIL = 1;
+        YOURS = 2;
+    }
+    repeated PersistentCharacter payload = 1;
+    ListType set = 2;
+}
+
+
+// Client -> server please move a certain character from my list to the avail list or, from avail to me.
+message PlayingCharacterMoveRequest {
+    bool take = 1; // if true, we're pulling a character from available list, otherwise giving it up to avail.
+    uint32 character = 2; // unique group id
+}
+
+
+// Server->client
+message Adventuring {
+    repeated PlayingCharacterList.PersistentCharacter yours = 1; // this is the list of characters you will manage, overrides your own.
+}
+
+
+// Server -> client. Roll a dice and tell me the result, see RollResult
+message ManualRollRequest {
+    string note = 1;   // master gives an hint to player
+    uint32 unique = 2; // multiple rolls can be in flight at once
+    enum Dice {
+        FOUR = 0;
+        SIX = 1;
+        EIGHT = 2;
+        TEN = 3;
+        TWELVE = 4;
+        TWENTY = 5;
+        HUNDRED = 6;
+    }
+    Dice what = 3;
+}
+
+
+// client -> server
+message RollResult {
+    uint32 generator = 1;
+    sint32 result = 2;
+}
+
+
+// server -> client
+message NewOrder {
+    message Temporary {
+        string name = 1;
+        uint32 id = 2; // those are also unique across themselves and PC
+    }
+    repeated Temporary temporaries = 1;
+    repeated uint32 sequence = 2;
+}
+
+
+// server -> client
+message RoundProgress {
+    uint32 id = 1; // id of the active character
+}
+
+
+// usually server -> client
+// client -> server can be used for requests
+message ActiveStatus {
+    bool active = 1; // if true, can partecipate to actions, otherwise will do nothing
+    string reason = 2; // if something do not partecipate to battle anymore, perhaps it's good to give an explanation such as "dead"
+    bool waiting = 3; // if true will do nothing but can still act and maintained in this order, waiting for a condition to occur
+}
+
+
+// client -> server
+// Primary use is client signals end of its own turn in the round.
+// Server can also terminate a round for a character by sending a new RoundProgress message
+message EndTurn {
+    // Any interesting data here?
+}
+
+
+// client -> server
+// I want to be moved to act in a certain way. Nothing really to do.
+message Reorder {
+    enum When {
+        FIRST = 0;
+        LAST = 1;
+        BEFORE = 2;
+        CONDITIONAL = 3;
+    }
+    When newPos = 1;
+    string description = 2;
+    uint32 id = 3; // used for BEFORE, not needed for FIRST,LAST, not known for CONDITIONAL
+}

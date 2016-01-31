@@ -19,7 +19,8 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/scanningForGroupsOngoing"
         android:id="@+id/txt_lookingForGroups"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:visibility="visible" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
@@ -27,14 +28,16 @@
         android:layout_height="wrap_content"
         android:id="@+id/progressBar2"
         android:indeterminate="true"
-        android:indeterminateOnly="false" />
+        android:indeterminateOnly="false"
+        android:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/groupList"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".5" />
+        android:layout_weight=".5"
+        android:visibility="visible" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -43,7 +46,8 @@
         android:text="@string/cannotSeeThemTryConnect"
         android:id="@+id/txt_explicitConnectHint"
         android:gravity="center_horizontal"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:visibility="visible" />
 
     <Button
         android:layout_width="wrap_content"
@@ -51,6 +55,25 @@
         android:text="@string/explicitConnect"
         android:id="@+id/btn_startExplicitConnection"
         android:onClick="startExplicitConnectionActivity"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:visibility="visible" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/pcList"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="match_parent"
+        android:layout_weight=".5" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/activity_join_group_addCharacterButton"
+        android:id="@+id/activity_join_group_addCharacterButton"
+        android:layout_gravity="center_horizontal"
+        android:enabled="false"
+        android:onClick="addCharacterCardCallback"
+        android:visibility="gone" />
 
 </LinearLayout>
