@@ -12,6 +12,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class MainMenuActivity extends AppCompatActivity {
+    public static final int REALLY_BAD_EXIT_REASON_INCOHERENT_CODE = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
