@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/scanningForGroupsOngoing"
+        android:text="@string/selectFormingGroupActivity_lookingForParties"
         android:id="@+id/txt_lookingForGroups"
         android:gravity="center_horizontal"
         android:visibility="visible" />
