@@ -7,13 +7,10 @@ import android.net.nsd.NsdServiceInfo;
 import android.os.Binder;
 import android.os.IBinder;
 
-import java.util.Collections;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.Vector;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -36,37 +33,46 @@ public class CrossActivityService extends Service {
     }
 
     /// Do not use Binder interface, use the special functions instead! You likely want to register
-    /// or get an existing CrossActivityData object.
+    /// or get an existing DataPack object.
     public class ProxyBinder extends Binder {
         long generate() {
             long gen = ++dataKey;
-            CrossActivityData mangle = new CrossActivityData();
+            DataPack mangle = new DataPack();
             manage.put(gen, mangle);
             return gen;
         }
-        CrossActivityData get(long key) {
+        DataPack get(long key) {
             return manage.get(key);
         }
         void release(long key) {
-            CrossActivityData which = get(key);
+            DataPack which = get(key);
             if(which == null) return;
             if(which.refCount == 1) manage.remove(key);
             else which.refCount--;
         }
         void addRef(long key) {
-            CrossActivityData which = get(key);
+            DataPack which = get(key);
             if(which == null) return;
             which.refCount++;
         }
     }
 
-    public static class CrossActivityData {
-        public static final int EVENT_DISCOVERY_START_FAILED = 0;
-        public static final int EVENT_DISCOVERY_STOP_FAILED = 1;
-        public static final int EVENT_DISCOVERY_STARTED = 2;
-        public static final int EVENT_DISCOVERY_STOPPED = 3;
-        public static final int EVENT_DISCOVERY_FOUND = 4;
-        public static final int EVENT_DISCOVERY_LOST = 5;
+    public static class FoundService {
+        final NsdServiceInfo info;
+        public Socket persist;
+
+        public FoundService(NsdServiceInfo info) {
+            this.info = info;
+        }
+    }
+
+    public static class DataPack {
+        public static final int DISCOVERY_START_STATUS_FAIL = -1;
+        public static final int DISCOVERY_START_STATUS_OK   =  1;
+        public static final int DISCOVERY_STOP_STATUS_FAIL  = -1;
+        public static final int DISCOVERY_STOP_STATUS_OK    =  1;
+
+        public Vector<FoundService> foundServices = new Vector<>();
 
         /**
          * Start network discovery of available services matching the specified type.
@@ -78,13 +84,15 @@ public class CrossActivityService extends Service {
          * by at least one stopDiscovery() call or leads to undefined resuls.
          */
         void beginDiscovery(String serviceType, NsdManager nsd) {
-            CrossActivityData.AccumulatingDiscoveryListener temp = new CrossActivityData.AccumulatingDiscoveryListener();
+            DataPack.AccumulatingDiscoveryListener temp = new DataPack.AccumulatingDiscoveryListener();
             nsd.discoverServices(serviceType, NsdManager.PROTOCOL_DNS_SD, temp);
             this.nsd = nsd;
             this.serviceType = serviceType;
             discovering = temp;
+            discoveryStartStatus = 0;
+            discoveryStopStatus = 0;
         }
-        String isDiscovering() { return serviceType; }
+        String discoveryStartAttempted() { return serviceType; }
         void stopDiscovery() {
             if(discovering != null) {
                 nsd.stopServiceDiscovery(discovering);
@@ -93,70 +101,33 @@ public class CrossActivityService extends Service {
                 serviceType = null;
             }
         }
+        int getDiscoveryStartStatus() { return discoveryStartStatus; }
+        int getDiscoveryStopStatus() { return discoveryStopStatus; }
+
 
         private class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListener {
-            private Queue<Object> pending = new LinkedBlockingQueue<>();
+            @Override
+            public void onStartDiscoveryFailed(String serviceType, int errorCode) { discoveryStartStatus = DISCOVERY_START_STATUS_FAIL; }
 
             @Override
-            public void onStartDiscoveryFailed(String serviceType, int errorCode) {
-                pending.add(EVENT_DISCOVERY_START_FAILED);
-                //pending.add(serviceType); // no need to keep track of this, it's the same as CrossActivityData.serviceType
-                pending.add(errorCode);
-            }
+            public void onStopDiscoveryFailed(String serviceType, int errorCode) { discoveryStopStatus = DISCOVERY_STOP_STATUS_FAIL; }
 
             @Override
-            public void onStopDiscoveryFailed(String serviceType, int errorCode) {
-                pending.add(EVENT_DISCOVERY_STOP_FAILED);
-                //pending.add(serviceType);
-                pending.add(errorCode);
-            }
+            public void onDiscoveryStarted(String serviceType) {  discoveryStartStatus = DISCOVERY_START_STATUS_OK; }
 
             @Override
-            public void onDiscoveryStarted(String serviceType) {
-                pending.add(EVENT_DISCOVERY_STARTED);
-                //pending.add(serviceType); // no need to keep track of this, it's the same as CrossActivityData.serviceType
-            }
+            public void onDiscoveryStopped(String serviceType) { discoveryStopStatus = DISCOVERY_STOP_STATUS_OK; }
 
             @Override
-            public void onDiscoveryStopped(String serviceType) {
-                pending.add(EVENT_DISCOVERY_STOPPED);
-                //pending.add(serviceType);
-            }
-
-            @Override
-            public void onServiceFound(NsdServiceInfo serviceInfo) {
-                pending.add(EVENT_DISCOVERY_FOUND);
-                pending.add(serviceInfo);
-            }
+            public void onServiceFound(NsdServiceInfo serviceInfo) { foundServices.add(new FoundService(serviceInfo)); }
 
             @Override
             public void onServiceLost(NsdServiceInfo serviceInfo) {
-                pending.add(EVENT_DISCOVERY_LOST);
-                pending.add(serviceInfo);
-            }
-
-            public void dispatch(NsdManager.DiscoveryListener real, String serviceType) {
-                while(pending.size() > 0) {
-                    final int type = (Integer) pending.element();
-                    switch(type) {
-                        case EVENT_DISCOVERY_START_FAILED:
-                        case EVENT_DISCOVERY_STOP_FAILED: {
-                            Object errCode = pending.element();
-                            if(type == EVENT_DISCOVERY_START_FAILED) real.onStartDiscoveryFailed(serviceType, (Integer) errCode);
-                            else real.onStopDiscoveryFailed(serviceType, (Integer) errCode);
-                            break;
-                        }
-                        case EVENT_DISCOVERY_STARTED: real.onDiscoveryStarted(serviceType); break;
-                        case EVENT_DISCOVERY_STOPPED: real.onDiscoveryStopped(serviceType); break;
-                        case EVENT_DISCOVERY_FOUND:
-                        case EVENT_DISCOVERY_LOST: {
-                            Object info = pending.element();
-                            if(type == EVENT_DISCOVERY_FOUND) real.onServiceFound((NsdServiceInfo)info);
-                            else real.onServiceLost((NsdServiceInfo)info);
-                        }
-                        default: System.exit(MainMenuActivity.REALLY_BAD_EXIT_REASON_INCOHERENT_CODE); // never happens!
-                    }
+                int match;
+                for(match = 0; match < foundServices.size(); match++) {
+                    if(foundServices.elementAt(match).info == serviceInfo) break;
                 }
+                if(match < foundServices.size()) foundServices.remove(match); // impossible to NOT happen
             }
         }
 
@@ -164,8 +135,9 @@ public class CrossActivityService extends Service {
         private NsdManager nsd;
         private String serviceType;
         private AccumulatingDiscoveryListener discovering;
+        private int discoveryStartStatus, discoveryStopStatus;
     }
 
     long dataKey; /// counts number of bindings created to assign them unique ids.
-    HashMap<Long, CrossActivityData> manage = new HashMap<>();
+    HashMap<Long, DataPack> manage = new HashMap<>();
 }
