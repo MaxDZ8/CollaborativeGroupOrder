@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by Massimo on 27/01/2016.
  * This is used by Pumper to have each thread dispatch Proto3 messages asynchronously.
  */
-interface PumpTarget {
+public interface PumpTarget {
     public interface Callbacks<ExtendedMessage extends MessageNano> {
         /** Generate a new message for parsing a blob of data. Must be 'cleared'.
          * Can be called by multiple threads at once.

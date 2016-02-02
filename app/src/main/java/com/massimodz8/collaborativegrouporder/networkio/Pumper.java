@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * Created by Massimo on 13/01/2016.
@@ -21,7 +20,7 @@ import java.util.Vector;
  *
  * The underlying goal is to funnel various threads to a single Handler by provided Callbacks.
  */
-public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
+public class Pumper {
     public static final int MAX_MSG_FROM_WIRE_BYTES = 4 * 1024;
     protected final Handler handler;
     private final int disconnectMessageCode;
@@ -32,16 +31,16 @@ public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
     }
 
     // Call this before starting to mangle stuff so it does not need to be thread protected.
-    public Pumper<ClientInfo> add(int key, Callbacks funcs) {
+    public Pumper add(int key, PumpTarget.Callbacks funcs) {
         allowed.put(key, funcs);
         return this;
     }
 
-    /// Give up ownership of c. It will now managed by this object and you must de-register it.
-    /// OFC you can keep a reference to it to match against signals.
+    /// Add this channel to management. You're still in change of releasing it. This associates
+    /// a thread to the channel which will pump messages asynchronously through the provided callbacks.
     public MessageChannel pump(MessageChannel c) {
-        Managed newComer = new Managed(allocate(c));
-        newComer.sleeper = new MessagePumpingThread(newComer.smart.pipe, this);
+        Managed newComer = new Managed(c);
+        newComer.sleeper = new MessagePumpingThread(newComer.pipe, funnel);
         synchronized(clients) {
             clients.add(newComer);
         }
@@ -49,42 +48,28 @@ public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
         return c;
     }
 
-    //// Give up ownership of both objects.
+    //// MessageChannel is yours. The pumping thread becomes mine, please forget about it.
     public void pump(MessageChannel c, MessagePumpingThread rebind) {
-        Managed newComer = new Managed(allocate(c));
+        Managed newComer = new Managed(c);
         newComer.sleeper = rebind;
         synchronized(clients) {
             clients.add(newComer);
         }
-        rebind.destination = this;
+        rebind.destination = funnel;
     }
 
-    public boolean close(MessageChannel c) throws IOException {
+    public boolean forget(MessageChannel c) {
         synchronized(clients) {
             for (int i = 0; i < clients.size(); i++) {
                 Managed el = clients.get(i);
-                if (el.smart.pipe == c) {
-                    el.shutdown();
+                if (el.pipe == c) {
+                    el.stop();
                     clients.remove(i);
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    public boolean leak(MessageChannel leak) {
-        synchronized(clients) {
-            for (int i = 0; i < clients.size(); i++) {
-                Managed el = clients.get(i);
-                if (el.smart.pipe == leak) {
-                    el.leak();
-                    clients.remove(i);
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 
     /// Give up ownership of something identified by channel without releasing anything so
@@ -93,10 +78,10 @@ public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
         synchronized(clients) {
             for (int i = 0; i < clients.size(); i++) {
                 Managed el = clients.get(i);
-                if (el.smart.pipe == c) {
+                if (el.pipe == c) {
                     final MessagePumpingThread ret = el.sleeper;
+                    ret.destination = null;
                     el.sleeper = null;
-                    el.leak();
                     clients.remove(i);
                     return ret;
                 }
@@ -105,18 +90,10 @@ public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
         return null;
     }
 
-    public void silentShutdown(MessageChannel c) {
-        try {
-            close(c);
-        } catch (IOException e) {
-            leak(c);
-        }
-    }
-
     public boolean yours(MessageChannel c) {
         synchronized(clients) {
             for (Managed el : clients) {
-                if (el.smart.pipe == c) return true;
+                if (el.pipe == c) return true;
             }
         }
         return false;
@@ -125,37 +102,42 @@ public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
     public MessageChannel[] get() {
         synchronized(clients) {
             MessageChannel[] out = new MessageChannel[clients.size()];
-            for (int cp = 0; cp < clients.size(); cp++) out[cp] = clients.get(cp).smart.pipe;
+            for (int cp = 0; cp < clients.size(); cp++) out[cp] = clients.get(cp).pipe;
             return out;
         }
     }
 
-
-    protected abstract ClientInfo allocate(MessageChannel c);
-
     private class Managed {
-        public ClientInfo smart;
+        public MessageChannel pipe;
         MessagePumpingThread sleeper;
 
-        public Managed(ClientInfo smart) {
-            this.smart = smart;
-        }
+        public Managed(MessageChannel smart) { pipe = smart; }
 
-        public void leak() {
-            if(sleeper != null) sleeper.interrupt();
-            smart.leak();
-        }
-
-        public void shutdown() throws IOException {
-            if(sleeper != null) sleeper.interrupt(); // we don't need this inputBuffer any case, going to another server.
-            smart.shutdown();
+        public void stop() {
+            if(sleeper != null) {
+                sleeper.interrupt();
+                sleeper = null;
+            }
         }
     }
     private final ArrayList<Managed> clients = new ArrayList<>();
-    private final Map<Integer, Callbacks> allowed = new HashMap<>();
+    private final Map<Integer, PumpTarget.Callbacks> allowed = new HashMap<>();
+    private final PumpTarget funnel = new PumpTarget() {
+        @Override
+        public Map<Integer, Callbacks> callbacks() { return allowed; }
+
+        @Override
+        public boolean signalExit() { return !silence; }
+
+        @Override
+        public void quitting(MessageChannel source, Exception error) {
+            handler.sendMessage(handler.obtainMessage(disconnectMessageCode, new Events.SocketDisconnected(source, error)));
+        }
+    };
 
 
     private static class MessagePumpingThread extends Thread {
+        public static final int DEFAULT_POLL_PERIOD = 1000;
         private final MessageChannel source;
         public volatile PumpTarget destination;
 
@@ -183,7 +165,13 @@ public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
 
                     source.recv.rewindToPosition(0);
                     final int type = source.recv.readUInt32();
-                    final Callbacks real = destination.callbacks().get(type);
+
+                    PumpTarget lookup = destination;
+                    while(lookup == null) {
+                        sleep(DEFAULT_POLL_PERIOD);
+                        lookup = destination;
+                    }
+                    final PumpTarget.Callbacks real = lookup.callbacks().get(type);
                     if(real == null) throw new InvalidMessageException(type);
                     final MessageNano wire = real.make();
                     source.recv.readMessage(wire);
@@ -192,7 +180,7 @@ public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
                     real.mangle(source, wire);
                 }
             } catch (IOException | BigMessageException | InvalidMessageException |
-                    EmptyMessageException | ByteCountMismatchException e) {
+                    EmptyMessageException | ByteCountMismatchException | InterruptedException e) {
                 quitError = e;
             }
             if(!destination.signalExit()) destination.quitting(source, quitError);
@@ -215,19 +203,9 @@ public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
     public void shutdown() throws IOException {
         silence = true;
         synchronized(clients) {
-            for (Managed c : clients) {
-                c.sleeper.interrupt();
-                c.sleeper = null;
-            }
-            for (Managed c : clients) c.shutdown();
+            for (Managed c : clients) c.stop();
             clients.clear();
         }
-    }
-
-    /** Called when a pumper thread exits, possibly due to an error. When this is called the
-     * message channel has already been removed from the managed list by calling this.remove(MessageChannel, false). */
-    protected void quitting(ClientInfo gone, Exception error) {
-        handler.sendMessage(handler.obtainMessage(disconnectMessageCode, new Events.SocketDisconnected(gone.pipe, error)));
     }
 
     static public class BigMessageException extends Exception {
@@ -280,46 +258,9 @@ public abstract class Pumper<ClientInfo extends Client> implements PumpTarget {
         }
     }
 
-    protected void message(int code, Object payload) {
-        handler.sendMessage(handler.obtainMessage(code, payload));
-    }
-
-    protected ClientInfo getClient(MessageChannel c) {
-        synchronized(clients) {
-            for(Managed test : clients) {
-                if(c == test.smart.pipe) return test.smart;
-            }
-        }
-        return null;
-    }
-
     public int getClientCount() {
         synchronized(clients) {
             return clients.size();
         }
-    }
-
-    @Override
-    public Map<Integer, Callbacks> callbacks() {
-        return allowed; // maps are thread safe for reads and non-structure-modifying
-    }
-
-    @Override
-    public boolean signalExit() {
-        return !silence;
-    }
-
-    @Override
-    public void quitting(MessageChannel source, Exception error) {
-        Managed match = null;
-        synchronized(clients) {
-            for (Managed c : clients) {
-                if (source == c.smart.pipe) {
-                    match = c;
-                    break;
-                }
-            }
-        }
-        if(match != null) quitting(match.smart, error);
     }
 }
