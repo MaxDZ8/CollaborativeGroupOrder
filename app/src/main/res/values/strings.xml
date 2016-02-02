@@ -164,5 +164,9 @@
     <string name="selectFormingGroup_networkDiscoveryFail">Network discovery failed to start. You can still join a group by attempting an explicit connection.</string>
     <string name="selectFormingGroupActivity_lostConnection">Lost connection to group \"%1$s\", reason given: %2$s.</string>
     <string name="selectFormingGroupActivity_lostCrossActivitySharingService">Lost handle over the cross-activity data sharing service. This is required to work.</string>
+    <string name="mainMenuActivity_couldNotBindInternalService">Could not bind to the cross-activity data sharing service. This is required for everything else to work so the app will now quit.</string>
+    <string name="mainMenuActivity_couldNotBindExit">Exit app</string>
+    <string name="mainMenuActivity_lostCrossActivitySharingService">Lost handle over the cross-activity data sharing service. Nothing else will work without it so the app will now close.</string>
+
 
 </resources>

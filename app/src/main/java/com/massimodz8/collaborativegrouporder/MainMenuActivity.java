@@ -1,7 +1,13 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.net.nsd.NsdManager;
+import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,26 +17,32 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Timer;
+import java.util.TimerTask;
 
-public class MainMenuActivity extends AppCompatActivity {
+public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final int REALLY_BAD_EXIT_REASON_INCOHERENT_CODE = -1;
 
     public static final String GROUP_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
+    private CrossActivityService.ProxyBinder binder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        File parties = new File("parties.xml");
-        try {
-            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(parties));
-            //Xml parsers = new Xml(bis);
-        } catch (FileNotFoundException e) {
-            /*
-            In theory I would just check parties.exists() but since FileInputStream(parties) checks and throws anyway I go with exception.
-            This is not an error at first run and we do nothing in that case.
-            */
+        Intent sharing = new Intent(this, CrossActivityService.class);
+        if(!bindService(sharing, this, BIND_AUTO_CREATE)) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.mainMenuActivity_couldNotBindInternalService)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.mainMenuActivity_couldNotBindExit, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
         }
     }
 
@@ -93,4 +105,26 @@ public class MainMenuActivity extends AppCompatActivity {
                 .show();
     }
 
+    // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        binder = (CrossActivityService.ProxyBinder) service;
+        // I'm not really interested in using the binder, I just keep it around so the service is on.
+
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.mainMenuActivity_lostCrossActivitySharingService))
+                .setCancelable(false)
+                .setPositiveButton(R.string.mainMenuActivity_couldNotBindExit, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .show();
+    }
+    // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }

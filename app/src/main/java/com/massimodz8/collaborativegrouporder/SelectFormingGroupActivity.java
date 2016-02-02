@@ -114,6 +114,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Ser
         xdata = binder.get(shareKey);
         showBasicControls();
         if(xdata.discoveryStartAttempted() == null) xdata.beginDiscovery(MainMenuActivity.GROUP_FORMING_SERVICE_TYPE, nsd);
+        showHideNetworkDiscoveryControls();
         // Now, in every moment the device could be rotated and this activity would be destroyed and recreated.
         // The service will keep searching and maintaining a list of found services I can later pull with ease,
         // it keeps churning even when I am destroyed... more or less. When I am destroyed I just need to pull
@@ -126,7 +127,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Ser
                 guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHECK_NETWORK_SERVICES));
             }
         }, INITIAL_SERVICE_POLLING_DELAY_MS, SERVICE_POLLING_PERIOD_MS);
-
     }
 
     @Override
@@ -430,6 +430,15 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Ser
         ViewUtils.setVisibility(this, View.VISIBLE,
                 R.id.selectFormingGroupActivity_explicitConnectionInstructions,
                 R.id.selectFormingGroupActivity_startExplicitConnection);
+    }
+
+    /// Controls which are displayed depending on whatever network discovery is on/off.
+    private void showHideNetworkDiscoveryControls() {
+        boolean show = xdata != null && xdata.discoveryStartAttempted() != null;
+        int vis = show? View.VISIBLE : View.GONE;
+        ViewUtils.setVisibility(this, vis,
+                R.id.selectFormingGroupActivity_progressBar,
+                R.id.selectFormingGroupActivity_lookingForGroups);
     }
 
     private GroupState getParty(MessageChannel c) {
