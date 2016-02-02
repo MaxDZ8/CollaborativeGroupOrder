@@ -21,14 +21,21 @@ public interface Events {
 
     class CharBudget {
         public final MessageChannel which;
-        public int count;
-        public int delay_ms;
+        public final Network.CharBudget payload;
 
-        public CharBudget(MessageChannel c) { this(c, 0, 0); }
-        public CharBudget(MessageChannel c, int count, int delay_ms) {
-            this.which = c;
-            this.count = count;
-            this.delay_ms = delay_ms;
+        public CharBudget(MessageChannel c, Network.CharBudget b) {
+            which = c;
+            payload = b;
+        }
+    }
+
+    class GroupInfo {
+        public final MessageChannel which;
+        public final Network.GroupInfo payload;
+
+        public GroupInfo(MessageChannel which, Network.GroupInfo payload) {
+            this.which = which;
+            this.payload = payload;
         }
     }
 
