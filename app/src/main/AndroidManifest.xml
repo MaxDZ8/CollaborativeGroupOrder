@@ -43,7 +43,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
-
+        </activity>
+        <activity android:name=".NewPartyDeviceSelectionActivity"
+            android:label="@string/newPartyDeviceSelectionActivity_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
     </application>
 </manifest>

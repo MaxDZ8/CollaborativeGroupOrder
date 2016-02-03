@@ -17,7 +17,8 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_newParty_text"
         android:id="@+id/btn_newParty"
-        android:onClick="startCreateParty_callback" />
+        android:onClick="startCreateParty_callback"
+        android:enabled="false" />
 
     <Button
         android:layout_width="wrap_content"
