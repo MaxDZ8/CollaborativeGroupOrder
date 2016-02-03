@@ -2,18 +2,12 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.app.Service;
 import android.content.Intent;
-import android.net.nsd.NsdManager;
-import android.net.nsd.NsdServiceInfo;
-import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
-import java.net.Socket;
 import java.util.HashMap;
-import java.util.Queue;
-import java.util.Vector;
-import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by Massimo on 01/02/2016.
@@ -30,25 +24,20 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class CrossActivityService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
-        ProxyBinder ret = new ProxyBinder();
+        Binder ret = new Binder();
         return ret;
     }
 
     /// Do not use Binder interface, use the special functions instead! You likely want to register
     /// or get an existing DataPack object.
-    public class ProxyBinder extends Binder {
+    public class Binder extends android.os.Binder {
         long store(Object payload) {
             long gen = ++dataKey;
             manage.put(gen, payload);
             return gen;
         }
-        Object get(long key) {
-            return manage.get(key);
-        }
-        void release(long key) {
-            Object which = get(key);
-            if(which == null) return;
-            manage.remove(key);
+        Object release(long key) {
+            return manage.remove(key);
         }
 
         public PersistentStorage.PartyOwnerData getGroupByName(String groupName) {
@@ -58,4 +47,9 @@ public class CrossActivityService extends Service {
 
     long dataKey; /// counts number of bindings created to assign them unique ids.
     HashMap<Long, Object> manage = new HashMap<>();
+
+    public static long pullKey(Bundle from, String name) {
+        if(from == null) return 0;
+        return from.getLong(name, 0);
+    }
 }

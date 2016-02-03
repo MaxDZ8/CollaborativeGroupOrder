@@ -26,7 +26,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 
 import java.io.IOException;
@@ -85,10 +84,18 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if(binder == null) return;
+        outState.putLong(EXTRA_SERVICED_DEVICE_STATUS_KEY, binder.store(clients));
+        outState.putLong(EXTRA_SERVICED_PUBLISHED_SERVICE_KEY, binder.store(publisher));
+    }
+
     static final String EXTRA_SERVICED_DEVICE_STATUS_KEY = "com.massimodz8.collaborativegrouporder.NewPartyDeviceSelectionActivity.servicedDeviceStatusKey";
     static final String EXTRA_SERVICED_PUBLISHED_SERVICE_KEY = "com.massimodz8.collaborativegrouporder.NewPartyDeviceSelectionActivity.publishedServiceKey";
 
-    CrossActivityService.ProxyBinder binder;
+    CrossActivityService.Binder binder;
     long deviceKey, serviceKey;
     Handler guiHandler = new MyHandler(this);
     Vector<DeviceStatus> clients = new Vector<>();
@@ -412,12 +419,12 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        binder = (CrossActivityService.ProxyBinder) service;
+        binder = (CrossActivityService.Binder) service;
         if (deviceKey != 0) {
-            clients = (Vector<DeviceStatus>) binder.get(deviceKey);
+            clients = (Vector<DeviceStatus>) binder.release(deviceKey);
         }
         if (serviceKey != 0) {
-            publisher = (PublishedService) binder.get(serviceKey);
+            publisher = (PublishedService) binder.release(serviceKey);
             landing = publisher.getSocket();
         }
         refreshGUI();

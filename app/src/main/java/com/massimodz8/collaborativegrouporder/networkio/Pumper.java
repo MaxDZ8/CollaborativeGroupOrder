@@ -89,6 +89,19 @@ public class Pumper {
         }
         return null;
     }
+    public MessagePumpingThread[] move() {
+        synchronized(clients) {
+            MessagePumpingThread[] ret = new MessagePumpingThread[clients.size()];
+            for (int i = 0; i < clients.size(); i++) {
+                Managed el = clients.get(i);
+                ret[i] = el.sleeper;
+                ret[i].destination = null;
+                el.sleeper = null;
+            }
+            clients.clear();
+            return ret;
+        }
+    }
 
     public boolean yours(MessageChannel c) {
         synchronized(clients) {
@@ -136,10 +149,10 @@ public class Pumper {
     };
 
 
-    private static class MessagePumpingThread extends Thread {
-        public static final int DEFAULT_POLL_PERIOD = 1000;
+    public static class MessagePumpingThread extends Thread {
+        private static final int DEFAULT_POLL_PERIOD = 1000;
         private final MessageChannel source;
-        public volatile PumpTarget destination;
+        private volatile PumpTarget destination;
 
         public MessagePumpingThread(MessageChannel mine, PumpTarget sink) {
             super();

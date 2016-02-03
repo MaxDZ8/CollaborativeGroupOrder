@@ -16,7 +16,8 @@
     <string name="serviceRegFailed_title">Service registration failed</string>
     <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
     <string name="nullNSDService_title">Failed to get NSD</string>
-    <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like the Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
+    <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
+    <string name="selectFormingGroupActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. You can still connect to a party but you\'ll have to use explicit connections.</string>
     <string name="renamedGroup">Tell your friends to join\n%1$s.</string>
     <string name="sameNetworkVisibilityInfo">The party will be visible to all devices on the same network.</string>
     <string name="joinGreetings">Say something so the party owner can recognize you</string>

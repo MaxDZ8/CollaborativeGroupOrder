@@ -31,15 +31,14 @@
         <activity android:name=".MainMenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreatePartyActivity" />
-        <activity android:name=".JoinGroupActivity" />
-        <activity android:name=".ExplicitConnectionActivity" />
-        <activity android:name=".SelectFormingGroupActivity"
-            android:parentActivityName=".MainMenuActivity"
-            android:label="@string/selectFormingGroupActivity_title">
+        <activity
+            android:name=".SelectFormingGroupActivity"
+            android:label="@string/selectFormingGroupActivity_title"
+            android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
@@ -52,4 +51,5 @@
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
     </application>
+
 </manifest>

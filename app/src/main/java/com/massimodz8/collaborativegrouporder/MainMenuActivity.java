@@ -1,30 +1,20 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.nsd.NsdManager;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Timer;
-import java.util.TimerTask;
-
-public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
+public class MainMenuActivity extends AppCompatActivity {
     public static final int REALLY_BAD_EXIT_REASON_INCOHERENT_CODE = -1;
 
     public static final String GROUP_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
-    private CrossActivityService.ProxyBinder binder;
+    private CrossActivityService.Binder binder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +22,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         setContentView(R.layout.activity_main_menu);
 
         Intent sharing = new Intent(this, CrossActivityService.class);
-        if(!bindService(sharing, this, BIND_AUTO_CREATE)) {
+        if(!bindService(sharing, serviceConn, BIND_AUTO_CREATE)) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.mainMenuActivity_couldNotBindInternalService)
                     .setCancelable(false)
@@ -44,6 +34,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     })
                     .show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        unbindService(serviceConn);
+        super.onDestroy();
     }
 
     public void startCreateParty_callback(View btn) {
@@ -105,26 +101,26 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 .show();
     }
 
-    // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        binder = (CrossActivityService.ProxyBinder) service;
-        // I'm not really interested in using the binder, I just keep it around so the service is on.
+    ServiceConnection serviceConn = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            binder = (CrossActivityService.Binder) service;
+            // I'm not really interested in using the binder, I just keep it around so the service is on.
 
-    }
+        }
 
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        new AlertDialog.Builder(this)
-                .setMessage(getString(R.string.mainMenuActivity_lostCrossActivitySharingService))
-                .setCancelable(false)
-                .setPositiveButton(R.string.mainMenuActivity_couldNotBindExit, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .show();
-    }
-    // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            new AlertDialog.Builder(MainMenuActivity.this)
+                    .setMessage(getString(R.string.mainMenuActivity_lostCrossActivitySharingService))
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.mainMenuActivity_couldNotBindExit, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
+        }
+    };
 }
