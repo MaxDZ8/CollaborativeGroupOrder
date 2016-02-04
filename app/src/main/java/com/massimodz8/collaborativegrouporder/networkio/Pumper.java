@@ -213,7 +213,7 @@ public class Pumper {
 
     private volatile boolean silence = false;
 
-    public void shutdown() throws IOException {
+    public void shutdown() {
         silence = true;
         synchronized(clients) {
             for (Managed c : clients) c.stop();

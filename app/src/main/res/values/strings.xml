@@ -26,8 +26,8 @@
     <string name="cannotSeeThemTryConnect">Cannot find your group?\nTry an explicit connection!</string>
     <string name="serviceDiscoveryFailed_msg">Something has gone wrong with network discovery (error %1$s)</string>
     <string name="FYI_explicitConnectInfo">Are your friends having trouble in finding your group? Here is data to use "explicit connect":\n</string>
-    <string name="txt_explicitConnectionInfo">To attempt a specific connection you need two pieces of information. They can be found at the bottom of the screen on group owner device. You might have to try this a few times.</string>
-    <string name="txt_inetPort_desc">The second information you need is a port. It\'s the number at the bottom of the screen on group owner device.</string>
+    <string name="txt_explicitConnectionInfo">The information you need here can be found at the bottom of the screen on party owner device.</string>
+    <string name="txt_inetPort_desc">The second information you need is a port. It\'s the number at the bottom of the screen on party owner device.</string>
     <string name="btn_txt_attemptConnection">Connect</string>
     <string name="explicit_portInfo">Port: %1$d\n</string>
     <string name="explicit_address">Address: %1$s\n</string>
@@ -44,11 +44,11 @@
     <string name="card_group_options">Options: </string>
     <string name="card_group_sameVersion">matching</string>
     <string name="card_group_oldProtocol_upgradeMe">group protocol is more recent, please update this installation</string>
-    <string name="card_group_oldProtocol_upgradeGroupOwner">group protocol is obsolete, please update group owner installation</string>
+    <string name="card_group_oldProtocol_upgradeGroupOwner">group protocol is obsolete, please update party owner installation</string>
     <string name="joiningGroupIntro">Joining group</string>
-    <string name="joiningGroupMsgInfo">To join a group, write a message to group owner. You must do that at least once.</string>
+    <string name="joiningGroupMsgInfo">To join a group, write a message to party owner. You must do that at least once.</string>
     <string name="joiningSendMsgBtn">Send</string>
-    <string name="sentMsgInformations">Wait until group owner confirms you being in the group.</string>
+    <string name="sentMsgInformations">Wait until party owner confirms you being in the group.</string>
     <string name="joiningDeviceWithHello_details">Device %1$d, connected from %2$s said:</string>
     <string name="joiningDeviceHello_acceptedCheckbox_nope">Tap to let in group</string>
     <string name="joinindDevice_kick">Reject</string>
