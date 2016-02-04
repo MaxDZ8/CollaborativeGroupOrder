@@ -119,6 +119,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
+                if(binder == null) return; // it's ok, we are shutting down
                 new AlertDialog.Builder(SelectFormingGroupActivity.this)
                         .setMessage(getString(R.string.lostCrossActivitySharingService))
                         .setCancelable(false)
@@ -149,15 +150,32 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     protected void onDestroy() {
         if(explorer != null) explorer.stopDiscovery();
         if(checkDiscoveries != null) checkDiscoveries.cancel();
-        if(netPump != null) {
-            try {
-                netPump.shutdown();
-            } catch (IOException e) {
-                // erm? Uhm...
-            }
+        if(netPump != null) netPump.shutdown();
+        if(binder != null) {
+            binder = null;
+            unbindService(serviceConn);
         }
-        if(binder != null) unbindService(serviceConn);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
     }
 
     @Override
@@ -172,13 +190,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
 
 
     public void startExplicitConnectionActivity_callback(View btn) {
-        new AlertDialog.Builder(this)
-                .setTitle("Not implemented!")
-                .setMessage("explicit connection!")
-                .show();
-
-        //Intent intent = new Intent(this, ExplicitConnectionActivity.class);
-        //startActivityForResult(intent, EXPLICIT_CONNECTION_REQUEST);
+        startActivityForResult(new Intent(this, ExplicitConnectionActivity.class), EXPLICIT_CONNECTION_REQUEST);
     }
 
 
@@ -215,8 +227,10 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         int nextMsgDelay_ms;
         String lastMsgSent;
         volatile long nextEnabled_ms = 0; // SystemClock.elapsedRealtime(); /// if now() is >= this, controls are updated if charBudget > 0
+        public boolean discovered = true;
 
         public GroupState(MessageChannel pipe) { channel = pipe; }
+        GroupState explicit() { discovered = false;    return this; }
     }
 
     private class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.GroupViewHolder> {
@@ -409,9 +423,11 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             }
         }
         for(int loop = 0; loop < candidates.size(); loop++) {
+            final GroupState gs = candidates.elementAt(loop);
+            if(!gs.discovered) continue;
             AccumulatingDiscoveryListener.FoundService match = null;
             for(AccumulatingDiscoveryListener.FoundService el : explorer.foundServices) {
-                if(el.socket == candidates.elementAt(loop).channel.socket) {
+                if(el.socket == gs.channel.socket) {
                     match = el;
                     break;
                 }
@@ -477,5 +493,23 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                 R.id.selectFormingGroupActivity_explicitConnectionInstructions,
                 R.id.selectFormingGroupActivity_startExplicitConnection);
         listAdapter.notifyDataSetChanged();
+    }
+
+    private static final int EXPLICIT_CONNECTION_REQUEST = 1;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode != EXPLICIT_CONNECTION_REQUEST) return;
+        if(resultCode != RESULT_OK) return;
+        long key = data.getLongExtra(ExplicitConnectionActivity.RESULT_ACTION_CHANNEL, 0);
+        if (key == 0) return; // should never happen but anyway...
+        final GroupState add = new GroupState((MessageChannel)binder.release(key)).explicit();
+        key = data.getLongExtra(ExplicitConnectionActivity.RESULT_ACTION_PARTY_INFO, 0);
+        add.group = (PartyInfo)binder.release(key);
+        key = data.getLongExtra(ExplicitConnectionActivity.RESULT_ACTION_PUMPER_THREAD, 0);
+        Pumper.MessagePumpingThread pumper = (Pumper.MessagePumpingThread)binder.release(key);
+        candidates.add(add);
+        netPump.pump(add.channel, pumper);
+        refreshGUI();
     }
 }

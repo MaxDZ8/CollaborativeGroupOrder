@@ -39,7 +39,10 @@ public class MainMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        unbindService(serviceConn);
+        if(binder != null) {
+            binder = null;
+            unbindService(serviceConn);
+        }
         super.onDestroy();
     }
 
@@ -112,6 +115,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            if(binder == null) return; // it's ok, we are shutting down
             new AlertDialog.Builder(MainMenuActivity.this)
                     .setMessage(getString(R.string.mainMenuActivity_lostCrossActivitySharingService))
                     .setCancelable(false)
