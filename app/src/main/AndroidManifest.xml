@@ -43,6 +43,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
+        <activity
+            android:name=".ExplicitConnectionActivity"
+            android:label="@string/explicitConnectionActivity_title" />
+
         <activity android:name=".NewPartyDeviceSelectionActivity"
             android:label="@string/newPartyDeviceSelectionActivity_title"
             android:parentActivityName=".MainMenuActivity">

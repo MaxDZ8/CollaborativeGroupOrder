@@ -13,4 +13,10 @@ public abstract class ViewUtils {
             if (v != null) v.setVisibility(visibility);
         }
     }
+    static void setEnabled(Activity parent, boolean enabled, int... targets) {
+        for (int id : targets) {
+            final View v = parent.findViewById(id);
+            if (v != null) v.setEnabled(enabled);
+        }
+    }
 }

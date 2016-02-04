@@ -12,8 +12,9 @@ import android.view.View;
 
 public class MainMenuActivity extends AppCompatActivity {
     public static final int REALLY_BAD_EXIT_REASON_INCOHERENT_CODE = -1;
-
     public static final String GROUP_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
+    public static final int NETWORK_VERSION = 1;
+
     private CrossActivityService.Binder binder;
 
     @Override

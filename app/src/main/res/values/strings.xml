@@ -56,7 +56,7 @@
     <string name="talkingDeviceStats">%1$d %2$s talked, showing below.</string>
     <string name="word_device_singular">device</string>
     <string name="word_device_plural">devices</string>
-    <string name="probingDesc">Probing group owner, please wait.</string>
+    <string name="explicitConnectionActivity_probingFeedback">Probing, please wait…</string>
     <string name="networkListening_groupNameTitle">Gathering party \"%1$s\"</string>
     <string name="cannotEnumerateNICs">Failed to get network information. This isn\'t really a problem but you\'ll have to find this device network address in some other way in case your friends need explicit connection data.</string>
     <string name="cannotStartSilentForming">"An error occurred while attempting to start accepting connections. I suggest to start again, possibly after rebooting device."</string>
@@ -180,6 +180,9 @@
     <string name="newPartyDeviceSelectionActivity_badLanding">Cannot open communication so your friend\'s devices can connect. This is very serious and prevents anything from working.</string>
     <string name="newPartyDeviceSelectionActivity_goDefiningPCs">Define playing characters</string>
     <string name="newPartyDeviceSelectionActivity_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
+    <string name="explicitConnectionActivity_title">Initiate explicit connection</string>
+    <string name="eca_disconnected">Could not connect to specified device. Check your input is correct and the device is reachable: it must be on the same Wi-Fi network! Not sure? Try using \"tethering\".</string>
+    <string name="eca_partyNotOpenMsg">I found a party named \"%1$s\" here but it is not accepting new players. You might have to talk to your friend about this.</string>
 
 
 </resources>
