@@ -63,9 +63,8 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 binder = (CrossActivityService.Binder) service;
-                if (listenerKey != 0)
-                    explorer = (AccumulatingDiscoveryListener) binder.release(listenerKey);
-                if (explorer == null) {
+                if (listenerKey != 0) explorer = (AccumulatingDiscoveryListener) binder.release(listenerKey);
+                else {
                     final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
                     if (nsd == null) {
                         new AlertDialog.Builder(SelectFormingGroupActivity.this)
@@ -73,7 +72,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                                 .show();
                         return;
                     }
-                    explorer = new AccumulatingDiscoveryListener();
                     explorer.beginDiscovery(MainMenuActivity.GROUP_FORMING_SERVICE_TYPE, nsd);
 
                 }
@@ -117,7 +115,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                         guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHECK_NETWORK_SERVICES));
                     }
                 }, INITIAL_SERVICE_POLLING_DELAY_MS, SERVICE_POLLING_PERIOD_MS);
-                refreshGUI();
             }
 
             @Override
@@ -199,7 +196,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
 
 
     Vector<GroupState> candidates = new Vector<>();
-    AccumulatingDiscoveryListener explorer;
+    AccumulatingDiscoveryListener explorer = new AccumulatingDiscoveryListener();
 
     private ServiceConnection serviceConn;
     CrossActivityService.Binder binder;
@@ -461,7 +458,9 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     }
 
     private void refreshGUI() {
-        boolean discovering = explorer != null && explorer.getDiscoveryStartStatus() == AccumulatingDiscoveryListener.DISCOVERY_START_STATUS_OK;
+        int status = explorer.getDiscoveryStatus();
+        if(status == AccumulatingDiscoveryListener.IDLE || status == AccumulatingDiscoveryListener.STARTING) return;
+        boolean discovering = status == AccumulatingDiscoveryListener.EXPLORING;
         int talked = 0;
         for (GroupState gs : candidates) {
             if (gs.lastMsgSent != null) talked++;
@@ -472,7 +471,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                 R.id.selectFormingGroupActivity_lookingForGroups,
                 R.id.selectFormingGroupActivity_progressBar);
         findViewById(R.id.selectFormingGroupActivity_groupList).setVisibility(candidates.isEmpty() ? View.INVISIBLE : View.VISIBLE);
-        findViewById(R.id.selectFormingGroupActivity_joiningInstructions).setVisibility(talked != 0? View.GONE : View.VISIBLE);
+        findViewById(R.id.selectFormingGroupActivity_joiningInstructions).setVisibility(candidates.isEmpty() || talked != 0? View.GONE : View.VISIBLE);
         findViewById(R.id.selectFormingGroupActivity_confirmInstructions).setVisibility(talked == 0? View.GONE : View.VISIBLE);
         ViewUtils.setVisibility(this, View.VISIBLE,
                 R.id.selectFormingGroupActivity_explicitConnectionInstructions,

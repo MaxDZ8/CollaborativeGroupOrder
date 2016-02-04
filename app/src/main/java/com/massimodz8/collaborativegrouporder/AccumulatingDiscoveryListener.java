@@ -13,10 +13,13 @@ import java.util.Vector;
  * its internal list must be routinely scanned to find if something is there or not.
  */
 public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListener {
-    public static final int DISCOVERY_START_STATUS_FAIL = -1;
-    public static final int DISCOVERY_START_STATUS_OK   =  1;
-    public static final int DISCOVERY_STOP_STATUS_FAIL  = -1;
-    public static final int DISCOVERY_STOP_STATUS_OK    =  1;
+    public static final int IDLE = 0;
+    public static final int STARTING = 1;
+    public static final int START_FAILED = 2;
+    public static final int EXPLORING = 3;
+    public static final int STOPPING = 4;
+    public static final int STOPPED = 5;
+    public static final int STOP_FAILED = 6;
 
     public static class FoundService {
         final NsdServiceInfo info;
@@ -29,16 +32,16 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
     public Vector<FoundService> foundServices = new Vector<>();
 
     @Override
-    public void onStartDiscoveryFailed(String serviceType, int errorCode) { discoveryStartStatus = DISCOVERY_START_STATUS_FAIL; }
+    public void onStartDiscoveryFailed(String serviceType, int errorCode) { status = START_FAILED; }
 
     @Override
-    public void onStopDiscoveryFailed(String serviceType, int errorCode) { discoveryStopStatus = DISCOVERY_STOP_STATUS_FAIL; }
+    public void onStopDiscoveryFailed(String serviceType, int errorCode) { status = STOP_FAILED; }
 
     @Override
-    public void onDiscoveryStarted(String serviceType) {  discoveryStartStatus = DISCOVERY_START_STATUS_OK; }
+    public void onDiscoveryStarted(String serviceType) {  status = EXPLORING; }
 
     @Override
-    public void onDiscoveryStopped(String serviceType) { discoveryStopStatus = DISCOVERY_STOP_STATUS_OK; }
+    public void onDiscoveryStopped(String serviceType) { status = STOPPED; }
 
     @Override
     public void onServiceFound(NsdServiceInfo serviceInfo) { foundServices.add(new FoundService(serviceInfo)); }
@@ -62,25 +65,24 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
      * by at least one stopDiscovery() call or leads to undefined resuls.
      */
     void beginDiscovery(String serviceType, NsdManager nsd) {
-        nsd.discoverServices(serviceType, NsdManager.PROTOCOL_DNS_SD, this);
         this.nsd = nsd;
         this.serviceType = serviceType;
-        discoveryStartStatus = 0;
-        discoveryStopStatus = 0;
+        status = STARTING;
+        nsd.discoverServices(serviceType, NsdManager.PROTOCOL_DNS_SD, this);
     }
-    String discoveryStartAttempted() { return serviceType; }
+    String startAttempted() { return serviceType; }
     void stopDiscovery() {
         if(nsd != null) {
             nsd.stopServiceDiscovery(this);
             nsd = null;
             serviceType = null;
+            status = STOPPING;
         }
     }
-    int getDiscoveryStartStatus() { return discoveryStartStatus; }
-    int getDiscoveryStopStatus() { return discoveryStopStatus; }
+    int getDiscoveryStatus() { return status; }
 
     private NsdManager nsd;
     private String serviceType;
 
-    private int discoveryStartStatus, discoveryStopStatus;
+    private int status = IDLE;
 }
