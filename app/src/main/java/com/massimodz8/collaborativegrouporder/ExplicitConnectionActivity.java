@@ -32,6 +32,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     private static final String EXTRA_SERVICED_CHANNEL = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.channel";
     Pumper netPump;
     MessageChannel attempting;
+    boolean handShaking;
     Handler handler;
 
     @Override
@@ -86,6 +87,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     }
 
     public void connect_callback(View triggerer) {
+        triggerer.setEnabled(false);
         final EditText inetAddr = (EditText)findViewById(R.id.eca_inetAddr);
         final EditText inetPort = (EditText)findViewById(R.id.eca_port);
         final String addr = inetAddr.getText().toString();
@@ -99,6 +101,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             inetPort.requestFocus();
             return;
         }
+        handShaking = true;
         new AsyncTask<Void, Void, MessageChannel>() {
             volatile Error fail;
 
@@ -141,6 +144,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 if(fail.msg != null && !fail.msg.isEmpty()) build.setMessage(fail.msg);
                 if(fail.refocus != null) findViewById(fail.refocus).requestFocus();
                 build.show();
+                handShaking = false;
             }
         }.execute();
     }
@@ -158,7 +162,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     }
 
     void refreshGUI() {
-        ViewUtils.setVisibility(this, attempting != null ? View.VISIBLE : View.GONE,
+        ViewUtils.setVisibility(this, handShaking ? View.VISIBLE : View.GONE,
                 R.id.eca_probing,
                 R.id.eca_probingProgress);
         ViewUtils.setEnabled(this, attempting == null,
@@ -190,6 +194,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             // Ok, I could signal this really... but I'm lazy
         }
         attempting = null;
+        handShaking = false;
 
         new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.eca_disconnected))

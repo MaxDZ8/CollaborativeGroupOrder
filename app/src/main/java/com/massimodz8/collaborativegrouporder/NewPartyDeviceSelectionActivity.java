@@ -73,7 +73,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_party_device_selection);
-        findViewById(R.id.npdsa_groupName).requestFocus();
 
         action = (Button) findViewById(R.id.npdsa_activate);
         final EditText namein = (EditText) findViewById(R.id.npdsa_groupName);
@@ -88,7 +87,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             for(Pumper.MessagePumpingThread fella : state.pumpers) netWorkers.pump(fella);
             state.pumpers = null;
         }
-        if(null != state.clients) {
+        if (null == state.clients) {
+            clients = new Vector<>();
+        } else {
             clients = state.clients;
             state.clients = null;
         }
