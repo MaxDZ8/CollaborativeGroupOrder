@@ -15,35 +15,10 @@ public class MainMenuActivity extends AppCompatActivity {
     public static final String GROUP_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
     public static final int NETWORK_VERSION = 1;
 
-    private CrossActivityService.Binder binder;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
-
-        Intent sharing = new Intent(this, CrossActivityService.class);
-        if(!bindService(sharing, serviceConn, BIND_AUTO_CREATE)) {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.mainMenuActivity_couldNotBindInternalService)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.mainMenuActivity_couldNotBindExit, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .show();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        if(binder != null) {
-            binder = null;
-            unbindService(serviceConn);
-        }
-        super.onDestroy();
     }
 
     public void startCreateParty_callback(View btn) {
@@ -104,28 +79,4 @@ public class MainMenuActivity extends AppCompatActivity {
                 .setMessage("going adventuring!")
                 .show();
     }
-
-    ServiceConnection serviceConn = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            binder = (CrossActivityService.Binder) service;
-            // I'm not really interested in using the binder, I just keep it around so the service is on.
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            if(binder == null) return; // it's ok, we are shutting down
-            new AlertDialog.Builder(MainMenuActivity.this)
-                    .setMessage(getString(R.string.mainMenuActivity_lostCrossActivitySharingService))
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.mainMenuActivity_couldNotBindExit, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .show();
-        }
-    };
 }

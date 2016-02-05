@@ -34,15 +34,12 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     MessageChannel attempting;
     Handler handler;
 
-    ServiceConnection serviceConn;
-    CrossActivityService.Binder binder;
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(binder == null) return;
-        outState.putLong(EXTRA_SERVICED_CHANNEL, binder.store(attempting));
-        outState.putLong(EXTRA_SERVICED_PUMPER_THREAD, binder.store(netPump.move(attempting)));
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        outState.putLong(EXTRA_SERVICED_CHANNEL, state.store(attempting));
+        outState.putLong(EXTRA_SERVICED_PUMPER_THREAD, state.store(netPump.move(attempting)));
     }
 
     private static final int MSG_DISCONNECTED = 1;
@@ -52,64 +49,27 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explicit_connection);
-        //final ActionBar bar = getSupportActionBar();
-        //if(bar != null) {
-        //    bar.setDisplayHomeAsUpEnabled(true);
-        //}
         handler = new MyHandler(this);
 
-        final long threadKey = CrossActivityService.pullKey(savedInstanceState, EXTRA_SERVICED_PUMPER_THREAD);
-        final long chanKey = CrossActivityService.pullKey(savedInstanceState, EXTRA_SERVICED_CHANNEL);
+        final long threadKey = CrossActivityShare.pullKey(savedInstanceState, EXTRA_SERVICED_PUMPER_THREAD);
+        final long chanKey = CrossActivityShare.pullKey(savedInstanceState, EXTRA_SERVICED_CHANNEL);
 
-        Intent sharing = new Intent(this, CrossActivityService.class);
-        serviceConn = new ServiceConnection() {
+        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        netPump = new Pumper(handler, MSG_DISCONNECTED);
+        netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
             @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                binder = (CrossActivityService.Binder) service;
-                netPump = new Pumper(handler, MSG_DISCONNECTED);
-                netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
-                    @Override
-                    public Network.GroupInfo make() { return new Network.GroupInfo(); }
-                    @Override
-                    public void mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
-                        handler.sendMessage(handler.obtainMessage(MSG_GOT_REPLY, new Events.GroupInfo(from, msg)));
-                    }
-                });
-                if(threadKey != 0) {
-                    Pumper.MessagePumpingThread worker = (Pumper.MessagePumpingThread) binder.release(threadKey);
-                    MessageChannel chan = (MessageChannel) binder.release(chanKey);
-                    netPump.pump(chan, worker);
-                }
-                refreshGUI();
-            }
-
+            public Network.GroupInfo make() { return new Network.GroupInfo(); }
             @Override
-            public void onServiceDisconnected(ComponentName name) {
-                if(binder == null) return; // it's ok, we are shutting down
-                new AlertDialog.Builder(ExplicitConnectionActivity.this)
-                        .setMessage(getString(R.string.lostCrossActivitySharingService))
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
-                        .show();
+            public void mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+                handler.sendMessage(handler.obtainMessage(MSG_GOT_REPLY, new Events.GroupInfo(from, msg)));
             }
-        };
-        if(!bindService(sharing, serviceConn, 0)) {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.couldNotBindInternalService)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .show();
+        });
+        if(threadKey != 0) {
+            Pumper.MessagePumpingThread worker = (Pumper.MessagePumpingThread) state.release(threadKey);
+            MessageChannel chan = (MessageChannel) state.release(chanKey);
+            netPump.pump(chan, worker);
         }
+        refreshGUI();
     }
 
     @Override
@@ -122,10 +82,6 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             } catch (IOException e) {
                 // well... nothing?
             }
-        }
-        if(binder != null) {
-            binder = null;
-            unbindService(serviceConn);
         }
     }
 
@@ -202,10 +158,6 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     }
 
     void refreshGUI() {
-        if(binder == null) {
-            findViewById(R.id.eca_attempt).setEnabled(false);
-            return;
-        }
         ViewUtils.setVisibility(this, attempting != null ? View.VISIBLE : View.GONE,
                 R.id.eca_probing,
                 R.id.eca_probingProgress);
@@ -254,9 +206,10 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         PartyInfo info = new PartyInfo(result.payload.version, result.payload.name);
         info.options = result.payload.options;
         Intent send = new Intent(RESULT_ACTION);
-        send.putExtra(RESULT_ACTION_PUMPER_THREAD, binder.store(netPump.move(attempting)));
-        send.putExtra(RESULT_ACTION_PARTY_INFO, binder.store(info));
-        send.putExtra(RESULT_ACTION_CHANNEL, binder.store(attempting));
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        send.putExtra(RESULT_ACTION_PUMPER_THREAD, state.store(netPump.move(attempting)));
+        send.putExtra(RESULT_ACTION_PARTY_INFO, state.store(info));
+        send.putExtra(RESULT_ACTION_CHANNEL, state.store(attempting));
         setResult(RESULT_OK, send);
         finish();
     }

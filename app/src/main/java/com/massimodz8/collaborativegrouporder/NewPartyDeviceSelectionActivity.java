@@ -1,19 +1,15 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
+import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -41,7 +37,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements ServiceConnection, TextWatcher {
+public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextWatcher {
 
     public static final int PUBLISHER_CHECK_PERIOD = 250;
     public static final int PUBLISHER_CHECK_DELAY = 1000;
@@ -51,15 +47,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_party_device_selection);
-        final ActionBar bar = getSupportActionBar();
-        if (bar != null) {
-            bar.setDisplayHomeAsUpEnabled(true);
-        }
 
-        if (savedInstanceState != null) {
-            deviceKey = savedInstanceState.getLong(EXTRA_SERVICED_DEVICE_STATUS_KEY, 0);
-            serviceKey = savedInstanceState.getLong(EXTRA_SERVICED_PUBLISHED_SERVICE_KEY, 0);
-        }
+        final long deviceKey = CrossActivityShare.pullKey(savedInstanceState, EXTRA_SERVICED_DEVICE_STATUS_KEY);
+        final long serviceKey = CrossActivityShare.pullKey(savedInstanceState, EXTRA_SERVICED_PUBLISHED_SERVICE_KEY);
 
         action = (Button) findViewById(R.id.newPartyDeviceSelectionActivity_activate);
         final EditText namein = (EditText) findViewById(R.id.newPartyDeviceSelectionActivity_groupName);
@@ -69,34 +59,26 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(listAdapter);
 
-        Intent sharing = new Intent(this, CrossActivityService.class);
-        if (!bindService(sharing, this, 0)) {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.couldNotBindInternalService)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .show();
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        if (deviceKey != 0)  clients = (Vector<DeviceStatus>) state.release(deviceKey);
+        if (serviceKey != 0) {
+            publisher = (PublishedService) state.release(serviceKey);
+            landing = publisher.getSocket();
         }
+        refreshGUI();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if(binder == null) return;
-        outState.putLong(EXTRA_SERVICED_DEVICE_STATUS_KEY, binder.store(clients));
-        outState.putLong(EXTRA_SERVICED_PUBLISHED_SERVICE_KEY, binder.store(publisher));
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        outState.putLong(EXTRA_SERVICED_DEVICE_STATUS_KEY, state.store(clients));
+        outState.putLong(EXTRA_SERVICED_PUBLISHED_SERVICE_KEY, state.store(publisher));
     }
 
     static final String EXTRA_SERVICED_DEVICE_STATUS_KEY = "com.massimodz8.collaborativegrouporder.NewPartyDeviceSelectionActivity.servicedDeviceStatusKey";
     static final String EXTRA_SERVICED_PUBLISHED_SERVICE_KEY = "com.massimodz8.collaborativegrouporder.NewPartyDeviceSelectionActivity.publishedServiceKey";
 
-    CrossActivityService.Binder binder;
-    long deviceKey, serviceKey;
     Handler guiHandler = new MyHandler(this);
     Vector<DeviceStatus> clients = new Vector<>();
     PublishedService publisher;
@@ -260,7 +242,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     private void publishGroup() {
         final TextView view = (TextView) findViewById(R.id.newPartyDeviceSelectionActivity_groupName);
         final String groupName = view.getText().toString().trim();
-        if (groupName.isEmpty() || binder.getGroupByName(groupName) != null) {
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        if (groupName.isEmpty() || state.getGroupByName(groupName) != null) {
             int msg = groupName.isEmpty() ? R.string.newPartyDeviceSelection_badParty_msg_emptyName : R.string.newPartyDeviceSelection_badParty_msg_alreadyThere;
             new AlertDialog.Builder(this)
                     .setTitle(R.string.newPartyDeviceSelectionActivity_badParty_title)
@@ -415,35 +398,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         findViewById(R.id.newPartyDeviceSelectionActivity_inputNameInstructions).setVisibility(View.GONE);
         findViewById(R.id.newPartyDeviceSelectionActivity_groupName).setEnabled(false);
     }
-
-    // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        binder = (CrossActivityService.Binder) service;
-        if (deviceKey != 0) {
-            clients = (Vector<DeviceStatus>) binder.release(deviceKey);
-        }
-        if (serviceKey != 0) {
-            publisher = (PublishedService) binder.release(serviceKey);
-            landing = publisher.getSocket();
-        }
-        refreshGUI();
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        new AlertDialog.Builder(this)
-                .setMessage(getString(R.string.lostCrossActivitySharingService))
-                .setCancelable(false)
-                .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .show();
-    }
-    // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     // TextWatcher vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) { }

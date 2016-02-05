@@ -44,106 +44,67 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
         setContentView(R.layout.activity_select_forming_group);
-        final ActionBar bar = getSupportActionBar();
-        if(bar != null) {
-            bar.setDisplayHomeAsUpEnabled(true);
-        }
 
-        final long candidatesKey = CrossActivityService.pullKey(savedState, EXTRA_SERVICED_CANDIDATES_VECTOR);
-        final long listenerKey = CrossActivityService.pullKey(savedState, EXTRA_SERVICED_DISCOVERY_LISTENER);
-        final long pumperKey = CrossActivityService.pullKey(savedState, EXTRA_SERVICED_NETWORK_PUMPERS_ARRAY);
+        final long candidatesKey = CrossActivityShare.pullKey(savedState, EXTRA_SERVICED_CANDIDATES_VECTOR);
+        final long listenerKey = CrossActivityShare.pullKey(savedState, EXTRA_SERVICED_DISCOVERY_LISTENER);
+        final long pumperKey = CrossActivityShare.pullKey(savedState, EXTRA_SERVICED_NETWORK_PUMPERS_ARRAY);
 
         listAdapter = new GroupListAdapter();
         RecyclerView groupList = (RecyclerView) findViewById(R.id.selectFormingGroupActivity_groupList);
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(listAdapter);
 
-        Intent sharing = new Intent(this, CrossActivityService.class);
-        serviceConn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                binder = (CrossActivityService.Binder) service;
-                if (listenerKey != 0) explorer = (AccumulatingDiscoveryListener) binder.release(listenerKey);
-                else {
-                    final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
-                    if (nsd == null) {
-                        new AlertDialog.Builder(SelectFormingGroupActivity.this)
-                                .setMessage(R.string.newPartyDeviceSelectionActivity_noDiscoveryManager)
-                                .show();
-                        return;
-                    }
-                    explorer.beginDiscovery(MainMenuActivity.GROUP_FORMING_SERVICE_TYPE, nsd);
-
-                }
-                if (candidatesKey != 0)
-                    candidates = (Vector<GroupState>) binder.release(candidatesKey);
-
-                if (pumperKey != 0) netPump = (Pumper) binder.release(pumperKey);
-                if (netPump == null) {
-                    netPump = new Pumper(guiHandler, MSG_SOCKET_DISCONNECTED);
-                    netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
-                        @Override
-                        public Network.GroupInfo make() {
-                            return new Network.GroupInfo();
-                        }
-
-                        @Override
-                        public void mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
-                            guiHandler.sendMessage(guiHandler.obtainMessage(MSG_GROUP_INFO, new Events.GroupInfo(from, msg)));
-                        }
-                    }).add(ProtoBufferEnum.CHAR_BUDGET, new PumpTarget.Callbacks<Network.CharBudget>() {
-                        @Override
-                        public Network.CharBudget make() {
-                            return new Network.CharBudget();
-                        }
-
-                        @Override
-                        public void mangle(MessageChannel from, Network.CharBudget msg) throws IOException {
-                            guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHAR_BUDGET, new Events.CharBudget(from, msg)));
-                        }
-                    });
-                }
-                // Now, in every moment the device could be rotated and this activity would be destroyed and recreated.
-                // The service will keep searching and maintaining a list of found services I can later pull with ease,
-                // it keeps churning even when I am destroyed... more or less. When I am destroyed I just need to pull
-                // the previous data, which is very easy as keys are always nonzero.
-                // However, in the meanwhile I have to check out the services found every once in a while.
-                checkDiscoveries = new Timer();
-                checkDiscoveries.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHECK_NETWORK_SERVICES));
-                    }
-                }, INITIAL_SERVICE_POLLING_DELAY_MS, SERVICE_POLLING_PERIOD_MS);
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                if(binder == null) return; // it's ok, we are shutting down
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        if (listenerKey != 0) explorer = (AccumulatingDiscoveryListener) state.release(listenerKey);
+        else {
+            final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
+            if (nsd == null) {
                 new AlertDialog.Builder(SelectFormingGroupActivity.this)
-                        .setMessage(getString(R.string.lostCrossActivitySharingService))
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        })
+                        .setMessage(R.string.newPartyDeviceSelectionActivity_noDiscoveryManager)
                         .show();
+                return;
             }
-        };
-        if(!bindService(sharing, serviceConn, 0)) {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.couldNotBindInternalService)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    })
-                    .show();
+            explorer.beginDiscovery(MainMenuActivity.GROUP_FORMING_SERVICE_TYPE, nsd);
         }
+        if (candidatesKey != 0) candidates = (Vector<GroupState>) state.release(candidatesKey);
+
+        if (pumperKey != 0) netPump = (Pumper) state.release(pumperKey);
+        if (netPump == null) {
+            netPump = new Pumper(guiHandler, MSG_SOCKET_DISCONNECTED);
+            netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
+                @Override
+                public Network.GroupInfo make() {
+                    return new Network.GroupInfo();
+                }
+
+                @Override
+                public void mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+                    guiHandler.sendMessage(guiHandler.obtainMessage(MSG_GROUP_INFO, new Events.GroupInfo(from, msg)));
+                }
+            }).add(ProtoBufferEnum.CHAR_BUDGET, new PumpTarget.Callbacks<Network.CharBudget>() {
+                @Override
+                public Network.CharBudget make() {
+                    return new Network.CharBudget();
+                }
+
+                @Override
+                public void mangle(MessageChannel from, Network.CharBudget msg) throws IOException {
+                    guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHAR_BUDGET, new Events.CharBudget(from, msg)));
+                }
+            });
+        }
+        // Now, in every moment the device could be rotated and this activity would be destroyed and recreated.
+        // The service will keep searching and maintaining a list of found services I can later pull with ease,
+        // it keeps churning even when I am destroyed... more or less. When I am destroyed I just need to pull
+        // the previous data, which is very easy as keys are always nonzero.
+        // However, in the meanwhile I have to check out the services found every once in a while.
+        checkDiscoveries = new Timer();
+        checkDiscoveries.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHECK_NETWORK_SERVICES));
+            }
+        }, INITIAL_SERVICE_POLLING_DELAY_MS, SERVICE_POLLING_PERIOD_MS);
     }
 
     @Override
@@ -151,39 +112,15 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         if(explorer != null) explorer.stopDiscovery();
         if(checkDiscoveries != null) checkDiscoveries.cancel();
         if(netPump != null) netPump.shutdown();
-        if(binder != null) {
-            binder = null;
-            unbindService(serviceConn);
-        }
         super.onDestroy();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle out) {
-        if(binder == null) return;
-        out.putLong(EXTRA_SERVICED_CANDIDATES_VECTOR, binder.store(candidates));
-        if(explorer != null) out.putLong(EXTRA_SERVICED_DISCOVERY_LISTENER, binder.store(explorer));
-        if(netPump != null) out.putLong(EXTRA_SERVICED_NETWORK_PUMPERS_ARRAY, binder.store(netPump.move()));
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        out.putLong(EXTRA_SERVICED_CANDIDATES_VECTOR, state.store(candidates));
+        if(explorer != null) out.putLong(EXTRA_SERVICED_DISCOVERY_LISTENER, state.store(explorer));
+        if(netPump != null) out.putLong(EXTRA_SERVICED_NETWORK_PUMPERS_ARRAY, state.store(netPump.move()));
         // Don't call this. The whole GUI is regenerated anyway from the state.
         //super.onSaveInstanceState(out);
     }
@@ -209,9 +146,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
 
     Vector<GroupState> candidates = new Vector<>();
     AccumulatingDiscoveryListener explorer = new AccumulatingDiscoveryListener();
-
-    private ServiceConnection serviceConn;
-    CrossActivityService.Binder binder;
 
     GroupListAdapter listAdapter;
     Timer checkDiscoveries;
@@ -503,11 +437,12 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         if(resultCode != RESULT_OK) return;
         long key = data.getLongExtra(ExplicitConnectionActivity.RESULT_ACTION_CHANNEL, 0);
         if (key == 0) return; // should never happen but anyway...
-        final GroupState add = new GroupState((MessageChannel)binder.release(key)).explicit();
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        final GroupState add = new GroupState((MessageChannel)state.release(key)).explicit();
         key = data.getLongExtra(ExplicitConnectionActivity.RESULT_ACTION_PARTY_INFO, 0);
-        add.group = (PartyInfo)binder.release(key);
+        add.group = (PartyInfo)state.release(key);
         key = data.getLongExtra(ExplicitConnectionActivity.RESULT_ACTION_PUMPER_THREAD, 0);
-        Pumper.MessagePumpingThread pumper = (Pumper.MessagePumpingThread)binder.release(key);
+        Pumper.MessagePumpingThread pumper = (Pumper.MessagePumpingThread)state.release(key);
         candidates.add(add);
         netPump.pump(add.channel, pumper);
         refreshGUI();
