@@ -3,7 +3,10 @@ package com.massimodz8.collaborativegrouporder;
 import android.app.Application;
 import android.os.Bundle;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+
 import java.util.HashMap;
+import java.util.Vector;
 
 /**
  * Created by Massimo on 05/02/2016.
@@ -29,7 +32,13 @@ public class CrossActivityShare extends Application {
     long dataKey; /// counts number of bindings created to assign them unique ids.
     HashMap<Long, Object> manage = new HashMap<>();
 
-    public PartyInfo getGroupByName(String groupName) {
+    public PersistentStorage.PartyOwnerData.Group getGroupByName(String name) {
+        if(null == groups) return null;
+        for(PersistentStorage.PartyOwnerData.Group test : groups) {
+            if(test.name.equals(name)) return test;
+        }
         return null;
     }
+
+    public Vector<PersistentStorage.PartyOwnerData.Group> groups;
 }

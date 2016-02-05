@@ -14,15 +14,15 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_newParty_text"
-        android:id="@+id/btn_newParty"
+        android:text="@string/mma_newParty"
+        android:id="@+id/mma_newParty"
         android:onClick="startCreateParty_callback"
         android:enabled="false" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_joinParty_text"
-        android:id="@+id/btn_joinParty"
+        android:text="@string/mma_joinNewParty"
+        android:id="@+id/mma_joinParty"
         android:onClick="startJoinGroupActivity_callback" />
 </LinearLayout>
