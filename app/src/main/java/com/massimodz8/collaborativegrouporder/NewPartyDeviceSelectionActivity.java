@@ -7,7 +7,6 @@ import android.net.nsd.NsdManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,11 +50,11 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         final long deviceKey = CrossActivityShare.pullKey(savedInstanceState, EXTRA_SERVICED_DEVICE_STATUS_KEY);
         final long serviceKey = CrossActivityShare.pullKey(savedInstanceState, EXTRA_SERVICED_PUBLISHED_SERVICE_KEY);
 
-        action = (Button) findViewById(R.id.newPartyDeviceSelectionActivity_activate);
-        final EditText namein = (EditText) findViewById(R.id.newPartyDeviceSelectionActivity_groupName);
+        action = (Button) findViewById(R.id.npdsa_activate);
+        final EditText namein = (EditText) findViewById(R.id.npdsa_groupName);
         namein.addTextChangedListener(this);
 
-        RecyclerView groupList = (RecyclerView) findViewById(R.id.newPartyDeviceSelectionActivity_deviceList);
+        RecyclerView groupList = (RecyclerView) findViewById(R.id.npdsa_deviceList);
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(listAdapter);
 
@@ -170,7 +169,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 if (dev.groupMember) count++;
             }
             listAdapter.notifyDataSetChanged();
-            findViewById(R.id.newPartyDeviceSelectionActivity_activate).setEnabled(count > 0);
+            findViewById(R.id.npdsa_activate).setEnabled(count > 0);
         }
     }
 
@@ -230,6 +229,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 //}
                 //case MSG_CHARACTER_DEFINITION: target.characterUpdate((Events.CharacterDefinition)msg.obj); break;
             }
+            target.refreshGUI();
         }
     }
 
@@ -240,7 +240,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     }
 
     private void publishGroup() {
-        final TextView view = (TextView) findViewById(R.id.newPartyDeviceSelectionActivity_groupName);
+        final TextView view = (TextView) findViewById(R.id.npdsa_groupName);
         final String groupName = view.getText().toString().trim();
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if (groupName.isEmpty() || state.getGroupByName(groupName) != null) {
@@ -301,6 +301,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
             }
         }, PUBLISHER_CHECK_DELAY, PUBLISHER_CHECK_PERIOD);
+        refreshGUI();
     }
 
     void closeGroup() {
@@ -387,16 +388,15 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             if (dev.groupMember) count++;
         }
         action.setEnabled(count != 0);
-        TextView info = (TextView) findViewById(R.id.newPartyDeviceSelectionActivity_explicitConnectionInfos);
-        info.setText(String.format(getString(R.string.newPartyDeviceSelectionActivity_explicitConnectionInfos), landing.getLocalPort(), listAddresses()));
+        TextView info = (TextView) findViewById(R.id.npdsa_explicitConnectionInfos);
+        info.setText(String.format(getString(R.string.npdsa_explicitConnectionInfos), landing.getLocalPort(), listAddresses()));
 
         ViewUtils.setVisibility(this, View.VISIBLE,
-                R.id.newPartyDeviceSelectionActivity_publishFeedback,
-                R.id.newPartyDeviceSelectionActivity_deviceList,
-                R.id.newPartyDeviceSelectionActivity_explicitConnectionInfos,
-                R.id.newPartyDeviceSelectionActivity_publishing);
-        findViewById(R.id.newPartyDeviceSelectionActivity_inputNameInstructions).setVisibility(View.GONE);
-        findViewById(R.id.newPartyDeviceSelectionActivity_groupName).setEnabled(false);
+                R.id.npdsa_publishFeedback,
+                R.id.npdsa_deviceList,
+                R.id.npdsa_explicitConnectionInfos,
+                R.id.npdsa_publishing);
+        findViewById(R.id.npdsa_groupName).setEnabled(false);
     }
     // TextWatcher vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
