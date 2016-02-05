@@ -1,5 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+
 /**
  * Created by Massimo on 26/01/2016.
  * Used across client and server when a new party is generated.
@@ -20,7 +22,8 @@ public class BuildingPlayingCharacter extends PlayingCharacter {
     }
 
     /// This ctor is used by the server instead: the ids are provided over the wire.
-    public BuildingPlayingCharacter(int provided) {
-        id = provided;
+    public BuildingPlayingCharacter(Network.PlayingCharacterDefinition def) {
+        super(def);
+        id = def.peerKey;
     }
 }

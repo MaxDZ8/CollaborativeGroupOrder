@@ -41,9 +41,9 @@ public interface Events {
 
     class PeerMessage {
         public final MessageChannel which;
-        public final String msg;
+        public final Network.PeerMessage msg;
 
-        public PeerMessage(MessageChannel which, String msg) {
+        public PeerMessage(MessageChannel which, Network.PeerMessage msg) {
             this.which = which;
             this.msg = msg;
         }
