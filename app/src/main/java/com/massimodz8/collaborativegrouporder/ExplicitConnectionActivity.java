@@ -66,8 +66,8 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         });
         if(threadKey != 0) {
             Pumper.MessagePumpingThread worker = (Pumper.MessagePumpingThread) state.release(threadKey);
-            MessageChannel chan = (MessageChannel) state.release(chanKey);
-            netPump.pump(chan, worker);
+            state.release(chanKey);
+            netPump.pump(worker);
         }
         refreshGUI();
     }

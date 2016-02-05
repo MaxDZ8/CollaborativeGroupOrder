@@ -39,21 +39,18 @@ public class Pumper {
     /// Add this channel to management. You're still in change of releasing it. This associates
     /// a thread to the channel which will pump messages asynchronously through the provided callbacks.
     public MessageChannel pump(MessageChannel c) {
-        Managed newComer = new Managed(c);
-        newComer.sleeper = new MessagePumpingThread(newComer.pipe, funnel);
+        MessagePumpingThread newComer = new MessagePumpingThread(c, funnel);
         synchronized(clients) {
             clients.add(newComer);
         }
-        newComer.sleeper.start();
+        newComer.start();
         return c;
     }
 
     //// MessageChannel is yours. The pumping thread becomes mine, please forget about it.
-    public void pump(MessageChannel c, MessagePumpingThread rebind) {
-        Managed newComer = new Managed(c);
-        newComer.sleeper = rebind;
+    public void pump(MessagePumpingThread rebind) {
         synchronized(clients) {
-            clients.add(newComer);
+            clients.add(rebind);
         }
         rebind.destination = funnel;
     }
@@ -61,9 +58,9 @@ public class Pumper {
     public boolean forget(MessageChannel c) {
         synchronized(clients) {
             for (int i = 0; i < clients.size(); i++) {
-                Managed el = clients.get(i);
-                if (el.pipe == c) {
-                    el.stop();
+                MessagePumpingThread el = clients.get(i);
+                if (el.getSource() == c) {
+                    el.interrupt();
                     clients.remove(i);
                     return true;
                 }
@@ -77,13 +74,11 @@ public class Pumper {
     public MessagePumpingThread move(MessageChannel c) {
         synchronized(clients) {
             for (int i = 0; i < clients.size(); i++) {
-                Managed el = clients.get(i);
-                if (el.pipe == c) {
-                    final MessagePumpingThread ret = el.sleeper;
-                    ret.destination = null;
-                    el.sleeper = null;
+                MessagePumpingThread el = clients.get(i);
+                if (el.getSource() == c) {
+                    el.destination = null;
                     clients.remove(i);
-                    return ret;
+                    return el;
                 }
             }
         }
@@ -93,10 +88,9 @@ public class Pumper {
         synchronized(clients) {
             MessagePumpingThread[] ret = new MessagePumpingThread[clients.size()];
             for (int i = 0; i < clients.size(); i++) {
-                Managed el = clients.get(i);
-                ret[i] = el.sleeper;
-                ret[i].destination = null;
-                el.sleeper = null;
+                MessagePumpingThread el = clients.get(i);
+                el.destination = null;
+                ret[i] = el;
             }
             clients.clear();
             return ret;
@@ -105,35 +99,14 @@ public class Pumper {
 
     public boolean yours(MessageChannel c) {
         synchronized(clients) {
-            for (Managed el : clients) {
-                if (el.pipe == c) return true;
+            for (MessagePumpingThread el : clients) {
+                if (el.getSource() == c) return true;
             }
         }
         return false;
     }
 
-    public MessageChannel[] get() {
-        synchronized(clients) {
-            MessageChannel[] out = new MessageChannel[clients.size()];
-            for (int cp = 0; cp < clients.size(); cp++) out[cp] = clients.get(cp).pipe;
-            return out;
-        }
-    }
-
-    private class Managed {
-        public MessageChannel pipe;
-        MessagePumpingThread sleeper;
-
-        public Managed(MessageChannel smart) { pipe = smart; }
-
-        public void stop() {
-            if(sleeper != null) {
-                sleeper.interrupt();
-                sleeper = null;
-            }
-        }
-    }
-    private final ArrayList<Managed> clients = new ArrayList<>();
+    private final ArrayList<MessagePumpingThread> clients = new ArrayList<>();
     private final Map<Integer, PumpTarget.Callbacks> allowed = new HashMap<>();
     private final PumpTarget funnel = new PumpTarget() {
         @Override
@@ -151,6 +124,9 @@ public class Pumper {
 
     public static class MessagePumpingThread extends Thread {
         private static final int DEFAULT_POLL_PERIOD = 1000;
+
+        public MessageChannel getSource() { return source; }
+
         private final MessageChannel source;
         private volatile PumpTarget destination;
 
@@ -216,7 +192,7 @@ public class Pumper {
     public void shutdown() {
         silence = true;
         synchronized(clients) {
-            for (Managed c : clients) c.stop();
+            for (MessagePumpingThread c : clients) c.interrupt();
             clients.clear();
         }
     }

@@ -444,7 +444,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         key = data.getLongExtra(ExplicitConnectionActivity.RESULT_ACTION_PUMPER_THREAD, 0);
         Pumper.MessagePumpingThread pumper = (Pumper.MessagePumpingThread)state.release(key);
         candidates.add(add);
-        netPump.pump(add.channel, pumper);
+        netPump.pump(pumper);
         refreshGUI();
     }
 }
