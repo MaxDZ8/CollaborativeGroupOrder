@@ -1,15 +1,10 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.content.ComponentName;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -104,6 +99,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             return;
         }
         handShaking = true;
+        refreshGUI();
         new AsyncTask<Void, Void, MessageChannel>() {
             volatile Error fail;
 
@@ -147,6 +143,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 if(fail.refocus != null) findViewById(fail.refocus).requestFocus();
                 build.show();
                 handShaking = false;
+                refreshGUI();
             }
         }.execute();
     }

@@ -31,8 +31,8 @@
     <string name="btn_txt_attemptConnection">Connect</string>
     <string name="explicit_portInfo">Port: %1$d\n</string>
     <string name="explicit_address">Address: %1$s\n</string>
-    <string name="port">Port</string>
-    <string name="NetworkAddress">Network address</string>
+    <string name="eca_port">Port</string>
+    <string name="eca_networkAddress">Network address</string>
     <string name="serviceDiscErr">Service discovery error</string>
     <string name="badPort_msg">This does not look like a valid port number. Ports are usually between 1024 and 65535. Try again.</string>
     <string name="badHost_msg">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
@@ -68,7 +68,7 @@
     <string name="protocolVersionMismatch_upgradeThis">this</string>
     <string name="protocolVersionMismatch_upgradeServer">party owner</string>
     <string name="networkDiscoveryStartFailed">Cannot start network discovery. Error %1$s.</string>
-    <string name="card_joinableGroup_talkHint">Send a message to join this group.</string>
+    <string name="card_joinableGroup_talkHint">Message to join</string>
     <string name="card_group_sayButton">Send</string>
     <string name="card_group_charCount">%1$d / %2$d</string>
     <string name="sendMessageErrorDesc">"Error detected while attempting to send message to party owner. Details: "</string>
@@ -187,7 +187,7 @@
     <string name="mma_exitApp">Exit app</string>
     <string name="mma_noUpgradeAvailable">Loaded party owner data is version %1$d. Current version is %2$d so data should be upgraded but no upgrading is possible yet. Continue at your own risk.</string>
     <string name="mma_invalidPartyOwnerLoadedData">Inconsistent party data loaded. You can proceed at your own risk making the problem worse. List of errors:%1$s</string>
-    <string name="npdsa_failedAccept">An error occured while connecting a new device. Maybe the network is broken or I am low on resources. Consider restarting.</string>
+    <string name="npdsa_failedAccept">An error occurred while connecting a new device. Maybe the network is broken or I am low on resources. Consider restarting.</string>
     <string name="npdsa_lostTalkingDevice">Lost connection to whoever sent the message \"%1$s\". You can ignore this issue.</string>
 
 

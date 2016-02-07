@@ -187,6 +187,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 @Override
                 public boolean mangle(MessageChannel from, Network.PeerMessage msg) throws IOException {
                     guiHandler.sendMessage(guiHandler.obtainMessage(MSG_PEER_MESSAGE, new Events.PeerMessage(from, msg)));
+                    return false;
                 }
             }).add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
                 @Override
@@ -430,10 +431,16 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         landing = listener;
         acceptor = new MyLandingServer(landing);
         ticker = new Timer();
+        class StooPid {
+            int value;
+        }
+        final StooPid previously = new StooPid();
+        previously.value = publisher.getStatus();
         ticker.schedule(new TimerTask() {
             @Override
             public void run() {
-                switch(publisher.getStatus()) {
+                int now = publisher.getStatus();
+                switch(now) {
                     //case STATUS_IDLE = 0; // just created, doing nothing.
                     case PublishedService.STATUS_STARTING: break;
                     case PublishedService.STATUS_PUBLISHING: break;
@@ -444,10 +451,12 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                     case PublishedService.STATUS_START_FAILED:
                         guiHandler.sendMessage(guiHandler.obtainMessage(MSG_SERVICE_REGISTRATION_FAILED));
                 }
-
+                if(previously.value != now) {
+                    guiHandler.sendMessage(guiHandler.obtainMessage(MSG_REFRESH_GUI));
+                    previously.value = now;
+                }
             }
         }, PUBLISHER_CHECK_DELAY, PUBLISHER_CHECK_PERIOD);
-        refreshGUI();
     }
 
     void closeGroup() {

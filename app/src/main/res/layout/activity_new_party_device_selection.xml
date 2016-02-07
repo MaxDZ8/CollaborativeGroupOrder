@@ -78,8 +78,6 @@
         android:textColor="#ff00ff"
         android:textStyle="bold|italic"
         android:background="#00ff00"
-        android:textSize="32sp"
-        android:paddingBottom="8sp"
-        android:paddingTop="8sp" />
+        android:textSize="28sp" />
 
 </LinearLayout>

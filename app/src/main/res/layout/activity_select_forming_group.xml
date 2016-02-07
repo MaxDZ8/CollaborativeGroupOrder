@@ -49,15 +49,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/selectFormingGroupActivity_joiningInstructions"
-        android:id="@+id/selectFormingGroupActivity_joiningInstructions"
-        android:gravity="center_horizontal"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/selectFormingGroupActivity_confirmInstructions"
         android:id="@+id/selectFormingGroupActivity_confirmInstructions"
         android:gravity="center_horizontal"
@@ -93,9 +84,6 @@
         android:textColor="#ff00ff"
         android:textStyle="bold|italic"
         android:background="#00ff00"
-        android:textSize="32sp"
-        android:paddingBottom="8sp"
-        android:paddingTop="8sp"
-        android:layout_marginTop="8sp" />
+        android:textSize="28sp" />
 
 </LinearLayout>

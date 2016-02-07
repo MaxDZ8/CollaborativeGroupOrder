@@ -1,18 +1,13 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -148,6 +143,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
 
     Vector<GroupState> candidates = new Vector<>();
     AccumulatingDiscoveryListener explorer = new AccumulatingDiscoveryListener();
+    int prevDiscoveryStatus = AccumulatingDiscoveryListener.IDLE;
 
     GroupListAdapter listAdapter;
     Timer checkDiscoveries;
@@ -251,7 +247,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             holder.curLen.setText(String.valueOf(current));
             holder.lenLimit.setText(String.valueOf(allowed));
             holder.message.setHint(info.lastMsgSent != null? info.lastMsgSent : getString(R.string.card_joinableGroup_talkHint));
-            if(info.group.options == null) holder.options.setVisibility(View.GONE);
+            if(info.group.options == null || info.group.options.length == 0) holder.options.setVisibility(View.GONE);
             else {
                 String total = getString(R.string.card_group_options);
                 for(int app = 0; app < info.group.options.length; app++) {
@@ -293,7 +289,9 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             SelectFormingGroupActivity target = this.target.get();
             switch(msg.what) {
-                case MSG_CHECK_NETWORK_SERVICES: target.checkNetwork(); break;
+                case MSG_CHECK_NETWORK_SERVICES:
+                    if(target.checkNetwork()) target.refreshGUI();
+                    return;
                 case MSG_SOCKET_DISCONNECTED: {
                     final Events.SocketDisconnected real = (Events.SocketDisconnected) msg.obj;
                     target.socketDisconnected(real.which, real.reason);
@@ -347,8 +345,13 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         }.execute();
     }
 
-    void checkNetwork() {
-        if(explorer.foundServices.size() == 0 && candidates.size() == 0) return;
+    boolean checkNetwork() {
+        int status = explorer.getDiscoveryStatus();
+        if(status == AccumulatingDiscoveryListener.IDLE || status == AccumulatingDiscoveryListener.STARTING) return false;
+
+        int diffs = prevDiscoveryStatus != status? 1 : 0;
+        prevDiscoveryStatus = status;
+        if(explorer.foundServices.size() == 0 && candidates.size() == 0) return diffs != 0;
         for(AccumulatingDiscoveryListener.FoundService el : explorer.foundServices) {
             int match = el.socket == null? candidates.size() : 0;
             for(; match < candidates.size(); match++) {
@@ -357,6 +360,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             if(match == candidates.size()) {
                 candidates.add(new GroupState(new MessageChannel(el.socket)));
                 netPump.pump(candidates.lastElement().channel);
+                diffs++;
             }
         }
         for(int loop = 0; loop < candidates.size(); loop++) {
@@ -369,8 +373,12 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                     break;
                 }
             }
-            if(match == null) candidates.remove(loop--);
+            if(match == null) {
+                candidates.remove(loop--);
+                diffs++;
+            }
         }
+        return diffs != 0;
     }
 
     private GroupState getParty(MessageChannel c) {
@@ -386,7 +394,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         if(payload.charSpecific != 0) return; // no playing charactes defined there!
         gs.charBudget = payload.total;
         gs.nextMsgDelay_ms = payload.period;
-        listAdapter.notifyDataSetChanged();
     }
 
     private void groupInfo(MessageChannel which, Network.GroupInfo payload) {
@@ -396,7 +403,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         PartyInfo keep = new PartyInfo(payload.version, payload.name);
         keep.options = payload.options; /// TODO: those should be localized
         gs.group = keep;
-        listAdapter.notifyDataSetChanged();
     }
 
     private void socketDisconnected(MessageChannel which, Exception reason) {
@@ -411,9 +417,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     }
 
     private void refreshGUI() {
-        int status = explorer.getDiscoveryStatus();
-        if(status == AccumulatingDiscoveryListener.IDLE || status == AccumulatingDiscoveryListener.STARTING) return;
-        boolean discovering = status == AccumulatingDiscoveryListener.EXPLORING;
+        boolean discovering = explorer != null && explorer.getDiscoveryStatus() == AccumulatingDiscoveryListener.EXPLORING;
         int talked = 0;
         for (GroupState gs : candidates) {
             if (gs.lastMsgSent != null) talked++;
@@ -424,7 +428,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                 R.id.selectFormingGroupActivity_lookingForGroups,
                 R.id.selectFormingGroupActivity_progressBar);
         findViewById(R.id.selectFormingGroupActivity_groupList).setVisibility(candidates.isEmpty() ? View.INVISIBLE : View.VISIBLE);
-        findViewById(R.id.selectFormingGroupActivity_joiningInstructions).setVisibility(candidates.isEmpty() || talked != 0? View.GONE : View.VISIBLE);
         findViewById(R.id.selectFormingGroupActivity_confirmInstructions).setVisibility(talked == 0? View.GONE : View.VISIBLE);
         ViewUtils.setVisibility(this, View.VISIBLE,
                 R.id.selectFormingGroupActivity_explicitConnectionInstructions,
