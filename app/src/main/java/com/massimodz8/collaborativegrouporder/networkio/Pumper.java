@@ -23,11 +23,14 @@ import java.util.Map;
 public class Pumper {
     public static final int MAX_MSG_FROM_WIRE_BYTES = 4 * 1024;
     protected final Handler handler;
-    private final int disconnectMessageCode;
+    private final int disconnectMessageCode, detachingMessageCode;
+    final String name;
 
-    public Pumper(Handler handler, int disconnectMessageCode) {
+    public Pumper(Handler handler, int disconnectMessageCode, int detachingMessageCode, String name) {
         this.handler = handler;
         this.disconnectMessageCode = disconnectMessageCode;
+        this.detachingMessageCode = detachingMessageCode;
+        this.name = name;
     }
 
     // Call this before starting to mangle stuff so it does not need to be thread protected.
@@ -41,6 +44,7 @@ public class Pumper {
     public MessageChannel pump(MessageChannel c) {
         MessagePumpingThread newComer = new MessagePumpingThread(c, funnel);
         synchronized(clients) {
+            if(name != null) newComer.setName(String.format("%1$s[%2$d]", name, clients.size()));
             clients.add(newComer);
         }
         newComer.start();
@@ -119,6 +123,11 @@ public class Pumper {
         public void quitting(MessageChannel source, Exception error) {
             handler.sendMessage(handler.obtainMessage(disconnectMessageCode, new Events.SocketDisconnected(source, error)));
         }
+
+        @Override
+        public void detaching(MessageChannel source) {
+            handler.sendMessage(handler.obtainMessage(detachingMessageCode, source));
+        }
     };
 
 
@@ -155,24 +164,32 @@ public class Pumper {
                     source.recv.rewindToPosition(0);
                     final int type = source.recv.readUInt32();
 
-                    PumpTarget lookup = destination;
-                    while(lookup == null) {
-                        sleep(DEFAULT_POLL_PERIOD);
-                        lookup = destination;
-                    }
+                    PumpTarget lookup = spinForTarget();
                     final PumpTarget.Callbacks real = lookup.callbacks().get(type);
                     if(real == null) throw new InvalidMessageException(type);
                     final MessageNano wire = real.make();
                     source.recv.readMessage(wire);
                     if(source.recv.getPosition() != expect) throw new ByteCountMismatchException(type, expect, source.recv.getPosition());
                     source.recv.rewindToPosition(0);
-                    real.mangle(source, wire);
+                    if(real.mangle(source, wire)) {
+                        destination = null;
+                        spinForTarget();
+                    }
                 }
             } catch (IOException | BigMessageException | InvalidMessageException |
                     EmptyMessageException | ByteCountMismatchException | InterruptedException e) {
                 quitError = e;
             }
             if(!destination.signalExit()) destination.quitting(source, quitError);
+        }
+
+        private PumpTarget spinForTarget() throws InterruptedException {
+            PumpTarget lookup = destination;
+            while(lookup == null) {
+                sleep(DEFAULT_POLL_PERIOD);
+                lookup = destination;
+            }
+            return lookup;
         }
 
 

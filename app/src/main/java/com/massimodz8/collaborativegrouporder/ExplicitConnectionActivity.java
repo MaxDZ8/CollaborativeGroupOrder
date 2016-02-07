@@ -45,6 +45,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
 
     private static final int MSG_DISCONNECTED = 1;
     private static final int MSG_GOT_REPLY = 2;
+    private static final int MSG_DETACHED = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,13 +57,14 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         final long chanKey = CrossActivityShare.pullKey(savedInstanceState, EXTRA_SERVICED_CHANNEL);
 
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        netPump = new Pumper(handler, MSG_DISCONNECTED);
+        netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED, "connAttempt");
         netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
             @Override
             public Network.GroupInfo make() { return new Network.GroupInfo(); }
             @Override
-            public void mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+            public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
                 handler.sendMessage(handler.obtainMessage(MSG_GOT_REPLY, new Events.GroupInfo(from, msg)));
+                return true;
             }
         });
         if(threadKey != 0) {
@@ -181,6 +183,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             switch(msg.what) {
                 case MSG_DISCONNECTED: target.disconnect(); break;
                 case MSG_GOT_REPLY: target.replied((Events.GroupInfo)msg.obj); break;
+                case MSG_DETACHED: break; // this comes after MSG_GOT_REPLY and can be ignored here.
             }
             target.refreshGUI();
         }

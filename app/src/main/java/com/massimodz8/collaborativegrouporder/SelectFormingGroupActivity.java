@@ -70,7 +70,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
 
         if (pumperKey != 0) netPump = (Pumper) state.release(pumperKey);
         if (netPump == null) {
-            netPump = new Pumper(guiHandler, MSG_SOCKET_DISCONNECTED);
+            netPump = new Pumper(guiHandler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED, "remoteGroup");
             netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
                 @Override
                 public Network.GroupInfo make() {
@@ -78,8 +78,9 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+                public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
                     guiHandler.sendMessage(guiHandler.obtainMessage(MSG_GROUP_INFO, new Events.GroupInfo(from, msg)));
+                    return false;
                 }
             }).add(ProtoBufferEnum.CHAR_BUDGET, new PumpTarget.Callbacks<Network.CharBudget>() {
                 @Override
@@ -88,8 +89,9 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                 }
 
                 @Override
-                public void mangle(MessageChannel from, Network.CharBudget msg) throws IOException {
+                public boolean mangle(MessageChannel from, Network.CharBudget msg) throws IOException {
                     guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHAR_BUDGET, new Events.CharBudget(from, msg)));
+                    return false;
                 }
             });
         }
@@ -142,7 +144,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     static final int MSG_SOCKET_DISCONNECTED = 2;
     static final int MSG_GROUP_INFO = 3;
     static final int MSG_CHAR_BUDGET = 4;
-
+    static final int MSG_PUMPER_DETACHED = 5;
 
     Vector<GroupState> candidates = new Vector<>();
     AccumulatingDiscoveryListener explorer = new AccumulatingDiscoveryListener();
@@ -304,6 +306,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                     final Events.CharBudget real = (Events.CharBudget) msg.obj;
                     target.charBudget(real.which, real.payload);
                 } break;
+                case MSG_PUMPER_DETACHED: break; // never happens for us.
             }
             target.refreshGUI();
         }

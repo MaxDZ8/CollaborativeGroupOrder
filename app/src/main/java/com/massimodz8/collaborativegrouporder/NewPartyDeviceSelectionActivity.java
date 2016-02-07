@@ -162,25 +162,30 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     public Vector<DeviceStatus> clients;
     PublishedService publisher;
     ServerSocket landing;
-    Pumper netWorkers = new Pumper(guiHandler, MSG_SOCKET_LOST)
+    Pumper netWorkers = new Pumper(guiHandler, MSG_SOCKET_LOST, MSG_PUMPER_DETACHED, "deviceFilter")
             .add(ProtoBufferEnum.HELLO, new PumpTarget.Callbacks<Network.Hello>() {
                 @Override
                 public Network.Hello make() { return new Network.Hello(); }
 
                 @Override
-                public void mangle(MessageChannel from, Network.Hello msg) throws IOException {
+                public boolean mangle(MessageChannel from, Network.Hello msg) throws IOException {
                     Network.GroupInfo send = new Network.GroupInfo();
                     send.forming = true;
                     send.name = publisher.name;
                     send.version = MainMenuActivity.NETWORK_VERSION;
                     from.writeSync(ProtoBufferEnum.GROUP_INFO, send);
+                    Network.CharBudget bud = new Network.CharBudget();
+                    bud.total = INITIAL_MESSAGE_CHAR_BUDGET;
+                    bud.period = INITIAL_MESSAGE_INTERVAL;
+                    from.write(ProtoBufferEnum.CHAR_BUDGET, bud);
+                    return false;
                 }
             }).add(ProtoBufferEnum.PEER_MESSAGE, new PumpTarget.Callbacks<Network.PeerMessage>() {
                 @Override
                 public Network.PeerMessage make() { return new Network.PeerMessage(); }
 
                 @Override
-                public void mangle(MessageChannel from, Network.PeerMessage msg) throws IOException {
+                public boolean mangle(MessageChannel from, Network.PeerMessage msg) throws IOException {
                     guiHandler.sendMessage(guiHandler.obtainMessage(MSG_PEER_MESSAGE, new Events.PeerMessage(from, msg)));
                 }
             }).add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
@@ -188,8 +193,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 public Network.PlayingCharacterDefinition make() { return new Network.PlayingCharacterDefinition(); }
 
                 @Override
-                public void mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
+                public boolean mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
                     guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHARACTER_DEFINITION, new Events.CharacterDefinition(from, msg)));
+                    return false;
                 }
             }); // the pumper itself does not go. We save the pumping threads instead.
     // Stuff going to CrossActivityShare -----------------------------------------------------------
@@ -300,6 +306,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 case MSG_CHARACTER_DEFINITION: target.definePlayingCharacter((Events.CharacterDefinition) msg.obj); break;
                 case MSG_PEER_MESSAGE: target.setMessage((Events.PeerMessage)msg.obj); break;
                 case MSG_SOCKET_LOST: target.remove((MessageChannel) msg.obj); break;
+                case MSG_REFRESH_GUI: break; // we call refresh anyway...
+                case MSG_PUMPER_DETACHED: break; // this never triggers for us
             }
             target.refreshGUI();
         }
