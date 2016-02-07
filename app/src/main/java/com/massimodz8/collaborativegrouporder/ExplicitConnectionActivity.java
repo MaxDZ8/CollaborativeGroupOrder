@@ -216,6 +216,8 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         send.putExtra(RESULT_ACTION_PARTY_INFO, state.store(info));
         send.putExtra(RESULT_ACTION_CHANNEL, state.store(attempting));
         setResult(RESULT_OK, send);
+        handShaking = false;
+        attempting = null;
         finish();
     }
 }

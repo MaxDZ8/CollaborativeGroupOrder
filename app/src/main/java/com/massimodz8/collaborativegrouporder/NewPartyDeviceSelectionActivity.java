@@ -45,16 +45,20 @@ import java.util.TimerTask;
 import java.util.Vector;
 
 public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextWatcher {
-    public static final int PUBLISHER_CHECK_PERIOD = 250;
-    public static final int PUBLISHER_CHECK_DELAY = 1000;
-    public static final int PEER_MESSAGE_INTERVAL_MS = 2000;
+    static final int PUBLISHER_CHECK_PERIOD = 250;
+    static final int PUBLISHER_CHECK_DELAY = 1000;
+    static final int PEER_MESSAGE_INTERVAL_MS = 2000;
+    static final int INITIAL_MESSAGE_CHAR_BUDGET = 30;
+    static final int INITIAL_MESSAGE_INTERVAL = 2000;
 
-    private static final int MSG_SERVICE_REGISTRATION_FAILED = 1;
-    private static final int MSG_FAILED_ACCEPT = 2;
-    private static final int MSG_CONNECTED = 3;
-    private static final int MSG_SOCKET_LOST = 4;
-    private static final int MSG_PEER_MESSAGE = 5;
-    private static final int MSG_CHARACTER_DEFINITION = 6;
+    static final int MSG_SERVICE_REGISTRATION_FAILED = 1;
+    static final int MSG_FAILED_ACCEPT = 2;
+    static final int MSG_CONNECTED = 3;
+    static final int MSG_SOCKET_LOST = 4;
+    static final int MSG_PEER_MESSAGE = 5;
+    static final int MSG_CHARACTER_DEFINITION = 6;
+    static final int MSG_REFRESH_GUI = 7;
+    static final int MSG_PUMPER_DETACHED = 8;
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
