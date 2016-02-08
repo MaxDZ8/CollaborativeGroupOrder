@@ -40,17 +40,16 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         super.onCreate(savedState);
         setContentView(R.layout.activity_select_forming_group);
 
-        final long candidatesKey = CrossActivityShare.pullKey(savedState, EXTRA_SERVICED_CANDIDATES_VECTOR);
-        final long listenerKey = CrossActivityShare.pullKey(savedState, EXTRA_SERVICED_DISCOVERY_LISTENER);
-        final long pumperKey = CrossActivityShare.pullKey(savedState, EXTRA_SERVICED_NETWORK_PUMPERS_ARRAY);
-
         listAdapter = new GroupListAdapter();
         RecyclerView groupList = (RecyclerView) findViewById(R.id.selectFormingGroupActivity_groupList);
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(listAdapter);
 
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        if (listenerKey != 0) explorer = (AccumulatingDiscoveryListener) state.release(listenerKey);
+        if(null != state.explorer) {
+            explorer = state.explorer;
+            state.explorer = null;
+        }
         else {
             final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
             if (nsd == null) {
@@ -61,34 +60,37 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             }
             explorer.beginDiscovery(MainMenuActivity.GROUP_FORMING_SERVICE_TYPE, nsd);
         }
-        if (candidatesKey != 0) candidates = (Vector<GroupState>) state.release(candidatesKey);
+        if(null != state.candidates) {
+            candidates = state.candidates;
+            state.candidates = null;
+        }
+        netPump = new Pumper(guiHandler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED, "remoteGroup");
+        netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
+            @Override
+            public Network.GroupInfo make() {
+                return new Network.GroupInfo();
+            }
 
-        if (pumperKey != 0) netPump = (Pumper) state.release(pumperKey);
-        if (netPump == null) {
-            netPump = new Pumper(guiHandler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED, "remoteGroup");
-            netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
-                @Override
-                public Network.GroupInfo make() {
-                    return new Network.GroupInfo();
-                }
+            @Override
+            public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+                guiHandler.sendMessage(guiHandler.obtainMessage(MSG_GROUP_INFO, new Events.GroupInfo(from, msg)));
+                return false;
+            }
+        }).add(ProtoBufferEnum.CHAR_BUDGET, new PumpTarget.Callbacks<Network.CharBudget>() {
+            @Override
+            public Network.CharBudget make() {
+                return new Network.CharBudget();
+            }
 
-                @Override
-                public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
-                    guiHandler.sendMessage(guiHandler.obtainMessage(MSG_GROUP_INFO, new Events.GroupInfo(from, msg)));
-                    return false;
-                }
-            }).add(ProtoBufferEnum.CHAR_BUDGET, new PumpTarget.Callbacks<Network.CharBudget>() {
-                @Override
-                public Network.CharBudget make() {
-                    return new Network.CharBudget();
-                }
-
-                @Override
-                public boolean mangle(MessageChannel from, Network.CharBudget msg) throws IOException {
-                    guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHAR_BUDGET, new Events.CharBudget(from, msg)));
-                    return false;
-                }
-            });
+            @Override
+            public boolean mangle(MessageChannel from, Network.CharBudget msg) throws IOException {
+                guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHAR_BUDGET, new Events.CharBudget(from, msg)));
+                return false;
+            }
+        });
+        if(null != state.pumpers) {
+            for(Pumper.MessagePumpingThread p : state.pumpers) netPump.pump(p);
+            state.pumpers = null;
         }
         // Now, in every moment the device could be rotated and this activity would be destroyed and recreated.
         // The service will keep searching and maintaining a list of found services I can later pull with ease,
@@ -115,9 +117,13 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle out) {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        out.putLong(EXTRA_SERVICED_CANDIDATES_VECTOR, state.store(candidates));
-        if(explorer != null) out.putLong(EXTRA_SERVICED_DISCOVERY_LISTENER, state.store(explorer));
-        if(netPump != null) out.putLong(EXTRA_SERVICED_NETWORK_PUMPERS_ARRAY, state.store(netPump.move()));
+        if(null != candidates && candidates.size() > 0) {
+            state.candidates = candidates;
+            candidates = null;
+            state.explorer = explorer;
+            explorer = null;
+            state.pumpers = netPump.move();
+        }
         // Don't call this. The whole GUI is regenerated anyway from the state.
         //super.onSaveInstanceState(out);
     }
@@ -130,10 +136,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
 
     static final int INITIAL_SERVICE_POLLING_DELAY_MS = 2500;
     static final int SERVICE_POLLING_PERIOD_MS = 1000;
-
-    static final String EXTRA_SERVICED_CANDIDATES_VECTOR = "com.massimodz8.collaborativegrouporder.SelectFormingGroupActivity.candidates";
-    static final String EXTRA_SERVICED_DISCOVERY_LISTENER = "com.massimodz8.collaborativegrouporder.SelectFormingGroupActivity.explorer";
-    static final String EXTRA_SERVICED_NETWORK_PUMPERS_ARRAY = "com.massimodz8.collaborativegrouporder.SelectFormingGroupActivity.networkPumpers";
 
     static final int MSG_CHECK_NETWORK_SERVICES = 1;
     static final int MSG_SOCKET_DISCONNECTED = 2;
@@ -150,20 +152,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     Handler guiHandler = new MyHandler(this);
     Pumper netPump;
 
-
-    static class GroupState {
-        final MessageChannel channel;
-        PartyInfo group;
-
-        int charBudget;
-        int nextMsgDelay_ms;
-        String lastMsgSent;
-        volatile long nextEnabled_ms = 0; // SystemClock.elapsedRealtime(); /// if now() is >= this, controls are updated if charBudget > 0
-        public boolean discovered = true;
-
-        public GroupState(MessageChannel pipe) { channel = pipe; }
-        GroupState explicit() { discovered = false;    return this; }
-    }
 
     private class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.GroupViewHolder> {
         public GroupListAdapter() {
