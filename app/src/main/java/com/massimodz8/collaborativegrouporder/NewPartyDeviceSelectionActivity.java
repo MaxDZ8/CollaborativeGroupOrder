@@ -419,7 +419,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             listener = new ServerSocket(0);
         } catch (IOException e) {
             new AlertDialog.Builder(this)
-                    .setMessage(R.string.newPartyDeviceSelectionActivity_badLanding)
+                    .setMessage(R.string.npdsa_badLanding)
                     .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -528,7 +528,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     private void refreshGUI() {
         if (landing == null)
             return; // initial state as in editor is "fine", button is enabled by listener on the input field
-        action.setText(R.string.newPartyDeviceSelectionActivity_goDefiningPCs);
+        action.setText(R.string.npdsa_goDefiningPCs);
         int count = 0;
         for (DeviceStatus dev : clients) {
             if (dev.groupMember) count++;

@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/txt_explicitConnectionInfo"
+        android:text="@string/eca_infoDesc"
         android:gravity="center_horizontal" />
 
     <EditText
@@ -62,8 +62,8 @@
         android:visibility="gone" />
 
     <Space
-        android:layout_width="20px"
-        android:layout_height="fill_parent"
+        android:layout_width="20dp"
+        android:layout_height="0dp"
         android:layout_weight=".5" />
 
     <TextView

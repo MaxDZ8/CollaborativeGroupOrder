@@ -33,6 +33,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         outState.putLong(EXTRA_SERVICED_CHANNEL, state.store(attempting));
         outState.putLong(EXTRA_SERVICED_PUMPER_THREAD, state.store(netPump.move(attempting)));

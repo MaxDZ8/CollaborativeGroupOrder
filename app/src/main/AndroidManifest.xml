@@ -41,10 +41,10 @@
         </activity>
         <activity
             android:name=".ExplicitConnectionActivity"
-            android:label="@string/explicitConnectionActivity_title" />
+            android:label="@string/eca_title" />
 
         <activity android:name=".NewPartyDeviceSelectionActivity"
-            android:label="@string/newPartyDeviceSelectionActivity_title"
+            android:label="@string/npdsa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">RPG Party Order</string>
-    <string name="mma_newParty">Assemble a new party</string>
-    <string name="mma_joinNewParty">Join a new party</string>
     <string name="txt_getGroupNameDesc_text">Party name:</string>
     <string name="btn_startListening_text">Let friends join your party</string>
     <string name="btn_generateParty">Make party</string>
@@ -26,18 +24,15 @@
     <string name="cannotSeeThemTryConnect">Cannot find your group?\nTry an explicit connection!</string>
     <string name="serviceDiscoveryFailed_msg">Something has gone wrong with network discovery (error %1$s)</string>
     <string name="FYI_explicitConnectInfo">Are your friends having trouble in finding your group? Here is data to use "explicit connect":\n</string>
-    <string name="txt_explicitConnectionInfo">The information you need here can be found at the bottom of the screen on party owner device.</string>
     <string name="txt_inetPort_desc">The second information you need is a port. It\'s the number at the bottom of the screen on party owner device.</string>
     <string name="btn_txt_attemptConnection">Connect</string>
     <string name="explicit_portInfo">Port: %1$d\n</string>
     <string name="explicit_address">Address: %1$s\n</string>
-    <string name="eca_port">Port</string>
-    <string name="eca_networkAddress">Network address</string>
     <string name="serviceDiscErr">Service discovery error</string>
     <string name="badPort_msg">This does not look like a valid port number. Ports are usually between 1024 and 65535. Try again.</string>
     <string name="badHost_msg">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
-    <string name="explicitConn_IOException_title">I/O error</string>
-    <string name="explicitConn_IOException_msg">Could not connect to host. System message:\n%1$s</string>
+    <string name="generic_IOError">I/O error</string>
+    <string name="generic_connFailedWithError">Could not connect to host. System message:\n%1$s</string>
     <string name="badInitialServerReply_msg">Failed to parse server reply. This server is incompatible.</string>
     <string name="unexpectedInitialServerReply_msg">Server replied in an unexpected way. This server is incompatible.</string>
     <string name="card_group_version">Version: %1$d (%2$s)</string>
@@ -169,24 +164,33 @@
     <string name="mainMenuActivity_couldNotBindInternalService">Could not bind to the cross-activity data sharing service. This is required for everything else to work so the app will now quit.</string>
     <string name="mainMenuActivity_couldNotBindExit">Exit app</string>
     <string name="mainMenuActivity_lostCrossActivitySharingService">Lost handle over the cross-activity data sharing service. Nothing else will work without it so the app will now close.</string>
-    <string name="npdsa_goal">Give your new party a name.</string>
     <string name="formingNewPartyActivity_partyName">Party name:</string>
-    <string name="npdsa_groupNameHint">Name of new party</string>
-    <string name="npdsa_publish">Publish party on Wi-Fi</string>
-    <string name="newPartyDeviceSelectionActivity_title">Party member selection</string>
-    <string name="npdsa_selectInstructions">Connected devices will be listed below. Select the devices to let in the group.</string>
-    <string name="npdsa_explicitConnectionInfos">Data for explicit connection:\nPort: %1$d\n%2$s</string>
-    <string name="newPartyDeviceSelection_inputNameAction">Publish</string>
-    <string name="newPartyDeviceSelectionActivity_badLanding">Cannot open communication so your friend\'s devices can connect. This is very serious and prevents anything from working.</string>
-    <string name="newPartyDeviceSelectionActivity_goDefiningPCs">Define playing characters</string>
-    <string name="newPartyDeviceSelectionActivity_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
-    <string name="explicitConnectionActivity_title">Initiate explicit connection</string>
+
+    <string name="eca_title">Initiate explicit connection</string>
     <string name="eca_disconnected">Could not connect to specified device. Check your input is correct and the device is reachable: it must be on the same Wi-Fi network! Not sure? Try using \"tethering\".</string>
     <string name="eca_partyNotOpenMsg">I found a party named \"%1$s\" here but it is not accepting new players. You might have to talk to your friend about this.</string>
+    <string name="eca_infoDesc">The information you need here can be found at the bottom of the screen on party owner device.</string>
+    <string name="eca_port">Port</string>
+    <string name="eca_networkAddress">Network address</string>
+    <string name="eca_failedHello">Could not send HELLO to host. System message:\n%1$s</string>
+
     <string name="mma_failedOwnedPartyLoad">Failed to load owned party data. This is required for the app to function. Ignoring this will only make the problem worse so the app will now close.</string>
     <string name="mma_exitApp">Exit app</string>
     <string name="mma_noUpgradeAvailable">Loaded party owner data is version %1$d. Current version is %2$d so data should be upgraded but no upgrading is possible yet. Continue at your own risk.</string>
     <string name="mma_invalidPartyOwnerLoadedData">Inconsistent party data loaded. You can proceed at your own risk making the problem worse. List of errors:%1$s</string>
+    <string name="mma_newParty">Assemble a new party</string>
+    <string name="mma_joinNewParty">Join a new party</string>
+
+    <string name="npdsa_title">Party member selection</string>
+    <string name="npdsa_goal">Give your new party a name.</string>
+    <string name="npdsa_groupNameHint">Name of new party</string>
+    <string name="npdsa_publish">Publish party on Wi-Fi</string>
+    <string name="npdsa_selectInstructions">Connected devices will be listed below. Select the devices to let in the group.</string>
+    <string name="npdsa_explicitConnectionInfos">Data for explicit connection:\nPort: %1$d\n%2$s</string>
+    <string name="npdsa_inputNameAction">Publish</string>
+    <string name="npdsa_badLanding">Cannot open communication so your friend\'s devices can connect. This is very serious and prevents anything from working.</string>
+    <string name="npdsa_goDefiningPCs">Define playing characters</string>
+    <string name="npdsa_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
     <string name="npdsa_failedAccept">An error occurred while connecting a new device. Maybe the network is broken or I am low on resources. Consider restarting.</string>
     <string name="npdsa_lostTalkingDevice">Lost connection to whoever sent the message \"%1$s\". You can ignore this issue.</string>
 
