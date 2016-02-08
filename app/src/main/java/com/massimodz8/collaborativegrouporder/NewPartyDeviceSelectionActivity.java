@@ -162,7 +162,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         }
     };
 
-    // Stuff going to CrossActivityShare -----------------------------------------------------------
+    // Stuff going to CrossActivityShare vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-
     public Vector<DeviceStatus> clients;
     PublishedService publisher;
     ServerSocket landing;
@@ -203,7 +203,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                     return false;
                 }
             }); // the pumper itself does not go. We save the pumping threads instead.
-    // Stuff going to CrossActivityShare -----------------------------------------------------------
+    // Stuff going to CrossActivityShare ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     
 
 
@@ -300,6 +300,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 } break;
                 case MSG_CONNECTED: {
                     DeviceStatus got = new DeviceStatus((MessageChannel) msg.obj);
+                    got.charBudget = INITIAL_MESSAGE_CHAR_BUDGET;
                     target.clients.add(got);
                     target.netWorkers.pump(got.source);
                 } break;
@@ -340,7 +341,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         if(null == owner) return;
         if(ev.msg.charSpecific != 0) return; // ignore, this is not supported at this stage you mofo.
         if(ev.msg.text.length() >= owner.charBudget) return; // messages exceeding can be dropped
-        if(owner.nextMessage.before(new Date())) return; // also ignore messaging too fast
+        if(null != owner.nextMessage && owner.nextMessage.after(new Date())) return; // also ignore messaging too fast
         owner.charBudget -= ev.msg.text.length();
         owner.nextMessage = new Date(new Date().getTime() + PEER_MESSAGE_INTERVAL_MS);
         owner.lastMessage = ev.msg.text;
@@ -543,6 +544,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 R.id.npdsa_explicitConnectionInfos,
                 R.id.npdsa_publishing);
         findViewById(R.id.npdsa_groupName).setEnabled(false);
+        listAdapter.notifyDataSetChanged();
     }
 
     class MyLandingServer extends LandingServer {

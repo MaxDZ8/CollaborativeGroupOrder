@@ -23,8 +23,6 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ExplicitConnectionActivity extends AppCompatActivity {
-    private static final String EXTRA_SERVICED_PUMPER_THREAD = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.pumperThread";
-    private static final String EXTRA_SERVICED_CHANNEL = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.channel";
     Pumper netPump;
     MessageChannel attempting;
     boolean handShaking;
@@ -35,8 +33,8 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        outState.putLong(EXTRA_SERVICED_CHANNEL, state.store(attempting));
-        outState.putLong(EXTRA_SERVICED_PUMPER_THREAD, state.store(netPump.move(attempting)));
+        if(netPump.getClientCount() != 0) state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
+        attempting = null;
     }
 
     private static final int MSG_DISCONNECTED = 1;
@@ -49,9 +47,6 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_explicit_connection);
         handler = new MyHandler(this);
 
-        final long threadKey = CrossActivityShare.pullKey(savedInstanceState, EXTRA_SERVICED_PUMPER_THREAD);
-        final long chanKey = CrossActivityShare.pullKey(savedInstanceState, EXTRA_SERVICED_CHANNEL);
-
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED, "connAttempt");
         netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
@@ -63,10 +58,10 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 return true;
             }
         });
-        if(threadKey != 0) {
-            Pumper.MessagePumpingThread worker = (Pumper.MessagePumpingThread) state.release(threadKey);
-            state.release(chanKey);
-            netPump.pump(worker);
+        if(null != state.pumpers) {
+            attempting = state.pumpers[0].getSource();
+            netPump.pump(state.pumpers[0]);
+            state.pumpers = null;
         }
         refreshGUI();
     }
@@ -115,7 +110,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                     return null;
 
                 } catch (IOException e) {
-                    fail = new Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
+                    fail = new Error(getString(R.string.generic_IOError), String.format(getString(R.string.generic_connFailedWithError), e.getLocalizedMessage()));
                     return null;
                 }
                 MessageChannel chan = new MessageChannel(s);
@@ -124,7 +119,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 try {
                     chan.write(ProtoBufferEnum.HELLO, payload);
                 } catch (IOException e) {
-                    fail = new Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
+                    fail = new Error(getString(R.string.generic_IOError), String.format(getString(R.string.eca_failedHello), e.getLocalizedMessage()));
                     return null;
                 }
                 return chan;
@@ -150,9 +145,6 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     }
 
     public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.result";
-    public static final String RESULT_ACTION_CHANNEL = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.result.channel";
-    public static final String RESULT_ACTION_PARTY_INFO = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.result.groupInfo";
-    public static final String RESULT_ACTION_PUMPER_THREAD = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.result.pumperThread";
 
     static class Error {
         String title;
@@ -213,9 +205,8 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         info.options = result.payload.options;
         Intent send = new Intent(RESULT_ACTION);
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        send.putExtra(RESULT_ACTION_PUMPER_THREAD, state.store(netPump.move(attempting)));
-        send.putExtra(RESULT_ACTION_PARTY_INFO, state.store(info));
-        send.putExtra(RESULT_ACTION_CHANNEL, state.store(attempting));
+        state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
+        state.probed = info;
         setResult(RESULT_OK, send);
         handShaking = false;
         attempting = null;

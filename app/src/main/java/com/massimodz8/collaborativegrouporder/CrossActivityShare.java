@@ -48,10 +48,14 @@ public class CrossActivityShare extends Application {
     public Vector<DeviceStatus> clients;
     PublishedService publisher;
     ServerSocket landing;
-    // NewPartyDeviceSelectionActivity state -------------------------------------------------------
+    //----------------------------------------------------------------------------------------------
+
+    // ExplicitConnectionActivity result -----------------------------------------------------------
+    public PartyInfo probed;
+    //----------------------------------------------------------------------------------------------
 
 
-    // NewPartyDeviceSelectionActivity, FUTUREACTIVITY ---------------------------------------------
+    // NewPartyDeviceSelectionActivity, ExplicitConnectionActivity ---------------------------------
     Pumper.MessagePumpingThread[] pumpers;
-    // NewPartyDeviceSelectionActivity, FUTUREACTIVITY ---------------------------------------------
+    //----------------------------------------------------------------------------------------------
 }

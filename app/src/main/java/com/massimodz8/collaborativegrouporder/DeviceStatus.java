@@ -16,7 +16,7 @@ class DeviceStatus {
     boolean groupMember;
     boolean kicked;
     Vector<BuildingPlayingCharacter> chars = new Vector<>(); // if contains something we have been promoted
-    public Date nextMessage = new Date();
+    public Date nextMessage;
 
     public DeviceStatus(MessageChannel source) {
         this.source = source;

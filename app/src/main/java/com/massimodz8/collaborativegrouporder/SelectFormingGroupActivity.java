@@ -441,14 +441,13 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode != EXPLICIT_CONNECTION_REQUEST) return;
         if(resultCode != RESULT_OK) return;
-        long key = data.getLongExtra(ExplicitConnectionActivity.RESULT_ACTION_CHANNEL, 0);
-        if (key == 0) return; // should never happen but anyway...
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        final GroupState add = new GroupState((MessageChannel)state.release(key)).explicit();
-        key = data.getLongExtra(ExplicitConnectionActivity.RESULT_ACTION_PARTY_INFO, 0);
-        add.group = (PartyInfo)state.release(key);
-        key = data.getLongExtra(ExplicitConnectionActivity.RESULT_ACTION_PUMPER_THREAD, 0);
-        Pumper.MessagePumpingThread pumper = (Pumper.MessagePumpingThread)state.release(key);
+        Pumper.MessagePumpingThread pumper = state.pumpers[0];
+        state.pumpers = null;
+        final GroupState add = new GroupState(pumper.getSource()).explicit();
+        add.group = state.probed;
+        state.probed = null;
+
         candidates.add(add);
         netPump.pump(pumper);
         refreshGUI();
