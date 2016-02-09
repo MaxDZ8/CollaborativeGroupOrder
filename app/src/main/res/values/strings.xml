@@ -1,16 +1,6 @@
 <resources>
-    <string name="app_name">RPG Party Order</string>
-    <string name="txt_getGroupNameDesc_text">Party name:</string>
-    <string name="btn_startListening_text">Let friends join your party</string>
-    <string name="btn_generateParty">Make party</string>
-    <string name="newPartyDeviceSelectionActivity_badParty_title">Bad party name</string>
-    <string name="newPartyDeviceSelection_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
-    <string name="newPartyDeviceSelection_badParty_msg_alreadyThere">A party with the same name already exists. Names must be unique.</string>
-    <string name="newPartyDeviceSelection_badParty_retry">Modify party name</string>
-    <string name="networkScanning">Tell your friends to join your party from the main menu. Devices will appear below. Tap devices to add them to the group.</string>
+    <string name="app_name">RPG Order</string>
     <string name="generic_unreadable_at_start" translatable="false">_initialized_</string>
-    <string name="serverSocketFailed_title">Network error</string>
-    <string name="serverSocketFailed_msg">Something prevented creation of the "listen" socket. This is required to let other devices talk to me. Without it, I cannot even start creating the party.</string>
     <string name="serviceRegFailed_title">Service registration failed</string>
     <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
     <string name="nullNSDService_title">Failed to get NSD</string>
@@ -49,8 +39,6 @@
     <string name="joinindDevice_kick">Reject</string>
     <string name="anonDeviceStats">%1$d silent %2$s connected.</string>
     <string name="talkingDeviceStats">%1$d %2$s talked, showing below.</string>
-    <string name="word_device_singular">device</string>
-    <string name="word_device_plural">devices</string>
     <string name="explicitConnectionActivity_probingFeedback">Probing, please wait…</string>
     <string name="networkListening_groupNameTitle">Gathering party \"%1$s\"</string>
     <string name="cannotEnumerateNICs">Failed to get network information. This isn\'t really a problem but you\'ll have to find this device network address in some other way in case your friends need explicit connection data.</string>
@@ -106,7 +94,6 @@
     <string name="joinGroupActivity_failedPCSend">Failed to send character data to party owner, detailed error follows:\n</string>
     <string name="CreatePartyActivity_definingCharactersFeedback">Players can now define playing characters. They can define more than one for each device part of the group.\nTheir characters will appear below.</string>
     <string name="card_joiningCharacter_sentFeedback">Sent. Waiting reply.</string>
-    <string name="createPartyActivity_failedAcceptRejectReplySend">Failed to signal character \"%1$s\", error: %2$s</string>
     <string name="createPartyActivity_PCDefDiscarded_badExperience">Bad character: experience must be positive.</string>
     <string name="createPartyActivity_PCDefDiscarded_badHealth">Bad character: health points must be at least 1.</string>
     <string name="createPartyActivity_PCDefDiscarded_badName">Bad character: must have a name.</string>
@@ -181,6 +168,10 @@
     <string name="mma_newParty">Assemble a new party</string>
     <string name="mma_joinNewParty">Join a new party</string>
 
+    <string name="npdsa_badParty_title">Bad party name</string>
+    <string name="npdsa_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
+    <string name="npdsa_badParty_msg_alreadyThere">A party with the same name already exists. Names must be unique.</string>
+    <string name="npdsa_badParty_retry">Modify party name</string>
     <string name="npdsa_title">Party member selection</string>
     <string name="npdsa_goal">Give your new party a name.</string>
     <string name="npdsa_groupNameHint">Name of new party</string>
@@ -193,6 +184,24 @@
     <string name="npdsa_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
     <string name="npdsa_failedAccept">An error occurred while connecting a new device. Maybe the network is broken or I am low on resources. Consider restarting.</string>
     <string name="npdsa_lostTalkingDevice">Lost connection to whoever sent the message \"%1$s\". You can ignore this issue.</string>
+    <string name="npdsa_sealing_title">Sealing a group</string>
+    <string name="npdsa_closing_oneDevice">There is a single device in the group.</string>
+    <string name="npdsa_closing_pluralDevices">There are %1$d devices in the group.</string>
+    <string name="npdsa_sealing_msg">%1$s. This operation cannot be reverted. Once you go ahead adding more players will require to restart.</string>
+    <string name="npdsa_goDefinePC">Go define characters</string>
+
+    <string name="ncaa_definingPCs">Players are defining characters.</string>
+    <string name="ncaa_action">Players are defining characters</string>
+    <string name="ncaa_failedAcceptRejectReplySend">Failed to signal character \"%1$s\", error: %2$s</string>
+    <string name="ncaa_makeGroup">Make group</string>
+    <string name="ncaa_lostConn_singularCharacter">which defined 1 character</string>
+    <string name="ncaa_lostConn_pluralCharacter">which defined %1$d characters</string>
+    <string name="ncaa_lostConn_msg">Lost connection to device \"%1$s\" %2$s. You can continue ignoring some errors, the group will still be formed and the device can later join anyway.</string>
+    <string name="ncaa_save_title">Save party to storage</string>
+    <string name="ncaa_save_msg">We\'re almost done. Check all the playing characters are defined and accepted. After saving the party to internal storage I will get you back to main menu.</string>
+    <string name="ncaa_done">Done</string>
+    <string name="ncaa_savingPleaseWait">Saving party...</string>
+    <string name="npdsa_failedSalt">Failed to generate secret key for new party. Something is very wrong with this system. Try rebooting.</string>
 
 
 </resources>

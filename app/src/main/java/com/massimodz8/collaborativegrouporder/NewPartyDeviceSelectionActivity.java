@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
 import android.os.AsyncTask;
@@ -38,6 +39,8 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.SocketException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Timer;
@@ -49,7 +52,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     static final int PUBLISHER_CHECK_DELAY = 1000;
     static final int PEER_MESSAGE_INTERVAL_MS = 2000;
     static final int INITIAL_MESSAGE_CHAR_BUDGET = 30;
-    static final int INITIAL_MESSAGE_INTERVAL = 2000;
 
     static final int MSG_SERVICE_REGISTRATION_FAILED = 1;
     static final int MSG_FAILED_ACCEPT = 2;
@@ -61,13 +63,27 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     static final int MSG_PUMPER_DETACHED = 8;
 
     @Override
+    protected void onDestroy() {
+        if(null != publisher) publisher.stopPublishing();
+        if(null != acceptor) acceptor.shutdown();
+        if(null != landing) {
+            try {
+                landing.close();
+            } catch (IOException e) {
+                // just suppress
+            }
+        }
+        super.onDestroy();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         // no need to, regen GUI from data
         //super.onSaveInstanceState(outState);
 
         if(null != netWorkers && 0 != netWorkers.getClientCount()) state.pumpers = netWorkers.move();
         state.landing = landing;
-        state.clients = clients;
+        state.clients = building.clients;
         state.publisher = publisher;
     }
 
@@ -92,9 +108,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             state.pumpers = null;
         }
         if (null == state.clients) {
-            clients = new Vector<>();
+            building.clients = new Vector<>();
         } else {
-            clients = state.clients;
+            building.clients = state.clients;
             state.clients = null;
         }
         if(null != state.landing) {
@@ -119,7 +135,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         @Override
         public long getItemId(int position) {
             int good = 0;
-            for (DeviceStatus d : clients) {
+            for (DeviceStatus d : building.clients) {
                 if (d.lastMessage == null) continue;
                 if (good == position) return d.source.unique;
                 good++;
@@ -137,7 +153,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         public void onBindViewHolder(DeviceViewHolder holder, int position) {
             int count = 0;
             DeviceStatus dev = null;
-            for (DeviceStatus d : clients) {
+            for (DeviceStatus d : building.clients) {
                 if (d.lastMessage != null && !d.kicked) {
                     if (count == position) {
                         dev = d;
@@ -155,15 +171,15 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         @Override
         public int getItemCount() {
             int count = 0;
-            for (DeviceStatus d : clients) {
+            for (DeviceStatus d : building.clients) {
                 if (d.lastMessage != null && !d.kicked) count++;
             }
             return count;
         }
     };
 
-    // Stuff going to CrossActivityShare vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv-
-    public Vector<DeviceStatus> clients;
+    // Stuff going to CrossActivityShare vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    public BuildingCharacters building = new BuildingCharacters();
     PublishedService publisher;
     ServerSocket landing;
     Pumper netWorkers = new Pumper(guiHandler, MSG_SOCKET_LOST, MSG_PUMPER_DETACHED)
@@ -180,13 +196,15 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                     from.writeSync(ProtoBufferEnum.GROUP_INFO, send);
                     Network.CharBudget bud = new Network.CharBudget();
                     bud.total = INITIAL_MESSAGE_CHAR_BUDGET;
-                    bud.period = INITIAL_MESSAGE_INTERVAL;
+                    bud.period = PEER_MESSAGE_INTERVAL_MS;
                     from.write(ProtoBufferEnum.CHAR_BUDGET, bud);
                     return false;
                 }
             }).add(ProtoBufferEnum.PEER_MESSAGE, new PumpTarget.Callbacks<Network.PeerMessage>() {
                 @Override
-                public Network.PeerMessage make() { return new Network.PeerMessage(); }
+                public Network.PeerMessage make() {
+                    return new Network.PeerMessage();
+                }
 
                 @Override
                 public boolean mangle(MessageChannel from, Network.PeerMessage msg) throws IOException {
@@ -238,7 +256,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             accepted.setText(res);
             accepted.setTypeface(original, weight);
             int count = 0;
-            for (DeviceStatus dev : clients) {
+            for (DeviceStatus dev : building.clients) {
                 if (dev.source == key) {
                     dev.groupMember = isChecked;
                 }
@@ -259,7 +277,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         @Override
         public void onClick(DialogInterface dialog, int which) {
             if (which == AlertDialog.BUTTON_POSITIVE) {
-                for (DeviceStatus dev : clients) {
+                for (DeviceStatus dev : building.clients) {
                     if (dev.source == key) {
                         dev.kicked = true;
                         dev.groupMember = false;
@@ -301,7 +319,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 case MSG_CONNECTED: {
                     DeviceStatus got = new DeviceStatus((MessageChannel) msg.obj);
                     got.charBudget = INITIAL_MESSAGE_CHAR_BUDGET;
-                    target.clients.add(got);
+                    target.building.clients.add(got);
                     target.netWorkers.pump(got.source);
                 } break;
                 case MSG_FAILED_ACCEPT: {
@@ -309,8 +327,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                             .setMessage(R.string.npdsa_failedAccept)
                             .show();
                 } break;
-                case MSG_CHARACTER_DEFINITION: target.definePlayingCharacter((Events.CharacterDefinition) msg.obj); break;
-                case MSG_PEER_MESSAGE: target.setMessage((Events.PeerMessage)msg.obj); break;
+                case MSG_CHARACTER_DEFINITION: target.building.definePlayingCharacter((Events.CharacterDefinition) msg.obj); break;
+                case MSG_PEER_MESSAGE: target.building.setMessage((Events.PeerMessage) msg.obj, PEER_MESSAGE_INTERVAL_MS); break;
                 case MSG_SOCKET_LOST: target.remove((MessageChannel) msg.obj); break;
                 case MSG_REFRESH_GUI: break; // we call refresh anyway...
                 case MSG_PUMPER_DETACHED: break; // this never triggers for us
@@ -320,86 +338,54 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     }
 
     private void remove(MessageChannel gone) {
-        DeviceStatus owner = get(gone);
+        DeviceStatus owner = building.get(gone);
         if(null == owner) return; // impossible, but ok.
         if(null == owner.lastMessage) return; // a silent going away is normal
         String string = String.format(getString(R.string.npdsa_lostTalkingDevice), owner.lastMessage);
         // what if the device also defined characters? I don't care! They're not even shown for the time being!
         new AlertDialog.Builder(this).setMessage(string).show();
         netWorkers.forget(gone);
-        clients.remove(owner);
+        building.clients.remove(owner);
         try {
             gone.socket.close();
         } catch (IOException e) {
             // do nothing. It's gone anyway.
         }
-        refreshGUI();
-    }
-
-    private void setMessage(Events.PeerMessage ev) {
-        DeviceStatus owner = get(ev.which);
-        if(null == owner) return;
-        if(ev.msg.charSpecific != 0) return; // ignore, this is not supported at this stage you mofo.
-        if(ev.msg.text.length() >= owner.charBudget) return; // messages exceeding can be dropped
-        if(null != owner.nextMessage && owner.nextMessage.after(new Date())) return; // also ignore messaging too fast
-        owner.charBudget -= ev.msg.text.length();
-        owner.nextMessage = new Date(new Date().getTime() + PEER_MESSAGE_INTERVAL_MS);
-        owner.lastMessage = ev.msg.text;
-        refreshGUI();
-    }
-
-    private void definePlayingCharacter(final Events.CharacterDefinition ev) {
-        DeviceStatus owner = get(ev.origin);
-        if(null == owner) return; // impossible
-        if(!owner.groupMember) {
-            new AsyncTask<Void, Void, Exception>() {
-                @Override
-                protected Exception doInBackground(Void... params) {
-                    Network.GroupFormed negative = new Network.GroupFormed();
-                    negative.accepted = false;
-                    negative.peerKey = ev.character.peerKey;
-                    try {
-                        ev.origin.writeSync(ProtoBufferEnum.GROUP_FORMED, negative);
-                    } catch (IOException e) {
-                        return e;
-                    }
-                    return null;
-                }
-
-                //@Override
-                //protected void onPostExecute(Exception e) {
-                //    if(null != e) {
-                //        // This is usually because the connection goes down so do nothing and wait till disconnect is signaled.
-                //    }
-                //}
-            }.execute();
-            return;
-        }
-        for(int rebind = 0; rebind < owner.chars.size(); rebind++) {
-            BuildingPlayingCharacter pc = owner.chars.elementAt(rebind);
-            if(pc.id == ev.character.peerKey) {
-                if(pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED) return; // ignore the thing, it's client's problem, not ours.
-                owner.chars.remove(rebind);
-            }
-        }
-        owner.chars.add(new BuildingPlayingCharacter(ev.character));
     }
 
     public void action_callback(View btn) {
         btn.setEnabled(false);
         if (landing == null) publishGroup();
-        else closeGroup();
+        else {
+            int devCount = 0;
+            for(DeviceStatus dev : building.clients) {
+                if(dev.groupMember) devCount++;
+            }
+            String singular = getString(R.string.npdsa_closing_oneDevice);
+            String plural = String.format(getString(R.string.npdsa_closing_pluralDevices), devCount);
+            String use = devCount == 1? singular : plural;
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.npdsa_sealing_title)
+                    .setMessage(String.format(getString(R.string.npdsa_sealing_msg), use))
+                    .setPositiveButton(R.string.npdsa_goDefinePC, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            closeGroup();
+                        }
+                    })
+                    .show();
+        }
     }
 
     private void publishGroup() {
         final TextView view = (TextView) findViewById(R.id.npdsa_groupName);
         final String groupName = view.getText().toString().trim();
         if (groupName.isEmpty() || state.getGroupByName(groupName) != null) {
-            int msg = groupName.isEmpty() ? R.string.newPartyDeviceSelection_badParty_msg_emptyName : R.string.newPartyDeviceSelection_badParty_msg_alreadyThere;
+            int msg = groupName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
             new AlertDialog.Builder(this)
-                    .setTitle(R.string.newPartyDeviceSelectionActivity_badParty_title)
+                    .setTitle(R.string.npdsa_badParty_title)
                     .setMessage(msg)
-                    .setPositiveButton(R.string.newPartyDeviceSelection_badParty_retry, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.npdsa_badParty_retry, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             view.requestFocus();
@@ -445,27 +431,129 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             @Override
             public void run() {
                 int now = publisher.getStatus();
-                switch(now) {
+                switch (now) {
                     //case STATUS_IDLE = 0; // just created, doing nothing.
-                    case PublishedService.STATUS_STARTING: break;
-                    case PublishedService.STATUS_PUBLISHING: break;
-                    case PublishedService.STATUS_STOPPED: break;
+                    case PublishedService.STATUS_STARTING:
+                        break;
+                    case PublishedService.STATUS_PUBLISHING:
+                        break;
+                    case PublishedService.STATUS_STOPPED:
+                        break;
                     case PublishedService.STATUS_STOP_FAILED:
                         // I don't think there's anything worth doing there.
                         break;
                     case PublishedService.STATUS_START_FAILED:
                         guiHandler.sendMessage(guiHandler.obtainMessage(MSG_SERVICE_REGISTRATION_FAILED));
                 }
-                if(previously.value != now) {
+                if (previously.value != now) {
                     guiHandler.sendMessage(guiHandler.obtainMessage(MSG_REFRESH_GUI));
                     previously.value = now;
                 }
             }
         }, PUBLISHER_CHECK_DELAY, PUBLISHER_CHECK_PERIOD);
+        building.name = groupName;
     }
 
     void closeGroup() {
-        new AlertDialog.Builder(this).setTitle("TODO").show();
+        try {
+            building.salt = buildKey();
+        } catch (NoSuchAlgorithmException e) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.npdsa_failedSalt)
+                    .show();
+        }
+
+        if(null != publisher) {
+            publisher.stopPublishing();
+            publisher = null;
+        }
+        if(null != landing) {
+            acceptor.shutdown();
+            try {
+                landing.close();
+            } catch (IOException e) {
+                // suppress
+            }
+            landing = null;
+            acceptor = null;
+        }
+
+        final Network.GroupFormed form = new Network.GroupFormed();
+        form.salt = building.salt;
+        new AsyncTask<Void, Void, Void>() {
+            Exception[] errors = new Exception[building.clients.size()];
+            int bad;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                int slot = 0;
+                for (DeviceStatus dev : building.clients) {
+                    if (!dev.kicked && dev.groupMember) {
+                        try {
+                            dev.source.writeSync(ProtoBufferEnum.GROUP_FORMED, form);
+                        } catch (IOException e) {
+                            errors[slot] = e;
+                            bad++;
+                        }
+                    }
+                    slot++;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if(0 != bad) {
+                    new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
+                            .setMessage("At least one connected device couldn't get in the party.")
+                            .setPositiveButton("Continue anyway", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) { goDefinePCs(); }
+                            }).setNegativeButton("Restart", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            }).show();
+                    return;
+                }
+                goDefinePCs();
+            }
+        }.execute();
+    }
+
+    private void goDefinePCs() {
+        if(null != netWorkers && 0 != netWorkers.getClientCount()) {
+            // Before continuing, get the rid of everything that's not a member.
+            Vector<DeviceStatus> members = new Vector<>();
+            for(DeviceStatus dev : building.clients) {
+                if(dev.groupMember) members.add(dev);
+                else {
+                    netWorkers.forget(dev.source);
+                    try {
+                        dev.source.socket.close();
+                    } catch (IOException e) {
+                        // I don't care about those guys.
+                    }
+                }
+            }
+            building.clients = members;
+            state.pumpers = netWorkers.move();
+        }
+        state.clients = building.clients;
+        building.clients = null;
+
+        startActivity(new Intent(NewPartyDeviceSelectionActivity.this, NewCharactersApprovalActivity.class));
+    }
+
+    public byte[] buildKey() throws NoSuchAlgorithmException {
+        int count = 0;
+        for(DeviceStatus dev : building.clients) {
+            if(dev.groupMember) count++;
+        }
+        final String message = String.format("counting=%1$d name=\"%2$s\" created=%3$s", count, building.name, new Date().toString());
+        MessageDigest hasher = MessageDigest.getInstance("SHA-256");
+        return hasher.digest(message.getBytes());
     }
 
     private static String nsdErrorString(int error) {
@@ -477,13 +565,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         return String.format("%1$d", error);
     }
 
-
-    DeviceStatus get(MessageChannel c) {
-        for (DeviceStatus d : clients) {
-            if (d.source == c) return d;
-        }
-        return null; // impossible most of the time
-    }
 
     String listAddresses() {
         Enumeration<NetworkInterface> nics;
@@ -531,7 +612,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             return; // initial state as in editor is "fine", button is enabled by listener on the input field
         action.setText(R.string.npdsa_goDefiningPCs);
         int count = 0;
-        for (DeviceStatus dev : clients) {
+        for (DeviceStatus dev : building.clients) {
             if (dev.groupMember) count++;
         }
         action.setEnabled(count != 0);

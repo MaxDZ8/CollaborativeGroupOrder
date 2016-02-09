@@ -7,7 +7,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
  * Used across client and server when a new party is generated.
  */
 public class BuildingPlayingCharacter extends PlayingCharacter {
-        public final int id;
+        public final int peerKey, unique;
         public int status = STATUS_BUILDING;
         public static final int STATUS_BUILDING = 0;
         public static final int STATUS_SENT = 1;
@@ -15,15 +15,10 @@ public class BuildingPlayingCharacter extends PlayingCharacter {
         public static final int STATUS_REJECTED = 3;
         private static int count = 0;
 
-    /// This ctor can be used by client to generate unique character id with ease.
-    /// Remember the ids are unique by device, the server considers devices separately.
-    BuildingPlayingCharacter() {
-        id = ++count;
-    }
-
     /// This ctor is used by the server instead: the ids are provided over the wire.
     public BuildingPlayingCharacter(Network.PlayingCharacterDefinition def) {
         super(def);
-        id = def.peerKey;
+        peerKey = def.peerKey;
+        unique = ++count;
     }
 }

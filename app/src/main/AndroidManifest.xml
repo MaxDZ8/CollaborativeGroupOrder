@@ -18,12 +18,12 @@
         android:required="true" />
 
     <application
+        android:name=".CrossActivityShare"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name=".CrossActivityShare">
+        android:theme="@style/AppTheme">
         <activity android:name=".MainMenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,13 +42,18 @@
         <activity
             android:name=".ExplicitConnectionActivity"
             android:label="@string/eca_title" />
-
-        <activity android:name=".NewPartyDeviceSelectionActivity"
+        <activity
+            android:name=".NewPartyDeviceSelectionActivity"
+            android:finishOnTaskLaunch="true"
             android:label="@string/npdsa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".NewCharactersApprovalActivity"
+            android:label="New playing characters">
         </activity>
     </application>
 
