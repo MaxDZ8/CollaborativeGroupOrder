@@ -195,9 +195,9 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
 
     private void finishingTouches(String name, byte[] groupKey, boolean goAdventuring) {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        state.goAdventuring = goAdventuring;
-        state.newGroupName = name;
-        state.newGroupKey = groupKey;
+        state.newGroupName = party.group.name;
+        state.newGroupKey = party.salt;
+        if(goAdventuring) state.pumpers = netWorker.move();
         finish();
     }
 

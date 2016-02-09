@@ -30,6 +30,7 @@ import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -379,8 +380,21 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     private void publishGroup() {
         final TextView view = (TextView) findViewById(R.id.npdsa_groupName);
         final String groupName = view.getText().toString().trim();
+        int collisions = 0;
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        if (groupName.isEmpty() || state.getGroupByName(groupName) != null) {
+        for(PersistentStorage.PartyOwnerData.Group test : state.groupDefs) {
+            if(test.name.equals(groupName)) {
+                collisions++;
+                break;
+            }
+        }
+        for(PersistentStorage.PartyClientData.Group test : state.groupKeys) {
+            if(test.name.equals(groupName)) {
+                collisions++;
+                break;
+            }
+        }
+        if (groupName.isEmpty() || 0 != collisions) {
             int msg = groupName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
             new AlertDialog.Builder(this)
                     .setTitle(R.string.npdsa_badParty_title)

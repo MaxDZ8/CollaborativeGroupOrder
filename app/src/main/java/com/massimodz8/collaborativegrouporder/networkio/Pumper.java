@@ -177,7 +177,7 @@ public class Pumper {
                     EmptyMessageException | ByteCountMismatchException | InterruptedException e) {
                 quitError = e;
             }
-            if(!destination.signalExit()) destination.quitting(source, quitError);
+            if(null != destination && !destination.signalExit()) destination.quitting(source, quitError);
         }
 
         private PumpTarget spinForTarget() throws InterruptedException {

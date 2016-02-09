@@ -151,7 +151,8 @@
 
     <string name="mma_failedOwnedPartyLoad">Failed to load owned party data. This is required for the app to function. Ignoring this will only make the problem worse so the app will now close.</string>
     <string name="mma_exitApp">Exit app</string>
-    <string name="mma_noUpgradeAvailable">Loaded party owner data is version %1$d. Current version is %2$d so data should be upgraded but no upgrading is possible yet. Continue at your own risk.</string>
+    <string name="mma_noOwnerDataUpgradeAvailable">Loaded party owner data is version %1$d. Current version is %2$d so data should be upgraded but no upgrading is possible yet. Continue at your own risk.</string>
+    <string name="mma_noClientDataUpgradeAvailable">Loaded client data is version %1$d. Current version is %2$d so data should be upgraded but no upgrading is possible yet. Continue at your own risk.</string>
     <string name="mma_invalidPartyOwnerLoadedData">Inconsistent party data loaded. You can proceed at your own risk making the problem worse. List of errors:%1$s</string>
     <string name="mma_newParty">Assemble a new party</string>
     <string name="mma_joinNewParty">Join a new party</string>
@@ -199,6 +200,11 @@
     <string name="ncpa_lostConnection_backToMain">Back to main menu</string>
     <string name="ncpa_done_title">Done!</string>
     <string name="ncpa_done_msg">Party successfully formed. I will now save some data and take you back to main menu.</string>
+    <string name="mma_failedMatchErroReport">Additionally, %1$d exception(s) were thrown while disposing of the communication channels.</string>
+    <string name="mma_impossible">Impossible</string>
+    <string name="mma_failedMatch">It seems I had to go with a newly created party but I couldn\'t match it. This is a very serious error.%1$s</string>
+    <string name="mma_exit">Exit</string>
+    <string name="mma_goAdventuring">Go adventuring</string>
 
 
 </resources>

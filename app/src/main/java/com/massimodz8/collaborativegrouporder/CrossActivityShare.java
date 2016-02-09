@@ -17,15 +17,8 @@ import java.util.Vector;
  * Application class and use it to keep persistent state.
  */
 public class CrossActivityShare extends Application {
-    public PersistentStorage.PartyOwnerData.Group getGroupByName(String name) {
-        if(null == groups) return null;
-        for(PersistentStorage.PartyOwnerData.Group test : groups) {
-            if(test.name.equals(name)) return test;
-        }
-        return null;
-    }
-
-    public Vector<PersistentStorage.PartyOwnerData.Group> groups;
+    public Vector<PersistentStorage.PartyOwnerData.Group> groupDefs;
+    public Vector<PersistentStorage.PartyClientData.Group> groupKeys;
 
     // NewPartyDeviceSelectionActivity state -------------------------------------------------------
     public Vector<DeviceStatus> clients;
@@ -43,7 +36,7 @@ public class CrossActivityShare extends Application {
     //----------------------------------------------------------------------------------------------
 
     // NewCharacterProposalActivity result ---------------------------------------------------------
-    public boolean goAdventuring;
+    //public boolean goAdventuring; // does not exist, use the pumpers instead
     public String newGroupName;
     public byte[] newGroupKey;
     //----------------------------------------------------------------------------------------------

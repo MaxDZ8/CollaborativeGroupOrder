@@ -237,13 +237,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     }
 
     private void startSaving() {
-        final PersistentDataUtils helper = new PersistentDataUtils() {
-            @Override
-            protected String getString(int resource) {
-                return NewCharactersApprovalActivity.this.getString(resource);
-            }
-        };
-
         new AsyncActivityLoadUpdateTask<PersistentStorage.PartyOwnerData>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", this) {
             @Override
             protected void onCompletedSuccessfully() {
@@ -270,9 +263,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
             @Override
             protected void appendNewEntry(PersistentStorage.PartyOwnerData loaded) {
                 PersistentStorage.PartyOwnerData.Group[] longer = new PersistentStorage.PartyOwnerData.Group[loaded.everything.length + 1];
-                for (int cp = 0; cp < loaded.everything.length; cp++)
-                    longer[cp] = loaded.everything[cp];
-                PersistentStorage.PartyClientData.Group gen = new PersistentStorage.PartyClientData.Group();
+                System.arraycopy(loaded.everything, 0, longer, 0, loaded.everything.length);
                 longer[loaded.everything.length] = makeGroup();
                 loaded.everything = longer;
             }
@@ -331,7 +322,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
         return ret;
     }
 
-    void finishingTouches(boolean goAdventuring) {
+    void finishingTouches(final boolean goAdventuring) {
         // This is mostly irrelevant. Mostly. Whole point is sending GroupReady message but that's just curtesy,
         // the clients will decide what to do anyway when the connections go down.
         new AsyncTask<Void, Void, Void>() {
@@ -365,6 +356,10 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(Void aVoid) {
+                final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+                state.newGroupName = building.name;
+                state.newGroupKey = building.salt;
+                if(goAdventuring) state.pumpers = netWorkers.move();
                 netWorkers.shutdown();
                 finish();
             }
