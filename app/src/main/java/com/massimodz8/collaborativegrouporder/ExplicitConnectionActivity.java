@@ -48,7 +48,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         handler = new MyHandler(this);
 
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED, "connAttempt");
+        netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED);
         netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
             @Override
             public Network.GroupInfo make() { return new Network.GroupInfo(); }

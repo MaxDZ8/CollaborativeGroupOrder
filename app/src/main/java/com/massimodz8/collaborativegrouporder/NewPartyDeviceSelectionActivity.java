@@ -166,7 +166,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     public Vector<DeviceStatus> clients;
     PublishedService publisher;
     ServerSocket landing;
-    Pumper netWorkers = new Pumper(guiHandler, MSG_SOCKET_LOST, MSG_PUMPER_DETACHED, "deviceFilter")
+    Pumper netWorkers = new Pumper(guiHandler, MSG_SOCKET_LOST, MSG_PUMPER_DETACHED)
             .add(ProtoBufferEnum.HELLO, new PumpTarget.Callbacks<Network.Hello>() {
                 @Override
                 public Network.Hello make() { return new Network.Hello(); }

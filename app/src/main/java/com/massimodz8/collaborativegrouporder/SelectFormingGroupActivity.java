@@ -64,7 +64,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             candidates = state.candidates;
             state.candidates = null;
         }
-        netPump = new Pumper(guiHandler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED, "remoteGroup");
+        netPump = new Pumper(guiHandler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED);
         netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
             @Override
             public Network.GroupInfo make() {

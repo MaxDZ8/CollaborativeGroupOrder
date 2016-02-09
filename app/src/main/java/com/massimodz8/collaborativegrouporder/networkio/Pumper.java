@@ -24,13 +24,11 @@ public class Pumper {
     public static final int MAX_MSG_FROM_WIRE_BYTES = 4 * 1024;
     protected final Handler handler;
     private final int disconnectMessageCode, detachingMessageCode;
-    final String name;
 
-    public Pumper(Handler handler, int disconnectMessageCode, int detachingMessageCode, String name) {
+    public Pumper(Handler handler, int disconnectMessageCode, int detachingMessageCode) {
         this.handler = handler;
         this.disconnectMessageCode = disconnectMessageCode;
         this.detachingMessageCode = detachingMessageCode;
-        this.name = name;
     }
 
     // Call this before starting to mangle stuff so it does not need to be thread protected.
@@ -44,7 +42,6 @@ public class Pumper {
     public MessageChannel pump(MessageChannel c) {
         MessagePumpingThread newComer = new MessagePumpingThread(c, funnel);
         synchronized(clients) {
-            if(name != null) newComer.setName(String.format("%1$s[%2$d]", name, clients.size()));
             clients.add(newComer);
         }
         newComer.start();
