@@ -1,28 +1,16 @@
 <resources>
     <string name="app_name">RPG Order</string>
     <string name="generic_unreadable_at_start" translatable="false">_initialized_</string>
-    <string name="serviceRegFailed_title">Service registration failed</string>
-    <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
-    <string name="nullNSDService_title">Failed to get NSD</string>
-    <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
-    <string name="selectFormingGroupActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. You can still connect to a party but you\'ll have to use explicit connections.</string>
-    <string name="renamedGroup">Tell your friends to join\n%1$s.</string>
-    <string name="sameNetworkVisibilityInfo">The party will be visible to all devices on the same network.</string>
-    <string name="joinGreetings">Say something so the party owner can recognize you</string>
-    <string name="sayHelloJoin">Start looking for a party</string>
-    <string name="explicitConnect">Explicit connect</string>
-    <string name="cannotSeeThemTryConnect">Cannot find your group?\nTry an explicit connection!</string>
-    <string name="serviceDiscoveryFailed_msg">Something has gone wrong with network discovery (error %1$s)</string>
-    <string name="FYI_explicitConnectInfo">Are your friends having trouble in finding your group? Here is data to use "explicit connect":\n</string>
-    <string name="txt_inetPort_desc">The second information you need is a port. It\'s the number at the bottom of the screen on party owner device.</string>
-    <string name="btn_txt_attemptConnection">Connect</string>
-    <string name="explicit_portInfo">Port: %1$d\n</string>
-    <string name="explicit_address">Address: %1$s\n</string>
-    <string name="serviceDiscErr">Service discovery error</string>
-    <string name="badPort_msg">This does not look like a valid port number. Ports are usually between 1024 and 65535. Try again.</string>
-    <string name="badHost_msg">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
     <string name="generic_IOError">I/O error</string>
     <string name="generic_connFailedWithError">Could not connect to host. System message:\n%1$s</string>
+
+    <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
+    <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
+    <string name="btn_txt_attemptConnection">Connect</string>
+    <string name="explicit_address">Address: %1$s\n</string>
+    <string name="badPort_msg">This does not look like a valid port number. Ports are usually between 1024 and 65535. Try again.</string>
+    <string name="badHost_msg">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
+
     <string name="badInitialServerReply_msg">Failed to parse server reply. This server is incompatible.</string>
     <string name="unexpectedInitialServerReply_msg">Server replied in an unexpected way. This server is incompatible.</string>
     <string name="card_group_version">Version: %1$d (%2$s)</string>
@@ -91,7 +79,7 @@
     <string name="charInputValidation_xpMustBeNumeric">Experience points must be a number.\n</string>
     <string name="charInputValidation_badCharacter_title">Not a valid character</string>
     <string name="charInputValidation_badCharacter_msgHint">Go back and try again.</string>
-    <string name="joinGroupActivity_failedPCSend">Failed to send character data to party owner, detailed error follows:\n</string>
+    <string name="ncpa_failedSend">Failed to send character data to party owner, detailed error follows:\n</string>
     <string name="CreatePartyActivity_definingCharactersFeedback">Players can now define playing characters. They can define more than one for each device part of the group.\nTheir characters will appear below.</string>
     <string name="card_joiningCharacter_sentFeedback">Sent. Waiting reply.</string>
     <string name="createPartyActivity_PCDefDiscarded_badExperience">Bad character: experience must be positive.</string>
@@ -100,8 +88,8 @@
     <string name="createPartyActivity_PCDefDiscarded_badLevel">Bad character: level must be at least 1.</string>
     <string name="createPartyActivity_newGroupSaved_startSession">Start a new session</string>
     <string name="createPartyActivity_allPCAreHereWeAreDone">Make party</string>
-    <string name="joinPartyActivity_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
-    <string name="joinPartyActivity_newDataSaved_goAdventuring">Go adventuring</string>
+    <string name="ncpa_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
+    <string name="ncpa_newDataSaved_goAdventuring">Go adventuring</string>
     <string name="veryBadError">Very bad error</string>
     <string name="noSuchAlgorithmExceptionAlertDialogMessage">Could not build party key. This is based on internal machinery which was supposed to be here by the standard, something is very wrong.</string>
     <string name="persistentStorage_cannotReadGroupList">File exists but cannot be read. This is unlikely to happen by accident so you\'re better check your system is fine.</string>
@@ -200,8 +188,17 @@
     <string name="ncaa_save_title">Save party to storage</string>
     <string name="ncaa_save_msg">We\'re almost done. Check all the playing characters are defined and accepted. After saving the party to internal storage I will get you back to main menu.</string>
     <string name="ncaa_done">Done</string>
-    <string name="ncaa_savingPleaseWait">Saving party...</string>
+    <string name="ncaa_savingPleaseWait">Saving party…</string>
+
     <string name="npdsa_failedSalt">Failed to generate secret key for new party. Something is very wrong with this system. Try rebooting.</string>
+    <string name="ncaa_title">Approve PCs</string>
+    <string name="ncpa_title">Propose new PCs</string>
+    <string name="ncpa_instructions">Define as many characters as you want. The process will complete when party owner decides so.</string>
+    <string name="ncpa_addChar">Add a character</string>
+    <string name="ncpa_lostConnection">Lost connection to party owner device. This is a fatal error and cannot be currently recovered. If you already proposed your characters the party owner might be able to make it anyway, otherwise you\'ll have to start from scratch.</string>
+    <string name="ncpa_lostConnection_backToMain">Back to main menu</string>
+    <string name="ncpa_done_title">Done!</string>
+    <string name="ncpa_done_msg">Party successfully formed. I will now save some data and take you back to main menu.</string>
 
 
 </resources>

@@ -251,7 +251,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                         .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
                         .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
                         .setCancelable(false)
-                        .setPositiveButton(R.string.joinPartyActivity_newDataSaved_goAdventuring, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.ncpa_newDataSaved_goAdventuring, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 finishingTouches(true);

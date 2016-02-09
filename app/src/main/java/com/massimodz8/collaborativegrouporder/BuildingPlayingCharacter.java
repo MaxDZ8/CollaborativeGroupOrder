@@ -15,6 +15,12 @@ public class BuildingPlayingCharacter extends PlayingCharacter {
         public static final int STATUS_REJECTED = 3;
         private static int count = 0;
 
+    /// Used by the client, there's no real peer list used here, we're fine with creation count.
+    public BuildingPlayingCharacter() {
+        peerKey = -1;
+        unique = ++count;
+    }
+
     /// This ctor is used by the server instead: the ids are provided over the wire.
     public BuildingPlayingCharacter(Network.PlayingCharacterDefinition def) {
         super(def);

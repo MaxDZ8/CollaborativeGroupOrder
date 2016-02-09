@@ -81,13 +81,12 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         // no need to, regen GUI from data
         //super.onSaveInstanceState(outState);
 
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(null != netWorkers && 0 != netWorkers.getClientCount()) state.pumpers = netWorkers.move();
         state.landing = landing;
         state.clients = building.clients;
         state.publisher = publisher;
     }
-
-    CrossActivityShare state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +101,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(listAdapter);
 
-        state = (CrossActivityShare) getApplicationContext();
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(null != state.pumpers) {
             for(Pumper.MessagePumpingThread fella : state.pumpers) netWorkers.pump(fella);
             state.pumpers = null;
@@ -380,6 +379,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     private void publishGroup() {
         final TextView view = (TextView) findViewById(R.id.npdsa_groupName);
         final String groupName = view.getText().toString().trim();
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if (groupName.isEmpty() || state.getGroupByName(groupName) != null) {
             int msg = groupName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
             new AlertDialog.Builder(this)
@@ -523,6 +523,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     }
 
     private void goDefinePCs() {
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(null != netWorkers && 0 != netWorkers.getClientCount()) {
             // Before continuing, get the rid of everything that's not a member.
             Vector<DeviceStatus> members = new Vector<>();

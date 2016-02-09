@@ -33,6 +33,7 @@
         </activity>
         <activity
             android:name=".SelectFormingGroupActivity"
+            android:finishOnTaskLaunch="true"
             android:label="@string/selectFormingGroupActivity_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -53,7 +54,18 @@
         </activity>
         <activity
             android:name=".NewCharactersApprovalActivity"
-            android:label="New playing characters">
+            android:label="@string/ncaa_title"
+            android:parentActivityName=".NewPartyDeviceSelectionActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.NewPartyDeviceSelectionActivity" />
+        </activity>
+        <activity android:name=".NewCharactersProposalActivity"
+            android:label="@string/ncpa_title"
+            android:parentActivityName=".SelectFormingGroupActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.SelectFormingGroupActivity" />
         </activity>
     </application>
 

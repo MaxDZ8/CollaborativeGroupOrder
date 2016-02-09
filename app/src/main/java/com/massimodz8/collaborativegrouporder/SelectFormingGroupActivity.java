@@ -87,6 +87,15 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                 guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHAR_BUDGET, new Events.CharBudget(from, msg)));
                 return false;
             }
+        }).add(ProtoBufferEnum.GROUP_FORMED, new PumpTarget.Callbacks<Network.GroupFormed>() {
+            @Override
+            public Network.GroupFormed make() { return new Network.GroupFormed(); }
+
+            @Override
+            public boolean mangle(MessageChannel from, Network.GroupFormed msg) throws IOException {
+                guiHandler.sendMessage(guiHandler.obtainMessage(MSG_GROUP_FORMED, new Events.GroupKey(from, msg.salt)));
+                return true;
+            }
         });
         if(null != state.pumpers) {
             for(Pumper.MessagePumpingThread p : state.pumpers) netPump.pump(p);
@@ -142,6 +151,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     static final int MSG_GROUP_INFO = 3;
     static final int MSG_CHAR_BUDGET = 4;
     static final int MSG_PUMPER_DETACHED = 5;
+    static final int MSG_GROUP_FORMED = 6;
 
     Vector<GroupState> candidates = new Vector<>();
     AccumulatingDiscoveryListener explorer = new AccumulatingDiscoveryListener();
@@ -292,10 +302,54 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                     final Events.CharBudget real = (Events.CharBudget) msg.obj;
                     target.charBudget(real.which, real.payload);
                 } break;
-                case MSG_PUMPER_DETACHED: break; // never happens for us.
+                case MSG_PUMPER_DETACHED: break; // it's ok, we moved the thing away
+                case MSG_GROUP_FORMED: {
+                    final Events.GroupKey real = (Events.GroupKey) msg.obj;
+                    target.formed(real.origin, real.key);
+                }
             }
             target.refreshGUI();
         }
+    }
+
+    private void formed(MessageChannel origin, byte[] key) {
+        GroupState got = null;
+        for(GroupState check : candidates) {
+            if(check.channel == origin) {
+                got = check;
+                break;
+            }
+        }
+        if(got == null) return; // impossible
+        got.salt = key;
+        // Also get the rid of everything that isn't you. Farewell.
+        final GroupState save = got;
+        final Vector<GroupState> clear = this.candidates;
+        this.candidates = null;
+
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        state.candidates = new Vector<>();
+        state.candidates.add(save);
+        state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(save.channel) };
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                for(GroupState away : clear) {
+                    if(save == away) continue;
+                    try {
+                        away.channel.socket.close();
+                    } catch (IOException e) {
+                        // I don't care.
+                    }
+                }
+                return null;
+            }
+        }.execute();
+
+        netPump.shutdown();
+        netPump = null;
+        startActivity(new Intent(SelectFormingGroupActivity.this, NewCharactersProposalActivity.class));
     }
 
     void sendMessageToPartyOwner(final GroupState gs, CharSequence msg) {

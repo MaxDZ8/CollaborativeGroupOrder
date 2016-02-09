@@ -16,6 +16,8 @@ class GroupState {
     volatile long nextEnabled_ms = 0; // SystemClock.elapsedRealtime(); /// if now() is >= this, controls are updated if charBudget > 0
     public boolean discovered = true;
 
+    byte[] salt; // set when a group is 'formed'
+
     public GroupState(MessageChannel pipe) {
         channel = pipe;
     }

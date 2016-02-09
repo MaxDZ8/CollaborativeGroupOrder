@@ -42,6 +42,12 @@ public class CrossActivityShare extends Application {
     public PartyInfo probed;
     //----------------------------------------------------------------------------------------------
 
+    // NewCharacterProposalActivity result ---------------------------------------------------------
+    public boolean goAdventuring;
+    public String newGroupName;
+    public byte[] newGroupKey;
+    //----------------------------------------------------------------------------------------------
+
 
     // NewPartyDeviceSelectionActivity, ExplicitConnectionActivity ---------------------------------
     // SelectFormingGroupActivity
