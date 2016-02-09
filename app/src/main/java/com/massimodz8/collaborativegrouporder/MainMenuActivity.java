@@ -100,8 +100,8 @@ public class MainMenuActivity extends AppCompatActivity {
         Collections.addAll(state.groupKeys, joined.everything);
         ViewUtils.setEnabled(this, true,
                 R.id.mma_newParty,
-                R.id.mma_joinParty,
-                R.id.mma_goAdventuring);
+                R.id.mma_joinParty);
+        findViewById(R.id.mma_goAdventuring).setEnabled(state.groupDefs.size() + state.groupKeys.size() > 0);
     }
 
     /// Called when party owner data loaded version != from current.

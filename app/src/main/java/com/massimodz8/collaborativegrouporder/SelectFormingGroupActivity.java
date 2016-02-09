@@ -382,7 +382,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                             .show();
                     return;
                 }
-                listAdapter.notifyDataSetChanged(); // maybe not, but time elapsed maybe restore those buttons
+                refreshGUI(); // maybe not, but time elapsed maybe restore those buttons
             }
         }.execute();
     }
