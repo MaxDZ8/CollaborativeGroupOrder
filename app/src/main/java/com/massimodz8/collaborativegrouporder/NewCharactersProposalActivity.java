@@ -37,7 +37,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
 
                 @Override
                 public boolean mangle(MessageChannel from, Network.GroupFormed msg) throws IOException {
-                    if(null != msg.salt) handler.sendMessage(handler.obtainMessage(MSG_NEW_KEY, msg.salt));
+                    if(0 != msg.salt.length) handler.sendMessage(handler.obtainMessage(MSG_NEW_KEY, msg.salt));
                     else handler.sendMessage(handler.obtainMessage(MSG_PC_APPROVAL, new Events.CharacterAcceptStatus(from, msg.peerKey, msg.accepted)));
                     return false;
                 }
@@ -121,10 +121,9 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                 } break;
                 case MSG_PUMPER_DETACHED: break; // impossible, cannot happen
                 case MSG_NEW_KEY: {
-                    Events.GroupKey real = (Events.GroupKey) msg.obj;
-                    target.party.salt = real.key;
+                    target.party.salt = (byte[]) msg.obj;
                 } break;
-                case MSG_PC_APPROVAL: target.confirmationStatus((Events.CharacterAcceptStatus)msg.obj);
+                case MSG_PC_APPROVAL: target.confirmationStatus((Events.CharacterAcceptStatus)msg.obj); break;
                 case MSG_DONE: target.saveData(); break;
             }
             target.refreshGUI();

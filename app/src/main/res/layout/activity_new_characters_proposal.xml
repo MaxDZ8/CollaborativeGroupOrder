@@ -25,7 +25,8 @@
         android:layout_height="wrap_content"
         android:text="@string/ncpa_addChar"
         android:id="@+id/ncpa_action"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:onClick="addCharCandidate" />
 
     <TextView
         android:layout_width="match_parent"

@@ -32,7 +32,8 @@
         android:layout_height="wrap_content"
         android:text="@string/ncaa_action"
         android:id="@+id/ncaa_action"
-        android:enabled="false" />
+        android:enabled="false"
+        android:onClick="action_callback" />
 
     <TextView
         android:layout_width="fill_parent"

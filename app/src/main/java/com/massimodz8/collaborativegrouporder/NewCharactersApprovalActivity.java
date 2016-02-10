@@ -59,7 +59,10 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
             int count = 0;
             for(DeviceStatus dev : building.clients) {
                 if(dev.kicked || !dev.groupMember) continue;
-                count += dev.chars.size();
+                for(BuildingPlayingCharacter pc : dev.chars) {
+                    if(BuildingPlayingCharacter.STATUS_REJECTED == pc.status) continue;
+                    count++;
+                }
             }
             return count;
         }

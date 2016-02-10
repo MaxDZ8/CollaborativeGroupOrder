@@ -193,7 +193,7 @@
 
     <string name="npdsa_failedSalt">Failed to generate secret key for new party. Something is very wrong with this system. Try rebooting.</string>
     <string name="ncaa_title">Approve PCs</string>
-    <string name="ncpa_title">Propose new PCs</string>
+    <string name="ncpa_title">Propose PCs</string>
     <string name="ncpa_instructions">Define as many characters as you want. The process will complete when party owner decides so.</string>
     <string name="ncpa_addChar">Add a character</string>
     <string name="ncpa_lostConnection">Lost connection to party owner device. This is a fatal error and cannot be currently recovered. If you already proposed your characters the party owner might be able to make it anyway, otherwise you\'ll have to start from scratch.</string>
