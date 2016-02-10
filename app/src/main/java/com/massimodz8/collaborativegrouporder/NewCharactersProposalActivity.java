@@ -1,6 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -197,7 +198,12 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
         state.newGroupName = party.group.name;
         state.newGroupKey = party.salt;
         if(goAdventuring) state.pumpers = netWorker.move();
-        finish();
+        startActivity(new Intent(this, MainMenuActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+    }
+
+    public void addCharCandidate(View v) {
+        characters.add(new BuildingPlayingCharacter());
+        refreshGUI();
     }
 
     // PlayingCharacterListAdapter.DataPuller vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

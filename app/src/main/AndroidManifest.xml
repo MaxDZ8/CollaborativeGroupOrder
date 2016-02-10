@@ -33,7 +33,6 @@
         </activity>
         <activity
             android:name=".SelectFormingGroupActivity"
-            android:finishOnTaskLaunch="true"
             android:label="@string/selectFormingGroupActivity_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -45,7 +44,7 @@
             android:label="@string/eca_title" />
         <activity
             android:name=".NewPartyDeviceSelectionActivity"
-            android:finishOnTaskLaunch="true"
+            android:noHistory="true"
             android:label="@string/npdsa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
