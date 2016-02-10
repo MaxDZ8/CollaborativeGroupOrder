@@ -364,6 +364,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 state.newGroupKey = building.salt;
                 if(goAdventuring) state.pumpers = netWorkers.move();
                 netWorkers.shutdown();
+                setResult(RESULT_OK);
                 finish();
             }
         }.execute();

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RPG Order</string>
+    <string name="app_name">Party Order</string>
     <string name="generic_unreadable_at_start" translatable="false">_initialized_</string>
     <string name="generic_IOError">I/O error</string>
     <string name="generic_connFailedWithError">Could not connect to host. System message:\n%1$s</string>
@@ -118,7 +118,7 @@
     <string name="persistentStorage_actorStatsPremise">" statistics"</string>
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
-    <string name="dataLoadUpdate_newGroupSaved_msg">  The new group was successfully saved to internal storage. We\'re almost done here and I will soon take you back to main menu. Do you want to start a new session right away?</string>
+    <string name="dataLoadUpdate_newGroupSaved_msg">Data successfully saved to internal storage. Do you want to go adventuring right away?</string>
     <string name="dataLoadUpdate_finished_newDataSaved_mainMenu">Main menu</string>
     <string name="dataLoadUpdate_couldNotStoreNewData">Could not store new group data. Error: %1$s</string>
     <string name="dataLoadUpdate_failedPreviousDataDelete">failed to delete previous contents, new data will be discarded to maintain the old.</string>
@@ -187,8 +187,8 @@
     <string name="ncaa_lostConn_pluralCharacter">which defined %1$d characters</string>
     <string name="ncaa_lostConn_msg">Lost connection to device \"%1$s\" %2$s. You can continue ignoring some errors, the group will still be formed and the device can later join anyway.</string>
     <string name="ncaa_save_title">Save party to storage</string>
-    <string name="ncaa_save_msg">We\'re almost done. Check all the playing characters are defined and accepted. After saving the party to internal storage I will get you back to main menu.</string>
-    <string name="ncaa_done">Done</string>
+    <string name="ncaa_save_msg">We\'re almost done. Check all the playing characters are defined and accepted.</string>
+    <string name="ncaa_done">Save party data</string>
     <string name="ncaa_savingPleaseWait">Saving party…</string>
 
     <string name="npdsa_failedSalt">Failed to generate secret key for new party. Something is very wrong with this system. Try rebooting.</string>

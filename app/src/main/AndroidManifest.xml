@@ -44,7 +44,6 @@
             android:label="@string/eca_title" />
         <activity
             android:name=".NewPartyDeviceSelectionActivity"
-            android:noHistory="true"
             android:label="@string/npdsa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data

@@ -347,7 +347,9 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         explorer.stopDiscovery();
         netPump.shutdown();
         netPump = null;
-        startActivity(new Intent(SelectFormingGroupActivity.this, NewCharactersProposalActivity.class));
+
+        setResult(RESULT_OK);
+        finish();
     }
 
     void sendMessageToPartyOwner(final GroupState gs, CharSequence msg) {

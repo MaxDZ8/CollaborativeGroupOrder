@@ -562,7 +562,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         state.clients = building.clients;
         building.clients = null;
 
-        startActivity(new Intent(NewPartyDeviceSelectionActivity.this, NewCharactersApprovalActivity.class));
+        setResult(RESULT_OK);
+        finish();
     }
 
     public byte[] buildKey() throws NoSuchAlgorithmException {

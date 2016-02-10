@@ -30,11 +30,8 @@ public class MainMenuActivity extends AppCompatActivity {
         new AsyncLoadAll().execute();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void refreshData() {
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        if(null == state.newGroupName) return;
         final String newName = state.newGroupName;
         final byte[] newKey = state.newGroupKey;
         final Pumper.MessagePumpingThread[] peers = state.pumpers;
@@ -118,11 +115,11 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     public void startCreateParty_callback(View btn) {
-        startActivity(new Intent(this, NewPartyDeviceSelectionActivity.class));
+        startActivityForResult(new Intent(this, NewPartyDeviceSelectionActivity.class), REQUEST_NEW_PARTY);
     }
 
     public void startJoinGroupActivity_callback(View btn) {
-        startActivity(new Intent(this, SelectFormingGroupActivity.class));
+        startActivityForResult(new Intent(this, SelectFormingGroupActivity.class), REQUEST_JOIN_FORMING);
     }
 
     public void startGoAdventuringActivity_callback(View btn) {
@@ -196,4 +193,28 @@ public class MainMenuActivity extends AppCompatActivity {
         }
         protected void onSuccessfullyRefreshed() { }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(RESULT_OK != resultCode) return;
+        switch(requestCode) {
+            case REQUEST_NEW_PARTY: {
+                final Intent intent = new Intent(this, NewCharactersApprovalActivity.class);
+                startActivityForResult(intent, REQUEST_APPROVE_CHARACTERS);
+            } break;
+            case REQUEST_JOIN_FORMING: {
+                final Intent intent = new Intent(this, NewCharactersProposalActivity.class);
+                startActivityForResult(intent, REQUEST_PROPOSE_CHARACTERS);
+            } break;
+            case REQUEST_APPROVE_CHARACTERS:
+            case REQUEST_PROPOSE_CHARACTERS: {
+                refreshData();
+            } break;
+        }
+    }
+
+    static final int REQUEST_NEW_PARTY = 1;
+    static final int REQUEST_JOIN_FORMING = 2;
+    static final int REQUEST_APPROVE_CHARACTERS = 3;
+    static final int REQUEST_PROPOSE_CHARACTERS = 4;
 }
