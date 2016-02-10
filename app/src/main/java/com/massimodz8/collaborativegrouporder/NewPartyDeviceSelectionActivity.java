@@ -102,6 +102,11 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         RecyclerView groupList = (RecyclerView) findViewById(R.id.npdsa_deviceList);
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(listAdapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(null != state.pumpers) {
@@ -560,6 +565,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             state.pumpers = netWorkers.move();
         }
         state.clients = building.clients;
+        state.newGroupKey = building.salt;
+        state.newGroupName = building.name;
         building.clients = null;
 
         setResult(RESULT_OK);

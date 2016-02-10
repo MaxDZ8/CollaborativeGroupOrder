@@ -40,9 +40,13 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_characters_approval);
 
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        building.name = state.newGroupName;
+        building.salt = state.newGroupKey;
         building.clients = state.clients;
-        for(Pumper.MessagePumpingThread p : state.pumpers) netWorkers.pump(p);
         state.clients = null;
+        state.newGroupName = null;
+        state.newGroupKey = null;
+        for(Pumper.MessagePumpingThread p : state.pumpers) netWorkers.pump(p);
 
         RecyclerView groupList = (RecyclerView) findViewById(R.id.ncaa_list);
         groupList.setLayoutManager(new LinearLayoutManager(this));
@@ -314,7 +318,9 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                     PersistentStorage.Actor built = new PersistentStorage.Actor();
                     built.name = pc.name;
                     built.level = pc.level;
-                    built.stats = new PersistentStorage.ActorStatistics[1];
+                    built.stats =  new PersistentStorage.ActorStatistics[] {
+                            new PersistentStorage.ActorStatistics()
+                    };
                     built.stats[0].initBonus = pc.initiativeBonus;
                     built.stats[0].experience = pc.experience;
                     built.stats[0].healthPoints = pc.fullHealth;
