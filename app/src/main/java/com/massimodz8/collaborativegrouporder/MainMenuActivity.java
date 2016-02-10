@@ -157,13 +157,13 @@ public class MainMenuActivity extends AppCompatActivity {
         @Override
         protected Exception doInBackground(Void... params) {
             PersistentStorage.PartyOwnerData pullo = new PersistentStorage.PartyOwnerData();
-            File srco = new File(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME);
+            File srco = new File(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME);
             if(srco.exists()) loader.mergeExistingGroupData(pullo, srco);
             else pullo.version = PersistentDataUtils.OWNER_DATA_VERSION;
             owned = pullo;
 
             PersistentStorage.PartyClientData pullk = new PersistentStorage.PartyClientData();
-            File srck = new File(PersistentDataUtils.DEFAULT_KEY_FILE_NAME);
+            File srck = new File(getFilesDir(), PersistentDataUtils.DEFAULT_KEY_FILE_NAME);
             if(srck.exists()) loader.mergeExistingGroupData(pullk, srck);
             else pullk.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
             joined = pullk;

@@ -42,6 +42,15 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                     else handler.sendMessage(handler.obtainMessage(MSG_PC_APPROVAL, new Events.CharacterAcceptStatus(from, msg.peerKey, msg.accepted)));
                     return false;
                 }
+            }).add(ProtoBufferEnum.GROUP_READY, new PumpTarget.Callbacks<Network.GroupReady>() {
+                @Override
+                public Network.GroupReady make() { return new Network.GroupReady(); }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.GroupReady msg) throws IOException {
+                    handler.sendMessage(handler.obtainMessage(MSG_DONE, new Boolean(msg.goAdventuring)));
+                    return true;
+                }
             });
 
     static final int MSG_SOCKET_DISCONNECTED = 1;
@@ -125,7 +134,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                     target.party.salt = (byte[]) msg.obj;
                 } break;
                 case MSG_PC_APPROVAL: target.confirmationStatus((Events.CharacterAcceptStatus)msg.obj); break;
-                case MSG_DONE: target.saveData(); break;
+                case MSG_DONE: target.saveData((Boolean)msg.obj); break;
             }
             target.refreshGUI();
         }
@@ -198,7 +207,8 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
         state.newGroupName = party.group.name;
         state.newGroupKey = party.salt;
         if(goAdventuring) state.pumpers = netWorker.move();
-        startActivity(new Intent(this, MainMenuActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        setResult(RESULT_OK);
+        finish();
     }
 
     public void addCharCandidate(View v) {

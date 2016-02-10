@@ -38,6 +38,7 @@ public abstract class PersistentDataUtils {
         try {
             final int count = source.read(everything);
             if(count != everything.length) return getString(R.string.persistentStorage_readSizeMismatch);
+            source.close();
         } catch (IOException e) {
             return getString(R.string.persistentStorage_failedRead);
         }

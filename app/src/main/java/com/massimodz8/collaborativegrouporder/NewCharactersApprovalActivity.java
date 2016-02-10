@@ -340,7 +340,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 final int sillyDelayMS = 250; // make sure the messages go through. Yeah, I should display a progress w/e
                 try {
                     Network.GroupReady byebye = new Network.GroupReady();
-                    byebye.goAdventuring = true;
+                    byebye.goAdventuring = goAdventuring;
                     for(DeviceStatus dev : building.clients) {
                         try {
                             dev.source.writeSync(ProtoBufferEnum.GROUP_READY, byebye);
