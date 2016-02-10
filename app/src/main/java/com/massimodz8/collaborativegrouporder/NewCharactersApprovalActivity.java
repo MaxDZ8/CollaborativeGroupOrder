@@ -43,10 +43,11 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
         building.name = state.newGroupName;
         building.salt = state.newGroupKey;
         building.clients = state.clients;
+        for(Pumper.MessagePumpingThread p : state.pumpers) netWorkers.pump(p);
         state.clients = null;
         state.newGroupName = null;
         state.newGroupKey = null;
-        for(Pumper.MessagePumpingThread p : state.pumpers) netWorkers.pump(p);
+        state.pumpers = null;
 
         RecyclerView groupList = (RecyclerView) findViewById(R.id.ncaa_list);
         groupList.setLayoutManager(new LinearLayoutManager(this));
@@ -251,7 +252,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                         .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
                         .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
                         .setCancelable(false)
-                        .setPositiveButton(R.string.ncpa_newDataSaved_goAdventuring, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.ncaa_newDataSaved_done, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 finishingTouches(true);

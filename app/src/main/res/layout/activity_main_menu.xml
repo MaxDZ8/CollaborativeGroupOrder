@@ -14,13 +14,13 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/mma_goAdventuring"
+        android:text="@string/mma_pickParty"
         android:id="@+id/mma_goAdventuring"
         android:layout_gravity="center_horizontal"
         android:enabled="false"
         android:layout_marginTop="8sp"
         android:layout_marginBottom="8sp"
-        android:onClick="startGoAdventuringActivity_callback" />
+        android:onClick="pickParty_callback" />
 
     <Button
         android:layout_width="wrap_content"

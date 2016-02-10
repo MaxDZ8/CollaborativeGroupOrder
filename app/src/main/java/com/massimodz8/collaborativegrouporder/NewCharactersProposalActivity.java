@@ -158,25 +158,22 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
         refreshGUI();
     }
 
-    private void saveData() {
+    private void saveData(final boolean goAdventuring) {
         final NewCharactersProposalActivity self = this;
         new AsyncActivityLoadUpdateTask<PersistentStorage.PartyClientData>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self) {
             @Override
             protected void onCompletedSuccessfully() {
+                String extra = ' ' + getString(R.string.ncpa_goingAdventuring);
+                String msg = String.format(getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");
+                int label = goAdventuring? R.string.ncpa_goAdventuring : R.string.ncpa_newDataSaved_done;
                 new AlertDialog.Builder(self)
                         .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
-                        .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
+                        .setMessage(msg)
                         .setCancelable(false)
-                        .setPositiveButton(R.string.ncpa_newDataSaved_goAdventuring, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(label, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                finishingTouches(true);
-                            }
-                        })
-                        .setNegativeButton(R.string.dataLoadUpdate_finished_newDataSaved_mainMenu, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finishingTouches(false);
+                                finishingTouches(goAdventuring);
                             }
                         })
                         .show();

@@ -88,8 +88,6 @@
     <string name="createPartyActivity_PCDefDiscarded_badLevel">Bad character: level must be at least 1.</string>
     <string name="createPartyActivity_newGroupSaved_startSession">Start a new session</string>
     <string name="createPartyActivity_allPCAreHereWeAreDone">Make party</string>
-    <string name="ncpa_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
-    <string name="ncpa_newDataSaved_goAdventuring">Go adventuring</string>
     <string name="veryBadError">Very bad error</string>
     <string name="noSuchAlgorithmExceptionAlertDialogMessage">Could not build party key. This is based on internal machinery which was supposed to be here by the standard, something is very wrong.</string>
     <string name="persistentStorage_cannotReadGroupList">File exists but cannot be read. This is unlikely to happen by accident so you\'re better check your system is fine.</string>
@@ -156,6 +154,11 @@
     <string name="mma_invalidPartyOwnerLoadedData">Inconsistent party data loaded. You can proceed at your own risk making the problem worse. List of errors:%1$s</string>
     <string name="mma_newParty">Assemble a new party</string>
     <string name="mma_joinNewParty">Join a new party</string>
+    <string name="mma_failedMatchErroReport">Additionally, %1$d exception(s) were thrown while disposing of the communication channels.</string>
+    <string name="mma_impossible">Impossible</string>
+    <string name="mma_failedMatch">It seems I had to go with a newly created party but I couldn\'t match it. This is a very serious error.%1$s</string>
+    <string name="mma_exit">Exit</string>
+    <string name="mma_pickParty">Pick a party…</string>
 
     <string name="npdsa_badParty_title">Bad party name</string>
     <string name="npdsa_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
@@ -190,6 +193,7 @@
     <string name="ncaa_save_msg">We\'re almost done. Check all the playing characters are defined and accepted.</string>
     <string name="ncaa_done">Save party data</string>
     <string name="ncaa_savingPleaseWait">Saving party…</string>
+    <string name="ncaa_newDataSaved_done">Yes</string>
 
     <string name="npdsa_failedSalt">Failed to generate secret key for new party. Something is very wrong with this system. Try rebooting.</string>
     <string name="ncaa_title">Approve PCs</string>
@@ -200,11 +204,10 @@
     <string name="ncpa_lostConnection_backToMain">Back to main menu</string>
     <string name="ncpa_done_title">Done!</string>
     <string name="ncpa_done_msg">Party successfully formed. I will now save some data and take you back to main menu.</string>
-    <string name="mma_failedMatchErroReport">Additionally, %1$d exception(s) were thrown while disposing of the communication channels.</string>
-    <string name="mma_impossible">Impossible</string>
-    <string name="mma_failedMatch">It seems I had to go with a newly created party but I couldn\'t match it. This is a very serious error.%1$s</string>
-    <string name="mma_exit">Exit</string>
-    <string name="mma_goAdventuring">Go adventuring</string>
-
+    <string name="ncpa_goAdventuring">Go adventuring</string>
+    <string name="ncpa_goingAdventuring">Party owner is starting a new session right away! See you there!</string>
+    <string name="ncpa_creationCompleted">Party creation completed.%1$s</string>
+    <string name="ncpa_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
+    <string name="ncpa_newDataSaved_done">Done</string>
 
 </resources>

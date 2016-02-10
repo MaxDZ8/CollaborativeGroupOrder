@@ -122,7 +122,7 @@ public class MainMenuActivity extends AppCompatActivity {
         startActivityForResult(new Intent(this, SelectFormingGroupActivity.class), REQUEST_JOIN_FORMING);
     }
 
-    public void startGoAdventuringActivity_callback(View btn) {
+    public void pickParty_callback(View btn) {
         new AlertDialog.Builder(this)
                 .setTitle("Not implemented!")
                 .setMessage("party selection activity!")
@@ -160,12 +160,13 @@ public class MainMenuActivity extends AppCompatActivity {
             File srco = new File(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME);
             if(srco.exists()) loader.mergeExistingGroupData(pullo, srco);
             else pullo.version = PersistentDataUtils.OWNER_DATA_VERSION;
-            owned = pullo;
 
             PersistentStorage.PartyClientData pullk = new PersistentStorage.PartyClientData();
             File srck = new File(getFilesDir(), PersistentDataUtils.DEFAULT_KEY_FILE_NAME);
             if(srck.exists()) loader.mergeExistingGroupData(pullk, srck);
             else pullk.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
+
+            owned = pullo;
             joined = pullk;
 
             return null;

@@ -81,14 +81,4 @@ public interface Events {
             this.accepted = accepted;
         }
     }
-
-    class GroupDone {
-        public final MessageChannel origin;
-        public final boolean goAdventuring;
-
-        public GroupDone(MessageChannel origin, boolean goAdventuring) {
-            this.origin = origin;
-            this.goAdventuring = goAdventuring;
-        }
-    }
 }
