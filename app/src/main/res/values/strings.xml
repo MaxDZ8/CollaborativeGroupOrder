@@ -124,11 +124,11 @@
     <string name="dataLoadUpdate_failedPreviousDataDelete">failed to delete previous contents, new data will be discarded to maintain the old.</string>
     <string name="dataLoadUpdate_failedNewDataRenamePreviousDestroyed">Failed to rename new data to override old. Old data storage has been destroyed but data itself is preserved.</string>
     <string name="card_joining_character_client_input_level">Level</string>
-    <string name="selectFormingGroupActivity_lookingForParties">Searching for parties. Found parties will appear below.</string>
+    <string name="sfga_lookingForParties">Searching for parties. Found parties will appear below.</string>
     <string name="selectFormingGroupActivity_title">Joining a new party</string>
     <string name="selectFormingGroupActivity_joiningInstructions">Send a message to a party to join. The message will be displayed only to party owner to identify you.</string>
-    <string name="selectFormingGroupActivity_explicitConnectionInstructions">Cannot find your party? Try an explicit connection!</string>
-    <string name="selectFormingGroupActivity_confirmInstructions">You will advance to next step automatically as soon as the party is formed.</string>
+    <string name="sfga_explicitConnectionInstructions">Cannot find your party? Try an explicit connection!</string>
+    <string name="sfga_confirmInstructions">You will advance to next step automatically as soon as the party is formed.</string>
     <string name="selectFormingGroupActivity_startExplicitConnection">Explicit connection</string>
     <string name="couldNotBindInternalService">Could not bind to the cross-activity data sharing service. This is required for everything else to work.</string>
     <string name="giveUpAndGoBack">Give up and go back</string>
@@ -176,7 +176,7 @@
     <string name="npdsa_sealing_title">Sealing a group</string>
     <string name="npdsa_closing_oneDevice">There is a single device in the group.</string>
     <string name="npdsa_closing_pluralDevices">There are %1$d devices in the group.</string>
-    <string name="npdsa_sealing_msg">%1$s. This operation cannot be reverted. Once you go ahead adding more players will require to restart.</string>
+    <string name="npdsa_sealing_msg">%1$s This operation cannot be reverted. Once you go ahead adding more players will require to restart.</string>
     <string name="npdsa_goDefinePC">Go define characters</string>
 
     <string name="ncaa_definingPCs">Players are defining characters.</string>

@@ -220,9 +220,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                         return false;
                     }
                     sendMessageToPartyOwner(source, msg);
-                    message.setHint(msg);
-                    message.setText("");
-                    message.setEnabled(false);
                     handled = true;
                 }
                 return handled;
@@ -382,6 +379,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                             .show();
                     return;
                 }
+                gs.lastMsgSent = send;
                 refreshGUI(); // maybe not, but time elapsed maybe restore those buttons
             }
         }.execute();
@@ -460,20 +458,23 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
 
     private void refreshGUI() {
         boolean discovering = explorer != null && explorer.getDiscoveryStatus() == AccumulatingDiscoveryListener.EXPLORING;
-        int talked = 0;
+        int talked = 0, explicit = 0;
         for (GroupState gs : candidates) {
             if (gs.lastMsgSent != null) talked++;
+            if(!gs.discovered) explicit++;
         }
 
         findViewById(R.id.selectFormingGroupActivity_initializing).setVisibility(explorer != null ? View.GONE : View.VISIBLE);
         ViewUtils.setVisibility(this, discovering ? View.VISIBLE : View.GONE,
-                R.id.selectFormingGroupActivity_lookingForGroups,
                 R.id.selectFormingGroupActivity_progressBar);
         findViewById(R.id.selectFormingGroupActivity_groupList).setVisibility(candidates.isEmpty() ? View.INVISIBLE : View.VISIBLE);
-        findViewById(R.id.selectFormingGroupActivity_confirmInstructions).setVisibility(talked == 0? View.GONE : View.VISIBLE);
+        findViewById(R.id.sfga_confirmInstructions).setVisibility(talked == 0? View.GONE : View.VISIBLE);
         ViewUtils.setVisibility(this, View.VISIBLE,
-                R.id.selectFormingGroupActivity_explicitConnectionInstructions,
+                R.id.sfga_explicitConnectionInstructions,
                 R.id.selectFormingGroupActivity_startExplicitConnection);
+
+        findViewById(R.id.sfga_explicitConnectionInstructions).setVisibility(explicit == 0? View.VISIBLE : View.GONE);
+        findViewById(R.id.sfga_lookingForGroups).setVisibility(discovering && candidates.size() == 0? View.VISIBLE : View.GONE);
         listAdapter.notifyDataSetChanged();
     }
 

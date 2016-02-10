@@ -354,8 +354,10 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     }
 
     public void action_callback(View btn) {
-        btn.setEnabled(false);
-        if (landing == null) publishGroup();
+        if (landing == null) {
+            publishGroup();
+            btn.setEnabled(false);
+        }
         else {
             int devCount = 0;
             for(DeviceStatus dev : building.clients) {

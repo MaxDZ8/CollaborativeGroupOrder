@@ -23,8 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/selectFormingGroupActivity_lookingForParties"
-        android:id="@+id/selectFormingGroupActivity_lookingForGroups"
+        android:text="@string/sfga_lookingForParties"
+        android:id="@+id/sfga_lookingForGroups"
         android:visibility="gone"
         android:gravity="center_horizontal" />
 
@@ -48,9 +48,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/selectFormingGroupActivity_confirmInstructions"
-        android:id="@+id/selectFormingGroupActivity_confirmInstructions"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/sfga_confirmInstructions"
+        android:id="@+id/sfga_confirmInstructions"
         android:gravity="center_horizontal"
         android:visibility="gone" />
 
@@ -58,8 +58,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/selectFormingGroupActivity_explicitConnectionInstructions"
-        android:id="@+id/selectFormingGroupActivity_explicitConnectionInstructions"
+        android:text="@string/sfga_explicitConnectionInstructions"
+        android:id="@+id/sfga_explicitConnectionInstructions"
         android:visibility="gone"
         android:gravity="center_horizontal" />
 
@@ -76,7 +76,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Place holder for ads"
-        android:id="@+id/textView8"
         android:editable="false"
         android:enabled="true"
         android:layout_gravity="bottom|center_horizontal"

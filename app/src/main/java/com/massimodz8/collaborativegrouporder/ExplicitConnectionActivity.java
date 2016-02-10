@@ -1,6 +1,5 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -32,8 +31,6 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        final ActionBar ab = getActionBar();
-        if(null != ab) ab.setDisplayHomeAsUpEnabled(true);
 
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(netPump.getClientCount() != 0) state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
@@ -160,7 +157,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         ViewUtils.setVisibility(this, handShaking ? View.VISIBLE : View.GONE,
                 R.id.eca_probing,
                 R.id.eca_probingProgress);
-        ViewUtils.setEnabled(this, attempting == null,
+        ViewUtils.setEnabled(this, !handShaking,
                 R.id.eca_inetAddr,
                 R.id.eca_port,
                 R.id.eca_attempt);
