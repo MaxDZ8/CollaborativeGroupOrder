@@ -65,6 +65,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     protected void onDestroy() {
+        if(null != ticker) ticker.cancel();
         if(null != publisher) publisher.stopPublishing();
         if(null != acceptor) acceptor.shutdown();
         if(null != landing) {
@@ -180,7 +181,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     // Stuff going to CrossActivityShare vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     public BuildingCharacters building = new BuildingCharacters();
-    PublishedService publisher;
+    volatile PublishedService publisher;
     ServerSocket landing;
     Pumper netWorkers = new Pumper(guiHandler, MSG_SOCKET_LOST, MSG_PUMPER_DETACHED)
             .add(ProtoBufferEnum.HELLO, new PumpTarget.Callbacks<Network.Hello>() {
@@ -446,6 +447,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         ticker.schedule(new TimerTask() {
             @Override
             public void run() {
+                if(null == publisher) return; // happens if we got cancelled a moment ago
                 int now = publisher.getStatus();
                 switch (now) {
                     //case STATUS_IDLE = 0; // just created, doing nothing.

@@ -322,7 +322,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         // Also get the rid of everything that isn't you. Farewell.
         final GroupState save = got;
         final Vector<GroupState> clear = this.candidates;
-        this.candidates = null;
+        this.candidates = new Vector<>();
 
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         state.candidates = new Vector<>();
@@ -344,6 +344,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             }
         }.execute();
 
+        explorer.stopDiscovery();
         netPump.shutdown();
         netPump = null;
         startActivity(new Intent(SelectFormingGroupActivity.this, NewCharactersProposalActivity.class));

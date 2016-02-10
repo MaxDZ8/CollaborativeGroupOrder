@@ -55,17 +55,17 @@
         <activity
             android:name=".NewCharactersApprovalActivity"
             android:label="@string/ncaa_title"
-            android:parentActivityName=".NewPartyDeviceSelectionActivity">
+            android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.massimodz8.collaborativegrouporder.NewPartyDeviceSelectionActivity" />
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
         <activity android:name=".NewCharactersProposalActivity"
             android:label="@string/ncpa_title"
-            android:parentActivityName=".SelectFormingGroupActivity">
+            android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.massimodz8.collaborativegrouporder.SelectFormingGroupActivity" />
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
     </application>
 

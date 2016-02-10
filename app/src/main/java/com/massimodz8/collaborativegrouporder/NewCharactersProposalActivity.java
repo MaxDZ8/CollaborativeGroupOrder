@@ -161,13 +161,13 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                         .setPositiveButton(R.string.ncpa_newDataSaved_goAdventuring, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                finishingTouches(party.group.name, party.salt, true);
+                                finishingTouches(true);
                             }
                         })
                         .setNegativeButton(R.string.dataLoadUpdate_finished_newDataSaved_mainMenu, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                finishingTouches(party.group.name, party.salt, false);
+                                finishingTouches(false);
                             }
                         })
                         .show();
@@ -193,7 +193,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
         }.execute();
     }
 
-    private void finishingTouches(String name, byte[] groupKey, boolean goAdventuring) {
+    private void finishingTouches(boolean goAdventuring) {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         state.newGroupName = party.group.name;
         state.newGroupKey = party.salt;
