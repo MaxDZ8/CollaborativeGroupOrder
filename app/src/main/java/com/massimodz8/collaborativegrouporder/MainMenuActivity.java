@@ -45,13 +45,13 @@ public class MainMenuActivity extends AppCompatActivity {
                 // go adventuring, but am I client or server?
                 for(PersistentStorage.PartyOwnerData.Group check : state.groupDefs) {
                     if(Arrays.equals(newKey, check.salt) && newName.equals(check.name)) {
-                        startGoAdventuringActivity(newName, newKey, peers);
+                        startNewSessionActivity(newName, newKey, peers);
                         return;
                     }
                 }
                 for(PersistentStorage.PartyClientData.Group check : state.groupKeys) {
                     if(Arrays.equals(newKey, check.key) && newName.equals(check.name)) {
-                        startNewSessionActivity(newName, newKey, peers);
+                        startGoAdventuringActivity(newName, newKey, peers);
                         return;
                     }
                 }
