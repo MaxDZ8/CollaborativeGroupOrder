@@ -22,7 +22,7 @@ import java.util.Arrays;
 public abstract class PersistentDataUtils {
     protected abstract String getString(int resource);
 
-    public static final int OWNER_DATA_WRITE_VERSION = 1;
+    public static final int OWNER_DATA_VERSION = 1;
     public static final int CLIENT_DATA_WRITE_VERSION = 1;
     public static final int MAX_GROUP_DATA_BYTES = 1024 * 1024 * 4;
 
@@ -38,6 +38,7 @@ public abstract class PersistentDataUtils {
         try {
             final int count = source.read(everything);
             if(count != everything.length) return getString(R.string.persistentStorage_readSizeMismatch);
+            source.close();
         } catch (IOException e) {
             return getString(R.string.persistentStorage_failedRead);
         }

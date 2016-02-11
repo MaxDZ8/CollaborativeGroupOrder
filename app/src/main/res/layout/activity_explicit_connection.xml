@@ -14,57 +14,50 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/txt_explicitConnectionInfo"
-        android:id="@+id/textView"
+        android:text="@string/eca_infoDesc"
         android:gravity="center_horizontal" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/NetworkAddress"
-        android:id="@+id/textView3"
-        android:layout_gravity="center_horizontal" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/in_explicit_inetAddr"
+        android:id="@+id/eca_inetAddr"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal"
-        android:inputType="textNoSuggestions" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/port"
-        android:id="@+id/textView4"
-        android:layout_gravity="center_horizontal" />
+        android:inputType="textNoSuggestions"
+        android:hint="@string/eca_networkAddress" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:ems="10"
-        android:id="@+id/in_explicit_port"
+        android:id="@+id/eca_port"
         android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:hint="@string/eca_port" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/btn_txt_attemptConnection"
-        android:id="@+id/attemptExplicitConnection"
+        android:id="@+id/eca_attempt"
         android:layout_gravity="center_horizontal"
-        android:onClick="startExplicitConnection" />
+        android:onClick="connect_callback" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/probingDesc"
-        android:id="@+id/probingUndergoing"
+        android:text="@string/explicitConnectionActivity_probingFeedback"
+        android:id="@+id/eca_probing"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/eca_connected"
+        android:id="@+id/eca_connected"
         android:layout_gravity="center_horizontal"
         android:visibility="gone" />
 
@@ -72,8 +65,31 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/waitProbingEnd"
+        android:id="@+id/eca_probingProgress"
         android:layout_gravity="center_horizontal"
         android:indeterminate="true"
         android:visibility="gone" />
+
+    <Space
+        android:layout_width="20dp"
+        android:layout_height="0dp"
+        android:layout_weight=".5" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Place holder for ads"
+        android:id="@+id/textView"
+        android:editable="false"
+        android:enabled="true"
+        android:layout_gravity="bottom|center_horizontal"
+        android:gravity="center_horizontal"
+        android:textColor="#ff00ff"
+        android:textStyle="bold|italic"
+        android:background="#00ff00"
+        android:textSize="28sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false" />
 </LinearLayout>

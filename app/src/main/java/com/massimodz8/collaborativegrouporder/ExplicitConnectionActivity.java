@@ -1,113 +1,110 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
-import com.massimodz8.collaborativegrouporder.networkio.joiningClient.InitialConnect;
+import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
+import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ExplicitConnectionActivity extends AppCompatActivity {
-    InitialConnect helper;
-    CallbackHandler handler;
+    Pumper netPump;
+    MessageChannel attempting;
+    boolean handShaking;
+    AsyncConnectTask connecting;
+    Handler handler;
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        if(netPump.getClientCount() != 0) state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
+        attempting = null;
+
+        if(null != connecting) {
+            connecting.cancel(true);
+            outState.putString(BUNDLE_HOST, connecting.getAddr());
+            outState.putInt(BUNDLE_PORT, connecting.getPort());
+            connecting = null;
+        }
+    }
+
+    private static final String BUNDLE_HOST = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.host";
+    private static final String BUNDLE_PORT = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.port";
+
     private static final int MSG_DISCONNECTED = 1;
     private static final int MSG_GOT_REPLY = 2;
-
-    private String addr;
-    private int port;
-
-    static class CallbackHandler extends Handler {
-        public interface Callback {
-            void disconnect();
-            void gotGroup(JoinGroupActivity.GroupConnection got);
-
-        }
-        final Callback callback;
-        CallbackHandler(Callback calls) {
-            callback = calls;
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch(msg.what) {
-                case MSG_DISCONNECTED: callback.disconnect(); break;
-                case MSG_GOT_REPLY: {
-                    JoinGroupActivity.GroupConnection got = (JoinGroupActivity.GroupConnection)msg.obj;
-                    callback.gotGroup(got);
-                }
-            }
-        }
-
-    }
+    private static final int MSG_DETACHED = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explicit_connection);
-        final ExplicitConnectionActivity self = this;
-        handler = new CallbackHandler(new CallbackHandler.Callback() {
-            @Override
-            public void disconnect() {
-                dialog(new Error(null, getString(R.string.lostConnectionToServer)));
-            }
+        handler = new MyHandler(this);
 
+        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED);
+        netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
             @Override
-            public void gotGroup(JoinGroupActivity.GroupConnection got) {
-                String mismatch = JoinGroupActivity.mismatchAdvice(got.group.version, self);
-                if(mismatch != null) {
-                    dialog(new Error("Version mismatch", mismatch));
-                    return;
-                }
-                Intent result = new Intent(RESULT_ACTION);
-                result.putExtra(RESULT_EXTRA_INET_ADDR, addr);
-                result.putExtra(RESULT_EXTRA_PORT, port);
-                setResult(Activity.RESULT_OK, result);
-                finish();
+            public Network.GroupInfo make() { return new Network.GroupInfo(); }
+            @Override
+            public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+                handler.sendMessage(handler.obtainMessage(MSG_GOT_REPLY, new Events.GroupInfo(from, msg)));
+                return true;
             }
         });
-        helper = new InitialConnect(handler, MSG_DISCONNECTED, true) {
-            @Override
-            public void onGroupFound(MessageChannel c, ConnectedGroup group) {
-                final JoinGroupActivity.GroupConnection info = new JoinGroupActivity.GroupConnection(c, group);
-                handler.sendMessage(handler.obtainMessage(MSG_GOT_REPLY, info));
+        if(null != state.pumpers) {
+            attempting = state.pumpers[0].getSource();
+            netPump.pump(state.pumpers[0]);
+            state.pumpers = null;
+        }
+        if(null != savedInstanceState) {
+            int port = savedInstanceState.getInt(BUNDLE_PORT, -1);
+            String host = savedInstanceState.getString(BUNDLE_HOST, "");
+            if(-1 != port) {
+                connecting = new AsyncConnectTask(host, port);
+                connecting.execute();
             }
-
-            @Override
-            public void onBudgetReceived(MessageChannel c, int newBudget, int delay) {
-                // For explicit connection, just ignore this. We're going out anyway!
-            }
-        };
+        }
+        refreshGUI();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(helper != null) try {
-            helper.shutdown();
-        } catch (IOException e) {
-            // urhm... nothing? We tried.
+        if(netPump != null) netPump.shutdown();
+        if(attempting != null) {
+            try {
+                attempting.socket.close();
+            } catch (IOException e) {
+                // well... nothing?
+            }
         }
+        if(null != connecting) connecting.cancel(true);
     }
 
-    public void startExplicitConnection(View triggerer) {
-        final EditText inetAddr = (EditText)findViewById(R.id.in_explicit_inetAddr);
-        final EditText inetPort = (EditText)findViewById(R.id.in_explicit_port);
-        addr = inetAddr.getText().toString();
+    public void connect_callback(View triggerer) {
+        triggerer.setEnabled(false);
+        final EditText inetAddr = (EditText)findViewById(R.id.eca_inetAddr);
+        final EditText inetPort = (EditText)findViewById(R.id.eca_port);
+        final String addr = inetAddr.getText().toString();
+        final int port;
         try {
             port = Integer.parseInt(inetPort.getText().toString());
         } catch(NumberFormatException e) {
@@ -117,84 +114,142 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             inetPort.requestFocus();
             return;
         }
-        viewVisibility(false);
-        if(helper != null) {
-            try {
-                helper.shutdown(); // one at a time
-            } catch (IOException e) {
-                // uhm...
-            }
-        }
-        new AsyncTask<Void, Void, MessageChannel>() {
-            @Override
-            protected MessageChannel doInBackground(Void... params) {
-                Error fail = null; // only used if something goes wrong
-                Socket s = null;
-                try {
-                    s = new Socket(addr, port);
-                } catch (UnknownHostException e) {
-                    fail = new Error(null, getString(R.string.badHost_msg));
-                    fail.refocus = R.id.in_explicit_inetAddr;
-
-                } catch (IOException e) {
-                    fail = new Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
-                }
-                if(fail != null) {
-                    dialog(fail);
-                    return null;
-                }
-                MessageChannel chan = new MessageChannel(s);
-                Network.Hello payload = new Network.Hello();
-                payload.version = JoinGroupActivity.CLIENT_PROTOCOL_VERSION;
-                try {
-                    chan.write(ProtoBufferEnum.HELLO, payload);
-                } catch (IOException e) {
-                    fail = new Error(getString(R.string.explicitConn_IOException_title), String.format(getString(R.string.explicitConn_IOException_msg), e.getLocalizedMessage()));
-                    dialog(fail);
-                    return null;
-                }
-                return chan;
-            }
-
-            @Override
-            protected void onPostExecute(MessageChannel pipe) {
-                if(pipe != null) helper.pump(pipe);
-                else viewVisibility(true);
-            }
-        }.execute();
+        handShaking = true;
+        refreshGUI();
+        connecting = new AsyncConnectTask(addr, port);
+        connecting.execute();
     }
 
-    private void viewVisibility(boolean usable) {
-        findViewById(R.id.attemptExplicitConnection).setVisibility(usable? View.VISIBLE : View.GONE);
-        findViewById(R.id.in_explicit_inetAddr).setEnabled(usable);
-        findViewById(R.id.in_explicit_port).setEnabled(usable);
-        findViewById(R.id.waitProbingEnd).setVisibility(usable? View.GONE : View.VISIBLE);
-        findViewById(R.id.probingUndergoing).setVisibility(usable? View.GONE: View.VISIBLE);
-    }
-
-    private void dialog(Error result) {
-        findViewById(R.id.attemptExplicitConnection).setVisibility(View.VISIBLE);
-        findViewById(R.id.in_explicit_inetAddr).setEnabled(true);
-        findViewById(R.id.in_explicit_port).setEnabled(true);
-        findViewById(R.id.waitProbingEnd).setVisibility(View.GONE);
-        findViewById(R.id.probingUndergoing).setVisibility(View.GONE);
-
-        AlertDialog.Builder build = new AlertDialog.Builder(this);
-        if(result.title != null && !result.title.isEmpty()) build.setTitle(result.title);
-        if(result.msg != null && !result.msg.isEmpty()) build.setMessage(result.msg);
-        if(result.refocus != null) findViewById(result.refocus).requestFocus();
-        build.show();
-    }
-
-
-    public static final String RESULT_EXTRA_INET_ADDR = "address";
-    public static final String RESULT_EXTRA_PORT = "port";
-    public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.EXPLICIT_CONNECTION_RESULT";
+    public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.result";
 
     static class Error {
         String title;
         String msg;
         Integer refocus;
         Error(String title, String msg) { this.title = title; this.msg = msg; }
+    }
+
+    void refreshGUI() {
+        findViewById(R.id.eca_probingProgress).setVisibility(handShaking ? View.VISIBLE : View.GONE);
+        findViewById(R.id.eca_probing).setVisibility(null != connecting? View.VISIBLE : View.GONE);
+        findViewById(R.id.eca_connected).setVisibility(null == connecting && netPump.getClientCount() > 0? View.VISIBLE : View.GONE);
+        ViewUtils.setEnabled(this, !handShaking,
+                R.id.eca_inetAddr,
+                R.id.eca_port,
+                R.id.eca_attempt);
+    }
+
+    private static class MyHandler extends Handler {
+        WeakReference<ExplicitConnectionActivity> target;
+        public MyHandler(ExplicitConnectionActivity target) { this.target = new WeakReference<>(target); }
+
+        @Override
+        public void handleMessage(Message msg) {
+            ExplicitConnectionActivity target = this.target.get();
+            switch(msg.what) {
+                case MSG_DISCONNECTED: target.disconnect(); break;
+                case MSG_GOT_REPLY: target.replied((Events.GroupInfo)msg.obj); break;
+                case MSG_DETACHED: break; // this comes after MSG_GOT_REPLY and can be ignored here.
+            }
+            target.refreshGUI();
+        }
+    }
+
+    private void disconnect() {
+        netPump.forget(attempting);
+        try {
+            attempting.socket.close();
+        } catch (IOException e) {
+            // Ok, I could signal this really... but I'm lazy
+        }
+        attempting = null;
+        handShaking = false;
+
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.eca_disconnected))
+                .show();
+    }
+
+    private void replied(Events.GroupInfo result) { // oh yeah I like this
+        if(!result.payload.forming) {
+            String res = getString(R.string.eca_partyNotOpenMsg);
+            new AlertDialog.Builder(this)
+                    .setMessage(String.format(res, result.payload.name))
+                    .show();
+        }
+        PartyInfo info = new PartyInfo(result.payload.version, result.payload.name);
+        info.options = result.payload.options;
+        Intent send = new Intent(RESULT_ACTION);
+        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
+        state.probed = info;
+        handShaking = false;
+        attempting = null;
+        setResult(RESULT_OK, send);
+        finish();
+    }
+
+    private class AsyncConnectTask extends AsyncTask<Void, Void, MessageChannel> {
+        private final String addr;
+        private final int port;
+        volatile Error fail;
+
+        public String getAddr() {
+            return addr;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public AsyncConnectTask(String addr, int port) {
+            this.addr = addr;
+            this.port = port;
+        }
+
+        @Override
+        protected MessageChannel doInBackground(Void... params) {
+            Socket s;
+            try {
+                s = new Socket(addr, port);
+            } catch (UnknownHostException e) {
+                fail = new Error(null, getString(R.string.badHost_msg));
+                fail.refocus = R.id.eca_inetAddr;
+                return null;
+
+            } catch (IOException e) {
+                fail = new Error(getString(R.string.generic_IOError), String.format(getString(R.string.generic_connFailedWithError), e.getLocalizedMessage()));
+                return null;
+            }
+            MessageChannel chan = new MessageChannel(s);
+            Network.Hello payload = new Network.Hello();
+            payload.version = MainMenuActivity.NETWORK_VERSION;
+            try {
+                chan.write(ProtoBufferEnum.HELLO, payload);
+            } catch (IOException e) {
+                // most likely because connection timed out
+                fail = new Error(getString(R.string.generic_IOError), String.format(getString(R.string.eca_failedHello), e.getLocalizedMessage()));
+                return null;
+            }
+            return chan;
+        }
+
+        @Override
+        protected void onPostExecute(MessageChannel pipe) {
+            connecting = null;
+            if(pipe != null) {
+                attempting = pipe;
+                netPump.pump(pipe);
+                refreshGUI();
+                return;
+            }
+            final AlertDialog.Builder build = new AlertDialog.Builder(ExplicitConnectionActivity.this);
+            if(fail.title != null && !fail.title.isEmpty()) build.setTitle(fail.title);
+            if(fail.msg != null && !fail.msg.isEmpty()) build.setMessage(fail.msg);
+            if(fail.refocus != null) findViewById(fail.refocus).requestFocus();
+            build.show();
+            handShaking = false;
+            refreshGUI();
+        }
     }
 }

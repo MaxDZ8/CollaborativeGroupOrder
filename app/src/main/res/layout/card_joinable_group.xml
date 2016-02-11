@@ -1,74 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/card_group_name"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/generic_unreadable_at_start"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+<android.support.v7.widget.CardView
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingBottom="@dimen/packed_card_vertical_margin"
+    android:paddingLeft="@dimen/packed_card_horizontal_margin"
+    android:paddingRight="@dimen/packed_card_horizontal_margin"
+    android:paddingTop="@dimen/packed_card_vertical_margin"
+    android:layout_marginBottom="@dimen/packed_card_vertical_margin">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/generic_unreadable_at_start"
-        android:id="@+id/card_group_options"
-        android:visibility="visible"
-        android:layout_gravity="center_horizontal"
-        android:layout_below="@+id/card_group_name"
-        android:layout_centerHorizontal="true" />
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/card_group_message"
-        android:inputType="textAutoComplete|textAutoCorrect"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignBaseline="@+id/card_group_buttonSend"
-        android:layout_toLeftOf="@+id/card_group_buttonSend"
-        android:hint="@string/card_group_talkHint" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/card_joinableGroup_name"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/generic_unreadable_at_start"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/card_group_sayButton"
-        android:id="@+id/card_group_buttonSend"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/card_group_options" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/generic_unreadable_at_start"
+            android:id="@+id/card_joinableGroup_options"
+            android:visibility="visible"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/card_joinableGroup_name"
+            android:layout_centerHorizontal="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/card_group_currentLength"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/card_group_buttonSend" />
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/card_joinableGroup_message"
+            android:inputType="textAutoComplete|textAutoCorrect"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:hint="@string/card_joinableGroup_talkHint"
+            android:layout_below="@+id/card_joinableGroup_options"
+            android:imeOptions="actionSend"
+            android:gravity="center_horizontal" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/card_group_lengthMaxDivisor"
-        android:id="@+id/textView2"
-        android:layout_toEndOf="@+id/card_group_currentLength"
-        android:layout_toRightOf="@+id/card_group_currentLength"
-        android:layout_alignBaseline="@+id/card_group_currentLength" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/card_joinableGroup_currentLength"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/card_joinableGroup_message" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/card_group_lengthLimit"
-        android:layout_alignBaseline="@+id/textView2"
-        android:layout_toRightOf="@+id/textView2" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/card_joinableGroup_lengthMaxDivisor"
+            android:id="@+id/textView2"
+            android:layout_toEndOf="@+id/card_joinableGroup_currentLength"
+            android:layout_toRightOf="@+id/card_joinableGroup_currentLength"
+            android:layout_alignBaseline="@+id/card_joinableGroup_currentLength" />
 
-</RelativeLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/card_joinableGroup_lengthLimit"
+            android:layout_alignBaseline="@+id/textView2"
+            android:layout_toRightOf="@+id/textView2" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

@@ -18,16 +18,12 @@
         android:required="true" />
 
     <application
+        android:name=".CrossActivityShare"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service
-            android:name=".CrossActivityService"
-            android:exported="false"
-            android:isolatedProcess="false" />
-
         <activity android:name=".MainMenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,9 +31,40 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreatePartyActivity" />
-        <activity android:name=".JoinGroupActivity" />
-        <activity android:name=".ExplicitConnectionActivity"></activity>
+        <activity
+            android:name=".SelectFormingGroupActivity"
+            android:label="@string/selectFormingGroupActivity_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".ExplicitConnectionActivity"
+            android:label="@string/eca_title" />
+        <activity
+            android:name=".NewPartyDeviceSelectionActivity"
+            android:label="@string/npdsa_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".NewCharactersApprovalActivity"
+            android:label="@string/ncaa_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+        <activity android:name=".NewCharactersProposalActivity"
+            android:label="@string/ncpa_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
     </application>
 
 </manifest>
