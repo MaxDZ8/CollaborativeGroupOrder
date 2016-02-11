@@ -26,6 +26,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     Pumper netPump;
     MessageChannel attempting;
     boolean handShaking;
+    AsyncConnectTask connecting;
     Handler handler;
 
     @Override
@@ -35,7 +36,17 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(netPump.getClientCount() != 0) state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
         attempting = null;
+
+        if(null != connecting) {
+            connecting.cancel(true);
+            outState.putString(BUNDLE_HOST, connecting.getAddr());
+            outState.putInt(BUNDLE_PORT, connecting.getPort());
+            connecting = null;
+        }
     }
+
+    private static final String BUNDLE_HOST = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.host";
+    private static final String BUNDLE_PORT = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.port";
 
     private static final int MSG_DISCONNECTED = 1;
     private static final int MSG_GOT_REPLY = 2;
@@ -63,6 +74,14 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             netPump.pump(state.pumpers[0]);
             state.pumpers = null;
         }
+        if(null != savedInstanceState) {
+            int port = savedInstanceState.getInt(BUNDLE_PORT, -1);
+            String host = savedInstanceState.getString(BUNDLE_HOST, "");
+            if(-1 != port) {
+                connecting = new AsyncConnectTask(host, port);
+                connecting.execute();
+            }
+        }
         refreshGUI();
     }
 
@@ -77,6 +96,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 // well... nothing?
             }
         }
+        if(null != connecting) connecting.cancel(true);
     }
 
     public void connect_callback(View triggerer) {
@@ -96,52 +116,8 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         }
         handShaking = true;
         refreshGUI();
-        new AsyncTask<Void, Void, MessageChannel>() {
-            volatile Error fail;
-
-            @Override
-            protected MessageChannel doInBackground(Void... params) {
-                Socket s;
-                try {
-                    s = new Socket(addr, port);
-                } catch (UnknownHostException e) {
-                    fail = new Error(null, getString(R.string.badHost_msg));
-                    fail.refocus = R.id.eca_inetAddr;
-                    return null;
-
-                } catch (IOException e) {
-                    fail = new Error(getString(R.string.generic_IOError), String.format(getString(R.string.generic_connFailedWithError), e.getLocalizedMessage()));
-                    return null;
-                }
-                MessageChannel chan = new MessageChannel(s);
-                Network.Hello payload = new Network.Hello();
-                payload.version = MainMenuActivity.NETWORK_VERSION;
-                try {
-                    chan.write(ProtoBufferEnum.HELLO, payload);
-                } catch (IOException e) {
-                    fail = new Error(getString(R.string.generic_IOError), String.format(getString(R.string.eca_failedHello), e.getLocalizedMessage()));
-                    return null;
-                }
-                return chan;
-            }
-
-            @Override
-            protected void onPostExecute(MessageChannel pipe) {
-                if(pipe != null) {
-                    attempting = pipe;
-                    netPump.pump(pipe);
-                    refreshGUI();
-                    return;
-                }
-                final AlertDialog.Builder build = new AlertDialog.Builder(ExplicitConnectionActivity.this);
-                if(fail.title != null && !fail.title.isEmpty()) build.setTitle(fail.title);
-                if(fail.msg != null && !fail.msg.isEmpty()) build.setMessage(fail.msg);
-                if(fail.refocus != null) findViewById(fail.refocus).requestFocus();
-                build.show();
-                handShaking = false;
-                refreshGUI();
-            }
-        }.execute();
+        connecting = new AsyncConnectTask(addr, port);
+        connecting.execute();
     }
 
     public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.result";
@@ -154,9 +130,9 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     }
 
     void refreshGUI() {
-        ViewUtils.setVisibility(this, handShaking ? View.VISIBLE : View.GONE,
-                R.id.eca_probing,
-                R.id.eca_probingProgress);
+        findViewById(R.id.eca_probingProgress).setVisibility(handShaking ? View.VISIBLE : View.GONE);
+        findViewById(R.id.eca_probing).setVisibility(null != connecting? View.VISIBLE : View.GONE);
+        findViewById(R.id.eca_connected).setVisibility(null == connecting && netPump.getClientCount() > 0? View.VISIBLE : View.GONE);
         ViewUtils.setEnabled(this, !handShaking,
                 R.id.eca_inetAddr,
                 R.id.eca_port,
@@ -207,9 +183,73 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
         state.probed = info;
-        setResult(RESULT_OK, send);
         handShaking = false;
         attempting = null;
+        setResult(RESULT_OK, send);
         finish();
+    }
+
+    private class AsyncConnectTask extends AsyncTask<Void, Void, MessageChannel> {
+        private final String addr;
+        private final int port;
+        volatile Error fail;
+
+        public String getAddr() {
+            return addr;
+        }
+
+        public int getPort() {
+            return port;
+        }
+
+        public AsyncConnectTask(String addr, int port) {
+            this.addr = addr;
+            this.port = port;
+        }
+
+        @Override
+        protected MessageChannel doInBackground(Void... params) {
+            Socket s;
+            try {
+                s = new Socket(addr, port);
+            } catch (UnknownHostException e) {
+                fail = new Error(null, getString(R.string.badHost_msg));
+                fail.refocus = R.id.eca_inetAddr;
+                return null;
+
+            } catch (IOException e) {
+                fail = new Error(getString(R.string.generic_IOError), String.format(getString(R.string.generic_connFailedWithError), e.getLocalizedMessage()));
+                return null;
+            }
+            MessageChannel chan = new MessageChannel(s);
+            Network.Hello payload = new Network.Hello();
+            payload.version = MainMenuActivity.NETWORK_VERSION;
+            try {
+                chan.write(ProtoBufferEnum.HELLO, payload);
+            } catch (IOException e) {
+                // most likely because connection timed out
+                fail = new Error(getString(R.string.generic_IOError), String.format(getString(R.string.eca_failedHello), e.getLocalizedMessage()));
+                return null;
+            }
+            return chan;
+        }
+
+        @Override
+        protected void onPostExecute(MessageChannel pipe) {
+            connecting = null;
+            if(pipe != null) {
+                attempting = pipe;
+                netPump.pump(pipe);
+                refreshGUI();
+                return;
+            }
+            final AlertDialog.Builder build = new AlertDialog.Builder(ExplicitConnectionActivity.this);
+            if(fail.title != null && !fail.title.isEmpty()) build.setTitle(fail.title);
+            if(fail.msg != null && !fail.msg.isEmpty()) build.setMessage(fail.msg);
+            if(fail.refocus != null) findViewById(fail.refocus).requestFocus();
+            build.show();
+            handShaking = false;
+            refreshGUI();
+        }
     }
 }

@@ -209,5 +209,6 @@
     <string name="ncpa_creationCompleted">Party creation completed.%1$s</string>
     <string name="ncpa_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
     <string name="ncpa_newDataSaved_done">Done</string>
+    <string name="eca_connected">Connected.</string>
 
 </resources>
