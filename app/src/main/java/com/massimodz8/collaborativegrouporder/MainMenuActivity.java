@@ -123,10 +123,7 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     public void pickParty_callback(View btn) {
-        new AlertDialog.Builder(this)
-                .setTitle("Not implemented!")
-                .setMessage("party selection activity!")
-                .show();
+        startActivityForResult(new Intent(this, PartyPickActivity.class), REQUEST_PICK_PARTY);
     }
 
 
@@ -211,6 +208,12 @@ public class MainMenuActivity extends AppCompatActivity {
             case REQUEST_PROPOSE_CHARACTERS: {
                 refreshData();
             } break;
+            case REQUEST_PICK_PARTY: {
+                new AlertDialog.Builder(this)
+                        .setTitle("Not implemented!")
+                        .setMessage("result of party selection activity!")
+                        .show();
+            }
         }
     }
 
@@ -218,4 +221,5 @@ public class MainMenuActivity extends AppCompatActivity {
     static final int REQUEST_JOIN_FORMING = 2;
     static final int REQUEST_APPROVE_CHARACTERS = 3;
     static final int REQUEST_PROPOSE_CHARACTERS = 4;
+    static final int REQUEST_PICK_PARTY = 5;
 }

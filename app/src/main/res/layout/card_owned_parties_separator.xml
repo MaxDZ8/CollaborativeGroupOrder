@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:CardView="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:paddingBottom="@dimen/packed_card_vertical_margin"
+    android:paddingLeft="@dimen/packed_card_horizontal_margin"
+    android:paddingRight="@dimen/packed_card_horizontal_margin"
+    android:paddingTop="@dimen/packed_card_vertical_margin"
+    CardView:cardCornerRadius="8sp"
+    CardView:cardElevation="8sp"
+    android:background="@android:color/holo_blue_bright">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/owned_party_icon"
+            android:layout_margin="8sp"
+            android:layout_centerVertical="true"
+            android:contentDescription="@string/cardOPS_iconDesc"
+            android:id="@+id/cardOPS_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="@string/cardOPS_title"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/cardOPS_icon"
+            android:layout_toEndOf="@+id/cardOPS_icon"
+            android:id="@+id/cardOPS_title"
+            android:layout_marginTop="4sp"
+            android:layout_marginBottom="4sp"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/cardOPS_desc"
+            android:id="@+id/cardOPS_desc"
+            android:layout_below="@+id/cardOPS_title"
+            android:layout_alignLeft="@+id/cardOPS_title"
+            android:layout_alignStart="@+id/cardOPS_title"
+            android:layout_marginBottom="4sp" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
