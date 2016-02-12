@@ -9,8 +9,7 @@
     android:paddingRight="@dimen/packed_card_horizontal_margin"
     android:paddingTop="@dimen/packed_card_vertical_margin"
     CardView:cardCornerRadius="8sp"
-    CardView:cardElevation="8sp"
-    android:background="@android:color/holo_blue_bright">
+    CardView:cardElevation="8sp">
 
     <RelativeLayout
         android:layout_width="match_parent"

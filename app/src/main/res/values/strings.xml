@@ -217,6 +217,16 @@
 
     <string name="cardJPS_iconDesc">Joined party icon</string>
     <string name="cardJPS_title">Joined parties</string>
-    <string name="cardJPS_desc">This device holds a key allowing you to join games.</string>
+    <string name="cardJPS_desc">This device holds a key allowing you to join games as a player.</string>
+    <string name="cardOP_createdLabel">Created:</string>
+    <string name="cardOP_lastPlayLabel">Last played:</string>
+    <string name="cardOP_currentStateLabel">Currently:</string>
+    <string name="cardJP_currentStateLabel">Currently:</string>
+    <string name="cardJP_lastPlayLabel">Last played:</string>
+    <string name="ppa_TODO_creationDate"><![CDATA[<!TODO!>]]></string>
+    <string name="ppa_TODO_lastPlayDate_owned"><![CDATA[<!TODO!>]]></string>
+    <string name="ppa_TODO_lastPlayDate_joined"><![CDATA[<!TODO-action!>ing since <!TODO-date!>]]></string>
+    <string name="ppa_TODO_currentState"><![CDATA[<!TODO!>]]></string>
+    <string name="ppa_playingCharacterNameSeparator">", "</string>
 
 </resources>
