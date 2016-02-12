@@ -21,17 +21,33 @@ public class PartyPickActivity extends AppCompatActivity {
 
         RecyclerView list = (RecyclerView)findViewById(R.id.ppa_list);
         list.setLayoutManager(new LinearLayoutManager(this));
-        list.setAdapter(listAll);
-    }
-
-    @Override
-    protected void onResume() {
         state = (CrossActivityShare) getApplicationContext();
-        super.onResume();
+        delicate = new PreSeparatorDecorator((RecyclerView)findViewById(R.id.ppa_list)) {
+            @Override
+            protected AppCompatActivity getResolver() {
+                return PartyPickActivity.this;
+            }
+
+            @Override
+            protected boolean isEligible(int position) {
+                if(state.groupDefs.size() > 0) {
+                    if(position < 2) return false; // header and first entry
+                    position--;
+                    if(position < state.groupDefs.size()) return true;
+                    position -= state.groupDefs.size();
+                }
+                return position >= 2;
+            }
+        };
+        list.addOnChildAttachStateChangeListener(delicate);
+        list.setAdapter(listAll);
+        list.setHasFixedSize(true);
     }
 
     CrossActivityShare state;
     RecyclerView.Adapter listAll = new RecyclerView.Adapter() {
+        public RecyclerView owner;
+
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             final LayoutInflater li = getLayoutInflater();
@@ -74,7 +90,13 @@ public class PartyPickActivity extends AppCompatActivity {
             if(0 == position) return JoinedPartySeparator.LAYOUT;
             return JoinedPartyHolder.LAYOUT;
         }
+
+        @Override
+        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+            owner = recyclerView;
+        }
     };
+    PreSeparatorDecorator delicate;
 
     interface DynamicViewHolder {
         void rebind(int position);

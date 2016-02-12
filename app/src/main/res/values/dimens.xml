@@ -6,4 +6,5 @@
     <!-- Some other things I decided at will -->
     <dimen name="packed_card_horizontal_margin">8dp</dimen>
     <dimen name="packed_card_vertical_margin">8dp</dimen>
+    <dimen name="list_separator_thickness">1sp</dimen>
 </resources>
