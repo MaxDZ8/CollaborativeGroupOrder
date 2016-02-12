@@ -213,7 +213,7 @@
 
     <string name="cardOPS_iconDesc">Owned party icon</string>
     <string name="cardOPS_title">Owned party</string>
-    <string name="cardOPS_desc">Parties generated and fully stored on this device. You have full control and you can host games.</string>
+    <string name="cardOPS_desc">Parties generated and stored on this device. You have full control and you can host games.</string>
 
     <string name="cardJPS_iconDesc">Joined party icon</string>
     <string name="cardJPS_title">Joined parties</string>
