@@ -15,10 +15,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   inkscape:export-filename="C:\Users\Massimo\Desktop\ic_launcher96.png"
-   inkscape:export-xdpi="180"
-   inkscape:export-ydpi="180"
-   sodipodi:docname="New document 1">
+   inkscape:export-filename="C:\Users\Massimo\Desktop\ic_launcher.png"
+   inkscape:export-xdpi="360"
+   inkscape:export-ydpi="360"
+   sodipodi:docname="ic_launcher_standard.svg">
   <defs
      id="defs4">
     <marker
@@ -170,9 +170,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6568543"
-     inkscape:cx="3.5357049"
-     inkscape:cy="19.54927"
+     inkscape:zoom="16.000001"
+     inkscape:cx="27.907383"
+     inkscape:cy="27.585368"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -228,38 +228,29 @@
          id="rect2985"
          style="color:#000000;fill:#3f51b5;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.77199996;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     </g>
-    <g
-       id="g6796"
-       transform="translate(0.78125,-0.78125)">
-      <path
-         sodipodi:nodetypes="cc"
-         style="fill:none;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#TriangleOutS)"
-         d="m 2.375,1042.3622 c 0,-23.7521 5,-30 5,-30"
-         id="path6741"
-         inkscape:connector-curvature="0" />
-      <use
-         height="48"
-         width="48"
-         transform="matrix(0,-1,1,0,-1004.9872,1052.7372)"
-         id="use6784"
-         xlink:href="#path6741"
-         y="0"
-         x="0" />
-      <path
-         inkscape:connector-curvature="0"
-         id="path6788"
-         d="m 44.5625,1015.9247 c 0,23.7521 -5,30 -5,30"
-         style="fill:none;stroke:#000000;stroke-width:3;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#TriangleOutS)"
-         sodipodi:nodetypes="cc" />
-      <use
-         x="0"
-         y="0"
-         xlink:href="#path6741"
-         id="use6792"
-         transform="matrix(0,1,-1,0,1051.9247,1005.5497)"
-         width="48"
-         height="48" />
-    </g>
+    <path
+       inkscape:connector-curvature="0"
+       id="path6741"
+       d="m 3.15625,1041.581 c 0,-23.7522 5,-30 5,-30"
+       style="fill:#ff00ff;stroke:#000000;stroke-width:4;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker-start:none;marker-end:url(#TriangleOutS)"
+       sodipodi:nodetypes="cc" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path6741"
+       id="use6784"
+       transform="matrix(0,-1,1,0,-1003.4247,1052.7372)"
+       width="48"
+       height="48" />
+    <use
+       height="48"
+       width="48"
+       transform="matrix(0,1,-1,0,1051.9247,1003.9872)"
+       id="use6792"
+       xlink:href="#path6741"
+       y="0"
+       x="0"
+       style="color:#000000;fill:#3f51b5;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.77199996000000000;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate" />
     <path
        sodipodi:type="star"
        style="color:#000000;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ffffff;stroke-width:1.90176451000000000;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
@@ -300,5 +291,13 @@
        id="path6864"
        inkscape:connector-curvature="0"
        transform="translate(0,1004.3622)" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#path6741"
+       id="use3023"
+       transform="matrix(-1,0,0,-1,48.317215,2056.8916)"
+       width="48"
+       height="48" />
   </g>
 </svg>
