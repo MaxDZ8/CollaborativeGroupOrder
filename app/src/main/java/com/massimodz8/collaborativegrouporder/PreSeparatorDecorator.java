@@ -8,9 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * Created by Massimo on 12/02/2016.
@@ -22,85 +20,60 @@ import java.util.Vector;
  * We cannot even just override notifyDataSetChanged as it's final so we need to keep
  * a decorator around. This takes the logic to decide if a position in a RecyclerView
  * needs a separator or not.
+ *
+ * Note that while they are called RecyclerView.ItemDecoration they don't decorate items at all.
+ * They just draw stuff in the canvas. They get an handle to all views contained (ViewHolders)
+ * and then they figure out how to move the element and how to draw the decoration, so there's
+ * only one decorator for each decoration type, which works across all items. Meh.
+ *
  */
-public abstract class PreSeparatorDecorator implements RecyclerView.OnChildAttachStateChangeListener {
-    public PreSeparatorDecorator(RecyclerView container) {
+public abstract class PreSeparatorDecorator extends RecyclerView.ItemDecoration {
+    public PreSeparatorDecorator(RecyclerView container, AppCompatActivity ctx, int thickness) {
         this.container = container;
+        int color = new ResourcesCompat().getColor(ctx.getResources(), R.color.listSeparator, ctx.getTheme());
+        this.thickness = thickness;
+        paint = new Paint();
+        paint.setColor(color);
+    }
+    public PreSeparatorDecorator(RecyclerView container, AppCompatActivity ctx) {
+        this(container, ctx, Math.round(ctx.getResources().getDimension(R.dimen.list_separator_thickness)));
     }
     protected abstract boolean isEligible(int position);
-    protected abstract AppCompatActivity getResolver();
 
     final RecyclerView container;
-
-    Map<View, Decoration> items = new IdentityHashMap<>();
+    final Paint paint;
+    final int thickness;
+    Rect rect = new Rect(), parentRect = new Rect();
+    ArrayList<View> targets = new ArrayList<>();
 
     @Override
-    public void onChildViewAttachedToWindow(View view) {
-        /*
-        Remove the stateful decorations... .invalidateItemDecorations is said to trigger
-        .requestLayout() and I don't want that to happen... such note is not there for the
-        other so I keep a list of stateful decorations around and unregister them on need.
-        */
-        Decoration el = items.get(view);
-        final int pos = container.getChildAdapterPosition(view);
-        if(isEligible(pos)) {
-            if(null == el) {
-                el = new Decoration(getResolver());
-                items.put(view, el);
-                container.addItemDecoration(el, pos);
-            }
+    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        final int pos = parent.getChildAdapterPosition(view);
+        if(!isEligible(pos)) {
+            outRect.setEmpty();
+            targets.add(null);
+            return;
         }
-        else if(null != el) {
-            items.remove(view);
-            container.removeItemDecoration(el);
-        }
+        targets.add(view);
+        outRect.set(0, thickness, 0, 0);
     }
 
     @Override
-    public void onChildViewDetachedFromWindow(View view) {
-        final Decoration dec = items.get(view);
-        if(null != dec) container.removeItemDecoration(dec);
-        items.remove(view);
-    }
-
-    /**
-     * Created by Massimo on 12/02/2016.
-     * Attempt at having easygoing, ready to go list separators I can just put in RecyclerView.
-     * It turns out this is almost stateless, in the sense that yes, RecyclerView.State can pass
-     * "arbitrary objects" by resource ids... WTF.. I also don't have enough info to associate views
-     * to call sequences, as I cannot track their lifetimes... so, super cool thing icing on the cake...
-     * the interface for item decorators is the same as RecycleView decorators... wtf... in both cases,
-     * you will get full canvas (not some sort of viewHolder subregion) and this complicates things.
-     *
-     * To be used as item decorator, so it can keep state. This means you apply this only on
-     * items required to be shaded and goodbye.
-     */
-    public static class Decoration extends RecyclerView.ItemDecoration {
-        Paint paint;
-        Rect rect = new Rect();
-        final int thickness;
-
-        Decoration(AppCompatActivity ctx, int thickness) {
-            int color = new ResourcesCompat().getColor(ctx.getResources(), R.color.listSeparator, ctx.getTheme());
-            this.thickness = thickness;
-            paint = new Paint();
-            paint.setColor(color);
-        }
-        Decoration(AppCompatActivity ctx) {
-            this(ctx, Math.round(ctx.getResources().getDimension(R.dimen.list_separator_thickness)));
-        }
-
-        @Override
-        //public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-            rect.bottom = rect.top + thickness;
-            c.drawRect(rect, paint);
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            outRect.set(0, thickness, 0, 0);
-            view.getDrawingRect(rect);
-        }
+    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    //public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+        if(targets.isEmpty())
+            return;
+        View v = targets.remove(0); // bad for perf but go fuck yourself Java!
+        if(null == v)
+            return;
+        parent.getGlobalVisibleRect(parentRect);
+        v.getGlobalVisibleRect(rect);
+        final int width = rect.right - rect.left;
+        rect.top -= parentRect.top;
+        rect.bottom = rect.top;
+        rect.top -= thickness;
+        rect.left -= parentRect.left;
+        rect.right = rect.left + width;
+        c.drawRect(rect, paint);
     }
 }

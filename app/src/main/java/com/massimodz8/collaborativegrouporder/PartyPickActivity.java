@@ -22,12 +22,9 @@ public class PartyPickActivity extends AppCompatActivity {
         RecyclerView list = (RecyclerView)findViewById(R.id.ppa_list);
         list.setLayoutManager(new LinearLayoutManager(this));
         state = (CrossActivityShare) getApplicationContext();
-        delicate = new PreSeparatorDecorator((RecyclerView)findViewById(R.id.ppa_list)) {
-            @Override
-            protected AppCompatActivity getResolver() {
-                return PartyPickActivity.this;
-            }
-
+        list.setAdapter(listAll);
+        list.setHasFixedSize(true);
+        delicate = new PreSeparatorDecorator(list, this) {
             @Override
             protected boolean isEligible(int position) {
                 if(state.groupDefs.size() > 0) {
@@ -39,9 +36,7 @@ public class PartyPickActivity extends AppCompatActivity {
                 return position >= 2;
             }
         };
-        list.addOnChildAttachStateChangeListener(delicate);
-        list.setAdapter(listAll);
-        list.setHasFixedSize(true);
+        list.addItemDecoration(delicate);
     }
 
     CrossActivityShare state;
