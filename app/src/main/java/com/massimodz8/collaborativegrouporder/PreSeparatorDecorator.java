@@ -51,7 +51,6 @@ public abstract class PreSeparatorDecorator extends RecyclerView.ItemDecoration 
         final int pos = parent.getChildAdapterPosition(view);
         if(!isEligible(pos)) {
             outRect.setEmpty();
-            targets.add(null);
             return;
         }
         targets.add(view);
@@ -59,21 +58,18 @@ public abstract class PreSeparatorDecorator extends RecyclerView.ItemDecoration 
     }
 
     @Override
-    public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-    //public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        if(targets.isEmpty())
-            return;
-        View v = targets.remove(0); // bad for perf but go fuck yourself Java!
-        if(null == v)
-            return;
+    //public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         parent.getGlobalVisibleRect(parentRect);
-        v.getGlobalVisibleRect(rect);
-        final int width = rect.right - rect.left;
-        rect.top -= parentRect.top;
-        rect.bottom = rect.top;
-        rect.top -= thickness;
-        rect.left -= parentRect.left;
-        rect.right = rect.left + width;
-        c.drawRect(rect, paint);
+        for(View v : targets) {
+            v.getGlobalVisibleRect(rect);
+            final int width = rect.right - rect.left;
+            rect.top -= parentRect.top;
+            rect.bottom = rect.top;
+            rect.top -= thickness;
+            rect.left -= parentRect.left;
+            rect.right = rect.left + width;
+            c.drawRect(rect, paint);
+        }
     }
 }

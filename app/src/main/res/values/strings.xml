@@ -212,7 +212,7 @@
     <string name="ncpa_newDataSaved_done">Done</string>
 
     <string name="cardOPS_iconDesc">Owned party icon</string>
-    <string name="cardOPS_title">Owned party</string>
+    <string name="cardOPS_title">Owned parties</string>
     <string name="cardOPS_desc">Parties generated and stored on this device. You have full control and you can host games.</string>
 
     <string name="cardJPS_iconDesc">Joined party icon</string>
