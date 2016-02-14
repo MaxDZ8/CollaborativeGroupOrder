@@ -15,9 +15,9 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   inkscape:export-filename="C:\Users\Massimo\Desktop\shaded-big-square.png"
-   inkscape:export-xdpi="600"
-   inkscape:export-ydpi="600"
+   inkscape:export-filename="C:\Users\Massimo\Desktop\ic_launcher.png"
+   inkscape:export-xdpi="371.61292"
+   inkscape:export-ydpi="371.61292"
    sodipodi:docname="ic_launcher_standard.svg">
   <defs
      id="defs4">
@@ -454,15 +454,15 @@
      inkscape:cx="17.214197"
      inkscape:cy="21.451399"
      inkscape:document-units="px"
-     inkscape:current-layer="layer6"
+     inkscape:current-layer="layer8"
      showgrid="true"
      inkscape:snap-global="true"
      inkscape:snap-grids="false"
-     inkscape:window-width="1680"
-     inkscape:window-height="987"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
+     inkscape:window-width="511"
+     inkscape:window-height="453"
+     inkscape:window-x="1043"
+     inkscape:window-y="385"
+     inkscape:window-maximized="0"
      inkscape:snap-midpoints="false"
      showguides="true"
      inkscape:snap-nodes="true"
@@ -519,7 +519,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -552,7 +552,7 @@
      inkscape:groupmode="layer"
      id="layer8"
      inkscape:label="d20-grande"
-     style="display:inline"
+     style="display:none"
      sodipodi:insensitive="true">
     <path
        sodipodi:type="star"
@@ -595,7 +595,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="d20-80percent"
-     style="display:none"
+     style="display:inline"
      sodipodi:insensitive="true">
     <path
        sodipodi:type="star"
@@ -690,13 +690,6 @@
        transform="matrix(0,-1,1,0,1.05896e-6,48)"
        id="g12003"
        style="fill:url(#radialGradient12001);fill-opacity:1;stroke:none" />
-    <rect
-       style="color:#000000;fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:6;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       id="rect3905"
-       width="0.75"
-       height="10.281"
-       x="0"
-       y="37.719002" />
     <g
        transform="matrix(0,-1,1,0,-1.8483887e-6,47.999999)"
        id="g3921"
