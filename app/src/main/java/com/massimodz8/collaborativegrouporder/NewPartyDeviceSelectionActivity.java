@@ -2,7 +2,6 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
 import android.os.AsyncTask;
@@ -234,29 +233,40 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     protected class DeviceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
         public TextView msg;
         public CheckBox accepted;
+        public View kicker;
         MessageChannel key;
         final Typeface original;
+        boolean ignoreNextChange;
 
         public DeviceViewHolder(View itemView) {
             super(itemView);
             msg = (TextView) itemView.findViewById(R.id.card_joiningDevice_msg);
             accepted = (CheckBox) itemView.findViewById(R.id.card_joiningDevice_accepted);
-            itemView.findViewById(R.id.card_joiningDevice_kick).setOnClickListener(this);
+            kicker = itemView.findViewById(R.id.card_joiningDevice_kick);
+            kicker.setOnClickListener(this);
+            itemView.setOnClickListener(this);
             accepted.setOnCheckedChangeListener(this);
             original = accepted.getTypeface();
         }
 
         @Override
         public void onClick(View v) {
-            new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
-                    .setTitle(R.string.kickDevice_title)
-                    .setMessage(R.string.kickDevice_msg)
-                    .setPositiveButton(R.string.kickDevice_positive, new KickListener(key))
-                    .show();
+            if(v == kicker) {
+                new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
+                        .setTitle(R.string.kickDevice_title)
+                        .setMessage(R.string.kickDevice_msg)
+                        .setPositiveButton(R.string.kickDevice_positive, new KickListener(key))
+                        .show();
+            }
+            else {
+                DeviceStatus dev = building.get(key);
+                if(null == dev) return; // impossible
+                ignoreNextChange = true;
+                selected(!dev.groupMember);
+            }
         }
 
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        void selected(boolean isChecked) {
             final int res = isChecked ? R.string.card_joining_device_groupMemberCheck : R.string.joiningDeviceHello_acceptedCheckbox_nope;
             final int weight = isChecked ? Typeface.BOLD : Typeface.NORMAL;
             accepted.setText(res);
@@ -270,6 +280,13 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             }
             listAdapter.notifyDataSetChanged();
             findViewById(R.id.npdsa_activate).setEnabled(count > 0);
+
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if(!ignoreNextChange) selected(isChecked);
+            ignoreNextChange = false;
         }
     }
 
