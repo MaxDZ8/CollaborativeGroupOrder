@@ -228,5 +228,17 @@
     <string name="ppa_TODO_lastPlayDate_joined"><![CDATA[<!TODO-action!>ing since <!TODO-date!>]]></string>
     <string name="ppa_TODO_currentState"><![CDATA[<!TODO!>]]></string>
     <string name="ppa_playingCharacterNameSeparator">", "</string>
+    <string name="ppa_noPartySelected">No party selected.</string>
+    <string name="ppa_noPartySelectedMoreInstructions">Tap on a party overview to show information and actions here.</string>
+    <string name="ppa_ownedDetails_created">Created:</string>
+    <string name="ppa_ownedDetails_createdLabel">Created:</string>
+    <string name="ppa_ownedDetails_lastPlayLabel">Last played:</string>
+    <string name="ppa_ownedDetails_currentStateLabel">Status:</string>
+    <string name="ppa_ownedDetails_newSession">New session</string>
+    <string name="ppa_ownedDetails_continueBattle">Continue battle</string>
+    <string name="ppa_joinedDetails_lastPlayLabel">Last played:</string>
+    <string name="ppa_joinedDetails_createdLabel">Key received:</string>
+    <string name="ppa_joinedDetails_continueBattle">Keep fighting</string>
+    <string name="ppa_joinedDetails_newSession">Go adventuring</string>
 
 </resources>

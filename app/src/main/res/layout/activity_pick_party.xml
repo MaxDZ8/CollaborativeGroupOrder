@@ -6,9 +6,8 @@
     android:orientation="vertical"
     tools:context=".PartyPickActivity">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/ppa_list"
-        android:scrollbars="vertical"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/ppa_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight=".5" />

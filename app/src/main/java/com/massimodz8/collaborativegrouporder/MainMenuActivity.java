@@ -130,14 +130,14 @@ public class MainMenuActivity extends AppCompatActivity {
     private void startNewSessionActivity(String name, byte[] groupKey, Pumper.MessagePumpingThread[] workers) {
         new AlertDialog.Builder(this)
                 .setTitle("Not implemented!")
-                .setMessage("new session!")
+                .setMessage(String.format("new session!\nName=%1$s\nSalt=%2$s", name, Arrays.toString(groupKey)))
                 .show();
     }
 
-    void startGoAdventuringActivity(String autojoin, byte[] key, Pumper.MessagePumpingThread[] workers) {
+    void startGoAdventuringActivity(String name, byte[] groupKey, Pumper.MessagePumpingThread[] workers) {
         new AlertDialog.Builder(this)
                 .setTitle("Not implemented!")
-                .setMessage("going adventuring!")
+                .setMessage(String.format("going adventuring!\nName=%1$s\nSalt=%2$s", name, Arrays.toString(groupKey)))
                 .show();
     }
 
@@ -209,10 +209,11 @@ public class MainMenuActivity extends AppCompatActivity {
                 refreshData();
             } break;
             case REQUEST_PICK_PARTY: {
-                new AlertDialog.Builder(this)
-                        .setTitle("Not implemented!")
-                        .setMessage("result of party selection activity!")
-                        .show();
+                boolean owned = data.getBooleanExtra(PartyPickActivity.RESULT_TRUE_IF_PARTY_OWNED, false);
+                String name = data.getStringExtra(PartyPickActivity.RESULT_PARTY_NAME);
+                byte[] salt = data.getByteArrayExtra(PartyPickActivity.RESULT_PARTY_SALT);
+                if(owned) startNewSessionActivity(name, salt, null);
+                else startGoAdventuringActivity(name, salt, null);
             }
         }
     }
