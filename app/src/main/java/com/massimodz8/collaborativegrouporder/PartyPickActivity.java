@@ -29,10 +29,10 @@ public class PartyPickActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_party);
 
+        state = (CrossActivityShare) getApplicationContext();
+
         pager = (ViewPager)findViewById(R.id.ppa_pager);
         pager.setAdapter(new MyFragmentPagerAdapter());
-
-        state = (CrossActivityShare) getApplicationContext();
     }
 
     @NonNull
@@ -205,6 +205,7 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public void onAttach(Context context) {
+            super.onAttach(context);
             target = (PartyPickActivity) context;
         }
 
@@ -246,6 +247,7 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public void onAttach(Context context) {
+            super.onAttach(context);
             target = (PartyPickActivity)context;
         }
 
