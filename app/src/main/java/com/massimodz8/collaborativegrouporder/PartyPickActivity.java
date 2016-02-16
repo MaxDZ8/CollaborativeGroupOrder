@@ -104,6 +104,16 @@ public class PartyPickActivity extends AppCompatActivity {
         backToPartyList = false;
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        if(backToPartyList) {
+            pager.setCurrentItem(0);
+            backToPartyList = false;
+            return false;
+        }
+        return super.onSupportNavigateUp();
+    }
+
     interface DynamicViewHolder {
         void rebind(int position);
     }

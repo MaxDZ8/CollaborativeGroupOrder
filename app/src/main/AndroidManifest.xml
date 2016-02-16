@@ -66,7 +66,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
-        <activity android:name=".PartyPickActivity"></activity>
+        <activity
+            android:name=".PartyPickActivity"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
     </application>
 
 </manifest>
