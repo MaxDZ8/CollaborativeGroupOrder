@@ -68,6 +68,7 @@
         </activity>
         <activity
             android:name=".PartyPickActivity"
+            android:label="@string/ppa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -4,13 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/ppa_activityRoot"
     tools:context=".PartyPickActivity">
+
+    <android.support.v7.widget.RecyclerView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/ppa_list"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/ppa_pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight=".5" />
+        android:layout_weight=".5"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="match_parent"

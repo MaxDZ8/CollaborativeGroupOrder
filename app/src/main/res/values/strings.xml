@@ -237,7 +237,7 @@
     <string name="ppa_ownedDetails_currentStateLabel">Status:</string>
     <string name="ppa_ownedDetails_newSession">New session</string>
     <string name="ppa_ownedDetails_continueBattle">Continue battle</string>
-    <string name="ppa_ownedDetails_npcList">Assiting %1$s</string>
+    <string name="ppa_ownedDetails_npcList">Assisting %1$s</string>
 
     <string name="ppa_joinedDetails_lastPlayLabel">Last played:</string>
     <string name="ppa_joinedDetails_createdLabel">Key received:</string>
@@ -245,5 +245,7 @@
     <string name="ppa_joinedDetails_newSession">Go adventuring</string>
     <string name="ppa_joinedDetails_goAdventuring">Go adventuring</string>
     <string name="ppa_joinedDetails_lastPlayedPcs">Played: %1$s</string>
+    <string name="ppa_title">Pick a party</string>
+    <string name="ppa_title_details">Party details</string>
 
 </resources>

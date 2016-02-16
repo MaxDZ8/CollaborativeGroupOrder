@@ -2,15 +2,18 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,21 +25,33 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 public class PartyPickActivity extends AppCompatActivity {
 
     private ViewPager pager;
-
-    boolean multiPane;
+    private RecyclerView partyList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_party);
 
-        multiPane = false;
-        // multiPane = null != findViewById(R.id.ppa_partyList);
-
         state = (CrossActivityShare) getApplicationContext();
 
         pager = (ViewPager)findViewById(R.id.ppa_pager);
         pager.setAdapter(new MyFragmentPagerAdapter());
+        partyList = (RecyclerView) findViewById(R.id.ppa_list);
+        partyList.setLayoutManager(new LinearLayoutManager(this));
+        partyList.setAdapter(listAll);
+        partyList.setHasFixedSize(true);
+        partyList.addItemDecoration(new PreSeparatorDecorator(partyList, this) {
+            @Override
+            protected boolean isEligible(int position) {
+                if(state.groupDefs.size() > 0) {
+                    if(position < 2) return false; // header and first entry
+                    position--;
+                    if(position < state.groupDefs.size()) return true;
+                    position -= state.groupDefs.size();
+                }
+                return position >= 2;
+            }
+        });
     }
 
     @NonNull
@@ -99,12 +114,23 @@ public class PartyPickActivity extends AppCompatActivity {
             owner = recyclerView;
         }
     };
-    PreSeparatorDecorator delicate;
     boolean backToPartyList;
+
+    private void showPartyList(boolean detailsIfFalse) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            final ViewGroup root = (ViewGroup) findViewById(R.id.ppa_activityRoot);
+            TransitionManager.beginDelayedTransition(root);
+        }
+        partyList.setVisibility(detailsIfFalse? View.VISIBLE : View.GONE);
+        pager.setVisibility(detailsIfFalse? View.GONE : View.VISIBLE);
+
+        final ActionBar ab = getSupportActionBar();
+        if(null != ab) ab.setTitle(detailsIfFalse? R.string.ppa_title : R.string.ppa_title_details);
+    }
 
     @Override
     public void onBackPressed() {
-        if(backToPartyList) pager.setCurrentItem(0);
+        if(backToPartyList) showPartyList(true);
         else super.onBackPressed();
         backToPartyList = false;
     }
@@ -112,7 +138,7 @@ public class PartyPickActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         if(backToPartyList) {
-            pager.setCurrentItem(0);
+            showPartyList(true);
             backToPartyList = false;
             return false;
         }
@@ -183,8 +209,8 @@ public class PartyPickActivity extends AppCompatActivity {
                 if(state.groupDefs.elementAt(match) == group) break;
             } // will always match
             backToPartyList = true;
-            int base = multiPane? 0 : 1;
-            pager.setCurrentItem(base + match, true);
+            pager.setCurrentItem(match, true);
+            showPartyList(false);
         }
     }
 
@@ -221,42 +247,8 @@ public class PartyPickActivity extends AppCompatActivity {
                 if(state.groupKeys.elementAt(match) == group) break;
             } // will always match
             backToPartyList = true;
-            int base = multiPane? 0 : 1;
-            pager.setCurrentItem(base + state.groupDefs.size() + match, true);
-        }
-    }
-
-    static public class PickPartyFragment extends Fragment {
-        private PartyPickActivity target;
-
-        @Override
-        public void onAttach(Context context) {
-            super.onAttach(context);
-            target = (PartyPickActivity) context;
-        }
-
-        @Nullable
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.frag_pick_party_list, container, false);
-            RecyclerView list = (RecyclerView)view.findViewById(R.id.ppa_list);
-            list.setLayoutManager(new LinearLayoutManager(target));
-            list.setAdapter(target.listAll);
-            list.setHasFixedSize(true);
-            target.delicate = new PreSeparatorDecorator(list, target) {
-                @Override
-                protected boolean isEligible(int position) {
-                    if(target.state.groupDefs.size() > 0) {
-                        if(position < 2) return false; // header and first entry
-                        position--;
-                        if(position < target.state.groupDefs.size()) return true;
-                        position -= target.state.groupDefs.size();
-                    }
-                    return position >= 2;
-                }
-            };
-            list.addItemDecoration(target.delicate);
-            return view;
+            pager.setCurrentItem(state.groupDefs.size() + match, true);
+            showPartyList(false);
         }
     }
 
@@ -429,17 +421,11 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            int count = multiPane? 0 : 1; // list
-            return count + state.groupDefs.size() + state.groupKeys.size();
+            return state.groupDefs.size() + state.groupKeys.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            if(!multiPane) {
-                // Then we use a single pager, where the first fragment is the list of parties.
-                if(0 == position) return new PickPartyFragment();
-                position--;
-            }
             if (position < state.groupDefs.size())
                 return build(new OwnedPartyFragment(), position);
             position -= state.groupDefs.size();
