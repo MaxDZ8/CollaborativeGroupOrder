@@ -23,10 +23,15 @@ public class PartyPickActivity extends AppCompatActivity {
 
     private ViewPager pager;
 
+    boolean multiPane;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_party);
+
+        multiPane = false;
+        // multiPane = null != findViewById(R.id.ppa_partyList);
 
         state = (CrossActivityShare) getApplicationContext();
 
@@ -177,7 +182,9 @@ public class PartyPickActivity extends AppCompatActivity {
             for(match = 0; match < state.groupDefs.size(); match++) {
                 if(state.groupDefs.elementAt(match) == group) break;
             } // will always match
-            pager.setCurrentItem(2 + match, true);
+            backToPartyList = true;
+            int base = multiPane? 0 : 1;
+            pager.setCurrentItem(base + match, true);
         }
     }
 
@@ -214,7 +221,8 @@ public class PartyPickActivity extends AppCompatActivity {
                 if(state.groupKeys.elementAt(match) == group) break;
             } // will always match
             backToPartyList = true;
-            pager.setCurrentItem(2 + state.groupDefs.size() + match, true);
+            int base = multiPane? 0 : 1;
+            pager.setCurrentItem(base + state.groupDefs.size() + match, true);
         }
     }
 
@@ -252,14 +260,16 @@ public class PartyPickActivity extends AppCompatActivity {
         }
     }
 
-    static public class NoSelectedPartyFragment extends Fragment {
-        @Nullable
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.frag_pick_party_none_selected, container, false);
-        }
-
-    }
+    // To be instantiated and put in the detail pane only if in multi-pane mode.
+    //
+    //static public class NoSelectedPartyFragment extends Fragment {
+    //    @Nullable
+    //    @Override
+    //    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    //        return inflater.inflate(R.layout.frag_pick_party_none_selected, container, false);
+    //    }
+    //
+    //}
 
     public static class PartyDetailsFragment extends Fragment {
         protected PartyPickActivity target;
@@ -419,21 +429,17 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            int count = 1; // list
-            count++; // no group selected fragment
+            int count = multiPane? 0 : 1; // list
             return count + state.groupDefs.size() + state.groupKeys.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            if(position < 0) return new NoSelectedPartyFragment();
-            switch (position) {
-                case 0:
-                    return new PickPartyFragment();
-                case 1:
-                    return new NoSelectedPartyFragment();
+            if(!multiPane) {
+                // Then we use a single pager, where the first fragment is the list of parties.
+                if(0 == position) return new PickPartyFragment();
+                position--;
             }
-            position -= 2;
             if (position < state.groupDefs.size())
                 return build(new OwnedPartyFragment(), position);
             position -= state.groupDefs.size();
