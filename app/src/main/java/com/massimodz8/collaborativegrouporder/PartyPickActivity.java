@@ -367,18 +367,30 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Intent res = new Intent();
-            res.putExtra(RESULT_TRUE_IF_PARTY_OWNED, null != owned);
-            res.putExtra(RESULT_PARTY_NAME, null != owned? owned.salt : joined.key);
-            res.putExtra(RESULT_PARTY_SALT, null != owned? owned.name : joined.name);
-            target.setResult(RESULT_OK, res);
+            int match = 0;
+            for(int check = 0; check < target.state.groupDefs.size(); check++) {
+                if(target.state.groupDefs.elementAt(check) == owned) {
+                    match = check;
+                    break;
+                }
+            }
+            for(int check = 0; check < target.state.groupKeys.size(); check++) {
+                if(target.state.groupKeys.elementAt(check) == joined) {
+                    match = check;
+                    break;
+                }
+            }
+            Intent intent = new Intent(RESULT_ACTION)
+                    .putExtra(EXTRA_PARTY_INDEX, match)
+                    .putExtra(EXTRA_TRUE_IF_PARTY_OWNED, owned != null);
+            target.setResult(RESULT_OK, intent);
             target.finish();
         }
     }
 
-    public static final String RESULT_TRUE_IF_PARTY_OWNED = "com.massimodz8.collaborativegrouporder.PickPartyActivity.owned";
-    public static final String RESULT_PARTY_NAME = "com.massimodz8.collaborativegrouporder.PickPartyActivity.name";
-    public static final String RESULT_PARTY_SALT = "com.massimodz8.collaborativegrouporder.PickPartyActivity.key";
+    private static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.PartyPickActivity.RESULT";
+    public static final String EXTRA_TRUE_IF_PARTY_OWNED =  "com.massimodz8.collaborativegrouporder.EXTRA_TRUE_IF_PARTY_OWNED";
+    public static final String EXTRA_PARTY_INDEX = "com.massimodz8.collaborativegrouporder.EXTRA_PARTY_INDEX";
 
     private class MyFragmentPagerAdapter extends FragmentPagerAdapter {
         public MyFragmentPagerAdapter() {

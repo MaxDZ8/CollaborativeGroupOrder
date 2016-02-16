@@ -209,12 +209,19 @@ public class MainMenuActivity extends AppCompatActivity {
                 refreshData();
             } break;
             case REQUEST_PICK_PARTY: {
-                boolean owned = data.getBooleanExtra(PartyPickActivity.RESULT_TRUE_IF_PARTY_OWNED, false);
-                String name = data.getStringExtra(PartyPickActivity.RESULT_PARTY_NAME);
-                byte[] salt = data.getByteArrayExtra(PartyPickActivity.RESULT_PARTY_SALT);
-                if(owned) startNewSessionActivity(name, salt, null);
-                else startGoAdventuringActivity(name, salt, null);
-            }
+                int linear = data.getIntExtra(PartyPickActivity.EXTRA_PARTY_INDEX, -1);
+                boolean owned = data.getBooleanExtra(PartyPickActivity.EXTRA_TRUE_IF_PARTY_OWNED, false);
+                if(linear < 0) return;
+                final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+                if(owned) {
+                    final PersistentStorage.PartyOwnerData.Group party = state.groupDefs.elementAt(linear);
+                    startNewSessionActivity(party.name, party.salt, null);
+                }
+                else {
+                    final PersistentStorage.PartyClientData.Group party = state.groupKeys.elementAt(linear);
+                    startGoAdventuringActivity(party.name, party.key, null);
+                }
+            } break;
         }
     }
 
