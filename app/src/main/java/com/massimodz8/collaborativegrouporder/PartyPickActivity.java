@@ -95,6 +95,14 @@ public class PartyPickActivity extends AppCompatActivity {
         }
     };
     PreSeparatorDecorator delicate;
+    boolean backToPartyList;
+
+    @Override
+    public void onBackPressed() {
+        if(backToPartyList) pager.setCurrentItem(0);
+        else super.onBackPressed();
+        backToPartyList = false;
+    }
 
     interface DynamicViewHolder {
         void rebind(int position);
@@ -195,6 +203,7 @@ public class PartyPickActivity extends AppCompatActivity {
             for(match = 0; match < state.groupKeys.size(); match++) {
                 if(state.groupKeys.elementAt(match) == group) break;
             } // will always match
+            backToPartyList = true;
             pager.setCurrentItem(2 + state.groupDefs.size() + match, true);
         }
     }
@@ -239,6 +248,7 @@ public class PartyPickActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             return inflater.inflate(R.layout.frag_pick_party_none_selected, container, false);
         }
+
     }
 
     public static class PartyDetailsFragment extends Fragment {
