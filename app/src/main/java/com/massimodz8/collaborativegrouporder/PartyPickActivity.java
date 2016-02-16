@@ -298,16 +298,16 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View layout = inflater.inflate(R.layout.frag_pick_party_joined_details, container, false);
-            if(getIndex() < 0 || getIndex() >= target.state.groupDefs.size()) return layout;
+            if(getIndex() < 0 || getIndex() >= target.state.groupKeys.size()) return layout;
 
             final PersistentStorage.PartyClientData.Group party = target.state.groupKeys.elementAt(getIndex());
             final Button go = (Button)layout.findViewById(R.id.ppa_joinedDetails_goAdventuring);
             go.setText(isFighting(party)? R.string.ppa_joinedDetails_continueBattle : R.string.ppa_joinedDetails_newSession);
-            ((TextView)layout.findViewById(R.id.ppa_ownedDetails_created)).setText("creation date TODO");
-            ((TextView)layout.findViewById(R.id.ppa_ownedDetails_lastPlayed)).setText("last play date TODO");
-            ((TextView)layout.findViewById(R.id.ppa_ownedDetails_currentState)).setText("status string TODO");
+            ((TextView)layout.findViewById(R.id.ppa_joinedDetails_created)).setText("creation date TODO");
+            ((TextView)layout.findViewById(R.id.ppa_joinedDetails_lastPlayed)).setText("last play date TODO");
+            ((TextView)layout.findViewById(R.id.ppa_joinedDetails_currentState)).setText("status string TODO");
             String note = target.getNote(party);
-            TextView widget = (TextView)layout.findViewById(R.id.ppa_ownedDetails_note);
+            TextView widget = (TextView)layout.findViewById(R.id.ppa_joinedDetails_note);
             if(null == note) widget.setVisibility(View.GONE);
             else widget.setText(note);
             go.setOnClickListener(new SelectionListener(target, party));

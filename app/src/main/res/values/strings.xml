@@ -240,5 +240,6 @@
     <string name="ppa_joinedDetails_createdLabel">Key received:</string>
     <string name="ppa_joinedDetails_continueBattle">Keep fighting</string>
     <string name="ppa_joinedDetails_newSession">Go adventuring</string>
+    <string name="ppa_joinedDetails_goAdventuring">Go adventuring</string>
 
 </resources>
