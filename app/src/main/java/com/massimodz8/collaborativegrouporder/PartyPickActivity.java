@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -279,8 +278,17 @@ public class PartyPickActivity extends AppCompatActivity {
             if(getIndex() < 0 || getIndex() >= target.state.groupDefs.size()) return layout;
 
             final PersistentStorage.PartyOwnerData.Group party = target.state.groupDefs.elementAt(getIndex());
+            ((TextView)layout.findViewById(R.id.ppa_ownedDetails_groupName)).setText(party.name);
+            ((TextView)layout.findViewById(R.id.ppa_ownedDetails_pcList)).setText(target.list(party.usually.party));
+            TextView npcList = (TextView) layout.findViewById(R.id.ppa_ownedDetails_accompanyingNpcList);
+            if (0 == party.usually.npcs.length) {
+                npcList.setVisibility(View.GONE);
+            } else {
+                final String res = target.getString(R.string.ppa_ownedDetails_npcList);
+                npcList.setText(String.format(res, target.list(party.usually.npcs)));
+            }
             final Button go = (Button)layout.findViewById(R.id.ppa_ownedDetails_goAdventuring);
-            go.setText(isFighting(party) ? R.string.ppa_ownedDetails_continueBattle : R.string.ppa_ownedDetails_newSession);
+            go.setText(target.isFighting(party) ? R.string.ppa_ownedDetails_continueBattle : R.string.ppa_ownedDetails_newSession);
             ((TextView)layout.findViewById(R.id.ppa_ownedDetails_created)).setText("creation date TODO");
             ((TextView)layout.findViewById(R.id.ppa_ownedDetails_lastPlayed)).setText("last play date TODO");
             ((TextView)layout.findViewById(R.id.ppa_ownedDetails_currentState)).setText("status string TODO");
@@ -301,8 +309,10 @@ public class PartyPickActivity extends AppCompatActivity {
             if(getIndex() < 0 || getIndex() >= target.state.groupKeys.size()) return layout;
 
             final PersistentStorage.PartyClientData.Group party = target.state.groupKeys.elementAt(getIndex());
+            ((TextView)layout.findViewById(R.id.ppa_joinedDetails_groupName)).setText(party.name);
+            ((TextView)layout.findViewById(R.id.ppa_joinedDetails_lastPlayedPcs)).setText(target.listLastPlayedPcs(party));
             final Button go = (Button)layout.findViewById(R.id.ppa_joinedDetails_goAdventuring);
-            go.setText(isFighting(party)? R.string.ppa_joinedDetails_continueBattle : R.string.ppa_joinedDetails_newSession);
+            go.setText(target.isFighting(party)? R.string.ppa_joinedDetails_continueBattle : R.string.ppa_joinedDetails_newSession);
             ((TextView)layout.findViewById(R.id.ppa_joinedDetails_created)).setText("creation date TODO");
             ((TextView)layout.findViewById(R.id.ppa_joinedDetails_lastPlayed)).setText("last play date TODO");
             ((TextView)layout.findViewById(R.id.ppa_joinedDetails_currentState)).setText("status string TODO");
@@ -323,12 +333,20 @@ public class PartyPickActivity extends AppCompatActivity {
         return null;
     }
 
-    static boolean isFighting(PersistentStorage.PartyOwnerData.Group party) {
+    boolean isFighting(PersistentStorage.PartyOwnerData.Group party) {
         return false;
     }
 
-    static boolean isFighting(PersistentStorage.PartyClientData.Group party) {
+    boolean isFighting(PersistentStorage.PartyClientData.Group party) {
         return false;
+    }
+
+    String listLastPlayedPcs(PersistentStorage.PartyClientData.Group party) {
+        // Not really there for the time being.
+        final PersistentStorage.Actor res = new PersistentStorage.Actor();
+        res.name = "!! STUB !!";
+        PersistentStorage.Actor[] arr = new PersistentStorage.Actor[]{res};
+        return list(arr);
     }
 
     static class SelectionListener implements View.OnClickListener {
