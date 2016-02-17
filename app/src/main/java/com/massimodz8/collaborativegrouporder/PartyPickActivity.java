@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.SwipeDismissBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -20,6 +19,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -40,6 +41,7 @@ public class PartyPickActivity extends AppCompatActivity {
     RecyclerView.Adapter listAll = new MyPartyListAdapter();
     boolean backToPartyList;
     CoordinatorLayout guiRoot;
+    MenuItem restoreDeleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,7 @@ public class PartyPickActivity extends AppCompatActivity {
         for(PersistentStorage.PartyClientData.Group el : state.groupKeys) partyState.put(el, new PartyItemState(el));
 
         guiRoot = (CoordinatorLayout) findViewById(R.id.ppa_activityRoot);
-pager = (ViewPager)findViewById(R.id.ppa_pager);
+        pager = (ViewPager)findViewById(R.id.ppa_pager);
         pager.setAdapter(new MyFragmentPagerAdapter());
         partyList = (RecyclerView) findViewById(R.id.ppa_list);
         partyList.setLayoutManager(new LinearLayoutManager(this));
@@ -72,6 +74,23 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
         final ItemTouchHelper swiper = new ItemTouchHelper(new MyItemTouchCallback());
         partyList.addItemDecoration(swiper);
         swiper.attachToRecyclerView(partyList);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.party_pick_activity, menu);
+        restoreDeleted = menu.findItem(R.id.ppa_menu_restoreDeleted);
+        return true;
+    }
+
+    @Override
+     public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.ppa_menu_restoreDeleted:
+                new AlertDialog.Builder(this).setMessage("TODO!!!").show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @NonNull
@@ -275,6 +294,7 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
                     if(DISMISS_EVENT_ACTION != event) {
                         junkyard.add(partyState);
                         PartyPickActivity.this.partyState.remove(party);
+                        restoreDeleted.setEnabled(true);
                     }
                 }
             }).show();
