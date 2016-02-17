@@ -240,14 +240,44 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            MessageNano party = viewHolder instanceof OwnedPartyHolder?
-                    ((OwnedPartyHolder) viewHolder).group :
-                    ((JoinedPartyHolder) viewHolder).group;
-            partyState.get(party).hide = true;
-            listAll.notifyItemRemoved(partyList.getChildAdapterPosition(viewHolder.itemView));
-            // TODO kick in delete/update task
-            // TODO show snackbar
-            // TODO on snackbar dismissed, get the rid of the state.
+            final Vector<PersistentStorage.PartyOwnerData.Group> prevDefs = new Vector<>(state.groupDefs);
+            final Vector<PersistentStorage.PartyClientData.Group> prevKeys = new Vector<>(state.groupKeys);
+            final MessageNano party;
+            final String name;
+            if(viewHolder instanceof OwnedPartyHolder) {
+                OwnedPartyHolder real = (OwnedPartyHolder) viewHolder;
+                party = real.group;
+                name = real.group.name;
+                state.groupDefs.remove(real.group);
+            }
+            else {
+                JoinedPartyHolder real = (JoinedPartyHolder) viewHolder;
+                party = real.group;
+                name = real.group.name;
+                state.groupKeys.remove(real.group);
+            }
+            final PartyItemState partyState = PartyPickActivity.this.partyState.get(party);
+            partyState.hide = true;
+            listAll.notifyDataSetChanged(); // for easiness, as the last changes two items (itself and the separator)
+            final String msg = String.format(getString(R.string.ppa_deletedParty), name);
+            Snackbar.make(guiRoot, msg, Snackbar.LENGTH_LONG)
+                    .setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            state.groupDefs = prevDefs;
+                            state.groupKeys = prevKeys;
+                            partyState.hide = false;
+                            listAll.notifyDataSetChanged();
+                        }
+                    }).setCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar snackbar, int event) {
+                    if(DISMISS_EVENT_ACTION != event) {
+                        junkyard.add(partyState);
+                        PartyPickActivity.this.partyState.remove(party);
+                    }
+                }
+            }).show();
         }
 
         @Override
@@ -547,4 +577,5 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
     }
 
     Map<MessageNano, PartyItemState> partyState = new IdentityHashMap<>();
+    Vector<PartyItemState> junkyard = new Vector<>(); /// We can restore stuff there from menu
 }

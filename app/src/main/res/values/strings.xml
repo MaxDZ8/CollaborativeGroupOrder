@@ -247,5 +247,6 @@
     <string name="ppa_joinedDetails_lastPlayedPcs">Played: %1$s</string>
     <string name="ppa_title">Pick a party</string>
     <string name="ppa_title_details">Party details</string>
+    <string name="ppa_deletedParty">Deleted \"%1$s\"</string>
 
 </resources>
