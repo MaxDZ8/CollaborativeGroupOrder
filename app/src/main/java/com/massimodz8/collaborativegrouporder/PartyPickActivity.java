@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.SwipeDismissBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -111,8 +112,6 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
     }
 
     class MyPartyListAdapter extends RecyclerView.Adapter {
-        public RecyclerView owner;
-
         public MyPartyListAdapter() {
             setHasStableIds(true);
         }
@@ -120,6 +119,7 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
         @Override
         public long getItemId(int position) {
             if(position == 0 && state.groupDefs.size() > 0) return 0;
+            position--;
             for (PersistentStorage.PartyOwnerData.Group party : state.groupDefs) {
                 final PartyItemState el = partyState.get(party);
                 if(null == el || el.hide) continue;
@@ -127,6 +127,7 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
                 position--;
             }
             if(position == 0) return 1;
+            position--;
             for (PersistentStorage.PartyClientData.Group party : state.groupKeys) {
                 final PartyItemState el = partyState.get(party);
                 if(el.hide) continue;
@@ -181,18 +182,17 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
         @Override
         public int getItemViewType(int position) {
             if(state.groupDefs.size() > 0) {
-                if (position == 0) return OwnedPartySeparator.LAYOUT;
+                if (0 == position) return OwnedPartySeparator.LAYOUT;
                 position--;
-                if(position < state.groupDefs.size()) return OwnedPartyHolder.LAYOUT;
-                position -= state.groupDefs.size();
+                for(PersistentStorage.PartyOwnerData.Group party : state.groupDefs) {
+                    if(!partyState.get(party).hide) {
+                        if(0 == position) return OwnedPartyHolder.LAYOUT;
+                        position--;
+                    }
+                }
             }
             if(0 == position) return JoinedPartySeparator.LAYOUT;
-            return JoinedPartyHolder.LAYOUT;
-        }
-
-        @Override
-        public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-            owner = recyclerView;
+            return JoinedPartyHolder.LAYOUT; // Well, that's the last thing.
         }
     }
 
@@ -519,12 +519,10 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
         }
     }
 
-    private static int partyBehaviorsCreated = 2; // 0 reserved for "owned" separator, 1 for "joined"
-
     /** Also doubles as a place to keep undo information for deleted parties and estabilishes a
      * common order between elements which can be used as stable ids.
      */
-    class PartyItemState {
+    static class PartyItemState {
         private final PersistentStorage.PartyOwnerData.Group owned;
         private final PersistentStorage.PartyClientData.Group joined;
         boolean hide; /// hidden if delete operation started.
@@ -533,7 +531,7 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
         // Snackbar notification (fired when delete took place) sets both pointers to null
         // and then it's gone forever.
 
-        final int unique = partyBehaviorsCreated++;
+        final int unique = 2 + partyStatesCreated++; // 0 reserved for "owned" separator, 1 for "joined"
 
 
         public PartyItemState(PersistentStorage.PartyOwnerData.Group owned) {
@@ -544,6 +542,8 @@ pager = (ViewPager)findViewById(R.id.ppa_pager);
             owned = null;
             this.joined = joined;
         }
+
+        private static int partyStatesCreated = 0;
     }
 
     Map<MessageNano, PartyItemState> partyState = new IdentityHashMap<>();
