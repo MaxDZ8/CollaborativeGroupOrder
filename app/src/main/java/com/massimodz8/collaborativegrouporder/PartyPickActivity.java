@@ -6,13 +6,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.SwipeDismissBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +24,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.Vector;
 
 public class PartyPickActivity extends AppCompatActivity {
 
     private ViewPager pager;
     private RecyclerView partyList;
+    CrossActivityShare state;
+    RecyclerView.Adapter listAll = new MyPartyListAdapter();
+    boolean backToPartyList;
+    CoordinatorLayout guiRoot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +46,11 @@ public class PartyPickActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pick_party);
 
         state = (CrossActivityShare) getApplicationContext();
+        for(PersistentStorage.PartyOwnerData.Group el : state.groupDefs) partyState.put(el, new PartyItemState(el));
+        for(PersistentStorage.PartyClientData.Group el : state.groupKeys) partyState.put(el, new PartyItemState(el));
 
-        pager = (ViewPager)findViewById(R.id.ppa_pager);
+        guiRoot = (CoordinatorLayout) findViewById(R.id.ppa_activityRoot);
+pager = (ViewPager)findViewById(R.id.ppa_pager);
         pager.setAdapter(new MyFragmentPagerAdapter());
         partyList = (RecyclerView) findViewById(R.id.ppa_list);
         partyList.setLayoutManager(new LinearLayoutManager(this));
@@ -43,15 +59,18 @@ public class PartyPickActivity extends AppCompatActivity {
         partyList.addItemDecoration(new PreSeparatorDecorator(partyList, this) {
             @Override
             protected boolean isEligible(int position) {
-                if(state.groupDefs.size() > 0) {
-                    if(position < 2) return false; // header and first entry
+                if (state.groupDefs.size() > 0) {
+                    if (position < 2) return false; // header and first entry
                     position--;
-                    if(position < state.groupDefs.size()) return true;
+                    if (position < state.groupDefs.size()) return true;
                     position -= state.groupDefs.size();
                 }
                 return position >= 2;
             }
         });
+        final ItemTouchHelper swiper = new ItemTouchHelper(new MyItemTouchCallback());
+        partyList.addItemDecoration(swiper);
+        swiper.attachToRecyclerView(partyList);
     }
 
     @NonNull
@@ -62,9 +81,60 @@ public class PartyPickActivity extends AppCompatActivity {
         return res;
     }
 
-    CrossActivityShare state;
-    RecyclerView.Adapter listAll = new RecyclerView.Adapter() {
+    private void showPartyList(boolean detailsIfFalse) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            final ViewGroup root = (ViewGroup) guiRoot;
+            TransitionManager.beginDelayedTransition(root);
+        }
+        partyList.setVisibility(detailsIfFalse? View.VISIBLE : View.GONE);
+        pager.setVisibility(detailsIfFalse? View.GONE : View.VISIBLE);
+
+        final ActionBar ab = getSupportActionBar();
+        if(null != ab) ab.setTitle(detailsIfFalse? R.string.ppa_title : R.string.ppa_title_details);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(backToPartyList) showPartyList(true);
+        else super.onBackPressed();
+        backToPartyList = false;
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if(backToPartyList) {
+            showPartyList(true);
+            backToPartyList = false;
+            return false;
+        }
+        return super.onSupportNavigateUp();
+    }
+
+    class MyPartyListAdapter extends RecyclerView.Adapter {
         public RecyclerView owner;
+
+        public MyPartyListAdapter() {
+            setHasStableIds(true);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            if(position == 0 && state.groupDefs.size() > 0) return 0;
+            for (PersistentStorage.PartyOwnerData.Group party : state.groupDefs) {
+                final PartyItemState el = partyState.get(party);
+                if(null == el || el.hide) continue;
+                if(0 == position) return el.unique;
+                position--;
+            }
+            if(position == 0) return 1;
+            for (PersistentStorage.PartyClientData.Group party : state.groupKeys) {
+                final PartyItemState el = partyState.get(party);
+                if(el.hide) continue;
+                if(0 == position) return el.unique;
+                position--;
+            }
+            return RecyclerView.NO_ID;
+        }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -92,9 +162,20 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             int count = 0;
-            if(state.groupKeys.size() > 0) count++;
-            if(state.groupDefs.size() > 0) count++;
-            return count + state.groupKeys.size() + state.groupDefs.size();
+            int visible = 0;
+            int now = visible;
+            for(PersistentStorage.PartyOwnerData.Group party : state.groupDefs) {
+                if(!partyState.get(party).hide) count++;
+                visible++;
+            }
+            if(now != visible) count++; // "owned parties" kinda-header
+            now = visible;
+            for(PersistentStorage.PartyClientData.Group party : state.groupKeys) {
+                if(!partyState.get(party).hide) count++;
+                visible++;
+            }
+            if(now != visible) count++; // "joined parties" kinda-header
+            return count;
         }
 
         @Override
@@ -113,36 +194,6 @@ public class PartyPickActivity extends AppCompatActivity {
         public void onAttachedToRecyclerView(RecyclerView recyclerView) {
             owner = recyclerView;
         }
-    };
-    boolean backToPartyList;
-
-    private void showPartyList(boolean detailsIfFalse) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            final ViewGroup root = (ViewGroup) findViewById(R.id.ppa_activityRoot);
-            TransitionManager.beginDelayedTransition(root);
-        }
-        partyList.setVisibility(detailsIfFalse? View.VISIBLE : View.GONE);
-        pager.setVisibility(detailsIfFalse? View.GONE : View.VISIBLE);
-
-        final ActionBar ab = getSupportActionBar();
-        if(null != ab) ab.setTitle(detailsIfFalse? R.string.ppa_title : R.string.ppa_title_details);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(backToPartyList) showPartyList(true);
-        else super.onBackPressed();
-        backToPartyList = false;
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        if(backToPartyList) {
-            showPartyList(true);
-            backToPartyList = false;
-            return false;
-        }
-        return super.onSupportNavigateUp();
     }
 
     interface DynamicViewHolder {
@@ -172,6 +223,39 @@ public class PartyPickActivity extends AppCompatActivity {
             result.append(actor.name);
         }
         return result.toString();
+    }
+
+    class MyItemTouchCallback extends ItemTouchHelper.SimpleCallback {
+        static final int DRAG_FORBIDDEN = 0;
+        static final int SWIPE_HORIZONTAL = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+
+        MyItemTouchCallback() {
+            super(DRAG_FORBIDDEN, SWIPE_HORIZONTAL);
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            MessageNano party = viewHolder instanceof OwnedPartyHolder?
+                    ((OwnedPartyHolder) viewHolder).group :
+                    ((JoinedPartyHolder) viewHolder).group;
+            partyState.get(party).hide = true;
+            listAll.notifyItemRemoved(partyList.getChildAdapterPosition(viewHolder.itemView));
+            // TODO kick in delete/update task
+            // TODO show snackbar
+            // TODO on snackbar dismissed, get the rid of the state.
+        }
+
+        @Override
+        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            int swipe = 0;
+            if(viewHolder instanceof OwnedPartyHolder || viewHolder instanceof JoinedPartyHolder) swipe = SWIPE_HORIZONTAL;
+            return makeMovementFlags(DRAG_FORBIDDEN, swipe);
+        }
     }
 
     class OwnedPartyHolder extends RecyclerView.ViewHolder implements DynamicViewHolder, View.OnClickListener {
@@ -434,4 +518,33 @@ public class PartyPickActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    private static int partyBehaviorsCreated = 2; // 0 reserved for "owned" separator, 1 for "joined"
+
+    /** Also doubles as a place to keep undo information for deleted parties and estabilishes a
+     * common order between elements which can be used as stable ids.
+     */
+    class PartyItemState {
+        private final PersistentStorage.PartyOwnerData.Group owned;
+        private final PersistentStorage.PartyClientData.Group joined;
+        boolean hide; /// hidden if delete operation started.
+        boolean undoExpired; /// true if snackbar control is gone so this is no more undo-able.
+        boolean ioCompleted; /// set by async write onPostExecute, storage ok.
+        // Snackbar notification (fired when delete took place) sets both pointers to null
+        // and then it's gone forever.
+
+        final int unique = partyBehaviorsCreated++;
+
+
+        public PartyItemState(PersistentStorage.PartyOwnerData.Group owned) {
+            joined = null;
+            this.owned = owned;
+        }
+        public PartyItemState(PersistentStorage.PartyClientData.Group joined) {
+            owned = null;
+            this.joined = joined;
+        }
+    }
+
+    Map<MessageNano, PartyItemState> partyState = new IdentityHashMap<>();
 }
