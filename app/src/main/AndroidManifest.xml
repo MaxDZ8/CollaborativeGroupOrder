@@ -58,8 +58,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
-        <activity android:name=".NewCharactersProposalActivity"
+        <activity
+            android:name=".NewCharactersProposalActivity"
             android:label="@string/ncpa_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".PartyPickActivity"
+            android:label="@string/ppa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

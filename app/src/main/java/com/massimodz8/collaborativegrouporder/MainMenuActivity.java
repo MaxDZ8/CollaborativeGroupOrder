@@ -123,24 +123,21 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     public void pickParty_callback(View btn) {
-        new AlertDialog.Builder(this)
-                .setTitle("Not implemented!")
-                .setMessage("party selection activity!")
-                .show();
+        startActivityForResult(new Intent(this, PartyPickActivity.class), REQUEST_PICK_PARTY);
     }
 
 
     private void startNewSessionActivity(String name, byte[] groupKey, Pumper.MessagePumpingThread[] workers) {
         new AlertDialog.Builder(this)
                 .setTitle("Not implemented!")
-                .setMessage("new session!")
+                .setMessage(String.format("new session!\nName=%1$s\nSalt=%2$s", name, Arrays.toString(groupKey)))
                 .show();
     }
 
-    void startGoAdventuringActivity(String autojoin, byte[] key, Pumper.MessagePumpingThread[] workers) {
+    void startGoAdventuringActivity(String name, byte[] groupKey, Pumper.MessagePumpingThread[] workers) {
         new AlertDialog.Builder(this)
                 .setTitle("Not implemented!")
-                .setMessage("going adventuring!")
+                .setMessage(String.format("going adventuring!\nName=%1$s\nSalt=%2$s", name, Arrays.toString(groupKey)))
                 .show();
     }
 
@@ -211,6 +208,20 @@ public class MainMenuActivity extends AppCompatActivity {
             case REQUEST_PROPOSE_CHARACTERS: {
                 refreshData();
             } break;
+            case REQUEST_PICK_PARTY: {
+                int linear = data.getIntExtra(PartyPickActivity.EXTRA_PARTY_INDEX, -1);
+                boolean owned = data.getBooleanExtra(PartyPickActivity.EXTRA_TRUE_IF_PARTY_OWNED, false);
+                if(linear < 0) return;
+                final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+                if(owned) {
+                    final PersistentStorage.PartyOwnerData.Group party = state.groupDefs.elementAt(linear);
+                    startNewSessionActivity(party.name, party.salt, null);
+                }
+                else {
+                    final PersistentStorage.PartyClientData.Group party = state.groupKeys.elementAt(linear);
+                    startGoAdventuringActivity(party.name, party.key, null);
+                }
+            } break;
         }
     }
 
@@ -218,4 +229,5 @@ public class MainMenuActivity extends AppCompatActivity {
     static final int REQUEST_JOIN_FORMING = 2;
     static final int REQUEST_APPROVE_CHARACTERS = 3;
     static final int REQUEST_PROPOSE_CHARACTERS = 4;
+    static final int REQUEST_PICK_PARTY = 5;
 }
