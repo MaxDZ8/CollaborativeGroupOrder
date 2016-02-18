@@ -1,7 +1,9 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +26,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.protobuf.nano.MessageNano;
@@ -90,11 +95,63 @@ public class PartyPickActivity extends AppCompatActivity {
     }
 
     @Override
-     public boolean onOptionsItemSelected(MenuItem item) {
+     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.ppa_menu_restoreDeleted:
-                new AlertDialog.Builder(this).setMessage("TODO!!!").show();
+            case R.id.ppa_menu_restoreDeleted: {
+                ListAdapter la = new ListAdapter() {
+                    @Override
+                    public void registerDataSetObserver(DataSetObserver observer) { }
+
+                    @Override
+                    public void unregisterDataSetObserver(DataSetObserver observer) { }
+
+                    @Override
+                    public int getCount() { return junkyard.size(); }
+
+                    @Override
+                    public Object getItem(int position) { return junkyard.get(position); }
+
+                    @Override
+                    public long getItemId(int position) { return junkyard.get(position).unique; }
+
+                    @Override
+                    public boolean hasStableIds() { return true; }
+
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        final TextView name = new TextView(PartyPickActivity.this);
+                        final PartyItemState el = junkyard.get(position);
+                        name.setText(null != el.owned? el.owned.name : el.joined.name);
+                        return name;
+                    }
+
+                    @Override
+                    public int getItemViewType(int position) { return 0; }
+
+                    @Override
+                    public int getViewTypeCount() { return 1; }
+
+                    @Override
+                    public boolean isEmpty() { return junkyard.isEmpty(); }
+
+                    @Override
+                    public boolean areAllItemsEnabled() { return true; }
+
+                    @Override
+                    public boolean isEnabled(int position) { return true; }
+                };
+                final AlertDialog.OnClickListener icl = new AlertDialog.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        restoreDeleted(which);
+                    }
+                };
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.ppa_menu_restoreDeleted)
+                        .setAdapter(la, icl).show();
                 return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -685,6 +742,46 @@ public class PartyPickActivity extends AppCompatActivity {
                 return;
             }
             if(null != showOnSuccess) showOnSuccess.show();
+        }
+    }
+
+    private void restoreDeleted(final int position) {
+        final PartyItemState el = junkyard.get(position);
+        final Vector<PersistentStorage.PartyOwnerData.Group> defs;
+        final Vector<PersistentStorage.PartyClientData.Group> keys;
+        if(null != el.owned) {
+            defs = new Vector<>(state.groupDefs.size() + 1);
+            for(int cp = 0; cp < state.groupKeys.size(); cp++) defs.add(state.groupDefs.elementAt(cp));
+            defs.add(el.owned);
+            keys = null;
+        }
+        else {
+            keys = new Vector<>(state.groupKeys.size() + 1);
+            for(int cp = 0; cp < state.groupKeys.size(); cp++) keys.add(state.groupKeys.elementAt(cp));
+            keys.add(el.joined);
+            defs = null;
+        }
+        final Snackbar sb = Snackbar.make(guiRoot, R.string.ppa_partyRecovered, Snackbar.LENGTH_LONG)
+                .setCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onShown(Snackbar snackbar) {
+                        partyState.put(null != el.owned? el.owned : el.joined, el);
+                        if(null != defs) state.groupDefs = defs;
+                        else state.groupKeys = keys;
+                        junkyard.remove(position);
+                        listAll.notifyDataSetChanged();
+                        restoreDeleted.setEnabled(!junkyard.isEmpty());
+                    }
+                });
+        if(null != el.owned) {
+            AsyncRenamingStore<PersistentStorage.PartyOwnerData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, sb, null);
+            task.execute(makePartyOwnerData(defs));
+            pending = task;
+        }
+        else {
+            AsyncRenamingStore<PersistentStorage.PartyClientData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, sb, null);
+            task.execute(makePartyClientData(keys));
+            pending = task;
         }
     }
 }
