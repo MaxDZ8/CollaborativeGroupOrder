@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,9 +30,12 @@ import android.widget.TextView;
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Vector;
+
 
 public class PartyPickActivity extends AppCompatActivity {
 
@@ -42,6 +46,7 @@ public class PartyPickActivity extends AppCompatActivity {
     boolean backToPartyList;
     CoordinatorLayout guiRoot;
     MenuItem restoreDeleted;
+    AsyncRenamingStore pending; // only one undergoing, ignore back, up and delete group while notnull
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,8 +108,7 @@ public class PartyPickActivity extends AppCompatActivity {
 
     private void showPartyList(boolean detailsIfFalse) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            final ViewGroup root = (ViewGroup) guiRoot;
-            TransitionManager.beginDelayedTransition(root);
+            TransitionManager.beginDelayedTransition(guiRoot);
         }
         partyList.setVisibility(detailsIfFalse? View.VISIBLE : View.GONE);
         pager.setVisibility(detailsIfFalse? View.GONE : View.VISIBLE);
@@ -116,6 +120,11 @@ public class PartyPickActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(backToPartyList) showPartyList(true);
+        else if(null != pending) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.ppa_cannotLetYouGoWhileWriting)
+                    .show();
+        }
         else super.onBackPressed();
         backToPartyList = false;
     }
@@ -127,6 +136,11 @@ public class PartyPickActivity extends AppCompatActivity {
             backToPartyList = false;
             return false;
         }
+        else if(null != pending) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.ppa_cannotLetYouGoWhileWriting)
+                    .show();
+        }
         return super.onSupportNavigateUp();
     }
 
@@ -137,22 +151,13 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int position) {
-            if(position == 0 && state.groupDefs.size() > 0) return 0;
-            position--;
-            for (PersistentStorage.PartyOwnerData.Group party : state.groupDefs) {
-                final PartyItemState el = partyState.get(party);
-                if(null == el || el.hide) continue;
-                if(0 == position) return el.unique;
-                position--;
+            if(state.groupDefs.size() > 0) {
+                if(0 == position) return 0;
+                if(position < state.groupDefs.size()) return partyState.get(state.groupDefs.elementAt(position)).unique;
+                position -= state.groupDefs.size();
             }
-            if(position == 0) return 1;
-            position--;
-            for (PersistentStorage.PartyClientData.Group party : state.groupKeys) {
-                final PartyItemState el = partyState.get(party);
-                if(el.hide) continue;
-                if(0 == position) return el.unique;
-                position--;
-            }
+            if(0 == position) return 1;
+            if(position < state.groupKeys.size()) return partyState.get(state.groupKeys.elementAt(position)).unique;
             return RecyclerView.NO_ID;
         }
 
@@ -182,19 +187,10 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             int count = 0;
-            int visible = 0;
-            int now = visible;
-            for(PersistentStorage.PartyOwnerData.Group party : state.groupDefs) {
-                if(!partyState.get(party).hide) count++;
-                visible++;
-            }
-            if(now != visible) count++; // "owned parties" kinda-header
-            now = visible;
-            for(PersistentStorage.PartyClientData.Group party : state.groupKeys) {
-                if(!partyState.get(party).hide) count++;
-                visible++;
-            }
-            if(now != visible) count++; // "joined parties" kinda-header
+            if(!state.groupDefs.isEmpty()) count++; // "owned parties" kinda-header
+            count += state.groupDefs.size();
+            if(!state.groupKeys.isEmpty()) count++; // "owned keys" kinda-header
+            count += state.groupKeys.size();
             return count;
         }
 
@@ -203,15 +199,11 @@ public class PartyPickActivity extends AppCompatActivity {
             if(state.groupDefs.size() > 0) {
                 if (0 == position) return OwnedPartySeparator.LAYOUT;
                 position--;
-                for(PersistentStorage.PartyOwnerData.Group party : state.groupDefs) {
-                    if(!partyState.get(party).hide) {
-                        if(0 == position) return OwnedPartyHolder.LAYOUT;
-                        position--;
-                    }
-                }
+                if(position < state.groupDefs.size()) return OwnedPartyHolder.LAYOUT;
+                position -= state.groupDefs.size();
             }
             if(0 == position) return JoinedPartySeparator.LAYOUT;
-            return JoinedPartyHolder.LAYOUT; // Well, that's the last thing.
+            return JoinedPartyHolder.LAYOUT;
         }
     }
 
@@ -263,45 +255,76 @@ public class PartyPickActivity extends AppCompatActivity {
             final Vector<PersistentStorage.PartyClientData.Group> prevKeys = new Vector<>(state.groupKeys);
             final MessageNano party;
             final String name;
-            if(viewHolder instanceof OwnedPartyHolder) {
+            if (viewHolder instanceof OwnedPartyHolder) {
                 OwnedPartyHolder real = (OwnedPartyHolder) viewHolder;
                 party = real.group;
                 name = real.group.name;
                 state.groupDefs.remove(real.group);
-            }
-            else {
+            } else {
                 JoinedPartyHolder real = (JoinedPartyHolder) viewHolder;
                 party = real.group;
                 name = real.group.name;
                 state.groupKeys.remove(real.group);
             }
-            final PartyItemState partyState = PartyPickActivity.this.partyState.get(party);
-            partyState.hide = true;
+            final PartyItemState pis = partyState.get(party);
+            junkyard.add(pis);
+            partyState.remove(party);
             listAll.notifyDataSetChanged(); // for easiness, as the last changes two items (itself and the separator)
             final String msg = String.format(getString(R.string.ppa_deletedParty), name);
-            Snackbar.make(guiRoot, msg, Snackbar.LENGTH_LONG)
-                    .setAction("Undo", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            state.groupDefs = prevDefs;
-                            state.groupKeys = prevKeys;
-                            partyState.hide = false;
-                            listAll.notifyDataSetChanged();
-                        }
-                    }).setCallback(new Snackbar.Callback() {
+            final Runnable undo = new Runnable() {
                 @Override
-                public void onDismissed(Snackbar snackbar, int event) {
-                    if(DISMISS_EVENT_ACTION != event) {
-                        junkyard.add(partyState);
-                        PartyPickActivity.this.partyState.remove(party);
-                        restoreDeleted.setEnabled(true);
+                public void run() {
+                    state.groupDefs = prevDefs;
+                    state.groupKeys = prevKeys;
+                    junkyard.remove(pis);
+                    partyState.put(party, pis);
+                    listAll.notifyDataSetChanged();
+                    if(restoreDeleted.isEnabled() && junkyard.isEmpty()) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            TransitionManager.beginDelayedTransition(guiRoot);
+                        }
+                        restoreDeleted.setEnabled(false);
                     }
                 }
-            }).show();
+            };
+            Snackbar sb = Snackbar.make(guiRoot, msg, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.generic_action_undo, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) { undo.run(); }
+                    }).setCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onShown(Snackbar snackbar) {
+                            if(!restoreDeleted.isEnabled()) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                    TransitionManager.beginDelayedTransition(guiRoot);
+                                }
+                                restoreDeleted.setEnabled(true);
+                            }
+                        }
+                    });
+            if(viewHolder instanceof OwnedPartyHolder) {
+                PersistentStorage.PartyOwnerData all = new PersistentStorage.PartyOwnerData();
+                all.version = PersistentDataUtils.OWNER_DATA_VERSION;
+                all.everything = new PersistentStorage.PartyOwnerData.Group[state.groupDefs.size()];
+                for(int cp = 0; cp < state.groupDefs.size(); cp++) all.everything[cp] = state.groupDefs.elementAt(cp);
+                AsyncRenamingStore<PersistentStorage.PartyOwnerData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, sb, undo);
+                task.execute(all);
+                pending = task;
+            }
+            else {
+                PersistentStorage.PartyClientData all = new PersistentStorage.PartyClientData();
+                all.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
+                all.everything = new PersistentStorage.PartyClientData.Group[state.groupKeys.size()];
+                for(int cp = 0; cp < state.groupDefs.size(); cp++) all.everything[cp] = state.groupKeys.elementAt(cp);
+                AsyncRenamingStore<PersistentStorage.PartyClientData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, sb, undo);
+                task.execute(all);
+                pending = task;
+            }
         }
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            if(null != pending) return 0;
             int swipe = 0;
             if(viewHolder instanceof OwnedPartyHolder || viewHolder instanceof JoinedPartyHolder) swipe = SWIPE_HORIZONTAL;
             return makeMovementFlags(DRAG_FORBIDDEN, swipe);
@@ -575,11 +598,6 @@ public class PartyPickActivity extends AppCompatActivity {
     static class PartyItemState {
         private final PersistentStorage.PartyOwnerData.Group owned;
         private final PersistentStorage.PartyClientData.Group joined;
-        boolean hide; /// hidden if delete operation started.
-        boolean undoExpired; /// true if snackbar control is gone so this is no more undo-able.
-        boolean ioCompleted; /// set by async write onPostExecute, storage ok.
-        // Snackbar notification (fired when delete took place) sets both pointers to null
-        // and then it's gone forever.
 
         final int unique = 2 + partyStatesCreated++; // 0 reserved for "owned" separator, 1 for "joined"
 
@@ -597,5 +615,75 @@ public class PartyPickActivity extends AppCompatActivity {
     }
 
     Map<MessageNano, PartyItemState> partyState = new IdentityHashMap<>();
-    Vector<PartyItemState> junkyard = new Vector<>(); /// We can restore stuff there from menu
+    ArrayList<PartyItemState> junkyard = new ArrayList<>(); /// We can restore stuff there from menu
+
+
+    /// If anything fails, trigger a runnable, otherwise a snackbar.
+    public class AsyncRenamingStore<Container extends MessageNano> extends AsyncTask<Container, Void, Exception> {
+        final String target;
+        final Snackbar showOnSuccess;
+        final Runnable undo;
+
+        public AsyncRenamingStore(String fileName, Snackbar showOnSuccess, Runnable undo) {
+            target = fileName;
+            this.showOnSuccess = showOnSuccess;
+            this.undo = undo;
+        }
+
+        @Override
+        protected Exception doInBackground(Container... params) {
+            try {
+                File temp = store(params[0]);
+                File old = new File(getFilesDir(), target);
+                if(old.exists()) {
+                    File grave = File.createTempFile("deleting-", ".old", getFilesDir());
+                    if(!old.renameTo(grave)) {
+                        if(!temp.delete()) temp.deleteOnExit();
+                        throw new Exception(getString(R.string.ppa_writeCancelled));
+                    }
+                }
+                if(!temp.renameTo(new File(getFilesDir(), target))) {
+                    if(old.exists()) {
+                        if(!old.renameTo(new File(getFilesDir(), target))) {
+                            throw new Exception(String.format(getString(R.string.ppa_failedRenameRestoreOld), old.getCanonicalPath()));
+                        }
+                    }
+                    else throw new Exception(getString(R.string.ppa_failedRenameRestoreNOP));
+                }
+                if(old.exists() && !old.delete()) old.deleteOnExit();
+            } catch (Exception e) {
+                return e;
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Exception e) {
+            pending = null;
+            if(null != e) {
+                new AlertDialog.Builder(PartyPickActivity.this)
+                        .setMessage(e.getLocalizedMessage())
+                        .show();
+                if(null != undo) undo.run();
+                return;
+            }
+            if(null != showOnSuccess) showOnSuccess.show();
+        }
+
+        File store(Container container) throws Exception {
+            File result = File.createTempFile("deleting-", ".tmp", getFilesDir());
+            PersistentDataUtils use = new PersistentDataUtils() {
+                @Override
+                protected String getString(int resource) {
+                    return PartyPickActivity.this.getString(resource);
+                }
+            };
+            String error = use.storeValidGroupData(result, container);
+            if(null != error) {
+                if(!result.delete()) result.deleteOnExit(); // we try the best we can.
+                throw new Exception(error);
+            }
+            return result;
+        }
+    }
 }
