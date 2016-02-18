@@ -31,6 +31,7 @@ import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -279,6 +280,18 @@ public class PartyPickActivity extends AppCompatActivity {
                     junkyard.remove(pis);
                     partyState.put(party, pis);
                     listAll.notifyDataSetChanged();
+                    boolean owned = party instanceof PersistentStorage.PartyOwnerData.Group;
+                    if(null != pending) pending.cancel(true);
+                    if(owned) {
+                        AsyncRenamingStore<PersistentStorage.PartyOwnerData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, null, null);
+                        task.execute(makePartyOwnerData(prevDefs));
+                        pending = task;
+                    }
+                    else {
+                        AsyncRenamingStore<PersistentStorage.PartyClientData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, null, null);
+                        task.execute(makePartyClientData(prevKeys));
+                        pending = task;
+                    }
                     if(restoreDeleted.isEnabled() && junkyard.isEmpty()) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                             TransitionManager.beginDelayedTransition(guiRoot);
@@ -303,21 +316,13 @@ public class PartyPickActivity extends AppCompatActivity {
                         }
                     });
             if(viewHolder instanceof OwnedPartyHolder) {
-                PersistentStorage.PartyOwnerData all = new PersistentStorage.PartyOwnerData();
-                all.version = PersistentDataUtils.OWNER_DATA_VERSION;
-                all.everything = new PersistentStorage.PartyOwnerData.Group[state.groupDefs.size()];
-                for(int cp = 0; cp < state.groupDefs.size(); cp++) all.everything[cp] = state.groupDefs.elementAt(cp);
                 AsyncRenamingStore<PersistentStorage.PartyOwnerData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, sb, undo);
-                task.execute(all);
+                task.execute(makePartyOwnerData(state.groupDefs));
                 pending = task;
             }
             else {
-                PersistentStorage.PartyClientData all = new PersistentStorage.PartyClientData();
-                all.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
-                all.everything = new PersistentStorage.PartyClientData.Group[state.groupKeys.size()];
-                for(int cp = 0; cp < state.groupDefs.size(); cp++) all.everything[cp] = state.groupKeys.elementAt(cp);
                 AsyncRenamingStore<PersistentStorage.PartyClientData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, sb, undo);
-                task.execute(all);
+                task.execute(makePartyClientData(state.groupKeys));
                 pending = task;
             }
         }
@@ -329,6 +334,22 @@ public class PartyPickActivity extends AppCompatActivity {
             if(viewHolder instanceof OwnedPartyHolder || viewHolder instanceof JoinedPartyHolder) swipe = SWIPE_HORIZONTAL;
             return makeMovementFlags(DRAG_FORBIDDEN, swipe);
         }
+    }
+
+    private static PersistentStorage.PartyOwnerData makePartyOwnerData(Vector<PersistentStorage.PartyOwnerData.Group> defs) {
+        PersistentStorage.PartyOwnerData all = new PersistentStorage.PartyOwnerData();
+        all.version = PersistentDataUtils.OWNER_DATA_VERSION;
+        all.everything = new PersistentStorage.PartyOwnerData.Group[defs.size()];
+        for(int cp = 0; cp < defs.size(); cp++) all.everything[cp] = defs.elementAt(cp);
+        return all;
+    }
+
+    private static PersistentStorage.PartyClientData makePartyClientData(Vector<PersistentStorage.PartyClientData.Group> defs) {
+        PersistentStorage.PartyClientData all = new PersistentStorage.PartyClientData();
+        all.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
+        all.everything = new PersistentStorage.PartyClientData.Group[defs.size()];
+        for(int cp = 0; cp < defs.size(); cp++) all.everything[cp] = defs.elementAt(cp);
+        return all;
     }
 
     class OwnedPartyHolder extends RecyclerView.ViewHolder implements DynamicViewHolder, View.OnClickListener {
@@ -632,28 +653,24 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         protected Exception doInBackground(Container... params) {
+            File previously = new File(getFilesDir(), target);
+            File store;
             try {
-                File temp = store(params[0]);
-                File old = new File(getFilesDir(), target);
-                if(old.exists()) {
-                    File grave = File.createTempFile("deleting-", ".old", getFilesDir());
-                    if(!old.renameTo(grave)) {
-                        if(!temp.delete()) temp.deleteOnExit();
-                        throw new Exception(getString(R.string.ppa_writeCancelled));
-                    }
-                }
-                if(!temp.renameTo(new File(getFilesDir(), target))) {
-                    if(old.exists()) {
-                        if(!old.renameTo(new File(getFilesDir(), target))) {
-                            throw new Exception(String.format(getString(R.string.ppa_failedRenameRestoreOld), old.getCanonicalPath()));
-                        }
-                    }
-                    else throw new Exception(getString(R.string.ppa_failedRenameRestoreNOP));
-                }
-                if(old.exists() && !old.delete()) old.deleteOnExit();
-            } catch (Exception e) {
+                store = File.createTempFile(target, ".new", getFilesDir());
+            } catch (IOException e) {
                 return e;
             }
+            new PersistentDataUtils() {
+                @Override
+                protected String getString(int resource) {
+                    return PartyPickActivity.this.getString(resource);
+                }
+            }.storeValidGroupData(store, params[0]);
+            if(previously.exists() && !previously.delete()) {
+                if(!store.delete()) store.deleteOnExit();
+                return new Exception(getString(R.string.ppa_failedOldDelete));
+            }
+            if(!store.renameTo(previously)) return new Exception(String.format(getString(R.string.ppa_failedNewRenameOldGone), store.getName()));
             return null;
         }
 
@@ -668,22 +685,6 @@ public class PartyPickActivity extends AppCompatActivity {
                 return;
             }
             if(null != showOnSuccess) showOnSuccess.show();
-        }
-
-        File store(Container container) throws Exception {
-            File result = File.createTempFile("deleting-", ".tmp", getFilesDir());
-            PersistentDataUtils use = new PersistentDataUtils() {
-                @Override
-                protected String getString(int resource) {
-                    return PartyPickActivity.this.getString(resource);
-                }
-            };
-            String error = use.storeValidGroupData(result, container);
-            if(null != error) {
-                if(!result.delete()) result.deleteOnExit(); // we try the best we can.
-                throw new Exception(error);
-            }
-            return result;
         }
     }
 }

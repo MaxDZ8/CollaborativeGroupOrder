@@ -252,8 +252,7 @@
     <string name="ppa_menu_restoreDeletedCondensed">Restore</string>
     <string name="generic_action_undo">Undo</string>
     <string name="ppa_cannotLetYouGoWhileWriting">I am rewriting storage data so I cannot let you go away. By the time you have read this, I\'ve hopefully finished.</string>
-    <string name="ppa_writeCancelled">Could not preserve old data before writing new. Write cancelled.</string>
-    <string name="ppa_failedRenameRestoreOld">Oh no! Couldn\'t store new data in the right place... and I couldn\'t restore the old data either! This is very serious! Your old data is now \"%1$s\"</string>
-    <string name="ppa_failedRenameRestoreNOP">Couldn\'t store new data in the right place. Everything is as it was before.</string>
+    <string name="ppa_failedOldDelete">Cannot save new data. Old data refused to go away.</string>
+    <string name="ppa_failedNewRenameOldGone">Oh no! New data was successfully produced and stored but couldn\'t be given its real name and old data is already gone!\nFile:\n  %1$s</string>
 
 </resources>
