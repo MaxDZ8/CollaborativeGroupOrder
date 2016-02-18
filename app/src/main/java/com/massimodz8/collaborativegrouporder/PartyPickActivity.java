@@ -119,10 +119,11 @@ public class PartyPickActivity extends AppCompatActivity {
 
                     @Override
                     public View getView(int position, View convertView, ViewGroup parent) {
-                        final TextView name = new TextView(PartyPickActivity.this);
+                        final View layout = getLayoutInflater().inflate(R.layout.dialog_restore_recently_deleted_party, parent, false);
+                        final TextView name = (TextView)layout.findViewById(R.id.ppa_dialogName);
                         final PartyItemState el = junkyard.get(position);
-                        name.setText(null != el.owned? el.owned.name : el.joined.name);
-                        return name;
+                        name.setText(null != el.owned ? el.owned.name : el.joined.name);
+                        return layout;
                     }
 
                     @Override
