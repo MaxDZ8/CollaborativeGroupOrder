@@ -20,6 +20,7 @@ import java.util.Vector;
 
 public class MainMenuActivity extends AppCompatActivity {
     public static final String GROUP_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
+    public static final String PARTY_GOING_ADVENTURING_SERVICE_TYPE = "_partyInitiative._tcp";
     public static final int NETWORK_VERSION = 1;
 
     @Override
@@ -128,10 +129,10 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
     private void startNewSessionActivity(PersistentStorage.PartyOwnerData.Group party, Pumper.MessagePumpingThread[] workers) {
-        new AlertDialog.Builder(this)
-                .setTitle("Not implemented!")
-                .setMessage(String.format("new session!\nName=%1$s\nSalt=%2$s", party.name, Arrays.toString(party.salt)))
-                .show();
+        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        state.pumpers = workers;
+        state.gaState = new GatheringActivity.State(party);
+        startActivity(new Intent(this, GatheringActivity.class));
     }
 
     void startGoAdventuringActivity(String name, byte[] groupKey, Pumper.MessagePumpingThread[] workers) {

@@ -20,6 +20,8 @@ public class CrossActivityShare extends Application {
     public Vector<PersistentStorage.PartyOwnerData.Group> groupDefs;
     public Vector<PersistentStorage.PartyClientData.Group> groupKeys;
 
+    public GatheringActivity.State gaState;
+
     // NewPartyDeviceSelectionActivity state -------------------------------------------------------
     public Vector<DeviceStatus> clients;
     PublishedService publisher;

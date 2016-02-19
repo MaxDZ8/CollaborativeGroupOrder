@@ -445,7 +445,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             listener = new ServerSocket(0);
         } catch (IOException e) {
             new AlertDialog.Builder(this)
-                    .setMessage(R.string.npdsa_badLanding)
+                    .setMessage(R.string.badServerSocket)
                     .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

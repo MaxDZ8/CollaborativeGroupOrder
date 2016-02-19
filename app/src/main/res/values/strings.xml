@@ -173,7 +173,7 @@
     <string name="npdsa_selectInstructions">Connected devices will be listed below. Select the devices to let in the group.</string>
     <string name="npdsa_explicitConnectionInfos">Data for explicit connection:\nPort: %1$d\n%2$s</string>
     <string name="npdsa_inputNameAction">Publish</string>
-    <string name="npdsa_badLanding">Cannot open communication so your friend\'s devices can connect. This is very serious and prevents anything from working.</string>
+    <string name="badServerSocket">Cannot open communication so your friend\'s devices can connect. This is very serious and prevents anything from working.</string>
     <string name="npdsa_goDefiningPCs">Define playing characters</string>
     <string name="npdsa_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
     <string name="npdsa_failedAccept">An error occurred while connecting a new device. Maybe the network is broken or I am low on resources. Consider restarting.</string>
@@ -261,5 +261,9 @@
     <string name="ga_connectedDevices">Connected devices</string>
     <string name="ga_playingCharactersAssignment">Playing characters assignment (all characters must be assigned to continue)</string>
     <string name="ga_menu_showConnectionInfos">Show connection infos</string>
+    <string name="ga_publisherFailedStart">Could not publish service. Explicit connections are still available.</string>
+    <string name="ga_publishing">Ready. Your friends can connect.</string>
+    <string name="ga_publishingStopFailed">Cannot stop publishing. Odd. Perhaps trying again will fix that.</string>
+    <string name="ga_noMorePublishing">Publishing stopped (explicit connections still available).</string>
 
 </resources>

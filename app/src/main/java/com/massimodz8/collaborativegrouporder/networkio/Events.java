@@ -81,4 +81,14 @@ public interface Events {
             this.accepted = accepted;
         }
     }
+
+    public class AuthToken {
+        public final MessageChannel origin;
+        public final byte[] doormat;
+
+        public AuthToken(MessageChannel origin, byte[] doormat) {
+            this.origin = origin;
+            this.doormat = doormat;
+        }
+    }
 }
