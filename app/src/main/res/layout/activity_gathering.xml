@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ga_activityRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    style="@style/Widget.Design.CoordinatorLayout"
+    tools:context="com.massimodz8.collaborativegrouporder.GatheringActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/ga_state"
+        android:layout_centerHorizontal="true">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/ga_initializing"
+            android:id="@+id/ga_state"
+            android:layout_gravity="center_horizontal" />
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ga_progressBar"
+            android:indeterminate="true" />
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="ADVERTISING"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#f200ff"
+            android:background="#00ff11"
+            android:gravity="center_horizontal"
+            android:textStyle="bold|italic"
+            android:textSize="32sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Connected devices" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/ga_deviceList"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".5" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/ga_playingCharactersAssignment" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/ga_pcStatusList"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight=".5" />
+
+
+    </LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

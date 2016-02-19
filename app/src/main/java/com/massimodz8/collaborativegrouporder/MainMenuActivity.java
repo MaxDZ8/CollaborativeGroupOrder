@@ -45,7 +45,7 @@ public class MainMenuActivity extends AppCompatActivity {
                 // go adventuring, but am I client or server?
                 for(PersistentStorage.PartyOwnerData.Group check : state.groupDefs) {
                     if(Arrays.equals(newKey, check.salt) && newName.equals(check.name)) {
-                        startNewSessionActivity(newName, newKey, peers);
+                        startNewSessionActivity(check, peers);
                         return;
                     }
                 }
@@ -127,10 +127,10 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
 
-    private void startNewSessionActivity(String name, byte[] groupKey, Pumper.MessagePumpingThread[] workers) {
+    private void startNewSessionActivity(PersistentStorage.PartyOwnerData.Group party, Pumper.MessagePumpingThread[] workers) {
         new AlertDialog.Builder(this)
                 .setTitle("Not implemented!")
-                .setMessage(String.format("new session!\nName=%1$s\nSalt=%2$s", name, Arrays.toString(groupKey)))
+                .setMessage(String.format("new session!\nName=%1$s\nSalt=%2$s", party.name, Arrays.toString(party.salt)))
                 .show();
     }
 
@@ -214,8 +214,7 @@ public class MainMenuActivity extends AppCompatActivity {
                 if(linear < 0) return;
                 final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
                 if(owned) {
-                    final PersistentStorage.PartyOwnerData.Group party = state.groupDefs.elementAt(linear);
-                    startNewSessionActivity(party.name, party.salt, null);
+                    startNewSessionActivity(state.groupDefs.elementAt(linear), null);
                 }
                 else {
                     final PersistentStorage.PartyClientData.Group party = state.groupKeys.elementAt(linear);

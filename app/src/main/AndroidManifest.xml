@@ -74,6 +74,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
+        <activity android:name=".GatheringActivity"
+            android:label="@string/ga_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
     </application>
 
 </manifest>

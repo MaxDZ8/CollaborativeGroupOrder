@@ -4,6 +4,7 @@
     <string name="generic_unreadable_at_start" translatable="false">_initialized_</string>
     <string name="generic_IOError">I/O error</string>
     <string name="generic_connFailedWithError">Could not connect to host. System message:\n%1$s</string>
+    <string name="generic_action_undo">Undo</string>
 
     <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
     <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
@@ -238,7 +239,6 @@
     <string name="ppa_ownedDetails_newSession">New session</string>
     <string name="ppa_ownedDetails_continueBattle">Continue battle</string>
     <string name="ppa_ownedDetails_npcList">Assisting %1$s</string>
-
     <string name="ppa_joinedDetails_lastPlayLabel">Last played:</string>
     <string name="ppa_joinedDetails_createdLabel">Key received:</string>
     <string name="ppa_joinedDetails_continueBattle">Keep fighting</string>
@@ -248,12 +248,18 @@
     <string name="ppa_title">Pick a party</string>
     <string name="ppa_title_details">Party details</string>
     <string name="ppa_deletedParty">Deleted \"%1$s\"</string>
-    <string name="ppa_menu_restoreDeleted">Restore deleted</string>
-    <string name="ppa_menu_restoreDeletedCondensed">Restore</string>
-    <string name="generic_action_undo">Undo</string>
     <string name="ppa_cannotLetYouGoWhileWriting">I am rewriting storage data so I cannot let you go away. By the time you have read this, I\'ve hopefully finished.</string>
     <string name="ppa_failedOldDelete">Cannot save new data. Old data refused to go away.</string>
     <string name="ppa_failedNewRenameOldGone">Oh no! New data was successfully produced and stored but couldn\'t be given its real name and old data is already gone!\nFile:\n  %1$s</string>
     <string name="ppa_partyRecovered">Recover successful</string>
+    <string name="ppa_menu_restoreDeleted">Restore deleted</string>
+    <string name="ppa_menu_restoreDeletedCondensed">Restore</string>
+
+    <string name="ga_title">Gathering heroes</string>
+    <string name="ga_initializing">Initializing…</string>
+    <string name="ga_welcoming">Welcoming players…</string>
+    <string name="ga_connectedDevices">Connected devices</string>
+    <string name="ga_playingCharactersAssignment">Playing characters assignment (all characters must be assigned to continue)</string>
+    <string name="ga_menu_showConnectionInfos">Show connection infos</string>
 
 </resources>
