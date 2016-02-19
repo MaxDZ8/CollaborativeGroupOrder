@@ -133,7 +133,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         findViewById(R.id.eca_probingProgress).setVisibility(handShaking ? View.VISIBLE : View.GONE);
         findViewById(R.id.eca_probing).setVisibility(null != connecting? View.VISIBLE : View.GONE);
         findViewById(R.id.eca_connected).setVisibility(null == connecting && netPump.getClientCount() > 0? View.VISIBLE : View.GONE);
-        ViewUtils.setEnabled(this, !handShaking,
+        MaxUtils.setEnabled(this, !handShaking,
                 R.id.eca_inetAddr,
                 R.id.eca_port,
                 R.id.eca_attempt);

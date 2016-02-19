@@ -96,7 +96,7 @@ public class MainMenuActivity extends AppCompatActivity {
         state.groupKeys = new Vector<>();
         Collections.addAll(state.groupDefs, owned.everything);
         Collections.addAll(state.groupKeys, joined.everything);
-        ViewUtils.setEnabled(this, true,
+        MaxUtils.setEnabled(this, true,
                 R.id.mma_newParty,
                 R.id.mma_joinParty);
         findViewById(R.id.mma_goAdventuring).setEnabled(state.groupDefs.size() + state.groupKeys.size() > 0);

@@ -190,7 +190,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
 
     void refreshGUI() {
         if(saving) {
-            ViewUtils.setVisibility(this, View.GONE,
+            MaxUtils.setVisibility(this, View.GONE,
                     R.id.ncaa_list,
                     R.id.ncaa_action);
             findViewById(R.id.ncaa_saveFeedback).setVisibility(View.VISIBLE);

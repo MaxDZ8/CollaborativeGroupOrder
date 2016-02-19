@@ -663,7 +663,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         TextView info = (TextView) findViewById(R.id.npdsa_explicitConnectionInfos);
         info.setText(String.format(getString(R.string.npdsa_explicitConnectionInfos), landing.getLocalPort(), listAddresses()));
 
-        ViewUtils.setVisibility(this, View.VISIBLE,
+        MaxUtils.setVisibility(this, View.VISIBLE,
                 R.id.npdsa_publishFeedback,
                 R.id.npdsa_deviceList,
                 R.id.npdsa_explicitConnectionInfos,

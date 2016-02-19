@@ -468,11 +468,11 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.selectFormingGroupActivity_initializing).setVisibility(explorer != null ? View.GONE : View.VISIBLE);
-        ViewUtils.setVisibility(this, discovering ? View.VISIBLE : View.GONE,
+        MaxUtils.setVisibility(this, discovering ? View.VISIBLE : View.GONE,
                 R.id.selectFormingGroupActivity_progressBar);
         findViewById(R.id.selectFormingGroupActivity_groupList).setVisibility(candidates.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         findViewById(R.id.sfga_confirmInstructions).setVisibility(talked == 0? View.GONE : View.VISIBLE);
-        ViewUtils.setVisibility(this, View.VISIBLE,
+        MaxUtils.setVisibility(this, View.VISIBLE,
                 R.id.sfga_explicitConnectionInstructions,
                 R.id.selectFormingGroupActivity_startExplicitConnection);
 
