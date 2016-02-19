@@ -25,12 +25,20 @@ public interface Network {
     // optional uint32 version = 1;
     public int version;
 
+    // optional bool verifyMe = 2;
+    public boolean verifyMe;
+
+    // optional bytes authorize = 3;
+    public byte[] authorize;
+
     public Hello() {
       clear();
     }
 
     public Hello clear() {
       version = 0;
+      verifyMe = false;
+      authorize = com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES;
       cachedSize = -1;
       return this;
     }
@@ -41,6 +49,12 @@ public interface Network {
       if (this.version != 0) {
         output.writeUInt32(1, this.version);
       }
+      if (this.verifyMe != false) {
+        output.writeBool(2, this.verifyMe);
+      }
+      if (!java.util.Arrays.equals(this.authorize, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
+        output.writeBytes(3, this.authorize);
+      }
       super.writeTo(output);
     }
 
@@ -50,6 +64,14 @@ public interface Network {
       if (this.version != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(1, this.version);
+      }
+      if (this.verifyMe != false) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeBoolSize(2, this.verifyMe);
+      }
+      if (!java.util.Arrays.equals(this.authorize, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeBytesSize(3, this.authorize);
       }
       return size;
     }
@@ -71,6 +93,14 @@ public interface Network {
           }
           case 8: {
             this.version = input.readUInt32();
+            break;
+          }
+          case 16: {
+            this.verifyMe = input.readBool();
+            break;
+          }
+          case 26: {
+            this.authorize = input.readBytes();
             break;
           }
         }
@@ -118,6 +148,9 @@ public interface Network {
     // optional bool forming = 4;
     public boolean forming;
 
+    // optional bytes doormat = 5;
+    public byte[] doormat;
+
     public GroupInfo() {
       clear();
     }
@@ -127,6 +160,7 @@ public interface Network {
       name = "";
       options = com.google.protobuf.nano.WireFormatNano.EMPTY_STRING_ARRAY;
       forming = false;
+      doormat = com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES;
       cachedSize = -1;
       return this;
     }
@@ -150,6 +184,9 @@ public interface Network {
       }
       if (this.forming != false) {
         output.writeBool(4, this.forming);
+      }
+      if (!java.util.Arrays.equals(this.doormat, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
+        output.writeBytes(5, this.doormat);
       }
       super.writeTo(output);
     }
@@ -182,6 +219,10 @@ public interface Network {
       if (this.forming != false) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeBoolSize(4, this.forming);
+      }
+      if (!java.util.Arrays.equals(this.doormat, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeBytesSize(5, this.doormat);
       }
       return size;
     }
@@ -228,6 +269,10 @@ public interface Network {
           }
           case 32: {
             this.forming = input.readBool();
+            break;
+          }
+          case 42: {
+            this.doormat = input.readBytes();
             break;
           }
         }
@@ -813,90 +858,6 @@ public interface Network {
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
       return new GroupReady().mergeFrom(input);
-    }
-  }
-
-  public static final class GroupKey extends
-      com.google.protobuf.nano.MessageNano {
-
-    private static volatile GroupKey[] _emptyArray;
-    public static GroupKey[] emptyArray() {
-      // Lazily initializes the empty array
-      if (_emptyArray == null) {
-        synchronized (
-            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-          if (_emptyArray == null) {
-            _emptyArray = new GroupKey[0];
-          }
-        }
-      }
-      return _emptyArray;
-    }
-
-    // optional string generator = 1;
-    public java.lang.String generator;
-
-    public GroupKey() {
-      clear();
-    }
-
-    public GroupKey clear() {
-      generator = "";
-      cachedSize = -1;
-      return this;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-        throws java.io.IOException {
-      if (!this.generator.equals("")) {
-        output.writeString(1, this.generator);
-      }
-      super.writeTo(output);
-    }
-
-    @Override
-    protected int computeSerializedSize() {
-      int size = super.computeSerializedSize();
-      if (!this.generator.equals("")) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeStringSize(1, this.generator);
-      }
-      return size;
-    }
-
-    @Override
-    public GroupKey mergeFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      while (true) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            return this;
-          default: {
-            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-              return this;
-            }
-            break;
-          }
-          case 10: {
-            this.generator = input.readString();
-            break;
-          }
-        }
-      }
-    }
-
-    public static GroupKey parseFrom(byte[] data)
-        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new GroupKey(), data);
-    }
-
-    public static GroupKey parseFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      return new GroupKey().mergeFrom(input);
     }
   }
 
