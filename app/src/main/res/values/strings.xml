@@ -9,7 +9,7 @@
     <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
     <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
     <string name="btn_txt_attemptConnection">Connect</string>
-    <string name="explicit_address">Address: %1$s\n</string>
+    <string name="explicit_address">%1$s\n</string>
     <string name="badPort_msg">This does not look like a valid port number. Ports are usually between 1024 and 65535. Try again.</string>
     <string name="badHost_msg">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
     <string name="badInitialServerReply_msg">Failed to parse server reply. This server is incompatible.</string>
@@ -265,5 +265,12 @@
     <string name="ga_publishing">Ready. Your friends can connect.</string>
     <string name="ga_publishingStopFailed">Cannot stop publishing. Odd. Perhaps trying again will fix that.</string>
     <string name="ga_noMorePublishing">Publishing stopped (explicit connections still available).</string>
+    <string name="ga_menu_pcFromThisDevice">Manage PC from this device</string>
+    <string name="ga_localPcsDialog_desc">Select an unused character to manage it from this device in case the player is missing a session.</string>
+    <string name="dialog_explicitConnectionInfo_title">Connection informations</string>
+    <string name="dlg_iec_port">Port: %1$s</string>
+    <string name="dlg_iec_portInfo">Port is valid for all addresses.</string>
+    <string name="dlg_iec_networkAddresses">Network addresses</string>
+    <string name="dlg_iec_tryAddressesHint">Try only one at time</string>
 
 </resources>

@@ -8,8 +8,13 @@ import android.os.Message;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.networkio.Events;
@@ -51,10 +56,13 @@ public class GatheringActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gathering);
-
         final CrossActivityShare appState = (CrossActivityShare) getApplicationContext();
         myState = appState.gaState;
         appState.gaState = null;
+
+        ((RecyclerView) findViewById(R.id.ga_deviceList)).setAdapter(new AuthDeviceAdapter());
+        ((RecyclerView) findViewById(R.id.ga_pcStatusList)).setAdapter(new PlayingCharactersAdapter());
+
         preparePumper(appState);
         if(null == myState.publisher) startPublishing();
         ticker = new Timer("publish status refresh");
@@ -98,6 +106,31 @@ public class GatheringActivity extends AppCompatActivity {
 
         }
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        getMenuInflater().inflate(R.menu.gathering_activity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.ga_menu_explicitConnInfo:
+                new ConnectionInfoDialog(this, myState.serverPort).show();
+                break;
+            case R.id.ga_menu_pcOnThisDevice: {
+                final AlertDialog custom = new AlertDialog.Builder(this).create();
+                final FrameLayout content = (FrameLayout) custom.findViewById(android.R.id.custom);
+                getLayoutInflater().inflate(R.layout.dialog_make_pc_local, content, true);
+                final RecyclerView list = (RecyclerView) content.findViewById(R.id.ga_localPcsDialog_list);
+                dialogList = new UnassignedPcsLister(custom);
+                list.setAdapter(dialogList);
+            }
+        }
+        return true;
     }
 
     void preparePumper(CrossActivityShare appState) {
@@ -172,7 +205,6 @@ public class GatheringActivity extends AppCompatActivity {
             NsdManager sys = (NsdManager) getSystemService(NSD_SERVICE);
             myState.publisher = new PublishedService(sys);
             myState.publisher.beginPublishing(myState.landing, MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE, myState.party.name);
-
         }
     }
 
@@ -184,6 +216,9 @@ public class GatheringActivity extends AppCompatActivity {
     private SecureRandom randomizer;
     private Timer ticker;
     private LandingServer acceptor;
+    private RecyclerView.Adapter dialogList; /// so if a player takes a PC, we can update the list.
+    private Menu menu;
+
 
     private static class MyHandler extends Handler {
         private final WeakReference<GatheringActivity> target;
@@ -229,6 +264,7 @@ public class GatheringActivity extends AppCompatActivity {
 
 
     private void publisher(int state) {
+        if(state == PublishedService.STATUS_STARTING) return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ga_activityRoot));
         }
@@ -266,4 +302,89 @@ public class GatheringActivity extends AppCompatActivity {
     private static final int DOORMAT_BYTES = 32;
     private static final int PUBLISH_CHECK_DELAY_MS = 1000;
     private static final int PUBLISH_CHECK_INTERVAL_MS = 1000;
+
+    private class UnassignedPcsLister extends RecyclerView.Adapter {
+        final AlertDialog dialog; // TODO: dismiss this when one is clicked.
+
+        public UnassignedPcsLister(AlertDialog dialog) {
+            this.dialog = dialog;
+        }
+
+        class StubHolder extends RecyclerView.ViewHolder {
+            public StubHolder(View itemView) {
+                super(itemView);
+            }
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            TextView meh = new TextView(GatheringActivity.this);
+            meh.setText("TODO");
+            return new StubHolder(meh);
+            // TODO
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            // TODO
+        }
+
+        @Override
+        public int getItemCount() {
+            // TODO
+            return 0;
+        }
+    }
+
+    private class AuthDeviceViewHolder extends RecyclerView.ViewHolder {
+        public AuthDeviceViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    private class AuthDeviceAdapter extends RecyclerView.Adapter<AuthDeviceViewHolder> {
+        @Override
+        public AuthDeviceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            TextView meh = new TextView(GatheringActivity.this);
+            meh.setText("TODO");
+            return new AuthDeviceViewHolder(meh);
+        }
+
+        @Override
+        public void onBindViewHolder(AuthDeviceViewHolder holder, int position) {
+            // TODO
+        }
+
+        @Override
+        public int getItemCount() {
+            // TODO
+            return 0;
+        }
+    }
+
+    private class PcViewHolder extends RecyclerView.ViewHolder {
+        public PcViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    private class PlayingCharactersAdapter extends RecyclerView.Adapter<PcViewHolder> {
+        @Override
+        public PcViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            TextView meh = new TextView(GatheringActivity.this);
+            meh.setText("TODO");
+            return new PcViewHolder(meh);
+        }
+
+        @Override
+        public void onBindViewHolder(PcViewHolder holder, int position) {
+            // TODO
+        }
+
+        @Override
+        public int getItemCount() {
+            // TODO
+            return 0;
+        }
+    }
 }

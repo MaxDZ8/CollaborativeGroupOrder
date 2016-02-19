@@ -5,5 +5,5 @@
         android:title="@string/ga_menu_showConnectionInfos" />
     <item
         android:id="@+id/ga_menu_pcOnThisDevice"
-        android:title="@string/ga_menu_showConnectionInfos" />
+        android:title="@string/ga_menu_pcFromThisDevice" />
 </menu>
