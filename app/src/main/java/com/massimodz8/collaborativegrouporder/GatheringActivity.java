@@ -37,7 +37,7 @@ import java.util.TimerTask;
  * This is important and we must be able to navigate back there every time needed in case
  * players get disconnected.
  */
-public class GatheringActivity extends AppCompatActivity {
+public class GatheringActivity extends AppCompatActivity implements PublishedService.OnStatusChanged {
     public static class State {
         final PersistentStorage.PartyOwnerData.Group party;
         //^ When the Activity is launched this always contains the thing we need. It is just assumed.
@@ -45,7 +45,6 @@ public class GatheringActivity extends AppCompatActivity {
         private ServerSocket landing;
         private int serverPort;
         private PublishedService publisher;
-        private int prevPublisherStatus = PublishedService.STATUS_IDLE;
 
         public State(PersistentStorage.PartyOwnerData.Group party) {
             this.party = party;
@@ -65,18 +64,12 @@ public class GatheringActivity extends AppCompatActivity {
 
         preparePumper(appState);
         if(null == myState.publisher) startPublishing();
-        ticker = new Timer("publish status refresh");
-        ticker.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                message(MSG_TICK, null);
-            }
-        }, PUBLISH_CHECK_DELAY_MS, PUBLISH_CHECK_INTERVAL_MS);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        myState.publisher.unregisterCallback();
         final CrossActivityShare appState = (CrossActivityShare) getApplicationContext();
         appState.gaState = myState;
         appState.pumpers = null != pumper? pumper.move() : null;
@@ -86,12 +79,13 @@ public class GatheringActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if(null != ticker) ticker.cancel();
         if(null != pumper) pumper.shutdown(); // if saving instance state this is empty
         if(null != acceptor) acceptor.shutdown();
         if(null != myState) { // we are not going to be recovered, so clear the persistent state
             final ServerSocket landing = myState.landing;
             final PublishedService publisher = myState.publisher;
+            if(null != publisher) {
+                publisher.unregisterCallback();
             new Thread() {
                 @Override
                 public void run() {
@@ -206,7 +200,13 @@ public class GatheringActivity extends AppCompatActivity {
             myState.publisher = new PublishedService(sys);
             myState.publisher.beginPublishing(myState.landing, MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE, myState.party.name);
         }
+        else myState.publisher.setCallback(this);
     }
+
+    // PublishedService.OnStatusChanged() vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    @Override
+    public void newStatus(int old, int current) { message(MSG_PUBLISHER_STATUS_CHANGED, null); }
+    // PublishedService.OnStatusChanged() ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 
@@ -214,7 +214,6 @@ public class GatheringActivity extends AppCompatActivity {
     private Pumper pumper;
     private MyHandler funnel;
     private SecureRandom randomizer;
-    private Timer ticker;
     private LandingServer acceptor;
     private RecyclerView.Adapter dialogList; /// so if a player takes a PC, we can update the list.
     private Menu menu;
@@ -246,11 +245,10 @@ public class GatheringActivity extends AppCompatActivity {
                 case MSG_AUTH_TOKEN_SENT:
                     new AlertDialog.Builder(target).setMessage("todo! MSG_AUTH_TOKEN_SENT").show();
                     return;
-                case MSG_TICK: {
+                case MSG_PUBLISHER_STATUS_CHANGED: {
+                    if(null == target.myState.publisher) return; // spurious signal, might happen
                     final int now = target.myState.publisher.getStatus();
-                    if(now == target.myState.prevPublisherStatus) return;
-                    target.publisher(now);
-                    target.myState.prevPublisherStatus = now;
+                    target.publisher(now, target.myState.publisher.getErrorCode());
                     return;
                 }
                 case MSG_FAILED_ACCEPT:
@@ -263,15 +261,13 @@ public class GatheringActivity extends AppCompatActivity {
     }
 
 
-    private void publisher(int state) {
+    private void publisher(int state, int err) {
         if(state == PublishedService.STATUS_STARTING) return;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ga_activityRoot));
         }
         final TextView dst = (TextView) findViewById(R.id.ga_state);
         boolean clear = false;
-        ticker.cancel();
-        ticker = null;
         switch(state) {
             case PublishedService.STATUS_START_FAILED:
                 dst.setText(R.string.ga_publisherFailedStart);
@@ -295,13 +291,11 @@ public class GatheringActivity extends AppCompatActivity {
     private static final int MSG_NO_VERIFY = 3;
     private static final int MSG_VERSION_MISMATCH = 4;
     private static final int MSG_AUTH_TOKEN_SENT = 5;
-    private static final int MSG_TICK = 6;
+    private static final int MSG_PUBLISHER_STATUS_CHANGED = 6;
     private static final int MSG_FAILED_ACCEPT = 7;
     private static final int MSG_CONNECTED = 8;
 
     private static final int DOORMAT_BYTES = 32;
-    private static final int PUBLISH_CHECK_DELAY_MS = 1000;
-    private static final int PUBLISH_CHECK_INTERVAL_MS = 1000;
 
     private class UnassignedPcsLister extends RecyclerView.Adapter {
         final AlertDialog dialog; // TODO: dismiss this when one is clicked.

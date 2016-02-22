@@ -47,9 +47,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextWatcher {
-    static final int PUBLISHER_CHECK_PERIOD = 250;
-    static final int PUBLISHER_CHECK_DELAY = 1000;
+public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextWatcher, PublishedService.OnStatusChanged {
     static final int PEER_MESSAGE_INTERVAL_MS = 2000;
     static final int INITIAL_MESSAGE_CHAR_BUDGET = 30;
 
@@ -64,7 +62,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     protected void onDestroy() {
-        if(null != ticker) ticker.cancel();
         if(null != publisher) publisher.stopPublishing();
         if(null != acceptor) acceptor.shutdown();
         if(null != landing) {
@@ -133,7 +130,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     }
 
     Button action;
-    Timer ticker;
     Handler guiHandler = new MyHandler(this);
     LandingServer acceptor;
     RecyclerView.Adapter<DeviceViewHolder> listAdapter = new RecyclerView.Adapter<DeviceViewHolder>() {
@@ -327,8 +323,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                     new AlertDialog.Builder(target)
                             .setMessage(String.format(target.getString(R.string.serviceRegFailed_msg), readable))
                             .show();
-                    target.ticker.cancel();
-                    target.ticker = null;
                     target.publisher = null;
                     try {
                         target.landing.close();
@@ -456,43 +450,37 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             return;
         }
         publisher = new PublishedService(nsd);
-        publisher.beginPublishing(listener, groupName, MainMenuActivity.GROUP_FORMING_SERVICE_TYPE);
+        publisher.beginPublishing(listener, groupName, MainMenuActivity.GROUP_FORMING_SERVICE_TYPE, this);
         view.setEnabled(false);
         landing = listener;
         acceptor = new MyLandingServer(landing);
-        ticker = new Timer();
-        class StooPid {
-            int value;
-        }
-        final StooPid previously = new StooPid();
-        previously.value = publisher.getStatus();
-        ticker.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if(null == publisher) return; // happens if we got cancelled a moment ago
-                int now = publisher.getStatus();
-                switch (now) {
-                    //case STATUS_IDLE = 0; // just created, doing nothing.
-                    case PublishedService.STATUS_STARTING:
-                        break;
-                    case PublishedService.STATUS_PUBLISHING:
-                        break;
-                    case PublishedService.STATUS_STOPPED:
-                        break;
-                    case PublishedService.STATUS_STOP_FAILED:
-                        // I don't think there's anything worth doing there.
-                        break;
-                    case PublishedService.STATUS_START_FAILED:
-                        guiHandler.sendMessage(guiHandler.obtainMessage(MSG_SERVICE_REGISTRATION_FAILED));
-                }
-                if (previously.value != now) {
-                    guiHandler.sendMessage(guiHandler.obtainMessage(MSG_REFRESH_GUI));
-                    previously.value = now;
-                }
-            }
-        }, PUBLISHER_CHECK_DELAY, PUBLISHER_CHECK_PERIOD);
         building.name = groupName;
     }
+
+    // PublishedService.OnStatusChanged vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    @Override
+    public void newStatus(int old, int current) {
+        if(null == publisher) return; // happens if we got cancelled a moment ago
+        int now = publisher.getStatus();
+        switch (now) {
+            //case STATUS_IDLE = 0; // just created, doing nothing.
+            case PublishedService.STATUS_STARTING:
+                break;
+            case PublishedService.STATUS_PUBLISHING:
+                break;
+            case PublishedService.STATUS_STOPPED:
+                break;
+            case PublishedService.STATUS_STOP_FAILED:
+                // I don't think there's anything worth doing there.
+                break;
+            case PublishedService.STATUS_START_FAILED:
+                guiHandler.sendMessage(guiHandler.obtainMessage(MSG_SERVICE_REGISTRATION_FAILED));
+        }
+        if (old != now) {
+            guiHandler.sendMessage(guiHandler.obtainMessage(MSG_REFRESH_GUI));
+        }
+    }
+    // PublishedService.OnStatusChanged ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     void closeGroup() {
         try {
