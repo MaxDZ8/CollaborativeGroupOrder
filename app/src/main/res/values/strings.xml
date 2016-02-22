@@ -278,5 +278,7 @@
     <string name="nsdError_unknown">unknown error</string>
     <string name="ga_failedServiceRegistration">Failed to register network service:\n%1$s</string>
     <string name="card_character_classesAndLevels">Classes and levels</string>
+    <string name="ga_startSession">Start session</string>
+    <string name="ga_allAssigned">All playing characters assigned to a device. Ready to go.</string>
 
 </resources>

@@ -62,15 +62,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/ga_playingCharactersAssignment" />
+            android:text="@string/ga_playingCharactersAssignment"
+            android:id="@+id/ga_pcUnassignedListDesc" />
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/ga_pcStatusList"
+            android:id="@+id/ga_pcUnassignedList"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight=".5"
             app:layoutManager="LinearLayoutManager" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ga_startSession"
+            android:id="@+id/ga_startSession"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:onClick="startSession_callback" />
 
 
     </LinearLayout>

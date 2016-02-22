@@ -5,6 +5,7 @@ import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.networkio.Events;
@@ -31,8 +31,6 @@ import java.lang.ref.WeakReference;
 import java.net.ServerSocket;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /** The server is 'gathering' player devices so they can join a new session.
  * This is important and we must be able to navigate back there every time needed in case
@@ -59,7 +57,8 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
 
     /// Not sure what should I put there, but it seems I might want to track state besides connection channel in the future.
     public static class PlayingDevice {
-        public PlayingDevice(MessageChannel pipe) {
+        /// Use null to mark "this device", to assign playing characters to this device.
+        public PlayingDevice(@Nullable MessageChannel pipe) {
             this.pipe = pipe;
         }
 
@@ -76,11 +75,11 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
 
         if(null == myState.mapping) {
             myState.mapping = new ArrayList<>();
-            for(int size = 0; size < myState.party.usually.party.length; size++) myState.mapping.add(null);
+            for (PersistentStorage.Actor aParty : myState.party.usually.party) myState.mapping.add(null);
         }
 
         ((RecyclerView) findViewById(R.id.ga_deviceList)).setAdapter(new AuthDeviceAdapter());
-        ((RecyclerView) findViewById(R.id.ga_pcStatusList)).setAdapter(new PlayingCharactersAdapter());
+        ((RecyclerView) findViewById(R.id.ga_pcUnassignedList)).setAdapter(new UnassignedPcsAdapter(null));
 
         preparePumper(appState);
         if(null == myState.publisher) startPublishing();
@@ -136,15 +135,45 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                 new ConnectionInfoDialog(this, myState.serverPort).show();
                 break;
             case R.id.ga_menu_pcOnThisDevice: {
-                final AlertDialog custom = new AlertDialog.Builder(this).create();
-                final FrameLayout content = (FrameLayout) custom.findViewById(android.R.id.custom);
-                getLayoutInflater().inflate(R.layout.dialog_make_pc_local, content, true);
-                final RecyclerView list = (RecyclerView) content.findViewById(R.id.ga_localPcsDialog_list);
-                dialogList = new UnassignedPcsLister(custom);
+                final AlertDialog dialog = new AlertDialog.Builder(this)
+                        .setView(R.layout.dialog_make_pc_local).show();
+                final RecyclerView list = (RecyclerView) dialog.findViewById(R.id.ga_localPcsDialog_list);
+                dialogList = new UnassignedPcsAdapter(new OnUnassignedPcClick() {
+                    @Override
+                    public void click(PersistentStorage.Actor actor) {
+                        dialog.dismiss();
+                        for(int slot = 0; slot < myState.party.usually.party.length; slot++) {
+                            if(actor == myState.party.usually.party[slot]) {
+                                myState.mapping.set(slot, new PlayingDevice(null));
+                                RecyclerView.Adapter lister = ((RecyclerView) findViewById(R.id.ga_pcUnassignedList)).getAdapter();
+                                lister.notifyDataSetChanged();
+                                availablePcs(lister.getItemCount());
+                                break;
+                            }
+                        }
+
+                    }
+                });
                 list.setAdapter(dialogList);
+                list.addItemDecoration(new PreSeparatorDecorator(list, this) {
+                    @Override
+                    protected boolean isEligible(int position) {
+                        return true;
+                    }
+                });
             }
         }
         return true;
+    }
+
+    private void availablePcs(int itemCount) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ga_activityRoot));
+        }
+        findViewById(R.id.ga_pcUnassignedList).setVisibility(itemCount > 0 ? View.VISIBLE : View.GONE);
+        findViewById(R.id.ga_startSession    ).setVisibility(itemCount > 0 ? View.GONE : View.VISIBLE);
+        final TextView label = (TextView) findViewById(R.id.ga_pcUnassignedListDesc);
+        label.setText(itemCount > 0 ? R.string.ga_playingCharactersAssignment : R.string.ga_allAssigned);
     }
 
     void preparePumper(CrossActivityShare appState) {
@@ -318,37 +347,8 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
 
     private static final int DOORMAT_BYTES = 32;
 
-    private class UnassignedPcsLister extends RecyclerView.Adapter {
-        final AlertDialog dialog; // TODO: dismiss this when one is clicked.
-
-        public UnassignedPcsLister(AlertDialog dialog) {
-            this.dialog = dialog;
-        }
-
-        class StubHolder extends RecyclerView.ViewHolder {
-            public StubHolder(View itemView) {
-                super(itemView);
-            }
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            TextView meh = new TextView(GatheringActivity.this);
-            meh.setText("TODO");
-            return new StubHolder(meh);
-            // TODO
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            // TODO
-        }
-
-        @Override
-        public int getItemCount() {
-            // TODO
-            return 0;
-        }
+    public void startSession_callback(View btn) {
+        new AlertDialog.Builder((this)).setMessage("TODO").show();
     }
 
     private class AuthDeviceViewHolder extends RecyclerView.ViewHolder {
@@ -377,22 +377,36 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         }
     }
 
-    private class PcViewHolder extends RecyclerView.ViewHolder {
+    private class PcViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final OnUnassignedPcClick clickTarget;
         TextView name;
         TextView levels;
         PersistentStorage.Actor actor;
 
-        public PcViewHolder(View itemView) {
+        public PcViewHolder(View itemView, OnUnassignedPcClick click) {
             super(itemView);
+            clickTarget = click;
             name = (TextView)itemView.findViewById(R.id.cardACSL_name);
             levels = (TextView)itemView.findViewById(R.id.cardACSL_classesAndLevels);
+            if(null != clickTarget) itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(null != actor && null != clickTarget) clickTarget.click(actor);
         }
     }
 
-    private class PlayingCharactersAdapter extends RecyclerView.Adapter<PcViewHolder> {
+    private interface OnUnassignedPcClick {
+        void click(PersistentStorage.Actor actor);
+    }
 
-        public PlayingCharactersAdapter() {
+    private class UnassignedPcsAdapter extends RecyclerView.Adapter<PcViewHolder> {
+        final OnUnassignedPcClick click;
+
+        public UnassignedPcsAdapter(OnUnassignedPcClick click) {
             setHasStableIds(true);
+            this.click = click;
         }
 
         @Override
@@ -407,7 +421,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
 
         @Override
         public PcViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new PcViewHolder(getLayoutInflater().inflate(R.layout.card_assignable_character_server_list, parent, false));
+            return new PcViewHolder(getLayoutInflater().inflate(R.layout.card_assignable_character_server_list, parent, false), click);
         }
 
         @Override
