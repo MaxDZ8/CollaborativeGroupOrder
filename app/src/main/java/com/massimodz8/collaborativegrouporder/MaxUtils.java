@@ -21,6 +21,11 @@ public abstract class MaxUtils {
             if (v != null) v.setVisibility(visibility);
         }
     }
+    static void setVisibility(int visibility, View... targets) {
+        for (int v : targets) {
+            if (v != null) v.setVisibility(visibility);
+        }
+    }
     static void setEnabled(Activity parent, boolean enabled, int... targets) {
         for (int id : targets) {
             final View v = parent.findViewById(id);

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.massimodz8.collaborativegrouporder.JoinSessionActivity"
+    tools:showIn="@layout/activity_join_session"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/jsa_initializing"
+        android:id="@+id/jsa_state"
+        android:layout_gravity="center_horizontal" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/jsa_progressBar"
+        android:indeterminate="true" />
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="A D V E R T I S I N G\nH E R E"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#f200ff"
+        android:background="#00ff11"
+        android:gravity="center_horizontal"
+        android:textStyle="bold|italic"
+        android:textSize="32sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/jsa_partyList"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        app:layoutManager="LinearLayoutManager" />
+
+
+</LinearLayout>

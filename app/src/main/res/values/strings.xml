@@ -281,4 +281,11 @@
     <string name="ga_startSession">Start session</string>
     <string name="ga_allAssigned">All playing characters assigned to a device. Ready to go.</string>
 
+    <string name="jsa_title">JoinSessionActivity</string>
+    <string name="jsa_initializing">Initializing…</string>
+    <string name="vhJP_statusIcon">Party join status</string>
+    <string name="vhJP_options">Options: %1$s</string>
+    <string name="vhJP_attemptJoin">Attempt join</string>
+    <string name="vhJP_iGottaKey">Looks like I have a key for this one.</string>
+
 </resources>

@@ -74,9 +74,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
-        <activity android:name=".GatheringActivity"
+        <activity
+            android:name=".GatheringActivity"
             android:label="@string/ga_title"
             android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".JoinSessionActivity"
+            android:label="@string/jsa_title"
+            android:parentActivityName=".MainMenuActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
