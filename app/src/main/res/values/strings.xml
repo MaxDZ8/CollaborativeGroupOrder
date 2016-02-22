@@ -272,5 +272,10 @@
     <string name="dlg_iec_portInfo">Port is valid for all addresses.</string>
     <string name="dlg_iec_networkAddresses">Network addresses</string>
     <string name="dlg_iec_tryAddressesHint">Try only one at time</string>
+    <string name="nsdError_alreadyActive">already active</string>
+    <string name="nsdError_internal">internal error</string>
+    <string name="nsdError_maxLimitReached">max limit reached</string>
+    <string name="nsdError_unknown">unknown error</string>
+    <string name="ga_failedServiceRegistration">Failed to register network service:\n%1$s</string>
 
 </resources>

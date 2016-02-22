@@ -1,6 +1,8 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.nsd.NsdManager;
 import android.view.View;
 
 
@@ -24,5 +26,14 @@ public abstract class MaxUtils {
             final View v = parent.findViewById(id);
             if (v != null) v.setEnabled(enabled);
         }
+    }
+
+    static String NsdManagerErrorToString(int err, Context ctx) {
+        switch(err) {
+            case NsdManager.FAILURE_ALREADY_ACTIVE: return ctx.getString(R.string.nsdError_alreadyActive);
+            case NsdManager.FAILURE_INTERNAL_ERROR: return ctx.getString(R.string.nsdError_internal);
+            case NsdManager.FAILURE_MAX_LIMIT: return ctx.getString(R.string.nsdError_maxLimitReached);
+        }
+        return ctx.getString(R.string.nsdError_unknown);
     }
 }

@@ -86,18 +86,18 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
             final PublishedService publisher = myState.publisher;
             if(null != publisher) {
                 publisher.unregisterCallback();
-            new Thread() {
-                @Override
-                public void run() {
-                    publisher.stopPublishing();
-                    try {
-                        landing.close();
-                    } catch (IOException e) {
-                        // It's going away anyway.
-                    }
-                }
-            }.start();
-
+                new Thread() {
+                    @Override
+                    public void run() {
+                        publisher.stopPublishing();
+                        try {
+                            landing.close();
+                        } catch (IOException e) {
+                            // It's going away anyway.
+                        }
+                        }
+                }.start();
+            }
         }
         super.onDestroy();
     }
@@ -198,7 +198,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         if(null == myState.publisher) {
             NsdManager sys = (NsdManager) getSystemService(NSD_SERVICE);
             myState.publisher = new PublishedService(sys);
-            myState.publisher.beginPublishing(myState.landing, MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE, myState.party.name);
+            myState.publisher.beginPublishing(myState.landing, myState.party.name, MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE, this);
         }
         else myState.publisher.setCallback(this);
     }
@@ -271,6 +271,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         switch(state) {
             case PublishedService.STATUS_START_FAILED:
                 dst.setText(R.string.ga_publisherFailedStart);
+                new AlertDialog.Builder(this).setMessage(String.format(getString(R.string.ga_failedServiceRegistration), MaxUtils.NsdManagerErrorToString(err, this))).show();
                 clear = true;
                 break;
             case PublishedService.STATUS_PUBLISHING:
