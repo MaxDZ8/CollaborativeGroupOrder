@@ -56,7 +56,7 @@
     <string name="createParty_charTableHeader_charName">Name</string>
     <string name="createParty_charTableHeader_initBonus">Initiative</string>
     <string name="createParty_charTableHeader_createdBy">Creator</string>
-    <string name="card_joiningCharacter_nameHint">Character name</string>
+    <string name="card_character_nameHint">Character name</string>
     <string name="card_joiningCharacter_healthPoints">Health points</string>
     <string name="card_joiningCharacter_initBonus">Initiative bonus</string>
     <string name="card_joiningCharacter_sendButton">Send</string>
@@ -277,5 +277,6 @@
     <string name="nsdError_maxLimitReached">max limit reached</string>
     <string name="nsdError_unknown">unknown error</string>
     <string name="ga_failedServiceRegistration">Failed to register network service:\n%1$s</string>
+    <string name="card_character_classesAndLevels">Classes and levels</string>
 
 </resources>

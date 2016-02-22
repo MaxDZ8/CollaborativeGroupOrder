@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.ServerSocket;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,6 +43,11 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         final PersistentStorage.PartyOwnerData.Group party;
         //^ When the Activity is launched this always contains the thing we need. It is just assumed.
 
+        // Build characters-to-device assignments, it's just a simple pair system. Should that be a set?
+        // Entry [i] corresponds to character party.group.usually.party[i]
+        ArrayList<PlayingDevice> mapping;
+
+
         private ServerSocket landing;
         private int serverPort;
         private PublishedService publisher;
@@ -51,6 +57,15 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         }
     }
 
+    /// Not sure what should I put there, but it seems I might want to track state besides connection channel in the future.
+    public static class PlayingDevice {
+        public PlayingDevice(MessageChannel pipe) {
+            this.pipe = pipe;
+        }
+
+        final MessageChannel pipe;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +73,11 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         final CrossActivityShare appState = (CrossActivityShare) getApplicationContext();
         myState = appState.gaState;
         appState.gaState = null;
+
+        if(null == myState.mapping) {
+            myState.mapping = new ArrayList<>();
+            for(int size = 0; size < myState.party.usually.party.length; size++) myState.mapping.add(null);
+        }
 
         ((RecyclerView) findViewById(R.id.ga_deviceList)).setAdapter(new AuthDeviceAdapter());
         ((RecyclerView) findViewById(R.id.ga_pcStatusList)).setAdapter(new PlayingCharactersAdapter());
@@ -358,28 +378,58 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     }
 
     private class PcViewHolder extends RecyclerView.ViewHolder {
+        TextView name;
+        TextView levels;
+        PersistentStorage.Actor actor;
+
         public PcViewHolder(View itemView) {
             super(itemView);
+            name = (TextView)itemView.findViewById(R.id.cardACSL_name);
+            levels = (TextView)itemView.findViewById(R.id.cardACSL_classesAndLevels);
         }
     }
 
     private class PlayingCharactersAdapter extends RecyclerView.Adapter<PcViewHolder> {
+
+        public PlayingCharactersAdapter() {
+            setHasStableIds(true);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            for(int scan = 0; scan < myState.mapping.size(); scan++) {
+                if(null != myState.mapping.get(scan)) continue;
+                if(0 == position) return scan;
+                position--;
+            }
+            return RecyclerView.NO_ID;
+        }
+
         @Override
         public PcViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            TextView meh = new TextView(GatheringActivity.this);
-            meh.setText("TODO");
-            return new PcViewHolder(meh);
+            return new PcViewHolder(getLayoutInflater().inflate(R.layout.card_assignable_character_server_list, parent, false));
         }
 
         @Override
         public void onBindViewHolder(PcViewHolder holder, int position) {
-            // TODO
+            int slot;
+            for(slot = 0; slot < myState.mapping.size(); slot++) {
+                if(null != myState.mapping.get(slot)) continue;
+                if(0 == position) break;
+                position--;
+            }
+            holder.actor = myState.party.usually.party[slot];
+            holder.name.setText(holder.actor.name);
+            holder.levels.setText("<class_todo> " + holder.actor.level); // TODO
         }
 
         @Override
         public int getItemCount() {
-            // TODO
-            return 0;
+            int count = 0;
+            for (PlayingDevice dev : myState.mapping) {
+                if(null == dev) count++;
+            }
+            return count;
         }
     }
 }
