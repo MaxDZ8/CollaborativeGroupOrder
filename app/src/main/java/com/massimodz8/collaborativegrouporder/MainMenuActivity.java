@@ -52,7 +52,7 @@ public class MainMenuActivity extends AppCompatActivity {
                 }
                 for(PersistentStorage.PartyClientData.Group check : state.groupKeys) {
                     if(Arrays.equals(newKey, check.key) && newName.equals(check.name)) {
-                        startGoAdventuringActivity(newName, newKey, peers);
+                        startGoAdventuringActivity(check, peers[0]);
                         return;
                     }
                 }
@@ -135,11 +135,11 @@ public class MainMenuActivity extends AppCompatActivity {
         startActivity(new Intent(this, GatheringActivity.class));
     }
 
-    void startGoAdventuringActivity(String name, byte[] groupKey, Pumper.MessagePumpingThread[] workers) {
-        new AlertDialog.Builder(this)
-                .setTitle("Not implemented!")
-                .setMessage(String.format("going adventuring!\nName=%1$s\nSalt=%2$s", name, Arrays.toString(groupKey)))
-                .show();
+    void startGoAdventuringActivity(PersistentStorage.PartyClientData.Group party, Pumper.MessagePumpingThread worker) {
+        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        state.pumpers = new Pumper.MessagePumpingThread[] { worker };
+        state.jsaState = new JoinSessionActivity.State(party);
+        startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
     private class AsyncLoadAll extends AsyncTask<Void, Void, Exception> {
@@ -219,8 +219,11 @@ public class MainMenuActivity extends AppCompatActivity {
                 }
                 else {
                     final PersistentStorage.PartyClientData.Group party = state.groupKeys.elementAt(linear);
-                    startGoAdventuringActivity(party.name, party.key, null);
+                    startGoAdventuringActivity(party, null);
                 }
+            } break;
+            case REQUEST_PULL_CHAR_LIST: {
+                new AlertDialog.Builder(this).setTitle("TODO").show();
             } break;
         }
     }
@@ -230,4 +233,5 @@ public class MainMenuActivity extends AppCompatActivity {
     static final int REQUEST_APPROVE_CHARACTERS = 3;
     static final int REQUEST_PROPOSE_CHARACTERS = 4;
     static final int REQUEST_PICK_PARTY = 5;
+    static final int REQUEST_PULL_CHAR_LIST = 6;
 }

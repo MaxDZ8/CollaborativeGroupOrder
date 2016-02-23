@@ -290,5 +290,8 @@
     <string name="jsa_lookingForParty">Looking for party</string>
     <string name="jsa_autoAdvanceInfo">You will advance to character selection as soon as I can connect to the master device.</string>
     <string name="jsa_errorWhileJoining">Error while joining group %1$s: %2$s</string>
+    <string name="jsa_pullingFromExistingConnection">Pulling character data from known server…</string>
+    <string name="jsa_failedNetworkExploreStart">Cannot explore network. You must use an explicit connection.</string>
+    <string name="jsa_searching">Looking for parties on Wi-Fi…</string>
 
 </resources>

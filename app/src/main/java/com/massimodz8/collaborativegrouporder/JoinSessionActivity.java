@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,7 +14,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.TransitionManager;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -100,22 +104,39 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                     }
                 });
 
-        if(null != myState.explorer) myState.explorer.setCallback(this);
-        else {
-            final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
-            myState.explorer = new AccumulatingDiscoveryListener();
-            myState.explorer.beginDiscovery(MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE, nsd, this);
+        if(null == share.pumpers) { // initialize network scan mode
+            if (null != myState.explorer) myState.explorer.setCallback(this);
+            else {
+                final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
+                myState.explorer = new AccumulatingDiscoveryListener();
+                myState.explorer.beginDiscovery(MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE, nsd, this);
+            }
+            if (null != myState.workers) {
+                for (Pumper.MessagePumpingThread w : myState.workers) pumper.pump(w);
+                myState.workers = null;
+            }
         }
-        if(null != myState.workers) {
-            for (Pumper.MessagePumpingThread w : myState.workers) pumper.pump(w);
-            myState.workers = null;
+        else { // just shake to the specified peer and be done with it.
+            PartyAttempt dummy = new PartyAttempt(null);
+            dummy.pipe = share.pumpers[0].getSource();
+            pumper.pump(share.pumpers[0]);
+            myState.attempts.add(dummy);
+            share.pumpers = null;
+            dummy.refresh(); // kick in our pretty sequence of events.
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                ViewGroup contentRoot = (ViewGroup) findViewById(R.id.jsa_contentRoot);
+                TransitionManager.beginDelayedTransition(contentRoot);
+            }
+            TextView state = (TextView) findViewById(R.id.jsa_state);
+            state.setText(R.string.jsa_pullingFromExistingConnection);
         }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         final CrossActivityShare share = (CrossActivityShare) getApplicationContext();
-        myState.explorer.unregisterCallback();
+        if(null != myState.explorer) myState.explorer.unregisterCallback(); // perhaps we continued using an existing connection
         myState.workers = pumper.move();
         share.jsaState = myState;
         myState = null;
@@ -148,7 +169,8 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     // AccumulatingDiscoveryListener.OnTick vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void tick(int old, int current) {
-        handler.sendMessage(handler.obtainMessage(MSG_TICK_EXPLORER));
+        int[] ugly = new int[] { old, current };
+        handler.sendMessage(handler.obtainMessage(MSG_TICK_EXPLORER, ugly));
     }
     // AccumulatingDiscoveryListener.OnTick ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -268,6 +290,8 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
             final JoinSessionActivity me = this.me.get();
             switch(msg.what) {
                 case MSG_TICK_EXPLORER:
+                    int[] ugly = (int[])msg.obj;
+                    me.refreshStatus(ugly[0], ugly[1]);
                     synchronized(me.myState.explorer.foundServices) {
                         me.connectNewDiscoveries();
                         int index = 0;
@@ -313,6 +337,31 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                     me.charList(real.origin, real.payload);
                 } break;
             }
+        }
+    }
+
+    private void refreshStatus(int was, int now) {
+        if(was == now) return;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ViewGroup contentRoot = (ViewGroup) findViewById(R.id.jsa_contentRoot);
+            TransitionManager.beginDelayedTransition(contentRoot);
+        }
+        TextView status = (TextView) findViewById(R.id.jsa_state);
+        switch(now) {
+            case AccumulatingDiscoveryListener.START_FAILED:
+                status.setText(R.string.jsa_failedNetworkExploreStart);
+                findViewById(R.id.jsa_progressBar).setEnabled(false);
+                break;
+            case AccumulatingDiscoveryListener.EXPLORING:
+                status.setText(R.string.jsa_searching);
+                findViewById(R.id.jsa_progressBar).setEnabled(false);
+                break;
+                /*
+                unused, we stop only when going away
+            case STOPPING = 4 ;
+            case STOPPED = 5 ;
+            case STOP_FAILED = 6 ;
+            */
         }
     }
 
