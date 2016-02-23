@@ -169,6 +169,7 @@ public class Pumper {
                     if(source.recv.getPosition() != expect) throw new ByteCountMismatchException(type, expect, source.recv.getPosition());
                     source.recv.rewindToPosition(0);
                     if(real.mangle(source, wire)) {
+                        destination.detaching(source);
                         destination = null;
                         spinForTarget();
                     }

@@ -4,6 +4,8 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 
 import java.net.Socket;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 /**
@@ -11,6 +13,8 @@ import java.util.Vector;
  * This can be used to keep a list of network services discovered kept by CrossActivityService.
  * Because this can exist across different activities (as it is the case when the layout changes)
  * its internal list must be routinely scanned to find if something is there or not.
+ *
+ * Updated to cantain its own timer checking, see PublishedService.
  */
 public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListener {
     public static final int IDLE = 0;
@@ -20,6 +24,16 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
     public static final int STOPPING = 4;
     public static final int STOPPED = 5;
     public static final int STOP_FAILED = 6;
+
+    interface OnStatusChanged {
+        /**  Called every time the state changes. Those are called from a different thread.
+         * If the new status reported is START_FAILED or STOPPED then no more
+         * notifications will be generated.
+         * @param old state of the publisher at previous call or IDLE for first.
+         * @param current the new state, which is already set.
+         */
+        void newStatus(int old, int current);
+    }
 
     public static class FoundService {
         final NsdServiceInfo info;
@@ -64,15 +78,33 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
      * Do not call this when already discovering something. Two calls must always be interleaved
      * by at least one stopDiscovery() call or leads to undefined resuls.
      */
-    void beginDiscovery(String serviceType, NsdManager nsd) {
+    void beginDiscovery(String serviceType, NsdManager nsd, OnStatusChanged onStatusChanged) {
         this.nsd = nsd;
         this.serviceType = serviceType;
         status = STARTING;
+        callback = onStatusChanged;
+        checker = new Timer("network publisher status check");
+        checker.schedule(new TimerTask() {
+            int prevStatus =IDLE;
+            @Override
+            public void run() {
+                if(prevStatus != status) {
+                    int old = prevStatus;
+                    prevStatus = status;
+                    OnStatusChanged call = callback;
+                    if(null != call) call.newStatus(old, status);
+                    if(START_FAILED == status || STOPPED == status) cancel();
+                }
+            }
+        }, DISCOVERY_PROBE_DELAY, DISCOVERY_PROBE_INTERVAL);
         nsd.discoverServices(serviceType, NsdManager.PROTOCOL_DNS_SD, this);
     }
     String startAttempted() { return serviceType; }
+    public void setCallback(OnStatusChanged newTarget) { callback = newTarget; }
+    public void unregisterCallback() { callback = null; }
     void stopDiscovery() {
         if(nsd != null) {
+            unregisterCallback();
             nsd.stopServiceDiscovery(this);
             nsd = null;
             serviceType = null;
@@ -83,6 +115,11 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
 
     private NsdManager nsd;
     private String serviceType;
+    Timer checker;
+    volatile OnStatusChanged callback;
+
+    static final int DISCOVERY_PROBE_DELAY = 1000;
+    static final int DISCOVERY_PROBE_INTERVAL = 250;
 
     private int status = IDLE;
 }

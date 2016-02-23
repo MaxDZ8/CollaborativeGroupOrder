@@ -7,7 +7,8 @@ option java_package = "com.massimodz8.collaborativegrouporder.protocol";
 // If the server thinks the device version is compatible, it will reply GroupInfo. Otherwise it will terminate connection.
 //
 // Additionally, when client wants to join a session (perhaps even binding to characters) it sets verifyMe = true, which will
-// make the server reply with a GroupInfo.doormat.
+// make the server reply with a GroupInfo.doormat. It then attempts another Hello, this time with authorize populated according
+// to the doormat. If the server thinks it's legit it will give a playing character list, otherwise it will close connection.
 message Hello {
     uint32 version = 1; // default 0 is an invalid version, this must be set from code and sent across the wire.
     bool verifyMe = 2;

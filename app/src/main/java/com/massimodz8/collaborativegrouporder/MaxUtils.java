@@ -22,7 +22,7 @@ public abstract class MaxUtils {
         }
     }
     static void setVisibility(int visibility, View... targets) {
-        for (int v : targets) {
+        for (View v : targets) {
             if (v != null) v.setVisibility(visibility);
         }
     }

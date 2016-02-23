@@ -82,13 +82,23 @@ public interface Events {
         }
     }
 
-    public class AuthToken {
+    class AuthToken {
         public final MessageChannel origin;
         public final byte[] doormat;
 
         public AuthToken(MessageChannel origin, byte[] doormat) {
             this.origin = origin;
             this.doormat = doormat;
+        }
+    }
+
+    class CharList {
+        public final MessageChannel origin;
+        public final Network.PlayingCharacterList payload;
+
+        public CharList(MessageChannel origin, Network.PlayingCharacterList payload) {
+            this.origin = origin;
+            this.payload = payload;
         }
     }
 }
