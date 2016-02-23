@@ -289,5 +289,6 @@
     <string name="vhJP_iGottaKey">Looks like I have a key for this one.</string>
     <string name="jsa_lookingForParty">Looking for party</string>
     <string name="jsa_autoAdvanceInfo">You will advance to character selection as soon as I can connect to the master device.</string>
+    <string name="jsa_errorWhileJoining">Error while joining group %1$s: %2$s</string>
 
 </resources>

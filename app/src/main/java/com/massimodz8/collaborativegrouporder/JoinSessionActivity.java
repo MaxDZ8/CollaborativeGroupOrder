@@ -15,7 +15,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -27,17 +26,33 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class JoinSessionActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
     public static class State {
+        /// This must be initially populated by whoever spans this activity.
         final PersistentStorage.PartyClientData.Group party;
 
         AccumulatingDiscoveryListener explorer;
         ArrayList<PartyAttempt> attempts = new ArrayList<>();
+        Pumper.MessagePumpingThread[] workers;
 
         public State(PersistentStorage.PartyClientData.Group party) {
             this.party = party;
+        }
+    }
+    public static class Result {
+        final Pumper.MessagePumpingThread worker;
+        final PersistentStorage.PartyClientData.Group party;
+        final PartyInfo info;
+        final Network.PlayingCharacterList pcList;
+
+        public Result(Pumper.MessagePumpingThread worker, PersistentStorage.PartyClientData.Group party, PartyInfo info, Network.PlayingCharacterList pcList) {
+            this.worker = worker;
+            this.party = party;
+            this.info = info;
+            this.pcList = pcList;
         }
     }
 
@@ -91,12 +106,17 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
             myState.explorer = new AccumulatingDiscoveryListener();
             myState.explorer.beginDiscovery(MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE, nsd, this);
         }
+        if(null != myState.workers) {
+            for (Pumper.MessagePumpingThread w : myState.workers) pumper.pump(w);
+            myState.workers = null;
+        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         final CrossActivityShare share = (CrossActivityShare) getApplicationContext();
         myState.explorer.unregisterCallback();
+        myState.workers = pumper.move();
         share.jsaState = myState;
         myState = null;
     }
@@ -104,7 +124,23 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     @Override
     protected void onDestroy() {
         if(null != myState) {
+            pumper.shutdown();
             myState.explorer.stopDiscovery();
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    for (PartyAttempt el : myState.attempts) {
+                        if(null == el.pipe) continue; // what if we're still handshaking this? I leak it and the runtime will go boom as I haven't closed the socket. I don't care.
+                        try {
+                            el.pipe.socket.close();
+                        } catch (IOException e) {
+                            // suppress this, they're just going away.
+                        }
+                    }
+                    return null;
+                }
+            }.execute();
+
         }
         super.onDestroy();
     }
@@ -129,9 +165,18 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     private class PartyAttempt {
         final NsdServiceInfo source; /// set first
         volatile MessageChannel pipe;
-
         volatile PartyInfo party; /// We get this from successful handshake
-        public Pumper.MessagePumpingThread detached;
+        volatile Network.PlayingCharacterList charList; // we get this from successful authorize
+
+        int lastSend = SENT_NOTHING;
+
+        static final int SENT_NOTHING = 0;
+        static final int SENT_DOORMAT_REQUEST = 1;
+        static final int SENT_KEY = 2;
+        boolean waitServerReply;
+        volatile Exception error;
+
+        byte[] doormat;
 
         private PartyAttempt(NsdServiceInfo source) {
             this.source = source;
@@ -152,21 +197,62 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                         } catch (IOException e) {
                             return null; // do nothing, I might have to signal that but I don't care for now, I'm late.
                         }
-                        MessageChannel channel = new MessageChannel(s);
-                        Network.Hello keyed = new Network.Hello();
-                        keyed.verifyMe = true;
-                        keyed.version = MainMenuActivity.NETWORK_VERSION;
-                        try {
-                            channel.writeSync(ProtoBufferEnum.HELLO, keyed);
-                        } catch (IOException e) {
-                            return null; // uhm... not really... this is big. But I am late.
-                        }
-                        pipe = channel;
+                        pipe = new MessageChannel(s);
                         return null;
                     }
                 }.execute();
-
             }
+        }
+
+        // Pipe is ready to transfer something.
+        public void refresh() {
+            if(waitServerReply) return;
+            switch(lastSend) {
+                case SENT_NOTHING: {
+                    final Network.Hello keyed = new Network.Hello();
+                    keyed.verifyMe = true;
+                    keyed.version = MainMenuActivity.NETWORK_VERSION;
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            try {
+                                pipe.writeSync(ProtoBufferEnum.HELLO, keyed);
+                            } catch (IOException e) {
+                                error = e;
+                            }
+                            return null;
+                        }
+                    }.execute();
+                    lastSend = SENT_DOORMAT_REQUEST;
+                    waitServerReply = true;
+                } break;
+                case SENT_DOORMAT_REQUEST: {
+                    JoinVerificator helper;
+                    try {
+                        helper = new JoinVerificator();
+                    } catch (NoSuchAlgorithmException e) {
+                        error = e;
+                        return;
+                    }
+                    final Network.Hello auth = new Network.Hello();
+                    auth.authorize = helper.mangle(doormat, myState.party.key);
+                    auth.version = MainMenuActivity.NETWORK_VERSION;
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(Void... params) {
+                            try {
+                                pipe.writeSync(ProtoBufferEnum.HELLO, auth);
+                            } catch (IOException e) {
+                                error = e;
+                            }
+                            return null;
+                        }
+                    }.execute();
+                    lastSend = SENT_KEY;
+                    waitServerReply = true;
+                }
+            }
+            waitServerReply = true;
         }
     }
 
@@ -181,30 +267,25 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         public void handleMessage(Message msg) {
             final JoinSessionActivity me = this.me.get();
             switch(msg.what) {
-                case MSG_TICK_EXPLORER: {
-                    // Add new discoveries to my list.
-                    for (AccumulatingDiscoveryListener.FoundService serv : me.myState.explorer.foundServices) {
-                        PartyAttempt match = null;
-                        for (PartyAttempt check : me.myState.attempts) {
-                            if(check.source.equals(serv.info)) {
-                                match = check;
-                                break;
+                case MSG_TICK_EXPLORER:
+                    synchronized(me.myState.explorer.foundServices) {
+                        me.connectNewDiscoveries();
+                        int index = 0;
+                        for (PartyAttempt party : me.myState.attempts) {
+                            index++;
+                            if (null == party.pipe) continue; // not connected yet
+                            if (null != party.party) {
+                                if (null == party.party.name || party.party.name.isEmpty())
+                                    continue; // to be ignored, for a reason or the other, likely handshake failed or no good key
                             }
+                            if (null != party.error) {
+                                me.error(index, party);
+                                continue;
+                            }
+                            party.refresh();
                         }
-                        if(null != match) return;
-                        match = me.newPartyAttempt(serv.info);
-                        me.myState.attempts.add(match);
-                        match.connect();
                     }
-                    // If something is not connected yet but it already has a message channel then
-                    // we should be waiting for server reply.
-                    for (PartyAttempt check : me.myState.attempts) {
-                        if(null == check.pipe) continue;
-                        if(null != check.party) continue; // already handshaked and already detached
-                        if(me.pumper.yours(check.pipe)) continue;
-                        me.pumper.pump(check.pipe);
-                    }
-                } break;
+                    break;
                 case MSG_DISCONNECTED: { // uhm... I cannot get to process this for anything I care, so...
                     MessageChannel real = (MessageChannel)msg.obj;
                     for (PartyAttempt check : me.myState.attempts) {
@@ -215,8 +296,12 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                 case MSG_DETACHED: { // that's what happens when we get the party info. It's ok.
                     MessageChannel real = (MessageChannel)msg.obj;
                     for (PartyAttempt check : me.myState.attempts) {
-                        if(real != check.pipe) continue;
-                        check.detached = me.pumper.move(real);
+                        if(real == check.pipe) {
+                            final Pumper.MessagePumpingThread move = me.pumper.move(real);
+                            me.myState.attempts.remove(check);
+                            me.gotcha(move, check);
+                            return;
+                        }
                     }
                 } break;
                 case MSG_PARTY_INFO: {
@@ -231,19 +316,94 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         }
     }
 
+    private void gotcha(Pumper.MessagePumpingThread move, PartyAttempt check) {
+        myState.attempts.remove(check);
+        pumper.move(move.getSource());
+        final CrossActivityShare share = (CrossActivityShare) getApplicationContext();
+        share.jsaResult = new Result(move, myState.party, check.party, check.charList);
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    private void error(int index, PartyAttempt party) {
+        String gname = String.valueOf(index);
+        if(null != party.party && null != party.party.name && !party.party.name.isEmpty()) gname = party.party.name;
+        new AlertDialog.Builder(this).setMessage(String.format(getString(R.string.jsa_errorWhileJoining), gname, party.error.getLocalizedMessage())).show();
+        party.error = null;
+        final Socket goner = party.pipe.socket;
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    goner.close();
+                } catch (IOException e) {
+                    // just suppress. It's gone anyway.
+                }
+                return null;
+            }
+        }.execute();
+        party.pipe = null;
+    }
+
+    private void connectNewDiscoveries() {
+        for (AccumulatingDiscoveryListener.FoundService serv : myState.explorer.foundServices) {
+            PartyAttempt match = null;
+            for (PartyAttempt check : myState.attempts) {
+                if(check.source.equals(serv.info)) {
+                    match = check;
+                    break;
+                }
+            }
+            if(null != match) return;
+            match = new PartyAttempt(serv.info);
+            myState.attempts.add(match);
+            match.connect();
+        }
+
+    }
+
     private void charList(MessageChannel origin, Network.PlayingCharacterList payload) {
-        new AlertDialog.Builder(this).setMessage("go char selection! " + "TODO").show();
+        PartyAttempt match = null;
+        for (PartyAttempt test : myState.attempts) {
+            if(test.pipe == origin) {
+                match = test;
+                break;
+            }
+        }
+        if(null == match) return; // impossible but make static tools happy
+        match.charList = payload; // wait for detach to populate my pumper, then go to PC selection.
     }
 
     private void partyInfo(MessageChannel which, Network.GroupInfo payload) {
-        new AlertDialog.Builder(this).setMessage("party info " + payload.name + "TODO").show();
-    }
+        PartyAttempt match = null;
+        for (PartyAttempt test : myState.attempts) {
+            if(test.pipe == which) {
+                match = test;
+                break;
+            }
+        }
+        if(null == match) return; // impossible but make static tools happy
 
-    private void selectCharacters(PartyAttempt check) {
-        new AlertDialog.Builder(this).setMessage("matched " + check.party.name + "TODO").show();
-    }
+        if(payload.forming || 0 == payload.doormat.length || !payload.name.equals(myState.party.name)) { // this server is uninteresting, uncollaborative or simply another thing.
+            final Socket goner = match.pipe.socket;
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    try {
+                        goner.close();
+                    } catch (IOException e) {
+                        // it's a goner anyway
+                    }
+                    return null;
+                }
+            }.execute();
+            match.pipe = null;
+            return;
+        }
 
-    private PartyAttempt newPartyAttempt(NsdServiceInfo info) {
-        return new PartyAttempt(info);
+        match.party = new PartyInfo(payload.version, payload.name);
+        match.party.options = payload.options;
+        match.doormat = payload.doormat;
+        match.waitServerReply = false;
     }
 }

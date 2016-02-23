@@ -22,6 +22,7 @@ public class CrossActivityShare extends Application {
 
     public GatheringActivity.State gaState;
     public JoinSessionActivity.State jsaState;
+    public JoinSessionActivity.Result jsaResult;
 
     // NewPartyDeviceSelectionActivity state -------------------------------------------------------
     public Vector<DeviceStatus> clients;
