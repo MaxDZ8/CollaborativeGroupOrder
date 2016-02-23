@@ -30,11 +30,9 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Vector;
 
-public class SelectFormingGroupActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnStatusChanged {
+public class SelectFormingGroupActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
     @Override
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -126,13 +124,13 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         //super.onSaveInstanceState(out);
     }
 
-    // AccumulatingDiscoveryListener.OnStatusChanged vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // AccumulatingDiscoveryListener.OnTick vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 
     @Override
-    public void newStatus(int old, int current) {
+    public void tick(int old, int current) {
         guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHECK_NETWORK_SERVICES));
     }
-    // AccumulatingDiscoveryListener.OnStatusChanged ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    // AccumulatingDiscoveryListener.OnTick ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
     public void startExplicitConnectionActivity_callback(View btn) {

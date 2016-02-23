@@ -25,14 +25,14 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
     public static final int STOPPED = 5;
     public static final int STOP_FAILED = 6;
 
-    interface OnStatusChanged {
+    interface OnTick {
         /**  Called every time the state changes. Those are called from a different thread.
          * If the new status reported is START_FAILED or STOPPED then no more
          * notifications will be generated.
          * @param old state of the publisher at previous call or IDLE for first.
          * @param current the new state, which is already set.
          */
-        void newStatus(int old, int current);
+        void tick(int old, int current);
     }
 
     public static class FoundService {
@@ -78,24 +78,22 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
      * Do not call this when already discovering something. Two calls must always be interleaved
      * by at least one stopDiscovery() call or leads to undefined resuls.
      */
-    void beginDiscovery(String serviceType, NsdManager nsd, OnStatusChanged onStatusChanged) {
+    void beginDiscovery(String serviceType, NsdManager nsd, OnTick onTick) {
         this.nsd = nsd;
         this.serviceType = serviceType;
         status = STARTING;
-        callback = onStatusChanged;
+        callback = onTick;
         checker = new Timer("network publisher status check");
         checker.schedule(new TimerTask() {
             int prevStatus =IDLE;
             @Override
             public void run() {
-                if(prevStatus != status) {
                     int old = prevStatus;
                     prevStatus = status;
-                    OnStatusChanged call = callback;
-                    if(null != call) call.newStatus(old, status);
+                    OnTick call = callback;
+                    if(null != call) call.tick(old, status);
                     if(START_FAILED == status || STOPPED == status) cancel();
                 }
-            }
         }, DISCOVERY_PROBE_DELAY, DISCOVERY_PROBE_INTERVAL);
         nsd.discoverServices(serviceType, NsdManager.PROTOCOL_DNS_SD, this);
     }

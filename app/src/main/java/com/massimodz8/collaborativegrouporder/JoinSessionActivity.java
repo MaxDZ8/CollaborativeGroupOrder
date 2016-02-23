@@ -29,7 +29,7 @@ import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class JoinSessionActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnStatusChanged {
+public class JoinSessionActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
     public static class State {
         final PersistentStorage.PartyClientData.Group party;
 
@@ -109,12 +109,12 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         super.onDestroy();
     }
 
-    // AccumulatingDiscoveryListener.OnStatusChanged vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // AccumulatingDiscoveryListener.OnTick vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
-    public void newStatus(int old, int current) {
+    public void tick(int old, int current) {
         handler.sendMessage(handler.obtainMessage(MSG_TICK_EXPLORER));
     }
-    // AccumulatingDiscoveryListener.OnStatusChanged ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    // AccumulatingDiscoveryListener.OnTick ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     private static final int MSG_TICK_EXPLORER = 1;
     private static final int MSG_DISCONNECTED = 2;
