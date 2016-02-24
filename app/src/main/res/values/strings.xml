@@ -298,5 +298,10 @@
     <string name="jsa_connectedAttemptJoin">Attempt join</string>
     <string name="sfga_connectedNotForming">Found a party, but it is not being formed. Discarding.</string>
     <string name="sfga_connectedGotDoormat">Found a party but master wants to verify key and I don\'t know what to do. Discarding.</string>
+    <string name="ga_failedAccept">A client tried to connect but I couldn\'t serve the request. This is really bad and I would expect more stuff to go awry at this point. Perhaps rebooting will help.</string>
+    <string name="ga_pleaseUpdateYourself">Please upgrade app on this device.</string>
+    <string name="ga_pleaseUpdateFriend">Please ask your friend to upgrade app.</string>
+    <string name="ga_versionMismatchDialogMessage">Device \"%1$s\" connected running version %2$d.\nYou\'re running version %3$d.\nIt is strongly suggested all devices to run the same protocol version.\n%4$s</string>
+    <string name="ga_noDigestDialogMessage">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
 
 </resources>

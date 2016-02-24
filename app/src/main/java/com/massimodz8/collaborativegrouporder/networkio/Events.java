@@ -101,4 +101,15 @@ public interface Events {
             this.payload = payload;
         }
     }
+
+    class Hello {
+        public final MessageChannel origin;
+
+        public Hello(MessageChannel origin, Network.Hello payload) {
+            this.origin = origin;
+            this.payload = payload;
+        }
+
+        public final Network.Hello payload;
+    }
 }

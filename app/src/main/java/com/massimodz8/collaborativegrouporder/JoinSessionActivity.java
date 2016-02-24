@@ -466,13 +466,21 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         final Network.GroupInfo ginfo = state.probed;
         state.pumpers = null;
         state.probed = null;
-        if(!ginfo.forming) {
+        if(ginfo.forming) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.jsa_connectedToForming)
                     .show();
             worker.interrupt();
             return;
         }
+        /* It seems this is called before the activity is restored.
+        Oddly, the pumper will be already there, as the activity has never been really destroyed so
+        let's just put the pointer back in place.
+        Point is: when explicit connection activity is pushed on top this will onSaveInstanceState.
+         */
+        //
+        //
+        myState = ((CrossActivityShare) getApplicationContext()).jsaState;
         if(!ginfo.name.equals(myState.party.name)) {
             new AlertDialog.Builder(this)
                     .setMessage(String.format(getString(R.string.jsa_connectedDifferentName), ginfo.name))

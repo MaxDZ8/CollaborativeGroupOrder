@@ -29,8 +29,10 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.ServerSocket;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /** The server is 'gathering' player devices so they can join a new session.
  * This is important and we must be able to navigate back there every time needed in case
@@ -41,10 +43,23 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         final PersistentStorage.PartyOwnerData.Group party;
         //^ When the Activity is launched this always contains the thing we need. It is just assumed.
 
-        // Build characters-to-device assignments, it's just a simple pair system. Should that be a set?
-        // Entry [i] corresponds to character party.group.usually.party[i]
-        ArrayList<PlayingDevice> mapping;
+        /**
+         * Build characters-to-device assignments, it's just a simple pair system. Should that be a set?
+         * Entry [i] corresponds to character party.group.usually.party[i]. The i-th character is
+         * managed by playerDevices[assignment[i]]. Special cases:
+         * - assignment[i] == null: character is unassigned
+         * - assignment[i] < 0: character is managed locally
+         */
+        ArrayList<Integer> assignment;
 
+        /**
+         * Devices connected, in some order. When a device provides a key it might be promoted
+         * to a different slot and take over the previously assigned characters.
+         * In a certain sense, they are 'kept unique', OFC we know that only after a device
+         * has provided its key. Identified devices get moved to playerDevice.
+         */
+        ArrayList<PlayingDevice> unidentified = new ArrayList<>();
+        ArrayList<PlayingDevice> playerDevices = new ArrayList<>();
 
         private ServerSocket landing;
         private int serverPort;
@@ -57,12 +72,15 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
 
     /// Not sure what should I put there, but it seems I might want to track state besides connection channel in the future.
     public static class PlayingDevice {
+        public boolean versionMismatchSignaled;
+        public byte[] doormat;
+
         /// Use null to mark "this device", to assign playing characters to this device.
         public PlayingDevice(@Nullable MessageChannel pipe) {
             this.pipe = pipe;
         }
 
-        final MessageChannel pipe;
+        MessageChannel pipe;
     }
 
     @Override
@@ -73,9 +91,9 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         myState = appState.gaState;
         appState.gaState = null;
 
-        if(null == myState.mapping) {
-            myState.mapping = new ArrayList<>();
-            for (PersistentStorage.Actor aParty : myState.party.usually.party) myState.mapping.add(null);
+        if(null == myState.assignment) {
+            myState.assignment = new ArrayList<>();
+            for (PersistentStorage.Actor aParty : myState.party.usually.party) myState.assignment.add(null);
         }
 
         ((RecyclerView) findViewById(R.id.ga_deviceList)).setAdapter(new AuthDeviceAdapter());
@@ -144,7 +162,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                         dialog.dismiss();
                         for(int slot = 0; slot < myState.party.usually.party.length; slot++) {
                             if(actor == myState.party.usually.party[slot]) {
-                                myState.mapping.set(slot, new PlayingDevice(null));
+                                myState.assignment.set(slot, -1);
                                 RecyclerView.Adapter lister = ((RecyclerView) findViewById(R.id.ga_pcUnassignedList)).getAdapter();
                                 lister.notifyDataSetChanged();
                                 availablePcs(lister.getItemCount());
@@ -185,20 +203,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
 
                     @Override
                     public boolean mangle(MessageChannel from, Network.Hello msg) throws IOException {
-                        if(msg.version != MainMenuActivity.NETWORK_VERSION) {
-                            message(MSG_VERSION_MISMATCH, from);
-                            return true;
-                        }
-                        Network.GroupInfo send = new Network.GroupInfo();
-                        send.forming = false;
-                        send.name = myState.party.name;
-                        send.version = MainMenuActivity.NETWORK_VERSION;
-                        if(msg.verifyMe) { // we play nice with the probing clients here, they're legit after all.
-                            send.doormat = random(DOORMAT_BYTES);
-                        }
-                        from.writeSync(ProtoBufferEnum.GROUP_INFO, send);
-                        if(msg.verifyMe) message(MSG_AUTH_TOKEN_SENT, new Events.AuthToken(from, send.doormat));
-                        else message(MSG_NO_VERIFY, from);
+                        message(MSG_HELLO, new Events.Hello(from, msg));
                         return false;
                     }
                 });
@@ -288,9 +293,6 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                 case MSG_NO_VERIFY:
                     new AlertDialog.Builder(target).setMessage("todo! MSG_NO_VERIFY").show();
                     return;
-                case MSG_VERSION_MISMATCH:
-                    new AlertDialog.Builder(target).setMessage("todo! MSG_VERSION_MISMATCH").show();
-                    return;
                 case MSG_AUTH_TOKEN_SENT:
                     new AlertDialog.Builder(target).setMessage("todo! MSG_AUTH_TOKEN_SENT").show();
                     return;
@@ -301,12 +303,141 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                     return;
                 }
                 case MSG_FAILED_ACCEPT:
-                    new AlertDialog.Builder(target).setMessage("todo! MSG_FAILED_ACCEPT").show();
+                    new AlertDialog.Builder(target)
+                            .setMessage(target.getString(R.string.ga_failedAccept))
+                            .show();
                     return;
-                case MSG_CONNECTED:
-                    new AlertDialog.Builder(target).setMessage("todo! MSG_CONNECTED").show();
+                case MSG_CONNECTED: {
+                    final MessageChannel real = (MessageChannel)msg.obj;
+                    target.myState.unidentified.add(new PlayingDevice(real));
+                    target.pumper.pump(real);
+                    // Don't signal that, comes easily.
+                    break;
+                }
+                case MSG_HELLO: {
+                    final Events.Hello real = (Events.Hello)msg.obj;
+                    target.hello(real.origin, real.payload);
+                    break;
+                }
             }
         }
+    }
+
+    PlayingDevice getDevice(MessageChannel origin) {
+        for (PlayingDevice check : myState.unidentified) {
+            if(check.pipe == origin) return check;
+        }
+        for (PlayingDevice check : myState.playerDevices) {
+            if(check.pipe == origin) return check;
+        }
+        return null;
+    }
+
+    String getDeviceName(PlayingDevice dev) {
+        for(int loop = 0; loop < myState.unidentified.size(); loop++) {
+            if(dev == myState.unidentified.get(loop)) return String.format("unidentified[%1$d]", loop); // TODO, but almost ok
+        }
+        for(int loop = 0; loop < myState.playerDevices.size(); loop++) {
+            if(dev == myState.playerDevices.get(loop)) return String.format("player[%1$d", loop); // TODO, resolve based on unique device keys and device labels
+        }
+        return "";
+    }
+
+    private void hello(final MessageChannel origin, Network.Hello payload) {
+        PlayingDevice dev = getDevice(origin);
+        if(null == dev) return; // impossible
+        if(payload.version != MainMenuActivity.NETWORK_VERSION && !dev.versionMismatchSignaled) {
+            dev.versionMismatchSignaled = true;
+            final String update = getString(payload.version > MainMenuActivity.NETWORK_VERSION? R.string.ga_pleaseUpdateYourself : R.string.ga_pleaseUpdateFriend);
+            String msg = getString(R.string.ga_versionMismatchDialogMessage);
+            msg = String.format(msg, getDeviceName(dev), payload.version, MainMenuActivity.NETWORK_VERSION, update);
+            new AlertDialog.Builder(this)
+                    .setMessage(msg)
+                    .show();
+        }
+        if(payload.authorize.length > 0) {
+            // For the time being, this must be the same for all devices.
+            // TODO: upgrade to device-specific keys!
+            byte[] hash;
+            try {
+                hash = new JoinVerificator().mangle(dev.doormat, myState.party.salt);
+            } catch (NoSuchAlgorithmException e) {
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.ga_noDigestDialogMessage)
+                        .show();
+                return;
+            }
+            if(Arrays.equals(hash, payload.authorize)) {
+                dev.doormat = null;
+                if(myState.unidentified.contains(dev)) { // move this to identified, otherwise it's just refresh.
+                    // TODO match identity by key and manage reconnect
+                    myState.unidentified.remove(dev);
+                    myState.playerDevices.add(dev);
+                    sendPlayingCharacterLists(dev);
+                }
+            }
+            else {
+                // Device tried to authenticate but I couldn't recognize it.
+                // Most likely using an absolete key -> kicked from party!
+                // Very odd but why not? Better to just ignore and disconnect the guy.
+                removeDevice(dev);
+                pumper.move(origin).interrupt();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            origin.socket.close();
+                        } catch (IOException e) {
+                            // nothing. It's a goner anyway.
+                        }
+                    }
+                }.start();
+            }
+            return;
+        }
+        final Network.GroupInfo send = new Network.GroupInfo();
+        send.forming = false;
+        send.name = myState.party.name;
+        send.version = MainMenuActivity.NETWORK_VERSION;
+        send.doormat = random(DOORMAT_BYTES);
+        dev.doormat = send.doormat;
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    origin.writeSync(ProtoBufferEnum.GROUP_INFO, send);
+                } catch (IOException e) {
+                    // just suppress. If it doesn't go... I can do nothing with it, as the device could rotate in the meanwhile.
+                }
+            }
+        }.start();
+    }
+
+    private void sendPlayingCharacterLists(PlayingDevice dev) {
+        new AlertDialog.Builder(this)
+                .setMessage("TODO: sendPlayingCharacterLists")
+                .show();
+    }
+
+    private void removeDevice(PlayingDevice dev) {
+        if(myState.unidentified.remove(dev)) return;
+        // If the device is identified it might have bound characters we need to unbind.
+        int slot = myState.playerDevices.indexOf(dev);
+        for(int loop = 0; loop < myState.assignment.size(); loop++) {
+            Integer check = myState.assignment.get(loop);
+            if(null != check && check == slot) {
+                myState.assignment.set(slot, null);
+            }
+        }
+        // We also must move back one binding all the characters binding to subsequent devices. Meh.
+        for(int loop = 0; loop < myState.assignment.size(); loop++) {
+            Integer check = myState.assignment.get(loop);
+            if(null != check && check > slot) {
+                myState.assignment.set(loop, check - 1);
+            }
+        }
+        myState.unidentified.remove(dev);
+        myState.playerDevices.remove(dev);
     }
 
 
@@ -339,11 +470,11 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     private static final int MSG_DISCONNECTED = 1;
     private static final int MSG_DETACHED = 2;
     private static final int MSG_NO_VERIFY = 3;
-    private static final int MSG_VERSION_MISMATCH = 4;
     private static final int MSG_AUTH_TOKEN_SENT = 5;
     private static final int MSG_PUBLISHER_STATUS_CHANGED = 6;
     private static final int MSG_FAILED_ACCEPT = 7;
     private static final int MSG_CONNECTED = 8;
+    private static final int MSG_HELLO = 9;
 
     private static final int DOORMAT_BYTES = 32;
 
@@ -411,8 +542,8 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
 
         @Override
         public long getItemId(int position) {
-            for(int scan = 0; scan < myState.mapping.size(); scan++) {
-                if(null != myState.mapping.get(scan)) continue;
+            for(int scan = 0; scan < myState.assignment.size(); scan++) {
+                if(null != myState.assignment.get(scan)) continue;
                 if(0 == position) return scan;
                 position--;
             }
@@ -427,8 +558,8 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         @Override
         public void onBindViewHolder(PcViewHolder holder, int position) {
             int slot;
-            for(slot = 0; slot < myState.mapping.size(); slot++) {
-                if(null != myState.mapping.get(slot)) continue;
+            for(slot = 0; slot < myState.assignment.size(); slot++) {
+                if(null != myState.assignment.get(slot)) continue;
                 if(0 == position) break;
                 position--;
             }
@@ -440,7 +571,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         @Override
         public int getItemCount() {
             int count = 0;
-            for (PlayingDevice dev : myState.mapping) {
+            for (Integer dev : myState.assignment) {
                 if(null == dev) count++;
             }
             return count;
