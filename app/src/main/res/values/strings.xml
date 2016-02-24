@@ -293,5 +293,10 @@
     <string name="jsa_pullingFromExistingConnection">Pulling character data from known server…</string>
     <string name="jsa_failedNetworkExploreStart">Cannot explore network. You must use an explicit connection.</string>
     <string name="jsa_searching">Exploring Wi-Fi…</string>
+    <string name="jsa_connectedToForming">Found a party there but it is still being formed. I\'m ignoring it.</string>
+    <string name="jsa_connectedDifferentName">Found party \"%1$s\" there. It is not the one we\'re looking for. I suggest to forget about this party but if you want I can try to join anyway (I\'ll most likely fail).</string>
+    <string name="jsa_connectedAttemptJoin">Attempt join</string>
+    <string name="sfga_connectedNotForming">Found a party, but it is not being formed. Discarding.</string>
+    <string name="sfga_connectedGotDoormat">Found a party but master wants to verify key and I don\'t know what to do. Discarding.</string>
 
 </resources>

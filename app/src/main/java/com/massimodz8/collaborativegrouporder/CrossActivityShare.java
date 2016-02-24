@@ -4,6 +4,7 @@ import android.app.Application;
 import android.os.Bundle;
 
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.net.ServerSocket;
@@ -36,7 +37,7 @@ public class CrossActivityShare extends Application {
     //----------------------------------------------------------------------------------------------
 
     // ExplicitConnectionActivity result -----------------------------------------------------------
-    public PartyInfo probed;
+    public Network.GroupInfo probed;
     //----------------------------------------------------------------------------------------------
 
     // NewCharacterProposalActivity result ---------------------------------------------------------

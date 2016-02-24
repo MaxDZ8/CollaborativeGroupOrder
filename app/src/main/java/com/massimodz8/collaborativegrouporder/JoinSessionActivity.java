@@ -1,6 +1,8 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.AsyncTask;
@@ -9,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -71,8 +72,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "TODO: explicit connection", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                startActivityForResult(new Intent(JoinSessionActivity.this, ExplicitConnectionActivity.class), REQUEST_EXPLICIT_CONNECTION);
             }
         });
         final ActionBar sab = getSupportActionBar();
@@ -248,7 +248,6 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                         }
                     }.execute();
                     lastSend = SENT_DOORMAT_REQUEST;
-                    waitServerReply = true;
                 } break;
                 case SENT_DOORMAT_REQUEST: {
                     JoinVerificator helper;
@@ -273,7 +272,6 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                         }
                     }.execute();
                     lastSend = SENT_KEY;
-                    waitServerReply = true;
                 }
             }
             waitServerReply = true;
@@ -456,5 +454,55 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         match.party.options = payload.options;
         match.doormat = payload.doormat;
         match.waitServerReply = false;
+    }
+
+    private static final int REQUEST_EXPLICIT_CONNECTION = 1;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode != REQUEST_EXPLICIT_CONNECTION) return;
+        if(resultCode != RESULT_OK) return;
+        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+        final Pumper.MessagePumpingThread worker = state.pumpers[0];
+        final Network.GroupInfo ginfo = state.probed;
+        state.pumpers = null;
+        state.probed = null;
+        if(!ginfo.forming) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.jsa_connectedToForming)
+                    .show();
+            worker.interrupt();
+            return;
+        }
+        if(!ginfo.name.equals(myState.party.name)) {
+            new AlertDialog.Builder(this)
+                    .setMessage(String.format(getString(R.string.jsa_connectedDifferentName), ginfo.name))
+                    .setPositiveButton(R.string.jsa_connectedAttemptJoin, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            join(ginfo, worker);
+                        }
+                    })
+                    .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            worker.interrupt();
+                        }
+                    })
+                    .show();
+            return;
+        }
+        join(ginfo, worker);
+    }
+
+    private void join(Network.GroupInfo ginfo, Pumper.MessagePumpingThread worker) {
+        PartyAttempt dummy = new PartyAttempt(null);
+        dummy.pipe = worker.getSource();
+        dummy.lastSend = PartyAttempt.SENT_DOORMAT_REQUEST;
+        dummy.party = new PartyInfo(ginfo.version, ginfo.name);
+        dummy.party.options = ginfo.options;
+        dummy.doormat = ginfo.doormat;
+        myState.attempts.add(dummy);
+        pumper.pump(worker);
     }
 }

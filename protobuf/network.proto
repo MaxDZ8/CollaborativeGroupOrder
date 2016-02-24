@@ -6,13 +6,12 @@ option java_package = "com.massimodz8.collaborativegrouporder.protocol";
 // Hello server, I am device (unknown), can you tell me which groups are you running?
 // If the server thinks the device version is compatible, it will reply GroupInfo. Otherwise it will terminate connection.
 //
-// Additionally, when client wants to join a session (perhaps even binding to characters) it sets verifyMe = true, which will
-// make the server reply with a GroupInfo.doormat. It then attempts another Hello, this time with authorize populated according
-// to the doormat. If the server thinks it's legit it will give a playing character list, otherwise it will close connection.
+// The reply is always GroupInfo, but its contents depend on whatever the server is forming a group or not.
+// The server will set GroupInfo.forming accordingly and when it's true, it will also set a doormat.
+// The client will then have to send another Hello with authorize set to a matching key.
 message Hello {
     uint32 version = 1; // default 0 is an invalid version, this must be set from code and sent across the wire.
-    bool verifyMe = 2;
-    bytes authorize = 3; // invalid to use both verify and authorize.
+    bytes authorize = 2; // invalid to use both verify and authorize.
 }
 
 
@@ -21,7 +20,7 @@ message GroupInfo {
     string name = 2;
     repeated string options = 3; // "master_initiative_rolls", "scribble", "health_points", "temporary_effects"
     bool forming = 4; // if true we're going to accept new devices in the group, otherwise we go adventuring and the group is 'closed'
-    bytes doormat = 5; // filled if Hello.verifyMe was set, reply with Hello.authorize.
+    bytes doormat = 5;
 }
 
 

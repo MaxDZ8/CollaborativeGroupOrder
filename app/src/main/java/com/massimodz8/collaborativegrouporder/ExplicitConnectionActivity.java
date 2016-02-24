@@ -177,12 +177,10 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                     .setMessage(String.format(res, result.payload.name))
                     .show();
         }
-        PartyInfo info = new PartyInfo(result.payload.version, result.payload.name);
-        info.options = result.payload.options;
         Intent send = new Intent(RESULT_ACTION);
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
-        state.probed = info;
+        state.probed = result.payload;
         handShaking = false;
         attempting = null;
         setResult(RESULT_OK, send);

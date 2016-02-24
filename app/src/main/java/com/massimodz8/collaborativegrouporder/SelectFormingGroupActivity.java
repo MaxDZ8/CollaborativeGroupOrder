@@ -480,10 +480,26 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         Pumper.MessagePumpingThread pumper = state.pumpers[0];
         state.pumpers = null;
-        final GroupState add = new GroupState(pumper.getSource()).explicit();
-        add.group = state.probed;
+        Network.GroupInfo probed = state.probed;
         state.probed = null;
+        if(!probed.forming) {
+            pumper.interrupt();
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.sfga_connectedNotForming)
+                    .show();
+            return;
+        }
+        if(probed.doormat.length != 0) {
+            pumper.interrupt();
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.sfga_connectedGotDoormat))
+                    .show();
+            return;
+        }
 
+        final GroupState add = new GroupState(pumper.getSource()).explicit();
+        add.group = new PartyInfo(probed.version, probed.name);
+        add.group.options = probed.options;
         candidates.add(add);
         netPump.pump(pumper);
         refreshGUI();
