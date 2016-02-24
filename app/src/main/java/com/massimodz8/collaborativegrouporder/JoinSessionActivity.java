@@ -234,7 +234,6 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
             switch(lastSend) {
                 case SENT_NOTHING: {
                     final Network.Hello keyed = new Network.Hello();
-                    keyed.verifyMe = true;
                     keyed.version = MainMenuActivity.NETWORK_VERSION;
                     new AsyncTask<Void, Void, Void>() {
                         @Override

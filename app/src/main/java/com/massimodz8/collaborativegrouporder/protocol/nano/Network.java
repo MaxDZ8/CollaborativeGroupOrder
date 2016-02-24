@@ -25,10 +25,7 @@ public interface Network {
     // optional uint32 version = 1;
     public int version;
 
-    // optional bool verifyMe = 2;
-    public boolean verifyMe;
-
-    // optional bytes authorize = 3;
+    // optional bytes authorize = 2;
     public byte[] authorize;
 
     public Hello() {
@@ -37,7 +34,6 @@ public interface Network {
 
     public Hello clear() {
       version = 0;
-      verifyMe = false;
       authorize = com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES;
       cachedSize = -1;
       return this;
@@ -49,11 +45,8 @@ public interface Network {
       if (this.version != 0) {
         output.writeUInt32(1, this.version);
       }
-      if (this.verifyMe != false) {
-        output.writeBool(2, this.verifyMe);
-      }
       if (!java.util.Arrays.equals(this.authorize, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
-        output.writeBytes(3, this.authorize);
+        output.writeBytes(2, this.authorize);
       }
       super.writeTo(output);
     }
@@ -65,13 +58,9 @@ public interface Network {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(1, this.version);
       }
-      if (this.verifyMe != false) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeBoolSize(2, this.verifyMe);
-      }
       if (!java.util.Arrays.equals(this.authorize, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeBytesSize(3, this.authorize);
+            .computeBytesSize(2, this.authorize);
       }
       return size;
     }
@@ -95,11 +84,7 @@ public interface Network {
             this.version = input.readUInt32();
             break;
           }
-          case 16: {
-            this.verifyMe = input.readBool();
-            break;
-          }
-          case 26: {
+          case 18: {
             this.authorize = input.readBytes();
             break;
           }

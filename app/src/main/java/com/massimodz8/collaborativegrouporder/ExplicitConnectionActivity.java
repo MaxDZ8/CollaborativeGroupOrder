@@ -171,12 +171,6 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     }
 
     private void replied(Events.GroupInfo result) { // oh yeah I like this
-        if(!result.payload.forming) {
-            String res = getString(R.string.eca_partyNotOpenMsg);
-            new AlertDialog.Builder(this)
-                    .setMessage(String.format(res, result.payload.name))
-                    .show();
-        }
         Intent send = new Intent(RESULT_ACTION);
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
