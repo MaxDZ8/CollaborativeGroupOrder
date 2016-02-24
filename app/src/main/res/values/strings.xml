@@ -259,7 +259,7 @@
     <string name="ga_initializing">Initializing…</string>
     <string name="ga_welcoming">Welcoming players…</string>
     <string name="ga_connectedDevices">Connected devices</string>
-    <string name="ga_playingCharactersAssignment">Playing characters assignment (all characters must be assigned to continue)</string>
+    <string name="ga_playingCharactersAssignment">Unassigned characters (all characters must be assigned to continue)</string>
     <string name="ga_menu_showConnectionInfos">Show connection infos</string>
     <string name="ga_publisherFailedStart">Could not publish service. Explicit connections are still available.</string>
     <string name="ga_publishing">Ready. Your friends can connect.</string>
@@ -292,6 +292,6 @@
     <string name="jsa_errorWhileJoining">Error while joining group %1$s: %2$s</string>
     <string name="jsa_pullingFromExistingConnection">Pulling character data from known server…</string>
     <string name="jsa_failedNetworkExploreStart">Cannot explore network. You must use an explicit connection.</string>
-    <string name="jsa_searching">Looking for parties on Wi-Fi…</string>
+    <string name="jsa_searching">Exploring Wi-Fi…</string>
 
 </resources>

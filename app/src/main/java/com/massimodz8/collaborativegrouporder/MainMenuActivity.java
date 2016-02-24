@@ -137,7 +137,8 @@ public class MainMenuActivity extends AppCompatActivity {
 
     void startGoAdventuringActivity(PersistentStorage.PartyClientData.Group party, Pumper.MessagePumpingThread worker) {
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        state.pumpers = new Pumper.MessagePumpingThread[] { worker };
+        if(null != worker) state.pumpers = new Pumper.MessagePumpingThread[] { worker };
+        else state.pumpers = null; // be safe-r. Sort of.
         state.jsaState = new JoinSessionActivity.State(party);
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }

@@ -82,6 +82,8 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         myState = share.jsaState;
         share.jsaState = null;
 
+        ((TextView)findViewById(R.id.jsa_partyName)).setText(myState.party.name);
+
         handler = new MyHandler(this);
         pumper = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
                 .add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
