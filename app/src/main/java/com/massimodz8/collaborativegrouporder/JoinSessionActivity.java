@@ -50,13 +50,11 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     public static class Result {
         final Pumper.MessagePumpingThread worker;
         final PersistentStorage.PartyClientData.Group party;
-        final PartyInfo info;
         final Network.PlayingCharacterList pcList;
 
-        public Result(Pumper.MessagePumpingThread worker, PersistentStorage.PartyClientData.Group party, PartyInfo info, Network.PlayingCharacterList pcList) {
+        public Result(Pumper.MessagePumpingThread worker, PersistentStorage.PartyClientData.Group party, Network.PlayingCharacterList pcList) {
             this.worker = worker;
             this.party = party;
-            this.info = info;
             this.pcList = pcList;
         }
     }
@@ -378,7 +376,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         myState.attempts.remove(check);
         pumper.move(move.getSource());
         final CrossActivityShare share = (CrossActivityShare) getApplicationContext();
-        share.jsaResult = new Result(move, myState.party, check.party, check.charList);
+        share.jsaResult = new Result(move, myState.party, check.charList);
         setResult(RESULT_OK);
         finish();
     }
