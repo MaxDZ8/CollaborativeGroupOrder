@@ -875,6 +875,9 @@ public interface Network {
     // optional .PlayingCharacterList.ListType set = 2;
     public int set;
 
+    // optional uint32 requestCount = 3;
+    public int requestCount;
+
     public PlayingCharacterList() {
       clear();
     }
@@ -882,6 +885,7 @@ public interface Network {
     public PlayingCharacterList clear() {
       payload = com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition.emptyArray();
       set = com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.READY;
+      requestCount = 0;
       cachedSize = -1;
       return this;
     }
@@ -899,6 +903,9 @@ public interface Network {
       }
       if (this.set != com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.READY) {
         output.writeInt32(2, this.set);
+      }
+      if (this.requestCount != 0) {
+        output.writeUInt32(3, this.requestCount);
       }
       super.writeTo(output);
     }
@@ -918,6 +925,10 @@ public interface Network {
       if (this.set != com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.READY) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
           .computeInt32Size(2, this.set);
+      }
+      if (this.requestCount != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(3, this.requestCount);
       }
       return size;
     }
@@ -967,6 +978,10 @@ public interface Network {
                 this.set = value;
                 break;
             }
+            break;
+          }
+          case 24: {
+            this.requestCount = input.readUInt32();
             break;
           }
         }

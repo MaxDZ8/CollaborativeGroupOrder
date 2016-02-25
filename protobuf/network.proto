@@ -90,6 +90,7 @@ message PlayingCharacterList {
     }
     repeated PlayingCharacterDefinition payload = 1;
     ListType set = 2;
+    uint32 requestCount = 3; // how many requests (to move from AVAIL to his list) the server has received from the client.
 }
 
 
