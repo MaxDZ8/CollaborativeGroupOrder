@@ -853,108 +853,7 @@ public interface Network {
     public static final int READY = 0;
     public static final int AVAIL = 1;
     public static final int YOURS = 2;
-
-    public static final class PersistentCharacter extends
-        com.google.protobuf.nano.MessageNano {
-
-      private static volatile PersistentCharacter[] _emptyArray;
-      public static PersistentCharacter[] emptyArray() {
-        // Lazily initializes the empty array
-        if (_emptyArray == null) {
-          synchronized (
-              com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-            if (_emptyArray == null) {
-              _emptyArray = new PersistentCharacter[0];
-            }
-          }
-        }
-        return _emptyArray;
-      }
-
-      // optional .PlayingCharacterDefinition pc = 1;
-      public com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition pc;
-
-      // optional uint32 groupIndex = 2;
-      public int groupIndex;
-
-      public PersistentCharacter() {
-        clear();
-      }
-
-      public PersistentCharacter clear() {
-        pc = null;
-        groupIndex = 0;
-        cachedSize = -1;
-        return this;
-      }
-
-      @Override
-      public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-          throws java.io.IOException {
-        if (this.pc != null) {
-          output.writeMessage(1, this.pc);
-        }
-        if (this.groupIndex != 0) {
-          output.writeUInt32(2, this.groupIndex);
-        }
-        super.writeTo(output);
-      }
-
-      @Override
-      protected int computeSerializedSize() {
-        int size = super.computeSerializedSize();
-        if (this.pc != null) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeMessageSize(1, this.pc);
-        }
-        if (this.groupIndex != 0) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeUInt32Size(2, this.groupIndex);
-        }
-        return size;
-      }
-
-      @Override
-      public PersistentCharacter mergeFrom(
-              com.google.protobuf.nano.CodedInputByteBufferNano input)
-          throws java.io.IOException {
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              return this;
-            default: {
-              if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              if (this.pc == null) {
-                this.pc = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition();
-              }
-              input.readMessage(this.pc);
-              break;
-            }
-            case 16: {
-              this.groupIndex = input.readUInt32();
-              break;
-            }
-          }
-        }
-      }
-
-      public static PersistentCharacter parseFrom(byte[] data)
-          throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-        return com.google.protobuf.nano.MessageNano.mergeFrom(new PersistentCharacter(), data);
-      }
-
-      public static PersistentCharacter parseFrom(
-              com.google.protobuf.nano.CodedInputByteBufferNano input)
-          throws java.io.IOException {
-        return new PersistentCharacter().mergeFrom(input);
-      }
-    }
+    public static final int YOURS_DEFINITIVE = 3;
 
     private static volatile PlayingCharacterList[] _emptyArray;
     public static PlayingCharacterList[] emptyArray() {
@@ -970,8 +869,8 @@ public interface Network {
       return _emptyArray;
     }
 
-    // repeated .PlayingCharacterList.PersistentCharacter payload = 1;
-    public com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter[] payload;
+    // repeated .PlayingCharacterDefinition payload = 1;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition[] payload;
 
     // optional .PlayingCharacterList.ListType set = 2;
     public int set;
@@ -981,7 +880,7 @@ public interface Network {
     }
 
     public PlayingCharacterList clear() {
-      payload = com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter.emptyArray();
+      payload = com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition.emptyArray();
       set = com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.READY;
       cachedSize = -1;
       return this;
@@ -992,7 +891,7 @@ public interface Network {
         throws java.io.IOException {
       if (this.payload != null && this.payload.length > 0) {
         for (int i = 0; i < this.payload.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter element = this.payload[i];
+          com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition element = this.payload[i];
           if (element != null) {
             output.writeMessage(1, element);
           }
@@ -1009,7 +908,7 @@ public interface Network {
       int size = super.computeSerializedSize();
       if (this.payload != null && this.payload.length > 0) {
         for (int i = 0; i < this.payload.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter element = this.payload[i];
+          com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition element = this.payload[i];
           if (element != null) {
             size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeMessageSize(1, element);
@@ -1042,18 +941,18 @@ public interface Network {
             int arrayLength = com.google.protobuf.nano.WireFormatNano
                 .getRepeatedFieldArrayLength(input, 10);
             int i = this.payload == null ? 0 : this.payload.length;
-            com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter[] newArray =
-                new com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter[i + arrayLength];
+            com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition[] newArray =
+                new com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition[i + arrayLength];
             if (i != 0) {
               java.lang.System.arraycopy(this.payload, 0, newArray, 0, i);
             }
             for (; i < newArray.length - 1; i++) {
-              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter();
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition();
               input.readMessage(newArray[i]);
               input.readTag();
             }
             // Last one without readTag.
-            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter();
+            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterDefinition();
             input.readMessage(newArray[i]);
             this.payload = newArray;
             break;
@@ -1064,6 +963,7 @@ public interface Network {
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.READY:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.AVAIL:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.YOURS:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.YOURS_DEFINITIVE:
                 this.set = value;
                 break;
             }
@@ -1181,116 +1081,6 @@ public interface Network {
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
       return new PlayingCharacterMoveRequest().mergeFrom(input);
-    }
-  }
-
-  public static final class Adventuring extends
-      com.google.protobuf.nano.MessageNano {
-
-    private static volatile Adventuring[] _emptyArray;
-    public static Adventuring[] emptyArray() {
-      // Lazily initializes the empty array
-      if (_emptyArray == null) {
-        synchronized (
-            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-          if (_emptyArray == null) {
-            _emptyArray = new Adventuring[0];
-          }
-        }
-      }
-      return _emptyArray;
-    }
-
-    // repeated .PlayingCharacterList.PersistentCharacter yours = 1;
-    public com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter[] yours;
-
-    public Adventuring() {
-      clear();
-    }
-
-    public Adventuring clear() {
-      yours = com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter.emptyArray();
-      cachedSize = -1;
-      return this;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-        throws java.io.IOException {
-      if (this.yours != null && this.yours.length > 0) {
-        for (int i = 0; i < this.yours.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter element = this.yours[i];
-          if (element != null) {
-            output.writeMessage(1, element);
-          }
-        }
-      }
-      super.writeTo(output);
-    }
-
-    @Override
-    protected int computeSerializedSize() {
-      int size = super.computeSerializedSize();
-      if (this.yours != null && this.yours.length > 0) {
-        for (int i = 0; i < this.yours.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter element = this.yours[i];
-          if (element != null) {
-            size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeMessageSize(1, element);
-          }
-        }
-      }
-      return size;
-    }
-
-    @Override
-    public Adventuring mergeFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      while (true) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            return this;
-          default: {
-            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-              return this;
-            }
-            break;
-          }
-          case 10: {
-            int arrayLength = com.google.protobuf.nano.WireFormatNano
-                .getRepeatedFieldArrayLength(input, 10);
-            int i = this.yours == null ? 0 : this.yours.length;
-            com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter[] newArray =
-                new com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter[i + arrayLength];
-            if (i != 0) {
-              java.lang.System.arraycopy(this.yours, 0, newArray, 0, i);
-            }
-            for (; i < newArray.length - 1; i++) {
-              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter();
-              input.readMessage(newArray[i]);
-              input.readTag();
-            }
-            // Last one without readTag.
-            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.PlayingCharacterList.PersistentCharacter();
-            input.readMessage(newArray[i]);
-            this.yours = newArray;
-            break;
-          }
-        }
-      }
-    }
-
-    public static Adventuring parseFrom(byte[] data)
-        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new Adventuring(), data);
-    }
-
-    public static Adventuring parseFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      return new Adventuring().mergeFrom(input);
     }
   }
 

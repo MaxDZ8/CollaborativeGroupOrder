@@ -258,7 +258,7 @@
     <string name="ga_title">Gathering heroes</string>
     <string name="ga_initializing">Initializing…</string>
     <string name="ga_welcoming">Welcoming players…</string>
-    <string name="ga_connectedDevices">Connected devices</string>
+    <string name="ga_identifiedDevices">Identified devices</string>
     <string name="ga_playingCharactersAssignment">Unassigned characters (all characters must be assigned to continue)</string>
     <string name="ga_menu_showConnectionInfos">Show connection infos</string>
     <string name="ga_publisherFailedStart">Could not publish service. Explicit connections are still available.</string>
@@ -267,6 +267,16 @@
     <string name="ga_noMorePublishing">Publishing stopped (explicit connections still available).</string>
     <string name="ga_menu_pcFromThisDevice">Manage PC from this device</string>
     <string name="ga_localPcsDialog_desc">Select an unused character to manage it from this device in case the player is missing a session.</string>
+    <string name="ga_failedServiceRegistration">Failed to register network service:\n%1$s</string>
+    <string name="ga_startSession">Start session</string>
+    <string name="ga_allAssigned">All playing characters assigned to a device. Ready to go.</string>
+    <string name="ga_failedAccept">A client tried to connect but I couldn\'t serve the request. This is really bad and I would expect more stuff to go awry at this point. Perhaps rebooting will help.</string>
+    <string name="ga_pleaseUpdateYourself">Please upgrade app on this device.</string>
+    <string name="ga_pleaseUpdateFriend">Please ask your friend to upgrade app.</string>
+    <string name="ga_versionMismatchDialogMessage">Device \"%1$s\" connected running version %2$d.\nYou\'re running version %3$d.\nIt is strongly suggested all devices to run the same protocol version.\n%4$s</string>
+    <string name="ga_noDigestDialogMessage">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
+    <string name="ga_noPcsOnDevice">No playing characters on this device.</string>
+
     <string name="dialog_explicitConnectionInfo_title">Connection informations</string>
     <string name="dlg_iec_port">Port: %1$s</string>
     <string name="dlg_iec_portInfo">Port is valid for all addresses.</string>
@@ -276,10 +286,7 @@
     <string name="nsdError_internal">internal error</string>
     <string name="nsdError_maxLimitReached">max limit reached</string>
     <string name="nsdError_unknown">unknown error</string>
-    <string name="ga_failedServiceRegistration">Failed to register network service:\n%1$s</string>
     <string name="card_character_classesAndLevels">Classes and levels</string>
-    <string name="ga_startSession">Start session</string>
-    <string name="ga_allAssigned">All playing characters assigned to a device. Ready to go.</string>
 
     <string name="jsa_title">JoinSessionActivity</string>
     <string name="jsa_initializing">Initializing…</string>
@@ -298,10 +305,5 @@
     <string name="jsa_connectedAttemptJoin">Attempt join</string>
     <string name="sfga_connectedNotForming">Found a party, but it is not being formed. Discarding.</string>
     <string name="sfga_connectedGotDoormat">Found a party but master wants to verify key and I don\'t know what to do. Discarding.</string>
-    <string name="ga_failedAccept">A client tried to connect but I couldn\'t serve the request. This is really bad and I would expect more stuff to go awry at this point. Perhaps rebooting will help.</string>
-    <string name="ga_pleaseUpdateYourself">Please upgrade app on this device.</string>
-    <string name="ga_pleaseUpdateFriend">Please ask your friend to upgrade app.</string>
-    <string name="ga_versionMismatchDialogMessage">Device \"%1$s\" connected running version %2$d.\nYou\'re running version %3$d.\nIt is strongly suggested all devices to run the same protocol version.\n%4$s</string>
-    <string name="ga_noDigestDialogMessage">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
 
 </resources>

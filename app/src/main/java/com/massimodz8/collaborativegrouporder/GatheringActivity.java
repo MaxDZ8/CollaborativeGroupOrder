@@ -338,7 +338,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
             if(dev == myState.unidentified.get(loop)) return String.format("unidentified[%1$d]", loop); // TODO, but almost ok
         }
         for(int loop = 0; loop < myState.playerDevices.size(); loop++) {
-            if(dev == myState.playerDevices.get(loop)) return String.format("player[%1$d", loop); // TODO, resolve based on unique device keys and device labels
+            if(dev == myState.playerDevices.get(loop)) return String.format("player[%1$d]", loop); // TODO, resolve based on unique device keys and device labels
         }
         return "";
     }
@@ -372,7 +372,9 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                 if(myState.unidentified.contains(dev)) { // move this to identified, otherwise it's just refresh.
                     // TODO match identity by key and manage reconnect
                     myState.unidentified.remove(dev);
+                    int last = myState.playerDevices.size();
                     myState.playerDevices.add(dev);
+                    ((RecyclerView)findViewById(R.id.ga_deviceList)).getAdapter().notifyItemInserted(last);
                     sendPlayingCharacterLists(dev);
                 }
             }
@@ -414,9 +416,77 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     }
 
     private void sendPlayingCharacterLists(PlayingDevice dev) {
-        new AlertDialog.Builder(this)
-                .setMessage("TODO: sendPlayingCharacterLists")
-                .show();
+        final Network.PlayingCharacterList avail = new Network.PlayingCharacterList();
+        final Network.PlayingCharacterList yours = new Network.PlayingCharacterList();
+        final Network.PlayingCharacterList ready = new Network.PlayingCharacterList();
+        Network.PlayingCharacterDefinition[] list = new Network.PlayingCharacterDefinition[0];
+        for(int loop = 0; loop < myState.assignment.size(); loop++) {
+            if(null != myState.assignment.get(loop)) {
+                Network.PlayingCharacterDefinition[] longer = Arrays.copyOf(list, list.length + 1);
+                longer[list.length] = simplify(myState.party.usually.party[loop], loop);
+                list = longer;
+            }
+        }
+        ready.payload = list;
+        ready.set = Network.PlayingCharacterList.READY;
+        // The avail and yours are a bit more complicated, mostly because...
+        // TODO further logic to be deployed there! Or perhaps before this is even called, IDK. Requires server to remember last assignments and device keys.
+        // TODO For the time being, yours is easy but I still implement it like something else already assigned me my chars.list = new Network.PlayingCharacterDefinition[0];
+        int devIndex = 0;
+        for (int loop = 0; loop < myState.playerDevices.size(); loop++) {
+            if(dev == myState.playerDevices.get(loop)) {
+                devIndex = loop;
+                break;
+            }
+        }
+        for(int loop = 0; loop < myState.assignment.size(); loop++) {
+            Integer binding = myState.assignment.get(loop);
+            if(null != binding && binding == devIndex) {
+                Network.PlayingCharacterDefinition[] longer = Arrays.copyOf(list, list.length + 1);
+                longer[list.length] = simplify(myState.party.usually.party[loop], loop);
+                list = longer;
+            }
+        }
+        yours.payload = list;
+        yours.set = Network.PlayingCharacterList.YOURS;
+        // TODO for the time being, available chars are everything which is not ready but in the future, I might restrict character selection on a pe-device basis.list = new Network.PlayingCharacterDefinition[0];
+        for(int loop = 0; loop < myState.assignment.size(); loop++) {
+            if(null == myState.assignment.get(loop)) {
+                Network.PlayingCharacterDefinition[] longer = Arrays.copyOf(list, list.length + 1);
+                longer[list.length] = simplify(myState.party.usually.party[loop], loop);
+                list = longer;
+            }
+        }
+        avail.payload = list;
+        avail.set = Network.PlayingCharacterList.AVAIL;
+        // An now send... as usual there's the "what if" the activity goes away before we complete.
+        // What I do: nothing. The socket will fail later... I hope. IDK. I still cannot find any decent solution.
+        final MessageChannel dst = dev.pipe;
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    dst.writeSync(ProtoBufferEnum.CHARACTER_LIST, yours);
+                    dst.writeSync(ProtoBufferEnum.CHARACTER_LIST, ready);
+                    dst.writeSync(ProtoBufferEnum.CHARACTER_LIST, avail);
+                } catch (IOException e) {
+                    // suppress and let's hope it's a persistent thing which will cause stuff to go awry.
+                    // TODO: in the future, tick for 'operation completeness' and have a queue of things to be checked. Ugly.
+                }
+            }
+        }.start();
+    }
+
+    private Network.PlayingCharacterDefinition simplify(PersistentStorage.Actor actor, int loop) {
+        Network.PlayingCharacterDefinition res = new Network.PlayingCharacterDefinition();
+        PersistentStorage.ActorStatistics currently = actor.stats[0];
+        res.name = actor.name;
+        res.initiativeBonus = currently.initBonus;
+        res.healthPoints = currently.healthPoints;
+        res.experience = currently.experience;
+        res.level = actor.level;
+        res.peerKey = loop;
+        return res;
     }
 
     private void removeDevice(PlayingDevice dev) {
@@ -483,28 +553,42 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     }
 
     private class AuthDeviceViewHolder extends RecyclerView.ViewHolder {
+        TextView name;
+        TextView pcList;
+
         public AuthDeviceViewHolder(View itemView) {
             super(itemView);
+            name = (TextView) itemView.findViewById(R.id.cardIDACA_name);
+            pcList = (TextView) itemView.findViewById(R.id.cardIDACA_assignedPcs);
         }
     }
 
     private class AuthDeviceAdapter extends RecyclerView.Adapter<AuthDeviceViewHolder> {
         @Override
         public AuthDeviceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            TextView meh = new TextView(GatheringActivity.this);
-            meh.setText("TODO");
-            return new AuthDeviceViewHolder(meh);
+            return new AuthDeviceViewHolder(getLayoutInflater().inflate(R.layout.card_identified_device_chars_assigned, parent, false));
         }
 
         @Override
         public void onBindViewHolder(AuthDeviceViewHolder holder, int position) {
-            // TODO
+            PlayingDevice dev = myState.playerDevices.get(position);
+            holder.name.setText(getDeviceName(dev));
+            String list = "";
+            for (int loop = 0; loop < myState.assignment.size(); loop++) {
+                Integer match = myState.assignment.get(loop);
+                if(null != match && match == position) {
+                    if(list.length() > 0) list += ", ";
+                    list += myState.party.usually.party[loop].name;
+                }
+            }
+
+            if(list.length() == 0) list = getString(R.string.ga_noPcsOnDevice);
+            holder.pcList.setText(list);
         }
 
         @Override
         public int getItemCount() {
-            // TODO
-            return 0;
+            return myState.playerDevices.size();
         }
     }
 

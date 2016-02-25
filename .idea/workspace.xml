@@ -92,17 +92,17 @@
   <component name="ChangeListManager">
     <list default="true" id="13bbe53d-0816-4d6b-911e-0d6f7bde0e56" name="Default" comment="">
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/Massimo.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
+      <change type="MODIFICATION" beforePath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\build\generated\source\r\debug\com\massimodz8\collaborativegrouporder\R.java" afterPath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\build\generated\source\r\debug\com\massimodz8\collaborativegrouporder\R.java" />
+      <change type="MODIFICATION" beforePath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\.idea\libraries\support_v4_23_1_1.xml" afterPath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\.idea\libraries\support_v4_23_1_1.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\src\main\java\com\massimodz8\collaborativegrouporder\CreatePartyActivity.java" afterPath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\src\main\java\com\massimodz8\collaborativegrouporder\CreatePartyActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/symbols/debug/R.txt" afterPath="$PROJECT_DIR$/app/build/intermediates/symbols/debug/R.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/generated/source/r/debug/com/massimodz8/collaborativegrouporder/R.java" afterPath="$PROJECT_DIR$/app/build/generated/source/r/debug/com/massimodz8/collaborativegrouporder/R.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/generated/source/r/debug/android/support/v7/appcompat/R.java" afterPath="$PROJECT_DIR$/app/build/generated/source/r/debug/android/support/v7/appcompat/R.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\build\generated\source\r\debug\android\support\v7\appcompat\R.java" afterPath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\build\generated\source\r\debug\android\support\v7\appcompat\R.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+      <change type="MODIFICATION" beforePath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\src\main\java\com\massimodz8\collaborativegrouporder\CreatePartyActivity.java" afterPath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\src\main\java\com\massimodz8\collaborativegrouporder\CreatePartyActivity.java" />
+      <change type="MODIFICATION" beforePath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\.idea\libraries\appcompat_v7_23_1_1.xml" afterPath="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\.idea\libraries\appcompat_v7_23_1_1.xml" />
     </list>
     <ignored path="CollaborativeGroupOrder.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -138,50 +138,41 @@
       <file leaf-file-name="GatheringActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/GatheringActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="402" column="0" selection-start-line="402" selection-start-column="0" selection-end-line="402" selection-end-column="0" />
+            <state vertical-scroll-proportion="-9.586206">
+              <caret line="340" column="89" selection-start-line="340" selection-start-column="89" selection-end-line="340" selection-end-column="89" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CrossActivityShare.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CrossActivityShare.java">
+      <file leaf-file-name="MainMenuActivity.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MainMenuActivity.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="54" column="0" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+              <caret line="231" column="43" selection-start-line="231" selection-start-column="43" selection-end-line="231" selection-end-column="43" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="JoinSessionActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="card_identified_device_chars_assigned.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_identified_device_chars_assigned.xml">
+          <provider editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+          <provider selected="true" editor-type-id="android-designer">
+            <state />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="JoinSessionActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/JoinSessionActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.30321047">
-              <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AccumulatingDiscoveryListener.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/AccumulatingDiscoveryListener.java">
-          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="107" column="20" selection-start-line="107" selection-start-column="20" selection-end-line="107" selection-end-column="20" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ExplicitConnectionActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ExplicitConnectionActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="180" column="0" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
+              <caret line="130" column="65" selection-start-line="130" selection-start-column="65" selection-end-line="130" selection-end-column="65" />
               <folding />
             </state>
           </provider>
@@ -195,9 +186,9 @@
         <option value="valueResourceFile" />
         <option value="Interface" />
         <option value="resourceFile" />
-        <option value="layoutResourceFile_vertical" />
         <option value="layoutResourceFile" />
         <option value="Class" />
+        <option value="layoutResourceFile_vertical" />
       </list>
     </option>
   </component>
@@ -1768,8 +1759,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/DefaultListItemSeparator.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/dimens.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ListPreSeparator.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/card_joined_party.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PreSeparatorDecorator.java" />
@@ -1812,13 +1801,15 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CrossActivityShare.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/content_join_session.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MainMenuActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/SelectFormingGroupActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/networkio/Events.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/protocol/nano/Network.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/GatheringActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ExplicitConnectionActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/JoinSessionActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/card_identified_device_and_chars_assigned.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/GatheringActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/card_identified_device_chars_assigned.xml" />
       </list>
     </option>
   </component>
@@ -1837,7 +1828,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
-    <option name="width" value="1213" />
+    <option name="width" value="1203" />
     <option name="height" value="1026" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -1945,6 +1936,9 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
+      <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -2263,10 +2257,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="AndroidView" />
       <pane id="Scope" />
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -2534,7 +2525,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="0" width="1213" height="1026" extended-state="0" />
+    <frame x="-8" y="0" width="1203" height="1026" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32911393" sideWeight="0.49266502" order="6" side_tool="false" content_ui="tabs" />
@@ -2547,25 +2538,25 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3294621" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.31300345" sideWeight="0.4823626" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32911393" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3475259" sideWeight="0.40853158" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32796317" sideWeight="0.49266502" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32853404" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.28423476" sideWeight="0.38753057" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32957503" sideWeight="0.4959724" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.33245844" sideWeight="0.4959724" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3294621" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24816626" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32762837" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2658228" sideWeight="0.5217391" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2658228" sideWeight="0.5217391" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3475259" sideWeight="0.40853158" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25431532" sideWeight="0.42493847" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -2705,7 +2696,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/GatheringActivity.java</url>
-          <line>402</line>
+          <line>404</line>
           <properties />
           <option name="timeStamp" value="1306" />
         </line-breakpoint>
@@ -2727,6 +2718,12 @@
           <properties />
           <option name="timeStamp" value="1325" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/GatheringActivity.java</url>
+          <line>574</line>
+          <properties />
+          <option name="timeStamp" value="1331" />
+        </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
@@ -2741,7 +2738,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="1331" />
+      <option name="time" value="1332" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="app">
@@ -2757,33 +2754,15 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/java/lang/Thread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33293697">
-          <caret line="648" column="16" selection-start-line="648" selection-start-column="16" selection-end-line="648" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/gathering_activity.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.14149822">
-          <caret line="7" column="59" selection-start-line="7" selection-start-column="59" selection-end-line="7" selection-end-column="59" />
-          <folding>
-            <element signature="e#188#225#0" expanded="true" />
-            <element signature="e#310#344#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_new_characters_approval.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.50246304">
           <caret line="27" column="39" selection-start-line="19" selection-start-column="36" selection-end-line="27" selection-end-column="39" />
           <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/content/Context.java">
@@ -2794,14 +2773,14 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_new_party_device_selection.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.7955665">
           <caret line="38" column="25" selection-start-line="0" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
           <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/NewCharactersProposalActivity.java">
@@ -2827,14 +2806,14 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_info_explicit_connect.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="1" column="13" selection-start-line="1" selection-start-column="13" selection-end-line="1" selection-end-column="13" />
           <folding />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ConnectionInfoDialog.java">
@@ -2852,20 +2831,17 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_joined_parties_separator.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-19.931034">
           <caret line="34" column="42" selection-start-line="0" selection-start-column="0" selection-end-line="51" selection-end-column="37" />
           <folding />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_joining_character_server_output.xml">
-      <provider selected="true" editor-type-id="android-designer">
+      <provider editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_joining_character_server_output.xml">
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -2873,6 +2849,9 @@
             <element signature="e#604#637#0" expanded="false" />
           </folding>
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PlayingCharacterListAdapter.java">
@@ -2891,25 +2870,25 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_assignable_character_server_list.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.7586207">
           <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
           <folding />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_make_pc_local.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_make_pc_local.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-11.724138">
           <caret line="20" column="43" selection-start-line="20" selection-start-column="43" selection-end-line="20" selection-end-column="43" />
           <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/m2repository/com/android/support/recyclerview-v7/23.1.1/recyclerview-v7-23.1.1-sources.jar!/android/support/v7/widget/RecyclerView.java">
@@ -2943,14 +2922,14 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_gathering.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="58" column="54" selection-start-line="45" selection-start-column="0" selection-end-line="58" selection-end-column="54" />
           <folding />
         </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/networkio/MessageChannel.java">
@@ -2961,14 +2940,14 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_joinable_group.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MaxUtils.java">
@@ -3038,14 +3017,14 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_join_session.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="26" column="27" selection-start-line="26" selection-start-column="27" selection-end-line="26" selection-end-column="27" />
           <folding />
         </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PartyInfo.java">
@@ -3061,15 +3040,15 @@
         <state vertical-scroll-proportion="0.7567084">
           <caret line="501" column="43" selection-start-line="501" selection-start-column="43" selection-end-line="501" selection-end-column="43" />
           <folding>
-            <element signature="e#2268#2327#0" expanded="true" />
-            <element signature="e#8748#8792#0" expanded="true" />
-            <element signature="e#9079#9116#0" expanded="true" />
-            <element signature="e#10214#10261#0" expanded="true" />
-            <element signature="e#10432#10470#0" expanded="true" />
-            <element signature="e#15695#15735#0" expanded="true" />
-            <element signature="e#18883#18944#0" expanded="true" />
-            <element signature="e#21095#21128#0" expanded="true" />
-            <element signature="e#21336#21380#0" expanded="true" />
+            <element signature="e#2268#2327#0" expanded="false" />
+            <element signature="e#8748#8792#0" expanded="false" />
+            <element signature="e#9079#9116#0" expanded="false" />
+            <element signature="e#10214#10261#0" expanded="false" />
+            <element signature="e#10432#10470#0" expanded="false" />
+            <element signature="e#15695#15735#0" expanded="false" />
+            <element signature="e#18883#18944#0" expanded="false" />
+            <element signature="e#21095#21128#0" expanded="false" />
+            <element signature="e#21336#21380#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -3110,13 +3089,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/java/util/ArrayList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33225808">
-          <caret line="352" column="25" selection-start-line="352" selection-start-column="25" selection-end-line="352" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CrossActivityShare.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -3126,44 +3098,20 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_join_session.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="14" column="21" selection-start-line="14" selection-start-column="21" selection-end-line="14" selection-end-column="21" />
           <folding />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MainMenuActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.55737704">
-          <caret line="126" column="75" selection-start-line="126" selection-start-column="75" selection-end-line="126" selection-end-column="75" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34819898">
-          <caret line="144" column="18" selection-start-line="144" selection-start-column="18" selection-end-line="144" selection-end-column="18" />
-          <folding />
-        </state>
+      <provider editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ExplicitConnectionActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="180" column="0" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/GatheringActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="402" column="0" selection-start-line="402" selection-start-column="0" selection-end-line="402" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -3178,12 +3126,61 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/JoinSessionActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.30321047">
-          <caret line="84" column="0" selection-start-line="84" selection-start-column="0" selection-end-line="84" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.0">
+          <caret line="130" column="65" selection-start-line="130" selection-start-column="65" selection-end-line="130" selection-end-column="65" />
+          <folding />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/java/util/Arrays.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2583" column="26" selection-start-line="2583" selection-start-column="26" selection-end-line="2583" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.18550369">
+          <caret line="260" column="50" selection-start-line="260" selection-start-column="50" selection-end-line="260" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/java/util/ArrayList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="113" column="29" selection-start-line="113" selection-start-column="29" selection-end-line="113" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MainMenuActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="231" column="43" selection-start-line="231" selection-start-column="43" selection-end-line="231" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/GatheringActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.586206">
+          <caret line="340" column="89" selection-start-line="340" selection-start-column="89" selection-end-line="340" selection-end-column="89" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_identified_device_chars_assigned.xml">
+      <provider editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
       </provider>
     </entry>
   </component>

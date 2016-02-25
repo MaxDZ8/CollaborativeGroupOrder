@@ -63,7 +63,7 @@ message PlayingCharacterDefinition {
     uint32 initiativeBonus = 2;
     uint32 healthPoints = 3;
     uint32 experience = 4;
-    uint32 peerKey = 5; // When client sends a new proposal to server, this will be used to identify the PC relative to the peer, must be unique. Reusing the same key re-defines a character.
+    uint32 peerKey = 5; // When client sends a new proposal to server, this will be used to identify the PC relative to the peer, must be unique. Reusing the same key re-defines a character. Server uses this as well, see PlayingCharacterList.
     uint32 level = 6;
 }
 
@@ -82,16 +82,13 @@ message GroupReady {
 
 // Server -> client
 message PlayingCharacterList {
-    message PersistentCharacter {
-        PlayingCharacterDefinition pc = 1;
-        uint32 groupIndex = 2; // uniquely identifying a specific character in the group, never repeating, can be 0
-    }
     enum ListType {
         READY = 0;
         AVAIL = 1;
         YOURS = 2;
+        YOURS_DEFINITIVE = 3; // characters you will manage, and now go init list mode, no more discussing assignments.
     }
-    repeated PersistentCharacter payload = 1;
+    repeated PlayingCharacterDefinition payload = 1;
     ListType set = 2;
 }
 
@@ -100,12 +97,6 @@ message PlayingCharacterList {
 message PlayingCharacterMoveRequest {
     bool take = 1; // if true, we're pulling a character from available list, otherwise giving it up to avail.
     uint32 character = 2; // unique group id
-}
-
-
-// Server->client
-message Adventuring {
-    repeated PlayingCharacterList.PersistentCharacter yours = 1; // this is the list of characters you will manage, overrides your own.
 }
 
 
