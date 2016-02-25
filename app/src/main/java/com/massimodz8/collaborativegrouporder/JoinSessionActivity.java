@@ -77,34 +77,44 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         });
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
+    }
 
-        final CrossActivityShare share = (CrossActivityShare) getApplicationContext();
-        myState = share.jsaState;
-        share.jsaState = null;
+    @Override
+    protected void onStart() {
+        super.onStart();
+        willBeRestored = false; // we don't really know, but we have being restored now so let's try again.
+
+        final CrossActivityShare share = ((CrossActivityShare) getApplicationContext());
+        if(null == myState) {
+            myState = share.jsaState;
+            share.jsaState = null;
+        }
 
         ((TextView)findViewById(R.id.jsa_partyName)).setText(myState.party.name);
 
-        handler = new MyHandler(this);
-        pumper = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
-                .add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
-                    @Override
-                    public Network.GroupInfo make() { return new Network.GroupInfo(); }
+        if(null == handler) handler = new MyHandler(this);
+        if(null == pumper) {
+            pumper = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
+                    .add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
+                        @Override
+                        public Network.GroupInfo make() { return new Network.GroupInfo(); }
 
-                    @Override
-                    public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
-                        handler.sendMessage(handler.obtainMessage(MSG_PARTY_INFO, new Events.GroupInfo(from, msg)));
-                        return false;
-                    }
-                }).add(ProtoBufferEnum.CHARACTER_LIST, new PumpTarget.Callbacks<Network.PlayingCharacterList>() {
-                    @Override
-                    public Network.PlayingCharacterList make() { return new Network.PlayingCharacterList(); }
+                        @Override
+                        public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+                            handler.sendMessage(handler.obtainMessage(MSG_PARTY_INFO, new Events.GroupInfo(from, msg)));
+                            return false;
+                        }
+                    }).add(ProtoBufferEnum.CHARACTER_LIST, new PumpTarget.Callbacks<Network.PlayingCharacterList>() {
+                        @Override
+                        public Network.PlayingCharacterList make() { return new Network.PlayingCharacterList(); }
 
-                    @Override
-                    public boolean mangle(MessageChannel from, Network.PlayingCharacterList msg) throws IOException {
-                        handler.sendMessage(handler.obtainMessage(MSG_CHAR_LIST, new Events.CharList(from, msg)));
-                        return true;
-                    }
-                });
+                        @Override
+                        public boolean mangle(MessageChannel from, Network.PlayingCharacterList msg) throws IOException {
+                            handler.sendMessage(handler.obtainMessage(MSG_CHAR_LIST, new Events.CharList(from, msg)));
+                            return true;
+                        }
+                    });
+        }
 
         if(null == share.pumpers) { // initialize network scan mode
             if (null != myState.explorer) myState.explorer.setCallback(this);
@@ -141,12 +151,12 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         if(null != myState.explorer) myState.explorer.unregisterCallback(); // perhaps we continued using an existing connection
         myState.workers = pumper.move();
         share.jsaState = myState;
-        myState = null;
+        willBeRestored = true;
     }
 
     @Override
     protected void onDestroy() {
-        if(null != myState) {
+        if(!willBeRestored) {
             pumper.shutdown();
             myState.explorer.stopDiscovery();
             new AsyncTask<Void, Void, Void>() {
@@ -473,14 +483,6 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
             worker.interrupt();
             return;
         }
-        /* It seems this is called before the activity is restored.
-        Oddly, the pumper will be already there, as the activity has never been really destroyed so
-        let's just put the pointer back in place.
-        Point is: when explicit connection activity is pushed on top this will onSaveInstanceState.
-         */
-        //
-        //
-        myState = ((CrossActivityShare) getApplicationContext()).jsaState;
         if(!ginfo.name.equals(myState.party.name)) {
             new AlertDialog.Builder(this)
                     .setMessage(String.format(getString(R.string.jsa_connectedDifferentName), ginfo.name))
@@ -512,4 +514,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         myState.attempts.add(dummy);
         pumper.pump(worker);
     }
+
+    /// Set by onSaveInstanceState to understand when to clean resources/connections for real.
+    private boolean willBeRestored;
 }
