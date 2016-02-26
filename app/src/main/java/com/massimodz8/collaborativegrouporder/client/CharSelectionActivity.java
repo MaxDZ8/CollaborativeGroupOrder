@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,7 @@ public class CharSelectionActivity extends AppCompatActivity {
 
     private PersistentStorage.PartyClientData.Group party;
 
-    private static void prepare(Pumper.MessagePumpingThread pipe, PersistentStorage.PartyClientData.Group info, Network.PlayingCharacterList last) {
+    public static void prepare(Pumper.MessagePumpingThread pipe, PersistentStorage.PartyClientData.Group info, Network.PlayingCharacterList last) {
         serverPipe = pipe;
         connectedParty = info;
         pcList = last;
@@ -55,23 +54,23 @@ public class CharSelectionActivity extends AppCompatActivity {
 
                     @Override
                     public boolean mangle(MessageChannel from, Network.PlayingCharacterList msg) throws IOException {
-                        handler.sendMessage(handler.obtainMessage(MSG_LIST_RECEIVED, new Events.CharList(from, msg)));
+                        handler.sendMessage(handler.obtainMessage(MSG_LIST_RECEIVED, msg));
                         return msg.set == Network.PlayingCharacterList.YOURS_DEFINITIVE;
                     }
                 });
         handler = new MyHandler(this);
+
+        RecyclerView list = (RecyclerView) findViewById(R.id.csa_pcList);
+        list.setAdapter(new MyLister());
+
+        party = connectedParty;
+        connectedParty = null;
 
         if(null != pcList) dispatch(pcList);
         pcList = null;
 
         netPump.pump(serverPipe);
         serverPipe = null;
-
-        party = connectedParty;
-        connectedParty = null;
-
-        RecyclerView list = (RecyclerView) findViewById(R.id.csa_pcList);
-        list.setAdapter(new MyLister());
     }
 
     private Pumper netPump;

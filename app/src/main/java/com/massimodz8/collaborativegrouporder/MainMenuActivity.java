@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
@@ -224,7 +225,13 @@ public class MainMenuActivity extends AppCompatActivity {
                 }
             } break;
             case REQUEST_PULL_CHAR_LIST: {
-                new AlertDialog.Builder(this).setTitle("TODO").show();
+                final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+                CharSelectionActivity.prepare(state.jsaResult.worker, state.jsaResult.party, state.jsaResult.pcList);
+                state.jsaResult = null;
+                startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
+            } break;
+            case REQUEST_BIND_CHARACTERS: {
+                new AlertDialog.Builder(this).setMessage("TODO").show();
             } break;
         }
     }
@@ -235,4 +242,5 @@ public class MainMenuActivity extends AppCompatActivity {
     static final int REQUEST_PROPOSE_CHARACTERS = 4;
     static final int REQUEST_PICK_PARTY = 5;
     static final int REQUEST_PULL_CHAR_LIST = 6;
+    static final int REQUEST_BIND_CHARACTERS = 7;
 }
