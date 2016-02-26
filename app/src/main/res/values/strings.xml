@@ -312,8 +312,6 @@
     <string name="csa_assignedInstructions">You can swipe those away to give up a character. They will not be deleted.</string>
     <string name="csa_available">Available</string>
     <string name="csa_request">Tap to request the master to assign those to you.</string>
-    <string name="csa_ready">Ready</string>
-    <string name="csa_readyDesc">For your information, characters played by someone else.</string>
     <string name="csa_refusedSingular">A character ownership request has been refused.</string>
     <string name="csa_refusedPlural">%1$d character ownership requests have been refused.</string>
     <string name="csa_takenAwaySingular">A character previously assigned to you has been given to someone else.</string>
@@ -325,5 +323,8 @@
     <string name="vhAC_level">Level: %1$d</string>
     <string name="vhAC_xp">XP: %1$d</string>
     <string name="vhAC_tapToPlay">Tap to play here</string>
+    <string name="csa_oneCharSomewhere">One character played on another device.</string>
+    <string name="csa_pluralCharsSomewhere">%1$d characters played elsewhere.</string>
+    <string name="vhAC_requestedHere">Requested to play here.</string>
 
 </resources>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp" >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vhAC_image"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/placeholder_todo"
+        android:contentDescription="@string/vhAC_imageDesc"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/vhAC_name"
+        android:layout_alignParentTop="false"
+        android:layout_toRightOf="@+id/vhAC_image"
+        android:layout_toEndOf="@+id/vhAC_image"
+        android:layout_alignParentStart="false"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/vhAC_level"
+        android:id="@+id/vhAC_level"
+        android:layout_below="@+id/vhAC_name"
+        android:layout_toRightOf="@+id/vhAC_image"
+        android:layout_toEndOf="@+id/vhAC_image" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/vhAC_hpMax"
+        android:id="@+id/vhAC_hpMax"
+        android:layout_below="@+id/vhAC_level"
+        android:layout_toRightOf="@+id/vhAC_image"
+        android:layout_toEndOf="@+id/vhAC_image" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/vhAC_xp"
+        android:id="@+id/vhAC_xp"
+        android:layout_below="@+id/vhAC_hpMax"
+        android:layout_alignLeft="@+id/vhAC_hpMax"
+        android:layout_alignStart="@+id/vhAC_hpMax" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/vhAC_tapToPlay"
+        android:id="@+id/vhAC_request"
+        android:layout_below="@+id/vhAC_xp"
+        android:layout_alignLeft="@+id/vhAC_xp"
+        android:layout_alignStart="@+id/vhAC_xp" />
+</RelativeLayout>

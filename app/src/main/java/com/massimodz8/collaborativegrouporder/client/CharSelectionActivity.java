@@ -6,7 +6,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
@@ -20,8 +27,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 public class CharSelectionActivity extends AppCompatActivity {
     // Before starting this activity, make sure to populate its connection parameters and friends.
@@ -64,6 +69,9 @@ public class CharSelectionActivity extends AppCompatActivity {
 
         party = connectedParty;
         connectedParty = null;
+
+        RecyclerView list = (RecyclerView) findViewById(R.id.csa_pcList);
+        list.setAdapter(new MyLister());
     }
 
     private Pumper netPump;
@@ -101,92 +109,67 @@ public class CharSelectionActivity extends AppCompatActivity {
         new AlertDialog.Builder(this).setMessage("TODO: take currently assigned characters and prepare to exit").show();
     }
 
-    ArrayList<Network.PlayingCharacterDefinition> playedHere = new ArrayList<>();
-    ArrayList<Network.PlayingCharacterDefinition> elsewhere = new ArrayList<>();
-    ArrayList<Network.PlayingCharacterDefinition> unassigned = new ArrayList<>();
-    ArrayList<Network.PlayingCharacterDefinition> requested = new ArrayList<>();
-    Map<Network.PlayingCharacterDefinition, Integer> requestIndex = new IdentityHashMap<>();
+    private static class TransactingCharacter {
+        static final int PLAYED_HERE = 0;
+        static final int PLAYED_SOMEWHERE = 1;
+        static final int AVAILABLE = 2;
+        static final int NO_REQUEST = -1;
+        int type = AVAILABLE;
+        int pending = NO_REQUEST; // check type to understand if being given away or being requested
+        final Network.PlayingCharacterDefinition pc;
 
-    private static Network.PlayingCharacterDefinition matchKey(ArrayList<Network.PlayingCharacterDefinition> container, int groupId) {
-        for (Network.PlayingCharacterDefinition check : container) {
-            if(check.peerKey == groupId) return check;
+        public TransactingCharacter(Network.PlayingCharacterDefinition pc) {
+            this.pc = pc;
         }
-        return null;
+        int set(int type) {
+            int res = type != this.type || pending != NO_REQUEST? 1 : 0;
+            this.type = type;
+            pending = NO_REQUEST;
+            return res;
+        }
+        boolean relevant(int requestCount) {
+            if(pending == NO_REQUEST) return false;
+            return pending <= requestCount;
+        }
     }
 
-    private static boolean moveByKey(int peerKey, ArrayList<Network.PlayingCharacterDefinition> src, ArrayList<Network.PlayingCharacterDefinition> dst) {
-        for(int loop = 0; loop < src.size(); loop++) {
-            Network.PlayingCharacterDefinition el = src.get(loop);
-            if(el.peerKey == peerKey) {
-                src.remove(loop);
-                dst.add(el);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /// This is very similar to moveByKey but moves only if the requestCount is at least the same as the number returned from requestIndex.
-    /// If not, it means my request is not processed yet so I cannot really make anything about it.
-    private boolean moveIfProcessed(int requestCount, int peerKey, ArrayList<Network.PlayingCharacterDefinition> src, ArrayList<Network.PlayingCharacterDefinition> dst) {
-        for(int loop = 0; loop < requested.size(); loop++) {
-            Network.PlayingCharacterDefinition el = src.get(loop);
-            Integer when = requestIndex.get(el);
-            if(null == when) continue; // impossible by construction
-            if(el.peerKey == peerKey && requestCount >= when) {
-                src.remove(loop);
-                dst.add(el);
-                return true;
-            }
-        }
-        return false;
-    }
-
+    ArrayList<TransactingCharacter> chars = new ArrayList<>();
 
     private void dispatch(Network.PlayingCharacterList list) {
-        int takenAway = 0, refused = 0;
+        int takenAway = 0, refused = 0, changes = 0;
         switch (list.set) {
-            case Network.PlayingCharacterList.READY: { // READY is characters bound to devices not you.
+            case Network.PlayingCharacterList.READY:   // READY is characters bound to devices not you.
+            case Network.PlayingCharacterList.AVAIL: { // AVAIL is not bound to you nor anyone else
+                // For our purposes what matters here is that we either dont' get owneship or we lose it, they're the same.
                 for (Network.PlayingCharacterDefinition pc : list.payload) {
-                    if(matchKey(elsewhere, pc.peerKey) != null) continue; // nothing to do, already ok, lists are not incremental
-                    if(moveByKey(pc.peerKey, unassigned, elsewhere)) continue; // typical, not worth emphatizing
-                    if(moveByKey(pc.peerKey, playedHere, elsewhere)) takenAway++;
-                    else if(moveByKey(pc.peerKey, requested, elsewhere)) refused++;
-                    else elsewhere.add(pc); // new peerkey
-                }
-            } break;
-            case Network.PlayingCharacterList.AVAIL: {
-                for (Network.PlayingCharacterDefinition pc : list.payload) {
-                    if(matchKey(unassigned, pc.peerKey) != null) continue; // changes nothing
-                    if(moveByKey(pc.peerKey, elsewhere, unassigned)) continue; // I don't really care
-                    if(moveByKey(pc.peerKey, playedHere, unassigned)) takenAway++;
-                    else if(moveIfProcessed(list.requestCount, pc.peerKey, requested, unassigned)) refused++;
-                    else unassigned.add(pc);
+                    TransactingCharacter known = chars.get(pc.peerKey);
+                    if(null == known) {
+                        chars.add(new TransactingCharacter(pc));
+                        if(list.set == Network.PlayingCharacterList.READY) chars.get(pc.peerKey).type = TransactingCharacter.PLAYED_SOMEWHERE;
+                        changes++;
+                        continue;
+                    }
+                    // Assigned to someone else. Two conditions here worth signaling.
+                    if(known.type == TransactingCharacter.PLAYED_HERE && known.pending == TransactingCharacter.NO_REQUEST) takenAway++;
+                    else if(known.type == TransactingCharacter.AVAILABLE && known.relevant(list.requestCount)) refused++;
+                    int status = list.set == Network.PlayingCharacterList.READY? TransactingCharacter.PLAYED_SOMEWHERE : TransactingCharacter.AVAILABLE;
+                    changes += known.set(status);
                 }
             } break;
             case Network.PlayingCharacterList.YOURS:
                 case Network.PlayingCharacterList.YOURS_DEFINITIVE: { // definitive is the same as further processing happens on pump detach
                 for (Network.PlayingCharacterDefinition pc : list.payload) {
-                    if(moveByKey(pc.peerKey, unassigned, playedHere)) continue; // that's fine. I guess.
-                    if(moveByKey(pc.peerKey, elsewhere, playedHere)) continue; // I don't think it's worth signaling.
-                    if(moveIfProcessed(list.requestCount, pc.peerKey, requested, playedHere)) { // my request has been satisfied
-                        requestIndex.remove(pc);
+                    TransactingCharacter known = chars.get(pc.peerKey);
+                    if(null == known) {
+                        TransactingCharacter add = new TransactingCharacter(pc);
+                        add.type = TransactingCharacter.PLAYED_HERE;
+                        chars.add(add);
+                        changes++;
                         continue;
                     }
-                    // Small complication here, might negate a 'I want to give up this character' request.
-                    // As a start, let's check if that's an id I know about.
-                    Network.PlayingCharacterDefinition match = matchKey(playedHere, pc.peerKey);
-                    if(match == null) {
-                        playedHere.add(pc);
-                        continue; // I got a new one and it's already mine.
-                    }
-                    // Otherwise, if I have requested to give up I might have to signal this and clear, otherwise it's nop.
-                    Integer when = requestIndex.get(match);
-                    if(when == null) continue;
-                    if(when < list.requestCount) {
-                        requestIndex.remove(match);
-                        refused++;
-                    }
+                    // Assigned to me. Signal if this is a refusal of taking my char back, otherwise it's fine.
+                    if(known.type == TransactingCharacter.PLAYED_HERE && known.relevant(list.requestCount)) refused++;
+                    changes += known.set(TransactingCharacter.PLAYED_HERE);
                 }
             } break;
             default:
@@ -207,5 +190,201 @@ public class CharSelectionActivity extends AppCompatActivity {
             if(refused != 1) text = String.format(text, refused);
             Snackbar.make(root, text, Snackbar.LENGTH_SHORT).show();
         }
+        if(refused != 0 || takenAway != 0 || changes != 0) {
+            RecyclerView view = (RecyclerView) findViewById(R.id.csa_pcList);
+            view.getAdapter().notifyDataSetChanged();
+        }
+    }
+
+    private static abstract class VariedHolder extends RecyclerView.ViewHolder {
+        public VariedHolder(View itemView) {
+            super(itemView);
+        }
+
+        public abstract void bind(TransactingCharacter o);
+    }
+
+    private static class PlayedHereSeparator extends VariedHolder {
+        static final int TYPE = 0;
+        public PlayedHereSeparator(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        public void bind(TransactingCharacter o) {
+            // nothing to do with this
+        }
+    }
+
+    private static class AvailableSeparator extends VariedHolder {
+        static final int TYPE = 1;
+        public AvailableSeparator(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        public void bind(TransactingCharacter o) {
+            // nop for the time being
+        }
+    }
+
+    private class SomewhereSeparator extends VariedHolder { // not really, just a textview, but made layout for simplicity
+        static final int TYPE = 2;
+        TextView label;
+        public SomewhereSeparator(View itemView) {
+            super(itemView);
+            label = (TextView) itemView.findViewById(R.id.vh_cs_somewhereCount);
+        }
+
+        @Override
+        public void bind(TransactingCharacter o) {
+            int count = count(TransactingCharacter.PLAYED_SOMEWHERE);
+            String msg;
+            if(count == 1) msg = getString(R.string.csa_oneCharSomewhere);
+            else msg = String.format(getString(R.string.csa_pluralCharsSomewhere), count);
+            label.setText(msg);
+        }
+    }
+
+    private static class PlayedHereHolder extends VariedHolder { // not really, just a textview, but made layout for simplicity
+        static final int TYPE = 3;
+        ImageView avatar;
+        TextView name;
+
+        public PlayedHereHolder(View itemView) {
+            super(itemView);
+            avatar = (ImageView) itemView.findViewById(R.id.vhPHC_image);
+            name = (TextView) itemView.findViewById(R.id.vhPHC_name);
+        }
+
+        @Override
+        public void bind(TransactingCharacter o) {
+            name.setText(o.pc.name);
+        }
+    }
+
+    private class AvailableHolder extends VariedHolder { // not really, just a textview, but made layout for simplicity
+        static final int TYPE = 4;
+        ImageView avatar;
+        TextView name, level, hpmax, xp;
+        CheckBox request;
+        boolean ignoreCheck;
+
+        public AvailableHolder(View itemView) {
+            super(itemView);
+        }
+
+        @Override
+        public void bind(TransactingCharacter o) {
+            name.setText(o.pc.name);
+            level.setText(String.format(getString(R.string.vhAC_level), o.pc.level));
+            hpmax.setText(String.format(getString(R.string.vhAC_hpMax), o.pc.healthPoints));
+            xp.setText(String.format(getString(R.string.vhAC_xp), o.pc.experience));
+            ignoreCheck = true;
+            request.setChecked(o.pending != TransactingCharacter.NO_REQUEST);
+            request.setText(o.pending != TransactingCharacter.NO_REQUEST? R.string.vhAC_requestedHere : R.string.vhAC_tapToPlay);
+        }
+    }
+
+    private class MyLister extends RecyclerView.Adapter<VariedHolder> {
+        @Override
+        public int getItemCount() {
+            int here = count(TransactingCharacter.PLAYED_HERE);
+            int avail = count(TransactingCharacter.AVAILABLE);
+            int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
+            int separators = 0;
+            if(here != 0) separators++;
+            if(avail != 0) separators++;
+            if(somewhere != 0) separators++;
+            return here + avail + separators; // characters assigned elsewhere are hidden.
+
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            int here = count(TransactingCharacter.PLAYED_HERE);
+            int avail = count(TransactingCharacter.AVAILABLE);
+            //int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
+            if(here != 0) {
+                if(position == 0) return PlayedHereSeparator.TYPE;
+                position--;
+                if(position < here) return PlayedHereHolder.TYPE;
+                position -= here;
+            }
+            if(avail != 0) {
+                if(position == 0) return AvailableSeparator.TYPE;
+                position--;
+                if(position < avail) return AvailableHolder.TYPE;
+                //position -= here;
+            }
+            return SomewhereSeparator.TYPE;
+        }
+
+        @Override
+        public VariedHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inf = getLayoutInflater();
+            switch(viewType) {
+                case AvailableSeparator.TYPE:
+                    return new AvailableSeparator(inf.inflate(R.layout.vh_character_selection_available_separator, parent, false));
+                case SomewhereSeparator.TYPE:
+                    return new SomewhereSeparator(inf.inflate(R.layout.vh_character_selection_somewhere_separator, parent, false));
+                case PlayedHereSeparator.TYPE:
+                    return new PlayedHereSeparator(inf.inflate(R.layout.vh_character_selection_here_separator, parent, false));
+                case AvailableHolder.TYPE:
+                    return new AvailableHolder(inf.inflate(R.layout.vh_character_selection_available_character, parent, false));
+                case PlayedHereHolder.TYPE:
+                    return new PlayedHereHolder(inf.inflate(R.layout.vh_character_selection_played_here_character, parent, false));
+            }
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(VariedHolder holder, int position) {
+            int here = count(TransactingCharacter.PLAYED_HERE);
+            int avail = count(TransactingCharacter.AVAILABLE);
+            int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
+            if(here != 0) {
+                if(position == 0) {
+                    holder.bind(null);
+                    return;
+                }
+                position--;
+                if(position < here) {
+                    holder.bind(getFilteredCharacter(position, TransactingCharacter.PLAYED_HERE));
+                    return;
+                }
+                position -= here;
+            }
+            if(avail != 0) {
+                if(position == 0) {
+                    holder.bind(null);
+                    return;
+                }
+                position--;
+                if(position < avail) {
+                    holder.bind(getFilteredCharacter(position, TransactingCharacter.AVAILABLE));
+                    return;
+                }
+            }
+            // must be SomewhereSeparator
+            holder.bind(null);
+        }
+    }
+
+    private int count(int type) {
+        int match = 0;
+        for(TransactingCharacter el : chars) {
+            if(type == el.type) match++;
+        }
+        return match;
+    }
+
+    private TransactingCharacter getFilteredCharacter(int position, int filter) {
+        for(TransactingCharacter pc : chars) {
+            if(pc.type != filter) continue;
+            if(position == 0) return pc;
+            position--;
+        }
+        return null;
     }
 }

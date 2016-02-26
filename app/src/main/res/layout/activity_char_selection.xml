@@ -21,7 +21,7 @@
         android:id="@+id/csa_guiRoot">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/csa_deviceList"
+            android:id="@+id/csa_pcList"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
