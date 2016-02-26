@@ -15,4 +15,5 @@ public interface ProtoBufferEnum {
     int GROUP_READY = 7;
 
     int CHARACTER_LIST = 8;
+    int CHARACTER_MOVE_REQUEST = 9;
 }

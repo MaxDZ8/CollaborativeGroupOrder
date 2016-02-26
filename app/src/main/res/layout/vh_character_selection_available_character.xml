@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp" >
+    android:padding="8dp"
+    android:background="?android:attr/selectableItemBackground">
 
     <ImageView
         android:layout_width="wrap_content"
@@ -10,12 +11,11 @@
         android:id="@+id/vhAC_image"
         android:layout_alignParentTop="false"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
+        android:layout_alignParentStart="false"
         android:src="@drawable/placeholder_todo"
         android:contentDescription="@string/vhAC_imageDesc"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -58,12 +58,16 @@
         android:layout_alignLeft="@+id/vhAC_hpMax"
         android:layout_alignStart="@+id/vhAC_hpMax" />
 
-    <CheckBox
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/vhAC_tapToPlay"
-        android:id="@+id/vhAC_request"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/vhAC_requested"
+        android:id="@+id/vhAC_requested"
         android:layout_below="@+id/vhAC_xp"
-        android:layout_alignLeft="@+id/vhAC_xp"
-        android:layout_alignStart="@+id/vhAC_xp" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="false"
+        android:visibility="gone"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout>

@@ -7,13 +7,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -35,6 +36,7 @@ public class CharSelectionActivity extends AppCompatActivity {
     private static Network.PlayingCharacterList pcList; // this can be of 4 different types... and can actually be null, even though it doesn't make sense.
 
     private PersistentStorage.PartyClientData.Group party;
+    private MessageChannel pipe;
 
     public static void prepare(Pumper.MessagePumpingThread pipe, PersistentStorage.PartyClientData.Group info, Network.PlayingCharacterList last) {
         serverPipe = pipe;
@@ -60,7 +62,32 @@ public class CharSelectionActivity extends AppCompatActivity {
         handler = new MyHandler(this);
 
         RecyclerView list = (RecyclerView) findViewById(R.id.csa_pcList);
-        list.setAdapter(new MyLister());
+        final RecyclerView.Adapter adapter = new MyLister();
+        list.setAdapter(adapter);
+        list.addItemDecoration(new PreSeparatorDecorator(list, this) {
+            @Override
+            protected boolean isEligible(int position) {
+                // see adapter's onBindViewHolder
+                int here = count(TransactingCharacter.PLAYED_HERE);
+                int avail = count(TransactingCharacter.AVAILABLE);
+                //int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
+                if (here != 0) {
+                    if (position == 0) return false;
+                    position--;
+                    if (position < here) return position != 0;
+                    position -= here;
+                }
+                if (avail != 0) {
+                    if (position == 0) return false;
+                    position--;
+                    if (position < avail) return position != 0;
+                }
+                return false;
+            }
+        });
+        final ItemTouchHelper swiper = new ItemTouchHelper(new MyItemTouchCallback());
+        list.addItemDecoration(swiper);
+        swiper.attachToRecyclerView(list);
 
         party = connectedParty;
         connectedParty = null;
@@ -68,6 +95,7 @@ public class CharSelectionActivity extends AppCompatActivity {
         if(null != pcList) dispatch(pcList);
         pcList = null;
 
+        pipe = serverPipe.getSource();
         netPump.pump(serverPipe);
         serverPipe = null;
     }
@@ -134,7 +162,6 @@ public class CharSelectionActivity extends AppCompatActivity {
         static final int AVAILABLE = 2;
         static final int NO_REQUEST = -1;
         int type = AVAILABLE;
-        int pending = NO_REQUEST; // check type to understand if being given away or being requested
         final Network.PlayingCharacterDefinition pc;
 
         public TransactingCharacter(Network.PlayingCharacterDefinition pc) {
@@ -145,6 +172,12 @@ public class CharSelectionActivity extends AppCompatActivity {
             this.type = type;
             pending = NO_REQUEST;
             return res;
+        }
+
+        private int pending = NO_REQUEST; // check type to understand if being given away or being requested
+        static int requestCount = 0;
+        int newRequest() {
+            return pending = requestCount++;
         }
         boolean relevant(int requestCount) {
             return pending != NO_REQUEST && pending <= requestCount;
@@ -269,6 +302,7 @@ public class CharSelectionActivity extends AppCompatActivity {
         static final int TYPE = 3;
         ImageView avatar;
         TextView name;
+        public int charKey;
 
         public PlayedHereHolder(View itemView) {
             super(itemView);
@@ -278,16 +312,16 @@ public class CharSelectionActivity extends AppCompatActivity {
 
         @Override
         public void bind(TransactingCharacter o) {
+            charKey = o.pc.peerKey;
             name.setText(o.pc.name);
         }
     }
 
-    private class AvailableHolder extends VariedHolder { // not really, just a textview, but made layout for simplicity
+    private class AvailableHolder extends VariedHolder implements View.OnClickListener { // not really, just a textview, but made layout for simplicity
         static final int TYPE = 4;
         ImageView avatar;
-        TextView name, level, hpmax, xp;
-        CheckBox request;
-        boolean ignoreCheck;
+        TextView name, level, hpmax, xp, requested;
+        int charKey;
 
         public AvailableHolder(View itemView) {
             super(itemView);
@@ -296,18 +330,23 @@ public class CharSelectionActivity extends AppCompatActivity {
             level = (TextView) itemView.findViewById(R.id.vhAC_level);
             hpmax = (TextView) itemView.findViewById(R.id.vhAC_hpMax);
             xp = (TextView) itemView.findViewById(R.id.vhAC_xp);
-            request = (CheckBox) itemView.findViewById(R.id.vhAC_request);
+            requested = (TextView) itemView.findViewById(R.id.vhAC_requested);
+            itemView.setOnClickListener(this);
         }
 
         @Override
         public void bind(TransactingCharacter o) {
+            charKey = o.pc.peerKey;
             name.setText(o.pc.name);
             level.setText(String.format(getString(R.string.vhAC_level), o.pc.level));
             hpmax.setText(String.format(getString(R.string.vhAC_hpMax), o.pc.healthPoints));
             xp.setText(String.format(getString(R.string.vhAC_xp), o.pc.experience));
-            ignoreCheck = true;
-            request.setChecked(o.pending != TransactingCharacter.NO_REQUEST);
-            request.setText(o.pending != TransactingCharacter.NO_REQUEST? R.string.vhAC_requestedHere : R.string.vhAC_tapToPlay);
+            requested.setVisibility(o.pending != TransactingCharacter.NO_REQUEST? View.VISIBLE : View.GONE);
+        }
+
+        @Override
+        public void onClick(View v) {
+            characterRequest(charKey);
         }
     }
 
@@ -417,5 +456,57 @@ public class CharSelectionActivity extends AppCompatActivity {
             if(pc.pc.peerKey == key) return pc;
         }
         return null;
+    }
+
+
+    /// Either ask a char to be assigned to me or ask it to be given away.
+    private void characterRequest(int charKey) {
+        TransactingCharacter character = getCharacterByKey(charKey);
+        if(null == character) return; // impossible
+        // It might be AVAILABLE or PLAYED_HERE, it doesn't matter to me, get request and notify.
+        if(character.pending != TransactingCharacter.NO_REQUEST) return; // don't mess with us.
+        character.newRequest();
+        ((RecyclerView)findViewById(R.id.csa_pcList)).getAdapter().notifyDataSetChanged();
+
+        final Network.PlayingCharacterMoveRequest payload = new Network.PlayingCharacterMoveRequest();
+        payload.character = charKey;
+        payload.take = character.type == TransactingCharacter.AVAILABLE;
+        new Thread() {
+            public void run() {
+                try {
+                    pipe.writeSync(ProtoBufferEnum.CHARACTER_MOVE_REQUEST, payload);
+                } catch (IOException e) {
+                    // suppress this. This is huge, but I need something better designed to deal with errors,
+                    // perhaps I will have my AppCompatActivityWithPendingAsyncOperations class.
+                }
+            }
+        }.start();
+    }
+
+    class MyItemTouchCallback extends ItemTouchHelper.SimpleCallback {
+        static final int DRAG_FORBIDDEN = 0;
+        static final int SWIPE_HORIZONTAL = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
+
+        MyItemTouchCallback() {
+            super(DRAG_FORBIDDEN, SWIPE_HORIZONTAL);
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            if(!(viewHolder instanceof PlayedHereHolder)) return;
+            PlayedHereHolder real = (PlayedHereHolder)viewHolder;
+            characterRequest(real.charKey);
+        }
+
+        @Override
+        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            if(viewHolder instanceof PlayedHereHolder) return makeMovementFlags(DRAG_FORBIDDEN, SWIPE_HORIZONTAL);
+            return 0;
+        }
     }
 }

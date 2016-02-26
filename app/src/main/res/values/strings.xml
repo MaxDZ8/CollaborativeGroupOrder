@@ -326,5 +326,6 @@
     <string name="csa_oneCharSomewhere">One character played on another device.</string>
     <string name="csa_pluralCharsSomewhere">%1$d characters played elsewhere.</string>
     <string name="vhAC_requestedHere">Requested to play here.</string>
+    <string name="vhAC_requested">Requested to be played on this device</string>
 
 </resources>
