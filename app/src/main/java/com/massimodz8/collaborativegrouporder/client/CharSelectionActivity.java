@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.R;
-import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
@@ -73,6 +72,27 @@ public class CharSelectionActivity extends AppCompatActivity {
         serverPipe = null;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(null != netPump) {
+            final Pumper.MessagePumpingThread[] threads = netPump.move();
+            for (Pumper.MessagePumpingThread worker : threads) worker.interrupt();
+            new Thread() {
+                @Override
+                public void run() {
+                    for (Pumper.MessagePumpingThread worker : threads) {
+                        try {
+                            worker.getSource().socket.close();
+                        } catch (IOException e) {
+                            // it's a goner anyway
+                        }
+                    }
+                }
+            }.start();
+        }
+    }
+
     private Pumper netPump;
     private Handler handler;
 
@@ -84,7 +104,7 @@ public class CharSelectionActivity extends AppCompatActivity {
         final WeakReference<CharSelectionActivity> self;
 
         private MyHandler(CharSelectionActivity self) {
-            this.self = new WeakReference<CharSelectionActivity>(self);
+            this.self = new WeakReference<>(self);
         }
 
         @Override
@@ -127,8 +147,7 @@ public class CharSelectionActivity extends AppCompatActivity {
             return res;
         }
         boolean relevant(int requestCount) {
-            if(pending == NO_REQUEST) return false;
-            return pending <= requestCount;
+            return pending != NO_REQUEST && pending <= requestCount;
         }
     }
 
@@ -157,7 +176,7 @@ public class CharSelectionActivity extends AppCompatActivity {
                 }
             } break;
             case Network.PlayingCharacterList.YOURS:
-                case Network.PlayingCharacterList.YOURS_DEFINITIVE: { // definitive is the same as further processing happens on pump detach
+            case Network.PlayingCharacterList.YOURS_DEFINITIVE: { // definitive is the same as further processing happens on pump detach
                 for (Network.PlayingCharacterDefinition pc : list.payload) {
                     TransactingCharacter known = getCharacterByKey(pc.peerKey);
                     if(null == known) {
@@ -272,6 +291,12 @@ public class CharSelectionActivity extends AppCompatActivity {
 
         public AvailableHolder(View itemView) {
             super(itemView);
+            avatar = (ImageView) itemView.findViewById(R.id.vhAC_image);
+            name = (TextView) itemView.findViewById(R.id.vhAC_name);
+            level = (TextView) itemView.findViewById(R.id.vhAC_level);
+            hpmax = (TextView) itemView.findViewById(R.id.vhAC_hpMax);
+            xp = (TextView) itemView.findViewById(R.id.vhAC_xp);
+            request = (CheckBox) itemView.findViewById(R.id.vhAC_request);
         }
 
         @Override
@@ -297,7 +322,6 @@ public class CharSelectionActivity extends AppCompatActivity {
             if(avail != 0) separators++;
             if(somewhere != 0) separators++;
             return here + avail + separators; // characters assigned elsewhere are hidden.
-
         }
 
         @Override
@@ -342,7 +366,7 @@ public class CharSelectionActivity extends AppCompatActivity {
         public void onBindViewHolder(VariedHolder holder, int position) {
             int here = count(TransactingCharacter.PLAYED_HERE);
             int avail = count(TransactingCharacter.AVAILABLE);
-            int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
+            //int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
             if(here != 0) {
                 if(position == 0) {
                     holder.bind(null);

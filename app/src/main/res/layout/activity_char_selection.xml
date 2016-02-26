@@ -24,7 +24,7 @@
             android:id="@+id/csa_pcList"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="fill_parent"
             app:layoutManager="LinearLayoutManager" />
 
         <TextView
