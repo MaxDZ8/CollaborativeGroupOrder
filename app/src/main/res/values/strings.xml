@@ -288,7 +288,7 @@
     <string name="nsdError_unknown">unknown error</string>
     <string name="card_character_classesAndLevels">Classes and levels</string>
 
-    <string name="jsa_title">JoinSessionActivity</string>
+    <string name="jsa_title">Join party</string>
     <string name="jsa_initializing">Initializing…</string>
     <string name="vhJP_statusIcon">Party join status</string>
     <string name="vhJP_options">Options: %1$s</string>

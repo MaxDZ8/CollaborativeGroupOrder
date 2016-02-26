@@ -141,10 +141,11 @@ public class CharSelectionActivity extends AppCompatActivity {
             case Network.PlayingCharacterList.AVAIL: { // AVAIL is not bound to you nor anyone else
                 // For our purposes what matters here is that we either dont' get owneship or we lose it, they're the same.
                 for (Network.PlayingCharacterDefinition pc : list.payload) {
-                    TransactingCharacter known = chars.get(pc.peerKey);
+                    TransactingCharacter known = getCharacterByKey(pc.peerKey);
                     if(null == known) {
-                        chars.add(new TransactingCharacter(pc));
-                        if(list.set == Network.PlayingCharacterList.READY) chars.get(pc.peerKey).type = TransactingCharacter.PLAYED_SOMEWHERE;
+                        TransactingCharacter add = new TransactingCharacter(pc);
+                        chars.add(add);
+                        if(list.set == Network.PlayingCharacterList.READY) add.type = TransactingCharacter.PLAYED_SOMEWHERE;
                         changes++;
                         continue;
                     }
@@ -158,7 +159,7 @@ public class CharSelectionActivity extends AppCompatActivity {
             case Network.PlayingCharacterList.YOURS:
                 case Network.PlayingCharacterList.YOURS_DEFINITIVE: { // definitive is the same as further processing happens on pump detach
                 for (Network.PlayingCharacterDefinition pc : list.payload) {
-                    TransactingCharacter known = chars.get(pc.peerKey);
+                    TransactingCharacter known = getCharacterByKey(pc.peerKey);
                     if(null == known) {
                         TransactingCharacter add = new TransactingCharacter(pc);
                         add.type = TransactingCharacter.PLAYED_HERE;
@@ -383,6 +384,13 @@ public class CharSelectionActivity extends AppCompatActivity {
             if(pc.type != filter) continue;
             if(position == 0) return pc;
             position--;
+        }
+        return null;
+    }
+
+    private TransactingCharacter getCharacterByKey(int key) {
+        for(TransactingCharacter pc : chars) {
+            if(pc.pc.peerKey == key) return pc;
         }
         return null;
     }
