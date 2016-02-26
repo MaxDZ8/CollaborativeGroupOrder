@@ -33,18 +33,6 @@
             android:indeterminate="true" />
 
         <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="A D V E R T I S I N G\nH E R E"
-            android:layout_gravity="center_horizontal"
-            android:textColor="#f200ff"
-            android:background="#00ff11"
-            android:gravity="center_horizontal"
-            android:textStyle="bold|italic"
-            android:textSize="32sp" />
-
-        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"

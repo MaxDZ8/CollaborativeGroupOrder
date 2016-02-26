@@ -75,21 +75,4 @@
         android:layout_height="0dp"
         android:layout_weight=".5" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Place holder for ads"
-        android:id="@+id/textView"
-        android:editable="false"
-        android:enabled="true"
-        android:layout_gravity="bottom|center_horizontal"
-        android:gravity="center_horizontal"
-        android:textColor="#ff00ff"
-        android:textStyle="bold|italic"
-        android:background="#00ff00"
-        android:textSize="28sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="false" />
 </LinearLayout>

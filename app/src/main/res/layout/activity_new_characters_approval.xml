@@ -35,20 +35,4 @@
         android:enabled="false"
         android:onClick="action_callback" />
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Place holder for ads"
-        android:id="@+id/textView8"
-        android:editable="false"
-        android:enabled="true"
-        android:layout_gravity="bottom|center_horizontal"
-        android:gravity="center_horizontal"
-        android:textColor="#ff00ff"
-        android:textStyle="bold|italic"
-        android:background="#00ff00"
-        android:textSize="28sp"
-        android:layout_marginTop="8sp" />
-
 </LinearLayout>
