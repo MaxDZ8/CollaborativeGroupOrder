@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.LandingServer;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -74,6 +75,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     public static class PlayingDevice {
         public boolean versionMismatchSignaled;
         public byte[] doormat;
+        public int requestsReceived;
 
         /// Use null to mark "this device", to assign playing characters to this device.
         public PlayingDevice(@Nullable MessageChannel pipe) {
@@ -206,6 +208,16 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                         message(MSG_HELLO, new Events.Hello(from, msg));
                         return false;
                     }
+                }).add(ProtoBufferEnum.CHARACTER_OWNERSHIP, new PumpTarget.Callbacks<Network.CharacterOwnership>() {
+                    @Override
+                    public Network.CharacterOwnership make() { return new Network.CharacterOwnership(); }
+
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.CharacterOwnership msg) throws IOException {
+                        if(msg.type != Network.CharacterOwnership.REQUEST) return false; // non-requests are silently ignored.
+                        message(MSG_CHARACTER_OWNERSHIP_REQUEST, new Events.CharOwnership(from, msg));
+                        return false;
+                    }
                 });
         if(null != appState.pumpers) {
             for (Pumper.MessagePumpingThread worker : appState.pumpers) pumper.pump(worker);
@@ -319,6 +331,10 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                     target.hello(real.origin, real.payload);
                     break;
                 }
+                case MSG_CHARACTER_OWNERSHIP_REQUEST: {
+                    final Events.CharOwnership real = (Events.CharOwnership)msg.obj;
+                    target.charOwnership(real.origin, real.payload);
+                } break;
             }
         }
     }
@@ -375,7 +391,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                     int last = myState.playerDevices.size();
                     myState.playerDevices.add(dev);
                     ((RecyclerView)findViewById(R.id.ga_deviceList)).getAdapter().notifyItemInserted(last);
-                    sendPlayingCharacterLists(dev);
+                    sendPlayingCharacterList(dev);
                 }
             }
             else {
@@ -415,66 +431,46 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         }.start();
     }
 
-    private void sendPlayingCharacterLists(PlayingDevice dev) {
-        final Network.PlayingCharacterList avail = new Network.PlayingCharacterList();
-        final Network.PlayingCharacterList yours = new Network.PlayingCharacterList();
-        final Network.PlayingCharacterList ready = new Network.PlayingCharacterList();
-        Network.PlayingCharacterDefinition[] list = new Network.PlayingCharacterDefinition[0];
+    private void sendPlayingCharacterList(PlayingDevice dev) {
+        // TODO: for the time being I just send everything. In the future I might want to do that differently, for example send only a subset of characters depending on device key
+        int peerKey = 0;
+        final ArrayList<Network.PlayingCharacterDefinition> stream = new ArrayList<>(myState.party.usually.party.length);
+        for (PersistentStorage.Actor actor : myState.party.usually.party) {
+            stream.add(simplify(actor, peerKey++));
+        }
+        // Also send a notification for each character which is already assigned to someone else.
+        final ArrayList<Integer> bound = new ArrayList<>(myState.party.usually.party.length);
         for(int loop = 0; loop < myState.assignment.size(); loop++) {
-            if(null != myState.assignment.get(loop)) {
-                Network.PlayingCharacterDefinition[] longer = Arrays.copyOf(list, list.length + 1);
-                longer[list.length] = simplify(myState.party.usually.party[loop], loop);
-                list = longer;
-            }
+            if(myState.assignment.get(loop) != null) bound.add(loop);
         }
-        ready.payload = list;
-        ready.set = Network.PlayingCharacterList.READY;
-        // The avail and yours are a bit more complicated, mostly because...
-        // TODO further logic to be deployed there! Or perhaps before this is even called, IDK. Requires server to remember last assignments and device keys.
-        // TODO For the time being, yours is easy but I still implement it like something else already assigned me my chars.list = new Network.PlayingCharacterDefinition[0];
-        int devIndex = 0;
-        for (int loop = 0; loop < myState.playerDevices.size(); loop++) {
-            if(dev == myState.playerDevices.get(loop)) {
-                devIndex = loop;
-                break;
-            }
-        }
-        for(int loop = 0; loop < myState.assignment.size(); loop++) {
-            Integer binding = myState.assignment.get(loop);
-            if(null != binding && binding == devIndex) {
-                Network.PlayingCharacterDefinition[] longer = Arrays.copyOf(list, list.length + 1);
-                longer[list.length] = simplify(myState.party.usually.party[loop], loop);
-                list = longer;
-            }
-        }
-        yours.payload = list;
-        yours.set = Network.PlayingCharacterList.YOURS;
-        // TODO for the time being, available chars are everything which is not ready but in the future, I might restrict character selection on a pe-device basis.list = new Network.PlayingCharacterDefinition[0];
-        for(int loop = 0; loop < myState.assignment.size(); loop++) {
-            if(null == myState.assignment.get(loop)) {
-                Network.PlayingCharacterDefinition[] longer = Arrays.copyOf(list, list.length + 1);
-                longer[list.length] = simplify(myState.party.usually.party[loop], loop);
-                list = longer;
-            }
-        }
-        avail.payload = list;
-        avail.set = Network.PlayingCharacterList.AVAIL;
-        // An now send... as usual there's the "what if" the activity goes away before we complete.
-        // What I do: nothing. The socket will fail later... I hope. IDK. I still cannot find any decent solution.
+        final Network.CharacterOwnership notification = new Network.CharacterOwnership();
+        notification.ticket = nextValidRequest;
+        notification.type = Network.CharacterOwnership.BOUND;
         final MessageChannel dst = dev.pipe;
         new Thread() {
             @Override
             public void run() {
-                try {
-                    dst.writeSync(ProtoBufferEnum.CHARACTER_LIST, yours);
-                    dst.writeSync(ProtoBufferEnum.CHARACTER_LIST, ready);
-                    dst.writeSync(ProtoBufferEnum.CHARACTER_LIST, avail);
-                } catch (IOException e) {
-                    // suppress and let's hope it's a persistent thing which will cause stuff to go awry.
-                    // TODO: in the future, tick for 'operation completeness' and have a queue of things to be checked. Ugly.
+                for (Network.PlayingCharacterDefinition character : stream) {
+                    try {
+                        dst.writeSync(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, character);
+                    } catch (IOException e) {
+                        // suppress and let's hope it's a persistent thing which will cause stuff to go awry.
+                        // TODO: in the future, tick for 'operation completeness' and have a queue of things to be checked. Ugly.
+                    }
+                }
+                for(Integer key : bound) {
+                    notification.character = key;
+                    try {
+                        dst.writeSync(ProtoBufferEnum.CHARACTER_OWNERSHIP, notification);
+                    } catch (IOException e) {
+                    }
+
                 }
             }
         }.start();
+        /// TODO: we should really be careful about letting the thread finish first and then do further procesesing,
+        // theres some slight chance we might try to send something before the the tread completes and then the messages
+        // would end up being delivered out of order... meh!
     }
 
     private Network.PlayingCharacterDefinition simplify(PersistentStorage.Actor actor, int loop) {
@@ -545,6 +541,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     private static final int MSG_FAILED_ACCEPT = 7;
     private static final int MSG_CONNECTED = 8;
     private static final int MSG_HELLO = 9;
+    private static final int MSG_CHARACTER_OWNERSHIP_REQUEST = 10;
 
     private static final int DOORMAT_BYTES = 32;
 
@@ -660,5 +657,92 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
             }
             return count;
         }
+    }
+
+    private int nextValidRequest = 0;
+
+    private void charOwnership(MessageChannel origin, Network.CharacterOwnership payload) {
+        final int ticket = payload.ticket;
+        payload.ticket = nextValidRequest;
+        if(ticket != nextValidRequest) {
+            payload.type = Network.CharacterOwnership.OBSOLETE;
+            sendingThread(ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, origin);
+            return;
+        }
+        // For this server implementation, the peer keys are just indices in an array!
+        PlayingDevice requester = null;
+        for (PlayingDevice match : myState.playerDevices) {
+            if(origin == match.pipe) {
+                requester = match;
+                break;
+            }
+        }
+        if(payload.character >= myState.party.usually.party.length || requester == null) { // requester asked chars before providing key.
+            payload.type = Network.CharacterOwnership.REJECTED;
+            sendingThread(ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, origin);
+            return;
+        }
+        Integer currentCharOwner = myState.assignment.get(payload.character);
+        if(currentCharOwner != null && currentCharOwner < 0) { // bound to me, silently rejected as mapping to me is a very strong action
+            payload.type = Network.CharacterOwnership.REJECTED;
+            sendingThread(ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, origin);
+            return;
+        }
+        // taking ownership from AVAIL is silently accepted, as it giving ownership away, the first is common, the latter has human factors involved, cannot force someone to play
+        if(currentCharOwner == null || myState.playerDevices.get(currentCharOwner) == requester) {
+            boolean away = currentCharOwner != null && myState.playerDevices.get(currentCharOwner) == requester;
+            Integer newMapping = away? null : myState.playerDevices.indexOf(requester);
+            myState.assignment.set(payload.character, newMapping);
+            payload.type = Network.CharacterOwnership.ACCEPTED;
+            payload.ticket = ++nextValidRequest;
+            sendingThread(ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, origin);
+            final ArrayList<MessageChannel> sendTo = new ArrayList<>(myState.playerDevices.size() - 1);
+            for (PlayingDevice peer : myState.playerDevices) {
+                if(peer.pipe == origin) continue; // got it already asyncronously
+                sendTo.add(peer.pipe);
+            }
+            final Network.CharacterOwnership notification = new Network.CharacterOwnership();
+            notification.ticket = payload.ticket;
+            notification.character = payload.character;
+            notification.type = away? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
+            new Thread() {
+                @Override
+                public void run() {
+                    for (MessageChannel peer : sendTo) {
+                        try {
+                            peer.writeSync(ProtoBufferEnum.CHARACTER_OWNERSHIP, notification);
+                        } catch (IOException e) {
+                            // TODO figure out how to do this reporting errors with care!
+                        }
+                    }
+                }
+            }.start();
+            RecyclerView rv = (RecyclerView) findViewById(R.id.ga_deviceList);
+            rv.getAdapter().notifyDataSetChanged();
+            rv = (RecyclerView)findViewById(R.id.ga_pcUnassignedList);
+            rv.getAdapter().notifyDataSetChanged();
+            return;
+        }
+        // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose
+        // but now requests must be sequential, receiving a second request would make the ticket obsolete and
+        // I don't want all the other requests to be somehow blocked or rejected in the meanwhile...
+        // So reject this instead. Looks like this is the only viable option.
+        payload.type = Network.CharacterOwnership.REJECTED;
+        sendingThread(ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, origin);
+    }
+
+    /// TODO: transition to better activity architecture
+    private void sendingThread(final int protoEnumCode, final MessageNano payload, final MessageChannel dst) {
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    dst.writeSync(protoEnumCode, payload);
+                } catch (IOException e) {
+                    // ughm...
+                    // TODO transition to long-running resistant architecture
+                }
+            }
+        }.start();
     }
 }

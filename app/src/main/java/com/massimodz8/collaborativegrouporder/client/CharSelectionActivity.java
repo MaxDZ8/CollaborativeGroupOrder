@@ -33,15 +33,17 @@ public class CharSelectionActivity extends AppCompatActivity {
     // onCreate assumes those non-null. Just call prepare(...)
     private static Pumper.MessagePumpingThread serverPipe;
     private static PersistentStorage.PartyClientData.Group connectedParty;
-    private static Network.PlayingCharacterList pcList; // this can be of 4 different types... and can actually be null, even though it doesn't make sense.
+    private static Network.PlayingCharacterDefinition character;
 
+    // to move on myState.
     private PersistentStorage.PartyClientData.Group party;
     private MessageChannel pipe;
+    private int ticket;
 
-    public static void prepare(Pumper.MessagePumpingThread pipe, PersistentStorage.PartyClientData.Group info, Network.PlayingCharacterList last) {
+    public static void prepare(Pumper.MessagePumpingThread pipe, PersistentStorage.PartyClientData.Group info, Network.PlayingCharacterDefinition first) {
         serverPipe = pipe;
         connectedParty = info;
-        pcList = last;
+        character = first;
     }
 
     @Override
@@ -49,14 +51,32 @@ public class CharSelectionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_char_selection);
         netPump = new Pumper(handler, MSG_DISCONNECT, MSG_DETACH)
-                .add(ProtoBufferEnum.CHARACTER_LIST, new PumpTarget.Callbacks<Network.PlayingCharacterList>() {
+                .add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
                     @Override
-                    public Network.PlayingCharacterList make() { return new Network.PlayingCharacterList(); }
+                    public Network.PlayingCharacterDefinition make() { return new Network.PlayingCharacterDefinition(); }
 
                     @Override
-                    public boolean mangle(MessageChannel from, Network.PlayingCharacterList msg) throws IOException {
-                        handler.sendMessage(handler.obtainMessage(MSG_LIST_RECEIVED, msg));
-                        return msg.set == Network.PlayingCharacterList.YOURS_DEFINITIVE;
+                    public boolean mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
+                        handler.sendMessage(handler.obtainMessage(MSG_CHARACTER_DEFINITION, msg));
+                        return false;
+                    }
+                }).add(ProtoBufferEnum.CHARACTER_OWNERSHIP, new PumpTarget.Callbacks<Network.CharacterOwnership>() {
+                    @Override
+                    public Network.CharacterOwnership make() { return new Network.CharacterOwnership(); }
+
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.CharacterOwnership msg) throws IOException {
+                        handler.sendMessage(handler.obtainMessage(MSG_CHARACTER_OWNERSHIP, msg));
+                        return false;
+                    }
+                }).add(ProtoBufferEnum.GROUP_READY, new PumpTarget.Callbacks<Network.GroupReady>() {
+                    @Override
+                    public Network.GroupReady make() { return new Network.GroupReady(); }
+
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.GroupReady msg) throws IOException {
+                        handler.sendMessage(handler.obtainMessage(MSG_PARTY_READY, msg));
+                        return true;
                     }
                 });
         handler = new MyHandler(this);
@@ -92,8 +112,8 @@ public class CharSelectionActivity extends AppCompatActivity {
         party = connectedParty;
         connectedParty = null;
 
-        if(null != pcList) dispatch(pcList);
-        pcList = null;
+        if(null != character) addChar(character);
+        character = null;
 
         pipe = serverPipe.getSource();
         netPump.pump(serverPipe);
@@ -126,7 +146,9 @@ public class CharSelectionActivity extends AppCompatActivity {
 
     private static final int MSG_DISCONNECT = 1;
     private static final int MSG_DETACH = 2;
-    private static final int MSG_LIST_RECEIVED = 3;
+    private static final int MSG_CHARACTER_DEFINITION = 3;
+    private static final int MSG_CHARACTER_OWNERSHIP = 4;
+    private static final int MSG_PARTY_READY = 5;
 
     private static class MyHandler extends Handler {
         final WeakReference<CharSelectionActivity> self;
@@ -144,9 +166,23 @@ public class CharSelectionActivity extends AppCompatActivity {
                 case MSG_DETACH: {
                     self.gotoTheRealDeal();
                 } break;
-                case MSG_LIST_RECEIVED: {
-                    Network.PlayingCharacterList real = (Network.PlayingCharacterList) msg.obj;
-                    self.dispatch(real);
+                case MSG_CHARACTER_DEFINITION: {
+                    Network.PlayingCharacterDefinition real = (Network.PlayingCharacterDefinition) msg.obj;
+                    self.addChar(real);
+                } break;
+                case MSG_CHARACTER_OWNERSHIP: {
+                    Network.CharacterOwnership real = (Network.CharacterOwnership)msg.obj;
+                    self.ownership(real);
+                } break;
+                case MSG_PARTY_READY: { // detach will follow soon, just reset all my characters
+                    Network.GroupReady real = (Network.GroupReady)msg.obj;
+                    ArrayList<TransactingCharacter> definitive = new ArrayList<>(real.yours.length);
+                    for (Network.PlayingCharacterDefinition take : real.yours) {
+                        final TransactingCharacter here = new TransactingCharacter(take);
+                        here.type = TransactingCharacter.PLAYED_HERE;
+                        definitive.add(here);
+                    }
+                    self.chars = definitive;
                 } break;
             }
         }
@@ -167,86 +203,111 @@ public class CharSelectionActivity extends AppCompatActivity {
         public TransactingCharacter(Network.PlayingCharacterDefinition pc) {
             this.pc = pc;
         }
-        int set(int type) {
-            int res = type != this.type || pending != NO_REQUEST? 1 : 0;
-            this.type = type;
-            pending = NO_REQUEST;
-            return res;
+
+        int pending = NO_REQUEST; // check type to understand if being given away or being requested
+
+        public void sendRequest(final MessageChannel server) {
+            final Network.CharacterOwnership request = new Network.CharacterOwnership();
+            request.ticket = pending;
+            request.type = Network.CharacterOwnership.REQUEST;
+            request.character = pc.peerKey;
+            new Thread(){
+                @Override
+                public void run() {
+                    try {
+                        server.writeSync(ProtoBufferEnum.CHARACTER_OWNERSHIP, request);
+                    } catch (IOException e) {
+                        // suppress this. This is huge, but I need something better designed to deal with errors,
+                        // perhaps I will have my AppCompatActivityWithPendingAsyncOperations class.
+                        // TODO: transition me to long-running task mode.
+                    }
+                }
+            }.start();
         }
 
-        private int pending = NO_REQUEST; // check type to understand if being given away or being requested
-        static int requestCount = 0;
-        int newRequest() {
-            return pending = requestCount++;
-        }
-        boolean relevant(int requestCount) {
-            return pending != NO_REQUEST && pending <= requestCount;
+        public void toggleOwnership() {
+            if(type == PLAYED_HERE) type = AVAILABLE;
+            else if(type == AVAILABLE) type = PLAYED_HERE;
+            // not called on PLAYED_SOMEWHERE, would be bad bad bad
         }
     }
 
     ArrayList<TransactingCharacter> chars = new ArrayList<>();
 
-    private void dispatch(Network.PlayingCharacterList list) {
-        int takenAway = 0, refused = 0, changes = 0;
-        switch (list.set) {
-            case Network.PlayingCharacterList.READY:   // READY is characters bound to devices not you.
-            case Network.PlayingCharacterList.AVAIL: { // AVAIL is not bound to you nor anyone else
-                // For our purposes what matters here is that we either dont' get owneship or we lose it, they're the same.
-                for (Network.PlayingCharacterDefinition pc : list.payload) {
-                    TransactingCharacter known = getCharacterByKey(pc.peerKey);
-                    if(null == known) {
-                        TransactingCharacter add = new TransactingCharacter(pc);
-                        chars.add(add);
-                        if(list.set == Network.PlayingCharacterList.READY) add.type = TransactingCharacter.PLAYED_SOMEWHERE;
-                        changes++;
-                        continue;
-                    }
-                    // Assigned to someone else. Two conditions here worth signaling.
-                    if(known.type == TransactingCharacter.PLAYED_HERE && known.pending == TransactingCharacter.NO_REQUEST) takenAway++;
-                    else if(known.type == TransactingCharacter.AVAILABLE && known.relevant(list.requestCount)) refused++;
-                    int status = list.set == Network.PlayingCharacterList.READY? TransactingCharacter.PLAYED_SOMEWHERE : TransactingCharacter.AVAILABLE;
-                    changes += known.set(status);
-                }
-            } break;
-            case Network.PlayingCharacterList.YOURS:
-            case Network.PlayingCharacterList.YOURS_DEFINITIVE: { // definitive is the same as further processing happens on pump detach
-                for (Network.PlayingCharacterDefinition pc : list.payload) {
-                    TransactingCharacter known = getCharacterByKey(pc.peerKey);
-                    if(null == known) {
-                        TransactingCharacter add = new TransactingCharacter(pc);
-                        add.type = TransactingCharacter.PLAYED_HERE;
-                        chars.add(add);
-                        changes++;
-                        continue;
-                    }
-                    // Assigned to me. Signal if this is a refusal of taking my char back, otherwise it's fine.
-                    if(known.type == TransactingCharacter.PLAYED_HERE && known.relevant(list.requestCount)) refused++;
-                    changes += known.set(TransactingCharacter.PLAYED_HERE);
-                }
-            } break;
-            default:
-                new AlertDialog.Builder(this)
-                        .setMessage(this.getString(R.string.csa_incoherentCharList))
-                        .show();
+    private void addChar(Network.PlayingCharacterDefinition newDef) {
+        final TransactingCharacter add = new TransactingCharacter(newDef);
+        final TransactingCharacter character = getCharacterByKey(newDef.peerKey);
+        if(null != character) { // redefined. Not really supposed to happen.
+            chars.set(chars.indexOf(character), add);
         }
-        ViewGroup root = null;
-        if(refused != 0) {
-            root = (ViewGroup) findViewById(R.id.csa_guiRoot);
-            String text = getString(refused == 1? R.string.csa_refusedSingular : R.string.csa_refusedPlural);
-            if(refused != 1) text = String.format(text, refused);
-            Snackbar.make(root, text, Snackbar.LENGTH_SHORT).show();
-        }
-        if(takenAway != 0) {
-            if(root == null) root = (ViewGroup) findViewById(R.id.csa_guiRoot);
-            String text = getString(refused == 1? R.string.csa_takenAwaySingular : R.string.csa_takenAwayPlural);
-            if(refused != 1) text = String.format(text, refused);
-            Snackbar.make(root, text, Snackbar.LENGTH_SHORT).show();
-        }
-        if(refused != 0 || takenAway != 0 || changes != 0) {
-            RecyclerView view = (RecyclerView) findViewById(R.id.csa_pcList);
-            view.getAdapter().notifyDataSetChanged();
-        }
+        else chars.add(add);
+        RecyclerView view = (RecyclerView) findViewById(R.id.csa_pcList);
+        view.getAdapter().notifyDataSetChanged();
     }
+
+    void ownership(final Network.CharacterOwnership msg) {
+        ticket = msg.ticket;
+        final TransactingCharacter character = getCharacterByKey(msg.character);
+        if(null == character) return; // super odd. Not sure of what I should be doing in this case. In theory the server prevents this from happening but it currently has a quirk
+        switch(msg.type) {
+            case Network.CharacterOwnership.REQUEST: return; // the server does not use this currently... perhaps to update ticket?
+            case Network.CharacterOwnership.OBSOLETE: { // just try again with the updated ticket.
+                character.sendRequest(pipe);
+                return;
+            }
+            case Network.CharacterOwnership.ACCEPTED: {
+                if(character.pending == TransactingCharacter.NO_REQUEST) break; // happens if the server assigned something to us before our request reached it
+                character.pending = TransactingCharacter.NO_REQUEST;
+                character.toggleOwnership();
+                break;
+            }
+            case Network.CharacterOwnership.REJECTED: {
+                if(character.pending == TransactingCharacter.NO_REQUEST) break; // happens if the server assigned something to us before our request reached it
+                character.pending = TransactingCharacter.NO_REQUEST;
+                ViewGroup root = (ViewGroup) findViewById(R.id.csa_guiRoot);
+                String text = String.format(getString(R.string.csa_charOwnershipChangeRefused), character.pc.name);
+                Snackbar.make(root, text, Snackbar.LENGTH_SHORT).show();
+                break;
+            }
+            case Network.CharacterOwnership.YOURS:
+            case Network.CharacterOwnership.AVAIL: {
+                int matched = msg.type == Network.CharacterOwnership.YOURS? TransactingCharacter.PLAYED_HERE : TransactingCharacter.AVAILABLE;
+                if(character.type == matched && character.pending != TransactingCharacter.NO_REQUEST) {
+                    msg.type = Network.CharacterOwnership.REJECTED;
+                    ownership(msg);
+                    return;
+                }
+                character.pending = TransactingCharacter.NO_REQUEST;
+                character.type = matched;
+                break;
+            }
+            case Network.CharacterOwnership.BOUND: { // This is almost like AVAILABLE but not quite.
+                switch(character.type) {
+                    case TransactingCharacter.PLAYED_SOMEWHERE: return;
+                    case TransactingCharacter.PLAYED_HERE:
+                        if(character.pending == TransactingCharacter.NO_REQUEST) {
+                            ViewGroup root = (ViewGroup) findViewById(R.id.csa_guiRoot);
+                            String text = String.format(getString(R.string.csa_charOwnershipToSomeoneUnsolicited), character.pc.name);
+                            Snackbar.make(root, text, Snackbar.LENGTH_SHORT).show();
+                        }
+                        break;
+                    case TransactingCharacter.AVAILABLE:
+                        if(character.pending != TransactingCharacter.NO_REQUEST) {
+                            ViewGroup root = (ViewGroup) findViewById(R.id.csa_guiRoot);
+                            String text = String.format(getString(R.string.csa_charOwnershipRequestToSomeoneElse), character.pc.name);
+                            Snackbar.make(root, text, Snackbar.LENGTH_SHORT).show();
+                        }
+                        character.pending = TransactingCharacter.NO_REQUEST;
+                        character.type = TransactingCharacter.PLAYED_SOMEWHERE;
+                        break;
+                }
+                break;
+            }
+        }
+        final RecyclerView list = (RecyclerView) findViewById(R.id.csa_pcList);
+        list.getAdapter().notifyDataSetChanged();
+    }
+
 
     private static abstract class VariedHolder extends RecyclerView.ViewHolder {
         public VariedHolder(View itemView) {
@@ -458,29 +519,15 @@ public class CharSelectionActivity extends AppCompatActivity {
         return null;
     }
 
-
     /// Either ask a char to be assigned to me or ask it to be given away.
     private void characterRequest(int charKey) {
         TransactingCharacter character = getCharacterByKey(charKey);
         if(null == character) return; // impossible
         // It might be AVAILABLE or PLAYED_HERE, it doesn't matter to me, get request and notify.
         if(character.pending != TransactingCharacter.NO_REQUEST) return; // don't mess with us.
-        character.newRequest();
+        character.pending = ticket++;
         ((RecyclerView)findViewById(R.id.csa_pcList)).getAdapter().notifyDataSetChanged();
-
-        final Network.PlayingCharacterMoveRequest payload = new Network.PlayingCharacterMoveRequest();
-        payload.character = charKey;
-        payload.take = character.type == TransactingCharacter.AVAILABLE;
-        new Thread() {
-            public void run() {
-                try {
-                    pipe.writeSync(ProtoBufferEnum.CHARACTER_MOVE_REQUEST, payload);
-                } catch (IOException e) {
-                    // suppress this. This is huge, but I need something better designed to deal with errors,
-                    // perhaps I will have my AppCompatActivityWithPendingAsyncOperations class.
-                }
-            }
-        }.start();
+        character.sendRequest(pipe);
     }
 
     class MyItemTouchCallback extends ItemTouchHelper.SimpleCallback {

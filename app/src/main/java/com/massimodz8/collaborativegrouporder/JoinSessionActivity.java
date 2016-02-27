@@ -50,12 +50,12 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     public static class Result {
         final Pumper.MessagePumpingThread worker;
         final PersistentStorage.PartyClientData.Group party;
-        final Network.PlayingCharacterList pcList;
+        final Network.PlayingCharacterDefinition first; // if I get one of those it's because I have been identified.
 
-        public Result(Pumper.MessagePumpingThread worker, PersistentStorage.PartyClientData.Group party, Network.PlayingCharacterList pcList) {
+        public Result(Pumper.MessagePumpingThread worker, PersistentStorage.PartyClientData.Group party, Network.PlayingCharacterDefinition first) {
             this.worker = worker;
             this.party = party;
-            this.pcList = pcList;
+            this.first = first;
         }
     }
 
@@ -102,13 +102,13 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                             handler.sendMessage(handler.obtainMessage(MSG_PARTY_INFO, new Events.GroupInfo(from, msg)));
                             return false;
                         }
-                    }).add(ProtoBufferEnum.CHARACTER_LIST, new PumpTarget.Callbacks<Network.PlayingCharacterList>() {
+                    }).add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
                         @Override
-                        public Network.PlayingCharacterList make() { return new Network.PlayingCharacterList(); }
+                        public Network.PlayingCharacterDefinition make() { return new Network.PlayingCharacterDefinition(); }
 
                         @Override
-                        public boolean mangle(MessageChannel from, Network.PlayingCharacterList msg) throws IOException {
-                            handler.sendMessage(handler.obtainMessage(MSG_CHAR_LIST, new Events.CharList(from, msg)));
+                        public boolean mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
+                            handler.sendMessage(handler.obtainMessage(MSG_CHAR_DEFINITION, new Events.CharacterDefinition(from, msg)));
                             return true;
                         }
                     });
@@ -188,7 +188,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     private static final int MSG_DISCONNECTED = 2;
     private static final int MSG_DETACHED = 3;
     private static final int MSG_PARTY_INFO = 4;
-    private static final int MSG_CHAR_LIST = 5;
+    private static final int MSG_CHAR_DEFINITION = 5;
 
     State myState;
     Handler handler;
@@ -198,7 +198,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         final NsdServiceInfo source; /// set first
         volatile MessageChannel pipe;
         volatile PartyInfo party; /// We get this from successful handshake
-        volatile Network.PlayingCharacterList charList; // we get this from successful authorize
+        volatile Network.PlayingCharacterDefinition charDef; // we get this from successful authorize
 
         int lastSend = SENT_NOTHING;
 
@@ -339,9 +339,9 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                     Events.GroupInfo real = (Events.GroupInfo)msg.obj;
                     me.partyInfo(real.which, real.payload);
                 } break;
-                case MSG_CHAR_LIST: {
-                    Events.CharList real = (Events.CharList)msg.obj;
-                    me.charList(real.origin, real.payload);
+                case MSG_CHAR_DEFINITION: {
+                    Events.CharacterDefinition real = (Events.CharacterDefinition)msg.obj;
+                    me.charDef(real.origin, real.character);
                 } break;
             }
         }
@@ -376,7 +376,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         myState.attempts.remove(check);
         pumper.move(move.getSource());
         final CrossActivityShare share = (CrossActivityShare) getApplicationContext();
-        share.jsaResult = new Result(move, myState.party, check.charList);
+        share.jsaResult = new Result(move, myState.party, check.charDef);
         setResult(RESULT_OK);
         finish();
     }
@@ -418,7 +418,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
 
     }
 
-    private void charList(MessageChannel origin, Network.PlayingCharacterList payload) {
+    private void charDef(MessageChannel origin, Network.PlayingCharacterDefinition payload) {
         PartyAttempt match = null;
         for (PartyAttempt test : myState.attempts) {
             if(test.pipe == origin) {
@@ -427,7 +427,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
             }
         }
         if(null == match) return; // impossible but make static tools happy
-        match.charList = payload; // wait for detach to populate my pumper, then go to PC selection.
+        match.charDef = payload; // wait for detach to populate my pumper, then go to PC selection.
     }
 
     private void partyInfo(MessageChannel which, Network.GroupInfo payload) {

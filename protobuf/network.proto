@@ -71,33 +71,54 @@ message PlayingCharacterDefinition {
 // Server -> client
 message GroupReady {
     bool go_adventuring = 1; // if true then terminate "join group" activity and open "go adventuring" activity right away.
+    repeated PlayingCharacterDefinition yours = 2; // only considered when terminating the character ownership process below.
 }
 
-////////////////////////////////////////////////////////////////
-//
-// Below: normal 'adventuring' sub-protocol. We start by assigning PCs to devices.
-//
-////////////////////////////////////////////////////////////////
 
-
-// Server -> client
-message PlayingCharacterList {
-    enum ListType {
-        READY = 0;
-        AVAIL = 1;
-        YOURS = 2;
-        YOURS_DEFINITIVE = 3; // characters you will manage, and now go init list mode, no more discussing assignments.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Below: normal 'adventuring' sub-protocol.
+// After the client has produced a Hello demostrating it has the valid key,
+// the server will send a stream of PlayingCharacterDefinition. Clients take those and put them in their AVAILABLE list.
+// Further PlayingCharacterDefinition can come at any time. They are guaranteed to have unique peerKey.
+//
+// The clients handshake character ownership by using CharacterOwnership messages.
+// When the client sends a CharacterOwnership, it requests the server for one of the following actions:
+// - Move a character from AVAILABLE to me
+// - Move a character from me to AVAILABLE
+// Clients are assumed to never have more than 1 request per character peerKey so they can be trivially mapped.
+// The server sequentializes all requests and replies to each one using CharacterOwnership as well. Those come in three flavours
+// depending on what was sent. The bottom line is a CharacterOwnership is invalid if its .ticket is different from the server order.
+// This makes possible to understand which requests are obsolete and discard them.
+//
+// The server starts from .ticket=0.
+// The next valid ticket will be .ticket=1, one client will get it, the others will be invalid and discarded.
+// All well formed requests get a reply. How?
+// As a start, all clients but the first get an .type=OBSOLETE reply with the .ticket they used. They will have to retry.
+// The first client instead gets either .type=ACCEPTED or .type=REJECTED.
+// 
+// However, there are a few special behaviours where the server sends CharacterOwnership unsolicited:
+// - Server can give a character to a client forcefully: YOURS
+// - Server can move a character back to unassigned list, taking it away from a client: AVAIL
+// - Server informs peers a certain character has been assigned to someone: BOUND
+//
+// The process continues until the server decides to send a GroupReady message with a populated .yours array.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+message CharacterOwnership {
+    uint32 character = 1; // unique group id, as in PlayingCharacterDefinition.peerKey
+    uint32 ticket = 2; // client->server: sequentializing index, server->client next ticket considered valid.
+    enum Type {
+        REQUEST = 0;  // client->server, only valid value otherwise server will just discard
+        OBSOLETE = 1; // server->client, try again!
+        ACCEPTED = 2; // server->client, your request regarding .character is ok, char is now yours or to avail, as you asked
+        REJECTED = 3; // server->client, keep ownership assignment as previously.
+        
+        YOURS = 4; // unsolicited server->client
+        AVAIL = 5; // unsolicited server->client
+        BOUND = 6; // unsolicited server->client
     }
-    repeated PlayingCharacterDefinition payload = 1;
-    ListType set = 2;
-    uint32 requestCount = 3; // how many requests (to move from AVAIL to his list) the server has received from the client.
-}
-
-
-// Client -> server please move a certain character from my list to the avail list or, from avail to me.
-message PlayingCharacterMoveRequest {
-    bool take = 1; // if true, we're pulling a character from available list, otherwise giving it up to avail.
-    uint32 character = 2; // unique group id
+    Type type = 3;
 }
 
 
