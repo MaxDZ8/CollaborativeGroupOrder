@@ -92,16 +92,6 @@ public interface Events {
         }
     }
 
-    class CharList {
-        public final MessageChannel origin;
-        public final Network.PlayingCharacterList payload;
-
-        public CharList(MessageChannel origin, Network.PlayingCharacterList payload) {
-            this.origin = origin;
-            this.payload = payload;
-        }
-    }
-
     class Hello {
         public final MessageChannel origin;
 
@@ -113,11 +103,11 @@ public interface Events {
         public final Network.Hello payload;
     }
 
-    class CharMove {
+    class CharOwnership {
         public final MessageChannel origin;
-        public final Network.PlayingCharacterMoveRequest payload;
+        public final Network.CharacterOwnership payload;
 
-        public CharMove(MessageChannel origin, Network.PlayingCharacterMoveRequest payload) {
+        public CharOwnership(MessageChannel origin, Network.CharacterOwnership payload) {
             this.origin = origin;
             this.payload = payload;
         }
