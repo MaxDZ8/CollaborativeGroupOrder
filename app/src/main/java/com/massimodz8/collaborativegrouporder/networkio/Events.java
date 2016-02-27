@@ -112,4 +112,14 @@ public interface Events {
 
         public final Network.Hello payload;
     }
+
+    class CharMove {
+        public final MessageChannel origin;
+        public final Network.PlayingCharacterMoveRequest payload;
+
+        public CharMove(MessageChannel origin, Network.PlayingCharacterMoveRequest payload) {
+            this.origin = origin;
+            this.payload = payload;
+        }
+    }
 }

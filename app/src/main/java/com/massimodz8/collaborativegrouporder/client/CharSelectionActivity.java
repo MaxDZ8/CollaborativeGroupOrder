@@ -181,6 +181,7 @@ public class CharSelectionActivity extends AppCompatActivity {
         }
         boolean relevant(int requestCount) {
             return pending != NO_REQUEST && pending <= requestCount;
+            // TODO: this is wrong! I need to keep a pending request list, one for each character. Otherwise, I can queue multiple requests and only the last one will be considered relevant!
         }
     }
 

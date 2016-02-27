@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.LandingServer;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -74,6 +75,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     public static class PlayingDevice {
         public boolean versionMismatchSignaled;
         public byte[] doormat;
+        public int requestsReceived;
 
         /// Use null to mark "this device", to assign playing characters to this device.
         public PlayingDevice(@Nullable MessageChannel pipe) {
@@ -206,6 +208,15 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                         message(MSG_HELLO, new Events.Hello(from, msg));
                         return false;
                     }
+                }).add(ProtoBufferEnum.CHARACTER_MOVE_REQUEST, new PumpTarget.Callbacks<Network.PlayingCharacterMoveRequest>() {
+                    @Override
+                    public Network.PlayingCharacterMoveRequest make() { return new Network.PlayingCharacterMoveRequest(); }
+
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.PlayingCharacterMoveRequest msg) throws IOException {
+                        message(MSG_CHARACTER_MOVE_REQUEST, new Events.CharMove(from, msg));
+                        return false;
+                    }
                 });
         if(null != appState.pumpers) {
             for (Pumper.MessagePumpingThread worker : appState.pumpers) pumper.pump(worker);
@@ -319,6 +330,10 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                     target.hello(real.origin, real.payload);
                     break;
                 }
+                case MSG_CHARACTER_MOVE_REQUEST: {
+                    final Events.CharMove real = (Events.CharMove)msg.obj;
+                    target.charMove(real.origin, real.payload);
+                } break;
             }
         }
     }
@@ -545,6 +560,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     private static final int MSG_FAILED_ACCEPT = 7;
     private static final int MSG_CONNECTED = 8;
     private static final int MSG_HELLO = 9;
+    private static final int MSG_CHARACTER_MOVE_REQUEST = 10;
 
     private static final int DOORMAT_BYTES = 32;
 
@@ -660,5 +676,66 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
             }
             return count;
         }
+    }
+
+
+    private void charMove(MessageChannel origin, Network.PlayingCharacterMoveRequest payload) {
+        final int charIndex = payload.character;
+        if(charIndex >= myState.assignment.size()) return; // selecting a non-existing character is ignored completely.
+        int clientIndex;
+        for(clientIndex = 0; clientIndex < myState.playerDevices.size(); clientIndex++) {
+            if(myState.playerDevices.get(clientIndex).pipe == origin) break;
+        }
+        if(clientIndex >= myState.playerDevices.size()) return; // wut? That should be impossible!
+        Integer ownerIndex = myState.assignment.get(charIndex);
+        final PlayingDevice owner = myState.playerDevices.get(clientIndex);
+        owner.requestsReceived++;
+        if(null == ownerIndex || ownerIndex == clientIndex) { // first assign -> auto take or perhaps giving up a char?
+            if(payload.take) myState.assignment.set(charIndex, clientIndex);
+            else myState.assignment.set(charIndex, null);
+            sendYours(owner);
+            sendAvail();
+            sendReady();
+            return;
+        }
+        // Colliding with someone else. Two players selected the same character... in the time elapsed to propagate state.
+        // This seems to happen fairly rarely, I guess it's worth leaving the user to decision.
+        // TODO: those are really more critical and should be mangled with more care! They should accumulate and be processed in order!
+        if(!payload.take) { // special state: we are just late with our request (very odd as I already assigned it to someone else), everything is fine.
+            sendYours(owner);
+            sendAvail();
+            sendReady();
+            return;
+        }
+        String charName = myState.party.usually.party[charIndex].name;
+        String currently = getDeviceName(myState.playerDevices.get(ownerIndex));
+        String requestor = getDeviceName(myState.playerDevices.get(clientIndex));
+        final int finalClientIndex = clientIndex;
+        final PlayingDevice prev = myState.playerDevices.get(ownerIndex);
+        new AlertDialog.Builder(this)
+                .setMessage(String.format(getString(R.string.ga_charAssignmentCollisionDlgMsg), charName, currently, requestor))
+                .setPositiveButton(R.string.ga_charAssignmentCollisionDlgIgnoreNew, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sendAvail(owner); // to cancel a request it is sufficient to send the new available list.
+                    }
+                })
+                .setNegativeButton(R.string.ga_charAssignmentCollisionDlgSetNew, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        myState.assignment.set(charIndex, finalClientIndex);
+                        sendYours(owner);
+                        sendYours(prev);
+                    }
+                })
+                .show();
+    }
+
+    /// Send to every connected client the list of "ready" characters.
+    /// The lists are always disjoint so keep a list of indices around.
+    private void sendReady() {
+        // TODO: this protocol is too complicated. Simplify it.
+        myState.assignment.clone()
+
     }
 }

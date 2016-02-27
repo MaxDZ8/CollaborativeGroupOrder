@@ -327,5 +327,8 @@
     <string name="csa_pluralCharsSomewhere">%1$d characters played elsewhere.</string>
     <string name="vhAC_requestedHere">Requested to play here.</string>
     <string name="vhAC_requested">Requested to be played on this device</string>
+    <string name="ga_charAssignmentCollisionDlgMsg">Character \"%1$s\" assigned to player \"%2$s\". Player \"%3$s\" just requested the same character. What shall I do?</string>
+    <string name="ga_charAssignmentCollisionDlgIgnoreNew">Ignore new request</string>
+    <string name="ga_charAssignmentCollisionDlgSetNew">Prefer new player</string>
 
 </resources>
