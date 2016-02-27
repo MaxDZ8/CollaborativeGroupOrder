@@ -226,7 +226,7 @@ public class MainMenuActivity extends AppCompatActivity {
             } break;
             case REQUEST_PULL_CHAR_LIST: {
                 final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-                CharSelectionActivity.prepare(state.jsaResult.worker, state.jsaResult.party, state.jsaResult.pcList);
+                CharSelectionActivity.prepare(state.jsaResult.worker, state.jsaResult.party, state.jsaResult.first);
                 state.jsaResult = null;
                 startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
             } break;
