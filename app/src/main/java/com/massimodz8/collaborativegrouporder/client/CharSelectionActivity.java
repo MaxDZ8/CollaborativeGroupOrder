@@ -412,6 +412,43 @@ public class CharSelectionActivity extends AppCompatActivity {
     }
 
     private class MyLister extends RecyclerView.Adapter<VariedHolder> {
+        public MyLister() {
+            super();
+            setHasStableIds(true);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            // If you look at the protocol, it turns out peer keys are uint!
+            // Java is shit and does not have uints, but it's very convenient.
+            // To be kept in sync with onBindViewHolder
+            int here = count(TransactingCharacter.PLAYED_HERE);
+            int avail = count(TransactingCharacter.AVAILABLE);
+            //int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
+            if(here != 0) {
+                if(position == 0) return PLAYED_HERE_SEPARATOR_ID;
+                position--;
+                if(position < here) {
+                    final TransactingCharacter got = getFilteredCharacter(position, TransactingCharacter.PLAYED_HERE);
+                    return got == null? RecyclerView.NO_ID : got.pc.peerKey;
+                }
+                position -= here;
+            }
+            if(avail != 0) {
+                if(position == 0) return AVAILABLE_SEPARATOR_ID;
+                position--;
+                if(position < avail) {
+                    final TransactingCharacter got = getFilteredCharacter(position, TransactingCharacter.AVAILABLE);
+                    return got == null? RecyclerView.NO_ID : got.pc.peerKey;
+                }
+            }
+            // must be SomewhereSeparator
+            return PLAYED_SOMEWHERE_SEPARATOR_ID;
+        }
+        private static final int PLAYED_HERE_SEPARATOR_ID = -1;
+        private static final int AVAILABLE_SEPARATOR_ID = -2;
+        private static final int PLAYED_SOMEWHERE_SEPARATOR_ID = -3;
+
         @Override
         public int getItemCount() {
             int here = count(TransactingCharacter.PLAYED_HERE);
