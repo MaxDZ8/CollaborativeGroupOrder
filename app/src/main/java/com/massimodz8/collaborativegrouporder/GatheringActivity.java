@@ -546,7 +546,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     private static final int DOORMAT_BYTES = 32;
 
     public void startSession_callback(View btn) {
-        new AlertDialog.Builder((this)).setMessage("TODO").show();
+        new AlertDialog.Builder((this)).setMessage("TODO - start session").show();
     }
 
     private class AuthDeviceViewHolder extends RecyclerView.ViewHolder {
@@ -720,7 +720,9 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
             RecyclerView rv = (RecyclerView) findViewById(R.id.ga_deviceList);
             rv.getAdapter().notifyDataSetChanged();
             rv = (RecyclerView)findViewById(R.id.ga_pcUnassignedList);
-            rv.getAdapter().notifyDataSetChanged();
+            RecyclerView.Adapter lister = rv.getAdapter();
+            lister.notifyDataSetChanged();
+            availablePcs(lister.getItemCount());
             return;
         }
         // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose

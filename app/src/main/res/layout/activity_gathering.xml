@@ -6,6 +6,10 @@
     android:id="@+id/ga_activityRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
     style="@style/Widget.Design.CoordinatorLayout"
     tools:context="com.massimodz8.collaborativegrouporder.GatheringActivity">
 
@@ -20,7 +24,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/ga_initializing"
             android:id="@+id/ga_state"
             android:layout_gravity="center_horizontal" />
@@ -53,6 +57,14 @@
             android:text="@string/ga_playingCharactersAssignment"
             android:id="@+id/ga_pcUnassignedListDesc" />
 
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ga_startSession"
+            android:id="@+id/ga_startSession"
+            android:visibility="gone"
+            android:onClick="startSession_callback" />
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/ga_pcUnassignedList"
             android:scrollbars="vertical"
@@ -60,15 +72,6 @@
             android:layout_height="0dp"
             android:layout_weight=".5"
             app:layoutManager="LinearLayoutManager" />
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ga_startSession"
-            android:id="@+id/ga_startSession"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone"
-            android:onClick="startSession_callback" />
 
 
     </LinearLayout>
