@@ -1,5 +1,6 @@
 package com.massimodz8.collaborativegrouporder.client;
 
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.Snackbar;
@@ -31,9 +32,10 @@ public class CharSelectionActivity extends AppCompatActivity {
     // Before starting this activity, make sure to populate its connection parameters and friends.
     // Those will be cleared as soon as the activity goes onCreate and then never reused again.
     // onCreate assumes those non-null. Just call prepare(...)
-    private static Pumper.MessagePumpingThread serverPipe;
-    private static PersistentStorage.PartyClientData.Group connectedParty;
-    private static Network.PlayingCharacterDefinition character;
+    private static Pumper.MessagePumpingThread serverPipe; // inout
+    private static PersistentStorage.PartyClientData.Group connectedParty; // inout
+    private static Network.PlayingCharacterDefinition character; // In only
+    private static ArrayList<Network.PlayingCharacterDefinition> playChars; // inout
 
     // to move on myState.
     private PersistentStorage.PartyClientData.Group party;
@@ -44,6 +46,22 @@ public class CharSelectionActivity extends AppCompatActivity {
         serverPipe = pipe;
         connectedParty = info;
         character = first;
+    }
+
+    public static PersistentStorage.PartyClientData.Group movePlayingParty() {
+        final PersistentStorage.PartyClientData.Group res = connectedParty;
+        connectedParty = null;
+        return res;
+    }
+    public static Pumper.MessagePumpingThread moveServerWorker() {
+        final Pumper.MessagePumpingThread res = serverPipe;
+        serverPipe = null;
+        return res;
+    }
+    public static ArrayList<Network.PlayingCharacterDefinition> movePlayChars() {
+        final ArrayList<Network.PlayingCharacterDefinition> res = playChars;
+        playChars = null;
+        return res;
     }
 
     @Override
@@ -176,6 +194,19 @@ public class CharSelectionActivity extends AppCompatActivity {
                 } break;
                 case MSG_PARTY_READY: { // detach will follow soon, just reset all my characters
                     Network.GroupReady real = (Network.GroupReady)msg.obj;
+                    if(real.yours.length == 0) {
+                        new AlertDialog.Builder(self)
+                                .setMessage(self.getString(R.string.csa_noDefinitiveCharactersHere))
+                                .setCancelable(false)
+                                .setPositiveButton(self.getString(R.string.csa_noDefinitiveCharactersHereDlgDone), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        self.finish();
+                                    }
+                                })
+                                .show();
+                        return;
+                    }
                     ArrayList<TransactingCharacter> definitive = new ArrayList<>(real.yours.length);
                     for (Network.PlayingCharacterDefinition take : real.yours) {
                         final TransactingCharacter here = new TransactingCharacter(take);
@@ -189,7 +220,16 @@ public class CharSelectionActivity extends AppCompatActivity {
     }
 
     private void gotoTheRealDeal() {
-        new AlertDialog.Builder(this).setMessage("TODO: take currently assigned characters and prepare to exit").show();
+        ArrayList<Network.PlayingCharacterDefinition> temp = new ArrayList<>();
+        for (TransactingCharacter pc : chars) {
+            if(pc.type != TransactingCharacter.PLAYED_HERE) continue;
+            temp.add(pc.pc);
+        }
+        serverPipe = netPump.move(pipe);
+        connectedParty = party;
+        playChars = temp;
+        setResult(RESULT_OK);
+        finish();
     }
 
     private static class TransactingCharacter {

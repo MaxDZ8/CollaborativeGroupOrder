@@ -10,6 +10,7 @@ import android.view.View;
 
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.File;
@@ -231,7 +232,13 @@ public class MainMenuActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                new AlertDialog.Builder(this).setMessage("TODO").show();
+                final PersistentStorage.PartyClientData.Group party = CharSelectionActivity.movePlayingParty();
+                final ArrayList<Network.PlayingCharacterDefinition> here = CharSelectionActivity.movePlayChars();
+                final Pumper.MessagePumpingThread worker = CharSelectionActivity.moveServerWorker();
+                            worker.interrupt();
+                String s = party.name + " > ";
+                for(Network.PlayingCharacterDefinition pc : here) s += pc.name + " > ";
+                new AlertDialog.Builder(this).setMessage(s).show();
             } break;
         }
     }

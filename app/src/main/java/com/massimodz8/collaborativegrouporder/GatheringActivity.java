@@ -143,7 +143,6 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
         getMenuInflater().inflate(R.menu.gathering_activity, menu);
         return super.onCreateOptionsMenu(menu);
     }
@@ -173,7 +172,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                                 break;
                             }
                         }
-
+                        dialogList = null;
                     }
                 });
                 list.setAdapter(dialogList);
@@ -284,7 +283,6 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     private SecureRandom randomizer;
     private LandingServer acceptor;
     private RecyclerView.Adapter dialogList; /// so if a player takes a PC, we can update the list.
-    private Menu menu;
 
 
     private static class MyHandler extends Handler {
@@ -548,7 +546,38 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     private static final int DOORMAT_BYTES = 32;
 
     public void startSession_callback(View btn) {
-        new AlertDialog.Builder((this)).setMessage("TODO - start session").show();
+        final ArrayList<MessageChannel> target = new ArrayList<>();
+        final ArrayList<ArrayList<Network.PlayingCharacterDefinition>> payload = new ArrayList<>();
+        for (PlayingDevice playa : myState.playerDevices) {
+            target.add(playa.pipe);
+            ArrayList<Network.PlayingCharacterDefinition> matched = new ArrayList<>();
+            for (int loop = 0; loop < myState.assignment.size(); loop++) {
+                Integer owner = myState.assignment.get(loop);
+                if(null == owner) continue; // impossible, really
+                if(owner < 0) continue;
+                if(myState.playerDevices.get(owner) == playa) {
+                    matched.add(simplify(myState.party.usually.party[loop], loop));
+                }
+            }
+            payload.add(matched);
+        }
+        new Thread(){
+            @Override
+            public void run() {
+                Network.GroupReady send = new Network.GroupReady();
+                for(int loop = 0; loop < target.size(); loop++) {
+                    ArrayList<Network.PlayingCharacterDefinition> matched = payload.get(loop);
+                    send.yours = new Network.PlayingCharacterDefinition[matched.size()];
+                    for(int cp = 0; cp < matched.size(); cp++) send.yours[cp] = matched.get(cp);
+                    try {
+                        target.get(loop).writeSync(ProtoBufferEnum.GROUP_READY, send);
+                    } catch (IOException e) {
+                        // uhm... someone else will check this in the future... hopefully.
+                    }
+                }
+            }
+        }.start();
+        new AlertDialog.Builder(this).setMessage("TODO: at this point the clients are in sequence mode. BUT... I need to refactor my architecture as this activity needs to stay afloat and go back there on need.").setTitle("TODO").show();
     }
 
     private class AuthDeviceViewHolder extends RecyclerView.ViewHolder {
@@ -706,6 +735,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
             RecyclerView.Adapter lister = rv.getAdapter();
             lister.notifyDataSetChanged();
             availablePcs(lister.getItemCount());
+            if(null != dialogList) dialogList.notifyDataSetChanged();
             return;
         }
         // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose
