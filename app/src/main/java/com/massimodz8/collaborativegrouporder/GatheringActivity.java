@@ -168,6 +168,8 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                                 RecyclerView.Adapter lister = ((RecyclerView) findViewById(R.id.ga_pcUnassignedList)).getAdapter();
                                 lister.notifyDataSetChanged();
                                 availablePcs(lister.getItemCount());
+                                int boundToMe = Network.CharacterOwnership.BOUND;
+                                sendAvailability(boundToMe, slot, null, ++nextValidRequest);
                                 break;
                             }
                         }
@@ -696,27 +698,8 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
             payload.type = Network.CharacterOwnership.ACCEPTED;
             payload.ticket = ++nextValidRequest;
             sendingThread(ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, origin);
-            final ArrayList<MessageChannel> sendTo = new ArrayList<>(myState.playerDevices.size() - 1);
-            for (PlayingDevice peer : myState.playerDevices) {
-                if(peer.pipe == origin) continue; // got it already asyncronously
-                sendTo.add(peer.pipe);
-            }
-            final Network.CharacterOwnership notification = new Network.CharacterOwnership();
-            notification.ticket = payload.ticket;
-            notification.character = payload.character;
-            notification.type = away? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
-            new Thread() {
-                @Override
-                public void run() {
-                    for (MessageChannel peer : sendTo) {
-                        try {
-                            peer.writeSync(ProtoBufferEnum.CHARACTER_OWNERSHIP, notification);
-                        } catch (IOException e) {
-                            // TODO figure out how to do this reporting errors with care!
-                        }
-                    }
-                }
-            }.start();
+            int type = away? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
+            sendAvailability(type, payload.character, origin, nextValidRequest);
             RecyclerView rv = (RecyclerView) findViewById(R.id.ga_deviceList);
             rv.getAdapter().notifyDataSetChanged();
             rv = (RecyclerView)findViewById(R.id.ga_pcUnassignedList);
@@ -731,6 +714,31 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         // So reject this instead. Looks like this is the only viable option.
         payload.type = Network.CharacterOwnership.REJECTED;
         sendingThread(ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, origin);
+    }
+
+    private void sendAvailability(int type, int charIndex, MessageChannel excluding, int request) {
+        final Network.CharacterOwnership notification = new Network.CharacterOwnership();
+        notification.ticket = request;
+        notification.character = charIndex;
+        notification.type = type;
+
+        final ArrayList<MessageChannel> sendTo = new ArrayList<>(myState.playerDevices.size() - 1);
+        for (PlayingDevice peer : myState.playerDevices) {
+            if(peer.pipe == excluding) continue; // got it already asyncronously
+            sendTo.add(peer.pipe);
+        }
+        new Thread() {
+            @Override
+            public void run() {
+                for (MessageChannel peer : sendTo) {
+                    try {
+                        peer.writeSync(ProtoBufferEnum.CHARACTER_OWNERSHIP, notification);
+                    } catch (IOException e) {
+                        // TODO figure out how to do this reporting errors with care!
+                    }
+                }
+            }
+        }.start();
     }
 
     /// TODO: transition to better activity architecture
