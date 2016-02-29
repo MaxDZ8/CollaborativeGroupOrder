@@ -40,7 +40,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/ga_identifiedDevices" />
+            android:text="@string/ga_identifiedDevices"
+            android:id="@+id/ga_identifiedDevices" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/ga_deviceList"
