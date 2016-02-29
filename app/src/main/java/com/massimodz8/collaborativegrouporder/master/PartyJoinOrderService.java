@@ -6,6 +6,8 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.massimodz8.collaborativegrouporder.MainMenuActivity;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -27,12 +29,14 @@ import java.util.Vector;
  * long story short: I must keep track of those events and remember them. Meh!
  */
 public class PartyJoinOrderService extends Service implements NsdManager.RegistrationListener {
-    static final int PUBLISHER_IDLE = 0; // just created, doing nothing.
-    static final int PUBLISHER_STARTING = 1; // we have a service name and type
-    static final int PUBLISHER_START_FAILED = 2; // as above, plus we got an error code
-    static final int PUBLISHER_PUBLISHING = 3;
-    static final int PUBLISHER_STOP_FAILED = 4;
-    static final int PUBLISHER_STOPPED = 5;
+    public static final int PUBLISHER_IDLE = 0; // just created, doing nothing.
+    public static final int PUBLISHER_STARTING = 1; // we have a service name and type
+    public static final int PUBLISHER_START_FAILED = 2; // as above, plus we got an error code
+    public static final int PUBLISHER_PUBLISHING = 3;
+    public static final int PUBLISHER_STOP_FAILED = 4;
+    public static final int PUBLISHER_STOPPED = 5;
+
+    public boolean isForeground;
 
     public PartyJoinOrderService() {
     }
@@ -43,7 +47,7 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
     only way to ensure client connection data is persistent. Otherwise, I might have to re-publish
     and similar. Poll based for the description in class doc.
     */
-    void startListening() throws IOException {
+    public void startListening() throws IOException {
         rejectConnections = false;
         if(landing != null) return;
         final ServerSocket temp = new ServerSocket(0);
@@ -76,19 +80,20 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
         };
         landing = temp;
     }
-    Vector<MessageChannel> getNewClients() {
+    public @Nullable Vector<MessageChannel> getNewClients() {
         if(newConn.isEmpty()) return null;
         Vector<MessageChannel> res = newConn;
         newConn = new Vector<>();
         return res;
     }
-    Vector<Exception> getNewAcceptErrors() {
+    public @Nullable Vector<Exception> getNewAcceptErrors() {
         if(listenErrors.isEmpty()) return null;
         Vector<Exception> res = listenErrors;
         listenErrors = new Vector<>();
         return res;
     }
-    void stopListening(boolean hard) {
+    public int getServerPort() { return landing == null? 0 : landing.getLocalPort(); }
+    public void stopListening(boolean hard) {
         rejectConnections = true;
         if(!hard) return;
         stoppingListener = true;
@@ -104,8 +109,9 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
     automatically, someone will get their connection and handshake them.
     */
     /// Requires startListening() to have been called at least once (needs a listening socket).
-    public void beginPublishing(NsdManager nsd, String serviceName) {
+    public void beginPublishing(@NonNull NsdManager nsd, @NonNull String serviceName) {
         if(null != servInfo) return;
+        nsdMan = nsd;
         NsdServiceInfo temp = new NsdServiceInfo();
         temp.setServiceName(serviceName);
         temp.setServiceType(MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
@@ -116,10 +122,11 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
     }
     public int getPublishStatus() { return publishStatus; }
     public int getPublishError() { return publishError; }
-    public void stopPublishing(NsdManager nsd) {
+    public void stopPublishing() {
         if(servInfo != null) {
-            nsd.unregisterService(this);
+            nsdMan.unregisterService(this);
             servInfo = null;
+            nsdMan = null;
         }
     }
 
@@ -131,6 +138,7 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
     private volatile Vector<MessageChannel> newConn = new Vector<>();
     private volatile Vector<Exception> listenErrors = new Vector<>();
 
+    private NsdManager nsdMan;
     private NsdServiceInfo servInfo;
     private volatile int publishStatus = PUBLISHER_IDLE, publishError;
 
@@ -141,8 +149,17 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
         return uniqueBinder;
     }
 
+    @Override
+    public void onDestroy() {
+        stopListening(true);
+        if(null != nsdMan) stopPublishing();
+        // Note: the sockets should be released somewhere else. Not really my concern.
+        // That is because in practice this should never be destroyed non-empty so I want
+        // the thing to go horribly.
+    }
+
     public class LocalBinder extends Binder {
-        PartyJoinOrderService getConcreteService() {
+        public PartyJoinOrderService getConcreteService() {
             return PartyJoinOrderService.this;
         }
     }

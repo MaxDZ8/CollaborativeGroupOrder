@@ -1,14 +1,21 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.app.Notification;
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.BitmapFactory;
 import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.view.Menu;
@@ -18,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.protobuf.nano.MessageNano;
+import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.LandingServer;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -29,17 +37,22 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.net.ServerSocket;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.Vector;
 
 /** The server is 'gathering' player devices so they can join a new session.
  * This is important and we must be able to navigate back there every time needed in case
  * players get disconnected.
  */
-public class GatheringActivity extends AppCompatActivity implements PublishedService.OnStatusChanged {
+public class GatheringActivity extends AppCompatActivity implements ServiceConnection {
+    private PartyJoinOrderService room;
+    private PartyJoinOrderService.LocalBinder serviceConnection;
+
     public static class State {
         final PersistentStorage.PartyOwnerData.Group party;
         //^ When the Activity is launched this always contains the thing we need. It is just assumed.
@@ -62,10 +75,6 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         ArrayList<PlayingDevice> unidentified = new ArrayList<>();
         ArrayList<PlayingDevice> playerDevices = new ArrayList<>();
 
-        private ServerSocket landing;
-        private int serverPort;
-        private PublishedService publisher;
-
         public State(PersistentStorage.PartyOwnerData.Group party) {
             this.party = party;
         }
@@ -75,7 +84,6 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     public static class PlayingDevice {
         public boolean versionMismatchSignaled;
         public byte[] doormat;
-        public int requestsReceived;
 
         /// Use null to mark "this device", to assign playing characters to this device.
         public PlayingDevice(@Nullable MessageChannel pipe) {
@@ -93,6 +101,13 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         myState = appState.gaState;
         appState.gaState = null;
 
+        // Now let's get to the real deal: create or start the state-maintaining service.
+        Intent temp = new Intent(this, PartyJoinOrderService.class);
+        if(!bindService(temp, this, BIND_AUTO_CREATE)) {
+            failedServiceBind();
+            return;
+        }
+
         if(null == myState.assignment) {
             myState.assignment = new ArrayList<>();
             for (PersistentStorage.Actor aParty : myState.party.usually.party) myState.assignment.add(null);
@@ -102,13 +117,25 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         ((RecyclerView) findViewById(R.id.ga_pcUnassignedList)).setAdapter(new UnassignedPcsAdapter(null));
 
         preparePumper(appState);
-        if(null == myState.publisher) startPublishing();
+    }
+
+    private void failedServiceBind() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ga_activityRoot));
+        }
+        final TextView status = (TextView) findViewById(R.id.ga_state);
+        status.setText(R.string.ga_cannotBindPartyService);
+        MaxUtils.setVisibility(this, View.GONE,
+                R.id.ga_progressBar,
+                R.id.ga_identifiedDevices,
+                R.id.ga_deviceList,
+                R.id.ga_pcUnassignedListDesc,
+                R.id.ga_pcUnassignedList);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        myState.publisher.unregisterCallback();
         final CrossActivityShare appState = (CrossActivityShare) getApplicationContext();
         appState.gaState = myState;
         appState.pumpers = null != pumper? pumper.move() : null;
@@ -118,26 +145,11 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
 
     @Override
     protected void onDestroy() {
-        if(null != pumper) pumper.shutdown(); // if saving instance state this is empty
-        if(null != acceptor) acceptor.shutdown();
-        if(null != myState) { // we are not going to be recovered, so clear the persistent state
-            final ServerSocket landing = myState.landing;
-            final PublishedService publisher = myState.publisher;
-            if(null != publisher) {
-                publisher.unregisterCallback();
-                new Thread() {
-                    @Override
-                    public void run() {
-                        publisher.stopPublishing();
-                        try {
-                            landing.close();
-                        } catch (IOException e) {
-                            // It's going away anyway.
-                        }
-                        }
-                }.start();
-            }
+        if(null != room) {
+            if(!isChangingConfigurations()) room.stopForeground(true); // being destroyed for real.
+            room.unbindService(this);
         }
+        if(null != pumper) pumper.shutdown(); // if saving instance state this is empty
         super.onDestroy();
     }
 
@@ -150,9 +162,11 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-            case R.id.ga_menu_explicitConnInfo:
-                new ConnectionInfoDialog(this, myState.serverPort).show();
+            case R.id.ga_menu_explicitConnInfo: {
+                int serverPort = room == null? 0 : room.getServerPort();
+                new ConnectionInfoDialog(this, serverPort).show();
                 break;
+            }
             case R.id.ga_menu_pcOnThisDevice: {
                 final AlertDialog dialog = new AlertDialog.Builder(this)
                         .setView(R.layout.dialog_make_pc_local).show();
@@ -238,50 +252,13 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
         funnel.sendMessage(funnel.obtainMessage(code, payload));
     }
 
-    private void startPublishing() {
-        if(null == myState.landing) { // then no socket can exist
-            try {
-                myState.landing = new ServerSocket(myState.serverPort); // if here this is zero, otherwise likely bad things will happen.
-            } catch (IOException e) {
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.badServerSocket)
-                        .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        }).show();
-                return;
-            }
-            myState.serverPort = myState.landing.getLocalPort();
-            acceptor = new LandingServer(myState.landing) {
-                @Override
-                public void failedAccept() { message(MSG_FAILED_ACCEPT, null); }
 
-                @Override
-                public void connected(MessageChannel newComer) { message(MSG_CONNECTED, newComer); }
-            };
-        }
-        if(null == myState.publisher) {
-            NsdManager sys = (NsdManager) getSystemService(NSD_SERVICE);
-            myState.publisher = new PublishedService(sys);
-            myState.publisher.beginPublishing(myState.landing, myState.party.name, MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE, this);
-        }
-        else myState.publisher.setCallback(this);
-    }
-
-    // PublishedService.OnStatusChanged() vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    @Override
-    public void newStatus(int old, int current) { message(MSG_PUBLISHER_STATUS_CHANGED, null); }
-    // PublishedService.OnStatusChanged() ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-
+    private Timer ticker = new Timer();
+    private int lastPublishStatus = PartyJoinOrderService.PUBLISHER_IDLE;
     private State myState;
     private Pumper pumper;
     private MyHandler funnel;
     private SecureRandom randomizer;
-    private LandingServer acceptor;
     private RecyclerView.Adapter dialogList; /// so if a player takes a PC, we can update the list.
 
 
@@ -308,24 +285,6 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                 case MSG_AUTH_TOKEN_SENT:
                     new AlertDialog.Builder(target).setMessage("todo! MSG_AUTH_TOKEN_SENT").show();
                     return;
-                case MSG_PUBLISHER_STATUS_CHANGED: {
-                    if(null == target.myState.publisher) return; // spurious signal, might happen
-                    final int now = target.myState.publisher.getStatus();
-                    target.publisher(now, target.myState.publisher.getErrorCode());
-                    return;
-                }
-                case MSG_FAILED_ACCEPT:
-                    new AlertDialog.Builder(target)
-                            .setMessage(target.getString(R.string.ga_failedAccept))
-                            .show();
-                    return;
-                case MSG_CONNECTED: {
-                    final MessageChannel real = (MessageChannel)msg.obj;
-                    target.myState.unidentified.add(new PlayingDevice(real));
-                    target.pumper.pump(real);
-                    // Don't signal that, comes easily.
-                    break;
-                }
                 case MSG_HELLO: {
                     final Events.Hello real = (Events.Hello)msg.obj;
                     target.hello(real.origin, real.payload);
@@ -335,6 +294,29 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                     final Events.CharOwnership real = (Events.CharOwnership)msg.obj;
                     target.charOwnership(real.origin, real.payload);
                 } break;
+                case MSG_TICK: {
+                    if(null == target.room) return; // spurious signal or connection not estabilished yet or lost.
+                    final int now = target.room.getPublishStatus();
+                    if(now != target.lastPublishStatus) {
+                        target.publisher(now, target.room.getPublishError());
+                        target.lastPublishStatus = now;
+                        return; // only change a single one per tick, accumulate the rest to give a chance of seeing something is going on.
+                    }
+                    Vector<Exception> failedAccept = target.room.getNewAcceptErrors();
+                    if(null != failedAccept && !failedAccept.isEmpty()) {
+                        new AlertDialog.Builder(target)
+                                .setMessage(target.getString(R.string.ga_failedAccept))
+                                .show();
+                        return;
+                    }
+                    final Vector<MessageChannel> clients = target.room.getNewClients();
+                    if(null != clients) {
+                        for (MessageChannel c : clients) {
+                            target.myState.unidentified.add(new PlayingDevice(c));
+                            target.pumper.move(c);
+                        }
+                    }
+                }
             }
         }
     }
@@ -513,12 +495,10 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
             TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ga_activityRoot));
         }
         final TextView dst = (TextView) findViewById(R.id.ga_state);
-        boolean clear = false;
         switch(state) {
             case PublishedService.STATUS_START_FAILED:
                 dst.setText(R.string.ga_publisherFailedStart);
                 new AlertDialog.Builder(this).setMessage(String.format(getString(R.string.ga_failedServiceRegistration), MaxUtils.NsdManagerErrorToString(err, this))).show();
-                clear = true;
                 break;
             case PublishedService.STATUS_PUBLISHING:
                 dst.setText(R.string.ga_publishing);
@@ -528,9 +508,7 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
                 break;
             case PublishedService.STATUS_STOPPED:
                 dst.setText(R.string.ga_noMorePublishing);
-                clear = true;
         }
-        if(clear) myState.publisher = null;
     }
 
     private static final int MSG_DISCONNECTED = 1;
@@ -538,12 +516,14 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
     private static final int MSG_NO_VERIFY = 3;
     private static final int MSG_AUTH_TOKEN_SENT = 5;
     private static final int MSG_PUBLISHER_STATUS_CHANGED = 6;
-    private static final int MSG_FAILED_ACCEPT = 7;
-    private static final int MSG_CONNECTED = 8;
     private static final int MSG_HELLO = 9;
     private static final int MSG_CHARACTER_OWNERSHIP_REQUEST = 10;
+    private static final int MSG_TICK = 11;
 
     private static final int DOORMAT_BYTES = 32;
+
+    private static final int TIMER_DELAY_MS = 1000;
+    private static final int TIMER_INTERVAL_MS = 250;
 
     public void startSession_callback(View btn) {
         final ArrayList<MessageChannel> target = new ArrayList<>();
@@ -785,4 +765,57 @@ public class GatheringActivity extends AppCompatActivity implements PublishedSer
             }
         }.start();
     }
+
+    // ServiceConnection ___________________________________________________________________________
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        room = ((PartyJoinOrderService.LocalBinder) service).getConcreteService();
+        if(!room.isForeground) {
+            final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
+                    .setOngoing(true)
+                    .setWhen(System.currentTimeMillis())
+                    .setShowWhen(true)
+                    .setContentTitle(myState.party.name)
+                    .setContentText(getString(R.string.ga_notificationDesc))
+                    .setSmallIcon(R.drawable.ic_notify_icon)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                help.setCategory(Notification.CATEGORY_SERVICE);
+            }
+            room.startForeground(NOTIFICATION_ID, help.build());
+            room.isForeground = true;
+        }
+        if(room.getPublishStatus() == PartyJoinOrderService.PUBLISHER_IDLE) {
+            try {
+                room.startListening();
+            } catch (IOException e) {
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.badServerSocket)
+                        .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).show();
+                return;
+            }
+            room.beginPublishing((NsdManager) getSystemService(NSD_SERVICE), myState.party.name);
+        }
+        ticker.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                funnel.sendMessage(funnel.obtainMessage(MSG_TICK));
+            }
+        }, TIMER_DELAY_MS, TIMER_INTERVAL_MS);
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        room = null;
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.ga_lostServiceConnection)
+                .show();
+    }
+
+    private static final int NOTIFICATION_ID = 1;
 }
