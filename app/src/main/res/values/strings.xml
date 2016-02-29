@@ -336,7 +336,7 @@
     <string name="csa_noDefinitiveCharactersHere">The party is now playing, but looks like you have been given no characters! Nothing to do.</string>
     <string name="csa_noDefinitiveCharactersHereDlgDone">Main menu</string>
     <string name="ga_cannotBindPartyService">Failed to get an handle to the party maintenance service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
-    <string name="ga_notificationDesc">Ongoing play session over the network.</string>
+    <string name="ga_notificationDesc">Play session over network.</string>
     <string name="ga_lostServiceConnection">Lost connection to the party maintenance service. This was not supposed to happen. Please report this!</string>
 
 </resources>

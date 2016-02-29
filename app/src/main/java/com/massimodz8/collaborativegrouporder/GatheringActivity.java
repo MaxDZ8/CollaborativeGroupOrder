@@ -313,7 +313,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                     if(null != clients) {
                         for (MessageChannel c : clients) {
                             target.myState.unidentified.add(new PlayingDevice(c));
-                            target.pumper.move(c);
+                            target.pumper.pump(c);
                         }
                     }
                 }

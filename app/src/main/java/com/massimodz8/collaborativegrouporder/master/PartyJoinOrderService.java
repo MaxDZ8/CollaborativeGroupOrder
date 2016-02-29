@@ -79,6 +79,7 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
             }
         };
         landing = temp;
+        acceptor.start();
     }
     public @Nullable Vector<MessageChannel> getNewClients() {
         if(newConn.isEmpty()) return null;
