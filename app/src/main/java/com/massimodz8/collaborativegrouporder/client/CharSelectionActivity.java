@@ -68,6 +68,7 @@ public class CharSelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_char_selection);
+        handler = new MyHandler(this);
         netPump = new Pumper(handler, MSG_DISCONNECT, MSG_DETACH)
                 .add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
                     @Override
@@ -97,7 +98,6 @@ public class CharSelectionActivity extends AppCompatActivity {
                         return true;
                     }
                 });
-        handler = new MyHandler(this);
 
         RecyclerView list = (RecyclerView) findViewById(R.id.csa_pcList);
         final RecyclerView.Adapter adapter = new MyLister();
