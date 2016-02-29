@@ -147,7 +147,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     protected void onDestroy() {
         if(null != room) {
             if(!isChangingConfigurations()) room.stopForeground(true); // being destroyed for real.
-            room.unbindService(this);
+            unbindService(this);
         }
         if(null != pumper) pumper.shutdown(); // if saving instance state this is empty
         super.onDestroy();
