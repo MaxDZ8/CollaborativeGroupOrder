@@ -21,7 +21,6 @@ public class CrossActivityShare extends Application {
     public Vector<PersistentStorage.PartyOwnerData.Group> groupDefs;
     public Vector<PersistentStorage.PartyClientData.Group> groupKeys;
 
-    public GatheringActivity.State gaState;
     public JoinSessionActivity.State jsaState;
     public JoinSessionActivity.Result jsaResult;
 

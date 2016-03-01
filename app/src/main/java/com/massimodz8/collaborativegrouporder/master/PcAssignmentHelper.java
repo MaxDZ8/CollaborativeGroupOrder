@@ -4,10 +4,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.MainMenuActivity;
+import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -35,6 +40,8 @@ import java.util.concurrent.BlockingQueue;
  * leaving Activity (not guaranteed to exist at the time it's generated) to probe for results.
  */
 public class PcAssignmentHelper {
+    private Runnable onOwnershipChange;
+
     public PcAssignmentHelper(PersistentStorage.PartyOwnerData.Group party, JoinVerificator verifier) {
         this.party = party;
         this.verifier = verifier;
@@ -57,11 +64,9 @@ public class PcAssignmentHelper {
         }
 
         public boolean isRemote() { return keyIndex >= 0; }
-        //public boolean isLocal() { return keyIndex == LOCAL_BINDING; }
         public boolean isAnonymous() { return keyIndex == ANON; }
 
         private static final int ANON = -1;
-        private static final int LOCAL_BINDING = -2;
     }
 
 
@@ -128,12 +133,25 @@ public class PcAssignmentHelper {
 
                 @Override
                 public boolean mangle(MessageChannel from, Network.Hello msg) throws IOException {
-                    int code = MSG_AUTH_HELLO;
+                    int code = MSG_HELLO_AUTH;
                     if(msg.authorize.length == 0) { // will need a doormat! Reuse a buffer.
                         msg.authorize = random(DOORMAT_BYTES);
-                        code = MSG_ANON_HELLO;
+                        code = MSG_HELLO_ANON;
                     }
                     handler.sendMessage(handler.obtainMessage(code, new Events.Hello(from, msg)));
+                    return false;
+                }
+            }).add(ProtoBufferEnum.CHARACTER_OWNERSHIP, new PumpTarget.Callbacks<Network.CharacterOwnership>() {
+                @Override
+                public Network.CharacterOwnership make() {
+                    return new Network.CharacterOwnership();
+                }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.CharacterOwnership msg) throws IOException {
+                    if (msg.type != Network.CharacterOwnership.REQUEST)
+                        return false; // non-requests are silently ignored.
+                    handler.sendMessage(handler.obtainMessage(MSG_CHAR_OWNERSHIP_REQUEST, new Events.CharOwnership(from, msg)));
                     return false;
                 }
             });
@@ -191,11 +209,16 @@ public class PcAssignmentHelper {
                     // Code incoherent, not currently thrown
                     break;
                 }
-                case MSG_ANON_HELLO:
-                case MSG_AUTH_HELLO: {
+                case MSG_HELLO_ANON:
+                case MSG_HELLO_AUTH: {
                     Events.Hello real = (Events.Hello)(msg.obj);
-                    if(msg.what == MSG_ANON_HELLO) self.helloAnon(real.origin, real.payload);
+                    if(msg.what == MSG_HELLO_ANON) self.helloAnon(real.origin, real.payload);
                     else self.helloAuth(real.origin, real.payload);
+                    break;
+                }
+                case MSG_CHAR_OWNERSHIP_REQUEST: {
+                    final Events.CharOwnership real = (Events.CharOwnership)msg.obj;
+                    self.charOwnership(real.origin, real.payload);
                     break;
                 }
             }
@@ -204,12 +227,14 @@ public class PcAssignmentHelper {
 
     private static final int MSG_DISCONNECTED = 1;
     private static final int MSG_DETACHED = 2;
-    private static final int MSG_ANON_HELLO = 3;
-    private static final int MSG_AUTH_HELLO = 4;
+    private static final int MSG_HELLO_ANON = 3;
+    private static final int MSG_HELLO_AUTH = 4;
+    private static final int MSG_CHAR_OWNERSHIP_REQUEST = 5;
 
     private static final int DOORMAT_BYTES = 64;
     private static final int USUAL_CLIENT_COUNT = 20; // not really! Usually 5 or less but that's for safety!
     private static final int USUAL_AVERAGE_MESSAGES_PENDING_COUNT = 10; // pretty a lot, those will be small!
+    private static final int LOCAL_BINDING = -1;
 
     private synchronized byte[] random(int count) {
         if(count < 0) count = -count;
@@ -221,6 +246,13 @@ public class PcAssignmentHelper {
     private PlayingDevice getDevice(MessageChannel pipe) {
         for (PlayingDevice check : peers) {
             if(check.pipe == pipe) return check;
+        }
+        return null;
+    }
+
+    private PlayingDevice getDeviceByKeyIndex(int index) {
+        for (PlayingDevice check : peers) {
+            if(check.keyIndex == index) return check;
         }
         return null;
     }
@@ -320,5 +352,194 @@ public class PcAssignmentHelper {
         return res;
     }
 
+    private void charOwnership(MessageChannel origin, Network.CharacterOwnership payload) {
+        final PlayingDevice requester = getDevice(origin);
+        if(requester == null) return; // impossible
+        final int ticket = payload.ticket;
+        payload.ticket = nextValidRequest;
+        if(ticket != nextValidRequest) {
+            payload.type = Network.CharacterOwnership.OBSOLETE;
+            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            return;
+        }
+        if(payload.character >= party.usually.party.length) { // requester asked chars before providing key.
+            payload.type = Network.CharacterOwnership.REJECTED;
+            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            return;
+        }
+        Integer currKeyIndex = assignment.get(payload.character);
+        if(currKeyIndex != null && currKeyIndex == LOCAL_BINDING) { // bound to me, silently rejected as mapping to me is a very strong action
+            payload.type = Network.CharacterOwnership.REJECTED;
+            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            return;
+        }
+        // taking ownership from AVAIL is silently accepted as common.
+        // same for giving ownership away, cannot force someone to play
+        final PlayingDevice currOwner = currKeyIndex != null ? getDeviceByKeyIndex(currKeyIndex) : null;
+        if(currKeyIndex == null || currOwner == requester) {
+            Integer newMapping = currKeyIndex == null? requester.keyIndex : null;
+            assignment.set(payload.character, newMapping);
+            payload.type = Network.CharacterOwnership.ACCEPTED;
+            payload.ticket = ++nextValidRequest;
+            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            int type = newMapping == null? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
+            sendAvailability(type, payload.character, origin, nextValidRequest);
+            if(onOwnershipChange != null) onOwnershipChange.run();
+            return;
+        }
+        // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose
+        // but now requests must be sequential, receiving a second request would make the ticket obsolete and
+        // I don't want all the other requests to be somehow blocked or rejected in the meanwhile...
+        // So reject this instead. Looks like this is the only viable option.
+        payload.type = Network.CharacterOwnership.REJECTED;
+        out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+    }
 
+    private void sendAvailability(int type, int charIndex, MessageChannel excluding, int request) {
+        for (PlayingDevice peer : peers) {
+            if(peer.isAnonymous()) continue;
+            if(peer.pipe == excluding) continue; // got it already asyncronously
+            final Network.CharacterOwnership notification = new Network.CharacterOwnership();
+            notification.ticket = request;
+            notification.character = charIndex;
+            notification.type = type;
+            out.add(new SendRequest(peer, ProtoBufferEnum.CHARACTER_OWNERSHIP, notification));
+        }
+    }
+
+    String getDeviceName(PlayingDevice dev) {
+        int anon = 0, known = 0;
+        for (PlayingDevice match : peers) {
+            if(match == dev) {
+                if(match.isAnonymous()) return String.format("unidentified[%1$d]", anon); // TODO, but almost ok
+                else return String.format("player[%1$d]", known); // TODO, resolve based on unique device keys and device labels
+            }
+            if(match.isAnonymous()) anon++;
+            else known++;
+        }
+        return "";
+    }
+
+
+    // ---------------------------------------------------------------------------------------------
+    // I really wouldn't like this to be here. But it is, because I spent a whole day on this already.
+    // ---------------------------------------------------------------------------------------------
+    private static class AuthDeviceViewHolder extends RecyclerView.ViewHolder {
+        TextView name;
+        TextView pcList;
+
+        public AuthDeviceViewHolder(View itemView) {
+            super(itemView);
+            name = (TextView) itemView.findViewById(R.id.cardIDACA_name);
+            pcList = (TextView) itemView.findViewById(R.id.cardIDACA_assignedPcs);
+        }
+    }
+
+    public abstract class AuthDeviceAdapter extends RecyclerView.Adapter<AuthDeviceViewHolder> {
+        protected abstract String getNoBoundCharactersMessage();
+
+        @Override
+        public void onBindViewHolder(AuthDeviceViewHolder holder, int position) {
+            PlayingDevice dev = null;
+            int index = 0;
+            for (PlayingDevice match : peers) {
+                if(match.isAnonymous()) continue;
+                if(index == position) {
+                    dev = match;
+                    break;
+                }
+                index++;
+            }
+            if(null == dev) return; // impossible
+            holder.name.setText(getDeviceName(dev));
+            String list = "";
+            for (int loop = 0; loop < assignment.size(); loop++) {
+                Integer match = assignment.get(loop);
+                if(null == match || match == LOCAL_BINDING) continue;
+                if(dev == getDeviceByKeyIndex(match)) {
+                    if(list.length() > 0) list += ", ";
+                    list += party.usually.party[loop].name;
+                }
+            }
+
+            if(list.length() == 0) list = getNoBoundCharactersMessage();
+            if(list != null) holder.pcList.setText(list);
+        }
+
+        @Override
+        public int getItemCount() {
+            int count = 0;
+            for (PlayingDevice match : peers) {
+                if (match.isAnonymous()) continue;
+                count++;
+            }
+            return count;
+        }
+    }
+
+
+    private class PcViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final OnUnassignedPcClick clickTarget;
+        TextView name;
+        TextView levels;
+        PersistentStorage.Actor actor;
+
+        public PcViewHolder(View itemView, OnUnassignedPcClick click) {
+            super(itemView);
+            clickTarget = click;
+            name = (TextView)itemView.findViewById(R.id.cardACSL_name);
+            levels = (TextView)itemView.findViewById(R.id.cardACSL_classesAndLevels);
+            if(null != clickTarget) itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(null != actor && null != clickTarget) clickTarget.click(actor);
+        }
+    }
+
+    private interface OnUnassignedPcClick {
+        void click(PersistentStorage.Actor actor);
+    }
+
+    private abstract class UnassignedPcsAdapter extends RecyclerView.Adapter<PcViewHolder> {
+        final OnUnassignedPcClick click;
+
+        public UnassignedPcsAdapter(OnUnassignedPcClick click) {
+            setHasStableIds(true);
+            this.click = click;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            for(int scan = 0; scan < assignment.size(); scan++) {
+                if(null != assignment.get(scan)) continue;
+                if(0 == position) return scan;
+                position--;
+            }
+            return RecyclerView.NO_ID;
+        }
+
+        @Override
+        public void onBindViewHolder(PcViewHolder holder, int position) {
+            int slot;
+            for(slot = 0; slot < assignment.size(); slot++) {
+                if(null != assignment.get(slot)) continue;
+                if(0 == position) break;
+                position--;
+            }
+            holder.actor = party.usually.party[slot];
+            holder.name.setText(holder.actor.name);
+            holder.levels.setText("<class_todo> " + holder.actor.level); // TODO
+        }
+
+        @Override
+        public int getItemCount() {
+            int count = 0;
+            for (Integer dev : assignment) {
+                if(null == dev) count++;
+            }
+            return count;
+        }
+    }
 }
