@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.graphics.BitmapFactory;
 import android.net.nsd.NsdManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -15,10 +16,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
-import java.util.concurrent.Callable;
 
 /** The server is 'gathering' player devices so they can join a new session.
  * This is important and we must be able to navigate back there every time needed in case
@@ -54,7 +54,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     private static Pumper.MessagePumpingThread[] alreadyConnectedPeers;
 
     private PartyJoinOrderService room;
-    private PartyJoinOrderService.LocalBinder serviceConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,31 +103,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                 new ConnectionInfoDialog(this, serverPort).show();
                 break;
             }
-            case R.id.ga_menu_pcOnThisDevice: {
-                final AlertDialog dialog = new AlertDialog.Builder(this)
-                        .setView(R.layout.dialog_make_pc_local).show();
-                final RecyclerView list = (RecyclerView) dialog.findViewById(R.id.ga_localPcsDialog_list);
-                dialogList = new UnassignedPcsAdapter(new OnUnassignedPcClick() {
-                    @Override
-                    public void click(PersistentStorage.Actor actor) {
-                        dialog.dismiss();
-                        if(room != null) {
-                            room.local(actor);
-                            RecyclerView.Adapter lister = ((RecyclerView) findViewById(R.id.ga_pcUnassignedList)).getAdapter();
-                            lister.notifyDataSetChanged();
-                            availablePcs(lister.getItemCount());
-                        }
-                        dialogList = null;
-                    }
-                });
-                list.setAdapter(dialogList);
-                list.addItemDecoration(new PreSeparatorDecorator(list, this) {
-                    @Override
-                    protected boolean isEligible(int position) {
-                        return true;
-                    }
-                });
-            }
         }
         return true;
     }
@@ -144,8 +118,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
 
     private Timer ticker = new Timer();
     private int lastPublishStatus = PartyJoinOrderService.PUBLISHER_IDLE;
-    private RecyclerView.Adapter dialogList; /// so if a player takes a PC, we can update the list.
-
 
     private static class MyHandler extends Handler {
         private final WeakReference<GatheringActivity> target;
@@ -267,7 +239,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         unboundPcList.setAdapter(room.setNewUnassignedPcsAdapter(new PcAssignmentHelper.UnassignedPcHolderFactoryBinder<PcViewHolder>() {
             @Override
             public PcViewHolder createUnbound(ViewGroup parent, int viewType) {
-                return new PcViewHolder(getLayoutInflater().inflate(R.layout.card_assignable_character_server_list, parent, false), null);
+                return new PcViewHolder(getLayoutInflater().inflate(R.layout.card_assignable_character_server_list, parent, false));
             }
 
             @Override
@@ -332,27 +304,52 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             pcList = (TextView) itemView.findViewById(R.id.cardIDACA_assignedPcs);
         }
     }
-    public interface OnUnassignedPcClick {
-        void click(PersistentStorage.Actor actor);
-    }
 
-    private class PcViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final OnUnassignedPcClick clickTarget;
+    private class PcViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, ActionMode.Callback {
         TextView name;
         TextView levels;
         PersistentStorage.Actor actor;
 
-        public PcViewHolder(View itemView, OnUnassignedPcClick click) {
+        public PcViewHolder(View itemView) {
             super(itemView);
-            clickTarget = click;
             name = (TextView)itemView.findViewById(R.id.cardACSL_name);
             levels = (TextView)itemView.findViewById(R.id.cardACSL_classesAndLevels);
-            if(null != clickTarget) itemView.setOnClickListener(this);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
-        public void onClick(View v) {
-            if(null != actor && null != clickTarget) clickTarget.click(actor);
+        public boolean onLongClick(View v) {
+            startActionMode(this);
+            // What if a character gets bound while the user is ready the menu and deciding what to do?
+            // Not really my problem, we'll re bind it.
+            return true;
         }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            getMenuInflater().inflate(R.menu.ga_unassigned_pc_context, menu);
+            if(null != actor) mode.setTitle(actor.name);
+            mode.setTag(actor);
+            return true;
+    }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch(item.getItemId()) {
+                case R.id.ga_ctx_unassigned_pc_playHere: {
+                    PersistentStorage.Actor was = (PersistentStorage.Actor) mode.getTag();
+                    if(null != room && null != was) room.local(was);
+                    mode.finish();
+                    return true;
+}
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) { }
     }
 }

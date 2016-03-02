@@ -67,6 +67,34 @@ public class PcAssignmentHelper {
         return count != 0;
     }
 
+    public ArrayList<PersistentStorage.Actor> getUnboundedPcs() {
+        ArrayList<PersistentStorage.Actor> list = new ArrayList<>();
+        for(int loop = 0; loop < party.usually.party.length; loop++) {
+            if(assignment.get(loop) != null) continue;
+            list.add(party.usually.party[loop]);
+        }
+        return list;
+    }
+
+    public void local(PersistentStorage.Actor actor) {
+        int match;
+        for(match = 0; match < party.usually.party.length; match++) {
+            if(actor == party.usually.party[match]) break;
+        }
+        if(match == party.usually.party.length) return;
+        final Integer ownerIndex = assignment.get(match);
+        if(ownerIndex != null && ownerIndex == LOCAL_BINDING) return;
+        assignment.set(match, LOCAL_BINDING);
+        Network.CharacterOwnership rebound = new Network.CharacterOwnership();
+        rebound.type = Network.CharacterOwnership.BOUND;
+        rebound.ticket = nextValidRequest;
+        rebound.character = match;
+        for (PlayingDevice dst : peers) {
+            out.add(new SendRequest(dst, ProtoBufferEnum.CHARACTER_OWNERSHIP, rebound));
+        }
+        if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
+    }
+
     private final SecureRandom randomizer = new SecureRandom();
     private final JoinVerificator verifier;
     private ArrayList<Integer> assignment;

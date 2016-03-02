@@ -259,7 +259,7 @@
     <string name="ga_initializing">Initializing…</string>
     <string name="ga_welcoming">Welcoming players…</string>
     <string name="ga_identifiedDevices">Identified devices</string>
-    <string name="ga_playingCharactersAssignment">Unassigned characters (all characters must be assigned to continue)</string>
+    <string name="ga_playingCharactersAssignment">Unassigned characters</string>
     <string name="ga_menu_showConnectionInfos">Show connection infos</string>
     <string name="ga_publisherFailedStart">Could not publish service. Explicit connections are still available.</string>
     <string name="ga_publishing">Ready. Your friends can connect.</string>
@@ -338,5 +338,9 @@
     <string name="ga_cannotBindPartyService">Failed to get an handle to the party maintenance service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
     <string name="ga_notificationDesc">Play session over network.</string>
     <string name="ga_lostServiceConnection">Lost connection to the party maintenance service. This was not supposed to happen. Please report this!</string>
+    <string name="ga_oneCharNotBound">One character has not been assigned to any device.</string>
+    <string name="ga_someCharsNotBound">%1$d characters have not been assigned to any device.</string>
+    <string name="ga_unboundCharsDlgMsg">%1$s\nTo continue, all characters must be played by someone.\n\nGo back and long press an unassigned character for some options.</string>
+    <string name="ga_ctx_unassigned_pc_playHere">Play on this device</string>
 
 </resources>

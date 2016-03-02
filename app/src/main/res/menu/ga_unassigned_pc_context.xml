@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/ga_menu_explicitConnInfo"
-        android:title="@string/ga_menu_showConnectionInfos" />
+        android:id="@+id/ga_ctx_unassigned_pc_playHere"
+        android:title="@string/ga_ctx_unassigned_pc_playHere" />
+
 </menu>

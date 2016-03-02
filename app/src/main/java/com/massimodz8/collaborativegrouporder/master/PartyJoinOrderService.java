@@ -18,6 +18,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.Vector;
 
 /** Encapsulates states and manipulations involved in creating a socket and publishing it to the
@@ -166,8 +167,13 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
         return gen;
     }
 
-    /// Marks the given character to be managed locally.
+    public ArrayList<PersistentStorage.Actor> getUnboundedPcs() {
+        return assignmentHelper.getUnboundedPcs();
+    }
+
+    /// Marks the given character to be managed locally. Will trigger ownership change.
     public void local(PersistentStorage.Actor actor) {
+        assignmentHelper.local(actor);
 
     }
 
