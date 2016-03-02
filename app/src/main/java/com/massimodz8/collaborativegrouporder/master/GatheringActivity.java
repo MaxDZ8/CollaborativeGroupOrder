@@ -80,6 +80,8 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                 // The documentation seems to be clear bound service destruction is deterministic.
                 room.stopForeground(true);
             }
+            room.setNewAuthDevicesAdapter(null);
+            room.setNewUnassignedPcsAdapter(null);
             unbindService(this);
         }
         super.onDestroy();

@@ -100,7 +100,7 @@ public class PcAssignmentHelper {
     public int getNumIdentifiedClients() {
         int count = 0;
         for (PlayingDevice client : peers) {
-            if(client.pipe != null & client.isRemote()) count++;
+            if(client.pipe != null & !client.isAnonymous()) count++;
         }
         return count;
     }
@@ -131,6 +131,7 @@ public class PcAssignmentHelper {
             out.add(new SendRequest(dst, ProtoBufferEnum.CHARACTER_OWNERSHIP, rebound));
         }
         if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
+        if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
     }
 
 
@@ -204,7 +205,6 @@ public class PcAssignmentHelper {
             this.pipe = pipe;
         }
 
-        public boolean isRemote() { return keyIndex >= 0; }
         public boolean isAnonymous() { return keyIndex == ANON; }
 
         private static final int ANON = -1;
@@ -437,6 +437,7 @@ public class PcAssignmentHelper {
             int type = newMapping == null? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
             sendAvailability(type, payload.character, origin, nextValidRequest);
             if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
+            if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
             return;
         }
         // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose
