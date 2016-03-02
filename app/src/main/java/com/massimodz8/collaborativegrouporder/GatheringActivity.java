@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -241,7 +243,26 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         }
         beginDelayedTransition();
         final RecyclerView devList = (RecyclerView) findViewById(R.id.ga_deviceList);
-        devList.setAdapter(new PcAssignmentHelper.AuthDeviceAdapter());
+        devList.setAdapter(room.makeAuthDevicesAdapter(new PcAssignmentHelper.AuthDeviceHolderFactoryBinder<AuthDeviceViewHolder>() {
+            @Override
+            public AuthDeviceViewHolder createUnbound(ViewGroup parent, int viewType) {
+                return new AuthDeviceViewHolder(getLayoutInflater().inflate(R.layout.card_identified_device_chars_assigned, parent, false));
+            }
+
+            @Override
+            public void bind(@NonNull AuthDeviceViewHolder target, @NonNull String deviceName, @Nullable ArrayList<Integer> characters) {
+                target.name.setText(deviceName);
+                if(null == characters) {
+                    target.pcList.setText(R.string.ga_noPcsOnDevice);
+                    return;
+                }
+                String list = "";
+                for (Integer index : characters) {
+                    if(list.length() > 0) list += ", ";
+                    list += room.getPartyOwnerData().usually.party[index].name;
+                }
+            }
+        }));
         final RecyclerView unboundPcList = (RecyclerView) findViewById(R.id.ga_pcUnassignedList);
         unboundPcList.setAdapter(new UnassignedPcsAdapter(null);
         MaxUtils.setVisibility(View.VISIBLE, devList, unboundPcList);
@@ -315,4 +336,16 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     }
 
     private static final int NOTIFICATION_ID = 1;
+
+
+    private static class AuthDeviceViewHolder extends RecyclerView.ViewHolder {
+        TextView name;
+        TextView pcList;
+
+        public AuthDeviceViewHolder(View itemView) {
+            super(itemView);
+            name = (TextView) itemView.findViewById(R.id.cardIDACA_name);
+            pcList = (TextView) itemView.findViewById(R.id.cardIDACA_assignedPcs);
+        }
+    }
 }

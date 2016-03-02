@@ -8,6 +8,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.MainMenuActivity;
@@ -40,6 +41,7 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
     public static final int PUBLISHER_PUBLISHING = 3;
     public static final int PUBLISHER_STOP_FAILED = 4;
     public static final int PUBLISHER_STOPPED = 5;
+    private PersistentStorage.PartyOwnerData.Group partyOwnerData;
 
     public PartyJoinOrderService() {
     }
@@ -147,6 +149,15 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
     public void initializePartyManagement(@NonNull PersistentStorage.PartyOwnerData.Group party, @NonNull JoinVerificator keyMaster) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster);
     }
+
+    public PersistentStorage.PartyOwnerData.Group getPartyOwnerData() {
+        return assignmentHelper.party;
+    }
+
+    public <VH extends RecyclerView.ViewHolder> PcAssignmentHelper.AuthDeviceAdapter<VH> makeAuthDevicesAdapter(@NonNull PcAssignmentHelper.AuthDeviceHolderFactoryBinder<VH> factory) {
+        return new PcAssignmentHelper.AuthDeviceAdapter<>(factory, assignmentHelper);
+    }
+
     /// Marks the given character to be managed locally.
     public void local(PersistentStorage.Actor actor) {
 

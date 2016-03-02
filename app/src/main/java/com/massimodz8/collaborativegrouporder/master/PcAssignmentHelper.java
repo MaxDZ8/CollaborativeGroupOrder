@@ -40,7 +40,7 @@ import java.util.concurrent.BlockingQueue;
  * leaving Activity (not guaranteed to exist at the time it's generated) to probe for results.
  */
 public class PcAssignmentHelper {
-    private Runnable onOwnershipChange;
+    public final PersistentStorage.PartyOwnerData.Group party;
 
     public PcAssignmentHelper(PersistentStorage.PartyOwnerData.Group party, JoinVerificator verifier) {
         this.party = party;
@@ -119,8 +119,11 @@ public class PcAssignmentHelper {
         return count != 0;
     }
 
+    void notifyAuthChange(@Nullable AuthDeviceAdapter lister) {
+        authDeviceLister = lister;
+    }
 
-    private final PersistentStorage.PartyOwnerData.Group party;
+
     private final SecureRandom randomizer = new SecureRandom();
     private final JoinVerificator verifier;
     private ArrayList<Integer> assignment;
@@ -315,8 +318,10 @@ public class PcAssignmentHelper {
             }.start();
             return;
         }
+        boolean signal = dev.isAnonymous();
         dev.keyIndex = TODO_shite_ugly_temp_hack++;
         sendPlayingCharacterList(dev);
+        if(signal && authDeviceLister != null) authDeviceLister.notifyDataSetChanged(); // no guarantee about ordering of auths.
     }
 
     private void sendPlayingCharacterList(final PlayingDevice dev) {
@@ -421,28 +426,37 @@ public class PcAssignmentHelper {
     }
 
 
-    // ---------------------------------------------------------------------------------------------
-    // I really wouldn't like this to be here. But it is, because I spent a whole day on this already.
-    // ---------------------------------------------------------------------------------------------
-    private static class AuthDeviceViewHolder extends RecyclerView.ViewHolder {
-        TextView name;
-        TextView pcList;
-
-        public AuthDeviceViewHolder(View itemView) {
-            super(itemView);
-            name = (TextView) itemView.findViewById(R.id.cardIDACA_name);
-            pcList = (TextView) itemView.findViewById(R.id.cardIDACA_assignedPcs);
-        }
+    public interface AuthDeviceHolderFactoryBinder<VH extends RecyclerView.ViewHolder> {
+        VH createUnbound(ViewGroup parent, int viewType);
+        /**
+         * Bind some data maintained by me to the holder. I take care of the mappings, you do the
+         * actual layout! Data passed here can be retained, it won't be reused, they are all locals.
+         * @param deviceName Resolved device name. Maybe I should be smarter about that.
+         * @param characters Each value is the index to use in PartyOwnerData.Group.Definition.party
+         *                   notably, those are NOT peer ids, as there's no such thing there.
+         */
+        void bind(@NonNull VH target, @NonNull String deviceName, @Nullable ArrayList<Integer> characters);
     }
 
-    public abstract class AuthDeviceAdapter extends RecyclerView.Adapter<AuthDeviceViewHolder> {
-        protected abstract String getNoBoundCharactersMessage();
+    public static class AuthDeviceAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+        private final AuthDeviceHolderFactoryBinder<VH> factory;
+        private final PcAssignmentHelper owner;
+
+        AuthDeviceAdapter(@NonNull AuthDeviceHolderFactoryBinder<VH> factory, @NonNull PcAssignmentHelper owner) {
+            this.factory = factory;
+            this.owner = owner;
+        }
 
         @Override
-        public void onBindViewHolder(AuthDeviceViewHolder holder, int position) {
+        public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            return factory.createUnbound(parent, viewType);
+        }
+
+        @Override
+        public void onBindViewHolder(VH holder, int position) {
             PlayingDevice dev = null;
             int index = 0;
-            for (PlayingDevice match : peers) {
+            for (PlayingDevice match : owner.peers) {
                 if(match.isAnonymous()) continue;
                 if(index == position) {
                     dev = match;
@@ -451,31 +465,29 @@ public class PcAssignmentHelper {
                 index++;
             }
             if(null == dev) return; // impossible
-            holder.name.setText(getDeviceName(dev));
-            String list = "";
-            for (int loop = 0; loop < assignment.size(); loop++) {
-                Integer match = assignment.get(loop);
+            ArrayList<Integer> charList = null;
+            for (int loop = 0; loop < owner.assignment.size(); loop++) {
+                Integer match = owner.assignment.get(loop);
                 if(null == match || match == LOCAL_BINDING) continue;
-                if(dev == getDeviceByKeyIndex(match)) {
-                    if(list.length() > 0) list += ", ";
-                    list += party.usually.party[loop].name;
+                if(dev == owner.getDeviceByKeyIndex(match)) {
+                    if(charList == null) charList = new ArrayList<>();
+                    charList.add(loop);
                 }
             }
-
-            if(list.length() == 0) list = getNoBoundCharactersMessage();
-            if(list != null) holder.pcList.setText(list);
+            factory.bind(holder, owner.getDeviceName(dev), charList);
         }
 
         @Override
         public int getItemCount() {
             int count = 0;
-            for (PlayingDevice match : peers) {
+            for (PlayingDevice match : owner.peers) {
                 if (match.isAnonymous()) continue;
                 count++;
             }
             return count;
         }
     }
+    private AuthDeviceAdapter authDeviceLister;
 
 
     private class PcViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
