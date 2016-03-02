@@ -54,12 +54,18 @@ public class PcAssignmentHelper {
     TODO UGLY UGLY UGLY UGLY UGLY UGLY UGLY UGLY UGLY UGLY */
     private int TODO_shite_ugly_temp_hack;
 
-    public void add(MessageChannel newConn) {
+    public void pump(MessageChannel newConn) {
         peers.add(new PlayingDevice(newConn));
         netPump.pump(newConn);
     }
 
-    public boolean hasClients() {
+
+    public void pump(Pumper.MessagePumpingThread worker) {
+        peers.add(new PlayingDevice(worker.getSource()));
+        netPump.pump(worker);
+    }
+
+    public boolean hasIdentifiedClients() {
         int count = 0;
         for (PlayingDevice client : peers) {
             if(client.pipe != null & client.isRemote()) count++;

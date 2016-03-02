@@ -110,7 +110,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     private void availablePcs(int itemCount) {
         beginDelayedTransition();
         findViewById(R.id.ga_pcUnassignedList).setVisibility(itemCount > 0 ? View.VISIBLE : View.GONE);
-        findViewById(R.id.ga_startSession    ).setVisibility(itemCount > 0 ? View.GONE : View.VISIBLE);
         final TextView label = (TextView) findViewById(R.id.ga_pcUnassignedListDesc);
         label.setText(itemCount > 0 ? R.string.ga_playingCharactersAssignment : R.string.ga_allAssigned);
     }
@@ -145,7 +144,8 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                                 .show();
                         return;
                     }
-                    target.room.tickNewClients();
+                    target.room.promoteNewClients();
+                    target.availablePcs(target.room.getUnboundedPcs().size());
                 }
             }
         }
@@ -214,6 +214,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             alreadyConnectedPeers = null;
         }
         beginDelayedTransition();
+        findViewById(R.id.ga_pcUnassignedListDesc).setVisibility(View.VISIBLE);
         final RecyclerView devList = (RecyclerView) findViewById(R.id.ga_deviceList);
         devList.setAdapter(room.setNewAuthDevicesAdapter(new PcAssignmentHelper.AuthDeviceHolderFactoryBinder<AuthDeviceViewHolder>() {
             @Override
@@ -250,7 +251,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
 
             }
         }));
-        MaxUtils.setVisibility(View.VISIBLE, devList, unboundPcList);
+        MaxUtils.setVisibility(View.VISIBLE, devList, unboundPcList, findViewById(R.id.ga_startSession));
 
         if(room.getPublishStatus() == PartyJoinOrderService.PUBLISHER_IDLE) {
             try {

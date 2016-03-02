@@ -61,14 +61,6 @@
             android:id="@+id/ga_pcUnassignedListDesc"
             android:visibility="gone" />
 
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ga_startSession"
-            android:id="@+id/ga_startSession"
-            android:visibility="gone"
-            android:onClick="startSession_callback" />
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/ga_pcUnassignedList"
             android:scrollbars="vertical"
@@ -77,6 +69,15 @@
             android:layout_weight=".5"
             app:layoutManager="LinearLayoutManager"
             android:visibility="gone" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ga_startSession"
+            android:id="@+id/ga_startSession"
+            android:visibility="gone"
+            android:onClick="startSession_callback"
+            android:longClickable="false" />
 
 
     </LinearLayout>

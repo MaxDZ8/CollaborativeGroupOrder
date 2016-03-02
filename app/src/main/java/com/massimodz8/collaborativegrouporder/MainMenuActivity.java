@@ -131,9 +131,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
     private void startNewSessionActivity(PersistentStorage.PartyOwnerData.Group party, Pumper.MessagePumpingThread[] workers) {
-        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        state.pumpers = workers;
-        state.gaState = new GatheringActivity.State(party);
+        GatheringActivity.prepare(party, workers);
         startActivity(new Intent(this, GatheringActivity.class));
     }
 

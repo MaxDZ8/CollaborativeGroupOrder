@@ -178,20 +178,19 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
     }
 
     /// Promotes freshly connected clients to anonymous handshaking clients.
-    public void tickNewClients() {
-        /*
-        if(newConn.isEmpty()) return null;
-        Vector<MessageChannel> res = newConn;
-        newConn = new Vector<>();
-        return res;
-        */
+    public void promoteNewClients() {
+        while(!newConn.isEmpty()) {
+            final MessageChannel client = newConn.remove(newConn.size() - 1);
+            assignmentHelper.pump(client);
+        }
+    }
 
     }
 
     /// Promotes freshly connected clients to anonymous handshaking clients.
     public void pumpClients(@Nullable Pumper.MessagePumpingThread[] existing) {
         if(existing == null) return;
-        // TODO
+        for(Pumper.MessagePumpingThread worker : existing) assignmentHelper.pump(worker);
     }
 
     /* Section 4: given current character bindings, start the real deal. ---------------------------
