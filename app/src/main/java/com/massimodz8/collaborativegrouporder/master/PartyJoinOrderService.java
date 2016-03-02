@@ -96,8 +96,10 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
         rejectConnections = true;
         if(!hard) return;
         stoppingListener = true;
-        acceptor.interrupt();
-        acceptor = null;
+        if(acceptor != null) { // it might happen we're really already called to stop.
+            acceptor.interrupt();
+            acceptor = null;
+        }
         landing = null;
     }
 
@@ -149,8 +151,12 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
         assignmentHelper = new PcAssignmentHelper(party, keyMaster);
     }
 
+    public void shutdownPartyManagement() {
+        if(null != assignmentHelper) assignmentHelper.shutdown();
+    }
+
     public PersistentStorage.PartyOwnerData.Group getPartyOwnerData() {
-        return assignmentHelper.party;
+        return assignmentHelper == null? null : assignmentHelper.party;
     }
 
     public <VH extends RecyclerView.ViewHolder> PcAssignmentHelper.AuthDeviceAdapter<VH> setNewAuthDevicesAdapter(PcAssignmentHelper.AuthDeviceHolderFactoryBinder<VH> factory) {
@@ -171,6 +177,10 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
         return assignmentHelper.getUnboundedPcs();
     }
 
+    public int getNumIdentifiedClients() {
+        return assignmentHelper.getNumIdentifiedClients();
+    }
+
     /// Marks the given character to be managed locally. Will trigger ownership change.
     public void local(PersistentStorage.Actor actor) {
         assignmentHelper.local(actor);
@@ -185,6 +195,21 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
         }
     }
 
+
+    public void kickNewClients() {
+        new Thread() {
+            @Override
+            public void run() {
+                while(!newConn.isEmpty()) {
+                    final MessageChannel client = newConn.remove(newConn.size() - 1);
+                    try {
+                        client.socket.close();
+                    } catch (IOException e) {
+                        // Ignore. I'm kicking them.
+                    }
+                }
+            }
+        }.start();
     }
 
     /// Promotes freshly connected clients to anonymous handshaking clients.
@@ -246,10 +271,9 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
     @Override
     public void onDestroy() {
         stopListening(true);
-        if(null != nsdMan) stopPublishing();
-        // Note: the sockets should be released somewhere else. Not really my concern.
-        // That is because in practice this should never be destroyed non-empty so I want
-        // the thing to go horribly.
+        stopPublishing();
+        kickNewClients();
+        shutdownPartyManagement();
     }
 
     public class LocalBinder extends Binder {

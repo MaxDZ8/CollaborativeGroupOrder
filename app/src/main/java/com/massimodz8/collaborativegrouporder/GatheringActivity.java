@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -67,6 +68,21 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        ticker.cancel();
+        if(null != room) {
+            if(!isChangingConfigurations()) { // being destroyed for real.
+                // no need to shut down the session, done so in the activity.
+                // no need to shut down anything at all, unbind will do!
+                // The documentation seems to be clear bound service destruction is deterministic.
+                room.stopForeground(true);
+            }
+            unbindService(this);
+        }
+        super.onDestroy();
+    }
+
     private void failedServiceBind() {
         beginDelayedTransition();
         final TextView status = (TextView) findViewById(R.id.ga_state);
@@ -80,13 +96,30 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     }
 
     @Override
-    protected void onDestroy() {
-        if(null != room) {
-            if(!isChangingConfigurations()) room.stopForeground(true); // being destroyed for real.
-            unbindService(this);
+    public boolean onSupportNavigateUp() {
+        if(room != null && room.getPartyOwnerData() != null && room.getNumIdentifiedClients() != 0) {
+            carefulExit();
+            return true;
         }
-        ticker.cancel();
-        super.onDestroy();
+        return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(room != null && room.getPartyOwnerData() != null && room.getNumIdentifiedClients() != 0) carefulExit();
+        else super.onBackPressed();
+    }
+
+    private void carefulExit() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.ga_carefulDlgTitle)
+                .setMessage(R.string.ga_carefulDlgMessage)
+                .setPositiveButton(R.string.ga_carefulDlgExitConfirmed, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                }).show();
     }
 
     @Override
@@ -104,7 +137,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                 break;
             }
         }
-        return true;
+        return false;
     }
 
     private void availablePcs(int itemCount) {
@@ -144,8 +177,10 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                                 .show();
                         return;
                     }
-                    target.room.promoteNewClients();
-                    target.availablePcs(target.room.getUnboundedPcs().size());
+                    if(target.room.getPartyOwnerData() != null) { // protect against spurious ticks
+                        target.room.promoteNewClients();
+                        target.availablePcs(target.room.getUnboundedPcs().size());
+                    }
                 }
             }
         }
@@ -177,7 +212,19 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     private static final int TIMER_INTERVAL_MS = 250;
 
     public void startSession_callback(View btn) {
-        room.adventuring();
+        final ArrayList<PersistentStorage.Actor> free = room.getUnboundedPcs();
+        if(free.isEmpty()) {
+            room.stopPublishing();
+            room.stopListening(false);
+            room.kickNewClients();
+            return;
+        }
+        String firstLine = free.size() == 1? getString(R.string.ga_oneCharNotBound)
+                : String.format(getString(R.string.ga_someCharsNotBound), free.size());
+        String message = getString(R.string.ga_unboundCharsDlgMsg);
+        new AlertDialog.Builder(this)
+                .setMessage(String.format(message, firstLine))
+                .show();
     }
 
     // ServiceConnection ___________________________________________________________________________
@@ -189,9 +236,11 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             try {
                 keyMaster = new JoinVerificator();
             } catch (NoSuchAlgorithmException e) {
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.ga_noDigestDialogMessage)
-                        .show();
+                beginDelayedTransition();
+                TextView status = (TextView) findViewById(R.id.ga_state);
+                status.setText(R.string.ga_noDigestStatus);
+                findViewById(R.id.ga_progressBar).setVisibility(View.GONE);
+                ticker.cancel();
                 return;
             }
 
@@ -332,7 +381,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             if(null != actor) mode.setTitle(actor.name);
             mode.setTag(actor);
             return true;
-    }
+        }
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
@@ -345,7 +394,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                     if(null != room && null != was) room.local(was);
                     mode.finish();
                     return true;
-}
+                }
             }
             return false;
         }

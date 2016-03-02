@@ -44,6 +44,38 @@ public class PcAssignmentHelper {
         this.verifier = verifier;
         assignment = new ArrayList<>(party.usually.party.length);
         for (PersistentStorage.Actor ignored : party.usually.party) assignment.add(null);
+        Thread mailman = new Thread() {
+            @Override
+            public void run() {
+                while (!isInterrupted()) {
+                    final SendRequest req;
+                    try {
+                        req = out.take();
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+                    if (req.destination == null) break;
+                    MessageChannel pipe = req.destination.pipe;
+                    if (pipe == null) continue; // impossible
+                    if (req.one != null) {
+                        try {
+                            pipe.write(req.type, req.one);
+                        } catch (IOException e) {
+                            req.destination.errors.add(e);
+                        }
+                    }
+                    if (req.many != null) {
+                        for (MessageNano msg : req.many) {
+                            try {
+                                pipe.write(req.type, msg);
+                            } catch (IOException e) {
+                                req.destination.errors.add(e);
+                            }
+                        }
+                    }
+                }
+            }
+        };
         mailman.start();
     }
 
@@ -65,12 +97,12 @@ public class PcAssignmentHelper {
         netPump.pump(worker);
     }
 
-    public boolean hasIdentifiedClients() {
+    public int getNumIdentifiedClients() {
         int count = 0;
         for (PlayingDevice client : peers) {
             if(client.pipe != null & client.isRemote()) count++;
         }
-        return count != 0;
+        return count;
     }
 
     public ArrayList<PersistentStorage.Actor> getUnboundedPcs() {
@@ -99,6 +131,27 @@ public class PcAssignmentHelper {
             out.add(new SendRequest(dst, ProtoBufferEnum.CHARACTER_OWNERSHIP, rebound));
         }
         if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
+    }
+
+
+    public void shutdown() {
+        out.add(new SendRequest());
+        final Pumper.MessagePumpingThread[] bye = netPump.move();
+        if(bye == null || bye.length == 0) return;
+        new Thread() {
+            @Override
+            public void run() {
+                for (Pumper.MessagePumpingThread worker : bye) {
+                    worker.interrupt();
+                    try {
+                        worker.getSource().socket.close();
+                    } catch (IOException e) {
+                        // simply suppress.
+                    }
+                }
+
+            }
+        }.start();
     }
 
     private final SecureRandom randomizer = new SecureRandom();
@@ -137,38 +190,6 @@ public class PcAssignmentHelper {
             });
     private ArrayList<PlayingDevice> peers = new ArrayList<>();
     private BlockingQueue<SendRequest> out = new ArrayBlockingQueue<>(USUAL_CLIENT_COUNT * USUAL_AVERAGE_MESSAGES_PENDING_COUNT);
-    private Thread mailman = new Thread() {
-        @Override
-        public void run() {
-            while(!isInterrupted()) {
-                final SendRequest req;
-                try {
-                    req = out.take();
-                } catch (InterruptedException e) {
-                    return;
-                }
-                if (req.destination == null) break;
-                MessageChannel pipe = req.destination.pipe;
-                if (pipe == null) continue; // impossible
-                if (req.one != null) {
-                    try {
-                        pipe.write(req.type, req.one);
-                    } catch (IOException e) {
-                        req.destination.errors.add(e);
-                    }
-                }
-                if(req.many != null) {
-                    for (MessageNano msg : req.many) {
-                        try {
-                            pipe.write(req.type, msg);
-                        } catch (IOException e) {
-                            req.destination.errors.add(e);
-                        }
-                    }
-                }
-            }
-        }
-    };
 
     /// Not sure what should I put there, but it seems I might want to track state besides connection channel in the future.
     private static class PlayingDevice {
