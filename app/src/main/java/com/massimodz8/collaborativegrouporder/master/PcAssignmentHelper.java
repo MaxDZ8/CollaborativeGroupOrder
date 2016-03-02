@@ -50,55 +50,6 @@ public class PcAssignmentHelper {
         mailman.start();
     }
 
-    /// Not sure what should I put there, but it seems I might want to track state besides connection channel in the future.
-    private static class PlayingDevice {
-        public @Nullable MessageChannel pipe; /// This is usually not-null, but becomes null to signal disconnected. Keep those around anyway to allow players to reconnect with ease.
-        public int clientVersion;
-        public @Nullable byte[] doormat; /// next doormat to send or to consider for key verification.
-        public int keyIndex = ANON; /// if isRemote, index of the matched device key --> bound to remote, otherwise check specials
-        public Vector<Exception> errors = new Vector<>();
-
-        /// Using null will create this in 'disconnected' mode. Does not make sense to me but w/e.
-        public PlayingDevice(@Nullable MessageChannel pipe) {
-            this.pipe = pipe;
-        }
-
-        public boolean isRemote() { return keyIndex >= 0; }
-        public boolean isAnonymous() { return keyIndex == ANON; }
-
-        private static final int ANON = -1;
-    }
-
-
-    /// Replies to clients must be sent in order! There's a dedicated thread for sending.
-    private static class SendRequest {
-        final PlayingDevice destination;
-        final int type;
-        final MessageNano one;
-        final MessageNano[] many;
-
-        public SendRequest(PlayingDevice destination, int type, MessageNano payload) {
-            this.destination = destination;
-            this.type = type;
-            one = payload;
-            this.many = null;
-        }
-
-        public SendRequest(PlayingDevice destination, int type, MessageNano[] payload) {
-            this.destination = destination;
-            this.type = type;
-            one = null;
-            many = payload;
-        }
-
-        private SendRequest() { // causes the mailman to shut down gracefully
-            destination = null;
-            type = -1;
-            one = null;
-            many = null;
-        }
-    }
-
 
     /*
     TODO: for the time being I don't have device keys so what do I do? I will just prethend everybody getting the group key is matching some key,
@@ -192,6 +143,55 @@ public class PcAssignmentHelper {
             }
         }
     };
+
+    /// Not sure what should I put there, but it seems I might want to track state besides connection channel in the future.
+    private static class PlayingDevice {
+        public @Nullable MessageChannel pipe; /// This is usually not-null, but becomes null to signal disconnected. Keep those around anyway to allow players to reconnect with ease.
+        public int clientVersion;
+        public @Nullable byte[] doormat; /// next doormat to send or to consider for key verification.
+        public int keyIndex = ANON; /// if isRemote, index of the matched device key --> bound to remote, otherwise check specials
+        public Vector<Exception> errors = new Vector<>();
+
+        /// Using null will create this in 'disconnected' mode. Does not make sense to me but w/e.
+        public PlayingDevice(@Nullable MessageChannel pipe) {
+            this.pipe = pipe;
+        }
+
+        public boolean isRemote() { return keyIndex >= 0; }
+        public boolean isAnonymous() { return keyIndex == ANON; }
+
+        private static final int ANON = -1;
+    }
+
+
+    /// Replies to clients must be sent in order! There's a dedicated thread for sending.
+    private static class SendRequest {
+        final PlayingDevice destination;
+        final int type;
+        final MessageNano one;
+        final MessageNano[] many;
+
+        public SendRequest(PlayingDevice destination, int type, MessageNano payload) {
+            this.destination = destination;
+            this.type = type;
+            one = payload;
+            this.many = null;
+        }
+
+        public SendRequest(PlayingDevice destination, int type, MessageNano[] payload) {
+            this.destination = destination;
+            this.type = type;
+            one = null;
+            many = payload;
+        }
+
+        private SendRequest() { // causes the mailman to shut down gracefully
+            destination = null;
+            type = -1;
+            one = null;
+            many = null;
+        }
+    }
 
     private static class MyHandler extends Handler {
         final WeakReference<PcAssignmentHelper> self;
