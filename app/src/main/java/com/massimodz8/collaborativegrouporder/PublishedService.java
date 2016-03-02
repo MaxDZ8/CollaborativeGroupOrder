@@ -18,12 +18,12 @@ public class PublishedService implements NsdManager.RegistrationListener {
         this.nsd = nsd;
     }
 
-    static final int STATUS_IDLE = 0; // just created, doing nothing.
-    static final int STATUS_STARTING = 1; // we have a service name and type
-    static final int STATUS_START_FAILED = 2; // as above, plus we got an error code
-    static final int STATUS_PUBLISHING = 3;
-    static final int STATUS_STOP_FAILED = 4;
-    static final int STATUS_STOPPED = 5;
+    public static final int STATUS_IDLE = 0; // just created, doing nothing.
+    public static final int STATUS_STARTING = 1; // we have a service name and type
+    public static final int STATUS_START_FAILED = 2; // as above, plus we got an error code
+    public static final int STATUS_PUBLISHING = 3;
+    public static final int STATUS_STOP_FAILED = 4;
+    public static final int STATUS_STOPPED = 5;
 
     interface OnStatusChanged {
         /**  Called every time the state changes. Those are called from a different thread.

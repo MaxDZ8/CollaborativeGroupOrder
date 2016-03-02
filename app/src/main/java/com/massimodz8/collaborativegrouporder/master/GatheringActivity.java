@@ -1,4 +1,4 @@
-package com.massimodz8.collaborativegrouporder;
+package com.massimodz8.collaborativegrouporder.master;
 
 import android.app.Notification;
 import android.content.ComponentName;
@@ -14,7 +14,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -27,8 +26,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
-import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
+import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
+import com.massimodz8.collaborativegrouporder.JoinVerificator;
+import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.PublishedService;
+import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 

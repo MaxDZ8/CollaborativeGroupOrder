@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
+import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;

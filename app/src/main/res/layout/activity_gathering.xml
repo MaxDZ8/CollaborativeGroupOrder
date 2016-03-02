@@ -11,7 +11,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     style="@style/Widget.Design.CoordinatorLayout"
-    tools:context="com.massimodz8.collaborativegrouporder.GatheringActivity">
+    tools:context=".master.GatheringActivity">
 
     <LinearLayout
         android:orientation="vertical"

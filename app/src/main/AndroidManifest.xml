@@ -75,7 +75,7 @@
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
         <activity
-            android:name=".GatheringActivity"
+            android:name=".master.GatheringActivity"
             android:label="@string/ga_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data

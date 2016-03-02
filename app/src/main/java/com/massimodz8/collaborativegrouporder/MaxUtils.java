@@ -15,25 +15,25 @@ import android.view.View;
  * methods.
  */
 public abstract class MaxUtils {
-    static void setVisibility(Activity parent, int visibility, int... targets) {
+    public static void setVisibility(Activity parent, int visibility, int... targets) {
         for (int id : targets) {
             final View v = parent.findViewById(id);
             if (v != null) v.setVisibility(visibility);
         }
     }
-    static void setVisibility(int visibility, View... targets) {
+    public static void setVisibility(int visibility, View... targets) {
         for (View v : targets) {
             if (v != null) v.setVisibility(visibility);
         }
     }
-    static void setEnabled(Activity parent, boolean enabled, int... targets) {
+    public static void setEnabled(Activity parent, boolean enabled, int... targets) {
         for (int id : targets) {
             final View v = parent.findViewById(id);
             if (v != null) v.setEnabled(enabled);
         }
     }
 
-    static String NsdManagerErrorToString(int err, Context ctx) {
+    public static String NsdManagerErrorToString(int err, Context ctx) {
         switch(err) {
             case NsdManager.FAILURE_ALREADY_ACTIVE: return ctx.getString(R.string.nsdError_alreadyActive);
             case NsdManager.FAILURE_INTERNAL_ERROR: return ctx.getString(R.string.nsdError_internal);
