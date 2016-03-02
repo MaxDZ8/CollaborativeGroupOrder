@@ -243,7 +243,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         }
         beginDelayedTransition();
         final RecyclerView devList = (RecyclerView) findViewById(R.id.ga_deviceList);
-        devList.setAdapter(room.makeAuthDevicesAdapter(new PcAssignmentHelper.AuthDeviceHolderFactoryBinder<AuthDeviceViewHolder>() {
+        devList.setAdapter(room.setNewAuthDevicesAdapter(new PcAssignmentHelper.AuthDeviceHolderFactoryBinder<AuthDeviceViewHolder>() {
             @Override
             public AuthDeviceViewHolder createUnbound(ViewGroup parent, int viewType) {
                 return new AuthDeviceViewHolder(getLayoutInflater().inflate(R.layout.card_identified_device_chars_assigned, parent, false));
@@ -252,49 +252,33 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             @Override
             public void bind(@NonNull AuthDeviceViewHolder target, @NonNull String deviceName, @Nullable ArrayList<Integer> characters) {
                 target.name.setText(deviceName);
-                if(null == characters) {
+                if (null == characters) {
                     target.pcList.setText(R.string.ga_noPcsOnDevice);
                     return;
                 }
                 String list = "";
                 for (Integer index : characters) {
-                    if(list.length() > 0) list += ", ";
+                    if (list.length() > 0) list += ", ";
                     list += room.getPartyOwnerData().usually.party[index].name;
                 }
             }
         }));
         final RecyclerView unboundPcList = (RecyclerView) findViewById(R.id.ga_pcUnassignedList);
-        unboundPcList.setAdapter(new UnassignedPcsAdapter(null);
-        MaxUtils.setVisibility(View.VISIBLE, devList, unboundPcList);
-
-        Callable<View> authDeviceFactory = new Callable<View>() {
+        unboundPcList.setAdapter(room.setNewUnassignedPcsAdapter(new PcAssignmentHelper.UnassignedPcHolderFactoryBinder<PcViewHolder>() {
             @Override
-            public View call() throws Exception {
-                return getLayoutInflater().inflate(R.layout.card_identified_device_chars_assigned, parent, false);
+            public PcViewHolder createUnbound(ViewGroup parent, int viewType) {
+                return new PcViewHolder(getLayoutInflater().inflate(R.layout.card_assignable_character_server_list, parent, false), null);
             }
-        };
 
-        devList.setAdapter(new PcAssignmentHelper.AuthDeviceAdapter());
+            @Override
+            public void bind(@NonNull PcViewHolder target, int index) {
+                target.actor = room.getPartyOwnerData().usually.party[index];
+                target.name.setText(target.actor.name);
+                target.levels.setText("<class_todo> " + target.actor.level); // TODO
 
-        //().
-
-        ///*
-        //public AuthDeviceViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //    return new AuthDeviceViewHolder();
-        //}
-        //*/
-//
-        //());
-        ///*
-//
-        //@Override
-        //public PcViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        //    return new PcViewHolder(getLayoutInflater().inflate(R.layout.card_assignable_character_server_list, parent, false), click);
-        //}
-        //
-//
-        // */
-
+            }
+        }));
+        MaxUtils.setVisibility(View.VISIBLE, devList, unboundPcList);
 
         if(room.getPublishStatus() == PartyJoinOrderService.PUBLISHER_IDLE) {
             try {
@@ -310,7 +294,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                         }).show();
                 return;
             }
-            room.beginPublishing((NsdManager) getSystemService(NSD_SERVICE), party.name);
+            room.beginPublishing((NsdManager) getSystemService(NSD_SERVICE), room.getPartyOwnerData().name);
         }
         final Handler funnel = new MyHandler(this);
         ticker.schedule(new TimerTask() {
@@ -346,6 +330,29 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.cardIDACA_name);
             pcList = (TextView) itemView.findViewById(R.id.cardIDACA_assignedPcs);
+        }
+    }
+    public interface OnUnassignedPcClick {
+        void click(PersistentStorage.Actor actor);
+    }
+
+    private class PcViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private final OnUnassignedPcClick clickTarget;
+        TextView name;
+        TextView levels;
+        PersistentStorage.Actor actor;
+
+        public PcViewHolder(View itemView, OnUnassignedPcClick click) {
+            super(itemView);
+            clickTarget = click;
+            name = (TextView)itemView.findViewById(R.id.cardACSL_name);
+            levels = (TextView)itemView.findViewById(R.id.cardACSL_classesAndLevels);
+            if(null != clickTarget) itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            if(null != actor && null != clickTarget) clickTarget.click(actor);
         }
     }
 }

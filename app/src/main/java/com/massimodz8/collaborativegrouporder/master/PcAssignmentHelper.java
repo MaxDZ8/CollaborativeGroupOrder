@@ -5,14 +5,11 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.MainMenuActivity;
-import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -69,11 +66,6 @@ public class PcAssignmentHelper {
         }
         return count != 0;
     }
-
-    void notifyAuthChange(@Nullable AuthDeviceAdapter lister) {
-        authDeviceLister = lister;
-    }
-
 
     private final SecureRandom randomizer = new SecureRandom();
     private final JoinVerificator verifier;
@@ -321,7 +313,7 @@ public class PcAssignmentHelper {
         boolean signal = dev.isAnonymous();
         dev.keyIndex = TODO_shite_ugly_temp_hack++;
         sendPlayingCharacterList(dev);
-        if(signal && authDeviceLister != null) authDeviceLister.notifyDataSetChanged(); // no guarantee about ordering of auths.
+        if(signal && authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged(); // no guarantee about ordering of auths.
     }
 
     private void sendPlayingCharacterList(final PlayingDevice dev) {
@@ -389,7 +381,7 @@ public class PcAssignmentHelper {
             out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             int type = newMapping == null? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
             sendAvailability(type, payload.character, origin, nextValidRequest);
-            if(onOwnershipChange != null) onOwnershipChange.run();
+            if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
             return;
         }
         // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose
@@ -487,45 +479,36 @@ public class PcAssignmentHelper {
             return count;
         }
     }
-    private AuthDeviceAdapter authDeviceLister;
+    public AuthDeviceAdapter authDeviceAdapter;
 
 
-    private class PcViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final OnUnassignedPcClick clickTarget;
-        TextView name;
-        TextView levels;
-        PersistentStorage.Actor actor;
+    public interface UnassignedPcHolderFactoryBinder<VH extends RecyclerView.ViewHolder> {
+        VH createUnbound(ViewGroup parent, int viewType);
 
-        public PcViewHolder(View itemView, OnUnassignedPcClick click) {
-            super(itemView);
-            clickTarget = click;
-            name = (TextView)itemView.findViewById(R.id.cardACSL_name);
-            levels = (TextView)itemView.findViewById(R.id.cardACSL_classesAndLevels);
-            if(null != clickTarget) itemView.setOnClickListener(this);
+        /**
+         * @param index Character index in party owner PC usual array, get your info there.
+         */
+        void bind(@NonNull VH target, int index);
+    }
+    public static class UnassignedPcsAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+        private final UnassignedPcHolderFactoryBinder<VH> factory;
+        private final PcAssignmentHelper owner;
+
+        public UnassignedPcsAdapter(@NonNull UnassignedPcHolderFactoryBinder<VH> factory, @NonNull PcAssignmentHelper owner) {
+            this.factory = factory;
+            this.owner = owner;
+            setHasStableIds(true);
         }
 
         @Override
-        public void onClick(View v) {
-            if(null != actor && null != clickTarget) clickTarget.click(actor);
-        }
-    }
-
-    private interface OnUnassignedPcClick {
-        void click(PersistentStorage.Actor actor);
-    }
-
-    private abstract class UnassignedPcsAdapter extends RecyclerView.Adapter<PcViewHolder> {
-        final OnUnassignedPcClick click;
-
-        public UnassignedPcsAdapter(OnUnassignedPcClick click) {
-            setHasStableIds(true);
-            this.click = click;
+        public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            return factory.createUnbound(parent, viewType);
         }
 
         @Override
         public long getItemId(int position) {
-            for(int scan = 0; scan < assignment.size(); scan++) {
-                if(null != assignment.get(scan)) continue;
+            for(int scan = 0; scan < owner.assignment.size(); scan++) {
+                if(null != owner.assignment.get(scan)) continue;
                 if(0 == position) return scan;
                 position--;
             }
@@ -533,25 +516,24 @@ public class PcAssignmentHelper {
         }
 
         @Override
-        public void onBindViewHolder(PcViewHolder holder, int position) {
+        public void onBindViewHolder(VH holder, int position) {
             int slot;
-            for(slot = 0; slot < assignment.size(); slot++) {
-                if(null != assignment.get(slot)) continue;
+            for(slot = 0; slot < owner.assignment.size(); slot++) {
+                if(null != owner.assignment.get(slot)) continue;
                 if(0 == position) break;
                 position--;
             }
-            holder.actor = party.usually.party[slot];
-            holder.name.setText(holder.actor.name);
-            holder.levels.setText("<class_todo> " + holder.actor.level); // TODO
+            factory.bind(holder, slot);
         }
 
         @Override
         public int getItemCount() {
             int count = 0;
-            for (Integer dev : assignment) {
+            for (Integer dev : owner.assignment) {
                 if(null == dev) count++;
             }
             return count;
         }
     }
+    public UnassignedPcsAdapter unboundPcAdapter;
 }

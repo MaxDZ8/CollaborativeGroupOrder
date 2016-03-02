@@ -18,8 +18,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 import java.util.Vector;
 
 /** Encapsulates states and manipulations involved in creating a socket and publishing it to the
@@ -154,8 +152,18 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
         return assignmentHelper.party;
     }
 
-    public <VH extends RecyclerView.ViewHolder> PcAssignmentHelper.AuthDeviceAdapter<VH> makeAuthDevicesAdapter(@NonNull PcAssignmentHelper.AuthDeviceHolderFactoryBinder<VH> factory) {
-        return new PcAssignmentHelper.AuthDeviceAdapter<>(factory, assignmentHelper);
+    public <VH extends RecyclerView.ViewHolder> PcAssignmentHelper.AuthDeviceAdapter<VH> setNewAuthDevicesAdapter(PcAssignmentHelper.AuthDeviceHolderFactoryBinder<VH> factory) {
+        PcAssignmentHelper.AuthDeviceAdapter<VH> gen = null;
+        if(factory != null) gen = new PcAssignmentHelper.AuthDeviceAdapter<>(factory, assignmentHelper);
+        assignmentHelper.authDeviceAdapter = gen;
+        return gen;
+    }
+
+    public <VH extends RecyclerView.ViewHolder> PcAssignmentHelper.UnassignedPcsAdapter<VH> setNewUnassignedPcsAdapter(PcAssignmentHelper.UnassignedPcHolderFactoryBinder<VH> factory) {
+        PcAssignmentHelper.UnassignedPcsAdapter<VH> gen = null;
+        if(factory != null) gen = new PcAssignmentHelper.UnassignedPcsAdapter<>(factory, assignmentHelper);
+        assignmentHelper.unboundPcAdapter = gen;
+        return gen;
     }
 
     /// Marks the given character to be managed locally.
