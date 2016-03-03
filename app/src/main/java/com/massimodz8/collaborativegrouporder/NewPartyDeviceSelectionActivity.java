@@ -22,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.LandingServer;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -40,7 +41,6 @@ import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.SocketException;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -451,7 +451,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             return;
         }
         publisher = new PublishedService(nsd);
-        publisher.beginPublishing(listener, groupName, MainMenuActivity.GROUP_FORMING_SERVICE_TYPE, this);
+        publisher.beginPublishing(listener, groupName, PartyCreationService.PARTY_FORMING_SERVICE_TYPE, this);
         view.setEnabled(false);
         landing = listener;
         acceptor = new MyLandingServer(landing);

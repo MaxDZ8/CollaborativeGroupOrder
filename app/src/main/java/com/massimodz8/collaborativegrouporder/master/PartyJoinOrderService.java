@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
-import com.massimodz8.collaborativegrouporder.MainMenuActivity;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
@@ -40,6 +39,7 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
     public static final int PUBLISHER_PUBLISHING = 3;
     public static final int PUBLISHER_STOP_FAILED = 4;
     public static final int PUBLISHER_STOPPED = 5;
+    public static final String PARTY_GOING_ADVENTURING_SERVICE_TYPE = "_partyInitiative._tcp";
     private PersistentStorage.PartyOwnerData.Group partyOwnerData;
 
     public PartyJoinOrderService() {
@@ -115,7 +115,7 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
         nsdMan = nsd;
         NsdServiceInfo temp = new NsdServiceInfo();
         temp.setServiceName(serviceName);
-        temp.setServiceType(MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
+        temp.setServiceType(PARTY_GOING_ADVENTURING_SERVICE_TYPE);
         temp.setPort(landing.getLocalPort());
         nsd.registerService(temp, NsdManager.PROTOCOL_DNS_SD, this);
         publishStatus = PUBLISHER_STARTING;

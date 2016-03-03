@@ -28,8 +28,6 @@ import java.util.Collections;
 import java.util.Vector;
 
 public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
-    public static final String GROUP_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
-    public static final String PARTY_GOING_ADVENTURING_SERVICE_TYPE = "_partyInitiative._tcp";
     public static final int NETWORK_VERSION = 1;
 
     @Override
