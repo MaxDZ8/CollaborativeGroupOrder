@@ -259,7 +259,7 @@
     <string name="ga_initializing">Initializing…</string>
     <string name="ga_welcoming">Welcoming players…</string>
     <string name="ga_identifiedDevices">Identified devices</string>
-    <string name="ga_playingCharactersAssignment">Unassigned characters (all characters must be assigned to continue)</string>
+    <string name="ga_playingCharactersAssignment">Unassigned characters</string>
     <string name="ga_menu_showConnectionInfos">Show connection infos</string>
     <string name="ga_publisherFailedStart">Could not publish service. Explicit connections are still available.</string>
     <string name="ga_publishing">Ready. Your friends can connect.</string>
@@ -274,7 +274,7 @@
     <string name="ga_pleaseUpdateYourself">Please upgrade app on this device.</string>
     <string name="ga_pleaseUpdateFriend">Please ask your friend to upgrade app.</string>
     <string name="ga_versionMismatchDialogMessage">Device \"%1$s\" connected running version %2$d.\nYou\'re running version %3$d.\nIt is strongly suggested all devices to run the same protocol version.\n%4$s</string>
-    <string name="ga_noDigestDialogMessage">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
+    <string name="mma_noDigestDlgMsg">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
     <string name="ga_noPcsOnDevice">No playing characters on this device.</string>
 
     <string name="dialog_explicitConnectionInfo_title">Connection informations</string>
@@ -335,5 +335,17 @@
     <string name="csa_charOwnershipRequestToSomeoneElse">Character \"%1$s\" will be played on another device.</string>
     <string name="csa_noDefinitiveCharactersHere">The party is now playing, but looks like you have been given no characters! Nothing to do.</string>
     <string name="csa_noDefinitiveCharactersHereDlgDone">Main menu</string>
+    <string name="ga_cannotBindPartyService">Failed to get an handle to the party maintenance service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
+    <string name="ga_notificationDesc">Play session over network.</string>
+    <string name="ga_lostServiceConnection">Lost connection to the party maintenance service. This was not supposed to happen. Please report this!</string>
+    <string name="ga_oneCharNotBound">One character has not been assigned to any device.</string>
+    <string name="ga_someCharsNotBound">%1$d characters have not been assigned to any device.</string>
+    <string name="ga_unboundCharsDlgMsg">%1$s\nTo continue, all characters must be played by someone.\n\nGo back and long press an unassigned character for some options.</string>
+    <string name="ga_ctx_unassigned_pc_playHere">Play on this device</string>
+    <string name="ga_carefulDlgTitle">Careful!</string>
+    <string name="ga_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
+    <string name="ga_carefulDlgExitConfirmed">Stop service</string>
+    <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
+    <string name="mma_lostServiceConn">Lost connection to internal service. Not supposed to happen. Maybe clearing some memory will help.</string>
 
 </resources>

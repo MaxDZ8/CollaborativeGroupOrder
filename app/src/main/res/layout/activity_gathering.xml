@@ -11,7 +11,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     style="@style/Widget.Design.CoordinatorLayout"
-    tools:context="com.massimodz8.collaborativegrouporder.GatheringActivity">
+    tools:context=".master.GatheringActivity">
 
     <LinearLayout
         android:orientation="vertical"
@@ -40,7 +40,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/ga_identifiedDevices" />
+            android:text="@string/ga_identifiedDevices"
+            android:id="@+id/ga_identifiedDevices"
+            android:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/ga_deviceList"
@@ -48,22 +50,16 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight=".5"
-            app:layoutManager="LinearLayoutManager" />
+            app:layoutManager="LinearLayoutManager"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="@string/ga_playingCharactersAssignment"
-            android:id="@+id/ga_pcUnassignedListDesc" />
-
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/ga_startSession"
-            android:id="@+id/ga_startSession"
-            android:visibility="gone"
-            android:onClick="startSession_callback" />
+            android:id="@+id/ga_pcUnassignedListDesc"
+            android:visibility="gone" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/ga_pcUnassignedList"
@@ -71,7 +67,17 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight=".5"
-            app:layoutManager="LinearLayoutManager" />
+            app:layoutManager="LinearLayoutManager"
+            android:visibility="gone" />
+
+        <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ga_startSession"
+            android:id="@+id/ga_startSession"
+            android:visibility="gone"
+            android:onClick="startSession_callback"
+            android:longClickable="false" />
 
 
     </LinearLayout>
