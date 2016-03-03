@@ -21,6 +21,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +36,22 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+
+        try {
+            NewPartyDeviceSelectionActivity.hasher = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            new AlertDialog.Builder(this)
+                    .setCancelable(false)
+                    .setMessage(R.string.mma_failedToInitHasher)
+                    .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    })
+                    .show();
+            return;
+        }
 
         new AsyncLoadAll().execute();
     }
@@ -301,19 +318,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if(service instanceof PartyJoinOrderService.LocalBinder) {
             PartyJoinOrderService.LocalBinder binder = (PartyJoinOrderService.LocalBinder)service;
             PartyJoinOrderService real =  binder.getConcreteService();
-            JoinVerificator keyMaster = null;
-            try {
-                keyMaster = new JoinVerificator(selectedOwned.devices);
-            } catch (NoSuchAlgorithmException e) {
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.mma_noDigestDlgMsg)
-                        .show();
-            }
-            if(null != keyMaster) {
-                real.initializePartyManagement(selectedOwned, keyMaster);
-                real.pumpClients(activeClients);
-                activeClients = null;
-            }
+            JoinVerificator keyMaster = new JoinVerificator(selectedOwned.devices, NewPartyDeviceSelectionActivity.hasher);
+            real.initializePartyManagement(selectedOwned, keyMaster);
+            real.pumpClients(activeClients);
+            activeClients = null;
         }
         unbindService(this);
         startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_NEW_SESSION);

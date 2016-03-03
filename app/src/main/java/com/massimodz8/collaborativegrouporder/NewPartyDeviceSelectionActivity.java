@@ -43,11 +43,11 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Vector;
 
 public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextWatcher, PublishedService.OnStatusChanged {
+    public static MessageDigest hasher;
+
     static final int PEER_MESSAGE_INTERVAL_MS = 2000;
     static final int INITIAL_MESSAGE_CHAR_BUDGET = 30;
 
@@ -271,6 +271,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             for (DeviceStatus dev : building.clients) {
                 if (dev.source == key) {
                     dev.groupMember = isChecked;
+                    if(isChecked) dev.salt = buildKey();
                 }
                 if (dev.groupMember) count++;
             }
@@ -483,14 +484,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     // PublishedService.OnStatusChanged ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
     void closeGroup() {
-        try {
-            building.salt = buildKey();
-        } catch (NoSuchAlgorithmException e) {
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.npdsa_failedSalt)
-                    .show();
-        }
-
         if(null != publisher) {
             publisher.stopPublishing();
             publisher = null;
@@ -507,7 +500,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         }
 
         final Network.GroupFormed form = new Network.GroupFormed();
-        form.salt = building.salt;
         new AsyncTask<Void, Void, Void>() {
             Exception[] errors = new Exception[building.clients.size()];
             int bad;
@@ -517,6 +509,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 int slot = 0;
                 for (DeviceStatus dev : building.clients) {
                     if (!dev.kicked && dev.groupMember) {
+                        form.salt = dev.salt;
                         try {
                             dev.source.writeSync(ProtoBufferEnum.GROUP_FORMED, form);
                         } catch (IOException e) {
@@ -570,7 +563,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             state.pumpers = netWorkers.move();
         }
         state.clients = building.clients;
-        state.newGroupKey = building.salt;
         state.newGroupName = building.name;
         building.clients = null;
 
@@ -578,13 +570,15 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         finish();
     }
 
-    public byte[] buildKey() throws NoSuchAlgorithmException {
+    private int keyCount;
+
+    public byte[] buildKey() {
         int count = 0;
         for(DeviceStatus dev : building.clients) {
             if(dev.groupMember) count++;
         }
-        final String message = String.format("counting=%1$d name=\"%2$s\" created=%3$s", count, building.name, new Date().toString());
-        MessageDigest hasher = MessageDigest.getInstance("SHA-256");
+        final String message = String.format("keyIndex=%4$d, counting=%1$d name=\"%2$s\" created=%3$s", count, building.name, new Date().toString(), keyCount++);
+		hasher.reset();
         return hasher.digest(message.getBytes());
     }
 

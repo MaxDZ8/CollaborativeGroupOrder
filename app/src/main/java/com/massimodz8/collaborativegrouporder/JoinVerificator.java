@@ -18,14 +18,14 @@ public class JoinVerificator {
     private final MessageDigest hasher;
     private final byte[][] keys;
 
-    public JoinVerificator(@NonNull PersistentStorage.PartyOwnerData.DeviceInfo[] known) throws NoSuchAlgorithmException {
-        hasher = newHasher();
+    public JoinVerificator(@NonNull PersistentStorage.PartyOwnerData.DeviceInfo[] known, @NonNull MessageDigest hasher) {
+        this.hasher = hasher;
         keys = new byte[known.length][];
         for(int loop = 0; loop < known.length; loop++) keys[loop] = known[loop].salt;
     }
 
-    public JoinVerificator(@NonNull PersistentStorage.PartyClientData.Group me) throws NoSuchAlgorithmException {
-        hasher = newHasher();
+    public JoinVerificator(@NonNull PersistentStorage.PartyClientData.Group me, @NonNull MessageDigest hasher) {
+        this.hasher = hasher;
         keys = new byte[1][];
         keys[0] = me.key;
     }
@@ -49,5 +49,4 @@ public class JoinVerificator {
         hasher.reset();
         return hasher.digest(input);
     }
-    private static MessageDigest newHasher() throws NoSuchAlgorithmException { return MessageDigest.getInstance("SHA-256"); }
 }

@@ -31,7 +31,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.Socket;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class JoinSessionActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
@@ -257,13 +256,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                     lastSend = SENT_DOORMAT_REQUEST;
                 } break;
                 case SENT_DOORMAT_REQUEST: {
-                    JoinVerificator helper;
-                    try {
-                        helper = new JoinVerificator(myState.party);
-                    } catch (NoSuchAlgorithmException e) {
-                        error = e;
-                        return;
-                    }
+                    JoinVerificator helper = new JoinVerificator(myState.party, NewPartyDeviceSelectionActivity.hasher);
                     final Network.Hello auth = new Network.Hello();
                     auth.authorize = helper.mangle(doormat);
                     auth.version = MainMenuActivity.NETWORK_VERSION;
