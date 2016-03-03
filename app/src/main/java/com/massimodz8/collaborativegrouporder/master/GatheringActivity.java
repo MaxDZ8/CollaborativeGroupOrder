@@ -259,6 +259,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                     if (list.length() > 0) list += ", ";
                     list += room.getPartyOwnerData().usually.party[index].name;
                 }
+                target.pcList.setText(list);
             }
         }));
         final RecyclerView unboundPcList = (RecyclerView) findViewById(R.id.ga_pcUnassignedList);

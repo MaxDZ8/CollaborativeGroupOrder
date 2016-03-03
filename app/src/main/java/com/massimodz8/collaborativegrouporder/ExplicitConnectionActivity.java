@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -32,6 +33,8 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        final ActionBar sab = getSupportActionBar();
+        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(netPump.getClientCount() != 0) state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
