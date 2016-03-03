@@ -274,7 +274,7 @@
     <string name="ga_pleaseUpdateYourself">Please upgrade app on this device.</string>
     <string name="ga_pleaseUpdateFriend">Please ask your friend to upgrade app.</string>
     <string name="ga_versionMismatchDialogMessage">Device \"%1$s\" connected running version %2$d.\nYou\'re running version %3$d.\nIt is strongly suggested all devices to run the same protocol version.\n%4$s</string>
-    <string name="ga_noDigestStatus">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
+    <string name="mma_noDigestDlgMsg">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
     <string name="ga_noPcsOnDevice">No playing characters on this device.</string>
 
     <string name="dialog_explicitConnectionInfo_title">Connection informations</string>
@@ -345,5 +345,7 @@
     <string name="ga_carefulDlgTitle">Careful!</string>
     <string name="ga_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
     <string name="ga_carefulDlgExitConfirmed">Stop service</string>
+    <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
+    <string name="mma_lostServiceConn">Lost connection to internal service. Not supposed to happen. Maybe clearing some memory will help.</string>
 
 </resources>

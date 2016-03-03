@@ -27,16 +27,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
-import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PublishedService;
 import com.massimodz8.collaborativegrouporder.R;
-import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -47,15 +44,6 @@ import java.util.Vector;
  * players get disconnected.
  */
 public class GatheringActivity extends AppCompatActivity implements ServiceConnection {
-    public static void prepare(@NonNull PersistentStorage.PartyOwnerData.Group toPlay, Pumper.MessagePumpingThread[] connected) {
-        startingParty = toPlay;
-        alreadyConnectedPeers = connected;
-    }
-
-    // Those will be consumed and set to null as soon as the activity connects to the service.
-    private static PersistentStorage.PartyOwnerData.Group startingParty;
-    private static Pumper.MessagePumpingThread[] alreadyConnectedPeers;
-
     private PartyJoinOrderService room;
 
     @Override
@@ -65,7 +53,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
 
         // Now let's get to the real deal: create or start the state-maintaining service.
         Intent temp = new Intent(this, PartyJoinOrderService.class);
-        if(!bindService(temp, this, BIND_AUTO_CREATE)) {
+        if(!bindService(temp, this, 0)) {
             failedServiceBind();
         }
     }
@@ -235,24 +223,13 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         room = ((PartyJoinOrderService.LocalBinder) service).getConcreteService();
-        if(startingParty != null) { // first time after a prepare the activity has started. Push data to service.
-            JoinVerificator keyMaster;
-            try {
-                keyMaster = new JoinVerificator();
-            } catch (NoSuchAlgorithmException e) {
-                beginDelayedTransition();
-                TextView status = (TextView) findViewById(R.id.ga_state);
-                status.setText(R.string.ga_noDigestStatus);
-                findViewById(R.id.ga_progressBar).setVisibility(View.GONE);
-                ticker.cancel();
-                return;
-            }
-
+        if(room.getPublishStatus() == PartyJoinOrderService.PUBLISHER_IDLE) {
+            // first time activity is launched. Data has been pushed to the service by previous activity and I just need to elevate priority.
             final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
                     .setOngoing(true)
                     .setWhen(System.currentTimeMillis())
                     .setShowWhen(true)
-                    .setContentTitle(startingParty.name)
+                    .setContentTitle(room.getPartyOwnerData().name)
                     .setContentText(getString(R.string.ga_notificationDesc))
                     .setSmallIcon(R.drawable.ic_notify_icon)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
@@ -260,11 +237,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                 help.setCategory(Notification.CATEGORY_SERVICE);
             }
             room.startForeground(NOTIFICATION_ID, help.build());
-            room.initializePartyManagement(startingParty, keyMaster);
-            startingParty = null;
-
-            room.pumpClients(alreadyConnectedPeers);
-            alreadyConnectedPeers = null;
         }
         beginDelayedTransition();
         findViewById(R.id.ga_pcUnassignedListDesc).setVisibility(View.VISIBLE);

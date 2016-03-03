@@ -1,8 +1,11 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.AsyncTask;
+import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,18 +13,20 @@ import android.view.View;
 
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
+import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Vector;
 
-public class MainMenuActivity extends AppCompatActivity {
+public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final String GROUP_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
     public static final String PARTY_GOING_ADVENTURING_SERVICE_TYPE = "_partyInitiative._tcp";
     public static final int NETWORK_VERSION = 1;
@@ -49,13 +54,17 @@ public class MainMenuActivity extends AppCompatActivity {
                 // go adventuring, but am I client or server?
                 for(PersistentStorage.PartyOwnerData.Group check : state.groupDefs) {
                     if(Arrays.equals(newKey, check.salt) && newName.equals(check.name)) {
-                        startNewSessionActivity(check, peers);
+                        selectedOwned = check;
+                        activeClients = peers;
+                        startNewSessionActivity();
                         return;
                     }
                 }
                 for(PersistentStorage.PartyClientData.Group check : state.groupKeys) {
                     if(Arrays.equals(newKey, check.key) && newName.equals(check.name)) {
-                        startGoAdventuringActivity(check, peers[0]);
+                        selectedKey = check;
+                        activeServer = peers[0];
+                        startGoAdventuringActivity();
                         return;
                     }
                 }
@@ -131,18 +140,43 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
 
-    private void startNewSessionActivity(PersistentStorage.PartyOwnerData.Group party, Pumper.MessagePumpingThread[] workers) {
-        GatheringActivity.prepare(party, workers);
-        startActivity(new Intent(this, GatheringActivity.class));
+    private void startNewSessionActivity() {
+        final Intent servName = new Intent(this, PartyJoinOrderService.class);
+        startService(servName);
+        if(!bindService(servName, this, 0)) {
+            stopService(servName);
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.mma_failedNewSessionServiceBind)
+                    .show();
+            if(null != activeClients) {
+                final Pumper.MessagePumpingThread[] kick = activeClients;
+                activeClients = null;
+                new Thread() {
+                    @Override
+                    public void run() {
+                        for(Pumper.MessagePumpingThread worker : kick) {
+                            worker.interrupt();
+                            try {
+                                worker.getSource().socket.close();
+                            } catch (IOException e) {
+                                // gone
+                            }
+                        }
+
+                    }
+                }.start();
+            }
+        }
     }
 
-    void startGoAdventuringActivity(PersistentStorage.PartyClientData.Group party, Pumper.MessagePumpingThread worker) {
+    void startGoAdventuringActivity() {
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        if(null != worker) state.pumpers = new Pumper.MessagePumpingThread[] { worker };
+        if(null != activeServer) state.pumpers = new Pumper.MessagePumpingThread[] { activeServer };
         else state.pumpers = null; // be safe-r. Sort of.
-        state.jsaState = new JoinSessionActivity.State(party);
+        state.jsaState = new JoinSessionActivity.State(selectedKey);
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
+
 
     private class AsyncLoadAll extends AsyncTask<Void, Void, Exception> {
         PersistentStorage.PartyOwnerData owned;
@@ -197,6 +231,9 @@ public class MainMenuActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == REQUEST_NEW_SESSION) {
+            stopService(new Intent(this, PartyJoinOrderService.class));
+        }
         if(RESULT_OK != resultCode) return;
         switch(requestCode) {
             case REQUEST_NEW_PARTY: {
@@ -217,11 +254,14 @@ public class MainMenuActivity extends AppCompatActivity {
                 if(linear < 0) return;
                 final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
                 if(owned) {
-                    startNewSessionActivity(state.groupDefs.elementAt(linear), null);
+                    selectedOwned = state.groupDefs.elementAt(linear);
+                    activeClients = null;
+                    startNewSessionActivity();
                 }
                 else {
-                    final PersistentStorage.PartyClientData.Group party = state.groupKeys.elementAt(linear);
-                    startGoAdventuringActivity(party, null);
+                    selectedKey = state.groupKeys.elementAt(linear);
+                    activeServer = null;
+                    startGoAdventuringActivity();
                 }
             } break;
             case REQUEST_PULL_CHAR_LIST: {
@@ -249,4 +289,43 @@ public class MainMenuActivity extends AppCompatActivity {
     static final int REQUEST_PICK_PARTY = 5;
     static final int REQUEST_PULL_CHAR_LIST = 6;
     static final int REQUEST_BIND_CHARACTERS = 7;
+    static final int REQUEST_NEW_SESSION = 8;
+
+    // Those must be fields to ensure a communication channel to the asynchronous onServiceConnected callbacks.
+    private PersistentStorage.PartyOwnerData.Group selectedOwned;
+    private Pumper.MessagePumpingThread[] activeClients;
+    private PersistentStorage.PartyClientData.Group selectedKey;
+    private Pumper.MessagePumpingThread activeServer;
+
+    // ServiceConnection ___________________________________________________________________________
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        if(service instanceof PartyJoinOrderService.LocalBinder) {
+            PartyJoinOrderService.LocalBinder binder = (PartyJoinOrderService.LocalBinder)service;
+            PartyJoinOrderService real =  binder.getConcreteService();
+            JoinVerificator keyMaster = null;
+            try {
+                keyMaster = new JoinVerificator();
+            } catch (NoSuchAlgorithmException e) {
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.mma_noDigestDlgMsg)
+                        .show();
+            }
+            if(null != keyMaster) {
+                real.initializePartyManagement(selectedOwned, keyMaster);
+                real.pumpClients(activeClients);
+                activeClients = null;
+            }
+        }
+        unbindService(this);
+        startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_NEW_SESSION);
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+        unbindService(this);
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.mma_lostServiceConn)
+                .show();
+    }
 }
