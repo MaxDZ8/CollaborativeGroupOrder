@@ -173,7 +173,7 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
         return gen;
     }
 
-    public ArrayList<PersistentStorage.Actor> getUnboundedPcs() {
+    public ArrayList<PersistentStorage.ActorDefinition> getUnboundedPcs() {
         return assignmentHelper.getUnboundedPcs();
     }
 
@@ -182,7 +182,7 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
     }
 
     /// Marks the given character to be managed locally. Will trigger ownership change.
-    public void local(PersistentStorage.Actor actor) {
+    public void local(PersistentStorage.ActorDefinition actor) {
         assignmentHelper.local(actor);
 
     }

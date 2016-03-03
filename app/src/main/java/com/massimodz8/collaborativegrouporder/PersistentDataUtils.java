@@ -149,21 +149,21 @@ public abstract class PersistentDataUtils {
             base = premiseBase;
         }
 
-        void check(String mod, PersistentStorage.Actor[] list, boolean required) {
+        ActorValidator check(String mod, PersistentStorage.ActorDefinition[] list, boolean required) {
             final String premise = base + mod;
             if(list.length == 0) {
                 if(required) errors.add(premise + getString(R.string.persistentStorage_groupWithNoActors));
-                return;
+                return this;
             }
             for(int i = 0; i < list.length; i++) {
-                final PersistentStorage.Actor actor = list[i];
+                final PersistentStorage.ActorDefinition actor = list[i];
                 String head = String.format("%1$s[%2$d]", premise, i);
                 if(actor.name.isEmpty()) errors.add(head + getString(R.string.persistentStorage_actorMissingName));
                 head = String.format("%1$s(%2$s)", head, actor.name);
                 if(actor.level == 0) errors.add(head + getString(R.string.persistentStorage_badLevel));
-                if(!actor.preparedAction.isEmpty() && preparedActionForbidden) errors.add(head + getString(R.string.persistentStorage_preparedActionsForbidden));
                 check(head + getString(R.string.persistentStorage_actorStatsPremise), actor.stats);
             }
+            return this;
         }
 
         void check(String premise, PersistentStorage.ActorStatistics[] list) {

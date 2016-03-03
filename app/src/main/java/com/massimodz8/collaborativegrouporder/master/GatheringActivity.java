@@ -204,7 +204,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     private static final int TIMER_INTERVAL_MS = 250;
 
     public void startSession_callback(View btn) {
-        final ArrayList<PersistentStorage.Actor> free = room.getUnboundedPcs();
+        final ArrayList<PersistentStorage.ActorDefinition> free = room.getUnboundedPcs();
         if(free.isEmpty()) {
             room.stopPublishing();
             room.stopListening(false);
@@ -257,7 +257,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                 String list = "";
                 for (Integer index : characters) {
                     if (list.length() > 0) list += ", ";
-                    list += room.getPartyOwnerData().usually.party[index].name;
+                    list += room.getPartyOwnerData().party[index].name;
                 }
                 target.pcList.setText(list);
             }
@@ -271,7 +271,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
 
             @Override
             public void bind(@NonNull PcViewHolder target, int index) {
-                target.actor = room.getPartyOwnerData().usually.party[index];
+                target.actor = room.getPartyOwnerData().party[index];
                 target.name.setText(target.actor.name);
                 target.levels.setText("<class_todo> " + target.actor.level); // TODO
 
@@ -335,7 +335,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     private class PcViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, ActionMode.Callback {
         TextView name;
         TextView levels;
-        PersistentStorage.Actor actor;
+        PersistentStorage.ActorDefinition actor;
 
         public PcViewHolder(View itemView) {
             super(itemView);
@@ -367,7 +367,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch(item.getItemId()) {
                 case R.id.ga_ctx_unassigned_pc_playHere: {
-                    PersistentStorage.Actor was = (PersistentStorage.Actor) mode.getTag();
+                    PersistentStorage.ActorDefinition was = (PersistentStorage.ActorDefinition) mode.getTag();
                     if(null != room && null != was) room.local(was);
                     mode.finish();
                     return true;

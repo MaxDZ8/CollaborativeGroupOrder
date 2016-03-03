@@ -42,8 +42,8 @@ public class PcAssignmentHelper {
     public PcAssignmentHelper(PersistentStorage.PartyOwnerData.Group party, JoinVerificator verifier) {
         this.party = party;
         this.verifier = verifier;
-        assignment = new ArrayList<>(party.usually.party.length);
-        for (PersistentStorage.Actor ignored : party.usually.party) assignment.add(null);
+        assignment = new ArrayList<>(party.party.length);
+        for (PersistentStorage.ActorDefinition ignored : party.party) assignment.add(null);
         Thread mailman = new Thread() {
             @Override
             public void run() {
@@ -105,21 +105,21 @@ public class PcAssignmentHelper {
         return count;
     }
 
-    public ArrayList<PersistentStorage.Actor> getUnboundedPcs() {
-        ArrayList<PersistentStorage.Actor> list = new ArrayList<>();
-        for(int loop = 0; loop < party.usually.party.length; loop++) {
+    public ArrayList<PersistentStorage.ActorDefinition> getUnboundedPcs() {
+        ArrayList<PersistentStorage.ActorDefinition> list = new ArrayList<>();
+        for(int loop = 0; loop < party.party.length; loop++) {
             if(assignment.get(loop) != null) continue;
-            list.add(party.usually.party[loop]);
+            list.add(party.party[loop]);
         }
         return list;
     }
 
-    public void local(PersistentStorage.Actor actor) {
+    public void local(PersistentStorage.ActorDefinition actor) {
         int match;
-        for(match = 0; match < party.usually.party.length; match++) {
-            if(actor == party.usually.party[match]) break;
+        for(match = 0; match < party.party.length; match++) {
+            if(actor == party.party[match]) break;
         }
-        if(match == party.usually.party.length) return;
+        if(match == party.party.length) return;
         final Integer ownerIndex = assignment.get(match);
         if(ownerIndex != null && ownerIndex == LOCAL_BINDING) return;
         assignment.set(match, LOCAL_BINDING);
@@ -373,13 +373,13 @@ public class PcAssignmentHelper {
 
     private void sendPlayingCharacterList(final PlayingDevice dev) {
         // TODO: for the time being I just send everything. In the future I might want to do that differently, for example send only a subset of characters depending on device key
-        final Network.PlayingCharacterDefinition[] stream = new Network.PlayingCharacterDefinition[party.usually.party.length];
-        for (int loop = 0; loop < party.usually.party.length; loop++) {
-            stream[loop] = simplify(party.usually.party[loop], loop);
+        final Network.PlayingCharacterDefinition[] stream = new Network.PlayingCharacterDefinition[party.party.length];
+        for (int loop = 0; loop < party.party.length; loop++) {
+            stream[loop] = simplify(party.party[loop], loop);
         }
         out.add(new SendRequest(dev, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, stream));
         // Also send a notification for each character which is already assigned to someone else.
-        final ArrayList<Integer> bound = new ArrayList<>(party.usually.party.length);
+        final ArrayList<Integer> bound = new ArrayList<>(party.party.length);
         for(int loop = 0; loop < assignment.size(); loop++) {
             if(assignment.get(loop) != null) bound.add(loop);
         }
@@ -392,13 +392,13 @@ public class PcAssignmentHelper {
         out.add(new SendRequest(dev, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial));
     }
 
-    private Network.PlayingCharacterDefinition simplify(PersistentStorage.Actor actor, int loop) {
+    private Network.PlayingCharacterDefinition simplify(PersistentStorage.ActorDefinition actor, int loop) {
         Network.PlayingCharacterDefinition res = new Network.PlayingCharacterDefinition();
         PersistentStorage.ActorStatistics currently = actor.stats[0];
         res.name = actor.name;
         res.initiativeBonus = currently.initBonus;
         res.healthPoints = currently.healthPoints;
-        res.experience = currently.experience;
+        res.experience = actor.experience;
         res.level = actor.level;
         res.peerKey = loop;
         return res;
@@ -414,7 +414,7 @@ public class PcAssignmentHelper {
             out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             return;
         }
-        if(payload.character >= party.usually.party.length) { // requester asked chars before providing key.
+        if(payload.character >= party.party.length) { // requester asked chars before providing key.
             payload.type = Network.CharacterOwnership.REJECTED;
             out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             return;

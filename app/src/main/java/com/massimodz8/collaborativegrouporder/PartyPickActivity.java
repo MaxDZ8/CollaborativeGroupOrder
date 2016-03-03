@@ -26,10 +26,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.protobuf.nano.MessageNano;
@@ -286,9 +284,9 @@ public class PartyPickActivity extends AppCompatActivity {
         }
     }
 
-    String list(PersistentStorage.Actor[] party) {
+    String list(PersistentStorage.ActorDefinition[] party) {
         StringBuilder result = new StringBuilder();
-        for(PersistentStorage.Actor actor : party) {
+        for(PersistentStorage.ActorDefinition actor : party) {
             if(result.length() > 0) result.append(getString(R.string.ppa_playingCharacterNameSeparator));
             result.append(actor.name);
         }
@@ -431,7 +429,7 @@ public class PartyPickActivity extends AppCompatActivity {
             if(position >= state.groupDefs.size()) return; // wut? that's impossible
             group = state.groupDefs.elementAt(position);
             name.setText(group.name);
-            chars.setText(list(group.usually.party));
+            chars.setText(list(group.party));
             created.setText(R.string.ppa_TODO_creationDate);
             lastPlay.setText(R.string.ppa_TODO_lastPlayDate_owned);
             currentState.setText(R.string.ppa_TODO_currentState);
@@ -537,13 +535,13 @@ public class PartyPickActivity extends AppCompatActivity {
 
             final PersistentStorage.PartyOwnerData.Group party = target.state.groupDefs.elementAt(getIndex());
             ((TextView)layout.findViewById(R.id.ppa_ownedDetails_groupName)).setText(party.name);
-            ((TextView)layout.findViewById(R.id.ppa_ownedDetails_pcList)).setText(target.list(party.usually.party));
+            ((TextView)layout.findViewById(R.id.ppa_ownedDetails_pcList)).setText(target.list(party.party));
             TextView npcList = (TextView) layout.findViewById(R.id.ppa_ownedDetails_accompanyingNpcList);
-            if (0 == party.usually.npcs.length) {
+            if (0 == party.npcs.length) {
                 npcList.setVisibility(View.GONE);
             } else {
                 final String res = target.getString(R.string.ppa_ownedDetails_npcList);
-                npcList.setText(String.format(res, target.list(party.usually.npcs)));
+                npcList.setText(String.format(res, target.list(party.npcs)));
             }
             final Button go = (Button)layout.findViewById(R.id.ppa_ownedDetails_goAdventuring);
             go.setText(target.isFighting(party) ? R.string.ppa_ownedDetails_continueBattle : R.string.ppa_ownedDetails_newSession);
@@ -601,9 +599,9 @@ public class PartyPickActivity extends AppCompatActivity {
 
     String listLastPlayedPcs(PersistentStorage.PartyClientData.Group party) {
         // Not really there for the time being.
-        final PersistentStorage.Actor res = new PersistentStorage.Actor();
+        final PersistentStorage.ActorDefinition res = new PersistentStorage.ActorDefinition();
         res.name = "!! STUB !!";
-        PersistentStorage.Actor[] arr = new PersistentStorage.Actor[]{res};
+        PersistentStorage.ActorDefinition[] arr = new PersistentStorage.ActorDefinition[]{res};
         return list(arr);
     }
 

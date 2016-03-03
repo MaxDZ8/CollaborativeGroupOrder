@@ -309,23 +309,22 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 if(BuildingPlayingCharacter.STATUS_ACCEPTED == pc.status) count++;
             }
         }
-        ret.usually = new PersistentStorage.PartyOwnerData.Group.Definition();
-        ret.usually.party = new PersistentStorage.Actor[count];
+        ret.party = new PersistentStorage.ActorDefinition[count];
         count = 0;
         for(DeviceStatus dev : building.clients) {
             if(dev.kicked || !dev.groupMember) continue;
             for(BuildingPlayingCharacter pc : dev.chars) {
                 if(BuildingPlayingCharacter.STATUS_ACCEPTED == pc.status) {
-                    PersistentStorage.Actor built = new PersistentStorage.Actor();
+                    PersistentStorage.ActorDefinition built = new PersistentStorage.ActorDefinition();
                     built.name = pc.name;
                     built.level = pc.level;
+                    built.experience = pc.experience;
                     built.stats =  new PersistentStorage.ActorStatistics[] {
                             new PersistentStorage.ActorStatistics()
                     };
                     built.stats[0].initBonus = pc.initiativeBonus;
-                    built.stats[0].experience = pc.experience;
                     built.stats[0].healthPoints = pc.fullHealth;
-                    ret.usually.party[count++] = built;
+                    ret.party[count++] = built;
                 }
             }
         }
