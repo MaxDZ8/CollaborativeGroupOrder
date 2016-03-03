@@ -20,6 +20,12 @@ import java.util.Arrays;
  * structures.
  */
 public abstract class PersistentDataUtils {
+    private final int minimumSaltBytes;
+
+    protected PersistentDataUtils(int minimumSaltBytes) {
+        this.minimumSaltBytes = minimumSaltBytes;
+    }
+
     protected abstract String getString(int resource);
 
     public static final int OWNER_DATA_VERSION = 1;
@@ -98,13 +104,14 @@ public abstract class PersistentDataUtils {
         final int start = errors.size();
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
-        if(group.salt.length < 1) errors.add(premise + getString(R.string.persistentStorage_missingKey));
-        if(group.usually == null) errors.add(premise + getString(R.string.persistentStorage_missingPartyDefinition));
-        else {
-            ActorValidator usual = new ActorValidator(true, errors, String.format("%1$s->%2$s", premise, getString(R.string.persistentStorage_partyDefValidationPremise)));
-            usual.check(getString(R.string.persistentStorage_playingCharacters), group.usually.party, true);
-            usual.check(getString(R.string.persistentStorage_NPC), group.usually.npcs, false);
 
+        new ActorValidator(true, errors, String.format("%1$s->%2$s", premise, getString(R.string.persistentStorage_partyDefValidationPremise)))
+                .check(getString(R.string.persistentStorage_playingCharacters), group.party, true)
+                .check(getString(R.string.persistentStorage_NPC), group.npcs, false);
+
+        for(int loop = 0; loop < group.devices.length; loop++) {
+            PersistentStorage.PartyOwnerData.DeviceInfo dev = group.devices[loop];
+            if(dev.salt.length < minimumSaltBytes) errors.add(premise + ", device[%1$s]: empty salt.");
         }
         return start != errors.size();
     }

@@ -19,7 +19,6 @@ import java.util.Vector;
  */
 public class BuildingCharacters {
     String name;
-    byte[] salt;
 
     public Vector<DeviceStatus> clients;
 

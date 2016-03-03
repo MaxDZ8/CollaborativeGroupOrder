@@ -41,12 +41,10 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
 
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         building.name = state.newGroupName;
-        building.salt = state.newGroupKey;
         building.clients = state.clients;
         for(Pumper.MessagePumpingThread p : state.pumpers) netWorkers.pump(p);
         state.clients = null;
         state.newGroupName = null;
-        state.newGroupKey = null;
         state.pumpers = null;
 
         RecyclerView groupList = (RecyclerView) findViewById(R.id.ncaa_list);
@@ -301,7 +299,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     private PersistentStorage.PartyOwnerData.Group makeGroup() {
         PersistentStorage.PartyOwnerData.Group ret = new PersistentStorage.PartyOwnerData.Group();
         ret.name = building.name;
-        ret.salt = building.salt;
         int count = 0;
         for(DeviceStatus dev : building.clients) {
             if(dev.kicked || !dev.groupMember) continue;
@@ -367,7 +364,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
             protected void onPostExecute(Void aVoid) {
                 final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
                 state.newGroupName = building.name;
-                state.newGroupKey = building.salt;
                 if(goAdventuring) state.pumpers = netWorkers.move();
                 netWorkers.shutdown();
                 setResult(RESULT_OK);

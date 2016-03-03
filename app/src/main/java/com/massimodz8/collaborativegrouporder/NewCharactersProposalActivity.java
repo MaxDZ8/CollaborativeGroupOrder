@@ -1,7 +1,6 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -202,7 +201,6 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
     private void finishingTouches(boolean goAdventuring) {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         state.newGroupName = party.group.name;
-        state.newGroupKey = party.salt;
         if(goAdventuring) state.pumpers = netWorker.move();
         setResult(RESULT_OK);
         finish();

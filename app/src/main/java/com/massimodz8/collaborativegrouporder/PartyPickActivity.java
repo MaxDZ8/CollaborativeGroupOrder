@@ -31,6 +31,7 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.google.protobuf.nano.MessageNano;
+import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.File;
@@ -716,7 +717,7 @@ public class PartyPickActivity extends AppCompatActivity {
             } catch (IOException e) {
                 return e;
             }
-            new PersistentDataUtils() {
+            new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
                 @Override
                 protected String getString(int resource) {
                     return PartyPickActivity.this.getString(resource);

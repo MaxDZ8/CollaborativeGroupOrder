@@ -42,7 +42,6 @@ public class CrossActivityShare extends Application {
     // NewCharacterProposalActivity result ---------------------------------------------------------
     //public boolean goAdventuring; // does not exist, use the pumpers instead
     public String newGroupName;
-    public byte[] newGroupKey;
     //----------------------------------------------------------------------------------------------
 
 

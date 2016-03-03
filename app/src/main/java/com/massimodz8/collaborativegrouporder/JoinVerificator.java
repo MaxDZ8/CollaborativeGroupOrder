@@ -1,7 +1,12 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.support.annotation.NonNull;
+
+import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
 /**
  * Created by Massimo on 23/02/2016.
@@ -11,19 +16,38 @@ import java.security.NoSuchAlgorithmException;
  */
 public class JoinVerificator {
     private final MessageDigest hasher;
-    private byte[] blob;
+    private final byte[][] keys;
 
-    public JoinVerificator() throws NoSuchAlgorithmException {
-        hasher = MessageDigest.getInstance("SHA-256");
+    public JoinVerificator(@NonNull PersistentStorage.PartyOwnerData.DeviceInfo[] known) throws NoSuchAlgorithmException {
+        hasher = newHasher();
+        keys = new byte[known.length][];
+        for(int loop = 0; loop < known.length; loop++) keys[loop] = known[loop].salt;
     }
-    public byte[] mangle(byte[] doormat, byte[] partyKey) {
-        if(null == blob) {
-            byte[] input = new byte[doormat.length + partyKey.length];
-            System.arraycopy(doormat, 0, input, 0, doormat.length);
-            System.arraycopy(partyKey, 0, input, doormat.length, partyKey.length);
 
-            blob = hasher.digest(input);
+    public JoinVerificator(@NonNull PersistentStorage.PartyClientData.Group me) throws NoSuchAlgorithmException {
+        hasher = newHasher();
+        keys = new byte[1][];
+        keys[0] = me.key;
+    }
+    public Integer match(@NonNull byte[] sent, @NonNull byte[] received) {
+        for(int loop = 0; loop < keys.length; loop++) {
+            byte[] salt = keys[loop];
+            byte[] input = new byte[sent.length + salt.length];
+            System.arraycopy(sent, 0, input, 0, sent.length);
+            System.arraycopy(salt, 0, input, sent.length, salt.length);
+            hasher.reset();
+            final byte[] blob = hasher.digest(input);
+            if(Arrays.equals(blob, received)) return loop;
         }
-        return blob;
+        return null;
     }
+    public byte[] mangle(@NonNull byte[] received) {
+        byte[] salt = keys[0];
+        byte[] input = new byte[received.length + salt.length];
+        System.arraycopy(received, 0, input, 0, received.length);
+        System.arraycopy(salt, 0, input, received.length, salt.length);
+        hasher.reset();
+        return hasher.digest(input);
+    }
+    private static MessageDigest newHasher() throws NoSuchAlgorithmException { return MessageDigest.getInstance("SHA-256"); }
 }

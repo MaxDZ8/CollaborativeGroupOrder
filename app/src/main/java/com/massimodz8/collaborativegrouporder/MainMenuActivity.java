@@ -14,6 +14,7 @@ import android.view.View;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
+import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
@@ -22,7 +23,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Vector;
 
@@ -42,10 +42,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     private void refreshData() {
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         final String newName = state.newGroupName;
-        final byte[] newKey = state.newGroupKey;
         final Pumper.MessagePumpingThread[] peers = state.pumpers;
         state.newGroupName = null;
-        state.newGroupKey = null;
         state.pumpers = null;
         new AsyncLoadAll() {
             @Override
@@ -53,7 +51,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 if(null == peers) return;
                 // go adventuring, but am I client or server?
                 for(PersistentStorage.PartyOwnerData.Group check : state.groupDefs) {
-                    if(Arrays.equals(newKey, check.salt) && newName.equals(check.name)) {
+                    if(newName.equals(check.name)) {
                         selectedOwned = check;
                         activeClients = peers;
                         startNewSessionActivity();
@@ -61,7 +59,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     }
                 }
                 for(PersistentStorage.PartyClientData.Group check : state.groupKeys) {
-                    if(Arrays.equals(newKey, check.key) && newName.equals(check.name)) {
+                    if(newName.equals(check.name)) {
                         selectedKey = check;
                         activeServer = peers[0];
                         startGoAdventuringActivity();
@@ -181,7 +179,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     private class AsyncLoadAll extends AsyncTask<Void, Void, Exception> {
         PersistentStorage.PartyOwnerData owned;
         PersistentStorage.PartyClientData joined;
-        final PersistentDataUtils loader = new PersistentDataUtils() {
+        final PersistentDataUtils loader = new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
             protected String getString(int resource) {
                 return MainMenuActivity.this.getString(resource);
@@ -305,7 +303,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             PartyJoinOrderService real =  binder.getConcreteService();
             JoinVerificator keyMaster = null;
             try {
-                keyMaster = new JoinVerificator();
+                keyMaster = new JoinVerificator(selectedOwned.devices);
             } catch (NoSuchAlgorithmException e) {
                 new AlertDialog.Builder(this)
                         .setMessage(R.string.mma_noDigestDlgMsg)

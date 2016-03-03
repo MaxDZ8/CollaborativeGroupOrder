@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.support.v7.app.AlertDialog;
 
 import com.google.protobuf.nano.MessageNano;
-import com.google.protobuf.nano.MessageNanoPrinter;
-
-import java.io.File;
+import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 
 /**
  * Created by Massimo on 31/01/2016.
@@ -14,7 +12,7 @@ import java.io.File;
  */
 public abstract class AsyncActivityLoadUpdateTask<Container extends MessageNano> extends AsyncLoadUpdateTask<Container> {
     public AsyncActivityLoadUpdateTask(String fileName, String targetFilePrefix, final Activity source) {
-        super(source.getFilesDir(), fileName, new PersistentDataUtils() {
+        super(source.getFilesDir(), fileName, new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
             protected String getString(int resource) {
                 return source.getString(resource);

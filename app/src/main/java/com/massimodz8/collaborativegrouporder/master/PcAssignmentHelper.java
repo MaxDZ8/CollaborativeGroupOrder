@@ -79,13 +79,6 @@ public class PcAssignmentHelper {
         mailman.start();
     }
 
-
-    /*
-    TODO: for the time being I don't have device keys so what do I do? I will just prethend everybody getting the group key is matching some key,
-    TODO depending on the order they happen.
-    TODO UGLY UGLY UGLY UGLY UGLY UGLY UGLY UGLY UGLY UGLY */
-    private int TODO_shite_ugly_temp_hack;
-
     public void pump(MessageChannel newConn) {
         peers.add(new PlayingDevice(newConn));
         netPump.pump(newConn);
@@ -281,7 +274,7 @@ public class PcAssignmentHelper {
     private static final int MSG_HELLO_AUTH = 4;
     private static final int MSG_CHAR_OWNERSHIP_REQUEST = 5;
 
-    private static final int DOORMAT_BYTES = 64;
+    public static final int DOORMAT_BYTES = 64;
     private static final int USUAL_CLIENT_COUNT = 20; // not really! Usually 5 or less but that's for safety!
     private static final int USUAL_AVERAGE_MESSAGES_PENDING_COUNT = 10; // pretty a lot, those will be small!
     private static final int LOCAL_BINDING = -1;
@@ -341,13 +334,13 @@ public class PcAssignmentHelper {
 
     private void helloAuth(final @NonNull MessageChannel origin, @NonNull Network.Hello msg) {
         final PlayingDevice dev = getDevice(origin);
-        if(null == dev || null == dev.pipe) return; // impossible!
+        if(null == dev || null == dev.pipe || null == dev.doormat) return; // impossible!
         dev.clientVersion = msg.version;
 
         // For the time being, this must be the same for all devices.
         // TODO: upgrade to device-specific keys!
-        byte[] hash = verifier.mangle(dev.doormat, party.salt);
-        if(!Arrays.equals(hash, msg.authorize)) {
+        final Integer match = verifier.match(dev.doormat, msg.authorize);
+        if(match == null) {
             // Device tried to authenticate but I couldn't recognize it.
             // Most likely using an absolete key -> kicked from party!
             // Very odd but why not? Better to just ignore and disconnect the guy.
@@ -366,7 +359,7 @@ public class PcAssignmentHelper {
             return;
         }
         boolean signal = dev.isAnonymous();
-        dev.keyIndex = TODO_shite_ugly_temp_hack++;
+        dev.keyIndex = match;
         sendPlayingCharacterList(dev);
         if(signal && authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged(); // no guarantee about ordering of auths.
     }

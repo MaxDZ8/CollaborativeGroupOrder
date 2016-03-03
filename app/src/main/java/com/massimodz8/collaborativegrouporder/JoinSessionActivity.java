@@ -259,13 +259,13 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                 case SENT_DOORMAT_REQUEST: {
                     JoinVerificator helper;
                     try {
-                        helper = new JoinVerificator();
+                        helper = new JoinVerificator(myState.party);
                     } catch (NoSuchAlgorithmException e) {
                         error = e;
                         return;
                     }
                     final Network.Hello auth = new Network.Hello();
-                    auth.authorize = helper.mangle(doormat, myState.party.key);
+                    auth.authorize = helper.mangle(doormat);
                     auth.version = MainMenuActivity.NETWORK_VERSION;
                     new AsyncTask<Void, Void, Void>() {
                         @Override
