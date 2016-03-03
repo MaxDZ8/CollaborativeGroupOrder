@@ -4,52 +4,56 @@ option java_package = "com.massimodz8.collaborativegrouporder.protocol";
 // I could borrow some definitions from network.proto but I rather keep everything easy and independant.
 message PartyOwnerData {
     uint32 version = 1;
-	repeated Group everything = 2;
+    repeated Group everything = 2;
+    
+    message DeviceInfo {
+        bytes salt = 1; // Unique salt to uniquely identify device. Never empty, counting at least 64 bytes.
+        string name = 2; // presentation name, tag entered by user. Not guaranteed unique in the group.
+        string avatarFile = 3; // one file to be loaded to identify user, from assets directory.
+    }
 
-	message Group {
-		string name = 1;
-		bytes salt = 2; // players wanting to join a group must specify a group by name and select characters by guessing the salt.
-		Definition usually = 3; // "default" group settings, must exist
-		
-		// Note: there's no "current group state" anymore, store them somewhere else
-		
-		message Definition {
-			repeated Actor party = 1; // must count at least one member, otherwise error
-			repeated Actor npcs = 2;
-		}
-	}
+    message Group {
+        string name = 1;
+        DeviceInfo devices = 2;
+        Usually usually = 3; // "default" group settings, must exist
+        string imageFile = 4; // group images are cool as well, used for the service notification.
+        
+        // Note: there's no "current group state" anymore, store them somewhere else
+        
+        message Usually {
+            repeated ActorDefinition party = 1; // must count at least one member, otherwise error
+            repeated ActorDefinition npcs = 2;
+        }
+    }
 }
 
-	
-// Used for both "static" description and combat state, depending on which Definition uses it.
-message Actor {
-	string name = 1;
-	uint32 level = 2;
-	repeated ActorStatistics stats = 3; // at least 1 or error. stats[0] is character level, stats[1] is level-1 etc... character history
-	
-	// vvv state data vvv
-	uint32 initiative = 4; // used for Group.currently, reconstruct an initiative order.
-	string preparedAction = 5; // Group.currently, a string describing when the character will act conditionally
-	uint32 temporaryHealth = 6; // stuff that goes down before real health.
-	uint32 healthMalus = 7; // taken down from max health due to (example: negative levels, malus COS)
+    
+// Holds information about the (N)PC regarding its 'starting' status when a new battle is initiated.
+// Also tracks level advancement.
+// It's the stuff you would write using a pen in the character sheet. Temporary effects and per-battle data not there.
+message ActorDefinition {
+    string name = 1;
+    uint32 level = 2;
+    uint32 experience = 3;
+    string avatarFile = 4;
+    repeated ActorStatistics stats = 5; // at least 1 or error. stats[0] is character level, stats[1] is level-1 etc... character history
 }
 
 
 // those are sort-of like "pure" stateless statistics as of when you roll a level up or copy a PG sheet.
 message ActorStatistics {
-	uint32 experience = 1;
-	uint32 initBonus = 2;
-	int32 healthPoints = 3; // Group.usually -> full health, otherwise current health
+    uint32 initBonus = 1;
+    int32 healthPoints = 2; // Group.usually -> full health, otherwise current health
 }
 
 
 // Client information about a group. I make it completely distinct to take it easy.
 message PartyClientData {
     uint32 version = 1;
-	repeated Group everything = 2;
-	
-	message Group {
-		string name = 1;
-		bytes key = 2;
-	}
+    repeated Group everything = 2;
+    
+    message Group {
+        string name = 1;
+        bytes key = 2;
+    }
 }
