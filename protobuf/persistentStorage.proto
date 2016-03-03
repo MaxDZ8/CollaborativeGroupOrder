@@ -14,16 +14,12 @@ message PartyOwnerData {
 
     message Group {
         string name = 1;
-        DeviceInfo devices = 2;
-        Usually usually = 3; // "default" group settings, must exist
-        string imageFile = 4; // group images are cool as well, used for the service notification.
+        repeated DeviceInfo devices = 2;
+        repeated ActorDefinition party = 3; // those actors can be assigned to players
+		repeated ActorDefinition npcs = 4; // those are managed by master
+        string imageFile = 5; // group images are cool as well, used for the service notification.
         
         // Note: there's no "current group state" anymore, store them somewhere else
-        
-        message Usually {
-            repeated ActorDefinition party = 1; // must count at least one member, otherwise error
-            repeated ActorDefinition npcs = 2;
-        }
     }
 }
 

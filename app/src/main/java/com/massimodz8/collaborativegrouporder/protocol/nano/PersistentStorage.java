@@ -125,157 +125,6 @@ public interface PersistentStorage {
     public static final class Group extends
         com.google.protobuf.nano.MessageNano {
 
-      public static final class Usually extends
-          com.google.protobuf.nano.MessageNano {
-
-        private static volatile Usually[] _emptyArray;
-        public static Usually[] emptyArray() {
-          // Lazily initializes the empty array
-          if (_emptyArray == null) {
-            synchronized (
-                com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-              if (_emptyArray == null) {
-                _emptyArray = new Usually[0];
-              }
-            }
-          }
-          return _emptyArray;
-        }
-
-        // repeated .ActorDefinition party = 1;
-        public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] party;
-
-        // repeated .ActorDefinition npcs = 2;
-        public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] npcs;
-
-        public Usually() {
-          clear();
-        }
-
-        public Usually clear() {
-          party = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition.emptyArray();
-          npcs = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition.emptyArray();
-          cachedSize = -1;
-          return this;
-        }
-
-        @Override
-        public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-            throws java.io.IOException {
-          if (this.party != null && this.party.length > 0) {
-            for (int i = 0; i < this.party.length; i++) {
-              com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.party[i];
-              if (element != null) {
-                output.writeMessage(1, element);
-              }
-            }
-          }
-          if (this.npcs != null && this.npcs.length > 0) {
-            for (int i = 0; i < this.npcs.length; i++) {
-              com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.npcs[i];
-              if (element != null) {
-                output.writeMessage(2, element);
-              }
-            }
-          }
-          super.writeTo(output);
-        }
-
-        @Override
-        protected int computeSerializedSize() {
-          int size = super.computeSerializedSize();
-          if (this.party != null && this.party.length > 0) {
-            for (int i = 0; i < this.party.length; i++) {
-              com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.party[i];
-              if (element != null) {
-                size += com.google.protobuf.nano.CodedOutputByteBufferNano
-                  .computeMessageSize(1, element);
-              }
-            }
-          }
-          if (this.npcs != null && this.npcs.length > 0) {
-            for (int i = 0; i < this.npcs.length; i++) {
-              com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.npcs[i];
-              if (element != null) {
-                size += com.google.protobuf.nano.CodedOutputByteBufferNano
-                  .computeMessageSize(2, element);
-              }
-            }
-          }
-          return size;
-        }
-
-        @Override
-        public Usually mergeFrom(
-                com.google.protobuf.nano.CodedInputByteBufferNano input)
-            throws java.io.IOException {
-          while (true) {
-            int tag = input.readTag();
-            switch (tag) {
-              case 0:
-                return this;
-              default: {
-                if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-                  return this;
-                }
-                break;
-              }
-              case 10: {
-                int arrayLength = com.google.protobuf.nano.WireFormatNano
-                    .getRepeatedFieldArrayLength(input, 10);
-                int i = this.party == null ? 0 : this.party.length;
-                com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] newArray =
-                    new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[i + arrayLength];
-                if (i != 0) {
-                  java.lang.System.arraycopy(this.party, 0, newArray, 0, i);
-                }
-                for (; i < newArray.length - 1; i++) {
-                  newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
-                  input.readMessage(newArray[i]);
-                  input.readTag();
-                }
-                // Last one without readTag.
-                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
-                input.readMessage(newArray[i]);
-                this.party = newArray;
-                break;
-              }
-              case 18: {
-                int arrayLength = com.google.protobuf.nano.WireFormatNano
-                    .getRepeatedFieldArrayLength(input, 18);
-                int i = this.npcs == null ? 0 : this.npcs.length;
-                com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] newArray =
-                    new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[i + arrayLength];
-                if (i != 0) {
-                  java.lang.System.arraycopy(this.npcs, 0, newArray, 0, i);
-                }
-                for (; i < newArray.length - 1; i++) {
-                  newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
-                  input.readMessage(newArray[i]);
-                  input.readTag();
-                }
-                // Last one without readTag.
-                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
-                input.readMessage(newArray[i]);
-                this.npcs = newArray;
-                break;
-              }
-            }
-          }
-        }
-
-        public static Usually parseFrom(byte[] data)
-            throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-          return com.google.protobuf.nano.MessageNano.mergeFrom(new Usually(), data);
-        }
-
-        public static Usually parseFrom(
-                com.google.protobuf.nano.CodedInputByteBufferNano input)
-            throws java.io.IOException {
-          return new Usually().mergeFrom(input);
-        }
-      }
-
       private static volatile Group[] _emptyArray;
       public static Group[] emptyArray() {
         // Lazily initializes the empty array
@@ -293,13 +142,16 @@ public interface PersistentStorage {
       // optional string name = 1;
       public java.lang.String name;
 
-      // optional .PartyOwnerData.DeviceInfo devices = 2;
-      public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo devices;
+      // repeated .PartyOwnerData.DeviceInfo devices = 2;
+      public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo[] devices;
 
-      // optional .PartyOwnerData.Group.Usually usually = 3;
-      public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.Group.Usually usually;
+      // repeated .ActorDefinition party = 3;
+      public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] party;
 
-      // optional string imageFile = 4;
+      // repeated .ActorDefinition npcs = 4;
+      public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] npcs;
+
+      // optional string imageFile = 5;
       public java.lang.String imageFile;
 
       public Group() {
@@ -308,8 +160,9 @@ public interface PersistentStorage {
 
       public Group clear() {
         name = "";
-        devices = null;
-        usually = null;
+        devices = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo.emptyArray();
+        party = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition.emptyArray();
+        npcs = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition.emptyArray();
         imageFile = "";
         cachedSize = -1;
         return this;
@@ -321,14 +174,32 @@ public interface PersistentStorage {
         if (!this.name.equals("")) {
           output.writeString(1, this.name);
         }
-        if (this.devices != null) {
-          output.writeMessage(2, this.devices);
+        if (this.devices != null && this.devices.length > 0) {
+          for (int i = 0; i < this.devices.length; i++) {
+            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo element = this.devices[i];
+            if (element != null) {
+              output.writeMessage(2, element);
+            }
+          }
         }
-        if (this.usually != null) {
-          output.writeMessage(3, this.usually);
+        if (this.party != null && this.party.length > 0) {
+          for (int i = 0; i < this.party.length; i++) {
+            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.party[i];
+            if (element != null) {
+              output.writeMessage(3, element);
+            }
+          }
+        }
+        if (this.npcs != null && this.npcs.length > 0) {
+          for (int i = 0; i < this.npcs.length; i++) {
+            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.npcs[i];
+            if (element != null) {
+              output.writeMessage(4, element);
+            }
+          }
         }
         if (!this.imageFile.equals("")) {
-          output.writeString(4, this.imageFile);
+          output.writeString(5, this.imageFile);
         }
         super.writeTo(output);
       }
@@ -340,17 +211,36 @@ public interface PersistentStorage {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeStringSize(1, this.name);
         }
-        if (this.devices != null) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeMessageSize(2, this.devices);
+        if (this.devices != null && this.devices.length > 0) {
+          for (int i = 0; i < this.devices.length; i++) {
+            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo element = this.devices[i];
+            if (element != null) {
+              size += com.google.protobuf.nano.CodedOutputByteBufferNano
+                .computeMessageSize(2, element);
+            }
+          }
         }
-        if (this.usually != null) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeMessageSize(3, this.usually);
+        if (this.party != null && this.party.length > 0) {
+          for (int i = 0; i < this.party.length; i++) {
+            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.party[i];
+            if (element != null) {
+              size += com.google.protobuf.nano.CodedOutputByteBufferNano
+                .computeMessageSize(3, element);
+            }
+          }
+        }
+        if (this.npcs != null && this.npcs.length > 0) {
+          for (int i = 0; i < this.npcs.length; i++) {
+            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.npcs[i];
+            if (element != null) {
+              size += com.google.protobuf.nano.CodedOutputByteBufferNano
+                .computeMessageSize(4, element);
+            }
+          }
         }
         if (!this.imageFile.equals("")) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeStringSize(4, this.imageFile);
+              .computeStringSize(5, this.imageFile);
         }
         return size;
       }
@@ -375,20 +265,66 @@ public interface PersistentStorage {
               break;
             }
             case 18: {
-              if (this.devices == null) {
-                this.devices = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo();
+              int arrayLength = com.google.protobuf.nano.WireFormatNano
+                  .getRepeatedFieldArrayLength(input, 18);
+              int i = this.devices == null ? 0 : this.devices.length;
+              com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo[] newArray =
+                  new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo[i + arrayLength];
+              if (i != 0) {
+                java.lang.System.arraycopy(this.devices, 0, newArray, 0, i);
               }
-              input.readMessage(this.devices);
+              for (; i < newArray.length - 1; i++) {
+                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo();
+                input.readMessage(newArray[i]);
+                input.readTag();
+              }
+              // Last one without readTag.
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo();
+              input.readMessage(newArray[i]);
+              this.devices = newArray;
               break;
             }
             case 26: {
-              if (this.usually == null) {
-                this.usually = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.Group.Usually();
+              int arrayLength = com.google.protobuf.nano.WireFormatNano
+                  .getRepeatedFieldArrayLength(input, 26);
+              int i = this.party == null ? 0 : this.party.length;
+              com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] newArray =
+                  new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[i + arrayLength];
+              if (i != 0) {
+                java.lang.System.arraycopy(this.party, 0, newArray, 0, i);
               }
-              input.readMessage(this.usually);
+              for (; i < newArray.length - 1; i++) {
+                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
+                input.readMessage(newArray[i]);
+                input.readTag();
+              }
+              // Last one without readTag.
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
+              input.readMessage(newArray[i]);
+              this.party = newArray;
               break;
             }
             case 34: {
+              int arrayLength = com.google.protobuf.nano.WireFormatNano
+                  .getRepeatedFieldArrayLength(input, 34);
+              int i = this.npcs == null ? 0 : this.npcs.length;
+              com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] newArray =
+                  new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[i + arrayLength];
+              if (i != 0) {
+                java.lang.System.arraycopy(this.npcs, 0, newArray, 0, i);
+              }
+              for (; i < newArray.length - 1; i++) {
+                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
+                input.readMessage(newArray[i]);
+                input.readTag();
+              }
+              // Last one without readTag.
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
+              input.readMessage(newArray[i]);
+              this.npcs = newArray;
+              break;
+            }
+            case 42: {
               this.imageFile = input.readString();
               break;
             }
