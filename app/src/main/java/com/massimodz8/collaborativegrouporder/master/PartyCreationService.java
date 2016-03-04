@@ -11,12 +11,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
+import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 public abstract class PartyCreationService extends PublishAcceptService {
     public static final String PARTY_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
@@ -96,6 +100,50 @@ public abstract class PartyCreationService extends PublishAcceptService {
     }
 
     public void kickNonMembers() { building.kickNonMembers(); }
+
+    public interface OnKeysSentListener {
+        void onKeysSent(int errors);
+    }
+
+
+    public void closeGroup(@NonNull final OnKeysSentListener onComplete) {
+        stopPublishing();
+        stopListening(true);
+        kickNonMembers();
+        final Network.GroupFormed form = new Network.GroupFormed();
+        final ArrayList<PartyDefinitionHelper.DeviceStatus> clients = getDevices();
+        int keyCount = 0;
+        for (PartyDefinitionHelper.DeviceStatus dev : clients) {
+            final String message = String.format("keyIndex=%1$d, name=\"%2$s\" created=%3$s", keyCount++, building, new Date().toString());
+            MaxUtils.hasher.reset();
+            dev.salt = MaxUtils.hasher.digest(message.getBytes());
+        }
+        new AsyncTask<Void, Void, Void>() {
+            Exception[] errors = new Exception[clients.size()];
+            int bad;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                int slot = 0;
+                for (PartyDefinitionHelper.DeviceStatus dev : clients) {
+                    form.salt = dev.salt;
+                    try {
+                        dev.source.writeSync(ProtoBufferEnum.GROUP_FORMED, form);
+                    } catch (IOException e) {
+                        errors[slot] = e;
+                        bad++;
+                    }
+                    slot++;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                onComplete.onKeysSent(bad);
+            }
+        }.execute();
+    }
 
     public interface ClientDeviceHolderFactoryBinder<VH extends RecyclerView.ViewHolder> {
         VH createUnbound(ViewGroup parent, int viewType);

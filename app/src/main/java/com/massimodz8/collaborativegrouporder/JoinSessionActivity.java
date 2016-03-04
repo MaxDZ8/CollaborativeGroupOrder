@@ -257,7 +257,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                     lastSend = SENT_DOORMAT_REQUEST;
                 } break;
                 case SENT_DOORMAT_REQUEST: {
-                    JoinVerificator helper = new JoinVerificator(myState.party, NewPartyDeviceSelectionActivity.hasher);
+                    JoinVerificator helper = new JoinVerificator(myState.party, MaxUtils.hasher);
                     final Network.Hello auth = new Network.Hello();
                     auth.authorize = helper.mangle(doormat);
                     auth.version = MainMenuActivity.NETWORK_VERSION;

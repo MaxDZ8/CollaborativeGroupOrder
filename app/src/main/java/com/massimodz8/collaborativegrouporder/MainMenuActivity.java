@@ -40,7 +40,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         setContentView(R.layout.activity_main_menu);
 
         try {
-            NewPartyDeviceSelectionActivity.hasher = MessageDigest.getInstance("SHA-256");
+            MaxUtils.hasher = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
             new AlertDialog.Builder(this)
                     .setCancelable(false)
@@ -312,7 +312,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             PartyJoinOrderService.LocalBinder binder = (PartyJoinOrderService.LocalBinder)service;
             PartyJoinOrderService real =  binder.getConcreteService();
             PersistentStorage.PartyOwnerData.Group owned = (PersistentStorage.PartyOwnerData.Group) activeParty;
-            JoinVerificator keyMaster = new JoinVerificator(owned.devices, NewPartyDeviceSelectionActivity.hasher);
+            JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
             real.initializePartyManagement(owned, keyMaster);
             real.pumpClients(activeConnections);
             // TODO: reuse landing if there!

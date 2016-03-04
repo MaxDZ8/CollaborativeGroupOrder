@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextWatcher, ServiceConnection {
-    public static MessageDigest hasher;
 
     @Override
     protected void onDestroy() {
@@ -178,64 +177,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         view.setEnabled(false);
         building = groupName;
         elevateServicePriority();
-    }
-
-    void closeGroup() {
-        if(room == null) return; // happens if the connection to service has gone down
-        final Network.GroupFormed form = new Network.GroupFormed();
-        room.stopPublishing();
-        room.stopListening(true);
-        room.kickNonMembers();
-        final ArrayList<PartyDefinitionHelper.DeviceStatus> clients = room.getDevices();
-        int keyCount = 0;
-        for (PartyDefinitionHelper.DeviceStatus dev : clients) {
-            final String message = String.format("keyIndex=%1$d, name=\"%2$s\" created=%3$s", keyCount++, building, new Date().toString());
-            hasher.reset();
-            dev.salt = hasher.digest(message.getBytes());
-        }
-        new AsyncTask<Void, Void, Void>() {
-            Exception[] errors = new Exception[clients.size()];
-            int bad;
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                int slot = 0;
-                for (PartyDefinitionHelper.DeviceStatus dev : clients) {
-                    form.salt = dev.salt;
-                    try {
-                        dev.source.writeSync(ProtoBufferEnum.GROUP_FORMED, form);
-                    } catch (IOException e) {
-                        errors[slot] = e;
-                        bad++;
-                    }
-                    slot++;
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                if(0 != bad) {
-                    new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
-                            .setMessage(R.string.npdsa_failedKeySendDlgMsg)
-                            .setPositiveButton(R.string.npdsa_carryOnDlgAction, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    setResult(RESULT_OK);
-                                    finish();
-                                }
-                            }).setNegativeButton(R.string.npdsa_discardDlgAction, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    finish();
-                                }
-                            }).show();
-                    return;
-                }
-                setResult(RESULT_OK);
-                finish();
-            }
-        }.execute();
     }
 
     private void beginDelayedTransition() {

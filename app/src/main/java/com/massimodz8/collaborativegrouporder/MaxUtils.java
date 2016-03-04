@@ -15,6 +15,8 @@ import android.view.View;
  * methods.
  */
 public abstract class MaxUtils {
+    public static MessageDigest hasher;
+
     public static void setVisibility(Activity parent, int visibility, int... targets) {
         for (int id : targets) {
             final View v = parent.findViewById(id);
