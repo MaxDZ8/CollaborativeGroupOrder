@@ -1,4 +1,4 @@
-package com.massimodz8.collaborativegrouporder;
+package com.massimodz8.collaborativegrouporder.master;
 
 import android.app.Notification;
 import android.content.ComponentName;
@@ -29,8 +29,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
-import com.massimodz8.collaborativegrouporder.master.PartyDefinitionHelper;
+import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
+import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
+import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
@@ -104,7 +106,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             key = dev.source;
             msg.setText(dev.lastMessage);
             final int weight = dev.groupMember ? Typeface.BOLD : Typeface.NORMAL;
-            MaxUtils.setVisibility(dev.groupMember? View.VISIBLE : View.GONE, memberIcon, memberMsg);
+            MaxUtils.setVisibility(dev.groupMember ? View.VISIBLE : View.GONE, memberIcon, memberMsg);
             msg.setTypeface(original, weight);
             findViewById(R.id.npdsa_activate).setEnabled(room.getMemberCount() > 0);
         }

@@ -15,6 +15,7 @@ import android.view.View;
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
+import com.massimodz8.collaborativegrouporder.master.NewPartyDeviceSelectionActivity;
 import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
