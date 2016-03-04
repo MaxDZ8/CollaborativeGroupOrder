@@ -339,13 +339,15 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             PartyCreationService.LocalBinder binder = (PartyCreationService.LocalBinder) service;
             PartyCreationService real =  binder.getConcreteService();
             if(real.getPublishStatus() == PartyCreationService.PUBLISHER_IDLE) {
+                real.defs = groupDefs;
                 startActivityForResult(new Intent(this, NewPartyDeviceSelectionActivity.class), REQUEST_NEW_PARTY);
                 return;
             }
-            // happens when called from successful character approval with GO_ADVENTURING
-            activeParty = real.getNewParty();
-            activeLanding = real.getLanding();
-            activeConnections = real.moveConnectedClients();
+            // happens when called from successful character approval with GO_ADVENTURING.
+            // The new party is always the last.
+            activeParty = groupDefs.get(groupDefs.size() - 1);
+            activeLanding = real.getLanding(true);
+            activeConnections = real.moveClients();
             unbindService(this);
             stopService(new Intent(this, PartyCreationService.class));
             dataRefreshed();
@@ -356,7 +358,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     public void onServiceDisconnected(ComponentName name) {
         unbindService(this);
         new AlertDialog.Builder(this)
-                .setMessage(R.string.mma_lostServiceConn)
+                .setMessage(R.string.generic_lostServiceConn)
                 .show();
     }
 

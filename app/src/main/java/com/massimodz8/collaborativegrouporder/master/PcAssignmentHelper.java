@@ -338,7 +338,6 @@ public class PcAssignmentHelper {
         dev.clientVersion = msg.version;
 
         // For the time being, this must be the same for all devices.
-        // TODO: upgrade to device-specific keys!
         final Integer match = verifier.match(dev.doormat, msg.authorize);
         if(match == null) {
             // Device tried to authenticate but I couldn't recognize it.

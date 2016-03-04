@@ -50,9 +50,9 @@
     <string name="saySomethingToServer_emptyForbidden">Empty messages are forbidden.</string>
     <string name="saySomethingToServer_tooLong">Message too long. It might be displayed partially or not at all. Go back and fit the given budget.</string>
     <string name="card_joinableGroup_lengthMaxDivisor"> / </string>
-    <string name="kickDevice_title">Kick device?</string>
-    <string name="kickDevice_msg">This device connection will be terminated. The device can still attempt to join again, this is just a temporary ban.</string>
-    <string name="kickDevice_positive">Kick away</string>
+    <string name="kickDevice_title">Hide device?</string>
+    <string name="kickDevice_msg">Further interaction with the device will be silenced. This operation cannot currently be reverted but client can quit and join again at any time.</string>
+    <string name="kickDevice_positive">Hide</string>
     <string name="card_joining_device_groupMemberCheck">Group member!</string>
     <string name="joinForming_earlyDisconnect">Disconnected from a party before I could identify it.</string>
     <string name="joinForming_groupLostReport">Disconnected from group %1$s (hosted at %2$s).</string>
@@ -349,4 +349,9 @@
     <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
     <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
 
+    <string name="npdsa_cannotBindPartyService">Failed to get an handle to the party creation service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
+    <string name="npdsa_failedKeySendDlgMsg">At least one connected device couldn\'t get in the party.</string>
+    <string name="npdsa_carryOnDlgAction">Continue anyway</string>
+    <string name="npdsa_discardDlgAction">Discard</string>
+    <string name="card_joiningDevice_groupMember">Group member</string>
 </resources>

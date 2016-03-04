@@ -1,14 +1,12 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.app.Application;
-import android.os.Bundle;
 
+import com.massimodz8.collaborativegrouporder.master.PartyDefinitionHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.net.ServerSocket;
-import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -21,12 +19,6 @@ public class CrossActivityShare extends Application {
 
     public JoinSessionActivity.State jsaState;
     public JoinSessionActivity.Result jsaResult;
-
-    // NewPartyDeviceSelectionActivity state -------------------------------------------------------
-    public Vector<DeviceStatus> clients;
-    PublishedService publisher;
-    ServerSocket landing;
-    //----------------------------------------------------------------------------------------------
 
     // SelectFormingGroupActivity ------------------------------------------------------------------
     AccumulatingDiscoveryListener explorer;

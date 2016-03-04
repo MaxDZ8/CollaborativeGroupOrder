@@ -58,6 +58,7 @@ public class Pumper {
         rebind.destination = funnel;
     }
 
+    @Deprecated
     public boolean forget(MessageChannel c) {
         synchronized(clients) {
             for (int i = 0; i < clients.size(); i++) {
@@ -206,6 +207,7 @@ public class Pumper {
 
     private volatile boolean silence = false;
 
+    @Deprecated
     public void shutdown() {
         silence = true;
         synchronized(clients) {
