@@ -7,7 +7,13 @@
     <string name="generic_action_undo">Undo</string>
     <string name="generic_initializing">Initializing…</string>
     <string name="generic_lostServiceConn">Lost connection to internal service. Not supposed to happen. Maybe clearing some memory will help.</string>
-    <string name="generic_publishing">Ready. Your friends can connect.</string>
+    <string name="generic_carefulDlgTitle">Careful!</string>
+
+    <string name="master_publishing">Ready. Your friends can connect.</string>
+    <string name="master_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
+    <string name="master_menu_showConnectionInfos">Show connection infos</string>
+    <string name="master_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
+    <string name="master_exitConfirmedDlgAction">Stop service</string>
 
     <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
     <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
@@ -178,7 +184,6 @@
     <string name="npdsa_inputNameAction">Publish</string>
     <string name="badServerSocket">Cannot open communication so your friend\'s devices can connect. This is very serious and prevents anything from working.</string>
     <string name="npdsa_goDefiningPCs">Define playing characters</string>
-    <string name="npdsa_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
     <string name="npdsa_failedAccept">An error occurred while connecting a new device. Maybe the network is broken or I am low on resources. Consider restarting.</string>
     <string name="npdsa_lostTalkingDevice">Lost connection to whoever sent the message \"%1$s\". You can ignore this issue.</string>
     <string name="npdsa_sealing_title">Sealing a group</string>
@@ -262,7 +267,6 @@
     <string name="ga_welcoming">Welcoming players…</string>
     <string name="ga_identifiedDevices">Identified devices</string>
     <string name="ga_playingCharactersAssignment">Unassigned characters</string>
-    <string name="ga_menu_showConnectionInfos">Show connection infos</string>
     <string name="ga_publisherFailedStart">Could not publish service. Explicit connections are still available.</string>
     <string name="ga_publishingStopFailed">Cannot stop publishing. Odd. Perhaps trying again will fix that.</string>
     <string name="ga_noMorePublishing">Publishing stopped (explicit connections still available).</string>
@@ -343,9 +347,6 @@
     <string name="ga_someCharsNotBound">%1$d characters have not been assigned to any device.</string>
     <string name="ga_unboundCharsDlgMsg">%1$s\nTo continue, all characters must be played by someone.\n\nGo back and long press an unassigned character for some options.</string>
     <string name="ga_ctx_unassigned_pc_playHere">Play on this device</string>
-    <string name="ga_carefulDlgTitle">Careful!</string>
-    <string name="ga_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
-    <string name="ga_carefulDlgExitConfirmed">Stop service</string>
     <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
     <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
 

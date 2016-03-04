@@ -90,7 +90,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     @Override
     public boolean onSupportNavigateUp() {
         if(room != null && room.getPartyOwnerData() != null && room.getNumIdentifiedClients() != 0) {
-            carefulExit();
+            MaxUtils.askExitConfirmation(this);
             return true;
         }
         return super.onSupportNavigateUp();
@@ -98,20 +98,8 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
 
     @Override
     public void onBackPressed() {
-        if(room != null && room.getPartyOwnerData() != null && room.getNumIdentifiedClients() != 0) carefulExit();
+        if(room != null && room.getPartyOwnerData() != null && room.getNumIdentifiedClients() != 0) MaxUtils.askExitConfirmation(this);
         else super.onBackPressed();
-    }
-
-    private void carefulExit() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.ga_carefulDlgTitle)
-                .setMessage(R.string.ga_carefulDlgMessage)
-                .setPositiveButton(R.string.ga_carefulDlgExitConfirmed, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                }).show();
     }
 
     @Override
