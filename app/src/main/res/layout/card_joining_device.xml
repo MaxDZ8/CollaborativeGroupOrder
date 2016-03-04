@@ -11,23 +11,26 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <CheckBox
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/joiningDeviceHello_acceptedCheckbox_nope"
-        android:id="@+id/card_joiningDevice_accepted"
+        android:id="@+id/card_joiningDevice_groupMemberIcon"
+        android:layout_below="@+id/card_joiningDevice_msg"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/card_joiningDevice_msg" />
+        android:src="@mipmap/ic_group_black_24dp"
+        android:contentDescription="@string/card_joiningDevice_groupMember"
+        android:visibility="gone" />
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/joinindDevice_kick"
-        android:id="@+id/card_joiningDevice_kick"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/card_joiningDevice_groupMember"
+        android:id="@+id/card_joiningDevice_groupMember"
         android:layout_below="@+id/card_joiningDevice_msg"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBaseline="@+id/card_joiningDevice_accepted" />
+        android:layout_toRightOf="@+id/card_joiningDevice_groupMemberIcon"
+        android:layout_toEndOf="@+id/card_joiningDevice_groupMemberIcon"
+        android:visibility="gone" />
+
 </RelativeLayout>

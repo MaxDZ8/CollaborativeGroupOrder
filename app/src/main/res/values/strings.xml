@@ -5,6 +5,9 @@
     <string name="generic_IOError">I/O error</string>
     <string name="generic_connFailedWithError">Could not connect to host. System message:\n%1$s</string>
     <string name="generic_action_undo">Undo</string>
+    <string name="generic_initializing">Initializing…</string>
+    <string name="generic_lostServiceConn">Lost connection to internal service. Not supposed to happen. Maybe clearing some memory will help.</string>
+    <string name="generic_publishing">Ready. Your friends can connect.</string>
 
     <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
     <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
@@ -168,7 +171,7 @@
     <string name="npdsa_badParty_retry">Modify party name</string>
     <string name="npdsa_title">Party member selection</string>
     <string name="npdsa_goal">Give your new party a name.</string>
-    <string name="npdsa_groupNameHint">Name of new party</string>
+    <string name="npdsa_groupNameHint">Party name</string>
     <string name="npdsa_publish">Publish party on Wi-Fi</string>
     <string name="npdsa_selectInstructions">Connected devices will be listed below. Select the devices to let in the group.</string>
     <string name="npdsa_explicitConnectionInfos">Data for explicit connection:\nPort: %1$d\n%2$s</string>
@@ -256,13 +259,11 @@
     <string name="ppa_menu_restoreDeletedCondensed">Restore</string>
 
     <string name="ga_title">Gathering heroes</string>
-    <string name="ga_initializing">Initializing…</string>
     <string name="ga_welcoming">Welcoming players…</string>
     <string name="ga_identifiedDevices">Identified devices</string>
     <string name="ga_playingCharactersAssignment">Unassigned characters</string>
     <string name="ga_menu_showConnectionInfos">Show connection infos</string>
     <string name="ga_publisherFailedStart">Could not publish service. Explicit connections are still available.</string>
-    <string name="ga_publishing">Ready. Your friends can connect.</string>
     <string name="ga_publishingStopFailed">Cannot stop publishing. Odd. Perhaps trying again will fix that.</string>
     <string name="ga_noMorePublishing">Publishing stopped (explicit connections still available).</string>
     <string name="ga_menu_pcFromThisDevice">Manage PC from this device</string>
@@ -346,7 +347,6 @@
     <string name="ga_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
     <string name="ga_carefulDlgExitConfirmed">Stop service</string>
     <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
-    <string name="mma_lostServiceConn">Lost connection to internal service. Not supposed to happen. Maybe clearing some memory will help.</string>
     <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
 
 </resources>
