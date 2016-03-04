@@ -1,10 +1,12 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
 import android.os.AsyncTask;
@@ -15,6 +17,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -171,6 +174,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         room.beginPublishing(nsd, groupName);
         view.setEnabled(false);
         building = groupName;
+        elevateServicePriority();
     }
 
     void closeGroup() {
@@ -180,6 +184,12 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         room.stopListening(true);
         room.kickNonMembers();
         final ArrayList<PartyDefinitionHelper.DeviceStatus> clients = room.getDevices();
+        int keyCount = 0;
+        for (PartyDefinitionHelper.DeviceStatus dev : clients) {
+            final String message = String.format("keyIndex=%1$d, name=\"%2$s\" created=%3$s", keyCount++, building, new Date().toString());
+            hasher.reset();
+            dev.salt = hasher.digest(message.getBytes());
+        }
         new AsyncTask<Void, Void, Void>() {
             Exception[] errors = new Exception[clients.size()];
             int bad;
@@ -223,23 +233,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 finish();
             }
         }.execute();
-    }
-
-    private int keyCount;
-
-    public byte[] buildKey() {
-        final String message = String.format("keyIndex=%1$d, name=\"%2$s\" created=%3$s", keyCount++, building, new Date().toString());
-		hasher.reset();
-        return hasher.digest(message.getBytes());
-    }
-
-    private static String nsdErrorString(int error) {
-        switch(error) {
-            case NsdManager.FAILURE_ALREADY_ACTIVE: return "FAILURE_ALREADY_ACTIVE";
-            case NsdManager.FAILURE_INTERNAL_ERROR: return "FAILURE_INTERNAL_ERROR";
-            case NsdManager.FAILURE_MAX_LIMIT: return "FAILURE_MAX_LIMIT";
-        }
-        return String.format("%1$d", error);
     }
 
     private void beginDelayedTransition() {
@@ -320,7 +313,27 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             @Override
             boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) { return true; }
         };
+        if(room.getBuildingPartyName() != null) { // restoring, so pull it in foreground! Otherwise defer until group name entered.
+            elevateServicePriority();
+        }
     }
+
+    private void elevateServicePriority() {
+        final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
+                .setOngoing(true)
+
+                .setContentTitle(room.getBuildingPartyName())
+                .setContentText(getString(R.string.npdsa_notifyContent))
+                .setSmallIcon(R.drawable.ic_notify_icon)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            help.setCategory(Notification.CATEGORY_SERVICE);
+        }
+        room.startForeground(NOTIFICATION_ID, help.build());
+    }
+
+    private static final int NOTIFICATION_ID = 1;
+
 
     @Override
     public void onServiceDisconnected(ComponentName name) {

@@ -354,4 +354,5 @@
     <string name="npdsa_carryOnDlgAction">Continue anyway</string>
     <string name="npdsa_discardDlgAction">Discard</string>
     <string name="card_joiningDevice_groupMember">Group member</string>
+    <string name="npdsa_notifyContent">Forming new group over the network.</string>
 </resources>
