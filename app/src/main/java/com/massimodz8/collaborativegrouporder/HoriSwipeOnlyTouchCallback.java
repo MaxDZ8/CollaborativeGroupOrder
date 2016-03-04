@@ -28,8 +28,8 @@ public abstract class HoriSwipeOnlyTouchCallback extends ItemTouchHelper.SimpleC
         swiper.attachToRecyclerView(rv);
     }
 
-    abstract boolean disable();
-    abstract boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh);
+    protected abstract boolean disable();
+    protected abstract boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh);
 
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {

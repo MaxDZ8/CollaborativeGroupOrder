@@ -311,10 +311,10 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             }
 
             @Override
-            boolean disable() { return false; }
+            protected boolean disable() { return false; }
 
             @Override
-            boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) { return true; }
+            protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) { return true; }
         };
         if(room.getBuildingPartyName() != null) { // restoring, so pull it in foreground! Otherwise defer until group name entered.
             elevateServicePriority();
