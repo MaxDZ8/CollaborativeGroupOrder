@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
+import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
@@ -21,11 +24,11 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Vector;
 
 public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final int NETWORK_VERSION = 1;
@@ -54,44 +57,27 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         new AsyncLoadAll().execute();
     }
 
-    private void refreshData() {
-        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        final String newName = state.newGroupName;
-        final Pumper.MessagePumpingThread[] peers = state.pumpers;
-        state.newGroupName = null;
-        state.pumpers = null;
-        new AsyncLoadAll() {
+    private void dataRefreshed() {
+        if (null == activeConnections) {
+            asyncCloseSockets(null, activeLanding, null);
+            activeLanding = null;
+            activeParty = null;
+            return;
+        }
+        if (activeParty instanceof PersistentStorage.PartyOwnerData.Group) {
+            startNewSessionActivity();
+            return;
+        }
+        if (activeParty instanceof PersistentStorage.PartyClientData.Group) {
+            startGoAdventuringActivity();
+            return;
+        }
+        asyncCloseSockets(activeConnections, activeLanding, new ErrorFeedbackFunc() {
             @Override
-            protected void onSuccessfullyRefreshed() {
-                if(null == peers) return;
-                // go adventuring, but am I client or server?
-                for(PersistentStorage.PartyOwnerData.Group check : state.groupDefs) {
-                    if(newName.equals(check.name)) {
-                        selectedOwned = check;
-                        activeClients = peers;
-                        startNewSessionActivity();
-                        return;
-                    }
-                }
-                for(PersistentStorage.PartyClientData.Group check : state.groupKeys) {
-                    if(newName.equals(check.name)) {
-                        selectedKey = check;
-                        activeServer = peers[0];
-                        startGoAdventuringActivity();
-                        return;
-                    }
-                }
-                int errors = 0;
-                for(Pumper.MessagePumpingThread worker : peers) {
-                    worker.interrupt();
-                    try {
-                        worker.getSource().socket.close();
-                    } catch (IOException e) {
-                        errors++;
-                    }
-                }
+            public void feedback(int errors) {
                 String ohno = "";
-                if(0 != errors) ohno = ' ' + String.format(getString(R.string.mma_failedMatchErroReport), errors);
+                if (0 != errors)
+                    ohno = ' ' + String.format(getString(R.string.mma_failedMatchErroReport), errors);
                 new AlertDialog.Builder(MainMenuActivity.this)
                         .setTitle(R.string.mma_impossible)
                         .setMessage(String.format(getString(R.string.mma_failedMatch), ohno))
@@ -103,28 +89,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                             }
                         }).show();
             }
-        }.execute();
-    }
-
-    private void setGroups(PersistentStorage.PartyOwnerData owned, PersistentStorage.PartyClientData joined, PersistentDataUtils loader) {
-        final ArrayList<String> errors = loader.validateLoadedDefinitions(owned);
-        if(null != errors) {
-            StringBuilder sb = new StringBuilder();
-            for(String str : errors) sb.append("\n").append(str);
-            new AlertDialog.Builder(this)
-                    .setMessage(String.format(getString(R.string.mma_invalidPartyOwnerLoadedData), sb.toString()))
-                    .show();
-            return;
-        }
-        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        state.groupDefs = new Vector<>();
-        state.groupKeys = new Vector<>();
-        Collections.addAll(state.groupDefs, owned.everything);
-        Collections.addAll(state.groupKeys, joined.everything);
-        MaxUtils.setEnabled(this, true,
-                R.id.mma_newParty,
-                R.id.mma_joinParty);
-        findViewById(R.id.mma_goAdventuring).setEnabled(state.groupDefs.size() + state.groupKeys.size() > 0);
+        });
+        activeConnections = null;
+        activeLanding = null;
+        activeParty = null;
     }
 
     /// Called when party owner data loaded version != from current.
@@ -141,7 +109,14 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     public void startCreateParty_callback(View btn) {
-        startActivityForResult(new Intent(this, NewPartyDeviceSelectionActivity.class), REQUEST_NEW_PARTY);
+        final Intent servName = new Intent(this, PartyCreationService.class);
+        startService(servName); // this service spans device selection and character approval activities.
+        if(!bindService(servName, this, 0)) {
+            stopService(servName);
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.mma_failedNewSessionServiceBind)
+                    .show();
+        }
     }
 
     public void startJoinGroupActivity_callback(View btn) {
@@ -161,32 +136,21 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             new AlertDialog.Builder(this)
                     .setMessage(R.string.mma_failedNewSessionServiceBind)
                     .show();
-            if(null != activeClients) {
-                final Pumper.MessagePumpingThread[] kick = activeClients;
-                activeClients = null;
-                new Thread() {
-                    @Override
-                    public void run() {
-                        for(Pumper.MessagePumpingThread worker : kick) {
-                            worker.interrupt();
-                            try {
-                                worker.getSource().socket.close();
-                            } catch (IOException e) {
-                                // gone
-                            }
-                        }
-
-                    }
-                }.start();
-            }
+            activeParty = null;
+            asyncCloseSockets(activeConnections, activeLanding, null);
+            activeConnections = null;
+            activeLanding = null;
         }
     }
 
     void startGoAdventuringActivity() {
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        if(null != activeServer) state.pumpers = new Pumper.MessagePumpingThread[] { activeServer };
+        if(null != activeConnections && activeConnections.length > 0) state.pumpers = new Pumper.MessagePumpingThread[] { activeConnections[0] };
         else state.pumpers = null; // be safe-r. Sort of.
-        state.jsaState = new JoinSessionActivity.State(selectedKey);
+        activeConnections = null;
+        // activeLanding is unused in client
+        state.jsaState = new JoinSessionActivity.State((PersistentStorage.PartyClientData.Group) activeParty);
+        activeParty = null;
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
@@ -222,6 +186,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         @Override
         protected void onPostExecute(Exception e) {
             if(null != e) {
+                // TODO: if the activity has been rotated in the meanwhile, this will have issues. Usual problem with AsyncTask reporting.
                 new AlertDialog.Builder(MainMenuActivity.this)
                         .setMessage(R.string.mma_failedOwnedPartyLoad)
                         .setPositiveButton(R.string.mma_exitApp, new DialogInterface.OnClickListener() {
@@ -231,23 +196,48 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                             }
                         })
                         .show();
+                return;
             }
-            else {
-                if(PersistentDataUtils.OWNER_DATA_VERSION != owned.version) upgrade(owned);
-                if(PersistentDataUtils.CLIENT_DATA_WRITE_VERSION != joined.version) upgrade(joined);
-                setGroups(owned, joined, loader);
-                onSuccessfullyRefreshed();
+            if(PersistentDataUtils.OWNER_DATA_VERSION != owned.version) upgrade(owned);
+            if(PersistentDataUtils.CLIENT_DATA_WRITE_VERSION != joined.version) upgrade(joined);
+            final ArrayList<String> errors = loader.validateLoadedDefinitions(owned);
+            if(null != errors) {
+                StringBuilder sb = new StringBuilder();
+                for(String str : errors) sb.append("\n").append(str);
+                new AlertDialog.Builder(MainMenuActivity.this)
+                        .setMessage(String.format(getString(R.string.mma_invalidPartyOwnerLoadedData), sb.toString()))
+                        .show();
+                return;
             }
+            Collections.addAll(groupDefs, owned.everything);
+            Collections.addAll(groupKeys, joined.everything);
+            MaxUtils.setEnabled(MainMenuActivity.this, true,
+                    R.id.mma_newParty,
+                    R.id.mma_joinParty);
+            findViewById(R.id.mma_goAdventuring).setEnabled(groupDefs.size() + groupKeys.size() > 0);
+            onSuccessfullyRefreshed();
         }
         protected void onSuccessfullyRefreshed() { }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_NEW_SESSION) {
-            stopService(new Intent(this, PartyJoinOrderService.class));
+        switch(requestCode) { // stuff to shut down no matter what
+            case REQUEST_NEW_SESSION:
+                // Does not produce output.
+                stopService(new Intent(this, PartyJoinOrderService.class));
+                break;
         }
-        if(RESULT_OK != resultCode) return;
+        if(RESULT_OK != resultCode) {
+            switch(requestCode) { // stuff would be used on success... but was not successful so goodbye
+                case REQUEST_NEW_PARTY:
+                case REQUEST_APPROVE_CHARACTERS:
+                    // Not continuing to characters approval or creation cancelled so goodbye
+                    stopService(new Intent(this, PartyCreationService.class));
+                    break;
+            }
+            return;
+        }
         switch(requestCode) {
             case REQUEST_NEW_PARTY: {
                 final Intent intent = new Intent(this, NewCharactersApprovalActivity.class);
@@ -257,23 +247,28 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 final Intent intent = new Intent(this, NewCharactersProposalActivity.class);
                 startActivityForResult(intent, REQUEST_PROPOSE_CHARACTERS);
             } break;
-            case REQUEST_APPROVE_CHARACTERS:
+            case REQUEST_APPROVE_CHARACTERS: {
+                if(!data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false)) {
+                    stopService(new Intent(this, PartyCreationService.class));
+                    dataRefreshed();
+                } else bindService(new Intent(this, PartyCreationService.class), this, 0);
+                break;
+            }
             case REQUEST_PROPOSE_CHARACTERS: {
-                refreshData();
+                dataRefreshed();
             } break;
             case REQUEST_PICK_PARTY: {
                 int linear = data.getIntExtra(PartyPickActivity.EXTRA_PARTY_INDEX, -1);
                 boolean owned = data.getBooleanExtra(PartyPickActivity.EXTRA_TRUE_IF_PARTY_OWNED, false);
                 if(linear < 0) return;
-                final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+                activeConnections = null;
+                activeLanding = null;
                 if(owned) {
-                    selectedOwned = state.groupDefs.elementAt(linear);
-                    activeClients = null;
+                    activeParty = groupDefs.get(linear);
                     startNewSessionActivity();
                 }
                 else {
-                    selectedKey = state.groupKeys.elementAt(linear);
-                    activeServer = null;
+                    activeParty = groupKeys.get(linear);
                     startGoAdventuringActivity();
                 }
             } break;
@@ -305,10 +300,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     static final int REQUEST_NEW_SESSION = 8;
 
     // Those must be fields to ensure a communication channel to the asynchronous onServiceConnected callbacks.
-    private PersistentStorage.PartyOwnerData.Group selectedOwned;
-    private Pumper.MessagePumpingThread[] activeClients;
-    private PersistentStorage.PartyClientData.Group selectedKey;
-    private Pumper.MessagePumpingThread activeServer;
+    private MessageNano activeParty; // PersistentStorage.PartyOwnerData.Group or PersistentStorage.PartyClientData.Group
+    private ServerSocket activeLanding;
+    private Pumper.MessagePumpingThread[] activeConnections; // Client: a single connection to a server or Owner: list of connections to client
 
     // ServiceConnection ___________________________________________________________________________
     @Override
@@ -316,13 +310,46 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if(service instanceof PartyJoinOrderService.LocalBinder) {
             PartyJoinOrderService.LocalBinder binder = (PartyJoinOrderService.LocalBinder)service;
             PartyJoinOrderService real =  binder.getConcreteService();
-            JoinVerificator keyMaster = new JoinVerificator(selectedOwned.devices, NewPartyDeviceSelectionActivity.hasher);
-            real.initializePartyManagement(selectedOwned, keyMaster);
-            real.pumpClients(activeClients);
-            activeClients = null;
+            PersistentStorage.PartyOwnerData.Group owned = (PersistentStorage.PartyOwnerData.Group) activeParty;
+            JoinVerificator keyMaster = new JoinVerificator(owned.devices, NewPartyDeviceSelectionActivity.hasher);
+            real.initializePartyManagement(owned, keyMaster);
+            real.pumpClients(activeConnections);
+            // TODO: reuse landing if there!
+            if(activeLanding != null) {
+                final ServerSocket landing = activeLanding;
+                activeLanding = null;
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        try {
+                            landing.close();
+                        } catch (IOException e) {
+                            // suppress
+                        }
+                        return null;
+                    }
+                }.execute();
+            }
+            activeConnections = null;
+
+            startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_NEW_SESSION);
+            unbindService(this);
         }
-        unbindService(this);
-        startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_NEW_SESSION);
+        if(service instanceof PartyCreationService.LocalBinder) {
+            PartyCreationService.LocalBinder binder = (PartyCreationService.LocalBinder) service;
+            PartyCreationService real =  binder.getConcreteService();
+            if(real.getPublishStatus() == PartyCreationService.PUBLISHER_IDLE) {
+                startActivityForResult(new Intent(this, NewPartyDeviceSelectionActivity.class), REQUEST_NEW_PARTY);
+                return;
+            }
+            // happens when called from successful character approval with GO_ADVENTURING
+            activeParty = real.getNewParty();
+            activeLanding = real.getLanding();
+            activeConnections = real.moveConnectedClients();
+            unbindService(this);
+            stopService(new Intent(this, PartyCreationService.class));
+            dataRefreshed();
+        }
     }
 
     @Override
@@ -331,5 +358,47 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         new AlertDialog.Builder(this)
                 .setMessage(R.string.mma_lostServiceConn)
                 .show();
+    }
+
+    // We keep everything that exists in memory. This is a compact representation and makes
+    // some things easier as we can compare by reference.
+    private ArrayList<PersistentStorage.PartyOwnerData.Group> groupDefs = new ArrayList<>();
+    private ArrayList<PersistentStorage.PartyClientData.Group> groupKeys = new ArrayList<>();
+
+    interface ErrorFeedbackFunc {
+        void feedback(int errors);
+    }
+
+    static private void asyncCloseSockets(@Nullable final Pumper.MessagePumpingThread[] activeConnections, @Nullable final ServerSocket activeLanding,
+                                          @Nullable final ErrorFeedbackFunc feedback) {
+        new AsyncTask<Void, Void, Integer>() {
+            @Override
+            protected Integer doInBackground (Void...params){
+                int errors = 0;
+                if (null != activeConnections) {
+                    for (Pumper.MessagePumpingThread worker : activeConnections) {
+                        worker.interrupt();
+                        try {
+                            worker.getSource().socket.close();
+                        } catch (IOException e) {
+                            errors++;
+                        }
+                    }
+                }
+                if (null != activeLanding) {
+                    try {
+                        activeLanding.close();
+                    } catch (IOException e) {
+                        errors++;
+                    }
+                }
+                return errors;
+            }
+
+            @Override
+            protected void onPostExecute(Integer count) {
+                if(null != count && feedback != null) feedback.feedback(count);
+            }
+        }.execute();
     }
 }

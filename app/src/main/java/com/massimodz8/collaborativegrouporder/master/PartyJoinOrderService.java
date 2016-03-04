@@ -100,6 +100,11 @@ public class PartyJoinOrderService extends Service implements NsdManager.Registr
             acceptor.interrupt();
             acceptor = null;
         }
+        try {
+            landing.close();
+        } catch (IOException e) {
+            // no idea what could be nice to do at this point, it's a goner anyway!
+        }
         landing = null;
     }
 

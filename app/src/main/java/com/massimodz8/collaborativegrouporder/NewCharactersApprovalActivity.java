@@ -33,6 +33,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     private static final int MSG_PEER_MESSAGE = 4;
 
     private static final int PEER_MESSAGE_INTERVAL = 5000;
+    public static final String RESULT_EXTRA_GO_ADVENTURING = "com.massimodz8.collaborativegrouporder.NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

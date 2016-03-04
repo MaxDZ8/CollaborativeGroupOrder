@@ -18,8 +18,6 @@ import java.util.Vector;
  * Application class and use it to keep persistent state.
  */
 public class CrossActivityShare extends Application {
-    public Vector<PersistentStorage.PartyOwnerData.Group> groupDefs;
-    public Vector<PersistentStorage.PartyClientData.Group> groupKeys;
 
     public JoinSessionActivity.State jsaState;
     public JoinSessionActivity.Result jsaResult;
