@@ -49,6 +49,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         if(null != room) {
             if (!isChangingConfigurations()) {
                 room.shutdown();
+                room.stopForeground(true);
                 unbindService(this);
             }
             room.setNewClientDevicesAdapter(null);
