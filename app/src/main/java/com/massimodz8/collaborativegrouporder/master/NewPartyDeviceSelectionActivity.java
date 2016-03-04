@@ -9,7 +9,6 @@ import android.content.ServiceConnection;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -23,37 +22,38 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.TransitionManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
-import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
-import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextWatcher, ServiceConnection {
 
     @Override
     protected void onDestroy() {
         if(null != room) {
+            room.onNewPublishStatus = null;
+            room.setNewClientDevicesAdapter(null);
             if (!isChangingConfigurations()) {
                 room.shutdown();
                 room.stopForeground(true);
                 unbindService(this);
             }
-            room.setNewClientDevicesAdapter(null);
         }
         super.onDestroy();
     }
@@ -74,8 +74,41 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.new_party_device_selection_activity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-    private String building;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.npdsa_menu_explicitConnInfo: {
+                int serverPort = room == null? 0 : room.getServerPort();
+                new ConnectionInfoDialog(this, serverPort).show();
+                break;
+            }
+        }
+        return false;
+    }
+
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if(room != null && room.getBuildingPartyName() != null && room.getMemberCount() != 0) {
+            MaxUtils.askExitConfirmation(this);
+            return true;
+        }
+        return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(room != null && room.getBuildingPartyName() != null && room.getMemberCount() != 0) MaxUtils.askExitConfirmation(this);
+        else super.onBackPressed();
+    }
+
+
     private PartyCreationService room;
     private Button action;
 
@@ -113,22 +146,49 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     public void action_callback(View btn) {
         if (room.getPublishStatus() == PartyCreationService.PUBLISHER_IDLE) {
+            beginDelayedTransition();
             publishGroup();
             btn.setEnabled(false);
             return;
         }
         final int devCount = room.getDeviceCount();
-        String use = devCount == 1 ? getString(R.string.npdsa_closing_oneDevice) : String.format(getString(R.string.npdsa_closing_pluralDevices), devCount);
+        String use = getString(devCount == 1? R.string.npdsa_closing_oneDevice : R.string.npdsa_closing_pluralDevices);
+        if(devCount != 1) use = String.format(use, devCount);
         new AlertDialog.Builder(this)
                 .setTitle(R.string.npdsa_sealing_title)
                 .setMessage(String.format(getString(R.string.npdsa_sealing_msg), use))
-                .setPositiveButton(R.string.npdsa_goDefinePC, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        closeGroup();
-                    }
-                })
+                .setPositiveButton(R.string.npdsa_goDefinePC, new PartySealer())
                 .show();
+    }
+
+    private class PartySealer implements AlertDialog.OnClickListener {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            room.closeGroup(new PartyCreationService.OnKeysSentListener() {
+                @Override
+                public void onKeysSent(int bad) {
+                    if (0 != bad) {
+                        new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
+                                .setMessage(R.string.npdsa_failedKeySendDlgMsg)
+                                .setPositiveButton(R.string.npdsa_carryOnDlgAction, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        setResult(RESULT_OK);
+                                        finish();
+                                    }
+                                }).setNegativeButton(R.string.npdsa_discardDlgAction, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        }).show();
+                        return;
+                    }
+                    setResult(RESULT_OK);
+                    finish();
+                }
+            });
+        }
     }
 
     private void publishGroup() {
@@ -175,7 +235,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         }
         room.beginPublishing(nsd, groupName);
         view.setEnabled(false);
-        building = groupName;
         elevateServicePriority();
     }
 
@@ -209,11 +268,27 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyCreationService.LocalBinder binder = (PartyCreationService.LocalBinder) service;
         this.room = binder.getConcreteService();
-        beginDelayedTransition();
-        TextView status = (TextView) findViewById(R.id.npdsa_status);
-        status.setText(R.string.generic_publishing);
-        findViewById(R.id.npdsa_partyName).setEnabled(true);
+        final TextView status = (TextView) findViewById(R.id.npdsa_status);
+        room.onNewPublishStatus = new PublishAcceptService.NewPublishStatusCallback() {
+            @Override
+            public void onNewPublishStatus(int now) {
+                switch(now) {
+                    case PublishAcceptService.PUBLISHER_PUBLISHING: {
+                        beginDelayedTransition();
+                        status.setText(R.string.master_publishing);
+                        findViewById(R.id.npdsa_partyName).setEnabled(true);
+                    } break;
+                    case PublishAcceptService.PUBLISHER_START_FAILED: {
+                        beginDelayedTransition();
+                        status.setText(R.string.master_failedPublish);
+                        findViewById(R.id.npdsa_partyName).setEnabled(true);
+                    } break;
+                }
 
+            }
+        };
+
+        beginDelayedTransition();
         RecyclerView groupList = (RecyclerView) findViewById(R.id.npdsa_deviceList);
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(room.setNewClientDevicesAdapter(new PartyCreationService.ClientDeviceHolderFactoryBinder<DeviceViewHolder>() {
@@ -265,7 +340,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     private void elevateServicePriority() {
         final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
                 .setOngoing(true)
-
                 .setContentTitle(room.getBuildingPartyName())
                 .setContentText(getString(R.string.npdsa_notifyContent))
                 .setSmallIcon(R.drawable.ic_notify_icon)

@@ -127,7 +127,10 @@ public abstract class PublishAcceptService extends Service implements NsdManager
             nsdMan = null;
         }
     }
-    protected abstract void onNewPublishStatus(int now);
+    public interface NewPublishStatusCallback {
+        void onNewPublishStatus(int now);
+    }
+    NewPublishStatusCallback onNewPublishStatus;
 
     // Service vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
@@ -145,24 +148,24 @@ public abstract class PublishAcceptService extends Service implements NsdManager
     @Override
     public void onServiceRegistered(NsdServiceInfo info) {
         publishStatus = PUBLISHER_PUBLISHING;
-        onNewPublishStatus(publishStatus);
+        if(onNewPublishStatus != null) onNewPublishStatus.onNewPublishStatus(publishStatus);
     }
     @Override
     public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
         publishError = errorCode;
         publishStatus = PUBLISHER_START_FAILED;
-        onNewPublishStatus(publishStatus);
+        if(onNewPublishStatus != null) onNewPublishStatus.onNewPublishStatus(publishStatus);
     }
     @Override
     public void onServiceUnregistered(NsdServiceInfo arg0) {
         publishStatus = PUBLISHER_STOPPED;
-        onNewPublishStatus(publishStatus);
+        if(onNewPublishStatus != null) onNewPublishStatus.onNewPublishStatus(publishStatus);
     }
     @Override
     public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
         publishError = errorCode;
         publishStatus = PUBLISHER_STOP_FAILED;
-        onNewPublishStatus(publishStatus);
+        if(onNewPublishStatus != null) onNewPublishStatus.onNewPublishStatus(publishStatus);
     }
     // NsdManager.RegistrationListener ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

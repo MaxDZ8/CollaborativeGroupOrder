@@ -3,7 +3,6 @@ package com.massimodz8.collaborativegrouporder.master;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Binder;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-public abstract class PartyCreationService extends PublishAcceptService {
+public class PartyCreationService extends PublishAcceptService {
     public static final String PARTY_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
 
     /**
@@ -288,6 +287,7 @@ public abstract class PartyCreationService extends PublishAcceptService {
         building.netPump.pump(fresh);
 
     }
+
     // PublishAcceptService ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     // Service vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override

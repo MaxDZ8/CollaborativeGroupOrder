@@ -176,7 +176,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                 new AlertDialog.Builder(this).setMessage(String.format(getString(R.string.ga_failedServiceRegistration), MaxUtils.NsdManagerErrorToString(err, this))).show();
                 break;
             case PublishedService.STATUS_PUBLISHING:
-                dst.setText(R.string.generic_publishing);
+                dst.setText(R.string.master_publishing);
                 break;
             case PublishedService.STATUS_STOP_FAILED:
                 dst.setText(R.string.ga_publishingStopFailed);
