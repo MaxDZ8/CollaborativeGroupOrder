@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -47,7 +48,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
 
                 @Override
                 public boolean mangle(MessageChannel from, Network.GroupReady msg) throws IOException {
-                    handler.sendMessage(handler.obtainMessage(MSG_DONE, new Boolean(msg.goAdventuring)));
+                    handler.sendMessage(handler.obtainMessage(MSG_DONE, msg.goAdventuring));
                     return true;
                 }
             });
@@ -159,9 +160,9 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
 
     private void saveData(final boolean goAdventuring) {
         final NewCharactersProposalActivity self = this;
-        new AsyncActivityLoadUpdateTask<PersistentStorage.PartyClientData>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self) {
+        new AsyncActivityLoadUpdateTask<PersistentStorage.PartyClientData>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self, new AsyncActivityLoadUpdateTask.ActivityCallbacks(this) {
             @Override
-            protected void onCompletedSuccessfully() {
+            public void onCompletedSuccessfully() {
                 String extra = ' ' + getString(R.string.ncpa_goingAdventuring);
                 String msg = String.format(getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");
                 int label = goAdventuring? R.string.ncpa_goAdventuring : R.string.ncpa_newDataSaved_done;
@@ -177,6 +178,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                         })
                         .show();
             }
+        }) {
             @Override
             protected void appendNewEntry(PersistentStorage.PartyClientData loaded) {
                 PersistentStorage.PartyClientData.Group[] longer = new PersistentStorage.PartyClientData.Group[loaded.everything.length + 1];
