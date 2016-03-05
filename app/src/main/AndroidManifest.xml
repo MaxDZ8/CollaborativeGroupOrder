@@ -103,11 +103,13 @@
         <service
             android:name=".master.PartyJoinOrderService"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/pjos_label" />
         <service
             android:name=".master.PartyCreationService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="false"
+            android:label="@string/pcs_label" />
     </application>
 
 </manifest>

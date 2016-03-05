@@ -32,7 +32,6 @@ import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
-import com.massimodz8.collaborativegrouporder.MainMenuActivity;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
@@ -274,7 +273,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     private void failedServiceBind() {
         beginDelayedTransition();
         final TextView status = (TextView) findViewById(R.id.ga_state);
-        status.setText(R.string.npdsa_cannotBindPartyService);
+        status.setText(R.string.master_cannotBindPartyService);
         MaxUtils.setVisibility(this, View.GONE,
                 R.id.npdsa_partyName,
                 R.id.npdsa_activate);

@@ -1,5 +1,6 @@
 package com.massimodz8.collaborativegrouporder.master;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -9,8 +10,11 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
+import com.massimodz8.collaborativegrouporder.AsyncLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
@@ -51,11 +55,6 @@ public class PartyCreationService extends PublishAcceptService {
             }
         }
         if(null == collisions) building = new PartyDefinitionHelper(name) {
-            @Override
-            protected void onCharacterDefined(BuildingPlayingCharacter pc) {
-                // TODO PartyDefinitionHelper.onCharacterDefined
-            }
-
             @Override
             protected void onMessageChanged(DeviceStatus owner) {
                 if(null != clientDeviceAdapter) clientDeviceAdapter.notifyDataSetChanged();
@@ -107,7 +106,7 @@ public class PartyCreationService extends PublishAcceptService {
 
     public void closeGroup(@NonNull final OnKeysSentListener onComplete) {
         stopPublishing();
-        stopListening(true);
+        stopListening(false);
         kickNonMembers();
         final Network.GroupFormed form = new Network.GroupFormed();
         final ArrayList<PartyDefinitionHelper.DeviceStatus> clients = getDevices();
@@ -184,6 +183,84 @@ public class PartyCreationService extends PublishAcceptService {
             if(!dev.kicked) count++;
         }
         return count;
+    }
+
+    public <VH extends RecyclerView.ViewHolder> PartyDefinitionHelper.CharsApprovalAdapter<VH> setNewCharsApprovalAdapter(PartyDefinitionHelper.CharsApprovalHolderFactoryBinder<VH> factory) {
+        return building.setNewCharsApprovalAdapter(factory);
+    }
+
+    public AsyncActivityLoadUpdateTask<PersistentStorage.PartyOwnerData> saveParty(final @NonNull Activity stringResolver, @NonNull AsyncLoadUpdateTask.Callbacks cb) {
+        return new AsyncActivityLoadUpdateTask<PersistentStorage.PartyOwnerData>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", stringResolver, cb) {
+            @Override
+            protected void appendNewEntry(PersistentStorage.PartyOwnerData loaded) {
+                PersistentStorage.PartyOwnerData.Group[] longer = new PersistentStorage.PartyOwnerData.Group[loaded.everything.length + 1];
+                System.arraycopy(loaded.everything, 0, longer, 0, loaded.everything.length);
+                longer[loaded.everything.length] = makeGroup();
+                loaded.everything = longer;
+            }
+
+            @Override
+            protected void setVersion(PersistentStorage.PartyOwnerData result) {
+                result.version = PersistentDataUtils.OWNER_DATA_VERSION;
+            }
+
+            @Override
+            protected void upgrade(PersistentDataUtils helper, PersistentStorage.PartyOwnerData result) {
+                helper.upgrade(result);
+            }
+
+            @Override
+            protected ArrayList<String> validateLoadedDefinitions(PersistentDataUtils helper, PersistentStorage.PartyOwnerData result) {
+                return helper.validateLoadedDefinitions(result);
+            }
+
+            @Override
+            protected PersistentStorage.PartyOwnerData allocate() {
+                return new PersistentStorage.PartyOwnerData();
+            }
+        };
+    }
+
+    public void approve(int unique) {
+        building.approve(unique);
+    }
+
+    public void reject(int unique) {
+        building.reject(unique);
+    }
+
+    public boolean isApproved(int unique) {
+        return building.isApproved(unique);
+    }
+
+    public AsyncTask sendPartyCompleteMessages(final boolean goAdventuring, final @NonNull Runnable onComplete) {
+        final int sillyDelayMS = 250; // make sure the messages go through. Yeah, I should display a progress w/e
+        return new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    Network.GroupReady byebye = new Network.GroupReady();
+                    byebye.goAdventuring = goAdventuring;
+                    for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                        try {
+                            dev.source.writeSync(ProtoBufferEnum.GROUP_READY, byebye);
+                            dev.source.socket.getOutputStream().flush();
+                        } catch (IOException e) {
+                            // we try.
+                        }
+                    }
+                    Thread.sleep(sillyDelayMS);
+                } catch (InterruptedException e) {
+                    // Sorry dudes, we're going down anyway.
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                onComplete.run();
+            }
+        };
     }
 
     /**
@@ -278,6 +355,39 @@ public class PartyCreationService extends PublishAcceptService {
             }
             return count;
         }
+    }
+
+
+    private PersistentStorage.PartyOwnerData.Group makeGroup() {
+        PersistentStorage.PartyOwnerData.Group ret = new PersistentStorage.PartyOwnerData.Group();
+        ret.name = building.name;
+        int count = 0;
+        for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+            if(dev.kicked || !dev.groupMember) continue;
+            for(BuildingPlayingCharacter pc : dev.chars) {
+                if(BuildingPlayingCharacter.STATUS_ACCEPTED == pc.status) count++;
+            }
+        }
+        ret.party = new PersistentStorage.ActorDefinition[count];
+        count = 0;
+        for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+            if(dev.kicked || !dev.groupMember) continue;
+            for(BuildingPlayingCharacter pc : dev.chars) {
+                if(BuildingPlayingCharacter.STATUS_ACCEPTED == pc.status) {
+                    PersistentStorage.ActorDefinition built = new PersistentStorage.ActorDefinition();
+                    built.name = pc.name;
+                    built.level = pc.level;
+                    built.experience = pc.experience;
+                    built.stats =  new PersistentStorage.ActorStatistics[] {
+                            new PersistentStorage.ActorStatistics()
+                    };
+                    built.stats[0].initBonus = pc.initiativeBonus;
+                    built.stats[0].healthPoints = pc.fullHealth;
+                    ret.party[count++] = built;
+                }
+            }
+        }
+        return ret;
     }
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

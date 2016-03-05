@@ -3,6 +3,9 @@ package com.massimodz8.collaborativegrouporder.master;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
 
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.MainMenuActivity;
@@ -17,7 +20,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
 
 /**
  * Created by Massimo on 08/02/2016.
@@ -75,7 +77,6 @@ public abstract class PartyDefinitionHelper {
             });
     }
 
-    protected abstract void onCharacterDefined(BuildingPlayingCharacter pc);
     protected abstract void onMessageChanged(DeviceStatus owner);
     protected abstract void onGone(MessageChannel which, Exception reason);
     protected abstract void onDetached(MessageChannel which);
@@ -117,7 +118,7 @@ public abstract class PartyDefinitionHelper {
             return;
         }
         for(int rebind = 0; rebind < owner.chars.size(); rebind++) {
-            BuildingPlayingCharacter pc = owner.chars.elementAt(rebind);
+            BuildingPlayingCharacter pc = owner.chars.get(rebind);
             if(pc.peerKey == ev.character.peerKey) {
                 if(pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED) return; // ignore the thing, it's client's problem, not ours.
                 owner.chars.remove(rebind);
@@ -125,7 +126,7 @@ public abstract class PartyDefinitionHelper {
         }
         final BuildingPlayingCharacter pc = new BuildingPlayingCharacter(ev.character);
         owner.chars.add(pc);
-        onCharacterDefined(pc);
+        if(charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
     }
 
     void setMessage(Events.PeerMessage ev) {
@@ -193,13 +194,25 @@ public abstract class PartyDefinitionHelper {
         }.execute();
     }
 
+    public interface CharsApprovalHolderFactoryBinder<VH extends RecyclerView.ViewHolder> {
+        VH createUnbound(ViewGroup parent, int viewType);
+        void bind(@NonNull VH target, @NonNull BuildingPlayingCharacter proposal);
+    }
+
+    public <VH extends RecyclerView.ViewHolder> CharsApprovalAdapter<VH> setNewCharsApprovalAdapter(CharsApprovalHolderFactoryBinder<VH> factory) {
+        CharsApprovalAdapter<VH> gen = null;
+        if(factory != null) gen = new CharsApprovalAdapter<>(factory);
+        charsApprovalAdapter = gen;
+        return gen;
+    }
+
     public static class DeviceStatus {
         public final MessageChannel source;
         public String lastMessage; // if null still not talking
         public int charBudget;
         public boolean groupMember;
         public boolean kicked;
-        public Vector<BuildingPlayingCharacter> chars = new Vector<>(); // if contains something we have been promoted
+        public ArrayList<BuildingPlayingCharacter> chars = new ArrayList<>(); // if contains something we have been promoted
         public Date nextMessage;
         public byte[] salt;
 
@@ -250,4 +263,92 @@ public abstract class PartyDefinitionHelper {
     private static final int MSG_PEER_MESSAGE = 2;
     private static final int MSG_SOCKET_LOST = 3;
     private static final int MSG_PUMPER_DETACHED = 4;
+
+    public class CharsApprovalAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
+        private final CharsApprovalHolderFactoryBinder<VH> factory;
+
+        public CharsApprovalAdapter(@NonNull CharsApprovalHolderFactoryBinder<VH> factory) {
+            this.factory = factory;
+            setHasStableIds(true);
+        }
+
+        @Override
+        public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            return factory.createUnbound(parent, viewType);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            BuildingPlayingCharacter pc = get(position);
+            return pc != null? pc.unique : RecyclerView.NO_ID;
+        }
+
+        @Override
+        public void onBindViewHolder(VH holder, int position) {
+            BuildingPlayingCharacter pc = get(position);
+            if(pc != null) factory.bind(holder, pc);
+        }
+
+        private BuildingPlayingCharacter get(int position) {
+            for (DeviceStatus dev : clients) {
+                if(dev.kicked || !dev.groupMember) continue;
+                for (BuildingPlayingCharacter pc : dev.chars) {
+                    if(pc.status == BuildingPlayingCharacter.STATUS_REJECTED) continue;
+                    if(position == 0) return pc;
+                    position--;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        public int getItemCount() {
+            int count = 0;
+            for (DeviceStatus dev : clients) {
+                if(dev.kicked || !dev.groupMember) continue;
+                for (BuildingPlayingCharacter pc : dev.chars) {
+                    if(pc.status != BuildingPlayingCharacter.STATUS_REJECTED) count++;
+                }
+            }
+            return count;
+        }
+    }
+    private CharsApprovalAdapter charsApprovalAdapter;
+
+    public boolean approve(int unique) {
+        for (DeviceStatus dev : clients) {
+            if(dev.kicked || !dev.groupMember) continue;
+            for (BuildingPlayingCharacter pc : dev.chars) {
+                if(pc.unique != unique) continue;
+                boolean signal = pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED;
+                pc.status = BuildingPlayingCharacter.STATUS_ACCEPTED;
+                if(signal && charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
+            }
+        }
+        return false;
+    }
+
+    public boolean reject(int unique) {
+        for (DeviceStatus dev : clients) {
+            if(dev.kicked || !dev.groupMember) continue;
+            for (BuildingPlayingCharacter pc : dev.chars) {
+                if(pc.unique != unique) continue;
+                boolean signal = pc.status != BuildingPlayingCharacter.STATUS_REJECTED;
+                pc.status = BuildingPlayingCharacter.STATUS_REJECTED;
+                if(signal && charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
+            }
+        }
+        return false;
+    }
+
+    public boolean isApproved(int unique) {
+        for (DeviceStatus dev : clients) {
+            if(dev.kicked || !dev.groupMember) continue;
+            for (BuildingPlayingCharacter pc : dev.chars) {
+                if(pc.unique != unique) continue;
+                return pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED;
+            }
+        }
+        return false;
+    }
 }
