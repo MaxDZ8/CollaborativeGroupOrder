@@ -60,7 +60,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
 
     @Override
     protected void onDestroy() {
-        ticker.cancel();
         if(null != room) {
             if(!isChangingConfigurations()) { // being destroyed for real.
                 // no need to shut down the session, done so in the activity.
@@ -70,9 +69,22 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             }
             room.setNewAuthDevicesAdapter(null);
             room.setNewUnassignedPcsAdapter(null);
+            room.onNewPublishStatus = null;
             unbindService(this);
         }
         super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        if(room != null) room.stopListening(false);
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        if(room != null) room.accept();
+        super.onStart();
     }
 
     private void failedServiceBind() {
@@ -127,76 +139,12 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         label.setText(itemCount > 0 ? R.string.ga_playingCharactersAssignment : R.string.ga_allAssigned);
     }
 
-
-    private Timer ticker = new Timer();
-    private int lastPublishStatus = PartyJoinOrderService.PUBLISHER_IDLE;
-
-    private static class MyHandler extends Handler {
-        private final WeakReference<GatheringActivity> target;
-
-        MyHandler(GatheringActivity target) {
-            this.target = new WeakReference<>(target);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            final GatheringActivity target = this.target.get();
-            switch(msg.what) {
-                case MSG_TICK: {
-                    if(null == target.room) return; // spurious signal or connection not estabilished yet or lost.
-                    final int now = target.room.getPublishStatus();
-                    if(now != target.lastPublishStatus) {
-                        target.publisher(now, target.room.getPublishError());
-                        target.lastPublishStatus = now;
-                        return; // only change a single one per tick, accumulate the rest to give a chance of seeing something is going on.
-                    }
-                    Vector<Exception> failedAccept = target.room.getNewAcceptErrors();
-                    if(null != failedAccept && !failedAccept.isEmpty()) {
-                        new AlertDialog.Builder(target)
-                                .setMessage(target.getString(R.string.ga_failedAccept))
-                                .show();
-                        return;
-                    }
-                    if(target.room.getPartyOwnerData() != null) { // protect against spurious ticks
-                        target.room.promoteNewClients();
-                        target.availablePcs(target.room.getUnboundedPcs().size());
-                    }
-                }
-            }
-        }
-    }
-
-    private void publisher(int state, int err) {
-        if(state == PublishedService.STATUS_STARTING) return;
-        beginDelayedTransition();
-        final TextView dst = (TextView) findViewById(R.id.ga_state);
-        switch(state) {
-            case PublishedService.STATUS_START_FAILED:
-                dst.setText(R.string.ga_publisherFailedStart);
-                new AlertDialog.Builder(this).setMessage(String.format(getString(R.string.ga_failedServiceRegistration), MaxUtils.NsdManagerErrorToString(err, this))).show();
-                break;
-            case PublishedService.STATUS_PUBLISHING:
-                dst.setText(R.string.master_publishing);
-                break;
-            case PublishedService.STATUS_STOP_FAILED:
-                dst.setText(R.string.ga_publishingStopFailed);
-                break;
-            case PublishedService.STATUS_STOPPED:
-                dst.setText(R.string.ga_noMorePublishing);
-        }
-    }
-
-    private static final int MSG_TICK = 1;
-
-    private static final int TIMER_DELAY_MS = 1000;
-    private static final int TIMER_INTERVAL_MS = 250;
-
     public void startSession_callback(View btn) {
         final ArrayList<PersistentStorage.ActorDefinition> free = room.getUnboundedPcs();
         if(free.isEmpty()) {
             room.stopPublishing();
             room.stopListening(false);
-            room.kickNewClients();
+            room.adventuring();
             return;
         }
         String firstLine = free.size() == 1? getString(R.string.ga_oneCharNotBound)
@@ -211,6 +159,33 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         room = ((PartyJoinOrderService.LocalBinder) service).getConcreteService();
+        room.onNewPublishStatus = new PublishAcceptService.NewPublishStatusCallback() {
+            @Override
+            public void onNewPublishStatus(int state) {
+                if(state == PublishedService.STATUS_STARTING) return;
+                beginDelayedTransition();
+                final TextView dst = (TextView) findViewById(R.id.ga_state);
+                switch(state) {
+                    case PublishedService.STATUS_START_FAILED: {
+                        int err = room.getPublishError();
+                        dst.setText(R.string.ga_publisherFailedStart);
+                        new AlertDialog.Builder(GatheringActivity.this)
+                                .setMessage(String.format(getString(R.string.ga_failedServiceRegistration), MaxUtils.NsdManagerErrorToString(err, GatheringActivity.this)))
+                                .show();
+                        break;
+                    }
+                    case PublishedService.STATUS_PUBLISHING:
+                        dst.setText(R.string.master_publishing);
+                        break;
+                    case PublishedService.STATUS_STOP_FAILED:
+                        dst.setText(R.string.ga_publishingStopFailed);
+                        break;
+                    case PublishedService.STATUS_STOPPED:
+                        dst.setText(R.string.ga_noMorePublishing);
+                }
+
+            }
+        };
         if(room.getPublishStatus() == PartyJoinOrderService.PUBLISHER_IDLE) {
             // first time activity is launched. Data has been pushed to the service by previous activity and I just need to elevate priority.
             final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
@@ -226,6 +201,13 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             }
             room.startForeground(NOTIFICATION_ID, help.build());
         }
+        room.setUnassignedPcsCountListener(new PcAssignmentHelper.OnBoundPcCallback() {
+            @Override
+            public void onUnboundCountChanged(int stillToBind) {
+                availablePcs(stillToBind);
+            }
+        });
+        room.accept();
         beginDelayedTransition();
         findViewById(R.id.ga_pcUnassignedListDesc).setVisibility(View.VISIBLE);
         final RecyclerView devList = (RecyclerView) findViewById(R.id.ga_deviceList);
@@ -281,15 +263,8 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                         }).show();
                 return;
             }
-            room.beginPublishing((NsdManager) getSystemService(NSD_SERVICE), room.getPartyOwnerData().name);
+            room.beginPublishing((NsdManager) getSystemService(NSD_SERVICE), room.getPartyOwnerData().name, PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
         }
-        final Handler funnel = new MyHandler(this);
-        ticker.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                funnel.sendMessage(funnel.obtainMessage(MSG_TICK));
-            }
-        }, TIMER_DELAY_MS, TIMER_INTERVAL_MS);
     }
 
     private void beginDelayedTransition() {

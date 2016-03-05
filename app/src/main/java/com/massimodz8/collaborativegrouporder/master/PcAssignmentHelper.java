@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -38,6 +37,11 @@ import java.util.concurrent.BlockingQueue;
  */
 public class PcAssignmentHelper {
     public final PersistentStorage.PartyOwnerData.Group party;
+
+    public interface OnBoundPcCallback {
+        void onUnboundCountChanged(int stillToBind);
+    }
+    public OnBoundPcCallback onBoundPc;
 
     public PcAssignmentHelper(PersistentStorage.PartyOwnerData.Group party, JoinVerificator verifier) {
         this.party = party;
@@ -107,6 +111,15 @@ public class PcAssignmentHelper {
         return list;
     }
 
+    public int getNumUnboundedPcs() {
+        int count = 0;
+        for(int loop = 0; loop < party.party.length; loop++) {
+            if(assignment.get(loop) != null) continue;
+            count++;
+        }
+        return count;
+    }
+
     public void local(PersistentStorage.ActorDefinition actor) {
         int match;
         for(match = 0; match < party.party.length; match++) {
@@ -125,6 +138,7 @@ public class PcAssignmentHelper {
         }
         if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
         if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
+        if(onBoundPc != null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
     }
 
 
@@ -430,6 +444,7 @@ public class PcAssignmentHelper {
             sendAvailability(type, payload.character, origin, nextValidRequest);
             if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
             if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
+            if(onBoundPc != null && currKeyIndex == null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
             return;
         }
         // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose

@@ -92,6 +92,15 @@ public abstract class PublishAcceptService extends Service implements NsdManager
         }
         landing = null;
     }
+
+    /**
+     * @return True if new connections will eventually be accepted, otherwise you made a hard stop listen and must recreate from scratch.
+     */
+    public boolean accept() {
+        if(stoppingListener) return false;
+        rejectConnections = true;
+        return true;
+    }
     public @Nullable ServerSocket getLanding(boolean release) {
         ServerSocket ret = landing;
         if(release) landing = null;
@@ -107,12 +116,12 @@ public abstract class PublishAcceptService extends Service implements NsdManager
     automatically, someone will get their connection and handshake them.
     */
     /// Assumes a ServerSocket is there (usually by calling startListening)
-    public void beginPublishing(@NonNull NsdManager nsd, @NonNull String serviceName) {
+    public void beginPublishing(@NonNull NsdManager nsd, @NonNull String serviceName, @NonNull String serviceType) {
         if(null != servInfo) return;
         nsdMan = nsd;
         NsdServiceInfo temp = new NsdServiceInfo();
         temp.setServiceName(serviceName);
-        temp.setServiceType(PARTY_GOING_ADVENTURING_SERVICE_TYPE);
+        temp.setServiceType(serviceType);
         temp.setPort(landing.getLocalPort());
         nsd.registerService(temp, NsdManager.PROTOCOL_DNS_SD, this);
         publishStatus = PUBLISHER_STARTING;
