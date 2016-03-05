@@ -32,6 +32,7 @@ import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
+import com.massimodz8.collaborativegrouporder.MainMenuActivity;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
@@ -39,11 +40,9 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.util.ArrayList;
 
 public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextWatcher, ServiceConnection {
-
     @Override
     protected void onDestroy() {
         if(null != room) {
@@ -72,6 +71,34 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         if(!bindService(temp, this, 0)) {
             failedServiceBind();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        if(room != null) {
+            room.stopListening(false);
+            room.stopPublishing();
+        }
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        if(room != null) {
+            room.accept();
+            if(room.getBuildingPartyName() != null) {
+                NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
+                if (nsd == null) {
+                    new AlertDialog.Builder(this)
+                            .setMessage(R.string.newPartyDeviceSelectionActivity_noDiscoveryManager)
+                            .show();
+                    return;
+                }
+                room.beginPublishing(nsd, room.getBuildingPartyName(), PartyCreationService.PARTY_FORMING_SERVICE_TYPE);
+            }
+
+        }
+        super.onStart();
     }
 
     @Override
@@ -233,7 +260,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                     .show();
             return;
         }
-        room.beginPublishing(nsd, groupName);
+        room.beginPublishing(nsd, groupName, PartyCreationService.PARTY_FORMING_SERVICE_TYPE);
         view.setEnabled(false);
         elevateServicePriority();
     }
