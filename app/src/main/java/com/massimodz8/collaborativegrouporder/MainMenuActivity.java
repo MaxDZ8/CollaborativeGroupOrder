@@ -125,6 +125,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     public void pickParty_callback(View btn) {
+        PartyPickActivity.ioDefs = groupDefs;
+        PartyPickActivity.ioKeys = groupKeys;
         startActivityForResult(new Intent(this, PartyPickActivity.class), REQUEST_PICK_PARTY);
     }
 
@@ -228,6 +230,11 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 // Does not produce output.
                 stopService(new Intent(this, PartyJoinOrderService.class));
                 break;
+            case REQUEST_PICK_PARTY: { // sync our data with what was produced
+                groupDefs = PartyPickActivity.ioDefs;
+                groupKeys = PartyPickActivity.ioKeys;
+                break;
+            }
         }
         if(RESULT_OK != resultCode) {
             switch(requestCode) { // stuff would be used on success... but was not successful so goodbye
