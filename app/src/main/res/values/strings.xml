@@ -14,6 +14,7 @@
     <string name="master_menu_showConnectionInfos">Show connection infos</string>
     <string name="master_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
     <string name="master_exitConfirmedDlgAction">Stop service</string>
+    <string name="master_cannotBindPartyService">Failed to get an handle to the party creation service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
 
     <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
     <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
@@ -350,10 +351,11 @@
     <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
     <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
 
-    <string name="npdsa_cannotBindPartyService">Failed to get an handle to the party creation service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
     <string name="npdsa_failedKeySendDlgMsg">At least one connected device couldn\'t get in the party.</string>
     <string name="npdsa_carryOnDlgAction">Continue anyway</string>
     <string name="npdsa_discardDlgAction">Discard</string>
     <string name="card_joiningDevice_groupMember">Group member</string>
     <string name="npdsa_notifyContent">Forming new group over the network.</string>
+    <string name="pjos_label">RPG order management</string>
+    <string name="pcs_label">RPG party creation</string>
 </resources>

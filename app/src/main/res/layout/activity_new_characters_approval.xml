@@ -13,11 +13,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/ncaa_savingPleaseWait"
-        android:id="@+id/ncaa_saveFeedback"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/generic_initializing"
+        android:id="@+id/ncaa_status"
         android:layout_gravity="center"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ncaa_list"

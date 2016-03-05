@@ -1,5 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.support.annotation.StringRes;
+
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
@@ -26,7 +28,7 @@ public abstract class PersistentDataUtils {
         this.minimumSaltBytes = minimumSaltBytes;
     }
 
-    protected abstract String getString(int resource);
+    protected abstract String getString(@StringRes int resource);
 
     public static final int OWNER_DATA_VERSION = 1;
     public static final int CLIENT_DATA_WRITE_VERSION = 1;
