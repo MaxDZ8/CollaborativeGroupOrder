@@ -260,13 +260,15 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             return;
         }
         room.beginPublishing(nsd, groupName, PartyCreationService.PARTY_FORMING_SERVICE_TYPE);
+        beginDelayedTransition();
         view.setEnabled(false);
         elevateServicePriority();
+        findViewById(R.id.npdsa_deviceList).setVisibility(View.VISIBLE);
     }
 
     private void beginDelayedTransition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ga_activityRoot));
+            TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.npdsa_activityRoot));
         }
     }
 
@@ -286,7 +288,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     public void onTextChanged(CharSequence s, int start, int before, int count) { }
     @Override
     public void afterTextChanged(Editable s) {
-        action.setEnabled(s.toString().trim().length() > 0);
+        boolean enable = s.toString().trim().length() > 0;
+        if(action.isEnabled() != enable) beginDelayedTransition();
+        action.setEnabled(enable);
     }
     // TextWatcher ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -360,6 +364,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         };
         if(room.getBuildingPartyName() != null) { // restoring, so pull it in foreground! Otherwise defer until group name entered.
             elevateServicePriority();
+        }
+        else {
+            status.setText(R.string.npdsa_waitingPartyName);
         }
     }
 

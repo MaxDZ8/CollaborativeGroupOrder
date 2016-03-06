@@ -193,6 +193,10 @@
     <string name="npdsa_sealing_msg">%1$s This operation cannot be reverted. Once you go ahead adding more players will require to restart.</string>
     <string name="npdsa_goDefinePC">Go define characters</string>
     <string name="npdsa_failedSalt">Failed to generate secret key for new party. Something is very wrong with this system. Try rebooting.</string>
+    <string name="npdsa_failedKeySendDlgMsg">At least one connected device couldn\'t get in the party.</string>
+    <string name="npdsa_carryOnDlgAction">Continue anyway</string>
+    <string name="npdsa_discardDlgAction">Discard</string>
+    <string name="npdsa_waitingPartyName">Waiting for a party name.</string>
 
     <string name="ncaa_definingPCs">Players are defining characters.</string>
     <string name="ncaa_action">Players are defining characters</string>
@@ -351,9 +355,6 @@
     <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
     <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
 
-    <string name="npdsa_failedKeySendDlgMsg">At least one connected device couldn\'t get in the party.</string>
-    <string name="npdsa_carryOnDlgAction">Continue anyway</string>
-    <string name="npdsa_discardDlgAction">Discard</string>
     <string name="card_joiningDevice_groupMember">Group member</string>
     <string name="npdsa_notifyContent">Forming new group over the network.</string>
     <string name="pjos_label">RPG order management</string>

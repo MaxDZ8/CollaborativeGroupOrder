@@ -9,6 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
+    android:id="@+id/npdsa_activityRoot"
     tools:context=".master.NewPartyDeviceSelectionActivity">
 
     <TextView
@@ -32,7 +33,6 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:gravity="center_horizontal"
-            android:hint="@string/npdsa_groupNameHint"
             android:selectAllOnFocus="true" />
 
     </android.support.design.widget.TextInputLayout>
