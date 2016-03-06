@@ -388,7 +388,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        unbindService(this);
         new AlertDialog.Builder(this)
                 .setMessage(R.string.generic_lostServiceConn)
                 .show();

@@ -156,25 +156,21 @@ public abstract class PublishAcceptService extends Service implements NsdManager
     // NsdManager.RegistrationListener vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceRegistered(NsdServiceInfo info) {
-        publishStatus = PUBLISHER_PUBLISHING;
-        if(onNewPublishStatus != null) onNewPublishStatus.onNewPublishStatus(publishStatus);
+        funnel.sendMessage(funnel.obtainMessage(MSG_SET_PUBLISH_STATUS, PUBLISHER_PUBLISHING));
     }
     @Override
     public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-        publishError = errorCode;
-        publishStatus = PUBLISHER_START_FAILED;
-        if(onNewPublishStatus != null) onNewPublishStatus.onNewPublishStatus(publishStatus);
+        funnel.sendMessage(funnel.obtainMessage(MSG_SET_PUBLISH_ERROR, errorCode));
+        funnel.sendMessage(funnel.obtainMessage(MSG_SET_PUBLISH_STATUS, PUBLISHER_START_FAILED));
     }
     @Override
     public void onServiceUnregistered(NsdServiceInfo arg0) {
-        publishStatus = PUBLISHER_STOPPED;
-        if(onNewPublishStatus != null) onNewPublishStatus.onNewPublishStatus(publishStatus);
+        funnel.sendMessage(funnel.obtainMessage(MSG_SET_PUBLISH_STATUS, PUBLISHER_STOPPED));
     }
     @Override
     public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
-        publishError = errorCode;
-        publishStatus = PUBLISHER_STOP_FAILED;
-        if(onNewPublishStatus != null) onNewPublishStatus.onNewPublishStatus(publishStatus);
+        funnel.sendMessage(funnel.obtainMessage(MSG_SET_PUBLISH_ERROR, errorCode));
+        funnel.sendMessage(funnel.obtainMessage(MSG_SET_PUBLISH_STATUS, PUBLISHER_STOP_FAILED));
     }
     // NsdManager.RegistrationListener ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -185,10 +181,12 @@ public abstract class PublishAcceptService extends Service implements NsdManager
 
     private NsdManager nsdMan;
     private NsdServiceInfo servInfo;
-    private volatile int publishStatus = PUBLISHER_IDLE, publishError;
+    private int publishStatus = PUBLISHER_IDLE, publishError;
 
     private Handler funnel;
     private static final int MSG_NEW_CLIENT = 1;
+    private static final int MSG_SET_PUBLISH_STATUS = 2;
+    private static final int MSG_SET_PUBLISH_ERROR = 3;
 
     private static class MyHandler extends Handler {
         final WeakReference<PublishAcceptService> self;
@@ -203,6 +201,13 @@ public abstract class PublishAcceptService extends Service implements NsdManager
             switch (msg.what) {
                 case MSG_NEW_CLIENT:
                     self.onNewClient((MessageChannel) msg.obj);
+                    break;
+                case MSG_SET_PUBLISH_ERROR:
+                    self.publishError = (Integer)msg.obj;
+                    break;
+                case MSG_SET_PUBLISH_STATUS:
+                    self.publishStatus = (Integer)msg.obj;
+                    if(self.onNewPublishStatus != null) self.onNewPublishStatus.onNewPublishStatus(self.publishStatus);
                     break;
             }
         }
