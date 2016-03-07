@@ -45,7 +45,7 @@ public abstract class PublishAcceptService extends Service implements NsdManager
                 while(!isInterrupted()) {
                     MessageChannel newComer;
                     try {
-                        newComer = new MessageChannel(landing.accept());
+                        newComer = new MessageChannel(temp.accept());
                     } catch (IOException e) {
                         if(!stoppingListener) listenErrors.add(e);
                         return;
@@ -58,11 +58,6 @@ public abstract class PublishAcceptService extends Service implements NsdManager
                         }
                     }
                     else funnel.sendMessage(funnel.obtainMessage(MSG_NEW_CLIENT, newComer));
-                }
-                try {
-                    landing.close();
-                } catch (IOException e) {
-                    // no idea what could be nice to do at this point, it's a goner anyway!
                 }
             }
         };
@@ -85,12 +80,20 @@ public abstract class PublishAcceptService extends Service implements NsdManager
             acceptor.interrupt();
             acceptor = null;
         }
-        try {
-            landing.close();
-        } catch (IOException e) {
-            // no idea what could be nice to do at this point, it's a goner anyway!
+        if(landing != null) {
+            final ServerSocket goner = landing;
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        goner.close();
+                    } catch (IOException e) {
+                        // no idea what could be nice to do at this point, it's a goner anyway!
+                    }
+                }
+            }).start();
+            landing = null;
         }
-        landing = null;
     }
 
     /**

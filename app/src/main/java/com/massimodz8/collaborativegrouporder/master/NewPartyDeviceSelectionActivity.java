@@ -388,9 +388,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.generic_lostServiceConn)
-                .show();
+        // Do not signal this. It apparently happens before onDestroy is called and
+        // isFinishing() is false as well so ... what to do?
         room = null;
     }
     // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

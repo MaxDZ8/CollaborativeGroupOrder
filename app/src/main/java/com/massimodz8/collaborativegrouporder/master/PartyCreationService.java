@@ -279,6 +279,7 @@ public class PartyCreationService extends PublishAcceptService {
     public void shutdown() {
         stopListening(true);
         stopPublishing();
+        if(building == null) return;
         final Pumper.MessagePumpingThread[] away = building.netPump.move();
         new Thread(new Runnable() {
             @Override

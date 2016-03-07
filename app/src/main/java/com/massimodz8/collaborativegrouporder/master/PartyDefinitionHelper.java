@@ -43,15 +43,7 @@ public abstract class PartyDefinitionHelper {
 
                 @Override
                 public boolean mangle(MessageChannel from, Network.Hello msg) throws IOException {
-                    Network.GroupInfo send = new Network.GroupInfo();
-                    send.forming = true;
-                    send.name = PartyDefinitionHelper.this.name;
-                    send.version = MainMenuActivity.NETWORK_VERSION;
-                    from.writeSync(ProtoBufferEnum.GROUP_INFO, send);
-                    Network.CharBudget bud = new Network.CharBudget();
-                    bud.total = INITIAL_MESSAGE_CHAR_BUDGET;
-                    bud.period = PEER_MESSAGE_INTERVAL_MS;
-                    from.write(ProtoBufferEnum.CHAR_BUDGET, bud);
+                    handler.sendMessage(handler.obtainMessage(MSG_HELLO, new Events.Hello(from, msg)));
                     return false;
                 }
             }).add(ProtoBufferEnum.PEER_MESSAGE, new PumpTarget.Callbacks<Network.PeerMessage>() {
@@ -239,8 +231,46 @@ public abstract class PartyDefinitionHelper {
                     self.gone(real.which, real.reason);
                 } break;
                 case MSG_PUMPER_DETACHED: self.onDetached((MessageChannel)msg.obj); break;
+                case MSG_HELLO: {
+                    final Events.Hello real = (Events.Hello)msg.obj;
+                    self.hello(real.origin, real.payload);
+                    break;
             }
         }
+    }
+    }
+
+    private void hello(final MessageChannel from, Network.Hello payload) {
+        final Network.GroupInfo info = new Network.GroupInfo();
+        info.forming = true;
+        info.name = PartyDefinitionHelper.this.name;
+        info.version = MainMenuActivity.NETWORK_VERSION;
+        final Network.CharBudget bud = helloBudget(from);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // What if it fails? Perhaps I should be careful with this as well.
+                // For the time being, I've already spent too much time on this.
+                try {
+                    from.writeSync(ProtoBufferEnum.GROUP_INFO, info);
+                    if (bud != null) from.writeSync(ProtoBufferEnum.CHAR_BUDGET, bud);
+                } catch (IOException e) {
+                    // TODO signal those... perhaps transition to fully sequential sending.
+                }
+
+            }
+        }).start();
+    }
+
+    private Network.CharBudget helloBudget(MessageChannel from) {
+        final DeviceStatus dev = get(from);
+        if(null == dev) return null; // impossible
+        if(dev.lastMessage != null) return null;
+        dev.charBudget = INITIAL_MESSAGE_CHAR_BUDGET;
+        Network.CharBudget bud = new Network.CharBudget();
+        bud.total = INITIAL_MESSAGE_CHAR_BUDGET;
+        bud.period = PEER_MESSAGE_INTERVAL_MS;
+        return bud;
     }
 
     private void gone(MessageChannel which, Exception reason) {
@@ -263,6 +293,7 @@ public abstract class PartyDefinitionHelper {
     private static final int MSG_PEER_MESSAGE = 2;
     private static final int MSG_SOCKET_LOST = 3;
     private static final int MSG_PUMPER_DETACHED = 4;
+    private static final int MSG_HELLO = 5;
 
     public class CharsApprovalAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
         private final CharsApprovalHolderFactoryBinder<VH> factory;
