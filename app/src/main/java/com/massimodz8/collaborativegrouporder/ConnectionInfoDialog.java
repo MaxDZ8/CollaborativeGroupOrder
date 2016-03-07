@@ -3,9 +3,7 @@ package com.massimodz8.collaborativegrouporder;
 import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import java.net.Inet4Address;
@@ -36,6 +34,11 @@ public class ConnectionInfoDialog {
         final TextView addr = (TextView) diag.findViewById(R.id.dlg_iec_addresses);
         port.setText(String.format(activity.getString(R.string.dlg_iec_port), serverPort));
         addr.setText(listAddresses(activity));
+        MaxUtils.setVisibility(diag, serverPort == 0? View.GONE : View.VISIBLE,
+                R.id.dlg_iec_addrInstructions,
+                R.id.dlg_iec_port,
+                R.id.dlg_iec_portInstructions);
+        diag.findViewById(R.id.dlg_iec_noPort).setVisibility(serverPort == 0? View.VISIBLE : View.GONE);
     }
     private final AlertDialog diag;
 

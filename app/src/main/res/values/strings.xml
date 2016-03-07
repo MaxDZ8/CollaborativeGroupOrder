@@ -359,4 +359,5 @@
     <string name="npdsa_notifyContent">Forming new group over the network.</string>
     <string name="pjos_label">RPG order management</string>
     <string name="pcs_label">RPG party creation</string>
+    <string name="dlg_iec_noPort">Port not currently open.\nNo connections available.</string>
 </resources>

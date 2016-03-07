@@ -28,6 +28,13 @@ public abstract class MaxUtils {
             if (v != null) v.setVisibility(visibility);
         }
     }
+
+    public static void setVisibility(AlertDialog parent, int visibility, int... targets) {
+        for (int id : targets) {
+            final View v = parent.findViewById(id);
+            if (v != null) v.setVisibility(visibility);
+        }
+    }
     public static void setVisibility(int visibility, View... targets) {
         for (View v : targets) {
             if (v != null) v.setVisibility(visibility);
