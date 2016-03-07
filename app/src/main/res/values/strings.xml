@@ -199,6 +199,8 @@
     <string name="npdsa_waitingPartyName">Waiting for a party name.</string>
     <string name="npdsa_waitingToTalk">Waiting devices to talk…</string>
     <string name="npdsa_unknownDeviceName">Unknown device %1$s</string>
+    <string name="npdsa_deviceHidden">Device \"%1$s\" hidden.</string>
+    <string name="npdsa_menu_hiddenDevices">Manage hidden devices</string>
 
     <string name="ncaa_definingPCs">Players are defining characters.</string>
     <string name="ncaa_action">Players are defining characters</string>
@@ -358,8 +360,11 @@
     <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
 
     <string name="card_joiningDevice_groupMember">Group member</string>
-    <string name="npdsa_notifyContent">Forming new group over the network.</string>
+    <string name="npdsa_notifyContent">Forming new party.</string>
     <string name="pjos_label">RPG order management</string>
     <string name="pcs_label">RPG party creation</string>
     <string name="dlg_iec_noPort">Port not currently open.\nNo connections available.</string>
+    <string name="dlgMHD_instructions">Hidden devices are listed below. You can restore them to view or disconnect them. Both operations require care!</string>
+    <string name="vhHD_disconnect">Disconnect</string>
+    <string name="vhHD_restore">Restore</string>
 </resources>

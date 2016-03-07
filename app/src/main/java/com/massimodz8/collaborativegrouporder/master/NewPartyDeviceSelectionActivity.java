@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -101,9 +102,13 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         super.onStart();
     }
 
+    MenuItem hiddenManagement;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.new_party_device_selection_activity, menu);
+        hiddenManagement = menu.findItem(R.id.npdsa_menu_hiddenDevices);
+        hiddenManagement.setEnabled(false);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -113,6 +118,21 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             case R.id.npdsa_menu_explicitConnInfo: {
                 int serverPort = room == null? 0 : room.getServerPort();
                 new ConnectionInfoDialog(this, serverPort).show();
+                break;
+            }
+            case R.id.npdsa_menu_hiddenDevices: {
+                final ArrayList<PartyDefinitionHelper.DeviceStatus> silent = room.getDevices(true);
+                new HiddenDeviceManagementDialog(this, silent) {
+                    @Override
+                    protected void requestDisconnect(PartyDefinitionHelper.DeviceStatus data) {
+                        room.kick(data.source, false);
+                    }
+
+                    @Override
+                    protected void requestRestore(PartyDefinitionHelper.DeviceStatus data) {
+                        room.setVisible(data.source);
+                    }
+                };
                 break;
             }
         }
@@ -180,7 +200,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             btn.setEnabled(false);
             return;
         }
-        final int devCount = room.getDeviceCount();
+        final int devCount = room.getDeviceCount(false);
         String use = getString(devCount == 1? R.string.npdsa_closing_oneDevice : R.string.npdsa_closing_pluralDevices);
         if(devCount != 1) use = String.format(use, devCount);
         new AlertDialog.Builder(this)
@@ -352,15 +372,17 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 if (room == null) return;
                 final DeviceViewHolder real = (DeviceViewHolder) viewHolder;
                 room.kick(real.key, true);
-                new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
-                        .setTitle(R.string.kickDevice_title)
-                        .setMessage(R.string.kickDevice_msg)
-                        .setPositiveButton(R.string.kickDevice_positive, new DialogInterface.OnClickListener() {
+                hiddenManagement.setEnabled(true);
+                String msg = String.format(getString(R.string.npdsa_deviceHidden), room.getDeviceNameByKey(real.key));
+                Snackbar.make(findViewById(R.id.npdsa_activityRoot), msg, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.generic_action_undo, new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                if(room != null) room.kick(real.key, true);
+                            public void onClick(View v) {
+                                room.setVisible(real.key);
+                                hiddenManagement.setEnabled(room.getDeviceCount(true) != 0);
                             }
-                        }).show();
+                        })
+                        .show();
             }
 
             @Override

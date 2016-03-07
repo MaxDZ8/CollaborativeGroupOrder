@@ -173,6 +173,21 @@ public abstract class PartyDefinitionHelper {
         }.start();
     }
 
+    boolean setVisible(MessageChannel pipe) {
+        boolean changed = false;
+        int prev = countTalkingDevices();
+        for (PartyDefinitionHelper.DeviceStatus match : clients) {
+            if(match.source == pipe) {
+                match.kicked = false;
+                changed = true;
+                break;
+            }
+        }
+        int now = countTalkingDevices();
+        if(prev != now) onTalkingDeviceCountChanged(now);
+        return changed;
+    }
+
     public void kickNonMembers() {
         int prev = countTalkingDevices();
         final ArrayList<MessageChannel> kick = new ArrayList<>();

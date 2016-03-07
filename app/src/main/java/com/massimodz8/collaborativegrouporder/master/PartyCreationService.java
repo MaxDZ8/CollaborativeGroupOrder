@@ -27,6 +27,7 @@ import java.util.Date;
 
 public class PartyCreationService extends PublishAcceptService {
     public static final String PARTY_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
+
     public interface OnTalkingDeviceCountListener {
         void currentlyTalking(int count);
     }
@@ -98,11 +99,15 @@ public class PartyCreationService extends PublishAcceptService {
         building.kick(pipe, soft);
     }
 
+    public void setVisible(MessageChannel pipe) {
+        if(building.setVisible(pipe) && clientDeviceAdapter != null) clientDeviceAdapter.notifyDataSetChanged();
+    }
+
     @NonNull
-    public ArrayList<PartyDefinitionHelper.DeviceStatus> getDevices() {
+    public ArrayList<PartyDefinitionHelper.DeviceStatus> getDevices(boolean kicked) {
         ArrayList<PartyDefinitionHelper.DeviceStatus> dev = new ArrayList<>(building.clients.size());
         for (PartyDefinitionHelper.DeviceStatus check : building.clients) {
-            if(!check.kicked) dev.add(check);
+            if(check.kicked == kicked) dev.add(check);
         }
         return dev;
     }
@@ -119,7 +124,7 @@ public class PartyCreationService extends PublishAcceptService {
         stopListening(false);
         kickNonMembers();
         final Network.GroupFormed form = new Network.GroupFormed();
-        final ArrayList<PartyDefinitionHelper.DeviceStatus> clients = getDevices();
+        final ArrayList<PartyDefinitionHelper.DeviceStatus> clients = getDevices(false);
         int keyCount = 0;
         for (PartyDefinitionHelper.DeviceStatus dev : clients) {
             final String message = String.format("keyIndex=%1$d, name=\"%2$s\" created=%3$s", keyCount++, building, new Date().toString());
@@ -187,10 +192,10 @@ public class PartyCreationService extends PublishAcceptService {
         return count;
     }
 
-    public int getDeviceCount() {
+    public int getDeviceCount(boolean kicked) {
         int count = 0;
         for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
-            if(!dev.kicked) count++;
+            if(dev.kicked == kicked) count++;
         }
         return count;
     }
@@ -278,7 +283,7 @@ public class PartyCreationService extends PublishAcceptService {
      * @return non-null means we 'go adventuring', eventually with no connected peers.
      */
     public @Nullable Pumper.MessagePumpingThread[] moveClients() {
-        final ArrayList<PartyDefinitionHelper.DeviceStatus> validish = getDevices();
+        final ArrayList<PartyDefinitionHelper.DeviceStatus> validish = getDevices(false);
         Pumper.MessagePumpingThread[] result = new Pumper.MessagePumpingThread[validish.size()];
         for(int loop = 0; loop < result.length; loop++) {
             result[loop] = building.netPump.move(validish.get(loop).source);
@@ -366,6 +371,13 @@ public class PartyCreationService extends PublishAcceptService {
             }
             return count;
         }
+    }
+
+    public String getDeviceNameByKey(MessageChannel pipe) {
+        for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+            if(dev.source == pipe) return dev.name;
+        }
+        return String.format(unknownDeviceName, -1);
     }
 
 
