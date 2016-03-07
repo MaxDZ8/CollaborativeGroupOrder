@@ -27,6 +27,10 @@ import java.util.Date;
 
 public class PartyCreationService extends PublishAcceptService {
     public static final String PARTY_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
+    public interface OnTalkingDeviceCountListener {
+        void currentlyTalking(int count);
+    }
+    public OnTalkingDeviceCountListener onTalkingDeviceCountChanged;
 
     /**
      * This is to be set immediately after binding to the service. Used as an 'input' to check if
@@ -46,7 +50,7 @@ public class PartyCreationService extends PublishAcceptService {
      *             clients have no control over group name.
      * @return null, or a list containing at least 1 element.
      */
-    public @Nullable ArrayList<PersistentStorage.PartyOwnerData.Group> beginBuilding(String name) {
+    public @Nullable ArrayList<PersistentStorage.PartyOwnerData.Group> beginBuilding(String name, String unknownDeviceName) {
         ArrayList<PersistentStorage.PartyOwnerData.Group> collisions = null;
         for (PersistentStorage.PartyOwnerData.Group match : defs) {
             if(match.name.equals(name)) {
@@ -54,6 +58,7 @@ public class PartyCreationService extends PublishAcceptService {
                 collisions.add(match);
             }
         }
+        this.unknownDeviceName = unknownDeviceName;
         if(null == collisions) building = new PartyDefinitionHelper(name) {
             @Override
             protected void onMessageChanged(DeviceStatus owner) {
@@ -71,6 +76,11 @@ public class PartyCreationService extends PublishAcceptService {
 
             @Override
             protected void onDetached(MessageChannel which) { /* never happens */ }
+
+            @Override
+            protected void onTalkingDeviceCountChanged(int currently) {
+                if(null != onTalkingDeviceCountChanged) onTalkingDeviceCountChanged.currentlyTalking(currently);
+            }
         };
         return collisions;
     }
@@ -392,11 +402,13 @@ public class PartyCreationService extends PublishAcceptService {
     }
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    private String unknownDeviceName;
     @Override
     protected void onNewClient(@NonNull MessageChannel fresh) {
-        building.clients.add(new PartyDefinitionHelper.DeviceStatus(fresh));
+        final PartyDefinitionHelper.DeviceStatus newComer = new PartyDefinitionHelper.DeviceStatus(fresh);
+        newComer.name = String.format(unknownDeviceName, building.clients.size() + 1);
+        building.clients.add(newComer);
         building.netPump.pump(fresh);
-
     }
 
     // PublishAcceptService ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

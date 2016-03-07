@@ -47,6 +47,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         if(null != room) {
             room.onNewPublishStatus = null;
             room.setNewClientDevicesAdapter(null);
+            room.onTalkingDeviceCountChanged = null;
             if (!isChangingConfigurations()) {
                 room.shutdown();
                 room.stopForeground(true);
@@ -140,7 +141,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
 
     protected class DeviceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView msg;
+        TextView msg, name;
         View memberIcon, memberMsg;
         MessageChannel key;
         final Typeface original;
@@ -152,6 +153,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             original = msg.getTypeface();
             memberIcon = itemView.findViewById(R.id.card_joiningDevice_groupMemberIcon);
             memberMsg = itemView.findViewById(R.id.card_joiningDevice_groupMember);
+            name = (TextView) itemView.findViewById(R.id.card_joiningDevice_name);
         }
 
         @Override
@@ -166,6 +168,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             final int weight = dev.groupMember ? Typeface.BOLD : Typeface.NORMAL;
             MaxUtils.setVisibility(dev.groupMember ? View.VISIBLE : View.GONE, memberIcon, memberMsg);
             msg.setTypeface(original, weight);
+            name.setText(dev.name);
             findViewById(R.id.npdsa_activate).setEnabled(room.getMemberCount() > 0);
         }
     }
@@ -222,7 +225,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         final EditText view = til.getEditText();
         if(view == null) return; // impossible
         final String groupName = view.getText().toString().trim();
-        ArrayList<PersistentStorage.PartyOwnerData.Group> collisions = room.beginBuilding(groupName);
+        ArrayList<PersistentStorage.PartyOwnerData.Group> collisions = room.beginBuilding(groupName, getString(R.string.npdsa_unknownDeviceName));
         if (groupName.isEmpty() || null != collisions) {
             int msg = groupName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
             new AlertDialog.Builder(this)
@@ -263,6 +266,10 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         beginDelayedTransition();
         view.setEnabled(false);
         elevateServicePriority();
+        MaxUtils.setVisibility(this, View.VISIBLE,
+                R.id.npdsa_deviceList,
+                R.id.npdsa_publishing);
+        action.setText(R.string.npdsa_waitingToTalk);
         findViewById(R.id.npdsa_deviceList).setVisibility(View.VISIBLE);
     }
 
@@ -368,6 +375,20 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         else {
             status.setText(R.string.npdsa_waitingPartyName);
         }
+        class Dummy {
+            int value;
+        }
+        final Dummy previously = new Dummy();
+        room.onTalkingDeviceCountChanged = new PartyCreationService.OnTalkingDeviceCountListener() {
+            @Override
+            public void currentlyTalking(int count) {
+                if(room.getMemberCount() != 0) return; // already transitioned to another state
+                if(previously.value == count) return; // nothing to do
+                previously.value = count;
+                beginDelayedTransition();
+                action.setText(count == 0? R.string.npdsa_waitingToTalk : R.string.npdsa_goDefinePC);
+            }
+        };
     }
 
     private void elevateServicePriority() {

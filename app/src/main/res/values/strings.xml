@@ -197,6 +197,8 @@
     <string name="npdsa_carryOnDlgAction">Continue anyway</string>
     <string name="npdsa_discardDlgAction">Discard</string>
     <string name="npdsa_waitingPartyName">Waiting for a party name.</string>
+    <string name="npdsa_waitingToTalk">Waiting devices to talk…</string>
+    <string name="npdsa_unknownDeviceName">Unknown device %1$s</string>
 
     <string name="ncaa_definingPCs">Players are defining characters.</string>
     <string name="ncaa_action">Players are defining characters</string>

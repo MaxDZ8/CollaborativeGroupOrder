@@ -72,6 +72,7 @@ public abstract class PartyDefinitionHelper {
     protected abstract void onMessageChanged(DeviceStatus owner);
     protected abstract void onGone(MessageChannel which, Exception reason);
     protected abstract void onDetached(MessageChannel which);
+    protected abstract void onTalkingDeviceCountChanged(int currently);
 
 
     DeviceStatus get(MessageChannel c) {
@@ -118,7 +119,7 @@ public abstract class PartyDefinitionHelper {
         }
         final BuildingPlayingCharacter pc = new BuildingPlayingCharacter(ev.character);
         owner.chars.add(pc);
-        if(charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
+        if (charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
     }
 
     void setMessage(Events.PeerMessage ev) {
@@ -128,13 +129,25 @@ public abstract class PartyDefinitionHelper {
         if(ev.msg.charSpecific != 0) return; // ignore, this is not supported at this stage you mofo.
         if(ev.msg.text.length() >= owner.charBudget) return; // messages exceeding can be dropped
         if(null != owner.nextMessage && owner.nextMessage.after(new Date())) return; // also ignore messaging too fast
+        int prevCount = countTalkingDevices();
         owner.charBudget -= ev.msg.text.length();
         owner.nextMessage = new Date(new Date().getTime() + PEER_MESSAGE_INTERVAL_MS);
         owner.lastMessage = ev.msg.text;
         onMessageChanged(owner);
+        int now = countTalkingDevices();
+        if(prevCount != now) onTalkingDeviceCountChanged(now);
+    }
+
+    private int countTalkingDevices() {
+        int count = 0;
+        for (DeviceStatus dev : clients) {
+            if(!dev.kicked && dev.lastMessage != null) count++;
+        }
+        return count;
     }
 
     void kick(MessageChannel pipe, boolean soft) {
+        int prev = countTalkingDevices();
         for (PartyDefinitionHelper.DeviceStatus match : clients) {
             if(match.source == pipe) {
                 match.kicked = true;
@@ -142,6 +155,8 @@ public abstract class PartyDefinitionHelper {
                 break;
             }
         }
+        int now = countTalkingDevices();
+        if(prev != now) onTalkingDeviceCountChanged(now);
         if(soft) return;
         final Pumper.MessagePumpingThread goner = netPump.move(pipe);
         if(null == goner) return; // unlikely by construction
@@ -159,6 +174,7 @@ public abstract class PartyDefinitionHelper {
     }
 
     public void kickNonMembers() {
+        int prev = countTalkingDevices();
         final ArrayList<MessageChannel> kick = new ArrayList<>();
         for(int loop = 0; loop < clients.size(); loop++) {
             PartyDefinitionHelper.DeviceStatus dev = clients.get(loop);
@@ -167,6 +183,8 @@ public abstract class PartyDefinitionHelper {
                 clients.remove(loop--);
             }
         }
+        int now = countTalkingDevices();
+        if(prev != now) onTalkingDeviceCountChanged(now);
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -207,6 +225,7 @@ public abstract class PartyDefinitionHelper {
         public ArrayList<BuildingPlayingCharacter> chars = new ArrayList<>(); // if contains something we have been promoted
         public Date nextMessage;
         public byte[] salt;
+        public String name;
 
         public DeviceStatus(MessageChannel source) {
             this.source = source;
@@ -235,9 +254,9 @@ public abstract class PartyDefinitionHelper {
                     final Events.Hello real = (Events.Hello)msg.obj;
                     self.hello(real.origin, real.payload);
                     break;
+                }
             }
         }
-    }
     }
 
     private void hello(final MessageChannel from, Network.Hello payload) {
