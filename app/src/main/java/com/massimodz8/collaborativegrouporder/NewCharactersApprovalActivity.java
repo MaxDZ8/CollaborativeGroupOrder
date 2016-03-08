@@ -178,6 +178,9 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
                 return true;
             }
         };
+        beginDelayedTransition();
+        TextView status = (TextView) findViewById(R.id.ncaa_status);
+        status.setText(R.string.ncaa_definingPCs);
     }
 
     @Override
@@ -190,7 +193,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
 
     private void beginDelayedTransition() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ga_activityRoot));
+            TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.activityRoot));
         }
     }
 

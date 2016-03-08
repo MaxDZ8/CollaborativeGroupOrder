@@ -208,7 +208,6 @@
     <string name="npdsaAM_setCharBudget">Set characters budget</string>
 
     <string name="ncaa_definingPCs">Players are defining characters.</string>
-    <string name="ncaa_action">Players are defining characters</string>
     <string name="ncaa_failedAcceptRejectReplySend">Failed to signal character \"%1$s\", error: %2$s</string>
     <string name="ncaa_makeGroup">Make group</string>
     <string name="ncaa_lostConn_singularCharacter">which defined 1 character</string>

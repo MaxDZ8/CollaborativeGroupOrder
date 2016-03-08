@@ -8,6 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:id="@+id/activityRoot"
     tools:context="com.massimodz8.collaborativegrouporder.NewCharactersApprovalActivity">
 
     <TextView
@@ -18,6 +19,12 @@
         android:id="@+id/ncaa_status"
         android:layout_gravity="center"
         android:visibility="visible" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ncaa_list"
@@ -30,7 +37,7 @@
     <Button
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/ncaa_action"
+        android:text="@string/ncaa_makeGroup"
         android:id="@+id/ncaa_action"
         android:enabled="false"
         android:onClick="action_callback" />
