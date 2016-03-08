@@ -15,11 +15,9 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
-import android.support.v7.view.SupportActionModeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -32,8 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.NumberPicker;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
@@ -163,6 +159,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     private PartyCreationService room;
     private Button action;
+    private ActionMode actionMode;
 
 
     protected class DeviceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, ActionMode.Callback {
@@ -200,40 +197,49 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
         @Override
         public boolean onLongClick(View v) {
+            if(actionMode != null) actionMode.finish();
             startActionMode(this);
             return true;
         }
 
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            SupportActionModeWrapper real = (SupportActionModeWrapper) mode;
-            // from internet //
-            getActivity().getLayoutInflater().inflate(R.layout.actionmode, null);
-            //
-            ViewGroup root = (ViewGroup) findViewById(R.id.npdsa_activityRoot);
-            final View inflate = getLayoutInflater().inflate(R.layout.npdsa_ctx_device_action_mode, root, false);
-            mode.setCustomView(inflate);
+            actionMode = mode;
+            mode.getMenuInflater().inflate(R.menu.npdsa_action_mode, menu);
+            mode.setTitle(name.getText());
             return true;
         }
 
         @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            final View view = mode.getCustomView();
-            TextView name = (TextView) view.findViewById(R.id.npdsa_ctx_devName);
-            name.setText(name.getText());
-            final NumberPicker budget = (NumberPicker) view.findViewById(R.id.npdsa_ctx_charBudgetPicker);
-            final PartyDefinitionHelper.DeviceStatus dev = room.building.get(key);
-            budget.setValue(dev.charBudget);
-            budget.setMinValue(Math.max(0, dev.charBudget - 100));
-            budget.setMaxValue(dev.charBudget + 100);
-            return true;
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) { return false; }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch(item.getItemId()) {
+                case R.id.npdsaAM_setName:
+                    new SetNameDialog(NewPartyDeviceSelectionActivity.this, mode, room.building.get(key), new Runnable() {
+                        @Override
+                        public void run() {
+                            devList.getAdapter().notifyDataSetChanged();
+                        }
+                    });
+                    return true;
+                case R.id.npdsaAM_setCharBudget:
+                    new SetCharBudgetDialog(NewPartyDeviceSelectionActivity.this, mode, room.building.get(key)) {
+                        @Override
+                        protected void requestBudgetChange(PartyDefinitionHelper.DeviceStatus devStat, int newValue) {
+                            room.building.setCharBudget(devStat, newValue);
+                        }
+                    };
+                    return true;
+            }
+            return false;
         }
 
         @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) { return false; }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) { }
+        public void onDestroyActionMode(ActionMode mode) {
+            actionMode = null;
+        }
     }
 
     public void action_callback(View btn) {
@@ -389,9 +395,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         };
 
         beginDelayedTransition();
-        RecyclerView groupList = (RecyclerView) findViewById(R.id.npdsa_deviceList);
-        groupList.setLayoutManager(new LinearLayoutManager(this));
-        groupList.setAdapter(room.setNewClientDevicesAdapter(new PartyCreationService.ClientDeviceHolderFactoryBinder<DeviceViewHolder>() {
+        devList = (RecyclerView) findViewById(R.id.npdsa_deviceList);
+        devList.setLayoutManager(new LinearLayoutManager(this));
+        devList.setAdapter(room.setNewClientDevicesAdapter(new PartyCreationService.ClientDeviceHolderFactoryBinder<DeviceViewHolder>() {
             @Override
             public DeviceViewHolder createUnbound(ViewGroup parent, int viewType) {
                 View layout = getLayoutInflater().inflate(R.layout.card_joining_device, parent, false);
@@ -403,13 +409,13 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 holder.bind(dev);
             }
         }));
-        groupList.addItemDecoration(new PreSeparatorDecorator(groupList, this) {
+        devList.addItemDecoration(new PreSeparatorDecorator(devList, this) {
             @Override
             protected boolean isEligible(int position) {
                 return position != 0;
             }
         });
-        new HoriSwipeOnlyTouchCallback(groupList) {
+        new HoriSwipeOnlyTouchCallback(devList) {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 if (room == null) return;
@@ -479,4 +485,5 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         room = null;
     }
     // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    private RecyclerView devList;
 }

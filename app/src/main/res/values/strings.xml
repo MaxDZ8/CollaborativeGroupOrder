@@ -8,6 +8,7 @@
     <string name="generic_initializing">Initializing…</string>
     <string name="generic_lostServiceConn">Lost connection to internal service. Not supposed to happen. Maybe clearing some memory will help.</string>
     <string name="generic_carefulDlgTitle">Careful!</string>
+    <string name="generic_action_rename">Rename</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
     <string name="master_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
@@ -202,6 +203,9 @@
     <string name="npdsa_deviceHidden">Device \"%1$s\" hidden.</string>
     <string name="npdsa_menu_hiddenDevices">Manage hidden devices</string>
     <string name="npdsa_ctx_setName">Set new name</string>
+    <string name="npdsa_ctx_setNameAction">Rename</string>
+    <string name="npdsaAM_setName">Set name</string>
+    <string name="npdsaAM_setCharBudget">Set characters budget</string>
 
     <string name="ncaa_definingPCs">Players are defining characters.</string>
     <string name="ncaa_action">Players are defining characters</string>
@@ -368,8 +372,10 @@
     <string name="dlgMHD_instructions">Hidden devices are listed below. You can restore them to view or disconnect them. Both operations require care!</string>
     <string name="vhHD_disconnect">Disconnect</string>
     <string name="vhHD_restore">Restore</string>
-    <string name="npdsa_ctx_device_setName">Set name</string>
-    <string name="npdsa_ctx_device_giveChars">Allow to talk more</string>
-    <string name="npdsa_ctx_setNameAction">Rename</string>
-    <string name="npdsa_ctx_characterBudget">Character budget</string>
+    <string name="dlgSDN_title">Rename device</string>
+    <string name="dlgSDN_newNameHint">New name</string>
+    <string name="dlgSDN_badName">Names must have at least one character.</string>
+    <string name="dlgSDN_visibilityNote">Device names are visible only from this device.</string>
+    <string name="dlgSCB_title">Set message budget</string>
+    <string name="dlgSCB_description">Messages exceeding this length will not be shown.\nPlaying characters have their separate budget.</string>
 </resources>

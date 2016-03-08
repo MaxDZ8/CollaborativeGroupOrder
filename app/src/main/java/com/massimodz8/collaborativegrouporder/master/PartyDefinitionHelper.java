@@ -219,6 +219,29 @@ public abstract class PartyDefinitionHelper {
         }.execute();
     }
 
+    public void setCharBudget(final DeviceStatus devStat, final int newValue) {
+        new AsyncTask<Void, Void, Exception>() {
+            @Override
+            protected Exception doInBackground(Void... params) {
+                Network.CharBudget send = new Network.CharBudget();
+                send.period = PEER_MESSAGE_INTERVAL_MS;
+                send.total = newValue;
+                try {
+                    devStat.source.writeSync(ProtoBufferEnum.CHAR_BUDGET, send);
+                } catch (IOException e) {
+                    return e;
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Exception e) {
+                if(e != null) return; // TODO
+                devStat.charBudget = newValue;
+            }
+        }.execute();
+    }
+
     public interface CharsApprovalHolderFactoryBinder<VH extends RecyclerView.ViewHolder> {
         VH createUnbound(ViewGroup parent, int viewType);
         void bind(@NonNull VH target, @NonNull BuildingPlayingCharacter proposal);
