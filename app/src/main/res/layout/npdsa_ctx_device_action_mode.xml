@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/npdsa_ctx_devName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/npdsa_ctx_set_name"
+        android:hint="@string/npdsa_ctx_setName"
+        android:layout_below="@+id/npdsa_ctx_devName">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:gravity="center_horizontal"
+            android:selectAllOnFocus="true"
+            android:imeActionLabel="@string/npdsa_ctx_setNameAction" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/npdsa_ctx_set_name"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/npdsa_ctx_characterBudget"
+            android:id="@+id/textView"
+            android:layout_gravity="center_vertical"
+            android:layout_alignBaseline="@+id/npdsa_ctx_charBudgetPicker" />
+
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/npdsa_ctx_charBudgetPicker"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/textView"
+            android:layout_toEndOf="@+id/textView" />
+
+    </RelativeLayout>
+
+    <!--
+        <NumberPicker
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/npdsa_ctx_setCharBudget"
+            android:layout_gravity="center_horizontal"
+            android:layoutMode="opticalBounds" />
+    -->
+</RelativeLayout>

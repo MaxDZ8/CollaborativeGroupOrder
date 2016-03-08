@@ -319,7 +319,7 @@ public class PartyCreationService extends PublishAcceptService {
     }
 
 
-    private PartyDefinitionHelper building;
+    PartyDefinitionHelper building;
     private RecyclerView.Adapter clientDeviceAdapter;
 
 

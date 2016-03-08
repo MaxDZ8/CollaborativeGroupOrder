@@ -15,20 +15,25 @@ import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.support.v7.view.SupportActionModeWrapper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.transition.TransitionManager;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.NumberPicker;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
@@ -160,7 +165,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     private Button action;
 
 
-    protected class DeviceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    protected class DeviceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, ActionMode.Callback {
         TextView msg, name;
         View memberIcon, memberMsg;
         MessageChannel key;
@@ -174,6 +179,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             memberIcon = itemView.findViewById(R.id.card_joiningDevice_groupMemberIcon);
             memberMsg = itemView.findViewById(R.id.card_joiningDevice_groupMember);
             name = (TextView) itemView.findViewById(R.id.card_joiningDevice_name);
+            itemView.setOnLongClickListener(this);
         }
 
         @Override
@@ -191,6 +197,43 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             name.setText(dev.name);
             findViewById(R.id.npdsa_activate).setEnabled(room.getMemberCount() > 0);
         }
+
+        @Override
+        public boolean onLongClick(View v) {
+            startActionMode(this);
+            return true;
+        }
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            SupportActionModeWrapper real = (SupportActionModeWrapper) mode;
+            // from internet //
+            getActivity().getLayoutInflater().inflate(R.layout.actionmode, null);
+            //
+            ViewGroup root = (ViewGroup) findViewById(R.id.npdsa_activityRoot);
+            final View inflate = getLayoutInflater().inflate(R.layout.npdsa_ctx_device_action_mode, root, false);
+            mode.setCustomView(inflate);
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            final View view = mode.getCustomView();
+            TextView name = (TextView) view.findViewById(R.id.npdsa_ctx_devName);
+            name.setText(name.getText());
+            final NumberPicker budget = (NumberPicker) view.findViewById(R.id.npdsa_ctx_charBudgetPicker);
+            final PartyDefinitionHelper.DeviceStatus dev = room.building.get(key);
+            budget.setValue(dev.charBudget);
+            budget.setMinValue(Math.max(0, dev.charBudget - 100));
+            budget.setMaxValue(dev.charBudget + 100);
+            return true;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) { return false; }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) { }
     }
 
     public void action_callback(View btn) {

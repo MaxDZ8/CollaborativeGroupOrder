@@ -201,6 +201,7 @@
     <string name="npdsa_unknownDeviceName">Unknown device %1$s</string>
     <string name="npdsa_deviceHidden">Device \"%1$s\" hidden.</string>
     <string name="npdsa_menu_hiddenDevices">Manage hidden devices</string>
+    <string name="npdsa_ctx_setName">Set new name</string>
 
     <string name="ncaa_definingPCs">Players are defining characters.</string>
     <string name="ncaa_action">Players are defining characters</string>
@@ -367,4 +368,8 @@
     <string name="dlgMHD_instructions">Hidden devices are listed below. You can restore them to view or disconnect them. Both operations require care!</string>
     <string name="vhHD_disconnect">Disconnect</string>
     <string name="vhHD_restore">Restore</string>
+    <string name="npdsa_ctx_device_setName">Set name</string>
+    <string name="npdsa_ctx_device_giveChars">Allow to talk more</string>
+    <string name="npdsa_ctx_setNameAction">Rename</string>
+    <string name="npdsa_ctx_characterBudget">Character budget</string>
 </resources>
