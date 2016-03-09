@@ -32,15 +32,7 @@
         android:id="@+id/ncaa_list"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="visible" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/ncaa_makeGroup"
-        android:id="@+id/ncaa_action"
-        android:enabled="false"
-        android:onClick="action_callback" />
+        android:visibility="visible"
+        android:layout_height="fill_parent" />
 
 </LinearLayout>

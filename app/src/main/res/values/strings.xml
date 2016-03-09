@@ -14,7 +14,7 @@
     <string name="master_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
     <string name="master_menu_showConnectionInfos">Show connection infos</string>
     <string name="master_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
-    <string name="master_exitConfirmedDlgAction">Stop service</string>
+    <string name="master_exitConfirmedDlgAction">Interrupt operations</string>
     <string name="master_cannotBindPartyService">Failed to get an handle to the party creation service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
 
     <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
@@ -211,7 +211,7 @@
 
     <string name="ncaa_definingPCs">Players are defining characters.</string>
     <string name="ncaa_failedAcceptRejectReplySend">Failed to signal character \"%1$s\", error: %2$s</string>
-    <string name="ncaa_makeGroup">Make group</string>
+    <string name="ncaa_action">Save party</string>
     <string name="ncaa_lostConn_singularCharacter">which defined 1 character</string>
     <string name="ncaa_lostConn_pluralCharacter">which defined %1$d characters</string>
     <string name="ncaa_lostConn_msg">Lost connection to device \"%1$s\" %2$s. You can continue ignoring some errors, the group will still be formed and the device can later join anyway.</string>
@@ -220,8 +220,10 @@
     <string name="ncaa_done">Save party data</string>
     <string name="ncaa_savingPleaseWait">Saving party…</string>
     <string name="ncaa_newDataSaved_done">Yes</string>
-
+    <string name="ncaa_actionShort">Save</string>
+    <string name="ncaa_exitConfirmMsg">Undergoing I/O. Try again later.</string>
     <string name="ncaa_title">Approve PCs</string>
+
     <string name="ncpa_title">Propose PCs</string>
     <string name="ncpa_instructions">Define as many characters as you want. The process will complete when party owner decides so.</string>
     <string name="ncpa_addChar">Add a character</string>

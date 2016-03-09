@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.nsd.NsdManager;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -57,9 +58,13 @@ public abstract class MaxUtils {
     }
 
     public static void askExitConfirmation(final AppCompatActivity goner) {
+        askExitConfirmation(goner, R.string.master_carefulDlgMessage);
+    }
+
+    public static void askExitConfirmation(final AppCompatActivity goner, @StringRes int msg) {
         new AlertDialog.Builder(goner)
                 .setTitle(R.string.generic_carefulDlgTitle)
-                .setMessage(R.string.master_carefulDlgMessage)
+                .setMessage(msg)
                 .setPositiveButton(R.string.master_exitConfirmedDlgAction, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

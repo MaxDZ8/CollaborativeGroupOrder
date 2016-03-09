@@ -254,7 +254,7 @@ public class PartyCreationService extends PublishAcceptService {
         return building.isApproved(unique);
     }
 
-    public AsyncTask sendPartyCompleteMessages(final boolean goAdventuring, final @NonNull Runnable onComplete) {
+    public AsyncTask<Void, Void, Void> sendPartyCompleteMessages(final boolean goAdventuring, final @NonNull Runnable onComplete) {
         final int sillyDelayMS = 250; // make sure the messages go through. Yeah, I should display a progress w/e
         return new AsyncTask<Void, Void, Void>() {
             @Override
