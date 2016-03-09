@@ -60,6 +60,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     private void dataRefreshed() {
+        findViewById(R.id.mma_goAdventuring).setEnabled(groupDefs.size() + groupKeys.size() > 0);
         if (null == activeConnections) {
             asyncCloseSockets(null, activeLanding, null);
             activeLanding = null;
