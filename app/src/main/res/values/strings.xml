@@ -78,6 +78,8 @@
     <string name="card_joiningCharacter_accepted">Accepted!</string>
     <string name="card_joiningCharacter_refuseButton">Refuse</string>
     <string name="card_joiningCharacter_acceptButton">Accept</string>
+    <string name="vhCA_acceptedIconContentDesc">Tick</string>
+    <string name="vhCA_acceptedCharacter">Character accepted.</string>
     <string name="joinGroupActivity_multipleGroupKeys">Party owner just tried to redefine key for the active group. This is very odd and might result in malfunctions.</string>
     <string name="joinGroupActivity_multiKeyMismatching">You were accepted in some other group than the one you\'re on already. I\'ll just ignore this, carry on. Try to join a single group next time (in doubt, try explicit connection)</string>
     <string name="activity_join_group_addCharacterButton">Add another character</string>

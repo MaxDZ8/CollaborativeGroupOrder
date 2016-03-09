@@ -63,6 +63,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
                         beginDelayedTransition();
                         final TextView status = (TextView) findViewById(R.id.ncaa_status);
                         status.setText(R.string.ncaa_savingPleaseWait);
+                        findViewById(R.id.ncaa_list).setEnabled(false);
                         saving = room.saveParty(NewCharactersApprovalActivity.this, new StoreDoneCallbacks());
                     }
                 })
@@ -140,7 +141,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
         groupList.setAdapter(room.building.setNewCharsApprovalAdapter(new PartyDefinitionHelper.CharsApprovalHolderFactoryBinder<PcApprovalVh>() {
             @Override
             public PcApprovalVh createUnbound(ViewGroup parent, int viewType) {
-                return new PcApprovalVh(getLayoutInflater().inflate(R.layout.card_joining_character_server_output, parent, false));
+                return new PcApprovalVh(getLayoutInflater().inflate(R.layout.vh_character_approval, parent, false));
             }
 
             @Override
@@ -214,6 +215,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
 
     private class PcApprovalVh extends RecyclerView.ViewHolder implements View.OnClickListener {
         final TextView name, level, xp, hp, initBonus;
+        final View accepted;
         int unique;
 
         public PcApprovalVh(View v) {
@@ -223,13 +225,15 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
             xp = (TextView) v.findViewById(R.id.vhCA_xp);
             hp = (TextView) v.findViewById(R.id.vhCA_hp);
             initBonus = (TextView) v.findViewById(R.id.vhCA_initBonus);
+            accepted = v.findViewById(R.id.vhCA_accepted);
             v.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             room.approve(unique);
-
+            beginDelayedTransition();
+            accepted.setVisibility(View.VISIBLE);
         }
     }
 }

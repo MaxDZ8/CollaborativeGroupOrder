@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:columnCount="5" android:rowCount="7">
+    android:columnCount="5" android:rowCount="8">
 
     <TextView
         android:id="@+id/vhCA_name"
@@ -98,14 +98,16 @@
         android:text="@string/generic_unreadable_at_start"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <ImageView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/vhCA_acceptedIcon"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/vhCA_acceptedCharacter"
+        android:id="@+id/vhCA_accepted"
+        android:drawableLeft="@mipmap/ic_done_black_24dp"
         android:layout_row="5"
         android:layout_column="0"
-        android:src="@mipmap/ic_done_black_24dp"
         android:layout_columnSpan="3"
-        android:layout_gravity="center_horizontal" />
-
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
 </GridLayout>

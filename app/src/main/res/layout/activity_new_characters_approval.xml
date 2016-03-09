@@ -32,8 +32,7 @@
         android:id="@+id/ncaa_list"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".5"
+        android:layout_height="wrap_content"
         android:visibility="visible" />
 
     <Button
