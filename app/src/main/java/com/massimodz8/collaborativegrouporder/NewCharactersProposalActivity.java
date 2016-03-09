@@ -1,7 +1,6 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
@@ -48,7 +47,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
 
                 @Override
                 public boolean mangle(MessageChannel from, Network.GroupReady msg) throws IOException {
-                    handler.sendMessage(handler.obtainMessage(MSG_DONE, new Boolean(msg.goAdventuring)));
+                    handler.sendMessage(handler.obtainMessage(MSG_DONE, msg.goAdventuring));
                     return true;
                 }
             });
@@ -160,9 +159,9 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
 
     private void saveData(final boolean goAdventuring) {
         final NewCharactersProposalActivity self = this;
-        new AsyncActivityLoadUpdateTask<PersistentStorage.PartyClientData>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self) {
+        new AsyncActivityLoadUpdateTask<PersistentStorage.PartyClientData>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self, new AsyncActivityLoadUpdateTask.ActivityCallbacks(this) {
             @Override
-            protected void onCompletedSuccessfully() {
+            public void onCompletedSuccessfully() {
                 String extra = ' ' + getString(R.string.ncpa_goingAdventuring);
                 String msg = String.format(getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");
                 int label = goAdventuring? R.string.ncpa_goAdventuring : R.string.ncpa_newDataSaved_done;
@@ -178,6 +177,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                         })
                         .show();
             }
+        }) {
             @Override
             protected void appendNewEntry(PersistentStorage.PartyClientData loaded) {
                 PersistentStorage.PartyClientData.Group[] longer = new PersistentStorage.PartyClientData.Group[loaded.everything.length + 1];
@@ -187,6 +187,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                 gen.name = party.group.name;
                 longer[loaded.everything.length] = gen;
                 loaded.everything =  longer;
+                newKey = gen;
             }
             @Override
             protected void setVersion(PersistentStorage.PartyClientData result) { result.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION; }
@@ -199,10 +200,11 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
         }.execute();
     }
 
+    private PersistentStorage.PartyClientData.Group newKey;
+
     private void finishingTouches(boolean goAdventuring) {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        state.newGroupName = party.group.name;
-        state.newGroupKey = party.salt;
+        state.newKey = newKey;
         if(goAdventuring) state.pumpers = netWorker.move();
         setResult(RESULT_OK);
         finish();

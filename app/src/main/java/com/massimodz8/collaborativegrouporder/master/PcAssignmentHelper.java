@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Vector;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -39,11 +38,16 @@ import java.util.concurrent.BlockingQueue;
 public class PcAssignmentHelper {
     public final PersistentStorage.PartyOwnerData.Group party;
 
+    public interface OnBoundPcCallback {
+        void onUnboundCountChanged(int stillToBind);
+    }
+    public OnBoundPcCallback onBoundPc;
+
     public PcAssignmentHelper(PersistentStorage.PartyOwnerData.Group party, JoinVerificator verifier) {
         this.party = party;
         this.verifier = verifier;
-        assignment = new ArrayList<>(party.usually.party.length);
-        for (PersistentStorage.Actor ignored : party.usually.party) assignment.add(null);
+        assignment = new ArrayList<>(party.party.length);
+        for (PersistentStorage.ActorDefinition ignored : party.party) assignment.add(null);
         Thread mailman = new Thread() {
             @Override
             public void run() {
@@ -79,13 +83,6 @@ public class PcAssignmentHelper {
         mailman.start();
     }
 
-
-    /*
-    TODO: for the time being I don't have device keys so what do I do? I will just prethend everybody getting the group key is matching some key,
-    TODO depending on the order they happen.
-    TODO UGLY UGLY UGLY UGLY UGLY UGLY UGLY UGLY UGLY UGLY */
-    private int TODO_shite_ugly_temp_hack;
-
     public void pump(MessageChannel newConn) {
         peers.add(new PlayingDevice(newConn));
         netPump.pump(newConn);
@@ -105,21 +102,30 @@ public class PcAssignmentHelper {
         return count;
     }
 
-    public ArrayList<PersistentStorage.Actor> getUnboundedPcs() {
-        ArrayList<PersistentStorage.Actor> list = new ArrayList<>();
-        for(int loop = 0; loop < party.usually.party.length; loop++) {
+    public ArrayList<PersistentStorage.ActorDefinition> getUnboundedPcs() {
+        ArrayList<PersistentStorage.ActorDefinition> list = new ArrayList<>();
+        for(int loop = 0; loop < party.party.length; loop++) {
             if(assignment.get(loop) != null) continue;
-            list.add(party.usually.party[loop]);
+            list.add(party.party[loop]);
         }
         return list;
     }
 
-    public void local(PersistentStorage.Actor actor) {
-        int match;
-        for(match = 0; match < party.usually.party.length; match++) {
-            if(actor == party.usually.party[match]) break;
+    public int getNumUnboundedPcs() {
+        int count = 0;
+        for(int loop = 0; loop < party.party.length; loop++) {
+            if(assignment.get(loop) != null) continue;
+            count++;
         }
-        if(match == party.usually.party.length) return;
+        return count;
+    }
+
+    public void local(PersistentStorage.ActorDefinition actor) {
+        int match;
+        for(match = 0; match < party.party.length; match++) {
+            if(actor == party.party[match]) break;
+        }
+        if(match == party.party.length) return;
         final Integer ownerIndex = assignment.get(match);
         if(ownerIndex != null && ownerIndex == LOCAL_BINDING) return;
         assignment.set(match, LOCAL_BINDING);
@@ -132,6 +138,7 @@ public class PcAssignmentHelper {
         }
         if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
         if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
+        if(onBoundPc != null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
     }
 
 
@@ -281,7 +288,7 @@ public class PcAssignmentHelper {
     private static final int MSG_HELLO_AUTH = 4;
     private static final int MSG_CHAR_OWNERSHIP_REQUEST = 5;
 
-    private static final int DOORMAT_BYTES = 64;
+    public static final int DOORMAT_BYTES = 64;
     private static final int USUAL_CLIENT_COUNT = 20; // not really! Usually 5 or less but that's for safety!
     private static final int USUAL_AVERAGE_MESSAGES_PENDING_COUNT = 10; // pretty a lot, those will be small!
     private static final int LOCAL_BINDING = -1;
@@ -341,13 +348,12 @@ public class PcAssignmentHelper {
 
     private void helloAuth(final @NonNull MessageChannel origin, @NonNull Network.Hello msg) {
         final PlayingDevice dev = getDevice(origin);
-        if(null == dev || null == dev.pipe) return; // impossible!
+        if(null == dev || null == dev.pipe || null == dev.doormat) return; // impossible!
         dev.clientVersion = msg.version;
 
         // For the time being, this must be the same for all devices.
-        // TODO: upgrade to device-specific keys!
-        byte[] hash = verifier.mangle(dev.doormat, party.salt);
-        if(!Arrays.equals(hash, msg.authorize)) {
+        final Integer match = verifier.match(dev.doormat, msg.authorize);
+        if(match == null) {
             // Device tried to authenticate but I couldn't recognize it.
             // Most likely using an absolete key -> kicked from party!
             // Very odd but why not? Better to just ignore and disconnect the guy.
@@ -366,20 +372,20 @@ public class PcAssignmentHelper {
             return;
         }
         boolean signal = dev.isAnonymous();
-        dev.keyIndex = TODO_shite_ugly_temp_hack++;
+        dev.keyIndex = match;
         sendPlayingCharacterList(dev);
         if(signal && authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged(); // no guarantee about ordering of auths.
     }
 
     private void sendPlayingCharacterList(final PlayingDevice dev) {
         // TODO: for the time being I just send everything. In the future I might want to do that differently, for example send only a subset of characters depending on device key
-        final Network.PlayingCharacterDefinition[] stream = new Network.PlayingCharacterDefinition[party.usually.party.length];
-        for (int loop = 0; loop < party.usually.party.length; loop++) {
-            stream[loop] = simplify(party.usually.party[loop], loop);
+        final Network.PlayingCharacterDefinition[] stream = new Network.PlayingCharacterDefinition[party.party.length];
+        for (int loop = 0; loop < party.party.length; loop++) {
+            stream[loop] = simplify(party.party[loop], loop);
         }
         out.add(new SendRequest(dev, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, stream));
         // Also send a notification for each character which is already assigned to someone else.
-        final ArrayList<Integer> bound = new ArrayList<>(party.usually.party.length);
+        final ArrayList<Integer> bound = new ArrayList<>(party.party.length);
         for(int loop = 0; loop < assignment.size(); loop++) {
             if(assignment.get(loop) != null) bound.add(loop);
         }
@@ -392,13 +398,13 @@ public class PcAssignmentHelper {
         out.add(new SendRequest(dev, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial));
     }
 
-    private Network.PlayingCharacterDefinition simplify(PersistentStorage.Actor actor, int loop) {
+    private Network.PlayingCharacterDefinition simplify(PersistentStorage.ActorDefinition actor, int loop) {
         Network.PlayingCharacterDefinition res = new Network.PlayingCharacterDefinition();
         PersistentStorage.ActorStatistics currently = actor.stats[0];
         res.name = actor.name;
         res.initiativeBonus = currently.initBonus;
         res.healthPoints = currently.healthPoints;
-        res.experience = currently.experience;
+        res.experience = actor.experience;
         res.level = actor.level;
         res.peerKey = loop;
         return res;
@@ -414,7 +420,7 @@ public class PcAssignmentHelper {
             out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             return;
         }
-        if(payload.character >= party.usually.party.length) { // requester asked chars before providing key.
+        if(payload.character >= party.party.length) { // requester asked chars before providing key.
             payload.type = Network.CharacterOwnership.REJECTED;
             out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             return;
@@ -438,6 +444,7 @@ public class PcAssignmentHelper {
             sendAvailability(type, payload.character, origin, nextValidRequest);
             if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
             if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
+            if(onBoundPc != null && currKeyIndex == null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
             return;
         }
         // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose

@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/ga_initializing"
+            android:text="@string/generic_initializing"
             android:id="@+id/ga_state"
             android:layout_gravity="center_horizontal" />
 

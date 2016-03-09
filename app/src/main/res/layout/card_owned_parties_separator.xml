@@ -14,7 +14,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/owned_party_icon"
+            android:src="@mipmap/ic_owned_party"
             android:layout_margin="8sp"
             android:layout_centerVertical="true"
             android:contentDescription="@string/cardOPS_iconDesc"

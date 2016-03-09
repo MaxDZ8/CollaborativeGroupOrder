@@ -2,8 +2,14 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.nsd.NsdManager;
+import android.support.annotation.StringRes;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import java.security.MessageDigest;
 
 
 /**
@@ -15,7 +21,16 @@ import android.view.View;
  * methods.
  */
 public abstract class MaxUtils {
+    public static MessageDigest hasher;
+
     public static void setVisibility(Activity parent, int visibility, int... targets) {
+        for (int id : targets) {
+            final View v = parent.findViewById(id);
+            if (v != null) v.setVisibility(visibility);
+        }
+    }
+
+    public static void setVisibility(AlertDialog parent, int visibility, int... targets) {
         for (int id : targets) {
             final View v = parent.findViewById(id);
             if (v != null) v.setVisibility(visibility);
@@ -40,5 +55,21 @@ public abstract class MaxUtils {
             case NsdManager.FAILURE_MAX_LIMIT: return ctx.getString(R.string.nsdError_maxLimitReached);
         }
         return ctx.getString(R.string.nsdError_unknown);
+    }
+
+    public static void askExitConfirmation(final AppCompatActivity goner) {
+        askExitConfirmation(goner, R.string.master_carefulDlgMessage);
+    }
+
+    public static void askExitConfirmation(final AppCompatActivity goner, @StringRes int msg) {
+        new AlertDialog.Builder(goner)
+                .setTitle(R.string.generic_carefulDlgTitle)
+                .setMessage(msg)
+                .setPositiveButton(R.string.master_exitConfirmedDlgAction, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        goner.finish();
+                    }
+                }).show();
     }
 }

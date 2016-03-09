@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/ga_menu_explicitConnInfo"
+        android:id="@+id/npdsa_menu_explicitConnInfo"
         android:title="@string/master_menu_showConnectionInfos" />
+    <item
+        android:id="@+id/npdsa_menu_hiddenDevices"
+        android:title="@string/npdsa_menu_hiddenDevices" />
 </menu>

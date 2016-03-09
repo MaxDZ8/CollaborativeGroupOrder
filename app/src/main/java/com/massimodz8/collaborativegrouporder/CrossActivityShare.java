@@ -1,14 +1,13 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.app.Application;
-import android.os.Bundle;
 
+import com.massimodz8.collaborativegrouporder.master.PartyDefinitionHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.net.ServerSocket;
-import java.util.HashMap;
 import java.util.Vector;
 
 /**
@@ -18,17 +17,9 @@ import java.util.Vector;
  * Application class and use it to keep persistent state.
  */
 public class CrossActivityShare extends Application {
-    public Vector<PersistentStorage.PartyOwnerData.Group> groupDefs;
-    public Vector<PersistentStorage.PartyClientData.Group> groupKeys;
 
     public JoinSessionActivity.State jsaState;
     public JoinSessionActivity.Result jsaResult;
-
-    // NewPartyDeviceSelectionActivity state -------------------------------------------------------
-    public Vector<DeviceStatus> clients;
-    PublishedService publisher;
-    ServerSocket landing;
-    //----------------------------------------------------------------------------------------------
 
     // SelectFormingGroupActivity ------------------------------------------------------------------
     AccumulatingDiscoveryListener explorer;
@@ -41,8 +32,7 @@ public class CrossActivityShare extends Application {
 
     // NewCharacterProposalActivity result ---------------------------------------------------------
     //public boolean goAdventuring; // does not exist, use the pumpers instead
-    public String newGroupName;
-    public byte[] newGroupKey;
+    public PersistentStorage.PartyClientData.Group newKey;
     //----------------------------------------------------------------------------------------------
 
 

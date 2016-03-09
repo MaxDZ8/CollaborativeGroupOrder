@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -31,7 +32,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.Socket;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 public class JoinSessionActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
@@ -119,7 +119,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
             else {
                 final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
                 myState.explorer = new AccumulatingDiscoveryListener();
-                myState.explorer.beginDiscovery(MainMenuActivity.PARTY_GOING_ADVENTURING_SERVICE_TYPE, nsd, this);
+                myState.explorer.beginDiscovery(PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE, nsd, this);
             }
             if (null != myState.workers) {
                 for (Pumper.MessagePumpingThread w : myState.workers) pumper.pump(w);
@@ -257,15 +257,9 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                     lastSend = SENT_DOORMAT_REQUEST;
                 } break;
                 case SENT_DOORMAT_REQUEST: {
-                    JoinVerificator helper;
-                    try {
-                        helper = new JoinVerificator();
-                    } catch (NoSuchAlgorithmException e) {
-                        error = e;
-                        return;
-                    }
+                    JoinVerificator helper = new JoinVerificator(myState.party, MaxUtils.hasher);
                     final Network.Hello auth = new Network.Hello();
-                    auth.authorize = helper.mangle(doormat, myState.party.key);
+                    auth.authorize = helper.mangle(doormat);
                     auth.version = MainMenuActivity.NETWORK_VERSION;
                     new AsyncTask<Void, Void, Void>() {
                         @Override

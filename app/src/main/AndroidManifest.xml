@@ -43,7 +43,7 @@
             android:name=".ExplicitConnectionActivity"
             android:label="@string/eca_title" />
         <activity
-            android:name=".NewPartyDeviceSelectionActivity"
+            android:name=".master.NewPartyDeviceSelectionActivity"
             android:label="@string/npdsa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -51,7 +51,7 @@
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
         <activity
-            android:name=".NewCharactersApprovalActivity"
+            android:name=".master.NewCharactersApprovalActivity"
             android:label="@string/ncaa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -103,7 +103,13 @@
         <service
             android:name=".master.PartyJoinOrderService"
             android:enabled="true"
-            android:exported="false"/>
+            android:exported="false"
+            android:label="@string/pjos_label" />
+        <service
+            android:name=".master.PartyCreationService"
+            android:enabled="true"
+            android:exported="false"
+            android:label="@string/pcs_label" />
     </application>
 
 </manifest>
