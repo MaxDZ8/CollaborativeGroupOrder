@@ -225,8 +225,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         protected void onSuccessfullyRefreshed() { }
     }
 
-    private boolean goAdventuringWithCreated;
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) { // stuff to shut down no matter what
@@ -250,8 +248,17 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         }
         switch(requestCode) {
             case REQUEST_NEW_PARTY: {
-                goAdventuringWithCreated = data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
-                bindService(new Intent(this, PartyCreationService.class), this, 0);
+                boolean goAdventuringWithCreated = data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
+                groupDefs = pcServ.defs;
+                if(goAdventuringWithCreated) {
+                    activeParty = pcServ.generatedParty;
+                    activeLanding = pcServ.getLanding(true);
+                    activeConnections = pcServ.moveClients();
+                }
+                pcServ = null;
+                unbindService(this);
+                stopService(new Intent(this, PartyCreationService.class));
+                dataRefreshed();
                 break;
             }
             case REQUEST_JOIN_FORMING: {
@@ -340,22 +347,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         }
         if(service instanceof PartyCreationService.LocalBinder) {
             PartyCreationService.LocalBinder binder = (PartyCreationService.LocalBinder) service;
-            PartyCreationService real =  binder.getConcreteService();
-            if(real.getPublishStatus() == PartyCreationService.PUBLISHER_IDLE) {
-                real.defs = groupDefs;
-                final Intent intent = new Intent(this, NewPartyDeviceSelectionActivity.class);
-                startActivityForResult(intent, REQUEST_NEW_PARTY);
-                return;
-            }
-            groupDefs = real.defs;
-            if(goAdventuringWithCreated) {
-                activeParty = real.generatedParty;
-                activeLanding = real.getLanding(true);
-                activeConnections = real.moveClients();
-            }
-            unbindService(this);
-            stopService(new Intent(this, PartyCreationService.class));
-            dataRefreshed();
+            pcServ = binder.getConcreteService();
+            pcServ.defs = groupDefs;
+            final Intent intent = new Intent(this, NewPartyDeviceSelectionActivity.class);
+            startActivityForResult(intent, REQUEST_NEW_PARTY);
         }
     }
 
@@ -408,4 +403,5 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             }
         }.execute();
     }
+    private PartyCreationService pcServ;
 }
