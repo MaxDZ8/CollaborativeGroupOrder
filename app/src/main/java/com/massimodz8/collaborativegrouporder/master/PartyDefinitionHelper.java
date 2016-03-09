@@ -410,7 +410,10 @@ public abstract class PartyDefinitionHelper {
                 if(pc.unique != unique) continue;
                 boolean signal = pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED;
                 pc.status = BuildingPlayingCharacter.STATUS_ACCEPTED;
-                if(signal && charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
+                if(signal) {
+                    if (charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
+                    sendApproval(dev.source, pc.peerKey, pc.status);
+                }
             }
         }
         return false;
@@ -423,10 +426,29 @@ public abstract class PartyDefinitionHelper {
                 if(pc.unique != unique) continue;
                 boolean signal = pc.status != BuildingPlayingCharacter.STATUS_REJECTED;
                 pc.status = BuildingPlayingCharacter.STATUS_REJECTED;
-                if(signal && charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
+                if(signal) {
+                    if (charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
+                    sendApproval(dev.source, pc.peerKey, pc.status);
+                }
             }
         }
         return false;
+    }
+
+    private void sendApproval(final MessageChannel source, int peerKey, int status) {
+        final Network.GroupFormed send = new Network.GroupFormed();
+        send.peerKey = peerKey;
+        send.accepted = status == BuildingPlayingCharacter.STATUS_ACCEPTED;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    source.write(ProtoBufferEnum.GROUP_FORMED, send);
+                } catch (IOException e) {
+                    // todo, will have to be hardened.
+                }
+            }
+        }).start();
     }
 
     public boolean isApproved(int unique) {
