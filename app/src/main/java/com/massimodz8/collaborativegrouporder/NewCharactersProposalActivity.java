@@ -4,7 +4,6 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -188,6 +187,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                 gen.name = party.group.name;
                 longer[loaded.everything.length] = gen;
                 loaded.everything =  longer;
+                newKey = gen;
             }
             @Override
             protected void setVersion(PersistentStorage.PartyClientData result) { result.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION; }
@@ -200,9 +200,11 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
         }.execute();
     }
 
+    private PersistentStorage.PartyClientData.Group newKey;
+
     private void finishingTouches(boolean goAdventuring) {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        state.newGroupName = party.group.name;
+        state.newKey = newKey;
         if(goAdventuring) state.pumpers = netWorker.move();
         setResult(RESULT_OK);
         finish();

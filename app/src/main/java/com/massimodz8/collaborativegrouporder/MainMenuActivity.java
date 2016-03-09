@@ -266,6 +266,14 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 startActivityForResult(intent, REQUEST_PROPOSE_CHARACTERS);
             } break;
             case REQUEST_PROPOSE_CHARACTERS: {
+                final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+                if(state.pumpers != null) { // go adventuring
+                    activeConnections = state.pumpers;
+                    state.pumpers = null;
+                }
+                groupKeys.add(state.newKey);
+                activeParty = state.newKey;
+                state.newKey = null;
                 dataRefreshed();
             } break;
             case REQUEST_PICK_PARTY: {
