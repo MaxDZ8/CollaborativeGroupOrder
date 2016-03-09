@@ -179,7 +179,7 @@
     <string name="npdsa_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
     <string name="npdsa_badParty_msg_alreadyThere">A party with the same name already exists. Names must be unique.</string>
     <string name="npdsa_badParty_retry">Modify party name</string>
-    <string name="npdsa_title">Party member selection</string>
+    <string name="npdsa_title">Device selection</string>
     <string name="npdsa_goal">Give your new party a name.</string>
     <string name="npdsa_groupNameHint">Party name</string>
     <string name="npdsa_publish">Publish party on Wi-Fi</string>

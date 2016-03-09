@@ -224,6 +224,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         protected void onSuccessfullyRefreshed() { }
     }
 
+    private boolean goAdventuringWithCreated;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) { // stuff to shut down no matter what
@@ -240,7 +242,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if(RESULT_OK != resultCode) {
             switch(requestCode) { // stuff would be used on success... but was not successful so goodbye
                 case REQUEST_NEW_PARTY:
-                    // Not continuing to characters approval or creation cancelled so goodbye
                     stopService(new Intent(this, PartyCreationService.class));
                     break;
             }
@@ -248,9 +249,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         }
         switch(requestCode) {
             case REQUEST_NEW_PARTY: {
-                if (!data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false)) {
-                    dataRefreshed();
-                } else bindService(new Intent(this, PartyCreationService.class), this, 0);
+                goAdventuringWithCreated = data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
+                bindService(new Intent(this, PartyCreationService.class), this, 0);
                 break;
             }
             case REQUEST_JOIN_FORMING: {
@@ -347,11 +347,11 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 return;
             }
             groupDefs = real.defs;
-            // happens when called from successful character approval with GO_ADVENTURING.
-            // The new party is always the last.
-            activeParty = groupDefs.get(groupDefs.size() - 1);
-            activeLanding = real.getLanding(true);
-            activeConnections = real.moveClients();
+            if(goAdventuringWithCreated) {
+                activeParty = real.generatedParty;
+                activeLanding = real.getLanding(true);
+                activeConnections = real.moveClients();
+            }
             unbindService(this);
             stopService(new Intent(this, PartyCreationService.class));
             dataRefreshed();

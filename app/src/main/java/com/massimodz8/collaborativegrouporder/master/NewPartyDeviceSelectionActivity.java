@@ -103,8 +103,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         super.onStart();
     }
 
-    MenuItem hiddenManagement;
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.new_party_device_selection_activity, menu);
@@ -156,13 +154,14 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         else super.onBackPressed();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode != RESULT_OK) return;
+        setResult(RESULT_OK, data);
+        finish();
+    }
 
-    private PartyCreationService room;
-    private Button action;
-    private ActionMode actionMode;
-
-
-    protected class DeviceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, ActionMode.Callback {
+    private class DeviceViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, ActionMode.Callback {
         TextView msg, name;
         View memberIcon, memberMsg;
         MessageChannel key;
@@ -263,12 +262,11 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         @Override
         public void onClick(DialogInterface dialog, int which) {
             final Intent intent = new Intent(NewPartyDeviceSelectionActivity.this, NewCharactersApprovalActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             room.closeGroup(new PartyCreationService.OnKeysSentListener() {
                 @Override
                 public void onKeysSent(int bad) {
                     if (0 == bad) {
-                        startActivity(intent);
+                        startActivityForResult(intent, REQUEST_APPROVE_PLAYING_CHARACTERS);
                         return;
                     }
                     new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
@@ -276,7 +274,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                             .setPositiveButton(R.string.npdsa_carryOnDlgAction, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    startActivity(intent);
+                                    startActivityForResult(intent, REQUEST_APPROVE_PLAYING_CHARACTERS);
                                 }
                             }).setNegativeButton(R.string.npdsa_discardDlgAction, new DialogInterface.OnClickListener() {
                         @Override
@@ -486,4 +484,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     }
     // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     private RecyclerView devList;
+    private PartyCreationService room;
+    private Button action;
+    private ActionMode actionMode;
+    private MenuItem hiddenManagement;
+    private static final int REQUEST_APPROVE_PLAYING_CHARACTERS = 1;
 }

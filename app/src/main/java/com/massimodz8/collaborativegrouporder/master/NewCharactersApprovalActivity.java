@@ -147,7 +147,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
                         }
                     })
                     .show();
-
         }
     }
 
@@ -164,7 +163,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
             Intent back = new Intent(RESULT_ACTION);
             back.putExtra(RESULT_EXTRA_GO_ADVENTURING, goAdventuring);
             setResult(RESULT_OK, back);
-            finishAffinity();
+            finish();
         }
     }
 
