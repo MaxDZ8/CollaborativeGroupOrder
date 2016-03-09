@@ -45,7 +45,8 @@
         <activity
             android:name=".master.NewPartyDeviceSelectionActivity"
             android:label="@string/npdsa_title"
-            android:parentActivityName=".MainMenuActivity">
+            android:parentActivityName=".MainMenuActivity"
+            android:taskAffinity="com.massimodz8.collaborativegrouporder.NEW_PARTY">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
@@ -53,7 +54,8 @@
         <activity
             android:name=".master.NewCharactersApprovalActivity"
             android:label="@string/ncaa_title"
-            android:parentActivityName=".MainMenuActivity">
+            android:parentActivityName=".MainMenuActivity"
+            android:taskAffinity="com.massimodz8.collaborativegrouporder.NEW_PARTY">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />

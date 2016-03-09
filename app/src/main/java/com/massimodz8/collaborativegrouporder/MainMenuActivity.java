@@ -240,7 +240,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if(RESULT_OK != resultCode) {
             switch(requestCode) { // stuff would be used on success... but was not successful so goodbye
                 case REQUEST_NEW_PARTY:
-                case REQUEST_APPROVE_CHARACTERS:
                     // Not continuing to characters approval or creation cancelled so goodbye
                     stopService(new Intent(this, PartyCreationService.class));
                     break;
@@ -249,20 +248,15 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         }
         switch(requestCode) {
             case REQUEST_NEW_PARTY: {
-                final Intent intent = new Intent(this, NewCharactersApprovalActivity.class);
-                startActivityForResult(intent, REQUEST_APPROVE_CHARACTERS);
-            } break;
-            case REQUEST_JOIN_FORMING: {
-                final Intent intent = new Intent(this, NewCharactersProposalActivity.class);
-                startActivityForResult(intent, REQUEST_PROPOSE_CHARACTERS);
-            } break;
-            case REQUEST_APPROVE_CHARACTERS: {
-                if(!data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false)) {
-                    stopService(new Intent(this, PartyCreationService.class));
+                if (!data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false)) {
                     dataRefreshed();
                 } else bindService(new Intent(this, PartyCreationService.class), this, 0);
                 break;
             }
+            case REQUEST_JOIN_FORMING: {
+                final Intent intent = new Intent(this, NewCharactersProposalActivity.class);
+                startActivityForResult(intent, REQUEST_PROPOSE_CHARACTERS);
+            } break;
             case REQUEST_PROPOSE_CHARACTERS: {
                 dataRefreshed();
             } break;
@@ -301,7 +295,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     static final int REQUEST_NEW_PARTY = 1;
     static final int REQUEST_JOIN_FORMING = 2;
-    static final int REQUEST_APPROVE_CHARACTERS = 3;
     static final int REQUEST_PROPOSE_CHARACTERS = 4;
     static final int REQUEST_PICK_PARTY = 5;
     static final int REQUEST_PULL_CHAR_LIST = 6;
@@ -349,9 +342,11 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             PartyCreationService real =  binder.getConcreteService();
             if(real.getPublishStatus() == PartyCreationService.PUBLISHER_IDLE) {
                 real.defs = groupDefs;
-                startActivityForResult(new Intent(this, NewPartyDeviceSelectionActivity.class), REQUEST_NEW_PARTY);
+                final Intent intent = new Intent(this, NewPartyDeviceSelectionActivity.class);
+                startActivityForResult(intent, REQUEST_NEW_PARTY);
                 return;
             }
+            groupDefs = real.defs;
             // happens when called from successful character approval with GO_ADVENTURING.
             // The new party is always the last.
             activeParty = groupDefs.get(groupDefs.size() - 1);

@@ -262,28 +262,28 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     private class PartySealer implements AlertDialog.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
+            final Intent intent = new Intent(NewPartyDeviceSelectionActivity.this, NewCharactersApprovalActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
             room.closeGroup(new PartyCreationService.OnKeysSentListener() {
                 @Override
                 public void onKeysSent(int bad) {
-                    if (0 != bad) {
-                        new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
-                                .setMessage(R.string.npdsa_failedKeySendDlgMsg)
-                                .setPositiveButton(R.string.npdsa_carryOnDlgAction, new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        setResult(RESULT_OK);
-                                        finish();
-                                    }
-                                }).setNegativeButton(R.string.npdsa_discardDlgAction, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        }).show();
+                    if (0 == bad) {
+                        startActivity(intent);
                         return;
                     }
-                    setResult(RESULT_OK);
-                    finish();
+                    new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
+                            .setMessage(R.string.npdsa_failedKeySendDlgMsg)
+                            .setPositiveButton(R.string.npdsa_carryOnDlgAction, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    startActivity(intent);
+                                }
+                            }).setNegativeButton(R.string.npdsa_discardDlgAction, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    }).show();
                 }
             });
         }
