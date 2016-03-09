@@ -1,4 +1,4 @@
-package com.massimodz8.collaborativegrouporder;
+package com.massimodz8.collaborativegrouporder.master;
 
 import android.content.ComponentName;
 import android.content.DialogInterface;
@@ -18,14 +18,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
-import com.massimodz8.collaborativegrouporder.master.PartyDefinitionHelper;
+import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
+import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
+import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
+import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
+import com.massimodz8.collaborativegrouporder.R;
 
 import java.util.ArrayList;
 
 public class NewCharactersApprovalActivity extends AppCompatActivity implements ServiceConnection {
-    public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.NewCharactersApprovalActivity.RESULT";
-    public static final String RESULT_EXTRA_GO_ADVENTURING = "com.massimodz8.collaborativegrouporder.NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING";
+    public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity.RESULT";
+    public static final String RESULT_EXTRA_GO_ADVENTURING = "com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +45,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
     @Override
     protected void onDestroy() {
         if(room != null) {
-            room.setNewCharsApprovalAdapter(null);
+            if(room.building != null) room.building.setNewCharsApprovalAdapter(null);
             unbindService(this);
         }
         super.onDestroy();
@@ -133,7 +137,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
 
         RecyclerView groupList = (RecyclerView) findViewById(R.id.ncaa_list);
         groupList.setLayoutManager(new LinearLayoutManager(this));
-        groupList.setAdapter(room.setNewCharsApprovalAdapter(new PartyDefinitionHelper.CharsApprovalHolderFactoryBinder<PcApprovalVh>() {
+        groupList.setAdapter(room.building.setNewCharsApprovalAdapter(new PartyDefinitionHelper.CharsApprovalHolderFactoryBinder<PcApprovalVh>() {
             @Override
             public PcApprovalVh createUnbound(ViewGroup parent, int viewType) {
                 return new PcApprovalVh(getLayoutInflater().inflate(R.layout.card_joining_character_server_output, parent, false));

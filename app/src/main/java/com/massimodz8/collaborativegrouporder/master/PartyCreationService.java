@@ -200,10 +200,6 @@ public class PartyCreationService extends PublishAcceptService {
         return count;
     }
 
-    public <VH extends RecyclerView.ViewHolder> PartyDefinitionHelper.CharsApprovalAdapter<VH> setNewCharsApprovalAdapter(PartyDefinitionHelper.CharsApprovalHolderFactoryBinder<VH> factory) {
-        return building.setNewCharsApprovalAdapter(factory);
-    }
-
     public AsyncActivityLoadUpdateTask<PersistentStorage.PartyOwnerData> saveParty(final @NonNull Activity stringResolver, @NonNull AsyncLoadUpdateTask.Callbacks cb) {
         return new AsyncActivityLoadUpdateTask<PersistentStorage.PartyOwnerData>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", stringResolver, cb) {
             @Override

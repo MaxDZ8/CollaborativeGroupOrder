@@ -51,7 +51,7 @@
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
         <activity
-            android:name=".NewCharactersApprovalActivity"
+            android:name=".master.NewCharactersApprovalActivity"
             android:label="@string/ncaa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data

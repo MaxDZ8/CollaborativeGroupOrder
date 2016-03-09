@@ -9,7 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:id="@+id/activityRoot"
-    tools:context="com.massimodz8.collaborativegrouporder.NewCharactersApprovalActivity">
+    tools:context=".master.NewCharactersApprovalActivity">
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,7 +24,9 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:indeterminateOnly="true"
+        android:indeterminate="true" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ncaa_list"
