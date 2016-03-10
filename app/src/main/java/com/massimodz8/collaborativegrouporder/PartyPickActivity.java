@@ -341,14 +341,10 @@ public class PartyPickActivity extends AppCompatActivity {
                     boolean owned = party instanceof PersistentStorage.PartyOwnerData.Group;
                     if(null != pending) pending.cancel(true);
                     if(owned) {
-                        AsyncRenamingStore<PersistentStorage.PartyOwnerData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, null, null);
-                        task.execute(makePartyOwnerData(prevDefs));
-                        pending = task;
+                        pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(prevDefs), null, null);
                     }
                     else {
-                        AsyncRenamingStore<PersistentStorage.PartyClientData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, null, null);
-                        task.execute(makePartyClientData(prevKeys));
-                        pending = task;
+                        pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(prevKeys), null, null);
                     }
                     if(restoreDeleted.isEnabled() && junkyard.isEmpty()) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -374,14 +370,10 @@ public class PartyPickActivity extends AppCompatActivity {
                         }
                     });
             if(viewHolder instanceof OwnedPartyHolder) {
-                AsyncRenamingStore<PersistentStorage.PartyOwnerData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, sb, undo);
-                task.execute(makePartyOwnerData(ioDefs));
-                pending = task;
+                pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(ioDefs), sb, undo);
             }
             else {
-                AsyncRenamingStore<PersistentStorage.PartyClientData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, sb, undo);
-                task.execute(makePartyClientData(ioKeys));
-                pending = task;
+                pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(ioKeys), sb, undo);
             }
         }
 
@@ -698,19 +690,22 @@ public class PartyPickActivity extends AppCompatActivity {
 
 
     /// If anything fails, trigger a runnable, otherwise a snackbar.
-    public class AsyncRenamingStore<Container extends MessageNano> extends AsyncTask<Container, Void, Exception> {
+    public class AsyncRenamingStore<Container extends MessageNano> extends AsyncTask<Void, Void, Exception> {
         final String target;
         final Snackbar showOnSuccess;
         final Runnable undo;
+        final Container container;
 
-        public AsyncRenamingStore(String fileName, Snackbar showOnSuccess, Runnable undo) {
+        public AsyncRenamingStore(@NonNull String fileName, @NonNull Container container, @Nullable Snackbar showOnSuccess, @Nullable Runnable undo) {
             target = fileName;
+            this.container = container;
             this.showOnSuccess = showOnSuccess;
             this.undo = undo;
+            super.execute();
         }
 
         @Override
-        protected Exception doInBackground(Container... params) {
+        protected Exception doInBackground(Void... params) {
             File previously = new File(getFilesDir(), target);
             File store;
             try {
@@ -723,7 +718,7 @@ public class PartyPickActivity extends AppCompatActivity {
                 protected String getString(int resource) {
                     return PartyPickActivity.this.getString(resource);
                 }
-            }.storeValidGroupData(store, params[0]);
+            }.storeValidGroupData(store, container);
             if(previously.exists() && !previously.delete()) {
                 if(!store.delete()) store.deleteOnExit();
                 return new Exception(getString(R.string.ppa_failedOldDelete));
@@ -775,14 +770,10 @@ public class PartyPickActivity extends AppCompatActivity {
                     }
                 });
         if(null != el.owned) {
-            AsyncRenamingStore<PersistentStorage.PartyOwnerData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, sb, null);
-            task.execute(makePartyOwnerData(defs));
-            pending = task;
+            pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(defs), sb, null);
         }
         else {
-            AsyncRenamingStore<PersistentStorage.PartyClientData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, sb, null);
-            task.execute(makePartyClientData(keys));
-            pending = task;
+            pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(keys), sb, null);
         }
     }
 }
