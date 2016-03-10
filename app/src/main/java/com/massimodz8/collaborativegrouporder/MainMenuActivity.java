@@ -278,17 +278,21 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 dataRefreshed();
             } break;
             case REQUEST_PICK_PARTY: {
-                int linear = data.getIntExtra(PartyPickActivity.EXTRA_PARTY_INDEX, -1);
-                boolean owned = data.getBooleanExtra(PartyPickActivity.EXTRA_TRUE_IF_PARTY_OWNED, false);
-                if(linear < 0) return;
                 activeConnections = null;
                 activeLanding = null;
-                if(owned) {
-                    activeParty = groupDefs.get(linear);
+                groupDefs = PartyPickActivity.ioDefs;
+                groupKeys = PartyPickActivity.ioKeys;
+                PartyPickActivity.ioDefs = null;
+                PartyPickActivity.ioKeys = null;
+                dataRefreshed();
+                if(PartyPickActivity.goDef != null) {
+                    activeParty = PartyPickActivity.goDef;
+                    PartyPickActivity.goDef = null;
                     startNewSessionActivity();
                 }
                 else {
-                    activeParty = groupKeys.get(linear);
+                    activeParty = PartyPickActivity.goKey;
+                    PartyPickActivity.goKey = null;
                     startGoAdventuringActivity();
                 }
             } break;
