@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -30,11 +31,9 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.Vector;
 
-public class SelectFormingGroupActivity extends AppCompatActivity {
+public class SelectFormingGroupActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
     @Override
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -49,6 +48,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         if(null != state.explorer) {
             explorer = state.explorer;
             state.explorer = null;
+            explorer.setCallback(this);
         }
         else {
             final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
@@ -58,7 +58,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                         .show();
                 return;
             }
-            explorer.beginDiscovery(MainMenuActivity.GROUP_FORMING_SERVICE_TYPE, nsd);
+            explorer.beginDiscovery(PartyCreationService.PARTY_FORMING_SERVICE_TYPE, nsd, this);
         }
         if(null != state.candidates) {
             candidates = state.candidates;
@@ -101,24 +101,11 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             for(Pumper.MessagePumpingThread p : state.pumpers) netPump.pump(p);
             state.pumpers = null;
         }
-        // Now, in every moment the device could be rotated and this activity would be destroyed and recreated.
-        // The service will keep searching and maintaining a list of found services I can later pull with ease,
-        // it keeps churning even when I am destroyed... more or less. When I am destroyed I just need to pull
-        // the previous data, which is very easy as keys are always nonzero.
-        // However, in the meanwhile I have to check out the services found every once in a while.
-        checkDiscoveries = new Timer();
-        checkDiscoveries.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHECK_NETWORK_SERVICES));
-            }
-        }, INITIAL_SERVICE_POLLING_DELAY_MS, SERVICE_POLLING_PERIOD_MS);
     }
 
     @Override
     protected void onDestroy() {
         if(explorer != null) explorer.stopDiscovery();
-        if(checkDiscoveries != null) checkDiscoveries.cancel();
         if(netPump != null) netPump.shutdown();
         super.onDestroy();
     }
@@ -129,6 +116,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         if(null != candidates && candidates.size() > 0) {
             state.candidates = candidates;
             candidates = null;
+            explorer.unregisterCallback();
             state.explorer = explorer;
             explorer = null;
             state.pumpers = netPump.move();
@@ -137,14 +125,18 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         //super.onSaveInstanceState(out);
     }
 
+    // AccumulatingDiscoveryListener.OnTick vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+
+    @Override
+    public void tick(int old, int current) {
+        guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHECK_NETWORK_SERVICES));
+    }
+    // AccumulatingDiscoveryListener.OnTick ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 
     public void startExplicitConnectionActivity_callback(View btn) {
         startActivityForResult(new Intent(this, ExplicitConnectionActivity.class), EXPLICIT_CONNECTION_REQUEST);
     }
-
-
-    static final int INITIAL_SERVICE_POLLING_DELAY_MS = 2500;
-    static final int SERVICE_POLLING_PERIOD_MS = 1000;
 
     static final int MSG_CHECK_NETWORK_SERVICES = 1;
     static final int MSG_SOCKET_DISCONNECTED = 2;
@@ -158,7 +150,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     int prevDiscoveryStatus = AccumulatingDiscoveryListener.IDLE;
 
     GroupListAdapter listAdapter;
-    Timer checkDiscoveries;
     Handler guiHandler = new MyHandler(this);
     Pumper netPump;
 
@@ -468,11 +459,11 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         }
 
         findViewById(R.id.selectFormingGroupActivity_initializing).setVisibility(explorer != null ? View.GONE : View.VISIBLE);
-        ViewUtils.setVisibility(this, discovering ? View.VISIBLE : View.GONE,
+        MaxUtils.setVisibility(this, discovering ? View.VISIBLE : View.GONE,
                 R.id.selectFormingGroupActivity_progressBar);
         findViewById(R.id.selectFormingGroupActivity_groupList).setVisibility(candidates.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         findViewById(R.id.sfga_confirmInstructions).setVisibility(talked == 0? View.GONE : View.VISIBLE);
-        ViewUtils.setVisibility(this, View.VISIBLE,
+        MaxUtils.setVisibility(this, View.VISIBLE,
                 R.id.sfga_explicitConnectionInstructions,
                 R.id.selectFormingGroupActivity_startExplicitConnection);
 
@@ -490,10 +481,26 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         Pumper.MessagePumpingThread pumper = state.pumpers[0];
         state.pumpers = null;
-        final GroupState add = new GroupState(pumper.getSource()).explicit();
-        add.group = state.probed;
+        Network.GroupInfo probed = state.probed;
         state.probed = null;
+        if(!probed.forming) {
+            pumper.interrupt();
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.sfga_connectedNotForming)
+                    .show();
+            return;
+        }
+        if(probed.doormat.length != 0) {
+            pumper.interrupt();
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.sfga_connectedGotDoormat))
+                    .show();
+            return;
+        }
 
+        final GroupState add = new GroupState(pumper.getSource()).explicit();
+        add.group = new PartyInfo(probed.version, probed.name);
+        add.group.options = probed.options;
         candidates.add(add);
         netPump.pump(pumper);
         refreshGUI();

@@ -2,6 +2,8 @@ package com.massimodz8.collaborativegrouporder.networkio;
 
 import android.os.Handler;
 
+import android.support.annotation.NonNull;
+
 import com.google.protobuf.nano.MessageNano;
 
 import java.io.IOException;
@@ -25,7 +27,7 @@ public class Pumper {
     protected final Handler handler;
     private final int disconnectMessageCode, detachingMessageCode;
 
-    public Pumper(Handler handler, int disconnectMessageCode, int detachingMessageCode) {
+    public Pumper(@NonNull Handler handler, int disconnectMessageCode, int detachingMessageCode) {
         this.handler = handler;
         this.disconnectMessageCode = disconnectMessageCode;
         this.detachingMessageCode = detachingMessageCode;
@@ -56,6 +58,7 @@ public class Pumper {
         rebind.destination = funnel;
     }
 
+    @Deprecated
     public boolean forget(MessageChannel c) {
         synchronized(clients) {
             for (int i = 0; i < clients.size(); i++) {
@@ -169,6 +172,7 @@ public class Pumper {
                     if(source.recv.getPosition() != expect) throw new ByteCountMismatchException(type, expect, source.recv.getPosition());
                     source.recv.rewindToPosition(0);
                     if(real.mangle(source, wire)) {
+                        destination.detaching(source);
                         destination = null;
                         spinForTarget();
                     }
@@ -203,6 +207,7 @@ public class Pumper {
 
     private volatile boolean silence = false;
 
+    @Deprecated
     public void shutdown() {
         silence = true;
         synchronized(clients) {

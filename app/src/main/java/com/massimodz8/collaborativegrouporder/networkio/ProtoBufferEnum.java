@@ -13,4 +13,6 @@ public interface ProtoBufferEnum {
     int GROUP_FORMED = 5;
     int PLAYING_CHARACTER_DEFINITION = 6;
     int GROUP_READY = 7;
+
+    int CHARACTER_OWNERSHIP = 8;
 }

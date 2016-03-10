@@ -1,5 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.support.annotation.StringRes;
+
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
@@ -20,7 +22,13 @@ import java.util.Arrays;
  * structures.
  */
 public abstract class PersistentDataUtils {
-    protected abstract String getString(int resource);
+    private final int minimumSaltBytes;
+
+    protected PersistentDataUtils(int minimumSaltBytes) {
+        this.minimumSaltBytes = minimumSaltBytes;
+    }
+
+    protected abstract String getString(@StringRes int resource);
 
     public static final int OWNER_DATA_VERSION = 1;
     public static final int CLIENT_DATA_WRITE_VERSION = 1;
@@ -98,13 +106,14 @@ public abstract class PersistentDataUtils {
         final int start = errors.size();
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
-        if(group.salt.length < 1) errors.add(premise + getString(R.string.persistentStorage_missingKey));
-        if(group.usually == null) errors.add(premise + getString(R.string.persistentStorage_missingPartyDefinition));
-        else {
-            ActorValidator usual = new ActorValidator(true, errors, String.format("%1$s->%2$s", premise, getString(R.string.persistentStorage_partyDefValidationPremise)));
-            usual.check(getString(R.string.persistentStorage_playingCharacters), group.usually.party, true);
-            usual.check(getString(R.string.persistentStorage_NPC), group.usually.npcs, false);
 
+        new ActorValidator(true, errors, String.format("%1$s->%2$s", premise, getString(R.string.persistentStorage_partyDefValidationPremise)))
+                .check(getString(R.string.persistentStorage_playingCharacters), group.party, true)
+                .check(getString(R.string.persistentStorage_NPC), group.npcs, false);
+
+        for(int loop = 0; loop < group.devices.length; loop++) {
+            PersistentStorage.PartyOwnerData.DeviceInfo dev = group.devices[loop];
+            if(dev.salt.length < minimumSaltBytes) errors.add(premise + ", device[%1$s]: empty salt.");
         }
         return start != errors.size();
     }
@@ -149,21 +158,21 @@ public abstract class PersistentDataUtils {
             base = premiseBase;
         }
 
-        void check(String mod, PersistentStorage.Actor[] list, boolean required) {
+        ActorValidator check(String mod, PersistentStorage.ActorDefinition[] list, boolean required) {
             final String premise = base + mod;
             if(list.length == 0) {
                 if(required) errors.add(premise + getString(R.string.persistentStorage_groupWithNoActors));
-                return;
+                return this;
             }
             for(int i = 0; i < list.length; i++) {
-                final PersistentStorage.Actor actor = list[i];
+                final PersistentStorage.ActorDefinition actor = list[i];
                 String head = String.format("%1$s[%2$d]", premise, i);
                 if(actor.name.isEmpty()) errors.add(head + getString(R.string.persistentStorage_actorMissingName));
                 head = String.format("%1$s(%2$s)", head, actor.name);
                 if(actor.level == 0) errors.add(head + getString(R.string.persistentStorage_badLevel));
-                if(!actor.preparedAction.isEmpty() && preparedActionForbidden) errors.add(head + getString(R.string.persistentStorage_preparedActionsForbidden));
                 check(head + getString(R.string.persistentStorage_actorStatsPremise), actor.stats);
             }
+            return this;
         }
 
         void check(String premise, PersistentStorage.ActorStatistics[] list) {

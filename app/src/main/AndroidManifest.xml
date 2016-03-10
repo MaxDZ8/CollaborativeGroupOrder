@@ -43,7 +43,7 @@
             android:name=".ExplicitConnectionActivity"
             android:label="@string/eca_title" />
         <activity
-            android:name=".NewPartyDeviceSelectionActivity"
+            android:name=".master.NewPartyDeviceSelectionActivity"
             android:label="@string/npdsa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -51,7 +51,7 @@
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
         <activity
-            android:name=".NewCharactersApprovalActivity"
+            android:name=".master.NewCharactersApprovalActivity"
             android:label="@string/ncaa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -74,6 +74,42 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
+        <activity
+            android:name=".master.GatheringActivity"
+            android:label="@string/ga_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".JoinSessionActivity"
+            android:label="@string/jsa_title"
+            android:parentActivityName=".MainMenuActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".client.CharSelectionActivity"
+            android:label="@string/csa_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+
+        <service
+            android:name=".master.PartyJoinOrderService"
+            android:enabled="true"
+            android:exported="false"
+            android:label="@string/pjos_label" />
+        <service
+            android:name=".master.PartyCreationService"
+            android:enabled="true"
+            android:exported="false"
+            android:label="@string/pcs_label" />
     </application>
 
 </manifest>

@@ -5,8 +5,13 @@ option java_package = "com.massimodz8.collaborativegrouporder.protocol";
 
 // Hello server, I am device (unknown), can you tell me which groups are you running?
 // If the server thinks the device version is compatible, it will reply GroupInfo. Otherwise it will terminate connection.
+//
+// The reply is always GroupInfo, but its contents depend on whatever the server is forming a group or not.
+// The server will set GroupInfo.forming accordingly and when it's true, it will also set a doormat.
+// The client will then have to send another Hello with authorize set to a matching key.
 message Hello {
     uint32 version = 1; // default 0 is an invalid version, this must be set from code and sent across the wire.
+    bytes authorize = 2; // invalid to use both verify and authorize.
 }
 
 
@@ -15,6 +20,7 @@ message GroupInfo {
     string name = 2;
     repeated string options = 3; // "master_initiative_rolls", "scribble", "health_points", "temporary_effects"
     bool forming = 4; // if true we're going to accept new devices in the group, otherwise we go adventuring and the group is 'closed'
+    bytes doormat = 5;
 }
 
 
@@ -26,7 +32,7 @@ message GroupInfo {
 message CharBudget {
     uint32 total = 1;
     uint32 period = 2; // in milliseconds, clients are suggested to wait slightly more before re-enabling messaging
-	uint32 charSpecific = 3; // when this is != 0 then this is index+1 of the character on device gaining the budget.
+    uint32 charSpecific = 3; // when this is != 0 then this is index+1 of the character on device gaining the budget.
 }
 
 
@@ -36,18 +42,18 @@ message CharBudget {
 // The first non-empty string sent causes the server to promote the client to Identified phase.
 message PeerMessage {
     string text = 1;
-	uint32 charSpecific = 2; // when this is != 0 then this is index+1 of the character on device gaining the budget.
+    uint32 charSpecific = 2; // when this is != 0 then this is index+1 of the character on device gaining the budget.
 }
 
 
 // Server to client. This would be better sent over cryptographic security channels as the data is to be hashed.
 message GroupFormed {
     bytes salt = 1; // Concatenate salt to group name and hash to obtain a device key for later joining the group.
-	
-	// The following is valid only if salt is empty.
-	// This message is also re-used to confirm characters to peers.
-	uint32 peerKey = 2; // key corresponding to character definition
-	bool accepted = 3; // false: server kicked character, start from scratch. True: server recorded character, lock it up.
+    
+    // The following is valid only if salt is empty.
+    // This message is also re-used to confirm characters to peers.
+    uint32 peerKey = 2; // key corresponding to character definition
+    bool accepted = 3; // false: server kicked character, start from scratch. True: server recorded character, lock it up.
 }
 
 
@@ -55,51 +61,64 @@ message GroupFormed {
 message PlayingCharacterDefinition {
     string name = 1;
     uint32 initiativeBonus = 2;
-	uint32 healthPoints = 3;
-	uint32 experience = 4;
-	uint32 peerKey = 5; // When client sends a new proposal to server, this will be used to identify the PC relative to the peer, must be unique. Reusing the same key re-defines a character.
-	uint32 level = 6;
+    uint32 healthPoints = 3;
+    uint32 experience = 4;
+    uint32 peerKey = 5; // When client sends a new proposal to server, this will be used to identify the PC relative to the peer, must be unique. Reusing the same key re-defines a character. Server uses this as well, see PlayingCharacterList.
+    uint32 level = 6;
 }
 
 
 // Server -> client
 message GroupReady {
     bool go_adventuring = 1; // if true then terminate "join group" activity and open "go adventuring" activity right away.
+    repeated PlayingCharacterDefinition yours = 2; // only considered when terminating the character ownership process below.
 }
 
 
-// Client -> server
-message GroupKey {
-    string generator = 1; // a cheap form of automated identification (would be adeguate over SSL but not really there, it's todo.
-}
-
-
-// Server -> client
-message PlayingCharacterList {
-    message PersistentCharacter {
-        PlayingCharacterDefinition pc = 1;
-        uint32 groupIndex = 2; // uniquely identifying a specific character in the group, never repeating, can be 0
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Below: normal 'adventuring' sub-protocol.
+// After the client has produced a Hello demostrating it has the valid key,
+// the server will send a stream of PlayingCharacterDefinition. Clients take those and put them in their AVAILABLE list.
+// Further PlayingCharacterDefinition can come at any time. They are guaranteed to have unique peerKey.
+//
+// The clients handshake character ownership by using CharacterOwnership messages.
+// When the client sends a CharacterOwnership, it requests the server for one of the following actions:
+// - Move a character from AVAILABLE to me
+// - Move a character from me to AVAILABLE
+// Clients are assumed to never have more than 1 request per character peerKey so they can be trivially mapped.
+// The server sequentializes all requests and replies to each one using CharacterOwnership as well. Those come in three flavours
+// depending on what was sent. The bottom line is a CharacterOwnership is invalid if its .ticket is different from the server order.
+// This makes possible to understand which requests are obsolete and discard them.
+//
+// The server starts from .ticket=0.
+// The next valid ticket will be .ticket=1, one client will get it, the others will be invalid and discarded.
+// All well formed requests get a reply. How?
+// As a start, all clients but the first get an .type=OBSOLETE reply with the .ticket they used. They will have to retry.
+// The first client instead gets either .type=ACCEPTED or .type=REJECTED.
+// 
+// However, there are a few special behaviours where the server sends CharacterOwnership unsolicited:
+// - Server can give a character to a client forcefully: YOURS
+// - Server can move a character back to unassigned list, taking it away from a client: AVAIL
+// - Server informs peers a certain character has been assigned to someone: BOUND
+//
+// The process continues until the server decides to send a GroupReady message with a populated .yours array.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+message CharacterOwnership {
+    uint32 character = 1; // unique group id, as in PlayingCharacterDefinition.peerKey
+    uint32 ticket = 2; // client->server: sequentializing index, server->client next ticket considered valid.
+    enum Type {
+        REQUEST = 0;  // client->server, only valid value otherwise server will just discard
+        OBSOLETE = 1; // server->client, try again!
+        ACCEPTED = 2; // server->client, your request regarding .character is ok, char is now yours or to avail, as you asked
+        REJECTED = 3; // server->client, keep ownership assignment as previously.
+        
+        YOURS = 4; // unsolicited server->client
+        AVAIL = 5; // unsolicited server->client
+        BOUND = 6; // unsolicited server->client
     }
-    enum ListType {
-        READY = 0;
-        AVAIL = 1;
-        YOURS = 2;
-    }
-    repeated PersistentCharacter payload = 1;
-    ListType set = 2;
-}
-
-
-// Client -> server please move a certain character from my list to the avail list or, from avail to me.
-message PlayingCharacterMoveRequest {
-    bool take = 1; // if true, we're pulling a character from available list, otherwise giving it up to avail.
-    uint32 character = 2; // unique group id
-}
-
-
-// Server->client
-message Adventuring {
-    repeated PlayingCharacterList.PersistentCharacter yours = 1; // this is the list of characters you will manage, overrides your own.
+    Type type = 3;
 }
 
 

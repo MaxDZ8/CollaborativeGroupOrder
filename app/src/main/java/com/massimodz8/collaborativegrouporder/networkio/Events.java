@@ -81,4 +81,35 @@ public interface Events {
             this.accepted = accepted;
         }
     }
+
+    class AuthToken {
+        public final MessageChannel origin;
+        public final byte[] doormat;
+
+        public AuthToken(MessageChannel origin, byte[] doormat) {
+            this.origin = origin;
+            this.doormat = doormat;
+        }
+    }
+
+    class Hello {
+        public final MessageChannel origin;
+
+        public Hello(MessageChannel origin, Network.Hello payload) {
+            this.origin = origin;
+            this.payload = payload;
+        }
+
+        public final Network.Hello payload;
+    }
+
+    class CharOwnership {
+        public final MessageChannel origin;
+        public final Network.CharacterOwnership payload;
+
+        public CharOwnership(MessageChannel origin, Network.CharacterOwnership payload) {
+            this.origin = origin;
+            this.payload = payload;
+        }
+    }
 }

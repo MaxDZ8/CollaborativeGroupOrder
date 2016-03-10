@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -32,6 +33,8 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        final ActionBar sab = getSupportActionBar();
+        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(netPump.getClientCount() != 0) state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
@@ -133,7 +136,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         findViewById(R.id.eca_probingProgress).setVisibility(handShaking ? View.VISIBLE : View.GONE);
         findViewById(R.id.eca_probing).setVisibility(null != connecting? View.VISIBLE : View.GONE);
         findViewById(R.id.eca_connected).setVisibility(null == connecting && netPump.getClientCount() > 0? View.VISIBLE : View.GONE);
-        ViewUtils.setEnabled(this, !handShaking,
+        MaxUtils.setEnabled(this, !handShaking,
                 R.id.eca_inetAddr,
                 R.id.eca_port,
                 R.id.eca_attempt);
@@ -171,18 +174,10 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     }
 
     private void replied(Events.GroupInfo result) { // oh yeah I like this
-        if(!result.payload.forming) {
-            String res = getString(R.string.eca_partyNotOpenMsg);
-            new AlertDialog.Builder(this)
-                    .setMessage(String.format(res, result.payload.name))
-                    .show();
-        }
-        PartyInfo info = new PartyInfo(result.payload.version, result.payload.name);
-        info.options = result.payload.options;
         Intent send = new Intent(RESULT_ACTION);
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
-        state.probed = info;
+        state.probed = result.payload;
         handShaking = false;
         attempting = null;
         setResult(RESULT_OK, send);

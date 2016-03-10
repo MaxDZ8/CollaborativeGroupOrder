@@ -8,47 +8,31 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.massimodz8.collaborativegrouporder.NewCharactersApprovalActivity">
+    android:id="@+id/activityRoot"
+    tools:context=".master.NewCharactersApprovalActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/ncaa_savingPleaseWait"
-        android:id="@+id/ncaa_saveFeedback"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@string/generic_initializing"
+        android:id="@+id/ncaa_status"
         android:layout_gravity="center"
-        android:visibility="gone" />
+        android:visibility="visible" />
+
+    <ProgressBar
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:indeterminateOnly="true"
+        android:indeterminate="true" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/ncaa_list"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".5"
-        android:visibility="visible" />
-
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/ncaa_action"
-        android:id="@+id/ncaa_action"
-        android:enabled="false"
-        android:onClick="action_callback" />
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Place holder for ads"
-        android:id="@+id/textView8"
-        android:editable="false"
-        android:enabled="true"
-        android:layout_gravity="bottom|center_horizontal"
-        android:gravity="center_horizontal"
-        android:textColor="#ff00ff"
-        android:textStyle="bold|italic"
-        android:background="#00ff00"
-        android:textSize="28sp"
-        android:layout_marginTop="8sp" />
+        android:visibility="visible"
+        android:layout_height="fill_parent" />
 
 </LinearLayout>

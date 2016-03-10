@@ -1,7 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.NonNull;
 
 import com.google.protobuf.nano.MessageNano;
 
@@ -14,17 +14,28 @@ import java.util.ArrayList;
  * Used by CreatePartyActivity and JoinGroupActivity to load and add the new data.
  */
 public abstract class AsyncLoadUpdateTask<Container extends MessageNano> extends AsyncTask<Void, Void, ArrayList<String>> {
-    protected AsyncLoadUpdateTask(File filesDir, String fileName, PersistentDataUtils helper, String targetFilePrefix) {
+    public interface Callbacks {
+        /**
+         * Called if something goes wrong attempting to load the data already existing. A non-existing
+         * file does not require to load so it does not generate errors. Will count at least 1.
+         */
+        void onFailedExistingLoad(@NonNull ArrayList<String> errors);
+        void onFailedSave(@NonNull Exception wrong);
+        void onCompletedSuccessfully();
+    }
+    protected AsyncLoadUpdateTask(File filesDir, String fileName, PersistentDataUtils helper, String targetFilePrefix, @NonNull Callbacks callbacks) {
         this.dir = filesDir;
         this.fileName = fileName;
         this.helper = helper;
         this.targetFilePrefix = targetFilePrefix;
+        this.callbacks = callbacks;
     }
 
     final File dir;
     final String fileName;
     final PersistentDataUtils helper;
     final String targetFilePrefix;
+    final Callbacks callbacks;
 
     public static final int ERROR_BAD_INFO_FROM_STORAGE = 1;
     public static final int ERROR_COULD_NOT_STORE_NEW_DATA = 2;
@@ -61,11 +72,7 @@ public abstract class AsyncLoadUpdateTask<Container extends MessageNano> extends
 
     protected void onPostExecute(ArrayList<String> lotsa) {
         if (lotsa != null) {
-            StringBuilder concat = new StringBuilder();
-            for (String err : lotsa) concat.append(err).append('\n');
-            newAlertDialogBuilder()
-                    .setMessage(String.format(getError(ERROR_BAD_INFO_FROM_STORAGE), concat.toString()))
-                    .show();
+            callbacks.onFailedExistingLoad(lotsa);
             return;
         }
         appendNewEntry(loaded);
@@ -90,19 +97,15 @@ public abstract class AsyncLoadUpdateTask<Container extends MessageNano> extends
         @Override
         protected void onPostExecute(Exception e) {
             if(e != null) {
-                newAlertDialogBuilder()
-                        .setMessage(String.format(getError(ERROR_COULD_NOT_STORE_NEW_DATA), e.getLocalizedMessage()))
-                        .show();
+                callbacks.onFailedSave(e);
                 return;
             }
-            onCompletedSuccessfully();
+            callbacks.onCompletedSuccessfully();
         }
     }
 
-    protected abstract void onCompletedSuccessfully();
     protected abstract String getError(int code);
     protected abstract void appendNewEntry(Container loaded);
-    protected abstract AlertDialog.Builder newAlertDialogBuilder();
     protected abstract void setVersion(Container result);
     protected abstract void upgrade(PersistentDataUtils helper, Container result);
     protected abstract ArrayList<String> validateLoadedDefinitions(PersistentDataUtils helper, Container result);

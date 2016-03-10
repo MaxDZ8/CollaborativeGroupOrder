@@ -26,13 +26,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.protobuf.nano.MessageNano;
+import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.File;
@@ -40,14 +39,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Vector;
 
 
 public class PartyPickActivity extends AppCompatActivity {
+    // Populate those before launching the activity. They will be updated if we remove a party.
+    // In other terms, always fetch back those, regardless activity result status.
+    public static ArrayList<PersistentStorage.PartyOwnerData.Group> ioDefs;
+    public static ArrayList<PersistentStorage.PartyClientData.Group> ioKeys;
 
     private ViewPager pager;
     private RecyclerView partyList;
-    CrossActivityShare state;
     RecyclerView.Adapter listAll = new MyPartyListAdapter();
     boolean backToPartyList;
     CoordinatorLayout guiRoot;
@@ -59,9 +60,8 @@ public class PartyPickActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_party);
 
-        state = (CrossActivityShare) getApplicationContext();
-        for(PersistentStorage.PartyOwnerData.Group el : state.groupDefs) partyState.put(el, new PartyItemState(el));
-        for(PersistentStorage.PartyClientData.Group el : state.groupKeys) partyState.put(el, new PartyItemState(el));
+        for(PersistentStorage.PartyOwnerData.Group el : ioDefs) partyState.put(el, new PartyItemState(el));
+        for(PersistentStorage.PartyClientData.Group el : ioKeys) partyState.put(el, new PartyItemState(el));
 
         guiRoot = (CoordinatorLayout) findViewById(R.id.ppa_activityRoot);
         pager = (ViewPager)findViewById(R.id.ppa_pager);
@@ -73,11 +73,11 @@ public class PartyPickActivity extends AppCompatActivity {
         partyList.addItemDecoration(new PreSeparatorDecorator(partyList, this) {
             @Override
             protected boolean isEligible(int position) {
-                if (state.groupDefs.size() > 0) {
+                if (ioDefs.size() > 0) {
                     if (position < 2) return false; // header and first entry
                     position--;
-                    if (position < state.groupDefs.size()) return true;
-                    position -= state.groupDefs.size();
+                    if (position < ioDefs.size()) return true;
+                    position -= ioDefs.size();
                 }
                 return position >= 2;
             }
@@ -210,13 +210,13 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int position) {
-            if(state.groupDefs.size() > 0) {
+            if(ioDefs.size() > 0) {
                 if(0 == position) return 0;
-                if(position < state.groupDefs.size()) return partyState.get(state.groupDefs.elementAt(position)).unique;
-                position -= state.groupDefs.size();
+                if(position < ioDefs.size()) return partyState.get(ioDefs.get(position)).unique;
+                position -= ioDefs.size();
             }
             if(0 == position) return 1;
-            if(position < state.groupKeys.size()) return partyState.get(state.groupKeys.elementAt(position)).unique;
+            if(position < ioKeys.size()) return partyState.get(ioKeys.get(position)).unique;
             return RecyclerView.NO_ID;
         }
 
@@ -246,20 +246,20 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             int count = 0;
-            if(!state.groupDefs.isEmpty()) count++; // "owned parties" kinda-header
-            count += state.groupDefs.size();
-            if(!state.groupKeys.isEmpty()) count++; // "owned keys" kinda-header
-            count += state.groupKeys.size();
+            if(!ioDefs.isEmpty()) count++; // "owned parties" kinda-header
+            count += ioDefs.size();
+            if(!ioKeys.isEmpty()) count++; // "owned keys" kinda-header
+            count += ioKeys.size();
             return count;
         }
 
         @Override
         public int getItemViewType(int position) {
-            if(state.groupDefs.size() > 0) {
+            if(ioDefs.size() > 0) {
                 if (0 == position) return OwnedPartySeparator.LAYOUT;
                 position--;
-                if(position < state.groupDefs.size()) return OwnedPartyHolder.LAYOUT;
-                position -= state.groupDefs.size();
+                if(position < ioDefs.size()) return OwnedPartyHolder.LAYOUT;
+                position -= ioDefs.size();
             }
             if(0 == position) return JoinedPartySeparator.LAYOUT;
             return JoinedPartyHolder.LAYOUT;
@@ -286,9 +286,9 @@ public class PartyPickActivity extends AppCompatActivity {
         }
     }
 
-    String list(PersistentStorage.Actor[] party) {
+    String list(PersistentStorage.ActorDefinition[] party) {
         StringBuilder result = new StringBuilder();
-        for(PersistentStorage.Actor actor : party) {
+        for(PersistentStorage.ActorDefinition actor : party) {
             if(result.length() > 0) result.append(getString(R.string.ppa_playingCharacterNameSeparator));
             result.append(actor.name);
         }
@@ -310,20 +310,20 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            final Vector<PersistentStorage.PartyOwnerData.Group> prevDefs = new Vector<>(state.groupDefs);
-            final Vector<PersistentStorage.PartyClientData.Group> prevKeys = new Vector<>(state.groupKeys);
+            final ArrayList<PersistentStorage.PartyOwnerData.Group> prevDefs = new ArrayList<>(ioDefs);
+            final ArrayList<PersistentStorage.PartyClientData.Group> prevKeys = new ArrayList<>(ioKeys);
             final MessageNano party;
             final String name;
             if (viewHolder instanceof OwnedPartyHolder) {
                 OwnedPartyHolder real = (OwnedPartyHolder) viewHolder;
                 party = real.group;
                 name = real.group.name;
-                state.groupDefs.remove(real.group);
+                ioDefs.remove(real.group);
             } else {
                 JoinedPartyHolder real = (JoinedPartyHolder) viewHolder;
                 party = real.group;
                 name = real.group.name;
-                state.groupKeys.remove(real.group);
+                ioKeys.remove(real.group);
             }
             final PartyItemState pis = partyState.get(party);
             junkyard.add(pis);
@@ -333,8 +333,8 @@ public class PartyPickActivity extends AppCompatActivity {
             final Runnable undo = new Runnable() {
                 @Override
                 public void run() {
-                    state.groupDefs = prevDefs;
-                    state.groupKeys = prevKeys;
+                    ioDefs = prevDefs;
+                    ioKeys = prevKeys;
                     junkyard.remove(pis);
                     partyState.put(party, pis);
                     listAll.notifyDataSetChanged();
@@ -375,12 +375,12 @@ public class PartyPickActivity extends AppCompatActivity {
                     });
             if(viewHolder instanceof OwnedPartyHolder) {
                 AsyncRenamingStore<PersistentStorage.PartyOwnerData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, sb, undo);
-                task.execute(makePartyOwnerData(state.groupDefs));
+                task.execute(makePartyOwnerData(ioDefs));
                 pending = task;
             }
             else {
                 AsyncRenamingStore<PersistentStorage.PartyClientData> task = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, sb, undo);
-                task.execute(makePartyClientData(state.groupKeys));
+                task.execute(makePartyClientData(ioKeys));
                 pending = task;
             }
         }
@@ -394,19 +394,19 @@ public class PartyPickActivity extends AppCompatActivity {
         }
     }
 
-    private static PersistentStorage.PartyOwnerData makePartyOwnerData(Vector<PersistentStorage.PartyOwnerData.Group> defs) {
+    private static PersistentStorage.PartyOwnerData makePartyOwnerData(ArrayList<PersistentStorage.PartyOwnerData.Group> defs) {
         PersistentStorage.PartyOwnerData all = new PersistentStorage.PartyOwnerData();
         all.version = PersistentDataUtils.OWNER_DATA_VERSION;
         all.everything = new PersistentStorage.PartyOwnerData.Group[defs.size()];
-        for(int cp = 0; cp < defs.size(); cp++) all.everything[cp] = defs.elementAt(cp);
+        for(int cp = 0; cp < defs.size(); cp++) all.everything[cp] = defs.get(cp);
         return all;
     }
 
-    private static PersistentStorage.PartyClientData makePartyClientData(Vector<PersistentStorage.PartyClientData.Group> defs) {
+    private static PersistentStorage.PartyClientData makePartyClientData(ArrayList<PersistentStorage.PartyClientData.Group> defs) {
         PersistentStorage.PartyClientData all = new PersistentStorage.PartyClientData();
         all.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
         all.everything = new PersistentStorage.PartyClientData.Group[defs.size()];
-        for(int cp = 0; cp < defs.size(); cp++) all.everything[cp] = defs.elementAt(cp);
+        for(int cp = 0; cp < defs.size(); cp++) all.everything[cp] = defs.get(cp);
         return all;
     }
 
@@ -428,10 +428,10 @@ public class PartyPickActivity extends AppCompatActivity {
 
         public void rebind(int position) {
             if(0 != position) position--; // position 0 is for the holder
-            if(position >= state.groupDefs.size()) return; // wut? that's impossible
-            group = state.groupDefs.elementAt(position);
+            if(position >= ioDefs.size()) return; // wut? that's impossible
+            group = ioDefs.get(position);
             name.setText(group.name);
-            chars.setText(list(group.usually.party));
+            chars.setText(list(group.party));
             created.setText(R.string.ppa_TODO_creationDate);
             lastPlay.setText(R.string.ppa_TODO_lastPlayDate_owned);
             currentState.setText(R.string.ppa_TODO_currentState);
@@ -441,8 +441,8 @@ public class PartyPickActivity extends AppCompatActivity {
         public void onClick(View v) {
             if(null == group) return; // will never happen.
             int match;
-            for(match = 0; match < state.groupDefs.size(); match++) {
-                if(state.groupDefs.elementAt(match) == group) break;
+            for(match = 0; match < ioDefs.size(); match++) {
+                if(ioDefs.get(match) == group) break;
             } // will always match
             backToPartyList = true;
             pager.setCurrentItem(match, true);
@@ -464,13 +464,13 @@ public class PartyPickActivity extends AppCompatActivity {
         }
 
         public void rebind(int position) {
-            if(state.groupDefs.size() > 0) {
+            if(ioDefs.size() > 0) {
                 position--;
-                position -= state.groupDefs.size();
+                position -= ioDefs.size();
             }
             if(0 != position) position--; // position 0 is for the holder
-            if(position >= state.groupKeys.size()) return; // wut? that's impossible
-            group = state.groupKeys.elementAt(position);
+            if(position >= ioKeys.size()) return; // wut? that's impossible
+            group = ioKeys.get(position);
             name.setText(group.name);
             desc.setText(R.string.ppa_TODO_lastPlayDate_joined);
         }
@@ -479,11 +479,11 @@ public class PartyPickActivity extends AppCompatActivity {
         public void onClick(View v) {
             if(null == group) return; // will never happen.
             int match;
-            for(match = 0; match < state.groupKeys.size(); match++) {
-                if(state.groupKeys.elementAt(match) == group) break;
+            for(match = 0; match < ioKeys.size(); match++) {
+                if(ioKeys.get(match) == group) break;
             } // will always match
             backToPartyList = true;
-            pager.setCurrentItem(state.groupDefs.size() + match, true);
+            pager.setCurrentItem(ioDefs.size() + match, true);
             showPartyList(false);
         }
     }
@@ -533,17 +533,17 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View layout = inflater.inflate(R.layout.frag_pick_party_owned_details, container, false);
-            if(getIndex() < 0 || getIndex() >= target.state.groupDefs.size()) return layout;
+            if(getIndex() < 0 || getIndex() >= ioDefs.size()) return layout;
 
-            final PersistentStorage.PartyOwnerData.Group party = target.state.groupDefs.elementAt(getIndex());
+            final PersistentStorage.PartyOwnerData.Group party = ioDefs.get(getIndex());
             ((TextView)layout.findViewById(R.id.ppa_ownedDetails_groupName)).setText(party.name);
-            ((TextView)layout.findViewById(R.id.ppa_ownedDetails_pcList)).setText(target.list(party.usually.party));
+            ((TextView)layout.findViewById(R.id.ppa_ownedDetails_pcList)).setText(target.list(party.party));
             TextView npcList = (TextView) layout.findViewById(R.id.ppa_ownedDetails_accompanyingNpcList);
-            if (0 == party.usually.npcs.length) {
+            if (0 == party.npcs.length) {
                 npcList.setVisibility(View.GONE);
             } else {
                 final String res = target.getString(R.string.ppa_ownedDetails_npcList);
-                npcList.setText(String.format(res, target.list(party.usually.npcs)));
+                npcList.setText(String.format(res, target.list(party.npcs)));
             }
             final Button go = (Button)layout.findViewById(R.id.ppa_ownedDetails_goAdventuring);
             go.setText(target.isFighting(party) ? R.string.ppa_ownedDetails_continueBattle : R.string.ppa_ownedDetails_newSession);
@@ -564,9 +564,9 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View layout = inflater.inflate(R.layout.frag_pick_party_joined_details, container, false);
-            if(getIndex() < 0 || getIndex() >= target.state.groupKeys.size()) return layout;
+            if(getIndex() < 0 || getIndex() >= ioKeys.size()) return layout;
 
-            final PersistentStorage.PartyClientData.Group party = target.state.groupKeys.elementAt(getIndex());
+            final PersistentStorage.PartyClientData.Group party = ioKeys.get(getIndex());
             ((TextView)layout.findViewById(R.id.ppa_joinedDetails_groupName)).setText(party.name);
             ((TextView)layout.findViewById(R.id.ppa_joinedDetails_lastPlayedPcs)).setText(target.listLastPlayedPcs(party));
             final Button go = (Button)layout.findViewById(R.id.ppa_joinedDetails_goAdventuring);
@@ -601,9 +601,9 @@ public class PartyPickActivity extends AppCompatActivity {
 
     String listLastPlayedPcs(PersistentStorage.PartyClientData.Group party) {
         // Not really there for the time being.
-        final PersistentStorage.Actor res = new PersistentStorage.Actor();
+        final PersistentStorage.ActorDefinition res = new PersistentStorage.ActorDefinition();
         res.name = "!! STUB !!";
-        PersistentStorage.Actor[] arr = new PersistentStorage.Actor[]{res};
+        PersistentStorage.ActorDefinition[] arr = new PersistentStorage.ActorDefinition[]{res};
         return list(arr);
     }
 
@@ -626,14 +626,14 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             int match = 0;
-            for(int check = 0; check < target.state.groupDefs.size(); check++) {
-                if(target.state.groupDefs.elementAt(check) == owned) {
+            for(int check = 0; check < ioDefs.size(); check++) {
+                if(ioDefs.get(check) == owned) {
                     match = check;
                     break;
                 }
             }
-            for(int check = 0; check < target.state.groupKeys.size(); check++) {
-                if(target.state.groupKeys.elementAt(check) == joined) {
+            for(int check = 0; check < ioKeys.size(); check++) {
+                if(ioKeys.get(check) == joined) {
                     match = check;
                     break;
                 }
@@ -657,15 +657,15 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return state.groupDefs.size() + state.groupKeys.size();
+            return ioDefs.size() + ioKeys.size();
         }
 
         @Override
         public Fragment getItem(int position) {
-            if (position < state.groupDefs.size())
+            if (position < ioDefs.size())
                 return build(new OwnedPartyFragment(), position);
-            position -= state.groupDefs.size();
-            if (position < state.groupKeys.size())
+            position -= ioDefs.size();
+            if (position < ioKeys.size())
                 return build(new JoinedPartyFragment(), position);
             return null;
         }
@@ -718,7 +718,7 @@ public class PartyPickActivity extends AppCompatActivity {
             } catch (IOException e) {
                 return e;
             }
-            new PersistentDataUtils() {
+            new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
                 @Override
                 protected String getString(int resource) {
                     return PartyPickActivity.this.getString(resource);
@@ -748,17 +748,17 @@ public class PartyPickActivity extends AppCompatActivity {
 
     private void restoreDeleted(final int position) {
         final PartyItemState el = junkyard.get(position);
-        final Vector<PersistentStorage.PartyOwnerData.Group> defs;
-        final Vector<PersistentStorage.PartyClientData.Group> keys;
+        final ArrayList<PersistentStorage.PartyOwnerData.Group> defs;
+        final ArrayList<PersistentStorage.PartyClientData.Group> keys;
         if(null != el.owned) {
-            defs = new Vector<>(state.groupDefs.size() + 1);
-            for(int cp = 0; cp < state.groupKeys.size(); cp++) defs.add(state.groupDefs.elementAt(cp));
+            defs = new ArrayList<>(ioDefs.size() + 1);
+            for(int cp = 0; cp < ioKeys.size(); cp++) defs.add(ioDefs.get(cp));
             defs.add(el.owned);
             keys = null;
         }
         else {
-            keys = new Vector<>(state.groupKeys.size() + 1);
-            for(int cp = 0; cp < state.groupKeys.size(); cp++) keys.add(state.groupKeys.elementAt(cp));
+            keys = new ArrayList<>(ioKeys.size() + 1);
+            for(int cp = 0; cp < ioKeys.size(); cp++) keys.add(ioKeys.get(cp));
             keys.add(el.joined);
             defs = null;
         }
@@ -767,8 +767,8 @@ public class PartyPickActivity extends AppCompatActivity {
                     @Override
                     public void onShown(Snackbar snackbar) {
                         partyState.put(null != el.owned? el.owned : el.joined, el);
-                        if(null != defs) state.groupDefs = defs;
-                        else state.groupKeys = keys;
+                        if(null != defs) ioDefs = defs;
+                        else ioKeys = keys;
                         junkyard.remove(position);
                         listAll.notifyDataSetChanged();
                         restoreDeleted.setEnabled(!junkyard.isEmpty());

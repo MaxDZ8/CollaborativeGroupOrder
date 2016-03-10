@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/npdsaAM_setName"
+        android:id="@+id/npdsaAM_setName" />
+
+    <item android:title="@string/npdsaAM_setCharBudget"
+        android:id="@+id/npdsaAM_setCharBudget" />
+
+</menu>
