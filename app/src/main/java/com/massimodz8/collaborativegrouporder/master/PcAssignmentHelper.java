@@ -467,19 +467,6 @@ public class PcAssignmentHelper {
         }
     }
 
-    String getDeviceName(PlayingDevice dev) {
-        int anon = 0, known = 0;
-        for (PlayingDevice match : peers) {
-            if(match == dev) {
-                if(match.isAnonymous()) return String.format("unidentified[%1$d]", anon); // TODO, but almost ok
-                else return String.format("player[%1$d]", known); // TODO, resolve based on unique device keys and device labels
-            }
-            if(match.isAnonymous()) anon++;
-            else known++;
-        }
-        return "";
-    }
-
 
     public interface AuthDeviceHolderFactoryBinder<VH extends RecyclerView.ViewHolder> {
         VH createUnbound(ViewGroup parent, int viewType);
@@ -529,7 +516,7 @@ public class PcAssignmentHelper {
                     charList.add(loop);
                 }
             }
-            factory.bind(holder, owner.getDeviceName(dev), charList);
+            factory.bind(holder, owner.party.devices[dev.keyIndex].name, charList);
         }
 
         @Override
