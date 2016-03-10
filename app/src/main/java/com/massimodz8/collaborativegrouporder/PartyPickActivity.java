@@ -248,6 +248,7 @@ public class PartyPickActivity extends AppCompatActivity {
                 count++;
             }
             if(count > 0 && 0 == position) return 0;
+            position--;
             for(int loop = 0; loop < ioDefs.size(); loop++) {
                 if(hideDefKey[loop]) continue;
                 if(position == 0) return 2 + loop;
@@ -259,6 +260,7 @@ public class PartyPickActivity extends AppCompatActivity {
                 count++;
             }
             if(count > 0 && 0 == position) return 1;
+            position--;
             for(int loop = 0; loop < ioKeys.size(); loop++) {
                 if(hideDefKey[ioDefs.size() + loop]) continue;
                 if(position == 0) return 2 + loop + ioDefs.size();
@@ -314,6 +316,7 @@ public class PartyPickActivity extends AppCompatActivity {
                 count++;
             }
             if(count > 0 && 0 == position) return OwnedPartySeparator.LAYOUT;
+            position--;
             for(int loop = 0; loop < ioDefs.size(); loop++) {
                 if(hideDefKey[loop]) continue;
                 if(position == 0) return OwnedPartyHolder.LAYOUT;
@@ -501,6 +504,7 @@ public class PartyPickActivity extends AppCompatActivity {
                     group = ioDefs.get(loop);
                     break;
                 }
+                position--;
             }
             if(group == null) return; // impossible by construction
             name.setText(group.name);
