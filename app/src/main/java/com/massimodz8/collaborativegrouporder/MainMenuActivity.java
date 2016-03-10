@@ -241,6 +241,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if(RESULT_OK != resultCode) {
             switch(requestCode) { // stuff would be used on success... but was not successful so goodbye
                 case REQUEST_NEW_PARTY:
+                    unbindService(this);
                     stopService(new Intent(this, PartyCreationService.class));
                     break;
             }

@@ -50,12 +50,12 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             room.onNewPublishStatus = null;
             room.setNewClientDevicesAdapter(null);
             room.onTalkingDeviceCountChanged = null;
-            unbindService(this);
             if (!isChangingConfigurations()) {
                 room.shutdown();
                 room.stopForeground(true);
             }
         }
+        if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
 
@@ -73,6 +73,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         if(!bindService(temp, this, 0)) {
             failedServiceBind();
         }
+        else mustUnbind = true;
     }
 
     @Override
@@ -488,5 +489,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     private Button action;
     private ActionMode actionMode;
     private MenuItem hiddenManagement;
+    private boolean mustUnbind;
     private static final int REQUEST_APPROVE_PLAYING_CHARACTERS = 1;
 }

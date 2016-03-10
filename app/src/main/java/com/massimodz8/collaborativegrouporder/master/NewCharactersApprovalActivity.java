@@ -44,14 +44,15 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
         if(!bindService(temp, this, 0)) {
             failedServiceBind();
         }
+        else mustUnbind = true;
     }
 
     @Override
     protected void onDestroy() {
         if(room != null) {
             if(room.building != null) room.building.setNewCharsApprovalAdapter(null);
-            unbindService(this);
         }
+        if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
 
@@ -284,4 +285,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
             storeGroup.setEnabled(true);
         }
     }
+
+    private boolean mustUnbind;
 }

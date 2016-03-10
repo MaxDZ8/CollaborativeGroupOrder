@@ -50,10 +50,12 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         if(!bindService(temp, this, 0)) {
             failedServiceBind();
         }
+        else mustUnbind = true;
     }
 
     @Override
     protected void onDestroy() {
+        if(mustUnbind) unbindService(this);
         if(null != room) {
             if(!isChangingConfigurations()) { // being destroyed for real.
                 // no need to shut down the session, done so in the activity.
@@ -64,7 +66,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             room.setNewAuthDevicesAdapter(null);
             room.setNewUnassignedPcsAdapter(null);
             room.onNewPublishStatus = null;
-            unbindService(this);
         }
         super.onDestroy();
     }
@@ -336,4 +337,5 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         @Override
         public void onDestroyActionMode(ActionMode mode) { }
     }
+    private boolean mustUnbind;
 }
