@@ -88,7 +88,8 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
 
     @Override
     protected void onDestroy() {
-        netWorker.shutdown();
+        final Pumper.MessagePumpingThread[] pumps = netWorker.move();
+        for (Pumper.MessagePumpingThread w : pumps) w.interrupt(); // there should be only one anyway
         if(null != party) {
             try {
                 party.channel.socket.close();
@@ -205,7 +206,10 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
     private void finishingTouches(boolean goAdventuring) {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         state.newKey = newKey;
-        if(goAdventuring) state.pumpers = netWorker.move();
+        if(goAdventuring) {
+            state.pumpers = netWorker.move();
+            party = null; // party != null --> onDestroy will close socket!
+        }
         setResult(RESULT_OK);
         finish();
     }

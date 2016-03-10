@@ -200,7 +200,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         volatile PartyInfo party; /// We get this from successful handshake
         volatile Network.PlayingCharacterDefinition charDef; // we get this from successful authorize
 
-        int lastSend = SENT_NOTHING;
+        private int lastSend = SENT_NOTHING;
 
         static final int SENT_NOTHING = 0;
         static final int SENT_DOORMAT_REQUEST = 1;
@@ -455,6 +455,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         match.party.options = payload.options;
         match.doormat = payload.doormat;
         match.waitServerReply = false;
+        match.refresh();
     }
 
     private static final int REQUEST_EXPLICIT_CONNECTION = 1;
