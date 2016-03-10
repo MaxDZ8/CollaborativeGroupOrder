@@ -288,7 +288,8 @@ public class PcAssignmentHelper {
     private static final int MSG_HELLO_AUTH = 4;
     private static final int MSG_CHAR_OWNERSHIP_REQUEST = 5;
 
-    public static final int DOORMAT_BYTES = 64;
+    /// Caution. This currently must match PartyCreationService.closeGroup
+    public static final int DOORMAT_BYTES = 32;
     private static final int USUAL_CLIENT_COUNT = 20; // not really! Usually 5 or less but that's for safety!
     private static final int USUAL_AVERAGE_MESSAGES_PENDING_COUNT = 10; // pretty a lot, those will be small!
     private static final int LOCAL_BINDING = -1;

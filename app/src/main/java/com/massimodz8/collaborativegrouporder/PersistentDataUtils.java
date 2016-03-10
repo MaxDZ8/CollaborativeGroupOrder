@@ -113,7 +113,7 @@ public abstract class PersistentDataUtils {
 
         for(int loop = 0; loop < group.devices.length; loop++) {
             PersistentStorage.PartyOwnerData.DeviceInfo dev = group.devices[loop];
-            if(dev.salt.length < minimumSaltBytes) errors.add(premise + String.format(getString(R.string.persistentStorage_deviceEmptySalt), loop));
+            if(dev.salt.length < minimumSaltBytes) errors.add(premise + String.format(getString(R.string.persistentStorage_deviceBadSalt), loop));
         }
         return start != errors.size();
     }
