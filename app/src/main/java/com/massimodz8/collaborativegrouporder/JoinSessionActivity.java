@@ -156,7 +156,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     protected void onDestroy() {
         if(!willBeRestored) {
             pumper.shutdown();
-            myState.explorer.stopDiscovery();
+            if(myState.explorer != null) myState.explorer.stopDiscovery(); // only created if not reusing an existing connection
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
@@ -367,8 +367,6 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     }
 
     private void gotcha(Pumper.MessagePumpingThread move, PartyAttempt check) {
-        myState.attempts.remove(check);
-        pumper.move(move.getSource());
         final CrossActivityShare share = (CrossActivityShare) getApplicationContext();
         share.jsaResult = new Result(move, myState.party, check.charDef);
         setResult(RESULT_OK);

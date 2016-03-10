@@ -9,9 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -33,11 +31,7 @@ import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.Vector;
 
 /** The server is 'gathering' player devices so they can join a new session.
  * This is important and we must be able to navigate back there every time needed in case

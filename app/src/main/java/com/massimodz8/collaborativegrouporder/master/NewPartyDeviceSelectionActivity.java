@@ -50,10 +50,10 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             room.onNewPublishStatus = null;
             room.setNewClientDevicesAdapter(null);
             room.onTalkingDeviceCountChanged = null;
+            unbindService(this);
             if (!isChangingConfigurations()) {
                 room.shutdown();
                 room.stopForeground(true);
-                unbindService(this);
             }
         }
         super.onDestroy();

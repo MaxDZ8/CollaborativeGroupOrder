@@ -364,10 +364,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
-        unbindService(this);
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.generic_lostServiceConn)
-                .show();
+        // Apparently this is called even when we call unbind, meh!
     }
 
     // We keep everything that exists in memory. This is a compact representation and makes
