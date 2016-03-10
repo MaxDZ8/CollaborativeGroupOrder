@@ -390,6 +390,22 @@ public class PartyCreationService extends PublishAcceptService {
     private PersistentStorage.PartyOwnerData.Group makeGroup() {
         PersistentStorage.PartyOwnerData.Group ret = new PersistentStorage.PartyOwnerData.Group();
         ret.name = building.name;
+        {
+            int devCount = 0;
+            for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                if(dev.kicked || !dev.groupMember) continue;
+                devCount++; // save all devices, even if they don't have proposed a pg
+            }
+            ret.devices = new PersistentStorage.PartyOwnerData.DeviceInfo[devCount];
+            devCount = 0;
+            for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                if(dev.kicked || !dev.groupMember) continue;
+                PersistentStorage.PartyOwnerData.DeviceInfo gen = new PersistentStorage.PartyOwnerData.DeviceInfo();
+                gen.salt = dev.salt;
+                gen.name = dev.name;
+                ret.devices[devCount++] = gen;
+            }
+        }
         int count = 0;
         for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
             if(dev.kicked || !dev.groupMember) continue;
