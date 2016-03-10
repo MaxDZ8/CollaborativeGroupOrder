@@ -746,7 +746,7 @@ public class PartyPickActivity extends AppCompatActivity {
             for(int loop = 0; loop < hideDefKey.length; loop++) {
                 if(hideDefKey[loop]) continue;
                 if(position == 0) {
-                    if(loop < ioDefs.size()) return new OwnedPartyFragment().init(position);
+                    if(loop < ioDefs.size()) return new OwnedPartyFragment().init(loop);
                     return new JoinedPartyFragment().init(loop - ioDefs.size());
                 }
                 position--;
