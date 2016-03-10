@@ -128,6 +128,8 @@
     <string name="persistentStorage_preparedActionsForbidden">: prepared actions not allowed here.</string>
     <string name="persistentStorage_actorStatsEmpty">: empty.</string>
     <string name="persistentStorage_actorStatsPremise">" statistics"</string>
+    <string name="persistentStorage_deviceEmptySalt">, device[%1$s]: empty salt.</string>
+
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
     <string name="dataLoadUpdate_newGroupSaved_msg">Data successfully saved to internal storage. Do you want to go adventuring right away?</string>
