@@ -63,12 +63,12 @@ public class PartyPickActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_party);
 
-        hideDefKey = new boolean[ioDefs.size() + ioKeys.size()];
-        rebuildDenseLists();
-
         guiRoot = (CoordinatorLayout) findViewById(R.id.ppa_activityRoot);
         pager = (ViewPager)findViewById(R.id.ppa_pager);
-        pager.setAdapter(new MyFragmentPagerAdapter());
+
+        hideDefKey = new boolean[ioDefs.size() + ioKeys.size()];
+        rebuildDenseLists();
+        
         partyList = (RecyclerView) findViewById(R.id.ppa_list);
         partyList.setLayoutManager(new LinearLayoutManager(this));
         partyList.setAdapter(listAll);
@@ -235,6 +235,7 @@ public class PartyPickActivity extends AppCompatActivity {
         denseKeys.clear();
         denseDefs.addAll(condCopy(ioDefs, 0, true));
         denseKeys.addAll(condCopy(ioKeys, ioDefs.size(), true));
+        pager.setAdapter(new MyFragmentPagerAdapter());
     }
 
     private class MyPartyListAdapter extends RecyclerView.Adapter {
