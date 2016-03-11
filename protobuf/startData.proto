@@ -1,6 +1,11 @@
 syntax = "proto3";
 option java_package = "com.massimodz8.collaborativegrouporder.protocol";
 
+// This is more or less 'static' stuff you would write in your character sheet.
+// That is, if you are the server. For the client it's just simple cryptographic key.
+// The important stuff is: when a new session begins, this is the data we load.
+// Then, if there is session data, we apply the data we find there.
+
 // I could borrow some definitions from network.proto but I rather keep everything easy and independant.
 message PartyOwnerData {
     uint32 version = 1;
