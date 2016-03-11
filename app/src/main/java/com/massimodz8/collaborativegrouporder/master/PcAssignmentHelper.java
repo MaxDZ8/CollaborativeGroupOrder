@@ -15,8 +15,8 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -36,18 +36,18 @@ import java.util.concurrent.BlockingQueue;
  * leaving Activity (not guaranteed to exist at the time it's generated) to probe for results.
  */
 public class PcAssignmentHelper {
-    public final PersistentStorage.PartyOwnerData.Group party;
+    public final StartData.PartyOwnerData.Group party;
 
     public interface OnBoundPcCallback {
         void onUnboundCountChanged(int stillToBind);
     }
     public OnBoundPcCallback onBoundPc;
 
-    public PcAssignmentHelper(PersistentStorage.PartyOwnerData.Group party, JoinVerificator verifier) {
+    public PcAssignmentHelper(StartData.PartyOwnerData.Group party, JoinVerificator verifier) {
         this.party = party;
         this.verifier = verifier;
         assignment = new ArrayList<>(party.party.length);
-        for (PersistentStorage.ActorDefinition ignored : party.party) assignment.add(null);
+        for (StartData.ActorDefinition ignored : party.party) assignment.add(null);
         Thread mailman = new Thread() {
             @Override
             public void run() {
@@ -102,8 +102,8 @@ public class PcAssignmentHelper {
         return count;
     }
 
-    public ArrayList<PersistentStorage.ActorDefinition> getUnboundedPcs() {
-        ArrayList<PersistentStorage.ActorDefinition> list = new ArrayList<>();
+    public ArrayList<StartData.ActorDefinition> getUnboundedPcs() {
+        ArrayList<StartData.ActorDefinition> list = new ArrayList<>();
         for(int loop = 0; loop < party.party.length; loop++) {
             if(assignment.get(loop) != null) continue;
             list.add(party.party[loop]);
@@ -120,7 +120,7 @@ public class PcAssignmentHelper {
         return count;
     }
 
-    public void local(PersistentStorage.ActorDefinition actor) {
+    public void local(StartData.ActorDefinition actor) {
         int match;
         for(match = 0; match < party.party.length; match++) {
             if(actor == party.party[match]) break;
@@ -399,9 +399,9 @@ public class PcAssignmentHelper {
         out.add(new SendRequest(dev, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial));
     }
 
-    private Network.PlayingCharacterDefinition simplify(PersistentStorage.ActorDefinition actor, int loop) {
+    private Network.PlayingCharacterDefinition simplify(StartData.ActorDefinition actor, int loop) {
         Network.PlayingCharacterDefinition res = new Network.PlayingCharacterDefinition();
-        PersistentStorage.ActorStatistics currently = actor.stats[0];
+        StartData.ActorStatistics currently = actor.stats[0];
         res.name = actor.name;
         res.initiativeBonus = currently.initBonus;
         res.healthPoints = currently.healthPoints;

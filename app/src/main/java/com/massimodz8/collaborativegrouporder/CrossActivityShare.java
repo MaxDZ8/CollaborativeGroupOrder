@@ -2,12 +2,10 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.app.Application;
 
-import com.massimodz8.collaborativegrouporder.master.PartyDefinitionHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
-import java.net.ServerSocket;
 import java.util.Vector;
 
 /**
@@ -32,7 +30,7 @@ public class CrossActivityShare extends Application {
 
     // NewCharacterProposalActivity result ---------------------------------------------------------
     //public boolean goAdventuring; // does not exist, use the pumpers instead
-    public PersistentStorage.PartyClientData.Group newKey;
+    public StartData.PartyClientData.Group newKey;
     //----------------------------------------------------------------------------------------------
 
 

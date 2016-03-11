@@ -21,8 +21,8 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -33,23 +33,23 @@ public class CharSelectionActivity extends AppCompatActivity {
     // Those will be cleared as soon as the activity goes onCreate and then never reused again.
     // onCreate assumes those non-null. Just call prepare(...)
     private static Pumper.MessagePumpingThread serverPipe; // inout
-    private static PersistentStorage.PartyClientData.Group connectedParty; // inout
+    private static StartData.PartyClientData.Group connectedParty; // inout
     private static Network.PlayingCharacterDefinition character; // In only
     private static ArrayList<Network.PlayingCharacterDefinition> playChars; // inout
 
     // to move on myState.
-    private PersistentStorage.PartyClientData.Group party;
+    private StartData.PartyClientData.Group party;
     private MessageChannel pipe;
     private int ticket;
 
-    public static void prepare(Pumper.MessagePumpingThread pipe, PersistentStorage.PartyClientData.Group info, Network.PlayingCharacterDefinition first) {
+    public static void prepare(Pumper.MessagePumpingThread pipe, StartData.PartyClientData.Group info, Network.PlayingCharacterDefinition first) {
         serverPipe = pipe;
         connectedParty = info;
         character = first;
     }
 
-    public static PersistentStorage.PartyClientData.Group movePlayingParty() {
-        final PersistentStorage.PartyClientData.Group res = connectedParty;
+    public static StartData.PartyClientData.Group movePlayingParty() {
+        final StartData.PartyClientData.Group res = connectedParty;
         connectedParty = null;
         return res;
     }

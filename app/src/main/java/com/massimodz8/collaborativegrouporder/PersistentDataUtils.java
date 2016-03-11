@@ -5,7 +5,7 @@ import android.support.annotation.StringRes;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,7 +59,7 @@ public abstract class PersistentDataUtils {
         return null;
     }
 
-    public ArrayList<String> validateLoadedDefinitions(PersistentStorage.PartyOwnerData loaded) {
+    public ArrayList<String> validateLoadedDefinitions(StartData.PartyOwnerData loaded) {
         ArrayList<String> arr = new ArrayList<>();
         if(loaded.version == 0) {
             arr.add(getString(R.string.persistentStorage_groupDataVersionZero));
@@ -67,7 +67,7 @@ public abstract class PersistentDataUtils {
         }
         if(loaded.version >= 1) {
             for(int check = 0; check < loaded.everything.length; check++) {
-                final PersistentStorage.PartyOwnerData.Group ref = loaded.everything[check];
+                final StartData.PartyOwnerData.Group ref = loaded.everything[check];
                 if(invalid(arr, ref, check)) continue;
                 for(int cmp = check + 1; cmp < loaded.everything.length; cmp++) {
                     if(ref.name.equals(loaded.everything[cmp].name)) {
@@ -80,7 +80,7 @@ public abstract class PersistentDataUtils {
         return arr.isEmpty()? null : arr;
     }
 
-    public ArrayList<String> validateLoadedDefinitions(PersistentStorage.PartyClientData loaded) {
+    public ArrayList<String> validateLoadedDefinitions(StartData.PartyClientData loaded) {
         ArrayList<String> arr = new ArrayList<>();
         if(loaded.version == 0) {
             arr.add(getString(R.string.persistentStorage_groupDataVersionZero));
@@ -88,7 +88,7 @@ public abstract class PersistentDataUtils {
         }
         if(loaded.version >= 1) {
             for(int check = 0; check < loaded.everything.length; check++) {
-                final PersistentStorage.PartyClientData.Group ref = loaded.everything[check];
+                final StartData.PartyClientData.Group ref = loaded.everything[check];
                 if(invalid(arr, ref, check)) continue;
                 for(int cmp = check + 1; cmp < loaded.everything.length; cmp++) {
                     if(ref.name.equals(loaded.everything[cmp].name) &&
@@ -102,7 +102,7 @@ public abstract class PersistentDataUtils {
         return arr.isEmpty()? null : arr;
     }
 
-    private boolean invalid(ArrayList<String> errors, PersistentStorage.PartyOwnerData.Group group, int index) {
+    private boolean invalid(ArrayList<String> errors, StartData.PartyOwnerData.Group group, int index) {
         final int start = errors.size();
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
@@ -112,13 +112,13 @@ public abstract class PersistentDataUtils {
                 .check(getString(R.string.persistentStorage_NPC), group.npcs, false);
 
         for(int loop = 0; loop < group.devices.length; loop++) {
-            PersistentStorage.PartyOwnerData.DeviceInfo dev = group.devices[loop];
+            StartData.PartyOwnerData.DeviceInfo dev = group.devices[loop];
             if(dev.salt.length < minimumSaltBytes) errors.add(premise + String.format(getString(R.string.persistentStorage_deviceBadSalt), loop));
         }
         return start != errors.size();
     }
 
-    private boolean invalid(ArrayList<String> errors, PersistentStorage.PartyClientData.Group group, int index) {
+    private boolean invalid(ArrayList<String> errors, StartData.PartyClientData.Group group, int index) {
         final int start = errors.size();
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
@@ -158,14 +158,14 @@ public abstract class PersistentDataUtils {
             base = premiseBase;
         }
 
-        ActorValidator check(String mod, PersistentStorage.ActorDefinition[] list, boolean required) {
+        ActorValidator check(String mod, StartData.ActorDefinition[] list, boolean required) {
             final String premise = base + mod;
             if(list.length == 0) {
                 if(required) errors.add(premise + getString(R.string.persistentStorage_groupWithNoActors));
                 return this;
             }
             for(int i = 0; i < list.length; i++) {
-                final PersistentStorage.ActorDefinition actor = list[i];
+                final StartData.ActorDefinition actor = list[i];
                 String head = String.format("%1$s[%2$d]", premise, i);
                 if(actor.name.isEmpty()) errors.add(head + getString(R.string.persistentStorage_actorMissingName));
                 head = String.format("%1$s(%2$s)", head, actor.name);
@@ -175,7 +175,7 @@ public abstract class PersistentDataUtils {
             return this;
         }
 
-        void check(String premise, PersistentStorage.ActorStatistics[] list) {
+        void check(String premise, StartData.ActorStatistics[] list) {
             if(list.length == 0) {
                 errors.add(premise + getString(R.string.persistentStorage_actorStatsEmpty));
             }
@@ -183,11 +183,11 @@ public abstract class PersistentDataUtils {
         }
     }
 
-    public void upgrade(PersistentStorage.PartyOwnerData result) {
+    public void upgrade(StartData.PartyOwnerData result) {
         if(result.version == 0) result.version = 1; // free upgrade :P
     }
 
-    public void upgrade(PersistentStorage.PartyClientData result) {
+    public void upgrade(StartData.PartyClientData result) {
         if(result.version == 0) result.version = 1; // free upgrade :P
     }
 

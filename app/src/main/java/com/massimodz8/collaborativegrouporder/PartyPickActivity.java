@@ -31,7 +31,7 @@ import android.widget.TextView;
 
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,12 +41,12 @@ import java.util.ArrayList;
 public class PartyPickActivity extends AppCompatActivity {
     // Populate those before launching the activity. They will be updated if we remove a party.
     // In other terms, always fetch back those, regardless activity result status.
-    public static ArrayList<PersistentStorage.PartyOwnerData.Group> ioDefs;
-    public static ArrayList<PersistentStorage.PartyClientData.Group> ioKeys;
+    public static ArrayList<StartData.PartyOwnerData.Group> ioDefs;
+    public static ArrayList<StartData.PartyClientData.Group> ioKeys;
 
     // One of those two is set if we have selected a party to go adventuring.
-    public static PersistentStorage.PartyOwnerData.Group goDef;
-    public static PersistentStorage.PartyClientData.Group goKey;
+    public static StartData.PartyOwnerData.Group goDef;
+    public static StartData.PartyClientData.Group goKey;
 
     private boolean[] hideDefKey;
 
@@ -108,8 +108,8 @@ public class PartyPickActivity extends AppCompatActivity {
      public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.ppa_menu_restoreDeleted: {
-                final ArrayList<PersistentStorage.PartyOwnerData.Group> hiddenDefs = condCopy(ioDefs, 0, false);
-                final ArrayList<PersistentStorage.PartyClientData.Group> hiddenKeys = condCopy(ioKeys, ioDefs.size(), false);
+                final ArrayList<StartData.PartyOwnerData.Group> hiddenDefs = condCopy(ioDefs, 0, false);
+                final ArrayList<StartData.PartyClientData.Group> hiddenKeys = condCopy(ioKeys, ioDefs.size(), false);
                 ListAdapter la = new ListAdapter() {
                     @Override
                     public void registerDataSetObserver(DataSetObserver observer) { }
@@ -227,8 +227,8 @@ public class PartyPickActivity extends AppCompatActivity {
         return list.size();
     }
 
-    private ArrayList<PersistentStorage.PartyOwnerData.Group> denseDefs = new ArrayList<>();
-    private ArrayList<PersistentStorage.PartyClientData.Group> denseKeys = new ArrayList<>();
+    private ArrayList<StartData.PartyOwnerData.Group> denseDefs = new ArrayList<>();
+    private ArrayList<StartData.PartyClientData.Group> denseKeys = new ArrayList<>();
 
     public void rebuildDenseLists() {
         denseDefs.clear();
@@ -321,9 +321,9 @@ public class PartyPickActivity extends AppCompatActivity {
         }
     }
 
-    String list(PersistentStorage.ActorDefinition[] party) {
+    String list(StartData.ActorDefinition[] party) {
         StringBuilder result = new StringBuilder();
-        for(PersistentStorage.ActorDefinition actor : party) {
+        for(StartData.ActorDefinition actor : party) {
             if(result.length() > 0) result.append(getString(R.string.ppa_playingCharacterNameSeparator));
             result.append(actor.name);
         }
@@ -374,7 +374,7 @@ public class PartyPickActivity extends AppCompatActivity {
                     hideDefKey[clear] = false;
                     rebuildDenseLists();
                     listAll.notifyDataSetChanged();
-                    boolean owned = party instanceof PersistentStorage.PartyOwnerData.Group;
+                    boolean owned = party instanceof StartData.PartyOwnerData.Group;
                     if(null != pending) pending.cancel(true);
                     if(owned) {
                         pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(condCopy(ioDefs, 0, true)), null, null);
@@ -435,18 +435,18 @@ public class PartyPickActivity extends AppCompatActivity {
         return res;
     }
 
-    private static PersistentStorage.PartyOwnerData makePartyOwnerData(ArrayList<PersistentStorage.PartyOwnerData.Group> defs) {
-        PersistentStorage.PartyOwnerData all = new PersistentStorage.PartyOwnerData();
+    private static StartData.PartyOwnerData makePartyOwnerData(ArrayList<StartData.PartyOwnerData.Group> defs) {
+        StartData.PartyOwnerData all = new StartData.PartyOwnerData();
         all.version = PersistentDataUtils.OWNER_DATA_VERSION;
-        all.everything = new PersistentStorage.PartyOwnerData.Group[defs.size()];
+        all.everything = new StartData.PartyOwnerData.Group[defs.size()];
         for(int cp = 0; cp < defs.size(); cp++) all.everything[cp] = defs.get(cp);
         return all;
     }
 
-    private static PersistentStorage.PartyClientData makePartyClientData(ArrayList<PersistentStorage.PartyClientData.Group> defs) {
-        PersistentStorage.PartyClientData all = new PersistentStorage.PartyClientData();
+    private static StartData.PartyClientData makePartyClientData(ArrayList<StartData.PartyClientData.Group> defs) {
+        StartData.PartyClientData all = new StartData.PartyClientData();
         all.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
-        all.everything = new PersistentStorage.PartyClientData.Group[defs.size()];
+        all.everything = new StartData.PartyClientData.Group[defs.size()];
         for(int cp = 0; cp < defs.size(); cp++) all.everything[cp] = defs.get(cp);
         return all;
     }
@@ -455,7 +455,7 @@ public class PartyPickActivity extends AppCompatActivity {
         static final int LAYOUT = R.layout.card_owned_party;
 
         TextView name, chars, created, lastPlay, currentState;
-        PersistentStorage.PartyOwnerData.Group group;
+        StartData.PartyOwnerData.Group group;
 
         public OwnedPartyHolder(LayoutInflater li, ViewGroup parent) {
             super(li.inflate(LAYOUT, parent, false));
@@ -491,7 +491,7 @@ public class PartyPickActivity extends AppCompatActivity {
         static final int LAYOUT = R.layout.card_joined_party;
 
         TextView name, desc;
-        PersistentStorage.PartyClientData.Group group;
+        StartData.PartyClientData.Group group;
 
         public JoinedPartyHolder(LayoutInflater li, ViewGroup parent) {
             super(li.inflate(LAYOUT, parent, false));
@@ -575,7 +575,7 @@ public class PartyPickActivity extends AppCompatActivity {
             View layout = inflater.inflate(R.layout.frag_pick_party_owned_details, container, false);
             if(getIndex() < 0 || getIndex() >= ioDefs.size()) return layout;
 
-            final PersistentStorage.PartyOwnerData.Group party = target.denseDefs.get(getIndex());
+            final StartData.PartyOwnerData.Group party = target.denseDefs.get(getIndex());
             ((TextView)layout.findViewById(R.id.ppa_ownedDetails_groupName)).setText(party.name);
             ((TextView)layout.findViewById(R.id.ppa_ownedDetails_pcList)).setText(target.list(party.party));
             TextView npcList = (TextView) layout.findViewById(R.id.ppa_ownedDetails_accompanyingNpcList);
@@ -606,7 +606,7 @@ public class PartyPickActivity extends AppCompatActivity {
             View layout = inflater.inflate(R.layout.frag_pick_party_joined_details, container, false);
             if(getIndex() < 0 || getIndex() >= ioKeys.size()) return layout;
 
-            final PersistentStorage.PartyClientData.Group party = target.denseKeys.get(getIndex());
+            final StartData.PartyClientData.Group party = target.denseKeys.get(getIndex());
             ((TextView)layout.findViewById(R.id.ppa_joinedDetails_groupName)).setText(party.name);
             ((TextView)layout.findViewById(R.id.ppa_joinedDetails_lastPlayedPcs)).setText(target.listLastPlayedPcs(party));
             final Button go = (Button)layout.findViewById(R.id.ppa_joinedDetails_goAdventuring);
@@ -623,41 +623,41 @@ public class PartyPickActivity extends AppCompatActivity {
         }
     }
 
-    private String getNote(PersistentStorage.PartyOwnerData.Group party) {
+    private String getNote(StartData.PartyOwnerData.Group party) {
         return null;
     }
 
-    private String getNote(PersistentStorage.PartyClientData.Group party) {
+    private String getNote(StartData.PartyClientData.Group party) {
         return null;
     }
 
-    boolean isFighting(PersistentStorage.PartyOwnerData.Group party) {
+    boolean isFighting(StartData.PartyOwnerData.Group party) {
         return false;
     }
 
-    boolean isFighting(PersistentStorage.PartyClientData.Group party) {
+    boolean isFighting(StartData.PartyClientData.Group party) {
         return false;
     }
 
-    String listLastPlayedPcs(PersistentStorage.PartyClientData.Group party) {
+    String listLastPlayedPcs(StartData.PartyClientData.Group party) {
         // Not really there for the time being.
-        final PersistentStorage.ActorDefinition res = new PersistentStorage.ActorDefinition();
+        final StartData.ActorDefinition res = new StartData.ActorDefinition();
         res.name = "!! STUB !!";
-        PersistentStorage.ActorDefinition[] arr = new PersistentStorage.ActorDefinition[]{res};
+        StartData.ActorDefinition[] arr = new StartData.ActorDefinition[]{res};
         return list(arr);
     }
 
     static class SelectionListener implements View.OnClickListener {
-        private final PersistentStorage.PartyOwnerData.Group owned;
-        private final PersistentStorage.PartyClientData.Group joined;
+        private final StartData.PartyOwnerData.Group owned;
+        private final StartData.PartyClientData.Group joined;
         private final PartyPickActivity target;
 
-        SelectionListener(PartyPickActivity target, PersistentStorage.PartyOwnerData.Group owned) {
+        SelectionListener(PartyPickActivity target, StartData.PartyOwnerData.Group owned) {
             this.target = target;
             this.owned = owned;
             joined = null;
         }
-        SelectionListener(PartyPickActivity target, PersistentStorage.PartyClientData.Group joined) {
+        SelectionListener(PartyPickActivity target, StartData.PartyClientData.Group joined) {
             this.target = target;
             this.joined = joined;
             owned = null;
@@ -762,7 +762,7 @@ public class PartyPickActivity extends AppCompatActivity {
         }
         rebuildDenseLists();
         listAll.notifyDataSetChanged();
-        final boolean owned = match instanceof PersistentStorage.PartyOwnerData.Group;
+        final boolean owned = match instanceof StartData.PartyOwnerData.Group;
         final Snackbar sb = Snackbar.make(guiRoot, R.string.ppa_partyRecovered, Snackbar.LENGTH_LONG)
                 .setCallback(new Snackbar.Callback() {
                     @Override

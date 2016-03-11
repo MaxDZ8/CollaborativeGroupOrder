@@ -38,7 +38,7 @@ import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -293,7 +293,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         final EditText view = til.getEditText();
         if(view == null) return; // impossible
         final String groupName = view.getText().toString().trim();
-        ArrayList<PersistentStorage.PartyOwnerData.Group> collisions = room.beginBuilding(groupName, getString(R.string.npdsa_unknownDeviceName));
+        ArrayList<StartData.PartyOwnerData.Group> collisions = room.beginBuilding(groupName, getString(R.string.npdsa_unknownDeviceName));
         if (groupName.isEmpty() || null != collisions) {
             int msg = groupName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
             new AlertDialog.Builder(this)

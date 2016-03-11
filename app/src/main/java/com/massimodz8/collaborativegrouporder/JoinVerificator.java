@@ -2,10 +2,9 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.support.annotation.NonNull;
 
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 /**
@@ -18,13 +17,13 @@ public class JoinVerificator {
     private final MessageDigest hasher;
     private final byte[][] keys;
 
-    public JoinVerificator(@NonNull PersistentStorage.PartyOwnerData.DeviceInfo[] known, @NonNull MessageDigest hasher) {
+    public JoinVerificator(@NonNull StartData.PartyOwnerData.DeviceInfo[] known, @NonNull MessageDigest hasher) {
         this.hasher = hasher;
         keys = new byte[known.length][];
         for(int loop = 0; loop < known.length; loop++) keys[loop] = known[loop].salt;
     }
 
-    public JoinVerificator(@NonNull PersistentStorage.PartyClientData.Group me, @NonNull MessageDigest hasher) {
+    public JoinVerificator(@NonNull StartData.PartyClientData.Group me, @NonNull MessageDigest hasher) {
         this.hasher = hasher;
         keys = new byte[1][];
         keys[0] = me.key;

@@ -21,8 +21,8 @@ import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,11 +67,11 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             activeParty = null;
             return;
         }
-        if (activeParty instanceof PersistentStorage.PartyOwnerData.Group) {
+        if (activeParty instanceof StartData.PartyOwnerData.Group) {
             startNewSessionActivity();
             return;
         }
-        if (activeParty instanceof PersistentStorage.PartyClientData.Group) {
+        if (activeParty instanceof StartData.PartyClientData.Group) {
             startGoAdventuringActivity();
             return;
         }
@@ -99,13 +99,13 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     /// Called when party owner data loaded version != from current.
-    private void upgrade(PersistentStorage.PartyOwnerData loaded) {
+    private void upgrade(StartData.PartyOwnerData loaded) {
         new AlertDialog.Builder(this)
                 .setMessage(String.format(getString(R.string.mma_noOwnerDataUpgradeAvailable), loaded.version, PersistentDataUtils.OWNER_DATA_VERSION))
                 .show();
     }
 
-    private void upgrade(PersistentStorage.PartyClientData loaded) {
+    private void upgrade(StartData.PartyClientData loaded) {
         new AlertDialog.Builder(this)
                 .setMessage(String.format(getString(R.string.mma_noClientDataUpgradeAvailable), loaded.version, PersistentDataUtils.OWNER_DATA_VERSION))
                 .show();
@@ -154,15 +154,15 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         else state.pumpers = null; // be safe-r. Sort of.
         activeConnections = null;
         // activeLanding is unused in client
-        state.jsaState = new JoinSessionActivity.State((PersistentStorage.PartyClientData.Group) activeParty);
+        state.jsaState = new JoinSessionActivity.State((StartData.PartyClientData.Group) activeParty);
         activeParty = null;
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
 
     private class AsyncLoadAll extends AsyncTask<Void, Void, Exception> {
-        PersistentStorage.PartyOwnerData owned;
-        PersistentStorage.PartyClientData joined;
+        StartData.PartyOwnerData owned;
+        StartData.PartyClientData joined;
         final PersistentDataUtils loader = new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
             protected String getString(int resource) {
@@ -172,12 +172,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
         @Override
         protected Exception doInBackground(Void... params) {
-            PersistentStorage.PartyOwnerData pullo = new PersistentStorage.PartyOwnerData();
+            StartData.PartyOwnerData pullo = new StartData.PartyOwnerData();
             File srco = new File(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME);
             if(srco.exists()) loader.mergeExistingGroupData(pullo, srco);
             else pullo.version = PersistentDataUtils.OWNER_DATA_VERSION;
 
-            PersistentStorage.PartyClientData pullk = new PersistentStorage.PartyClientData();
+            StartData.PartyClientData pullk = new StartData.PartyClientData();
             File srck = new File(getFilesDir(), PersistentDataUtils.DEFAULT_KEY_FILE_NAME);
             if(srck.exists()) loader.mergeExistingGroupData(pullk, srck);
             else pullk.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
@@ -303,7 +303,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                final PersistentStorage.PartyClientData.Group party = CharSelectionActivity.movePlayingParty();
+                final StartData.PartyClientData.Group party = CharSelectionActivity.movePlayingParty();
                 final ArrayList<Network.PlayingCharacterDefinition> here = CharSelectionActivity.movePlayChars();
                 final Pumper.MessagePumpingThread worker = CharSelectionActivity.moveServerWorker();
                             worker.interrupt();
@@ -323,7 +323,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     static final int REQUEST_NEW_SESSION = 8;
 
     // Those must be fields to ensure a communication channel to the asynchronous onServiceConnected callbacks.
-    private MessageNano activeParty; // PersistentStorage.PartyOwnerData.Group or PersistentStorage.PartyClientData.Group
+    private MessageNano activeParty; // StartData.PartyOwnerData.Group or StartData.PartyClientData.Group
     private ServerSocket activeLanding;
     private Pumper.MessagePumpingThread[] activeConnections; // Client: a single connection to a server or Owner: list of connections to client
 
@@ -333,7 +333,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if(service instanceof PartyJoinOrderService.LocalBinder) {
             PartyJoinOrderService.LocalBinder binder = (PartyJoinOrderService.LocalBinder)service;
             PartyJoinOrderService real =  binder.getConcreteService();
-            PersistentStorage.PartyOwnerData.Group owned = (PersistentStorage.PartyOwnerData.Group) activeParty;
+            StartData.PartyOwnerData.Group owned = (StartData.PartyOwnerData.Group) activeParty;
             JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
             real.initializePartyManagement(owned, keyMaster);
             real.pumpClients(activeConnections);
@@ -374,8 +374,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     // We keep everything that exists in memory. This is a compact representation and makes
     // some things easier as we can compare by reference.
-    private ArrayList<PersistentStorage.PartyOwnerData.Group> groupDefs = new ArrayList<>();
-    private ArrayList<PersistentStorage.PartyClientData.Group> groupKeys = new ArrayList<>();
+    private ArrayList<StartData.PartyOwnerData.Group> groupDefs = new ArrayList<>();
+    private ArrayList<StartData.PartyClientData.Group> groupKeys = new ArrayList<>();
 
     interface ErrorFeedbackFunc {
         void feedback(int errors);

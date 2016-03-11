@@ -18,8 +18,8 @@ import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class PartyCreationService extends PublishAcceptService {
     When saveParty() is called, it will generate this by calling makeGroup() unless a group is
     already there, in which case it will use the existing group.
     */
-    public PersistentStorage.PartyOwnerData.Group generatedParty;
+    public StartData.PartyOwnerData.Group generatedParty;
 
     public interface OnTalkingDeviceCountListener {
         void currentlyTalking(int count);
@@ -47,7 +47,7 @@ public class PartyCreationService extends PublishAcceptService {
      * adding a new group collides with an existing one as owned groups must have unique names!
      * Also, output of party creation already saved and synched to storage.
      */
-    public ArrayList<PersistentStorage.PartyOwnerData.Group> defs;
+    public ArrayList<StartData.PartyOwnerData.Group> defs;
 
     public PartyCreationService() {
     }
@@ -60,9 +60,9 @@ public class PartyCreationService extends PublishAcceptService {
      *             clients have no control over group name.
      * @return null, or a list containing at least 1 element.
      */
-    public @Nullable ArrayList<PersistentStorage.PartyOwnerData.Group> beginBuilding(String name, String unknownDeviceName) {
-        ArrayList<PersistentStorage.PartyOwnerData.Group> collisions = null;
-        for (PersistentStorage.PartyOwnerData.Group match : defs) {
+    public @Nullable ArrayList<StartData.PartyOwnerData.Group> beginBuilding(String name, String unknownDeviceName) {
+        ArrayList<StartData.PartyOwnerData.Group> collisions = null;
+        for (StartData.PartyOwnerData.Group match : defs) {
             if(match.name.equals(name)) {
                 if(null == collisions) collisions = new ArrayList<>();
                 collisions.add(match);
@@ -209,11 +209,11 @@ public class PartyCreationService extends PublishAcceptService {
         return count;
     }
 
-    public AsyncActivityLoadUpdateTask<PersistentStorage.PartyOwnerData> saveParty(final @NonNull Activity stringResolver, @NonNull AsyncLoadUpdateTask.Callbacks cb) {
-        return new AsyncActivityLoadUpdateTask<PersistentStorage.PartyOwnerData>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", stringResolver, cb) {
+    public AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> saveParty(final @NonNull Activity stringResolver, @NonNull AsyncLoadUpdateTask.Callbacks cb) {
+        return new AsyncActivityLoadUpdateTask<StartData.PartyOwnerData>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", stringResolver, cb) {
             @Override
-            protected void appendNewEntry(PersistentStorage.PartyOwnerData loaded) {
-                PersistentStorage.PartyOwnerData.Group[] longer = new PersistentStorage.PartyOwnerData.Group[loaded.everything.length + 1];
+            protected void appendNewEntry(StartData.PartyOwnerData loaded) {
+                StartData.PartyOwnerData.Group[] longer = new StartData.PartyOwnerData.Group[loaded.everything.length + 1];
                 System.arraycopy(loaded.everything, 0, longer, 0, loaded.everything.length);
                 if(null == generatedParty) generatedParty = makeGroup();
                 longer[loaded.everything.length] = generatedParty;
@@ -221,23 +221,23 @@ public class PartyCreationService extends PublishAcceptService {
             }
 
             @Override
-            protected void setVersion(PersistentStorage.PartyOwnerData result) {
+            protected void setVersion(StartData.PartyOwnerData result) {
                 result.version = PersistentDataUtils.OWNER_DATA_VERSION;
             }
 
             @Override
-            protected void upgrade(PersistentDataUtils helper, PersistentStorage.PartyOwnerData result) {
+            protected void upgrade(PersistentDataUtils helper, StartData.PartyOwnerData result) {
                 helper.upgrade(result);
             }
 
             @Override
-            protected ArrayList<String> validateLoadedDefinitions(PersistentDataUtils helper, PersistentStorage.PartyOwnerData result) {
+            protected ArrayList<String> validateLoadedDefinitions(PersistentDataUtils helper, StartData.PartyOwnerData result) {
                 return helper.validateLoadedDefinitions(result);
             }
 
             @Override
-            protected PersistentStorage.PartyOwnerData allocate() {
-                return new PersistentStorage.PartyOwnerData();
+            protected StartData.PartyOwnerData allocate() {
+                return new StartData.PartyOwnerData();
             }
         };
     }
@@ -387,8 +387,8 @@ public class PartyCreationService extends PublishAcceptService {
     }
 
 
-    private PersistentStorage.PartyOwnerData.Group makeGroup() {
-        PersistentStorage.PartyOwnerData.Group ret = new PersistentStorage.PartyOwnerData.Group();
+    private StartData.PartyOwnerData.Group makeGroup() {
+        StartData.PartyOwnerData.Group ret = new StartData.PartyOwnerData.Group();
         ret.name = building.name;
         {
             int devCount = 0;
@@ -396,11 +396,11 @@ public class PartyCreationService extends PublishAcceptService {
                 if(dev.kicked || !dev.groupMember) continue;
                 devCount++; // save all devices, even if they don't have proposed a pg
             }
-            ret.devices = new PersistentStorage.PartyOwnerData.DeviceInfo[devCount];
+            ret.devices = new StartData.PartyOwnerData.DeviceInfo[devCount];
             devCount = 0;
             for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
                 if(dev.kicked || !dev.groupMember) continue;
-                PersistentStorage.PartyOwnerData.DeviceInfo gen = new PersistentStorage.PartyOwnerData.DeviceInfo();
+                StartData.PartyOwnerData.DeviceInfo gen = new StartData.PartyOwnerData.DeviceInfo();
                 gen.salt = dev.salt;
                 gen.name = dev.name;
                 ret.devices[devCount++] = gen;
@@ -413,18 +413,18 @@ public class PartyCreationService extends PublishAcceptService {
                 if(BuildingPlayingCharacter.STATUS_ACCEPTED == pc.status) count++;
             }
         }
-        ret.party = new PersistentStorage.ActorDefinition[count];
+        ret.party = new StartData.ActorDefinition[count];
         count = 0;
         for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
             if(dev.kicked || !dev.groupMember) continue;
             for(BuildingPlayingCharacter pc : dev.chars) {
                 if(BuildingPlayingCharacter.STATUS_ACCEPTED == pc.status) {
-                    PersistentStorage.ActorDefinition built = new PersistentStorage.ActorDefinition();
+                    StartData.ActorDefinition built = new StartData.ActorDefinition();
                     built.name = pc.name;
                     built.level = pc.level;
                     built.experience = pc.experience;
-                    built.stats =  new PersistentStorage.ActorStatistics[] {
-                            new PersistentStorage.ActorStatistics()
+                    built.stats =  new StartData.ActorStatistics[] {
+                            new StartData.ActorStatistics()
                     };
                     built.stats[0].initBonus = pc.initiativeBonus;
                     built.stats[0].healthPoints = pc.fullHealth;
