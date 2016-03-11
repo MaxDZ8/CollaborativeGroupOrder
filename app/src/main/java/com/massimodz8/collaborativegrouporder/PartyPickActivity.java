@@ -68,7 +68,7 @@ public class PartyPickActivity extends AppCompatActivity {
 
         hideDefKey = new boolean[ioDefs.size() + ioKeys.size()];
         rebuildDenseLists();
-        
+
         partyList = (RecyclerView) findViewById(R.id.ppa_list);
         partyList.setLayoutManager(new LinearLayoutManager(this));
         partyList.setAdapter(listAll);

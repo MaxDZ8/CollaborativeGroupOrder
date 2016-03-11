@@ -1,7 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#2E7D32</color> <!-- green 800 -->
+    <color name="colorPrimaryDark">#1B5E20</color> <!-- green 900 -->
+    <color name="colorAccent">#FFAB40</color> <!-- Orange A200 -->
+    <color name="windowBackground">#283593</color> <!-- indigo 800, also try indigo 900 #1A237E -->
+    <color name="textColorPrimary">#FAFAFA</color> <!-- grey 50 -->
+    <color name="textColorSecondary">#E0FAFAFA</color> <!-- grey 50, very slight alpha -->
+    <color name="textColorTertiary">#AAFAFAFA</color> <!-- grey 50, more alpha -->
+    <color name="colorButtonNormal">#004D40</color> <!-- teal 900, also try green 900 #1B5E20, blue 700 #1976D2 -->
+
+    <color name="cardBackgroundColor">#1565C0</color>  <!-- blue 800 -->
+
     <color name="listSeparator">#c5cae9</color>
+
+    <!--
+    <color name="colorControlNormal">#FF00FF</color> ?
+
+        <item name="colorControlActivated">?attr/colorAccent</item>
+        <item name="colorControlHighlight">@color/ripple_material_light</item>
+        <item name="colorSwitchThumbNormal">@color/switch_thumb_material_light</item>
+
+        <item name="android:colorForeground">@color/foreground_material_light</item>
+        <item name="android:colorForegroundInverse">@color/foreground_material_dark</item>
+        <item name="android:colorBackground">@color/background_material_light</item>
+        <item name="android:colorBackgroundCacheHint">@color/abc_background_cache_hint_selector_material_light</item>
+
+        <item name="android:textColorPrimaryInverse">@color/abc_primary_text_material_dark</item>
+        <item name="android:textColorSecondaryInverse">@color/abc_secondary_text_material_dark</item>
+        <item name="android:textColorTertiaryInverse">@color/abc_secondary_text_material_dark</item>
+        <item name="android:textColorPrimaryDisableOnly">@color/abc_primary_text_disable_only_material_light</item>
+        <item name="android:textColorPrimaryInverseDisableOnly">@color/abc_primary_text_disable_only_material_dark</item>
+        <item name="android:textColorHint">@color/hint_foreground_material_light</item>
+        <item name="android:textColorHintInverse">@color/hint_foreground_material_dark</item>
+        <item name="android:textColorHighlight">@color/highlighted_text_material_light</item>
+        <item name="android:textColorLink">?attr/colorAccent</item>
+
+
+        <item name="colorBackground">@color/background_light</item>
+        <item name="colorForeground">@color/bright_foreground_light</item>
+        <item name="colorForegroundInverse">@color/bright_foreground_light_inverse</item>
+
+        <item name="colorPrimaryDark">@color/legacy_light_primary_dark</item>
+        <item name="colorPrimary">@color/legacy_light_primary</item>
+        <item name="colorControlActivated">@color/legacy_light_control_activated</item>
+        <item name="colorControlNormal">@color/legacy_light_control_normal</item>
+        <item name="colorControlHighlight">@color/legacy_light_button_pressed</item>
+        <item name="colorButtonNormal">@color/legacy_light_button_normal</item>
+
+        <item name="textColorPrimary">@color/primary_text_light</item>
+        <item name="textColorSecondary">@color/secondary_text_light</item>
+        <item name="textColorTertiary">@color/tertiary_text_light</item>
+        <item name="textColorPrimaryInverse">@color/primary_text_dark</item>
+        <item name="textColorSecondaryInverse">@color/secondary_text_dark</item>
+        <item name="textColorTertiaryInverse">@color/tertiary_text_dark</item>
+        <item name="textColorPrimaryActivated">@color/primary_text_light</item>
+        <item name="textColorSecondaryActivated">@color/secondary_text_light</item>
+        <item name="textColorPrimaryDisableOnly">@color/primary_text_light_disable_only</item>
+        <item name="textColorPrimaryInverseDisableOnly">@color/primary_text_dark_disable_only</item>
+        <item name="textColorPrimaryNoDisable">@color/primary_text_light_nodisable</item>
+        <item name="textColorSecondaryNoDisable">@color/secondary_text_light_nodisable</item>
+        <item name="textColorPrimaryInverseNoDisable">@color/primary_text_dark_nodisable</item>
+        <item name="textColorSecondaryInverseNoDisable">@color/secondary_text_dark_nodisable</item>
+        <item name="textColorHint">@color/hint_foreground_light</item>
+        <item name="textColorHintInverse">@color/hint_foreground_dark</item>
+        <item name="textColorHighlight">@color/highlighted_text_light</item>
+        <item name="textColorHighlightInverse">@color/highlighted_text_dark</item>
+        <item name="textColorLink">@color/link_text_light</item>
+        <item name="textColorLinkInverse">@color/link_text_dark</item>
+
+        <item name="editTextColor">@color/primary_text_light</item>
+
+
+        -->
 </resources>
