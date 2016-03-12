@@ -81,13 +81,12 @@ public class PartyPickActivity extends AppCompatActivity {
         partyList.addItemDecoration(new PreSeparatorDecorator(partyList, this) {
             @Override
             protected boolean isEligible(int position) {
-                if (ioDefs.size() > 0) {
-                    if (position < 2) return false; // header and first entry
-                    position--;
-                    if (position < ioDefs.size()) return true;
-                    position -= ioDefs.size();
-                }
-                return position >= 2;
+                // Problem here: positions are stable, but not all of those are to be shown, so...
+                if(position == 0) return false; // separator
+                if(denseDefs.size() > 0) position--;
+                if(position < denseDefs.size()) return position != 0;
+                position -= denseDefs.size();
+                return position > 1;
             }
         });
         final ItemTouchHelper swiper = new ItemTouchHelper(new MyItemTouchCallback());
@@ -476,7 +475,7 @@ public class PartyPickActivity extends AppCompatActivity {
             group = denseDefs.get(position);
             if(group == null) return; // impossible by construction
             name.setText(group.name);
-            String str = getString(group.party.length > 1? R.string.vhOP_charCount_singular : R.string.vhOP_charCount_plural);
+            String str = getString(group.party.length == 1? R.string.vhOP_charCount_singular : R.string.vhOP_charCount_plural);
             if(group.party.length > 1) str = String.format(str, group.party.length);
             pgCount.setText(str);
             int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
@@ -643,7 +642,7 @@ public class PartyPickActivity extends AppCompatActivity {
 
             final StartData.PartyClientData.Group party = target.denseKeys.get(getIndex());
             ((TextView)layout.findViewById(R.id.fragPPAJD_partyName)).setText(party.name);
-            ((TextView)layout.findViewById(R.id.fragPPAJD_lastPlayedPcs)).setText(target.listLastPlayedPcs(party));
+            MaxUtils.setTextUnlessNull((TextView) layout.findViewById(R.id.fragPPAJD_lastPlayedPcs), target.listLastPlayedPcs(party), View.GONE);
             final Button go = (Button)layout.findViewById(R.id.fragPPAJD_goAdventuring);
             go.setText(target.isFighting(party) ? R.string.ppa_joinedDetails_continueBattle : R.string.ppa_joinedDetails_newSession);
             ((TextView)layout.findViewById(R.id.fragPPAJD_created)).setText(target.getNiceDate(party.received));
@@ -675,11 +674,13 @@ public class PartyPickActivity extends AppCompatActivity {
     }
 
     String listLastPlayedPcs(StartData.PartyClientData.Group party) {
-        // Not really there for the time being.
-        final StartData.ActorDefinition res = new StartData.ActorDefinition();
-        res.name = "!! STUB !!";
-        StartData.ActorDefinition[] arr = new StartData.ActorDefinition[]{res};
-        return list(arr);
+        //// Not really there for the time being.
+        //// TODO
+        //final StartData.ActorDefinition res = new StartData.ActorDefinition();
+        //res.name = "!! STUB !!";
+        //StartData.ActorDefinition[] arr = new StartData.ActorDefinition[]{res};
+        //return list(arr);
+        return null;
     }
 
     static class SelectionListener implements View.OnClickListener {
@@ -787,9 +788,9 @@ public class PartyPickActivity extends AppCompatActivity {
             hiddenPos--;
         }
         for(int loop = match != null? ioKeys.size() : 0; loop < ioKeys.size(); loop++) {
-            if(hideDefKey[loop]) continue;
+            if(!hideDefKey[ioDefs.size() + loop]) continue;
             if(hiddenPos == 0) {
-                hideDefKey[loop] = false;
+                hideDefKey[ioDefs.size() + loop] = false;
                 match = ioKeys.get(loop);
                 break;
             }

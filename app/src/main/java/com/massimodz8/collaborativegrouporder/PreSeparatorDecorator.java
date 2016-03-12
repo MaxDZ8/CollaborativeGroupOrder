@@ -45,9 +45,14 @@ public abstract class PreSeparatorDecorator extends RecyclerView.ItemDecoration 
     final int thickness;
     Rect rect = new Rect(), parentRect = new Rect();
     ArrayList<View> targets = new ArrayList<>();
+    boolean drawn = true; // we lie
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+        if(drawn) {
+            targets.clear();
+            drawn = false;
+        }
         final int pos = parent.getChildAdapterPosition(view);
         if(!isEligible(pos)) {
             outRect.setEmpty();
@@ -71,5 +76,6 @@ public abstract class PreSeparatorDecorator extends RecyclerView.ItemDecoration 
             rect.right = rect.left + width;
             c.drawRect(rect, paint);
         }
+        drawn = true;
     }
 }
