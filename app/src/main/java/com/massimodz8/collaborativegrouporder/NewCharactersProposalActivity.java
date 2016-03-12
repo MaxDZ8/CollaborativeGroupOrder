@@ -23,6 +23,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 
 public class NewCharactersProposalActivity extends AppCompatActivity implements PlayingCharacterListAdapter.DataPuller {
@@ -186,6 +187,9 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                 StartData.PartyClientData.Group gen = new StartData.PartyClientData.Group();
                 gen.key = party.salt;
                 gen.name = party.group.name;
+                gen.received = new com.google.protobuf.nano.Timestamp();
+                gen.received.seconds = System.currentTimeMillis() / 1000;
+                gen.sessionFile = PersistentDataUtils.makeInitialSession(new Date(), gen.name);
                 longer[loaded.everything.length] = gen;
                 loaded.everything =  longer;
                 newKey = gen;

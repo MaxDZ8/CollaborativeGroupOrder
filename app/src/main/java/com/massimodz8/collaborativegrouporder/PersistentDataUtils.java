@@ -1,6 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.support.annotation.StringRes;
+import android.support.annotation.WorkerThread;
 
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
@@ -14,6 +15,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -26,6 +29,27 @@ public abstract class PersistentDataUtils {
 
     protected PersistentDataUtils(int minimumSaltBytes) {
         this.minimumSaltBytes = minimumSaltBytes;
+    }
+
+    /**
+     * Ok, we want to save a party, whatever it is owned or joined we need to create a "session file" which will be initially empty.
+     * This function takes care of creating that empty file for you and returns its name.
+     * @return File name to be used.
+     */
+    @WorkerThread
+    public static String makeInitialSession(Date when, String name) {
+        // First strategy is the most convenient for the user. It's party name. Likely to fail.
+        // Then creation date + party name, only creation date. If this fails we're busted.
+        File session = createSessionFile(name);
+        if(session != null) return name;
+        Calendar local = Calendar.getInstance();
+        local.setTime(when);
+        String timestamp = String.format("%1$tY%1$tm%1td_%1$tH%1$tM%1$tS", local);
+        session = createSessionFile(timestamp + name);
+        if(session != null) return timestamp + name;
+        session = createSessionFile(timestamp);
+        if(session != null) return timestamp;
+        return null;
     }
 
     protected abstract String getString(@StringRes int resource);
@@ -106,6 +130,8 @@ public abstract class PersistentDataUtils {
         final int start = errors.size();
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
+        if(group.created == null || group.created.nanos != 0 || group.created.seconds == 0) errors.add(premise + getString(R.string.persistentStorage_badCreationTimestamp));
+        if(group.sessionFile == null || group.sessionFile.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_badSessionFile));
 
         new ActorValidator(true, errors, String.format("%1$s->%2$s", premise, getString(R.string.persistentStorage_partyDefValidationPremise)))
                 .check(getString(R.string.persistentStorage_playingCharacters), group.party, true)
@@ -123,6 +149,8 @@ public abstract class PersistentDataUtils {
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
         if(group.key.length < 1) errors.add(premise + getString(R.string.persistentStorage_missingKey));
+        if(group.received == null || group.received.nanos != 0 || group.received.seconds == 0) errors.add(premise + getString(R.string.persistentStorage_badCreationTimestamp));
+        if(group.sessionFile == null || group.sessionFile.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_badSessionFile));
         return start != errors.size();
     }
 
@@ -193,4 +221,18 @@ public abstract class PersistentDataUtils {
 
     public static final String DEFAULT_GROUP_DATA_FILE_NAME = "groupDefs.bin";
     public static final String DEFAULT_KEY_FILE_NAME = "keys.bin";
+
+    private static File createSessionFile(String name) {
+        File session = new File(name);
+        try {
+            if(!session.createNewFile()) session = null;
+            else if(!session.canWrite()) {
+                session.deleteOnExit();
+                session = null;
+            }
+        } catch (IOException e) {
+            session = null; // most likely malformed file
+        }
+        return session;
+    }
 }

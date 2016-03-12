@@ -389,6 +389,10 @@ public class PartyCreationService extends PublishAcceptService {
 
     private StartData.PartyOwnerData.Group makeGroup() {
         StartData.PartyOwnerData.Group ret = new StartData.PartyOwnerData.Group();
+        ret.created = new com.google.protobuf.nano.Timestamp();
+        ret.created.seconds = System.currentTimeMillis() / 1000;
+        ret.sessionFile = PersistentDataUtils.makeInitialSession(new Date(ret.created.seconds * 1000), building.name);
+        if(ret.sessionFile == null) throw new RuntimeException();
         ret.name = building.name;
         {
             int devCount = 0;
