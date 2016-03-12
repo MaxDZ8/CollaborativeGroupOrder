@@ -4,10 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.nsd.NsdManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.TextView;
 
 import java.security.MessageDigest;
 
@@ -71,5 +74,17 @@ public abstract class MaxUtils {
                         goner.finish();
                     }
                 }).show();
+    }
+
+    /**
+     * @param view The view which will be target of state manipulation.
+     * @param text String to set when not null.
+     * @param nullVis Visibility to apply when text == null, otherwise ignored
+     * @return true if the view is set to VISIBLE, always true if text != null
+     */
+    public static boolean setTextUnlessNull(@NonNull TextView view, @Nullable String text, int nullVis) {
+        view.setVisibility(text == null? nullVis : View.VISIBLE);
+        if(text != null) view.setText(text);
+        return text != null;
     }
 }

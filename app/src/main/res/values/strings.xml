@@ -253,10 +253,6 @@
     <string name="cardOP_currentStateLabel">Currently:</string>
     <string name="cardJP_currentStateLabel">Currently:</string>
     <string name="cardJP_lastPlayLabel">Last played:</string>
-    <string name="ppa_TODO_creationDate"><![CDATA[<!TODO!>]]></string>
-    <string name="ppa_TODO_lastPlayDate_owned"><![CDATA[<!TODO!>]]></string>
-    <string name="ppa_TODO_lastPlayDate_joined"><![CDATA[<!TODO-action!>ing since <!TODO-date!>]]></string>
-    <string name="ppa_TODO_currentState"><![CDATA[<!TODO!>]]></string>
     <string name="ppa_playingCharacterNameSeparator">", "</string>
     <string name="ppa_noPartySelected">No party selected.</string>
     <string name="ppa_noPartySelectedMoreInstructions">Tap on a party overview to show information and actions here.</string>
@@ -385,4 +381,9 @@
     <string name="dlgSDN_visibilityNote">Device names are visible only from this device.</string>
     <string name="dlgSCB_title">Set message budget</string>
     <string name="dlgSCB_description">Messages exceeding this length will not be shown.\nPlaying characters have their separate budget.</string>
+
+    <string name="vhOP_charCount_singular">A lone adventurer</string>
+    <string name="vhOP_charCount_plural">%1$d playing characters</string>
+    <string name="vhOP_charLevel_same">Level %1$d</string>
+    <string name="vhOP_charLevel_different">Levels %1$d - %2$d</string>
 </resources>
