@@ -189,7 +189,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                 gen.name = party.group.name;
                 gen.received = new com.google.protobuf.nano.Timestamp();
                 gen.received.seconds = System.currentTimeMillis() / 1000;
-                gen.sessionFile = PersistentDataUtils.makeInitialSession(new Date(), gen.name);
+                gen.sessionFile = PersistentDataUtils.makeInitialSession(new Date(), self.getFilesDir(), gen.name);
                 longer[loaded.everything.length] = gen;
                 loaded.everything =  longer;
                 newKey = gen;

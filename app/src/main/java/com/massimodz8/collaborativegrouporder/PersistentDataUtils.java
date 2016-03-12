@@ -37,17 +37,17 @@ public abstract class PersistentDataUtils {
      * @return File name to be used.
      */
     @WorkerThread
-    public static String makeInitialSession(Date when, String name) {
+    public static String makeInitialSession(Date when, File filesDir, String name) {
         // First strategy is the most convenient for the user. It's party name. Likely to fail.
         // Then creation date + party name, only creation date. If this fails we're busted.
-        File session = createSessionFile(name);
+        File session = createSessionFile(filesDir, name);
         if(session != null) return name;
         Calendar local = Calendar.getInstance();
         local.setTime(when);
-        String timestamp = String.format("%1$tY%1$tm%1td_%1$tH%1$tM%1$tS", local);
-        session = createSessionFile(timestamp + name);
+        String timestamp = String.format("%1$tY%1$tm%1$td_%1$tH%1$tM%1$tS", local);
+        session = createSessionFile(filesDir, timestamp + name);
         if(session != null) return timestamp + name;
-        session = createSessionFile(timestamp);
+        session = createSessionFile(filesDir, timestamp);
         if(session != null) return timestamp;
         return null;
     }
@@ -222,8 +222,8 @@ public abstract class PersistentDataUtils {
     public static final String DEFAULT_GROUP_DATA_FILE_NAME = "groupDefs.bin";
     public static final String DEFAULT_KEY_FILE_NAME = "keys.bin";
 
-    private static File createSessionFile(String name) {
-        File session = new File(name);
+    private static File createSessionFile(File filesDir, String name) {
+        File session = new File(filesDir, name);
         try {
             if(!session.createNewFile()) session = null;
             else if(!session.canWrite()) {

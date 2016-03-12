@@ -21,6 +21,7 @@ import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -209,13 +210,13 @@ public class PartyCreationService extends PublishAcceptService {
         return count;
     }
 
-    public AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> saveParty(final @NonNull Activity stringResolver, @NonNull AsyncLoadUpdateTask.Callbacks cb) {
-        return new AsyncActivityLoadUpdateTask<StartData.PartyOwnerData>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", stringResolver, cb) {
+    public AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> saveParty(final @NonNull Activity activity, @NonNull AsyncLoadUpdateTask.Callbacks cb) {
+        return new AsyncActivityLoadUpdateTask<StartData.PartyOwnerData>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", activity, cb) {
             @Override
             protected void appendNewEntry(StartData.PartyOwnerData loaded) {
                 StartData.PartyOwnerData.Group[] longer = new StartData.PartyOwnerData.Group[loaded.everything.length + 1];
                 System.arraycopy(loaded.everything, 0, longer, 0, loaded.everything.length);
-                if(null == generatedParty) generatedParty = makeGroup();
+                if(null == generatedParty) generatedParty = makeGroup(activity.getFilesDir());
                 longer[loaded.everything.length] = generatedParty;
                 loaded.everything = longer;
             }
@@ -387,11 +388,11 @@ public class PartyCreationService extends PublishAcceptService {
     }
 
 
-    private StartData.PartyOwnerData.Group makeGroup() {
+    private StartData.PartyOwnerData.Group makeGroup(File filesDir) {
         StartData.PartyOwnerData.Group ret = new StartData.PartyOwnerData.Group();
         ret.created = new com.google.protobuf.nano.Timestamp();
         ret.created.seconds = System.currentTimeMillis() / 1000;
-        ret.sessionFile = PersistentDataUtils.makeInitialSession(new Date(ret.created.seconds * 1000), building.name);
+        ret.sessionFile = PersistentDataUtils.makeInitialSession(new Date(ret.created.seconds * 1000), filesDir, building.name);
         if(ret.sessionFile == null) throw new RuntimeException();
         ret.name = building.name;
         {
