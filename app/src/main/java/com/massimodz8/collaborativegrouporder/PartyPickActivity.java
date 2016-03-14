@@ -410,7 +410,7 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
 
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-            if(null != pending) return 0;
+            if(null != pending || null != loading) return 0;
             int swipe = 0;
             if(viewHolder instanceof OwnedPartyHolder || viewHolder instanceof JoinedPartyHolder) swipe = SWIPE_HORIZONTAL;
             return makeMovementFlags(DRAG_FORBIDDEN, swipe);
@@ -777,10 +777,10 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
                     }
                 });
         if(match instanceof StartData.PartyOwnerData.Group) {
-            pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(owned), sb, null);
+            pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(denseDefs), sb, null);
         }
         else {
-            pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(joined), sb, null);
+            pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(denseKeys), sb, null);
         }
     }
 
