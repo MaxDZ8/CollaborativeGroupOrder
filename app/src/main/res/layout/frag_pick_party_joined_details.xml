@@ -8,8 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/generic_unreadable_at_start"
-        android:id="@+id/ppa_joinedDetails_groupName"
+        android:id="@+id/fragPPAJD_partyName"
         android:layout_columnSpan="3"
         android:layout_column="0"
         android:layout_margin="8sp"
@@ -19,8 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/ppa_joinedDetails_lastPlayedPcs"
-        android:id="@+id/ppa_joinedDetails_lastPlayedPcs"
+        android:id="@+id/fragPPAJD_lastPlayedPcs"
         android:layout_row="1"
         android:layout_column="0"
         android:layout_columnSpan="3"
@@ -32,16 +30,13 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/ppa_joinedDetails_createdLabel"
         android:layout_row="2"
-        android:layout_column="0"
-        android:layout_marginLeft="24sp"
-        android:layout_marginRight="8sp" />
+        android:layout_column="0" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/generic_unreadable_at_start"
-        android:id="@+id/ppa_joinedDetails_created"
+        android:id="@+id/fragPPAJD_created"
         android:layout_row="2"
         android:layout_column="1" />
 
@@ -51,16 +46,13 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/ppa_joinedDetails_lastPlayLabel"
         android:layout_row="3"
-        android:layout_column="0"
-        android:layout_marginLeft="24sp"
-        android:layout_marginRight="8sp" />
+        android:layout_column="0" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/generic_unreadable_at_start"
-        android:id="@+id/ppa_joinedDetails_lastPlayed"
+        android:id="@+id/fragPPAJD_lastPlayed"
         android:layout_row="3"
         android:layout_column="1" />
 
@@ -70,16 +62,13 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/ppa_ownedDetails_currentStateLabel"
         android:layout_row="4"
-        android:layout_column="0"
-        android:layout_marginLeft="24sp"
-        android:layout_marginRight="8sp" />
+        android:layout_column="0" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/generic_unreadable_at_start"
-        android:id="@+id/ppa_joinedDetails_currentState"
+        android:id="@+id/fragPPAJD_currentState"
         android:layout_row="4"
         android:layout_column="1" />
 
@@ -93,17 +82,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/ppa_joinedDetails_note"
+        android:id="@+id/fragPPAJD_note"
         android:layout_row="6"
         android:layout_column="0"
-        android:layout_columnSpan="3"
-        android:text="@string/generic_unreadable_at_start" />
+        android:layout_columnSpan="3" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ppa_joinedDetails_goAdventuring"
-        android:id="@+id/ppa_joinedDetails_goAdventuring"
+        android:id="@+id/fragPPAJD_goAdventuring"
         android:layout_row="7"
         android:layout_column="0"
         android:layout_columnSpan="2"

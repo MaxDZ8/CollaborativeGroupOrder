@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
     This goes in parallel with landing socket and publish management so you're better set this up ASAP.
     As usual, it can be initialized only once and then the service will have to be destroyed.
     */
-    public void initializePartyManagement(@NonNull PersistentStorage.PartyOwnerData.Group party, @NonNull JoinVerificator keyMaster) {
+    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, @NonNull JoinVerificator keyMaster) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster);
     }
 
@@ -43,7 +43,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
         }
     }
 
-    public PersistentStorage.PartyOwnerData.Group getPartyOwnerData() {
+    public StartData.PartyOwnerData.Group getPartyOwnerData() {
         return assignmentHelper == null? null : assignmentHelper.party;
     }
 
@@ -61,7 +61,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
         return gen;
     }
 
-    public ArrayList<PersistentStorage.ActorDefinition> getUnboundedPcs() {
+    public ArrayList<StartData.ActorDefinition> getUnboundedPcs() {
         return assignmentHelper.getUnboundedPcs();
     }
 
@@ -70,7 +70,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
     }
 
     /// Marks the given character to be managed locally. Will trigger ownership change.
-    public void local(PersistentStorage.ActorDefinition actor) {
+    public void local(StartData.ActorDefinition actor) {
         assignmentHelper.local(actor);
     }
 

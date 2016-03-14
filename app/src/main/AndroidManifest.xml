@@ -110,6 +110,10 @@
             android:enabled="true"
             android:exported="false"
             android:label="@string/pcs_label" />
+        <service
+            android:name=".PartyPickingService"
+            android:enabled="true"
+            android:exported="false"></service>
     </application>
 
 </manifest>

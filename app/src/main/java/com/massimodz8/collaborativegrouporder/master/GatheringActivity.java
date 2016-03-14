@@ -28,7 +28,7 @@ import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PublishedService;
 import com.massimodz8.collaborativegrouporder.R;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -135,7 +135,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     }
 
     public void startSession_callback(View btn) {
-        final ArrayList<PersistentStorage.ActorDefinition> free = room.getUnboundedPcs();
+        final ArrayList<StartData.ActorDefinition> free = room.getUnboundedPcs();
         if(free.isEmpty()) {
             room.stopPublishing();
             room.stopListening(false);
@@ -293,7 +293,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     private class PcViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, ActionMode.Callback {
         TextView name;
         TextView levels;
-        PersistentStorage.ActorDefinition actor;
+        StartData.ActorDefinition actor;
 
         public PcViewHolder(View itemView) {
             super(itemView);
@@ -325,7 +325,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch(item.getItemId()) {
                 case R.id.ga_ctx_unassigned_pc_playHere: {
-                    PersistentStorage.ActorDefinition was = (PersistentStorage.ActorDefinition) mode.getTag();
+                    StartData.ActorDefinition was = (StartData.ActorDefinition) mode.getTag();
                     if(null != room && null != was) room.local(was);
                     mode.finish();
                     return true;

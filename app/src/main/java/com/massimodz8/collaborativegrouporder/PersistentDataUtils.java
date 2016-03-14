@@ -1,11 +1,13 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.support.annotation.StringRes;
+import android.support.annotation.WorkerThread;
 
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,6 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 
 /**
@@ -28,11 +32,33 @@ public abstract class PersistentDataUtils {
         this.minimumSaltBytes = minimumSaltBytes;
     }
 
+    /**
+     * Ok, we want to save a party, whatever it is owned or joined we need to create a "session file" which will be initially empty.
+     * This function takes care of creating that empty file for you and returns its name.
+     * @return File name to be used.
+     */
+    @WorkerThread
+    public static String makeInitialSession(Date when, File filesDir, String name) {
+        // First strategy is the most convenient for the user. It's party name. Likely to fail.
+        // Then creation date + party name, only creation date. If this fails we're busted.
+        File session = createSessionFile(filesDir, name);
+        if(session != null) return name;
+        Calendar local = Calendar.getInstance();
+        local.setTime(when);
+        String timestamp = String.format("%1$tY%1$tm%1$td_%1$tH%1$tM%1$tS", local);
+        session = createSessionFile(filesDir, timestamp + name);
+        if(session != null) return timestamp + name;
+        session = createSessionFile(filesDir, timestamp);
+        if(session != null) return timestamp;
+        return null;
+    }
+
     protected abstract String getString(@StringRes int resource);
 
     public static final int OWNER_DATA_VERSION = 1;
     public static final int CLIENT_DATA_WRITE_VERSION = 1;
     public static final int MAX_GROUP_DATA_BYTES = 1024 * 1024 * 4;
+    public static final int MAX_SESSION_DATA_BYTES = 1024 * 1024 * 4;
 
     public <Container extends MessageNano> String mergeExistingGroupData(Container dst, File from) {
         FileInputStream source;
@@ -41,7 +67,7 @@ public abstract class PersistentDataUtils {
         } catch (FileNotFoundException e) {
             return null;
         }
-        if(from.length() > MAX_GROUP_DATA_BYTES) return getString(R.string.persistentStorage_groupDataTooBig);
+        if(from.length() > MAX_GROUP_DATA_BYTES) return getString(R.string.persistentStorage_archiveTooBig);
         byte[] everything = new byte[(int)from.length()];
         try {
             final int count = source.read(everything);
@@ -54,12 +80,12 @@ public abstract class PersistentDataUtils {
         try {
             dst.mergeFrom(input);
         } catch (IOException e) {
-            return getString(R.string.persistentStorage_failedReadGroupList);
+            return getString(R.string.persistentStorage_failedRead);
         }
         return null;
     }
 
-    public ArrayList<String> validateLoadedDefinitions(PersistentStorage.PartyOwnerData loaded) {
+    public ArrayList<String> validateLoadedDefinitions(StartData.PartyOwnerData loaded) {
         ArrayList<String> arr = new ArrayList<>();
         if(loaded.version == 0) {
             arr.add(getString(R.string.persistentStorage_groupDataVersionZero));
@@ -67,7 +93,7 @@ public abstract class PersistentDataUtils {
         }
         if(loaded.version >= 1) {
             for(int check = 0; check < loaded.everything.length; check++) {
-                final PersistentStorage.PartyOwnerData.Group ref = loaded.everything[check];
+                final StartData.PartyOwnerData.Group ref = loaded.everything[check];
                 if(invalid(arr, ref, check)) continue;
                 for(int cmp = check + 1; cmp < loaded.everything.length; cmp++) {
                     if(ref.name.equals(loaded.everything[cmp].name)) {
@@ -80,7 +106,7 @@ public abstract class PersistentDataUtils {
         return arr.isEmpty()? null : arr;
     }
 
-    public ArrayList<String> validateLoadedDefinitions(PersistentStorage.PartyClientData loaded) {
+    public ArrayList<String> validateLoadedDefinitions(StartData.PartyClientData loaded) {
         ArrayList<String> arr = new ArrayList<>();
         if(loaded.version == 0) {
             arr.add(getString(R.string.persistentStorage_groupDataVersionZero));
@@ -88,7 +114,7 @@ public abstract class PersistentDataUtils {
         }
         if(loaded.version >= 1) {
             for(int check = 0; check < loaded.everything.length; check++) {
-                final PersistentStorage.PartyClientData.Group ref = loaded.everything[check];
+                final StartData.PartyClientData.Group ref = loaded.everything[check];
                 if(invalid(arr, ref, check)) continue;
                 for(int cmp = check + 1; cmp < loaded.everything.length; cmp++) {
                     if(ref.name.equals(loaded.everything[cmp].name) &&
@@ -102,27 +128,31 @@ public abstract class PersistentDataUtils {
         return arr.isEmpty()? null : arr;
     }
 
-    private boolean invalid(ArrayList<String> errors, PersistentStorage.PartyOwnerData.Group group, int index) {
+    private boolean invalid(ArrayList<String> errors, StartData.PartyOwnerData.Group group, int index) {
         final int start = errors.size();
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
+        if(group.created == null || group.created.nanos != 0 || group.created.seconds == 0) errors.add(premise + getString(R.string.persistentStorage_badCreationTimestamp));
+        if(group.sessionFile == null || group.sessionFile.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_badSessionFile));
 
         new ActorValidator(true, errors, String.format("%1$s->%2$s", premise, getString(R.string.persistentStorage_partyDefValidationPremise)))
                 .check(getString(R.string.persistentStorage_playingCharacters), group.party, true)
                 .check(getString(R.string.persistentStorage_NPC), group.npcs, false);
 
         for(int loop = 0; loop < group.devices.length; loop++) {
-            PersistentStorage.PartyOwnerData.DeviceInfo dev = group.devices[loop];
-            if(dev.salt.length < minimumSaltBytes) errors.add(premise + ", device[%1$s]: empty salt.");
+            StartData.PartyOwnerData.DeviceInfo dev = group.devices[loop];
+            if(dev.salt.length < minimumSaltBytes) errors.add(premise + String.format(getString(R.string.persistentStorage_deviceBadSalt), loop));
         }
         return start != errors.size();
     }
 
-    private boolean invalid(ArrayList<String> errors, PersistentStorage.PartyClientData.Group group, int index) {
+    private boolean invalid(ArrayList<String> errors, StartData.PartyClientData.Group group, int index) {
         final int start = errors.size();
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
         if(group.key.length < 1) errors.add(premise + getString(R.string.persistentStorage_missingKey));
+        if(group.received == null || group.received.nanos != 0 || group.received.seconds == 0) errors.add(premise + getString(R.string.persistentStorage_badCreationTimestamp));
+        if(group.sessionFile == null || group.sessionFile.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_badSessionFile));
         return start != errors.size();
     }
 
@@ -158,14 +188,14 @@ public abstract class PersistentDataUtils {
             base = premiseBase;
         }
 
-        ActorValidator check(String mod, PersistentStorage.ActorDefinition[] list, boolean required) {
+        ActorValidator check(String mod, StartData.ActorDefinition[] list, boolean required) {
             final String premise = base + mod;
             if(list.length == 0) {
                 if(required) errors.add(premise + getString(R.string.persistentStorage_groupWithNoActors));
                 return this;
             }
             for(int i = 0; i < list.length; i++) {
-                final PersistentStorage.ActorDefinition actor = list[i];
+                final StartData.ActorDefinition actor = list[i];
                 String head = String.format("%1$s[%2$d]", premise, i);
                 if(actor.name.isEmpty()) errors.add(head + getString(R.string.persistentStorage_actorMissingName));
                 head = String.format("%1$s(%2$s)", head, actor.name);
@@ -175,7 +205,7 @@ public abstract class PersistentDataUtils {
             return this;
         }
 
-        void check(String premise, PersistentStorage.ActorStatistics[] list) {
+        void check(String premise, StartData.ActorStatistics[] list) {
             if(list.length == 0) {
                 errors.add(premise + getString(R.string.persistentStorage_actorStatsEmpty));
             }
@@ -183,14 +213,69 @@ public abstract class PersistentDataUtils {
         }
     }
 
-    public void upgrade(PersistentStorage.PartyOwnerData result) {
+    public void upgrade(StartData.PartyOwnerData result) {
         if(result.version == 0) result.version = 1; // free upgrade :P
     }
 
-    public void upgrade(PersistentStorage.PartyClientData result) {
+    public void upgrade(StartData.PartyClientData result) {
         if(result.version == 0) result.version = 1; // free upgrade :P
     }
 
     public static final String DEFAULT_GROUP_DATA_FILE_NAME = "groupDefs.bin";
     public static final String DEFAULT_KEY_FILE_NAME = "keys.bin";
+
+    private static File createSessionFile(File filesDir, String name) {
+        File session = new File(filesDir, name);
+        try {
+            if(!session.createNewFile()) session = null;
+            else if(!session.canWrite()) {
+                session.deleteOnExit();
+                session = null;
+            }
+        } catch (IOException e) {
+            session = null; // most likely malformed file
+        }
+        return session;
+    }
+
+    public static class SessionStructs {
+        Session.RealWorldData irl;
+        Session.LiveData adventure;
+        Session.BattleData battle;
+    }
+
+    public String load(SessionStructs fetch, FileInputStream source, int size) {
+        byte[] everything = new byte[size];
+        try {
+            final int count = source.read(everything);
+            if(count != everything.length) return getString(R.string.persistentStorage_readSizeMismatch);
+        } catch (IOException e) {
+            return getString(R.string.persistentStorage_failedRead);
+        }
+        CodedInputByteBufferNano input = CodedInputByteBufferNano.newInstance(everything);
+        String bad = loadCatchClose(fetch.irl, input, source);
+        if(bad != null && fetch.irl.state != Session.RealWorldData.KNOWN) {
+            fetch.adventure = new Session.LiveData();
+            bad = loadCatchClose(fetch.adventure, input, source);
+            if(bad == null && fetch.irl.state != Session.RealWorldData.ADVENTURING) {
+                fetch.battle = new Session.BattleData();
+                bad = loadCatchClose(fetch.battle, input, source);
+            }
+        }
+        return bad;
+    }
+
+    private String loadCatchClose(MessageNano data, CodedInputByteBufferNano input, FileInputStream file) {
+        try {
+            input.readMessage(data);
+        } catch (IOException e) {
+            try {
+                file.close();
+            } catch (IOException e1) {
+                // ignore
+            }
+            return getString(R.string.persistentStorage_failedRead);
+        }
+        return null;
+    }
 }

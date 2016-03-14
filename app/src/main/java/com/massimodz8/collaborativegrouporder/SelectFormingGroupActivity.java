@@ -290,7 +290,11 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
                     final Events.CharBudget real = (Events.CharBudget) msg.obj;
                     target.charBudget(real.which, real.payload);
                 } break;
-                case MSG_PUMPER_DETACHED: break; // it's ok, we moved the thing away
+                case MSG_PUMPER_DETACHED: {
+                    final MessageChannel real = (MessageChannel)msg.obj;
+                    target.wereDone(real);
+                    break;
+                }
                 case MSG_GROUP_FORMED: {
                     final Events.GroupKey real = (Events.GroupKey) msg.obj;
                     target.formed(real.origin, real.key);
@@ -300,7 +304,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         }
     }
 
-    private void formed(MessageChannel origin, byte[] key) {
+    private void wereDone(MessageChannel origin) {
         GroupState got = null;
         for(GroupState check : candidates) {
             if(check.channel == origin) {
@@ -309,7 +313,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
             }
         }
         if(got == null) return; // impossible
-        got.salt = key;
         // Also get the rid of everything that isn't you. Farewell.
         final GroupState save = got;
         final Vector<GroupState> clear = this.candidates;
@@ -323,8 +326,8 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                for(GroupState away : clear) {
-                    if(save == away) continue;
+                for (GroupState away : clear) {
+                    if (save == away) continue;
                     try {
                         away.channel.socket.close();
                     } catch (IOException e) {
@@ -336,11 +339,37 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         }.execute();
 
         explorer.stopDiscovery();
-        netPump.shutdown();
+        final Pumper.MessagePumpingThread[] goners = netPump.move();
+        for (Pumper.MessagePumpingThread bye : goners) bye.interrupt();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Pumper.MessagePumpingThread bye : goners) {
+                    try {
+                        bye.getSource().socket.close();
+                    } catch (IOException e) {
+                        // ignore
+                    }
+                }
+
+            }
+        }).start();
         netPump = null;
 
         setResult(RESULT_OK);
         finish();
+    }
+
+    private void formed(MessageChannel origin, byte[] key) {
+        GroupState got = null;
+        for(GroupState check : candidates) {
+            if(check.channel == origin) {
+                got = check;
+                break;
+            }
+        }
+        if(got == null) return; // impossible
+        got.salt = key;
     }
 
     void sendMessageToPartyOwner(final GroupState gs, CharSequence msg) {

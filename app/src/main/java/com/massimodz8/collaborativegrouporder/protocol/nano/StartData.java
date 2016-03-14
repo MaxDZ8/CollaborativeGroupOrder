@@ -3,7 +3,7 @@
 package com.massimodz8.collaborativegrouporder.protocol.nano;
 
 @SuppressWarnings("hiding")
-public interface PersistentStorage {
+public interface StartData {
 
   public static final class PartyOwnerData extends
       com.google.protobuf.nano.MessageNano {
@@ -143,16 +143,22 @@ public interface PersistentStorage {
       public java.lang.String name;
 
       // repeated .PartyOwnerData.DeviceInfo devices = 2;
-      public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo[] devices;
+      public com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.DeviceInfo[] devices;
 
       // repeated .ActorDefinition party = 3;
-      public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] party;
+      public com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition[] party;
 
       // repeated .ActorDefinition npcs = 4;
-      public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] npcs;
+      public com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition[] npcs;
 
       // optional string imageFile = 5;
       public java.lang.String imageFile;
+
+      // optional .google.protobuf.Timestamp created = 6;
+      public com.google.protobuf.nano.Timestamp created;
+
+      // optional string sessionFile = 7;
+      public java.lang.String sessionFile;
 
       public Group() {
         clear();
@@ -160,10 +166,12 @@ public interface PersistentStorage {
 
       public Group clear() {
         name = "";
-        devices = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo.emptyArray();
-        party = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition.emptyArray();
-        npcs = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition.emptyArray();
+        devices = com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.DeviceInfo.emptyArray();
+        party = com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition.emptyArray();
+        npcs = com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition.emptyArray();
         imageFile = "";
+        created = null;
+        sessionFile = "";
         cachedSize = -1;
         return this;
       }
@@ -176,7 +184,7 @@ public interface PersistentStorage {
         }
         if (this.devices != null && this.devices.length > 0) {
           for (int i = 0; i < this.devices.length; i++) {
-            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo element = this.devices[i];
+            com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.DeviceInfo element = this.devices[i];
             if (element != null) {
               output.writeMessage(2, element);
             }
@@ -184,7 +192,7 @@ public interface PersistentStorage {
         }
         if (this.party != null && this.party.length > 0) {
           for (int i = 0; i < this.party.length; i++) {
-            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.party[i];
+            com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition element = this.party[i];
             if (element != null) {
               output.writeMessage(3, element);
             }
@@ -192,7 +200,7 @@ public interface PersistentStorage {
         }
         if (this.npcs != null && this.npcs.length > 0) {
           for (int i = 0; i < this.npcs.length; i++) {
-            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.npcs[i];
+            com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition element = this.npcs[i];
             if (element != null) {
               output.writeMessage(4, element);
             }
@@ -200,6 +208,12 @@ public interface PersistentStorage {
         }
         if (!this.imageFile.equals("")) {
           output.writeString(5, this.imageFile);
+        }
+        if (this.created != null) {
+          output.writeMessage(6, this.created);
+        }
+        if (!this.sessionFile.equals("")) {
+          output.writeString(7, this.sessionFile);
         }
         super.writeTo(output);
       }
@@ -213,7 +227,7 @@ public interface PersistentStorage {
         }
         if (this.devices != null && this.devices.length > 0) {
           for (int i = 0; i < this.devices.length; i++) {
-            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo element = this.devices[i];
+            com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.DeviceInfo element = this.devices[i];
             if (element != null) {
               size += com.google.protobuf.nano.CodedOutputByteBufferNano
                 .computeMessageSize(2, element);
@@ -222,7 +236,7 @@ public interface PersistentStorage {
         }
         if (this.party != null && this.party.length > 0) {
           for (int i = 0; i < this.party.length; i++) {
-            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.party[i];
+            com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition element = this.party[i];
             if (element != null) {
               size += com.google.protobuf.nano.CodedOutputByteBufferNano
                 .computeMessageSize(3, element);
@@ -231,7 +245,7 @@ public interface PersistentStorage {
         }
         if (this.npcs != null && this.npcs.length > 0) {
           for (int i = 0; i < this.npcs.length; i++) {
-            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition element = this.npcs[i];
+            com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition element = this.npcs[i];
             if (element != null) {
               size += com.google.protobuf.nano.CodedOutputByteBufferNano
                 .computeMessageSize(4, element);
@@ -241,6 +255,14 @@ public interface PersistentStorage {
         if (!this.imageFile.equals("")) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeStringSize(5, this.imageFile);
+        }
+        if (this.created != null) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeMessageSize(6, this.created);
+        }
+        if (!this.sessionFile.equals("")) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeStringSize(7, this.sessionFile);
         }
         return size;
       }
@@ -268,18 +290,18 @@ public interface PersistentStorage {
               int arrayLength = com.google.protobuf.nano.WireFormatNano
                   .getRepeatedFieldArrayLength(input, 18);
               int i = this.devices == null ? 0 : this.devices.length;
-              com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo[] newArray =
-                  new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo[i + arrayLength];
+              com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.DeviceInfo[] newArray =
+                  new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.DeviceInfo[i + arrayLength];
               if (i != 0) {
                 java.lang.System.arraycopy(this.devices, 0, newArray, 0, i);
               }
               for (; i < newArray.length - 1; i++) {
-                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo();
+                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.DeviceInfo();
                 input.readMessage(newArray[i]);
                 input.readTag();
               }
               // Last one without readTag.
-              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.DeviceInfo();
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.DeviceInfo();
               input.readMessage(newArray[i]);
               this.devices = newArray;
               break;
@@ -288,18 +310,18 @@ public interface PersistentStorage {
               int arrayLength = com.google.protobuf.nano.WireFormatNano
                   .getRepeatedFieldArrayLength(input, 26);
               int i = this.party == null ? 0 : this.party.length;
-              com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] newArray =
-                  new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[i + arrayLength];
+              com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition[] newArray =
+                  new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition[i + arrayLength];
               if (i != 0) {
                 java.lang.System.arraycopy(this.party, 0, newArray, 0, i);
               }
               for (; i < newArray.length - 1; i++) {
-                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
+                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition();
                 input.readMessage(newArray[i]);
                 input.readTag();
               }
               // Last one without readTag.
-              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition();
               input.readMessage(newArray[i]);
               this.party = newArray;
               break;
@@ -308,24 +330,35 @@ public interface PersistentStorage {
               int arrayLength = com.google.protobuf.nano.WireFormatNano
                   .getRepeatedFieldArrayLength(input, 34);
               int i = this.npcs == null ? 0 : this.npcs.length;
-              com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[] newArray =
-                  new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition[i + arrayLength];
+              com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition[] newArray =
+                  new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition[i + arrayLength];
               if (i != 0) {
                 java.lang.System.arraycopy(this.npcs, 0, newArray, 0, i);
               }
               for (; i < newArray.length - 1; i++) {
-                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
+                newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition();
                 input.readMessage(newArray[i]);
                 input.readTag();
               }
               // Last one without readTag.
-              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorDefinition();
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorDefinition();
               input.readMessage(newArray[i]);
               this.npcs = newArray;
               break;
             }
             case 42: {
               this.imageFile = input.readString();
+              break;
+            }
+            case 50: {
+              if (this.created == null) {
+                this.created = new com.google.protobuf.nano.Timestamp();
+              }
+              input.readMessage(this.created);
+              break;
+            }
+            case 58: {
+              this.sessionFile = input.readString();
               break;
             }
           }
@@ -362,7 +395,7 @@ public interface PersistentStorage {
     public int version;
 
     // repeated .PartyOwnerData.Group everything = 2;
-    public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.Group[] everything;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.Group[] everything;
 
     public PartyOwnerData() {
       clear();
@@ -370,7 +403,7 @@ public interface PersistentStorage {
 
     public PartyOwnerData clear() {
       version = 0;
-      everything = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.Group.emptyArray();
+      everything = com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.Group.emptyArray();
       cachedSize = -1;
       return this;
     }
@@ -383,7 +416,7 @@ public interface PersistentStorage {
       }
       if (this.everything != null && this.everything.length > 0) {
         for (int i = 0; i < this.everything.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.Group element = this.everything[i];
+          com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.Group element = this.everything[i];
           if (element != null) {
             output.writeMessage(2, element);
           }
@@ -401,7 +434,7 @@ public interface PersistentStorage {
       }
       if (this.everything != null && this.everything.length > 0) {
         for (int i = 0; i < this.everything.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.Group element = this.everything[i];
+          com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.Group element = this.everything[i];
           if (element != null) {
             size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeMessageSize(2, element);
@@ -434,18 +467,18 @@ public interface PersistentStorage {
             int arrayLength = com.google.protobuf.nano.WireFormatNano
                 .getRepeatedFieldArrayLength(input, 18);
             int i = this.everything == null ? 0 : this.everything.length;
-            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.Group[] newArray =
-                new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.Group[i + arrayLength];
+            com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.Group[] newArray =
+                new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.Group[i + arrayLength];
             if (i != 0) {
               java.lang.System.arraycopy(this.everything, 0, newArray, 0, i);
             }
             for (; i < newArray.length - 1; i++) {
-              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.Group();
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.Group();
               input.readMessage(newArray[i]);
               input.readTag();
             }
             // Last one without readTag.
-            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyOwnerData.Group();
+            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyOwnerData.Group();
             input.readMessage(newArray[i]);
             this.everything = newArray;
             break;
@@ -496,7 +529,7 @@ public interface PersistentStorage {
     public java.lang.String avatarFile;
 
     // repeated .ActorStatistics stats = 5;
-    public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorStatistics[] stats;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics[] stats;
 
     public ActorDefinition() {
       clear();
@@ -507,7 +540,7 @@ public interface PersistentStorage {
       level = 0;
       experience = 0;
       avatarFile = "";
-      stats = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorStatistics.emptyArray();
+      stats = com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics.emptyArray();
       cachedSize = -1;
       return this;
     }
@@ -529,7 +562,7 @@ public interface PersistentStorage {
       }
       if (this.stats != null && this.stats.length > 0) {
         for (int i = 0; i < this.stats.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorStatistics element = this.stats[i];
+          com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics element = this.stats[i];
           if (element != null) {
             output.writeMessage(5, element);
           }
@@ -559,7 +592,7 @@ public interface PersistentStorage {
       }
       if (this.stats != null && this.stats.length > 0) {
         for (int i = 0; i < this.stats.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorStatistics element = this.stats[i];
+          com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics element = this.stats[i];
           if (element != null) {
             size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeMessageSize(5, element);
@@ -604,18 +637,18 @@ public interface PersistentStorage {
             int arrayLength = com.google.protobuf.nano.WireFormatNano
                 .getRepeatedFieldArrayLength(input, 42);
             int i = this.stats == null ? 0 : this.stats.length;
-            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorStatistics[] newArray =
-                new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorStatistics[i + arrayLength];
+            com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics[] newArray =
+                new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics[i + arrayLength];
             if (i != 0) {
               java.lang.System.arraycopy(this.stats, 0, newArray, 0, i);
             }
             for (; i < newArray.length - 1; i++) {
-              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorStatistics();
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics();
               input.readMessage(newArray[i]);
               input.readTag();
             }
             // Last one without readTag.
-            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.ActorStatistics();
+            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics();
             input.readMessage(newArray[i]);
             this.stats = newArray;
             break;
@@ -761,6 +794,12 @@ public interface PersistentStorage {
       // optional bytes key = 2;
       public byte[] key;
 
+      // optional .google.protobuf.Timestamp received = 3;
+      public com.google.protobuf.nano.Timestamp received;
+
+      // optional string sessionFile = 4;
+      public java.lang.String sessionFile;
+
       public Group() {
         clear();
       }
@@ -768,6 +807,8 @@ public interface PersistentStorage {
       public Group clear() {
         name = "";
         key = com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES;
+        received = null;
+        sessionFile = "";
         cachedSize = -1;
         return this;
       }
@@ -780,6 +821,12 @@ public interface PersistentStorage {
         }
         if (!java.util.Arrays.equals(this.key, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
           output.writeBytes(2, this.key);
+        }
+        if (this.received != null) {
+          output.writeMessage(3, this.received);
+        }
+        if (!this.sessionFile.equals("")) {
+          output.writeString(4, this.sessionFile);
         }
         super.writeTo(output);
       }
@@ -794,6 +841,14 @@ public interface PersistentStorage {
         if (!java.util.Arrays.equals(this.key, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeBytesSize(2, this.key);
+        }
+        if (this.received != null) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeMessageSize(3, this.received);
+        }
+        if (!this.sessionFile.equals("")) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeStringSize(4, this.sessionFile);
         }
         return size;
       }
@@ -819,6 +874,17 @@ public interface PersistentStorage {
             }
             case 18: {
               this.key = input.readBytes();
+              break;
+            }
+            case 26: {
+              if (this.received == null) {
+                this.received = new com.google.protobuf.nano.Timestamp();
+              }
+              input.readMessage(this.received);
+              break;
+            }
+            case 34: {
+              this.sessionFile = input.readString();
               break;
             }
           }
@@ -855,7 +921,7 @@ public interface PersistentStorage {
     public int version;
 
     // repeated .PartyClientData.Group everything = 2;
-    public com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyClientData.Group[] everything;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyClientData.Group[] everything;
 
     public PartyClientData() {
       clear();
@@ -863,7 +929,7 @@ public interface PersistentStorage {
 
     public PartyClientData clear() {
       version = 0;
-      everything = com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyClientData.Group.emptyArray();
+      everything = com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyClientData.Group.emptyArray();
       cachedSize = -1;
       return this;
     }
@@ -876,7 +942,7 @@ public interface PersistentStorage {
       }
       if (this.everything != null && this.everything.length > 0) {
         for (int i = 0; i < this.everything.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyClientData.Group element = this.everything[i];
+          com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyClientData.Group element = this.everything[i];
           if (element != null) {
             output.writeMessage(2, element);
           }
@@ -894,7 +960,7 @@ public interface PersistentStorage {
       }
       if (this.everything != null && this.everything.length > 0) {
         for (int i = 0; i < this.everything.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyClientData.Group element = this.everything[i];
+          com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyClientData.Group element = this.everything[i];
           if (element != null) {
             size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeMessageSize(2, element);
@@ -927,18 +993,18 @@ public interface PersistentStorage {
             int arrayLength = com.google.protobuf.nano.WireFormatNano
                 .getRepeatedFieldArrayLength(input, 18);
             int i = this.everything == null ? 0 : this.everything.length;
-            com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyClientData.Group[] newArray =
-                new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyClientData.Group[i + arrayLength];
+            com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyClientData.Group[] newArray =
+                new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyClientData.Group[i + arrayLength];
             if (i != 0) {
               java.lang.System.arraycopy(this.everything, 0, newArray, 0, i);
             }
             for (; i < newArray.length - 1; i++) {
-              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyClientData.Group();
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyClientData.Group();
               input.readMessage(newArray[i]);
               input.readTag();
             }
             // Last one without readTag.
-            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage.PartyClientData.Group();
+            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.PartyClientData.Group();
             input.readMessage(newArray[i]);
             this.everything = newArray;
             break;

@@ -1,15 +1,19 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.view.View;
 
 import com.google.protobuf.nano.MessageNano;
@@ -21,8 +25,8 @@ import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +38,7 @@ import java.util.Collections;
 
 public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final int NETWORK_VERSION = 1;
+    private static final int NOTIFICATION_ID = 1234;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +72,11 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             activeParty = null;
             return;
         }
-        if (activeParty instanceof PersistentStorage.PartyOwnerData.Group) {
+        if (activeParty instanceof StartData.PartyOwnerData.Group) {
             startNewSessionActivity();
             return;
         }
-        if (activeParty instanceof PersistentStorage.PartyClientData.Group) {
+        if (activeParty instanceof StartData.PartyClientData.Group) {
             startGoAdventuringActivity();
             return;
         }
@@ -99,13 +104,13 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     /// Called when party owner data loaded version != from current.
-    private void upgrade(PersistentStorage.PartyOwnerData loaded) {
+    private void upgrade(StartData.PartyOwnerData loaded) {
         new AlertDialog.Builder(this)
                 .setMessage(String.format(getString(R.string.mma_noOwnerDataUpgradeAvailable), loaded.version, PersistentDataUtils.OWNER_DATA_VERSION))
                 .show();
     }
 
-    private void upgrade(PersistentStorage.PartyClientData loaded) {
+    private void upgrade(StartData.PartyClientData loaded) {
         new AlertDialog.Builder(this)
                 .setMessage(String.format(getString(R.string.mma_noClientDataUpgradeAvailable), loaded.version, PersistentDataUtils.OWNER_DATA_VERSION))
                 .show();
@@ -127,9 +132,16 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     public void pickParty_callback(View btn) {
-        PartyPickActivity.ioDefs = groupDefs;
-        PartyPickActivity.ioKeys = groupKeys;
-        startActivityForResult(new Intent(this, PartyPickActivity.class), REQUEST_PICK_PARTY);
+        final Intent servName = new Intent(this, PartyPickingService.class);
+        startService(servName);
+        if(!bindService(servName, this, 0)) {
+            if (!bindService(servName, this, 0)) {
+                stopService(servName);
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.mma_failedNewSessionServiceBind)
+                        .show();
+            }
+        }
     }
 
 
@@ -154,15 +166,15 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         else state.pumpers = null; // be safe-r. Sort of.
         activeConnections = null;
         // activeLanding is unused in client
-        state.jsaState = new JoinSessionActivity.State((PersistentStorage.PartyClientData.Group) activeParty);
+        state.jsaState = new JoinSessionActivity.State((StartData.PartyClientData.Group) activeParty);
         activeParty = null;
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
 
     private class AsyncLoadAll extends AsyncTask<Void, Void, Exception> {
-        PersistentStorage.PartyOwnerData owned;
-        PersistentStorage.PartyClientData joined;
+        StartData.PartyOwnerData owned;
+        StartData.PartyClientData joined;
         final PersistentDataUtils loader = new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
             protected String getString(int resource) {
@@ -172,12 +184,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
         @Override
         protected Exception doInBackground(Void... params) {
-            PersistentStorage.PartyOwnerData pullo = new PersistentStorage.PartyOwnerData();
+            StartData.PartyOwnerData pullo = new StartData.PartyOwnerData();
             File srco = new File(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME);
             if(srco.exists()) loader.mergeExistingGroupData(pullo, srco);
             else pullo.version = PersistentDataUtils.OWNER_DATA_VERSION;
 
-            PersistentStorage.PartyClientData pullk = new PersistentStorage.PartyClientData();
+            StartData.PartyClientData pullk = new StartData.PartyClientData();
             File srck = new File(getFilesDir(), PersistentDataUtils.DEFAULT_KEY_FILE_NAME);
             if(srck.exists()) loader.mergeExistingGroupData(pullk, srck);
             else pullk.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
@@ -232,18 +244,28 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 // Does not produce output.
                 stopService(new Intent(this, PartyJoinOrderService.class));
                 break;
-            case REQUEST_PICK_PARTY: { // sync our data with what was produced
-                groupDefs = PartyPickActivity.ioDefs;
-                groupKeys = PartyPickActivity.ioKeys;
+            case REQUEST_PICK_PARTY: { // sync our data with what was produced/modified
+                groupDefs.clear();
+                groupKeys.clear();
+                pickServ.getDense(groupDefs, groupKeys, false);
+                dataRefreshed();
                 break;
             }
         }
         if(RESULT_OK != resultCode) {
             switch(requestCode) { // stuff would be used on success... but was not successful so goodbye
                 case REQUEST_NEW_PARTY:
+                    pcServ = null;
                     unbindService(this);
                     stopService(new Intent(this, PartyCreationService.class));
                     break;
+                case REQUEST_PICK_PARTY: { // sync our data with what was produced/modified
+                    pickServ.stopForeground(true);
+                    pickServ = null;
+                    unbindService(this);
+                    stopService(new Intent(this, PartyPickingService.class));
+                    break;
+                }
             }
             return;
         }
@@ -278,17 +300,18 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 dataRefreshed();
             } break;
             case REQUEST_PICK_PARTY: {
-                int linear = data.getIntExtra(PartyPickActivity.EXTRA_PARTY_INDEX, -1);
-                boolean owned = data.getBooleanExtra(PartyPickActivity.EXTRA_TRUE_IF_PARTY_OWNED, false);
-                if(linear < 0) return;
+                activeParty = pickServ.sessionParty;
+                pickServ.stopForeground(true);
+                pickServ = null;
+                unbindService(this);
+                stopService(new Intent(this, PartyPickingService.class));
+
                 activeConnections = null;
                 activeLanding = null;
-                if(owned) {
-                    activeParty = groupDefs.get(linear);
+                if(activeParty instanceof StartData.PartyOwnerData.Group) {
                     startNewSessionActivity();
                 }
-                else {
-                    activeParty = groupKeys.get(linear);
+                else if(activeParty instanceof StartData.PartyClientData.Group) {
                     startGoAdventuringActivity();
                 }
             } break;
@@ -299,7 +322,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                final PersistentStorage.PartyClientData.Group party = CharSelectionActivity.movePlayingParty();
+                final StartData.PartyClientData.Group party = CharSelectionActivity.movePlayingParty();
                 final ArrayList<Network.PlayingCharacterDefinition> here = CharSelectionActivity.movePlayChars();
                 final Pumper.MessagePumpingThread worker = CharSelectionActivity.moveServerWorker();
                             worker.interrupt();
@@ -319,7 +342,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     static final int REQUEST_NEW_SESSION = 8;
 
     // Those must be fields to ensure a communication channel to the asynchronous onServiceConnected callbacks.
-    private MessageNano activeParty; // PersistentStorage.PartyOwnerData.Group or PersistentStorage.PartyClientData.Group
+    private MessageNano activeParty; // StartData.PartyOwnerData.Group or StartData.PartyClientData.Group
     private ServerSocket activeLanding;
     private Pumper.MessagePumpingThread[] activeConnections; // Client: a single connection to a server or Owner: list of connections to client
 
@@ -329,7 +352,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if(service instanceof PartyJoinOrderService.LocalBinder) {
             PartyJoinOrderService.LocalBinder binder = (PartyJoinOrderService.LocalBinder)service;
             PartyJoinOrderService real =  binder.getConcreteService();
-            PersistentStorage.PartyOwnerData.Group owned = (PersistentStorage.PartyOwnerData.Group) activeParty;
+            StartData.PartyOwnerData.Group owned = (StartData.PartyOwnerData.Group) activeParty;
             JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
             real.initializePartyManagement(owned, keyMaster);
             real.pumpClients(activeConnections);
@@ -361,6 +384,23 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             final Intent intent = new Intent(this, NewPartyDeviceSelectionActivity.class);
             startActivityForResult(intent, REQUEST_NEW_PARTY);
         }
+        if(service instanceof PartyPickingService.LocalBinder) {
+            final PartyPickingService.LocalBinder binder = (PartyPickingService.LocalBinder) service;
+            pickServ = binder.getConcreteService();
+            pickServ.setKnownParties(groupDefs, groupKeys);
+            startActivityForResult(new Intent(this, PartyPickActivity.class), REQUEST_PICK_PARTY);
+            // The pick party server is different, looks like I can just pull it up now.
+            final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
+                    .setOngoing(true)
+                    .setWhen(System.currentTimeMillis())
+                    .setContentTitle(getString(R.string.mma_partyManagerNotificationTitle))
+                    .setSmallIcon(R.drawable.ic_notify_icon)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                help.setCategory(Notification.CATEGORY_SERVICE);
+            }
+            pickServ.startForeground(NOTIFICATION_ID, help.build());
+        }
     }
 
     @Override
@@ -370,8 +410,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     // We keep everything that exists in memory. This is a compact representation and makes
     // some things easier as we can compare by reference.
-    private ArrayList<PersistentStorage.PartyOwnerData.Group> groupDefs = new ArrayList<>();
-    private ArrayList<PersistentStorage.PartyClientData.Group> groupKeys = new ArrayList<>();
+    private ArrayList<StartData.PartyOwnerData.Group> groupDefs = new ArrayList<>();
+    private ArrayList<StartData.PartyClientData.Group> groupKeys = new ArrayList<>();
 
     interface ErrorFeedbackFunc {
         void feedback(int errors);
@@ -410,4 +450,5 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         }.execute();
     }
     private PartyCreationService pcServ;
+    private PartyPickingService pickServ;
 }

@@ -1,16 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.os.Build;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.transition.TransitionManager;
-import android.view.View;
-
-import com.google.protobuf.nano.MessageNano;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
-
-import java.util.Vector;
 
 /**
  * Created by Massimo on 04/03/2016.

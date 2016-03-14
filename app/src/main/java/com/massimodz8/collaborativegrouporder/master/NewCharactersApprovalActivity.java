@@ -26,7 +26,7 @@ import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.util.ArrayList;
 
@@ -78,7 +78,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
                                 status.setText(R.string.ncaa_savingPleaseWait);
                                 findViewById(R.id.ncaa_list).setEnabled(false);
                                 storeGroup.setEnabled(false);
-                                final AsyncActivityLoadUpdateTask<PersistentStorage.PartyOwnerData> temp = room.saveParty(NewCharactersApprovalActivity.this, new StoreDoneCallbacks());
+                                final AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> temp = room.saveParty(NewCharactersApprovalActivity.this, new StoreDoneCallbacks());
                                 temp.execute();
                                 saving = temp;
                             }

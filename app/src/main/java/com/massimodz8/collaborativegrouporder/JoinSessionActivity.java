@@ -26,8 +26,8 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -37,22 +37,22 @@ import java.util.ArrayList;
 public class JoinSessionActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
     public static class State {
         /// This must be initially populated by whoever spans this activity.
-        final PersistentStorage.PartyClientData.Group party;
+        final StartData.PartyClientData.Group party;
 
         AccumulatingDiscoveryListener explorer;
         ArrayList<PartyAttempt> attempts = new ArrayList<>();
         Pumper.MessagePumpingThread[] workers;
 
-        public State(PersistentStorage.PartyClientData.Group party) {
+        public State(StartData.PartyClientData.Group party) {
             this.party = party;
         }
     }
     public static class Result {
         final Pumper.MessagePumpingThread worker;
-        final PersistentStorage.PartyClientData.Group party;
+        final StartData.PartyClientData.Group party;
         final Network.PlayingCharacterDefinition first; // if I get one of those it's because I have been identified.
 
-        public Result(Pumper.MessagePumpingThread worker, PersistentStorage.PartyClientData.Group party, Network.PlayingCharacterDefinition first) {
+        public Result(Pumper.MessagePumpingThread worker, StartData.PartyClientData.Group party, Network.PlayingCharacterDefinition first) {
             this.worker = worker;
             this.party = party;
             this.first = first;

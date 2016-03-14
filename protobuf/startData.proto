@@ -1,5 +1,11 @@
 syntax = "proto3";
 option java_package = "com.massimodz8.collaborativegrouporder.protocol";
+import "google/protobuf/timestamp.proto";
+
+// This is more or less 'static' stuff you would write in your character sheet.
+// That is, if you are the server. For the client it's just simple cryptographic key.
+// The important stuff is: when a new session begins, this is the data we load.
+// Then, if there is session data, we apply the data we find there.
 
 // I could borrow some definitions from network.proto but I rather keep everything easy and independant.
 message PartyOwnerData {
@@ -16,8 +22,10 @@ message PartyOwnerData {
         string name = 1;
         repeated DeviceInfo devices = 2;
         repeated ActorDefinition party = 3; // those actors can be assigned to players
-		repeated ActorDefinition npcs = 4; // those are managed by master
+        repeated ActorDefinition npcs = 4; // those are managed by master
         string imageFile = 5; // group images are cool as well, used for the service notification.
+        google.protobuf.Timestamp created = 6;
+        string sessionFile = 7; // the session file is created even before this party is saved
         
         // Note: there's no "current group state" anymore, store them somewhere else
     }
@@ -51,5 +59,7 @@ message PartyClientData {
     message Group {
         string name = 1;
         bytes key = 2;
+        google.protobuf.Timestamp received = 3;
+        string sessionFile = 4;
     }
 }

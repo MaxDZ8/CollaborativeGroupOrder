@@ -1,0 +1,38 @@
+syntax = "proto3";
+option java_package = "com.massimodz8.collaborativegrouporder.protocol";
+import "google/protobuf/timestamp.proto";
+//import "startData.proto";
+
+// Each session file starts with an object of this type. It is the same for client and server and keeps track of various
+// real-world related statistics.
+message RealWorldData {
+    google.protobuf.Timestamp lastBegin = 1; // time started of last session.
+    google.protobuf.Timestamp lastSaved = 2; // aka 'end', for what we are concerned. Real world hours.
+    google.protobuf.Timestamp spent = 3; // .seconds spent playing so far.
+    uint32 numSessions = 4;
+    string note = 5;
+    State state = 6;
+    enum State {
+        KNOWN = 0;    // basically 'no session'. No other data will follow. Static information matches live.
+        ADVENTURING = 1; // last session ended while PGs had transient effects which cannot be encoded in definitions.
+            // Example: improved DEX -> initiative, health points not full. A LiveData message will follow.
+        FIGHTING = 2; // extra transient effects and initiative rolled so LiveData and BattleData will follow.
+    }
+}
+
+
+// Take the static definitions (defs.bin, keys.bin, "canonical party") and 'evolve' them according to the data here.
+// The most common example here is adjusting current health points (defs only know about full health) and other temporary effects.
+// Can also include new npcs...
+message LiveData {
+}
+
+
+// Most important thing here is for sure the initiative order. Again, new npcs can join this specific battle.
+message BattleData {
+}
+
+
+// You're not really concerned about stuff down there.
+// They're structures internal to LiveData/BattleData, specific to none and they are here to flatten the namespace
+// avoiding long typenames that look just silly.

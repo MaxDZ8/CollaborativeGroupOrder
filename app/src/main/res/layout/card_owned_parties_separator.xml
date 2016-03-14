@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_width="fill_parent"
     android:background="@color/cardview_light_background"
-    CardView:cardCornerRadius="8sp">
+    CardView:cardCornerRadius="8sp"
+    style="@style/CardTheme">
 
     <RelativeLayout
         android:layout_width="match_parent"

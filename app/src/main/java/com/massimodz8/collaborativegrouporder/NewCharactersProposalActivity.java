@@ -17,12 +17,13 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PersistentStorage;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 
 public class NewCharactersProposalActivity extends AppCompatActivity implements PlayingCharacterListAdapter.DataPuller {
@@ -160,7 +161,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
 
     private void saveData(final boolean goAdventuring) {
         final NewCharactersProposalActivity self = this;
-        new AsyncActivityLoadUpdateTask<PersistentStorage.PartyClientData>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self, new AsyncActivityLoadUpdateTask.ActivityCallbacks(this) {
+        new AsyncActivityLoadUpdateTask<StartData.PartyClientData>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self, new AsyncActivityLoadUpdateTask.ActivityCallbacks(this) {
             @Override
             public void onCompletedSuccessfully() {
                 String extra = ' ' + getString(R.string.ncpa_goingAdventuring);
@@ -180,28 +181,31 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
             }
         }) {
             @Override
-            protected void appendNewEntry(PersistentStorage.PartyClientData loaded) {
-                PersistentStorage.PartyClientData.Group[] longer = new PersistentStorage.PartyClientData.Group[loaded.everything.length + 1];
+            protected void appendNewEntry(StartData.PartyClientData loaded) {
+                StartData.PartyClientData.Group[] longer = new StartData.PartyClientData.Group[loaded.everything.length + 1];
                 System.arraycopy(loaded.everything, 0, longer, 0, loaded.everything.length);
-                PersistentStorage.PartyClientData.Group gen = new PersistentStorage.PartyClientData.Group();
+                StartData.PartyClientData.Group gen = new StartData.PartyClientData.Group();
                 gen.key = party.salt;
                 gen.name = party.group.name;
+                gen.received = new com.google.protobuf.nano.Timestamp();
+                gen.received.seconds = System.currentTimeMillis() / 1000;
+                gen.sessionFile = PersistentDataUtils.makeInitialSession(new Date(), self.getFilesDir(), gen.name);
                 longer[loaded.everything.length] = gen;
                 loaded.everything =  longer;
                 newKey = gen;
             }
             @Override
-            protected void setVersion(PersistentStorage.PartyClientData result) { result.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION; }
+            protected void setVersion(StartData.PartyClientData result) { result.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION; }
             @Override
-            protected void upgrade(PersistentDataUtils helper, PersistentStorage.PartyClientData result) { helper.upgrade(result); }
+            protected void upgrade(PersistentDataUtils helper, StartData.PartyClientData result) { helper.upgrade(result); }
             @Override
-            protected ArrayList<String> validateLoadedDefinitions(PersistentDataUtils helper, PersistentStorage.PartyClientData result) { return helper.validateLoadedDefinitions(result); }
+            protected ArrayList<String> validateLoadedDefinitions(PersistentDataUtils helper, StartData.PartyClientData result) { return helper.validateLoadedDefinitions(result); }
             @Override
-            protected PersistentStorage.PartyClientData allocate() { return new PersistentStorage.PartyClientData(); }
+            protected StartData.PartyClientData allocate() { return new StartData.PartyClientData(); }
         }.execute();
     }
 
-    private PersistentStorage.PartyClientData.Group newKey;
+    private StartData.PartyClientData.Group newKey;
 
     private void finishingTouches(boolean goAdventuring) {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();

@@ -23,7 +23,7 @@ import java.util.Date;
 
 /**
  * Created by Massimo on 08/02/2016.
- * A group being formed which will later become a PersistentStorage structure.
+ * A group being formed which will later become a StartData structure.
  * This requires some more care as it also tracks ownership from devices.
  */
 public abstract class PartyDefinitionHelper {
