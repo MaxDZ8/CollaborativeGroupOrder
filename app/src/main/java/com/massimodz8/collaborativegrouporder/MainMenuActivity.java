@@ -260,9 +260,11 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     stopService(new Intent(this, PartyCreationService.class));
                     break;
                 case REQUEST_PICK_PARTY: { // sync our data with what was produced/modified
+                    pickServ.stopForeground(true);
                     pickServ = null;
                     unbindService(this);
-                    stopService(new Intent(this, PartyCreationService.class));
+                    stopService(new Intent(this, PartyPickingService.class));
+                    break;
                 }
             }
             return;
@@ -299,9 +301,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             } break;
             case REQUEST_PICK_PARTY: {
                 activeParty = pickServ.sessionParty;
+                pickServ.stopForeground(true);
                 pickServ = null;
                 unbindService(this);
-                stopService(new Intent(this, PartyCreationService.class));
+                stopService(new Intent(this, PartyPickingService.class));
 
                 activeConnections = null;
                 activeLanding = null;
