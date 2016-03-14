@@ -349,7 +349,7 @@
     <string name="csa_refusedPlural">%1$d character ownership requests have been refused.</string>
     <string name="csa_takenAwaySingular">A character previously assigned to you has been given to someone else.</string>
     <string name="csa_takenAwayPlural">%1$d characters assigned to you have been taken away.</string>
-	
+
     <string name="vhPHC_imageDesc">Character image</string>
     <string name="vhAC_imageDesc">Character image</string>
     <string name="vhAC_hpMax">HP max: %1$d</string>

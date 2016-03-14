@@ -113,7 +113,15 @@
         <service
             android:name=".PartyPickingService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".master.FreeRoamingActivity"
+            android:label="Adventuring"
+            android:parentActivityName=".master.GatheringActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".master.GatheringActivity" />
+        </activity>
     </application>
 
 </manifest>

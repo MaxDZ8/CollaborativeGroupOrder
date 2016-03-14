@@ -301,6 +301,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             } break;
             case REQUEST_PICK_PARTY: {
                 activeParty = pickServ.sessionParty;
+                activeStats = pickServ.sessionData.get(activeParty);
                 pickServ.stopForeground(true);
                 pickServ = null;
                 unbindService(this);
@@ -343,6 +344,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     // Those must be fields to ensure a communication channel to the asynchronous onServiceConnected callbacks.
     private MessageNano activeParty; // StartData.PartyOwnerData.Group or StartData.PartyClientData.Group
+    private PersistentDataUtils.SessionStructs activeStats;
     private ServerSocket activeLanding;
     private Pumper.MessagePumpingThread[] activeConnections; // Client: a single connection to a server or Owner: list of connections to client
 
@@ -354,7 +356,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             PartyJoinOrderService real =  binder.getConcreteService();
             StartData.PartyOwnerData.Group owned = (StartData.PartyOwnerData.Group) activeParty;
             JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
-            real.initializePartyManagement(owned, keyMaster);
+            real.initializePartyManagement(owned, activeStats, keyMaster);
             real.pumpClients(activeConnections);
             // TODO: reuse landing if there!
             if(activeLanding != null) {
@@ -373,6 +375,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 }.execute();
             }
             activeConnections = null;
+            activeParty = null;
+            activeStats = null;
 
             startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_NEW_SESSION);
             unbindService(this);

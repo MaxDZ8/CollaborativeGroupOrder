@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
+import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
@@ -32,8 +33,9 @@ public class PartyJoinOrderService extends PublishAcceptService {
     This goes in parallel with landing socket and publish management so you're better set this up ASAP.
     As usual, it can be initialized only once and then the service will have to be destroyed.
     */
-    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, @NonNull JoinVerificator keyMaster) {
+    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs live, @NonNull JoinVerificator keyMaster) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster);
+        sessionHelper = new SessionHelper(assignmentHelper.party, live);
     }
 
     public void shutdownPartyManagement() {
@@ -84,48 +86,16 @@ public class PartyJoinOrderService extends PublishAcceptService {
         assignmentHelper.onBoundPc = listener;
     }
 
-    /* Section 4: given current character bindings, start the real deal. ---------------------------
-    TODO
-     */
+    // Section 4: given current character bindings, start the real deal. ---------------------------
+    // There's no such thing really, just call adventuring() once and getPlaySession() as many times as needed.
     public void adventuring() {
-        /*
-
-        final ArrayList<MessageChannel> target = new ArrayList<>();
-        final ArrayList<ArrayList<Network.PlayingCharacterDefinition>> payload = new ArrayList<>();
-        for (PlayingDevice playa : myState.playerDevices) {
-            target.add(playa.pipe);
-            ArrayList<Network.PlayingCharacterDefinition> matched = new ArrayList<>();
-            for (int loop = 0; loop < myState.assignment.size(); loop++) {
-                Integer owner = myState.assignment.get(loop);
-                if(null == owner) continue; // impossible, really
-                if(owner < 0) continue;
-                if(myState.playerDevices.get(owner) == playa) {
-                    matched.add(simplify(myState.party.usually.party[loop], loop));
-                }
-            }
-            payload.add(matched);
-        }
-        new Thread(){
-            @Override
-            public void run() {
-                Network.GroupReady send = new Network.GroupReady();
-                for(int loop = 0; loop < target.size(); loop++) {
-                    ArrayList<Network.PlayingCharacterDefinition> matched = payload.get(loop);
-                    send.yours = new Network.PlayingCharacterDefinition[matched.size()];
-                    for(int cp = 0; cp < matched.size(); cp++) send.yours[cp] = matched.get(cp);
-                    try {
-                        target.get(loop).writeSync(ProtoBufferEnum.GROUP_READY, send);
-                    } catch (IOException e) {
-                        // uhm... someone else will check this in the future... hopefully.
-                    }
-                }
-            }
-        }.start();
-        new AlertDialog.Builder(this).setMessage("TODO: at this point the clients are in sequence mode. BUT... I need to refactor my architecture as this activity needs to stay afloat and go back there on need.").setTitle("TODO").show();
-         */
+        sessionHelper.play(assignmentHelper.getBoundKickOthers());
     }
 
+    public SessionHelper.PlayState getPlaySession() { return sessionHelper.getSession(); }
+
     private PcAssignmentHelper assignmentHelper;
+    private SessionHelper sessionHelper;
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override

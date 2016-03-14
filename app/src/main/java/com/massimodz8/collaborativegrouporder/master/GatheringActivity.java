@@ -140,6 +140,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             room.stopPublishing();
             room.stopListening(false);
             room.adventuring();
+            startActivity(new Intent(this, FreeRoamingActivity.class));
             return;
         }
         String firstLine = free.size() == 1? getString(R.string.ga_oneCharNotBound)
