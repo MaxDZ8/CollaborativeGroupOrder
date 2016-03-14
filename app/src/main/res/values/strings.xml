@@ -286,6 +286,11 @@
     <string name="ppa_inconsistentSessionDataDlgMsg">Errors detected in session data. In the future I might be able to fix this but for the time being there\'s nothing I can do. To protect the data, I will now take you back to main menu.</string>
     <string name="ppa_backMainMenuDlgPosBtn">Give up and go main menu</string>
     <string name="ppa_noInputStream">Failed to get input stream.</string>
+    <string name="ppa_neverPlayed">never</string>
+    <string name="ppa_status_battle">fighting</string>
+    <string name="ppa_status_adventure">somewhat in trouble</string>
+    <string name="ppa_status_asDefined">nothing going on</string>
+    <string name="ppa_lastSavedInconsistent">Inconsistent data!</string>
 
     <string name="ga_title">Gathering heroes</string>
     <string name="ga_welcoming">Welcoming players…</string>

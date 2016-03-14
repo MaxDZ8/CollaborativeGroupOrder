@@ -10,6 +10,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -43,8 +44,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
-import java.util.Map;
 
 
 public class PartyPickActivity extends AppCompatActivity implements ServiceConnection {
@@ -464,8 +463,15 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             if(min == max) str = String.format(getString(R.string.vhOP_charLevel_same), min);
             else str = String.format(getString(R.string.vhOP_charLevel_different), max, min);
             level.setText(str);
-            str = getLastPlayed(group.sessionFile, true);
-            MaxUtils.setTextUnlessNull(lastPlay, str, View.GONE);
+            if(helper == null || helper.sessionData == null) lastPlay.setVisibility(View.GONE);
+            else {
+                PersistentDataUtils.SessionStructs structs = helper.sessionData.get(group);
+                if(structs == null || structs.irl == null || structs.irl.lastSaved == null) lastPlay.setVisibility(View.GONE);
+                else {
+                    lastPlay.setVisibility(View.VISIBLE);
+                    lastPlay.setText(getNiceDate(structs.irl.lastSaved));
+                }
+            }
         }
 
         @Override
@@ -476,26 +482,6 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             showPartyList(false);
         }
     }
-
-    // TODO find a way to return some sort of 'getter' proxy so I use less functions
-    private String getCurrentState(String sessionFile, boolean owned) {
-        return getLastPlayed(sessionFile, owned); // TODO for the lack of a better candidate!
-    }
-
-    /**
-     * Find if we have play data regarding this specific group. This involves opening and reading
-     * the relative session file to understand what's going on. This function does not really perform the lookup but
-     * simply pulls data from the internal cache.
-     * @param file Name of the session file to look up, as specified by the party, either owned or joined.
-     * @param owned true if requesting information about an owned party. They have different structure and come from different storage.
-     * @return null if no data is yet available. Otherwise, non-empty string. The string can be localized last date played or a localized
-     * string which means "never played". In both cases, you just present them to user.
-     */
-    private @Nullable String getLastPlayed(String file, boolean owned) {
-        Map<String, String> map = owned? ownedPlayed : joinedPlayed;
-        return map.get(file);
-    }
-    private Map<String, String> ownedPlayed = new Hashtable<>(), joinedPlayed = new Hashtable<>();
 
     class JoinedPartyHolder extends RecyclerView.ViewHolder implements DynamicViewHolder, View.OnClickListener {
         static final int LAYOUT = R.layout.vh_joined_party;
@@ -519,8 +505,15 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             group = denseKeys.get(position);
             if(group == null) return; // impossible by construction
             name.setText(group.name);
-            String when = getLastPlayed(group.sessionFile, false);
-            MaxUtils.setTextUnlessNull(date, when, View.GONE);
+            if(helper == null || helper.sessionData == null) date.setVisibility(View.GONE);
+            else {
+                PersistentDataUtils.SessionStructs structs = helper.sessionData.get(group);
+                if(structs == null || structs.irl == null || structs.irl.lastSaved == null) date.setVisibility(View.GONE);
+                else {
+                    date.setVisibility(View.VISIBLE);
+                    date.setText(getNiceDate(structs.irl.lastSaved));
+                }
+            }
         }
 
         @Override
@@ -577,6 +570,44 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             setArguments(di);
             return this;
         }
+
+        boolean isFighting(MessageNano party) {
+            if(target.helper == null || target.helper.sessionData == null) return false;
+            PersistentDataUtils.SessionStructs structs = target.helper.sessionData.get(party);
+            return structs != null && structs.battle != null;
+        }
+
+        protected void note(MessageNano party, @IdRes int view, View container) {
+            String got = null;
+            if(target.helper != null && target.helper.sessionData != null) {
+                PersistentDataUtils.SessionStructs structs = target.helper.sessionData.get(party);
+                if (structs != null && structs.irl != null && !structs.irl.note.isEmpty()) got = structs.irl.note;
+            }
+            MaxUtils.setTextUnlessNull((TextView) container.findViewById(view), got, View.GONE);
+        }
+
+        protected void state(MessageNano party, @IdRes int view, View container) {
+            String got = null;
+            if(target.helper != null && target.helper.sessionData != null) {
+                PersistentDataUtils.SessionStructs structs = target.helper.sessionData.get(party);
+                if(structs.battle != null) got = target.getString(R.string.ppa_status_battle);
+                else if(structs.adventure != null) got = target.getString(R.string.ppa_status_adventure);
+                else got = target.getString(R.string.ppa_status_asDefined);
+            }
+            MaxUtils.setTextUnlessNull((TextView) container.findViewById(view), got, View.GONE);
+        }
+
+        protected String lastPlayed(MessageNano party, TextView view) {
+            String got = null;
+            if(target.helper != null && target.helper.sessionData != null) {
+                PersistentDataUtils.SessionStructs structs = target.helper.sessionData.get(party);
+                if(structs.irl == null) got = getString(R.string.ppa_neverPlayed);
+                else if(structs.irl.lastSaved == null) got = getString(R.string.ppa_lastSavedInconsistent);
+                else got = target.getNiceDate(structs.irl.lastSaved);
+            }
+            MaxUtils.setTextUnlessNull(view, got, View.GONE);
+            return got;
+        }
     }
 
     public static class OwnedPartyFragment extends PartyDetailsFragment {
@@ -597,15 +628,11 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
                 npcList.setText(String.format(res, target.list(party.npcs)));
             }
             final Button go = (Button)layout.findViewById(R.id.fragPPAOD_goAdventuring);
-            go.setText(target.isFighting(party) ? R.string.ppa_ownedDetails_continueBattle : R.string.ppa_ownedDetails_newSession);
+            go.setText(isFighting(party) ? R.string.ppa_ownedDetails_continueBattle : R.string.ppa_ownedDetails_newSession);
             ((TextView)layout.findViewById(R.id.fragPPAOD_created)).setText(target.getNiceDate(party.created));
-            ((TextView)layout.findViewById(R.id.fragPPAOD_currentState)).setText(target.getCurrentState(party.sessionFile, true));
-            String when = target.getLastPlayed(party.sessionFile, true);
-            MaxUtils.setTextUnlessNull((TextView)layout.findViewById(R.id.fragPPAOD_lastPlayed), when, View.INVISIBLE);
-            String note = target.getNote(party);
-            TextView widget = (TextView)layout.findViewById(R.id.fragPPAOD_note);
-            if(null == note) widget.setVisibility(View.GONE);
-            else widget.setText(note);
+            lastPlayed(party, (TextView) layout.findViewById(R.id.fragPPAOD_lastPlayed));
+            note(party, R.id.fragPPAOD_note, layout);
+            state(party, R.id.fragPPAOD_currentState, layout);
             go.setOnClickListener(new SelectionListener(target, party));
             return layout;
         }
@@ -622,33 +649,14 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             ((TextView)layout.findViewById(R.id.fragPPAJD_partyName)).setText(party.name);
             MaxUtils.setTextUnlessNull((TextView) layout.findViewById(R.id.fragPPAJD_lastPlayedPcs), target.listLastPlayedPcs(party), View.GONE);
             final Button go = (Button)layout.findViewById(R.id.fragPPAJD_goAdventuring);
-            go.setText(target.isFighting(party) ? R.string.ppa_joinedDetails_continueBattle : R.string.ppa_joinedDetails_newSession);
+            go.setText(isFighting(party) ? R.string.ppa_joinedDetails_continueBattle : R.string.ppa_joinedDetails_newSession);
             ((TextView)layout.findViewById(R.id.fragPPAJD_created)).setText(target.getNiceDate(party.received));
-            MaxUtils.setTextUnlessNull((TextView) layout.findViewById(R.id.fragPPAJD_lastPlayed), target.getLastPlayed(party.sessionFile, false), View.INVISIBLE);
-            ((TextView)layout.findViewById(R.id.fragPPAJD_currentState)).setText(target.getCurrentState(party.sessionFile, false));
-            String note = target.getNote(party);
-            TextView widget = (TextView)layout.findViewById(R.id.fragPPAJD_note);
-            if(null == note) widget.setVisibility(View.GONE);
-            else widget.setText(note);
+            lastPlayed(party, (TextView) layout.findViewById(R.id.fragPPAJD_lastPlayed));
+            note(party, R.id.fragPPAJD_note, layout);
+            state(party, R.id.fragPPAJD_currentState, layout);
             go.setOnClickListener(new SelectionListener(target, party));
             return layout;
         }
-    }
-
-    private String getNote(StartData.PartyOwnerData.Group party) {
-        return null;
-    }
-
-    private String getNote(StartData.PartyClientData.Group party) {
-        return null;
-    }
-
-    boolean isFighting(StartData.PartyOwnerData.Group party) {
-        return false;
-    }
-
-    boolean isFighting(StartData.PartyClientData.Group party) {
-        return false;
     }
 
     String listLastPlayedPcs(StartData.PartyClientData.Group party) {
@@ -785,7 +793,7 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
     }
 
 
-    private DateFormat local = DateFormat.getInstance();
+    private DateFormat local = DateFormat.getDateInstance(DateFormat.MEDIUM);
     private String getNiceDate(Timestamp ts) {
         return local.format(new Date(ts.seconds * 1000));
     }
