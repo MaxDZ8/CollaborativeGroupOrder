@@ -41,7 +41,7 @@ public class PartyPickingService extends Service {
         return this;
     }
 
-    AsyncTask<Void, Void, Integer> startLoadingSessions() {
+    AsyncTask<Void, Void, Integer> makeSessionLoadingTask() {
         if(sessionData != null) {
             if(onSessionDataLoaded != null) onSessionDataLoaded.run();
             return null;
@@ -83,7 +83,7 @@ public class PartyPickingService extends Service {
                 PersistentDataUtils.SessionStructs loaded = new PersistentDataUtils.SessionStructs();
                 if(data.length() == 0) {
                     result.put(party, loaded);
-                    return 1;
+                    return 0;
                 }
                 if(data.length() > PersistentDataUtils.MAX_SESSION_DATA_BYTES) {
                     errors.put(party, String.format(getString(R.string.pes_sessionTooBig), data.length(), PersistentDataUtils.MAX_SESSION_DATA_BYTES));
@@ -114,8 +114,8 @@ public class PartyPickingService extends Service {
 
     public boolean setDeletionFlag(MessageNano party, boolean delete) {
         int index = 0;
-        while(defs.get(index) != party) index++;
-        if(index != defs.size()) {
+        while(index < defs.size() && defs.get(index) != party) index++;
+        if(index == defs.size()) {
             while(keys.get(index - defs.size()) != party) index++;
         }
         boolean was = hideDefKey[index];
@@ -164,13 +164,4 @@ public class PartyPickingService extends Service {
     private ArrayList<StartData.PartyOwnerData.Group> defs;
     private ArrayList<StartData.PartyClientData.Group> keys;
     private boolean[] hideDefKey;
-
-    private <X> ArrayList<X> condCopy(ArrayList<X> coll, int offset, boolean discard) {
-        ArrayList<X> res = new ArrayList<>();
-        for(int loop = 0; loop < coll.size(); loop++) {
-            if(hideDefKey[offset + loop] == discard) continue;
-            res.add(coll.get(loop));
-        }
-        return res;
-    }
 }

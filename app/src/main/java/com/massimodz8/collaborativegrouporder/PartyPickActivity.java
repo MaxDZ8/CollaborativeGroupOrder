@@ -819,7 +819,11 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
                 }
             }
         };
-        loading = helper.startLoadingSessions();
+        final AsyncTask<Void, Void, Integer> go = helper.makeSessionLoadingTask();
+        if(go != null) {
+            loading = go;
+            go.execute();
+        }
     }
 
     @Override
