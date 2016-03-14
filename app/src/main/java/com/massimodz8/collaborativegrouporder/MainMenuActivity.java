@@ -1,15 +1,19 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.app.Notification;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.NotificationCompat;
 import android.view.View;
 
 import com.google.protobuf.nano.MessageNano;
@@ -34,6 +38,7 @@ import java.util.Collections;
 
 public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final int NETWORK_VERSION = 1;
+    private static final int NOTIFICATION_ID = 1234;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -381,6 +386,17 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             pickServ = binder.getConcreteService();
             pickServ.setKnownParties(groupDefs, groupKeys);
             startActivityForResult(new Intent(this, PartyPickActivity.class), REQUEST_PICK_PARTY);
+            // The pick party server is different, looks like I can just pull it up now.
+            final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
+                    .setOngoing(true)
+                    .setWhen(System.currentTimeMillis())
+                    .setContentTitle(getString(R.string.mma_partyManagerNotificationTitle))
+                    .setSmallIcon(R.drawable.ic_notify_icon)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                help.setCategory(Notification.CATEGORY_SERVICE);
+            }
+            pickServ.startForeground(NOTIFICATION_ID, help.build());
         }
     }
 
