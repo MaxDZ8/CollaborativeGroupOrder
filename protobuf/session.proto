@@ -10,7 +10,8 @@ message RealWorldData {
     google.protobuf.Timestamp lastSaved = 2; // aka 'end', for what we are concerned. Real world hours.
     google.protobuf.Timestamp spent = 3; // .seconds spent playing so far.
     uint32 numSessions = 4;
-    State state = 5;
+    string note = 5;
+    State state = 6;
     enum State {
         KNOWN = 0;    // basically 'no session'. No other data will follow. Static information matches live.
         ADVENTURING = 1; // last session ended while PGs had transient effects which cannot be encoded in definitions.

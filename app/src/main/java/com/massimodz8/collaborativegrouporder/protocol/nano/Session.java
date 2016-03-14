@@ -39,7 +39,10 @@ public interface Session {
     // optional uint32 numSessions = 4;
     public int numSessions;
 
-    // optional .RealWorldData.State state = 5;
+    // optional string note = 5;
+    public java.lang.String note;
+
+    // optional .RealWorldData.State state = 6;
     public int state;
 
     public RealWorldData() {
@@ -51,6 +54,7 @@ public interface Session {
       lastSaved = null;
       spent = null;
       numSessions = 0;
+      note = "";
       state = com.massimodz8.collaborativegrouporder.protocol.nano.Session.RealWorldData.KNOWN;
       cachedSize = -1;
       return this;
@@ -71,8 +75,11 @@ public interface Session {
       if (this.numSessions != 0) {
         output.writeUInt32(4, this.numSessions);
       }
+      if (!this.note.equals("")) {
+        output.writeString(5, this.note);
+      }
       if (this.state != com.massimodz8.collaborativegrouporder.protocol.nano.Session.RealWorldData.KNOWN) {
-        output.writeInt32(5, this.state);
+        output.writeInt32(6, this.state);
       }
       super.writeTo(output);
     }
@@ -96,9 +103,13 @@ public interface Session {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(4, this.numSessions);
       }
+      if (!this.note.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(5, this.note);
+      }
       if (this.state != com.massimodz8.collaborativegrouporder.protocol.nano.Session.RealWorldData.KNOWN) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-          .computeInt32Size(5, this.state);
+          .computeInt32Size(6, this.state);
       }
       return size;
     }
@@ -143,7 +154,11 @@ public interface Session {
             this.numSessions = input.readUInt32();
             break;
           }
-          case 40: {
+          case 42: {
+            this.note = input.readString();
+            break;
+          }
+          case 48: {
             int value = input.readInt32();
             switch (value) {
               case com.massimodz8.collaborativegrouporder.protocol.nano.Session.RealWorldData.KNOWN:
