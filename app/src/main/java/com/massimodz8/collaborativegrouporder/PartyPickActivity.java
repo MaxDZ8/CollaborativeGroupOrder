@@ -1,11 +1,15 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -43,18 +47,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 
-public class PartyPickActivity extends AppCompatActivity {
-    // Populate those before launching the activity. They will be updated if we remove a party.
-    // In other terms, always fetch back those, regardless activity result status.
-    public static ArrayList<StartData.PartyOwnerData.Group> ioDefs;
-    public static ArrayList<StartData.PartyClientData.Group> ioKeys;
-
-    // One of those two is set if we have selected a party to go adventuring.
-    public static StartData.PartyOwnerData.Group goDef;
-    public static StartData.PartyClientData.Group goKey;
-
-    private boolean[] hideDefKey;
-
+public class PartyPickActivity extends AppCompatActivity implements ServiceConnection {
     private ViewPager pager;
     private RecyclerView partyList;
     private RecyclerView.Adapter listAll = new MyPartyListAdapter();
@@ -62,18 +55,20 @@ public class PartyPickActivity extends AppCompatActivity {
     private CoordinatorLayout guiRoot;
     private MenuItem restoreDeleted;
     private AsyncRenamingStore pending; // only one undergoing, ignore back, up and delete group while notnull
+    private PartyPickingService helper;
+    private boolean mustUnbind;
+    private AsyncTask loading;
+
+    // List of all visible (non-deleted) parties, kept in sync with the service state.
+    private ArrayList<StartData.PartyOwnerData.Group> denseDefs = new ArrayList<>();
+    private ArrayList<StartData.PartyClientData.Group> denseKeys = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_party);
-
-        guiRoot = (CoordinatorLayout) findViewById(R.id.ppa_activityRoot);
+        guiRoot = (CoordinatorLayout) findViewById(R.id.activityRoot);
         pager = (ViewPager)findViewById(R.id.ppa_pager);
-
-        hideDefKey = new boolean[ioDefs.size() + ioKeys.size()];
-        rebuildDenseLists();
-
         partyList = (RecyclerView) findViewById(R.id.ppa_list);
         partyList.setLayoutManager(new LinearLayoutManager(this));
         partyList.setAdapter(listAll);
@@ -92,12 +87,24 @@ public class PartyPickActivity extends AppCompatActivity {
         final ItemTouchHelper swiper = new ItemTouchHelper(new MyItemTouchCallback());
         partyList.addItemDecoration(swiper);
         swiper.attachToRecyclerView(partyList);
+
+        if(!bindService(new Intent(this, PartyPickingService.class), this, 0)) {
+            MaxUtils.beginDelayedTransition(this);
+            final TextView status = (TextView) findViewById(R.id.ga_state);
+            status.setText(R.string.ga_cannotBindPartyService);
+            MaxUtils.setVisibility(this, View.GONE,
+                    R.id.ga_progressBar,
+                    R.id.ga_identifiedDevices,
+                    R.id.ga_deviceList,
+                    R.id.ga_pcUnassignedListDesc,
+                    R.id.ga_pcUnassignedList);
+        }
     }
 
     @Override
     protected void onDestroy() {
-        ioDefs = condCopy(ioDefs, 0, true);
-        ioKeys = condCopy(ioKeys, ioDefs.size(), true);
+        if(helper != null) helper.onSessionDataLoaded = null;
+        if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
 
@@ -112,8 +119,9 @@ public class PartyPickActivity extends AppCompatActivity {
      public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case R.id.ppa_menu_restoreDeleted: {
-                final ArrayList<StartData.PartyOwnerData.Group> hiddenDefs = condCopy(ioDefs, 0, false);
-                final ArrayList<StartData.PartyClientData.Group> hiddenKeys = condCopy(ioKeys, ioDefs.size(), false);
+                final ArrayList<StartData.PartyOwnerData.Group> hiddenDefs = new ArrayList<>();
+                final ArrayList<StartData.PartyClientData.Group> hiddenKeys = new ArrayList<>();
+                helper.getDense(hiddenDefs, hiddenKeys, true);
                 ListAdapter la = new ListAdapter() {
                     @Override
                     public void registerDataSetObserver(DataSetObserver observer) { }
@@ -133,9 +141,9 @@ public class PartyPickActivity extends AppCompatActivity {
 
                     @Override
                     public long getItemId(int position) {
-                        if(position < hiddenDefs.size()) return indexOf(hiddenDefs.get(position), ioDefs);
+                        if(position < hiddenDefs.size()) return helper.indexOf(hiddenDefs.get(position));
                         position -= hiddenDefs.size();
-                        return indexOf(hiddenKeys.get(position), ioKeys) + ioDefs.size();
+                        return helper.indexOf(hiddenKeys.get(position));
                     }
 
                     @Override
@@ -200,7 +208,7 @@ public class PartyPickActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(backToPartyList) showPartyList(true);
-        else if(null != pending) {
+        else if(null != pending || null != loading) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.ppa_cannotLetYouGoWhileWriting)
                     .show();
@@ -216,30 +224,12 @@ public class PartyPickActivity extends AppCompatActivity {
             backToPartyList = false;
             return false;
         }
-        else if(null != pending) {
+        else if(null != pending || null != loading) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.ppa_cannotLetYouGoWhileWriting)
                     .show();
         }
         return super.onSupportNavigateUp();
-    }
-
-    private <X> int indexOf(X match, ArrayList<X> list) {
-        for(int loop = 0; loop < list.size(); loop++) {
-            if(list.get(loop) == match) return loop;
-        }
-        return list.size();
-    }
-
-    private ArrayList<StartData.PartyOwnerData.Group> denseDefs = new ArrayList<>();
-    private ArrayList<StartData.PartyClientData.Group> denseKeys = new ArrayList<>();
-
-    public void rebuildDenseLists() {
-        denseDefs.clear();
-        denseKeys.clear();
-        denseDefs.addAll(condCopy(ioDefs, 0, true));
-        denseKeys.addAll(condCopy(ioKeys, ioDefs.size(), true));
-        pager.setAdapter(new MyFragmentPagerAdapter());
     }
 
     private class MyPartyListAdapter extends RecyclerView.Adapter {
@@ -249,15 +239,15 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int position) {
-            if(!denseDefs.isEmpty()) {
+            if(denseDefs.size() > 0) {
                 if(0 == position) return 0;
                 position--;
-                if(position < denseDefs.size()) return 2 + indexOf(denseDefs.get(position), ioDefs);
+                if(position < denseDefs.size()) return 2 + helper.indexOf(denseDefs.get(position));
                 position -= denseDefs.size();
             }
             if(!denseKeys.isEmpty() && 0 == position) return 1;
             position--;
-            if(position < denseKeys.size()) return 2 + indexOf(denseKeys.get(position), ioKeys) + denseDefs.size();
+            if(position < denseKeys.size()) return 2 + helper.indexOf(denseKeys.get(position));
             return RecyclerView.NO_ID;
         }
 
@@ -294,13 +284,14 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public int getItemViewType(int position) {
-            if(!denseDefs.isEmpty()) {
+            int ownedCount = denseDefs.size();
+            if(ownedCount > 0) {
                 if (0 == position) return OwnedPartySeparator.LAYOUT;
                 position--;
-                if (position < denseDefs.size()) return OwnedPartyHolder.LAYOUT;
-                position -= denseDefs.size();
+                if (position < ownedCount) return OwnedPartyHolder.LAYOUT;
+                position -= ownedCount;
             }
-            if(!denseKeys.isEmpty() && 0 == position) return JoinedPartySeparator.LAYOUT;
+            if(denseKeys.size() > 0 && 0 == position) return JoinedPartySeparator.LAYOUT;
             return JoinedPartyHolder.LAYOUT;
         }
     }
@@ -352,45 +343,41 @@ public class PartyPickActivity extends AppCompatActivity {
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             final MessageNano party;
             final String name;
-            final int clear;
             if (viewHolder instanceof OwnedPartyHolder) {
                 OwnedPartyHolder real = (OwnedPartyHolder) viewHolder;
                 party = real.group;
                 name = real.group.name;
-                int loop;
-                for(loop = 0; loop < ioDefs.size() && ioDefs.get(loop) != real.group; loop++);
-                clear = loop;
+                helper.setDeletionFlag(party, true);
             } else {
                 JoinedPartyHolder real = (JoinedPartyHolder) viewHolder;
                 party = real.group;
                 name = real.group.name;
-                int loop;
-                for(loop = 0; loop < ioKeys.size() && ioKeys.get(loop) != real.group; loop++);
-                clear = loop + ioDefs.size();
+                helper.setDeletionFlag(party, true);
             }
-            hideDefKey[clear] = true;
-            rebuildDenseLists();
+            denseDefs.clear();
+            denseKeys.clear();
+            helper.getDense(denseDefs, denseKeys, false);
             listAll.notifyDataSetChanged(); // for easiness, as the last changes two items (itself and the separator)
+            pager.setAdapter(new MyFragmentPagerAdapter());
             final String msg = String.format(getString(R.string.ppa_deletedParty), name);
             final Runnable undo = new Runnable() {
                 @Override
                 public void run() {
-                    hideDefKey[clear] = false;
-                    rebuildDenseLists();
+                    helper.setDeletionFlag(party, false);
+                    denseDefs.clear();
+                    denseKeys.clear();
+                    helper.getDense(denseDefs, denseKeys, false);
                     listAll.notifyDataSetChanged();
+                    pager.setAdapter(new MyFragmentPagerAdapter());
                     boolean owned = party instanceof StartData.PartyOwnerData.Group;
                     if(null != pending) pending.cancel(true);
                     if(owned) {
-                        pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(condCopy(ioDefs, 0, true)), null, null);
+                        pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(denseDefs), null, null);
                     }
                     else {
-                        pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(condCopy(ioKeys, ioDefs.size(), true)), null, null);
+                        pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(denseKeys), null, null);
                     }
-                    int count = 0;
-                    for (boolean flag : hideDefKey) {
-                        if(flag) count++;
-                    }
-                    if(restoreDeleted.isEnabled() && count == 0) {
+                    if(restoreDeleted.isEnabled() && denseDefs.size() + denseKeys.size() == 0) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                             TransitionManager.beginDelayedTransition(guiRoot);
                         }
@@ -405,7 +392,7 @@ public class PartyPickActivity extends AppCompatActivity {
                     }).setCallback(new Snackbar.Callback() {
                         @Override
                         public void onShown(Snackbar snackbar) {
-                            if(!restoreDeleted.isEnabled()) {
+                            if (!restoreDeleted.isEnabled()) {
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                                     TransitionManager.beginDelayedTransition(guiRoot);
                                 }
@@ -414,10 +401,10 @@ public class PartyPickActivity extends AppCompatActivity {
                         }
                     });
             if(viewHolder instanceof OwnedPartyHolder) {
-                pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(condCopy(ioDefs, 0, true)), sb, undo);
+                pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(denseDefs), sb, undo);
             }
             else {
-                pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(condCopy(ioKeys, ioDefs.size(), true)), sb, undo);
+                pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(denseKeys), sb, undo);
             }
         }
 
@@ -428,15 +415,6 @@ public class PartyPickActivity extends AppCompatActivity {
             if(viewHolder instanceof OwnedPartyHolder || viewHolder instanceof JoinedPartyHolder) swipe = SWIPE_HORIZONTAL;
             return makeMovementFlags(DRAG_FORBIDDEN, swipe);
         }
-    }
-
-    private <X> ArrayList<X> condCopy(ArrayList<X> coll, int offset, boolean discard) {
-        ArrayList<X> res = new ArrayList<>();
-        for(int loop = 0; loop < coll.size(); loop++) {
-            if(hideDefKey[offset + loop] == discard) continue;
-            res.add(coll.get(loop));
-        }
-        return res;
     }
 
     private static StartData.PartyOwnerData makePartyOwnerData(ArrayList<StartData.PartyOwnerData.Group> defs) {
@@ -494,7 +472,7 @@ public class PartyPickActivity extends AppCompatActivity {
         public void onClick(View v) {
             if(null == group) return; // will never happen.
             backToPartyList = true;
-            pager.setCurrentItem(indexOf(group, denseDefs), true);
+            pager.setCurrentItem(denseDefs.indexOf(group), true);
             showPartyList(false);
         }
     }
@@ -549,7 +527,7 @@ public class PartyPickActivity extends AppCompatActivity {
         public void onClick(View v) {
             if(null == group) return; // will never happen.
             backToPartyList = true;
-            pager.setCurrentItem(indexOf(group, denseKeys), true);
+            pager.setCurrentItem(denseDefs.size() + denseKeys.indexOf(group), true);
             showPartyList(false);
         }
     }
@@ -606,9 +584,9 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View layout = inflater.inflate(R.layout.frag_pick_party_owned_details, container, false);
-            if(getIndex() < 0 || getIndex() >= ioDefs.size()) return layout;
+            if(getIndex() < 0 || getIndex() >= target.denseDefs.size()) return layout;
 
-            final StartData.PartyOwnerData.Group party = target.denseDefs.get(getIndex());
+            final StartData.PartyOwnerData.Group party = target.helper.getOwned(getIndex());
             ((TextView)layout.findViewById(R.id.fragPPAOD_partyName)).setText(party.name);
             ((TextView)layout.findViewById(R.id.fragPPAOD_pcList)).setText(target.list(party.party));
             TextView npcList = (TextView) layout.findViewById(R.id.fragPPAOD_accompanyingNpcList);
@@ -638,9 +616,9 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             View layout = inflater.inflate(R.layout.frag_pick_party_joined_details, container, false);
-            if(getIndex() < 0 || getIndex() >= ioKeys.size()) return layout;
+            if(getIndex() < 0 || getIndex() >= target.denseKeys.size()) return layout;
 
-            final StartData.PartyClientData.Group party = target.denseKeys.get(getIndex());
+            final StartData.PartyClientData.Group party = target.helper.getJoined(getIndex());
             ((TextView)layout.findViewById(R.id.fragPPAJD_partyName)).setText(party.name);
             MaxUtils.setTextUnlessNull((TextView) layout.findViewById(R.id.fragPPAJD_lastPlayedPcs), target.listLastPlayedPcs(party), View.GONE);
             final Button go = (Button)layout.findViewById(R.id.fragPPAJD_goAdventuring);
@@ -701,8 +679,8 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            if(owned != null) goDef = owned;
-            else goKey = joined;
+            if(owned != null) target.helper.sessionParty = owned;
+            else target.helper.sessionParty = joined;
             target.setResult(RESULT_OK);
             target.finish();
         }
@@ -718,8 +696,9 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            if(position < denseDefs.size()) return new OwnedPartyFragment().init(position);
-            return new JoinedPartyFragment().init(position - denseDefs.size());
+            int owned = denseDefs.size();
+            if(position < owned) return new OwnedPartyFragment().init(position);
+            return new JoinedPartyFragment().init(position - owned);
         }
     }
 
@@ -777,45 +756,31 @@ public class PartyPickActivity extends AppCompatActivity {
     }
 
     private void restoreDeleted(int hiddenPos) {
-        MessageNano match = null;
-        for(int loop = 0; loop < ioDefs.size(); loop++) {
-            if(!hideDefKey[loop]) continue;
-            if(hiddenPos == 0) {
-                hideDefKey[loop] = false;
-                match = ioDefs.get(loop);
-                break;
-            }
-            hiddenPos--;
-        }
-        for(int loop = match != null? ioKeys.size() : 0; loop < ioKeys.size(); loop++) {
-            if(!hideDefKey[ioDefs.size() + loop]) continue;
-            if(hiddenPos == 0) {
-                hideDefKey[ioDefs.size() + loop] = false;
-                match = ioKeys.get(loop);
-                break;
-            }
-            hiddenPos--;
-        }
-        rebuildDenseLists();
+        ArrayList<StartData.PartyOwnerData.Group> owned = new ArrayList<>();
+        ArrayList<StartData.PartyClientData.Group> joined = new ArrayList<>();
+        helper.getDense(owned, joined, true);
+        MessageNano match;
+        if(hiddenPos < owned.size()) match = owned.get(hiddenPos);
+        else match = joined.get(hiddenPos - owned.size());
+        helper.setDeletionFlag(match, false);
+        denseDefs.clear();
+        denseKeys.clear();
+        helper.getDense(denseDefs, denseKeys, false);
+        pager.setAdapter(new MyFragmentPagerAdapter());
         listAll.notifyDataSetChanged();
-        final boolean owned = match instanceof StartData.PartyOwnerData.Group;
+        restoreDeleted.setEnabled(owned.size() + joined.size() > 1);
         final Snackbar sb = Snackbar.make(guiRoot, R.string.ppa_partyRecovered, Snackbar.LENGTH_LONG)
                 .setCallback(new Snackbar.Callback() {
                     @Override
                     public void onShown(Snackbar snackbar) {
-                        listAll.notifyDataSetChanged();
-                        int count = 0;
-                        for (boolean flag : hideDefKey) {
-                            if(flag) count++;
-                        }
-                        restoreDeleted.setEnabled(count != 0);
+                        pending = null;
                     }
                 });
-        if(owned) {
-            pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(condCopy(ioDefs, 0, true)), sb, null);
+        if(match instanceof StartData.PartyOwnerData.Group) {
+            pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, makePartyOwnerData(owned), sb, null);
         }
         else {
-            pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(condCopy(ioKeys, ioDefs.size(), true)), sb, null);
+            pending = new AsyncRenamingStore<>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, makePartyClientData(joined), sb, null);
         }
     }
 
@@ -824,4 +789,42 @@ public class PartyPickActivity extends AppCompatActivity {
     private String getNiceDate(Timestamp ts) {
         return local.format(new Date(ts.seconds * 1000));
     }
+
+    // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        PartyPickingService.LocalBinder binder = (PartyPickingService.LocalBinder) service;
+        helper = binder.getConcreteService();
+        mustUnbind = true;
+        helper.getDense(denseDefs, denseKeys, false);
+
+        helper.onSessionDataLoaded = new Runnable() {
+            @Override
+            public void run() {
+                loading = null;
+                listAll.notifyDataSetChanged();
+                pager.setAdapter(new MyFragmentPagerAdapter());
+
+                if(!helper.sessionErrors.isEmpty()) {
+                    new AlertDialog.Builder(PartyPickActivity.this)
+                            .setMessage(R.string.ppa_inconsistentSessionDataDlgMsg)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.ppa_backMainMenuDlgPosBtn, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            })
+                            .show();
+                }
+            }
+        };
+        loading = helper.startLoadingSessions();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+
+    }
+    // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }

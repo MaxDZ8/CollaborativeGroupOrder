@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.nsd.NsdManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.TransitionManager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.security.MessageDigest;
@@ -83,8 +86,14 @@ public abstract class MaxUtils {
      * @return true if the view is set to VISIBLE, always true if text != null
      */
     public static boolean setTextUnlessNull(@NonNull TextView view, @Nullable String text, int nullVis) {
-        view.setVisibility(text == null? nullVis : View.VISIBLE);
+        view.setVisibility(text == null ? nullVis : View.VISIBLE);
         if(text != null) view.setText(text);
         return text != null;
+    }
+
+    public static void beginDelayedTransition(Activity ctx) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            TransitionManager.beginDelayedTransition((ViewGroup) ctx.findViewById(R.id.activityRoot));
+        }
     }
 }

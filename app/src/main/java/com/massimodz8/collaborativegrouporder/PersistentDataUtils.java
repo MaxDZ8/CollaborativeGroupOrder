@@ -6,6 +6,7 @@ import android.support.annotation.WorkerThread;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.File;
@@ -57,6 +58,7 @@ public abstract class PersistentDataUtils {
     public static final int OWNER_DATA_VERSION = 1;
     public static final int CLIENT_DATA_WRITE_VERSION = 1;
     public static final int MAX_GROUP_DATA_BYTES = 1024 * 1024 * 4;
+    public static final int MAX_SESSION_DATA_BYTES = 1024 * 1024 * 4;
 
     public <Container extends MessageNano> String mergeExistingGroupData(Container dst, File from) {
         FileInputStream source;
@@ -65,7 +67,7 @@ public abstract class PersistentDataUtils {
         } catch (FileNotFoundException e) {
             return null;
         }
-        if(from.length() > MAX_GROUP_DATA_BYTES) return getString(R.string.persistentStorage_groupDataTooBig);
+        if(from.length() > MAX_GROUP_DATA_BYTES) return getString(R.string.persistentStorage_archiveTooBig);
         byte[] everything = new byte[(int)from.length()];
         try {
             final int count = source.read(everything);
@@ -78,7 +80,7 @@ public abstract class PersistentDataUtils {
         try {
             dst.mergeFrom(input);
         } catch (IOException e) {
-            return getString(R.string.persistentStorage_failedReadGroupList);
+            return getString(R.string.persistentStorage_failedRead);
         }
         return null;
     }
@@ -234,5 +236,46 @@ public abstract class PersistentDataUtils {
             session = null; // most likely malformed file
         }
         return session;
+    }
+
+    public static class SessionStructs {
+        Session.RealWorldData irl;
+        Session.LiveData adventure;
+        Session.BattleData battle;
+    }
+
+    public String load(SessionStructs fetch, FileInputStream source, int size) {
+        byte[] everything = new byte[size];
+        try {
+            final int count = source.read(everything);
+            if(count != everything.length) return getString(R.string.persistentStorage_readSizeMismatch);
+        } catch (IOException e) {
+            return getString(R.string.persistentStorage_failedRead);
+        }
+        CodedInputByteBufferNano input = CodedInputByteBufferNano.newInstance(everything);
+        String bad = loadCatchClose(fetch.irl, input, source);
+        if(bad != null && fetch.irl.state != Session.RealWorldData.KNOWN) {
+            fetch.adventure = new Session.LiveData();
+            bad = loadCatchClose(fetch.adventure, input, source);
+            if(bad == null && fetch.irl.state != Session.RealWorldData.ADVENTURING) {
+                fetch.battle = new Session.BattleData();
+                bad = loadCatchClose(fetch.battle, input, source);
+            }
+        }
+        return bad;
+    }
+
+    private String loadCatchClose(MessageNano data, CodedInputByteBufferNano input, FileInputStream file) {
+        try {
+            input.readMessage(data);
+        } catch (IOException e) {
+            try {
+                file.close();
+            } catch (IOException e1) {
+                // ignore
+            }
+            return getString(R.string.persistentStorage_failedRead);
+        }
+        return null;
     }
 }

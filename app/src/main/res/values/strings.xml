@@ -105,8 +105,7 @@
     <string name="veryBadError">Very bad error</string>
     <string name="noSuchAlgorithmExceptionAlertDialogMessage">Could not build party key. This is based on internal machinery which was supposed to be here by the standard, something is very wrong.</string>
     <string name="persistentStorage_cannotReadGroupList">File exists but cannot be read. This is unlikely to happen by accident so you\'re better check your system is fine.</string>
-    <string name="persistentStorage_failedReadGroupList">Failed to read groups from storage.</string>
-    <string name="persistentStorage_groupDataTooBig">Group data archive exceeds maximum size.</string>
+    <string name="persistentStorage_archiveTooBig">Data archive exceeds maximum size.</string>
     <string name="persistentStorage_groupDataVersionZero">group version 0 should have never been saved.</string>
     <string name="persistentStorage_groupNameClash">Group %1$d clashes with %2$d, both are named \"%3$s\".</string>
     <string name="persistentStorage_groupKeyNameClash">Group key %1$d clashes with %2$d, both are named \"%3$s\" and have the same key!</string>
@@ -131,6 +130,7 @@
     <string name="persistentStorage_deviceBadSalt">, device[%1$s]: not enough salt.</string>
     <string name="persistentStorage_badCreationTimestamp">: invalid creation timestamp.</string>
     <string name="persistentStorage_badSessionFile">: no session file specified.</string>
+    <string name="persistentStorage_closeFailed">Could not close file input stream handle.</string>
 
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
@@ -178,6 +178,10 @@
     <string name="mma_failedMatch">It seems I had to go with a newly created party but I couldn\'t match it. This is a very serious error.%1$s</string>
     <string name="mma_exit">Exit</string>
     <string name="mma_pickParty">Pick a party…</string>
+    <string name="mma_partyManagerNotificationTitle">Party manager</string>
+    <string name="mma_noDigestDlgMsg">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
+    <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
+    <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
 
     <string name="npdsa_badParty_title">Bad party name</string>
     <string name="npdsa_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
@@ -253,10 +257,10 @@
     <string name="cardOP_currentStateLabel">Currently:</string>
     <string name="cardJP_currentStateLabel">Currently:</string>
     <string name="cardJP_lastPlayLabel">Last played:</string>
+
     <string name="ppa_playingCharacterNameSeparator">", "</string>
     <string name="ppa_noPartySelected">No party selected.</string>
     <string name="ppa_noPartySelectedMoreInstructions">Tap on a party overview to show information and actions here.</string>
-
     <string name="ppa_ownedDetails_created">Created:</string>
     <string name="ppa_ownedDetails_createdLabel">Created:</string>
     <string name="ppa_ownedDetails_lastPlayLabel">Last played:</string>
@@ -279,6 +283,9 @@
     <string name="ppa_partyRecovered">Recover successful</string>
     <string name="ppa_menu_restoreDeleted">Restore deleted</string>
     <string name="ppa_menu_restoreDeletedCondensed">Restore</string>
+    <string name="ppa_inconsistentSessionDataDlgMsg">Errors detected in session data. In the future I might be able to fix this but for the time being there\'s nothing I can do. To protect the data, I will now take you back to main menu.</string>
+    <string name="ppa_backMainMenuDlgPosBtn">Give up and go main menu</string>
+    <string name="ppa_noInputStream">Failed to get input stream.</string>
 
     <string name="ga_title">Gathering heroes</string>
     <string name="ga_welcoming">Welcoming players…</string>
@@ -296,7 +303,6 @@
     <string name="ga_pleaseUpdateYourself">Please upgrade app on this device.</string>
     <string name="ga_pleaseUpdateFriend">Please ask your friend to upgrade app.</string>
     <string name="ga_versionMismatchDialogMessage">Device \"%1$s\" connected running version %2$d.\nYou\'re running version %3$d.\nIt is strongly suggested all devices to run the same protocol version.\n%4$s</string>
-    <string name="mma_noDigestDlgMsg">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
     <string name="ga_noPcsOnDevice">No playing characters on this device.</string>
 
     <string name="dialog_explicitConnectionInfo_title">Connection informations</string>
@@ -364,8 +370,6 @@
     <string name="ga_someCharsNotBound">%1$d characters have not been assigned to any device.</string>
     <string name="ga_unboundCharsDlgMsg">%1$s\nTo continue, all characters must be played by someone.\n\nGo back and long press an unassigned character for some options.</string>
     <string name="ga_ctx_unassigned_pc_playHere">Play on this device</string>
-    <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
-    <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
 
     <string name="card_joiningDevice_groupMember">Group member</string>
     <string name="npdsa_notifyContent">Forming new party.</string>
@@ -386,4 +390,6 @@
     <string name="vhOP_charCount_plural">%1$d playing characters</string>
     <string name="vhOP_charLevel_same">Level %1$d</string>
     <string name="vhOP_charLevel_different">Levels %1$d - %2$d</string>
+    <string name="pes_sessionNotFound">Missing session file.</string>
+    <string name="pes_sessionTooBig">session file takes %1$d, maximum size allowed is %2$d</string>
 </resources>
