@@ -397,4 +397,6 @@
     <string name="vhOP_charLevel_different">Levels %1$d - %2$d</string>
     <string name="pes_sessionNotFound">Missing session file.</string>
     <string name="pes_sessionTooBig">session file takes %1$d, maximum size allowed is %2$d</string>
+	
+    <string name="fra_title">Adventuring</string>
 </resources>

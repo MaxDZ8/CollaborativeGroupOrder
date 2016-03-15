@@ -116,8 +116,9 @@
             android:exported="false" />
 
         <activity android:name=".master.FreeRoamingActivity"
-            android:label="Adventuring"
-            android:parentActivityName=".master.GatheringActivity">
+            android:label="@string/fra_title"
+            android:parentActivityName=".master.GatheringActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".master.GatheringActivity" />
