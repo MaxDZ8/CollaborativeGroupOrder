@@ -1,8 +1,11 @@
 package com.massimodz8.collaborativegrouporder.master;
 
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
+import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -12,9 +15,10 @@ import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 
 import com.massimodz8.collaborativegrouporder.HealthBar;
+import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.R;
 
-public class FreeRoamingActivity extends AppCompatActivity {
+public class FreeRoamingActivity extends AppCompatActivity implements ServiceConnection {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +37,35 @@ public class FreeRoamingActivity extends AppCompatActivity {
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
-        silly(R.id.hb1, R.id.hb1val,   0, 33);
+        if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
+            MaxUtils.beginDelayedTransition(this);
+            TextView ohno = (TextView) findViewById(R.id.fra_instructions);
+            ohno.setText(R.string.fra_failedBind);
+            return;
+        }
+        mustUnbind = true;
     }
 
-    void silly(@IdRes int hb, @IdRes int label, int current, int max) {
-        HealthBar bar = (HealthBar)findViewById(hb);
-        bar.currentHp = current;
-        bar.maxHp = max;
-        bar.invalidate();
-        TextView text = (TextView)findViewById(label);
-        text.setText(String.format("%1$d / %2$d", current, max));
+    @Override
+    protected void onDestroy() {
+        if(mustUnbind) unbindService(this);
+        super.onDestroy();
     }
+
+    private boolean mustUnbind;
+    private SessionHelper.PlayState game;
+
+    // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    @Override
+    public void onServiceConnected(ComponentName name, IBinder service) {
+        PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
+        PartyJoinOrderService serv = real.getConcreteService();
+        game = serv.getPlaySession();
+    }
+
+    @Override
+    public void onServiceDisconnected(ComponentName name) {
+
+    }
+    // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }

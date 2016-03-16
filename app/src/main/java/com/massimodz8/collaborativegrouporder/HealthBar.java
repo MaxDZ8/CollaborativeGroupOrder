@@ -4,13 +4,10 @@ import android.animation.ArgbEvaluator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.ColorInt;
 import android.util.AttributeSet;
 import android.view.View;
-
-import com.massimodz8.collaborativegrouporder.R;
 
 /**
  * Created by Massimo on 15/03/2016.
@@ -58,25 +55,27 @@ public class HealthBar extends View {
     protected void onDraw(Canvas canvas) {
         paintRatio();
         float x = getWidth() * widthFraction;
-        float y = getHeight() * .75f;
-        canvas.drawRect(0, 0, x, getHeight(), paint);
-        canvas.drawRect(x, y, getWidth(), getHeight(), paint);
+        canvas.drawRect(0, 0, x, getHeight(), fill);
+        canvas.drawRect(0, 0, getWidth() - 1, getHeight() - 1, stroke);
     }
 
 
     private boolean maxVisible;
     private int showCurrentMode; // TODO! Show current health points!
     private float widthFraction;
-    private Paint paint;
+    private Paint fill, stroke;
     private static float[] points =       new float[] { .0f,        .15f,       .66f,       .85f,       1.0f };
     private static @ColorInt int[] colors = new int[] { 0xFFFF0000, 0xFFFF0000, 0xFFFFFF00, 0xFF00FF00, 0xFF0000FF };
 
     private static ArgbEvaluator lerp = new ArgbEvaluator(); // because apparently .getInstance() does not get resolved you mofo
 
     private void paintRatio() {
-        if(paint == null) {
-            paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setStyle(Paint.Style.FILL);
+        if(fill == null) {
+            stroke = new Paint(Paint.ANTI_ALIAS_FLAG);
+            stroke.setStyle(Paint.Style.STROKE);
+            stroke.setStrokeWidth(.0f);
+            fill = new Paint(Paint.ANTI_ALIAS_FLAG);
+            fill.setStyle(Paint.Style.FILL);
         }
         Integer use;
         if(currentHp <= 0) {
@@ -95,6 +94,7 @@ public class HealthBar extends View {
             fraction /= (points[start] - points[start - 1]);
             use = (Integer)lerp.evaluate(fraction, colors[start - 1], colors[start]);
         }
-        paint.setColor(use);
+        fill.setColor(use);
+        stroke.setColor(use);
     }
 }
