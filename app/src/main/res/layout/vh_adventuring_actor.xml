@@ -5,7 +5,7 @@
     <CheckBox
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/vhAC_selected"
+        android:id="@+id/vhAA_selected"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
@@ -13,10 +13,10 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/vhAC_avatar"
+        android:id="@+id/vhAA_avatar"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/vhAC_selected"
-        android:layout_toEndOf="@+id/vhAC_selected"
+        android:layout_toRightOf="@+id/vhAA_selected"
+        android:layout_toEndOf="@+id/vhAA_selected"
         android:src="@drawable/placeholder_todo"
         android:contentDescription="@string/vhAC_avatarDesc"
         android:layout_marginRight="4dp" />
@@ -25,19 +25,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/vhAC_name"
+        android:id="@+id/vhAA_name"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/vhAC_avatar"
+        android:layout_toRightOf="@+id/vhAA_avatar"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
     <com.massimodz8.collaborativegrouporder.HealthBar
         android:layout_width="wrap_content"
         android:layout_height="8dp"
-        android:layout_toRightOf="@+id/vhAC_avatar"
+        android:layout_toRightOf="@+id/vhAA_avatar"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_below="@+id/vhAC_name"
-        android:id="@+id/vhAC_health" />
+        android:layout_below="@+id/vhAA_name"
+        android:id="@+id/vhAA_health" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/vhAA_actorTypeShort"
+        android:layout_alignParentTop="false"
+        android:layout_alignLeft="@+id/vhAA_avatar"
+        android:layout_below="@+id/vhAA_avatar"
+        android:layout_alignRight="@+id/vhAA_avatar"
+        android:gravity="center_horizontal" />
 
 </RelativeLayout>

@@ -11,8 +11,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".master.FreeRoamingActivity"
     tools:showIn="@layout/activity_free_roaming"
-    android:orientation="vertical"
-    android:id="@+id/activityRoot">
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
@@ -26,6 +25,7 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:visibility="visible"
-        android:layout_height="fill_parent" />
+        android:layout_height="fill_parent"
+        app:layoutManager="LinearLayoutManager" />
 
 </LinearLayout>

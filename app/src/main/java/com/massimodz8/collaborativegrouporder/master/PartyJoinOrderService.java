@@ -35,7 +35,10 @@ public class PartyJoinOrderService extends PublishAcceptService {
     */
     public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs live, @NonNull JoinVerificator keyMaster) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster);
-        sessionHelper = new SessionHelper(assignmentHelper.party, live);
+        ArrayList<AbsLiveActor> byDef = new ArrayList<>();
+        for(StartData.ActorDefinition el : party.party) byDef.add(makeLiveActor(el, true));
+        for(StartData.ActorDefinition el : party.npcs) byDef.add(makeLiveActor(el, false));
+        sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef);
     }
 
     public void shutdownPartyManagement() {
@@ -86,16 +89,19 @@ public class PartyJoinOrderService extends PublishAcceptService {
         assignmentHelper.onBoundPc = listener;
     }
 
-    // Section 4: given current character bindings, start the real deal. ---------------------------
-    // There's no such thing really, just call adventuring() once and getPlaySession() as many times as needed.
-    public void adventuring() {
-        sessionHelper.play(assignmentHelper.getBoundKickOthers());
-    }
-
+    public PcAssignmentHelper getAssignmentHelper() { return assignmentHelper; }
     public SessionHelper.PlayState getPlaySession() { return sessionHelper.getSession(); }
 
     private PcAssignmentHelper assignmentHelper;
     private SessionHelper sessionHelper;
+
+    private AbsLiveActor makeLiveActor(StartData.ActorDefinition definition, boolean playingCharacter) {
+        CharacterActor build = new CharacterActor(definition.name, playingCharacter);
+        build.initiativeBonus = definition.stats[0].initBonus;
+        build.currentHealth = build.maxHealth = definition.stats[0].healthPoints;
+        build.experience = definition.experience;
+        return build;
+    }
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override

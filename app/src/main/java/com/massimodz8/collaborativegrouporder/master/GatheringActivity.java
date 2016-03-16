@@ -139,7 +139,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         if(free.isEmpty()) {
             room.stopPublishing();
             room.stopListening(false);
-            room.adventuring();
             startActivity(new Intent(this, FreeRoamingActivity.class));
             return;
         }

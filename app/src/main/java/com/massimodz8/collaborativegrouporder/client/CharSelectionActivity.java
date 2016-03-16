@@ -427,7 +427,7 @@ public class CharSelectionActivity extends AppCompatActivity {
         public AvailableHolder(View itemView) {
             super(itemView);
             avatar = (ImageView) itemView.findViewById(R.id.vhAC_image);
-            name = (TextView) itemView.findViewById(R.id.vhAC_name);
+            name = (TextView) itemView.findViewById(R.id.vhAA_name);
             level = (TextView) itemView.findViewById(R.id.vhAC_level);
             hpmax = (TextView) itemView.findViewById(R.id.vhAC_hpMax);
             xp = (TextView) itemView.findViewById(R.id.vhAC_xp);

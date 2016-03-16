@@ -1,10 +1,17 @@
 package com.massimodz8.collaborativegrouporder.master;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
+
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
+import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Created by Massimo on 14/03/2016.
@@ -21,18 +28,12 @@ import java.util.ArrayList;
 public class SessionHelper {
     public final StartData.PartyOwnerData.Group party;
     public final PersistentDataUtils.SessionStructs stats;
+    public final ArrayList<AbsLiveActor> existByDef;
 
-    SessionHelper(StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs stats) {
+    SessionHelper(StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs stats, ArrayList<AbsLiveActor> existByDef) {
         this.party = party;
         this.stats = stats;
-    }
-
-    void play(ArrayList<Pumper.MessagePumpingThread> boundKickOthers) {
-        // TODO
-        // TODO
-        // TODO
-        // TODO
-        // TODO
+        this.existByDef = existByDef;
     }
 
     PlayState getSession() {
@@ -42,7 +43,29 @@ public class SessionHelper {
 
     /// Activity interface so I can avoid dealing with the service and all.
     public class PlayState {
+        void begin(@NonNull Runnable onComplete) {
+            onComplete.run();
+        }
+        void end() { }
+
+        void add(AbsLiveActor actor) { temporaries.add(actor); }
+        boolean willFight(AbsLiveActor actor, Boolean newFlag) {
+            boolean currently = fighters.contains(actor);
+            if(newFlag == null) return currently;
+            if(newFlag) fighters.add(actor);
+            else fighters.remove(actor);
+            return newFlag;
+        }
+        int getNumActors() { return existByDef.size() + temporaries.size(); }
+        AbsLiveActor getActor(int i) {
+            int sz = existByDef.size();
+            return i < sz ? existByDef.get(i) : temporaries.get(i - sz);
+        }
     }
 
     private PlayState session;
+    private final ArrayList<AbsLiveActor> temporaries = new ArrayList<>();
+    private final HashSet<AbsLiveActor> fighters = new HashSet<>();
+    private Pumper netPump;
+
 }
