@@ -12,8 +12,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -28,7 +31,6 @@ import com.massimodz8.collaborativegrouporder.R;
 import java.util.IdentityHashMap;
 
 public class FreeRoamingActivity extends AppCompatActivity implements ServiceConnection {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,11 +85,40 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         super.onDestroy();
     }
 
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.free_roaming_activity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.fra_menu_addMonster: {
+                startActivityForResult(new Intent(this, SpawnMonsterActivity.class), REQUEST_ADD_MONSTER);
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(requestCode) {
+            case REQUEST_ADD_MONSTER: lister.notifyDataSetChanged();
+            default: super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     private boolean mustUnbind;
     private SessionHelper.PlayState game;
     private AdventuringActorAdapter lister = new AdventuringActorAdapter();
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
     private int numDefinedActors; // those won't get expunged, no matter what
+
+    private static final int REQUEST_ADD_MONSTER = 1;
 
     private class AdventuringActorVH extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
         final CheckBox selected;

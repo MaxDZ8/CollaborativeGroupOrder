@@ -397,9 +397,9 @@
     <string name="vhOP_charLevel_different">Levels %1$d - %2$d</string>
     <string name="pes_sessionNotFound">Missing session file.</string>
     <string name="pes_sessionTooBig">session file takes %1$d, maximum size allowed is %2$d</string>
-	
+
     <string name="vhAC_avatarDesc">Actor pic</string>
-	
+
     <string name="fra_title">Adventuring</string>
     <string name="fra_instructions">Select everyone taking part in next battle.</string>
     <string name="fra_failedBind">Could not bind to internal playing service. This is a very serious error.\nIt might go away retrying or not.</string>
@@ -410,4 +410,8 @@
     <string name="fra_dataLoadedFeedback">Started brand new session.</string>
     <string name="fra_noBattle_zeroPcs">At least one playing character required.</string>
     <string name="fra_noBattle_nobody">Nobody would be fighting.</string>
+    <string name="fra_addMonster">Add monster</string>
+	
+    <string name="sma_title">Spawn monster</string>
+    <string name="sma_nameSearchHint">Search by name</string>
 </resources>

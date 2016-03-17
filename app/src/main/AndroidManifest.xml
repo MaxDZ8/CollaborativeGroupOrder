@@ -115,13 +115,23 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".master.FreeRoamingActivity"
+        <activity
+            android:name=".master.FreeRoamingActivity"
             android:label="@string/fra_title"
             android:parentActivityName=".master.GatheringActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".master.GatheringActivity" />
+        </activity>
+
+        <activity
+            android:name=".master.SpawnMonsterActivity"
+            android:label="@string/sma_title"
+            android:parentActivityName=".master.FreeRoamingActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".master.FreeRoamingActivity" />
         </activity>
     </application>
 
