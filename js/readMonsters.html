@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <title>Monster text to JSON!</title>
+    <script src="readMonsters.js"></script>
+</head>
+<body>
+</body>
+    <div id="start">
+        Hello. Start by giving me a list of monsters you want to pull. Hit the button and give me a text file, where each non-empty line defines a monster name.<br />
+    	<input id="listInput" type="file" accept="text/*" />
+    </div>
+    <div id="parseListFeedback">
+    </div>
+    <div id="realDeal">
+        Ok, now give me the file you want me to read. This must be a text file. Try copypasting a manual in a <strong>.txt</strong> file using notepad.<br />
+    	<input id="realDealInput" type="file" accept="text/*" />
+    </div>
+    <div id="realDealFeedback">
+        Successfully parsed <span id="parsedCount"></span> monsters.<br><br>
+    	<a id="jsonOut">Json file with parsed stuff</a><br>
+    	<a id="clearedOut">Text file with parsed lines cleared</a><br>
+		We're done here.
+    </div>
+</html>
