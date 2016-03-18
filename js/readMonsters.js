@@ -95,7 +95,7 @@ function parseBestiary(monsters, book) {
             var prevLen = book.length;
             for(var loop = 0; loop < monsters.length; loop++) { // simple 'regular' monsters
                 if(monsters[loop].mangled) continue;
-                monsters[loop].mangled = matchMonster(monsters[loop].engName, monsters[loop + 1]);
+                monsters[loop].mangled = matchMonster(monsters[loop].engName);
                 if(monsters[loop].mangled) {
                     var data = monsters[loop].mangled;
                     var string = cell('Regular'); // parse type
@@ -124,33 +124,30 @@ function parseBestiary(monsters, book) {
     }
     
     
-    function matchMonster(name, next) {
+    function matchMonster(name) {
         var skip = -1;
         var skipDiff = 1;
         while(skipDiff !== 0) {
             skip += skipDiff;
             skipDiff = 0;
-            var where = book.indexOf(name, skip);
-            if(where < 0) return;
-            skipDiff = where - skip + name.length;
-            var imbad = book.substr(where);
-            var head = imbad.match(header);
+            var head = book.substr(skip).match(header);
             if(!head) continue;
             var headPos = book.indexOf(head[0], skip);
-            if(fixSpaces(name, lineStart(headPos))) {
+            var where = lineStart(headPos);
+            if(fixSpaces(name, where)) {
                 skip--;
                 skipDiff = 1;
                 continue;
             }
             // It's really a match if we reached header by getting no newlines and only whitespace,
             // since the header includes the initial \t, they must simply be contiguous.
-            if(where + name.length !== headPos) {
-                //skipDiff += head[0].length; // don't skip head here, there are sometimes spurious characters.
+            if(book.substr(where, name.length) !== name || where + name.length !== headPos) {
+                skipDiff = headPos - skip + 10; // an header takes a while to match
                 continue;
             }
             head[3] = head[3].trim();
-            var def = imbad.match(defense);
-            var off = imbad.match(offense);
+            var def = book.match(defense);
+            var off = book.match(offense);
             if(off) {
                 off[2] = off[2].trim();
                 if(off[2].length > 2) {
@@ -158,13 +155,17 @@ function parseBestiary(monsters, book) {
                     if(off[2].charAt(off[2].length - 1) === ')') off[2] = off[2].substring(0, off[2].length - 1);
                 }
             }
-            var stats = imbad.match(statistics);
-            
-            if(next === undefined) next = book.length;
-            else next = imbad.indexOf(next.engName) + where;
-            blackenParsed(where, next);
+            var stats = book.match(statistics);
+            blackenParsed(where, findNext(book.indexOf(stats[0], skip)));
             return { head, def, off, stats };
         }
+    }
+    
+    function findNext(after) {
+        var bad = book.substr(after, book.length / 2);
+        var match = bad.match(header);
+        if(!match) return book.length / 4;
+        return lineStart(bad.indexOf(match[0]) + after);
     }
     
     function blackenParsed(start, limit) {
