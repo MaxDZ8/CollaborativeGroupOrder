@@ -66,42 +66,60 @@ function parseBestiary(monsters, book) {
 	//         CR integer or fraction|      |XPs|       |     |               alignment                   | Size| |Type      |Initiative     |
 	//                 |     \1      |      | \3|       v     |                  \4                       | |\5 | |\6|       |\7             |
 	var header = /\tCR (\d+(?:\/\d+)?)\n+XP (\d+)\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s)(\w+) (.+)\n+Init ([+\-]?\d+);.*\n+/;
-	//                             |AC |     dice count n type|          | TS cos        |      | TS dex        |       | TS wis        |
-	//                             |\1 |              |\2     |          |\3             |      |\4             |       |               |
-	//var defense = /\n+(?:Defense|DEFENSE)\n+AC (\d+),.+\n+hp \d+\((\d+d\d+)\)\n+Fort ((?:\+|-)(?:\d+)), Ref ((?:\+|-)(?:\d+)), Will ((?:\+|-)(?:\d+))\n+/;
+	//                                         |AC |        dice count, type and mod           |          | TS cos        |      | TS dex        |       | TS wis        |
+	//                                         |\1 |              |\2                          |          |\3             |      |\4             |       |               |
+	var defense = /\n+(?:Defense|DEFENSE)\n+AC (\d+),.+\n+hp \d+ \((\d+d\d+(?:(?:\+|-)(?:\d+))?)\)\n+Fort ((?:\+|-)(?:\d+)), Ref ((?:\+|-)(?:\d+)), Will ((?:\+|-)(?:\d+))\n+/;
 	//                                             speed   || extra speed modifiers such as fly, swim 
 	//                                            |\1      ||\2|
-	//var offense = /\n+(?:Offense|OFFENSE)\n+Speed (\d+ ft\.)(.*)\n+/; // this one is very complicated!
+	var offense = /\n+(?:Offense|OFFENSE)\n+Speed (\d+ ft\.)(.*)\n+/; // this one is very complicated!
 	//
 	//
-	//var statistics = /\n+(?Statistics|STATISTICS)\n+Str (\d+|-), Dex (\d+|-), Con (\d+|-), Int (\d+|-), Wis (\d+|-), Cha (\d+|-)\n+/;
+	var statistics = /\n+(?:Statistics|STATISTICS)\n+Str (\d+|-), Dex (\d+|-), Con (\d+|-), Int (\d+|-), Wis (\d+|-), Cha (\d+|-)\n+/;
 	transmogrify();
 	
 	function transmogrify() {
 	    var lenDiff = -1;
 	    while(lenDiff !== 0) {
 	    	var prevLen = book.length;
-	    	for(var loop = 0; loop < monsters.length; loop++) {
+	    	for(var loop = 0; loop < monsters.length; loop++) { // simple 'regular' monsters
 	    		if(monsters[loop].mangled) continue;
-	    		monsters[loop].mangled = matchMonster(monsters[loop].engName);
+	    		monsters[loop].mangled = matchMonster(monsters[loop].engName, monsters[loop + 1]);
 	    	}
 	    	lenDiff = book.length - prevLen;
 	    }
 	}
 	
 	
-	function matchMonster(name) {
-		var where = 0;
-		var imbad = book;
-		while(where < imbad.length) {
-			where = book.indexOf(name);
-			if(where < 0) break;
-			imbad = book.substr(where);
-			var head = imbad.match(header);
-			if(head) head[3] = head[3].trim();
-			alert("Manglin " + name + " from offset " + where);
+	function matchMonster(name, next) {
+		where = book.indexOf(name);
+		if(where < 0) return;
+		imbad = book.substr(where);
+		var head = imbad.match(header);
+		if(head) {
+			head[3] = head[3].trim();
+			var def = imbad.match(defense);
+			var off = imbad.match(offense);
+			if(off) {
+				off[2] = off[2].trim();
+				if(off[2].length > 2) {
+					if(off[2].charAt(0) === '(') off[2] = off[2].substr(1);
+					if(off[2].charAt(off[2].length - 1) === ')') off[2].length--;
+				}
+			}
+			var stats = imbad.match(statistics);
+			
+			if(next === undefined) next = book.length;
+			else next = imbad.indexOf(next.engName) + where;
+			blackenParsed(where, next);
+			return { head, def, off, stats };
 		}
-		//var def = book.match(defense);
-		//var off = book.match(offense);
+	}
+	
+	function blackenParsed(start, limit) {
+		var prev = book.substring(0, start); // substring index, index. substr index, count
+		var parsed = book.substring(start, limit);
+		var then = book.substring(limit);
+		parsed = parsed.replace(/\n\n/g, "\n").replace(/./g, ""); // "\u2588" <- blacken out
+		book = prev + parsed + then;
 	}
 }
