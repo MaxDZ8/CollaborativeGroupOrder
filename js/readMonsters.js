@@ -130,33 +130,43 @@ function parseBestiary(monsters, book) {
         while(skipDiff !== 0) {
             skip += skipDiff;
             skipDiff = 0;
-            var head = book.substr(skip).match(header);
+            var imbad = book.substr(skip);
+            var head = imbad.match(header);
             if(!head) continue;
-            var headPos = book.indexOf(head[0], skip);
-            var where = lineStart(headPos);
+            var where = lineStart(head.index + skip);
             if(fixSpaces(name, where)) {
                 skip--;
                 skipDiff = 1;
                 continue;
             }
+            where -= skip;
             // It's really a match if we reached header by getting no newlines and only whitespace,
             // since the header includes the initial \t, they must simply be contiguous.
-            if(book.substr(where, name.length) !== name || where + name.length !== headPos) {
-                skipDiff = headPos - skip + 10; // an header takes a while to match
-                continue;
-            }
+            skipDiff = head.index;
+            if(imbad.substr(where, name.length) !== name || where + name.length !== head.index) continue;
             head[3] = head[3].trim();
-            var def = book.match(defense);
-            var off = book.match(offense);
-            if(off) {
-                off[2] = off[2].trim();
-                if(off[2].length > 2) {
-                    if(off[2].charAt(0) === '(') off[2] = off[2].substr(1);
-                    if(off[2].charAt(off[2].length - 1) === ')') off[2] = off[2].substring(0, off[2].length - 1);
-                }
+            imbad = imbad.substr(head.index + head[0].length);
+            skipDiff += head[0].length;
+            
+            var def = imbad.match(defense);
+            if(!def) continue;
+            skipDiff += def.index + def[0].length;
+            imbad = imbad.substr(def.index + def[0].length);
+            
+            var off = imbad.match(offense);
+            if(!off) continue;
+            skipDiff += off.index + off[0].length;
+            imbad = imbad.substr(imbad.indexOf(off[0]) + off[0].length);
+            off[2] = off[2].trim();
+            if(off[2].length > 2) {
+                if(off[2].charAt(0) === '(') off[2] = off[2].substr(1);
+                if(off[2].charAt(off[2].length - 1) === ')') off[2] = off[2].substring(0, off[2].length - 1);
             }
-            var stats = book.match(statistics);
-            blackenParsed(where, findNext(book.indexOf(stats[0], skip)));
+            
+            var stats = imbad.match(statistics);
+            if(!stats) continue;
+            skipDiff += stats.index + stats[0].length;
+            blackenParsed(where, findNext(skip + skipDiff));
             return { head, def, off, stats };
         }
     }
