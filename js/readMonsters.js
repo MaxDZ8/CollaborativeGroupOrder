@@ -1,3 +1,4 @@
+"use strict";
 
 window.onload = function() {
 	var parseListFeedback = document.getElementById('parseListFeedback');
@@ -11,10 +12,12 @@ window.onload = function() {
 		var reader = new FileReader();
 		reader.onload = function() {
 			monsters = parseMonsterList(friendlify(reader.result));
-			var start = document.getElementById('start');
-			start.parentNode.removeChild(start);
-			document.body.appendChild(realDeal);
+			document.getElementById('listInput').disabled = true;
+			var inner = "";
+			for(var loop = 0; loop < monsters.length; loop++) inner += "<tr><td>" + (loop + 1) + "</td><td>" + monsters[loop].engName + "</td></tr>";
+			parseListFeedback.innerHTML = inner;
 			document.body.appendChild(parseListFeedback);
+			document.body.appendChild(realDeal);
 			document.getElementById('realDealInput').onchange = loadFullText;
 		};
 		reader.readAsText(document.getElementById('listInput').files[0]);
@@ -91,11 +94,25 @@ function parseBestiary(monsters, book) {
 	
 	
 	function matchMonster(name, next) {
-		where = book.indexOf(name);
-		if(where < 0) return;
-		imbad = book.substr(where);
-		var head = imbad.match(header);
-		if(head) {
+		var skip = -1;
+		var skipDiff = 1;
+		while(skipDiff !== 0) {
+			skip += skipDiff;
+			skipDiff = 0;
+			var where = book.indexOf(name, skip);
+			if(where < 0) return;
+			skipDiff = where - skip + name.length;
+			var imbad = book.substr(where);
+			var head = imbad.match(header);
+			if(!head) {
+				continue;
+			}
+			// It's really a match if we reached header by getting no newlines and only whitespace,
+			// since the header includes the initial \t, they must simply be contiguous.
+			if(where + name.length !== book.indexOf(head[0], skip)) {
+				//skipDiff += head[0].length; // don't skip head here, there are sometimes spurious characters.
+				continue;
+			}
 			head[3] = head[3].trim();
 			var def = imbad.match(defense);
 			var off = imbad.match(offense);
@@ -103,7 +120,7 @@ function parseBestiary(monsters, book) {
 				off[2] = off[2].trim();
 				if(off[2].length > 2) {
 					if(off[2].charAt(0) === '(') off[2] = off[2].substr(1);
-					if(off[2].charAt(off[2].length - 1) === ')') off[2].length--;
+					if(off[2].charAt(off[2].length - 1) === ')') off[2] = off[2].substring(0, off[2].length - 1);
 				}
 			}
 			var stats = imbad.match(statistics);
