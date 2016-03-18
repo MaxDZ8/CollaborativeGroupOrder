@@ -52,6 +52,13 @@ function parseMonsterList(mobs) {
         var build = {};
         if(par) el = el.replace(par, "").trim();
         build.engName = el;
+        var tokens = build.engName.split(/\s+/);
+        build.engName = "";
+        for(var inner = 0; inner < tokens.length; inner++) {
+            build.engName += tokens[inner].charAt(0).toLocaleUpperCase();
+            build.engName += tokens[inner].substr(1);
+            if(inner + 1 < tokens.length) build.engName += ' ';
+        }
         if(par) build.subType = par[0];
         if(build.subType) build.subType = build.subType.replace(parAway, "");
         out.push(build);
