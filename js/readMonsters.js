@@ -13,11 +13,6 @@ window.onload = function() {
         reader.onload = function() {
             monsters = parseMonsterList(friendlify(reader.result));
             document.getElementById('listInput').disabled = true;
-            for(var loop = 0; loop < monsters.length; loop++) {
-                monsters[loop].feedbackRow = document.createElement("TR");
-                monsters[loop].feedbackRow.innerHTML = "<td>" + (loop + 1) + "</td><td>" + monsters[loop].engName + "</td>";
-                parseListFeedback.appendChild(monsters[loop].feedbackRow);
-            }
             document.body.appendChild(realDeal);
             document.body.appendChild(parseListFeedback);
             document.getElementById('realDealInput').onchange = loadFullText;
@@ -30,12 +25,13 @@ window.onload = function() {
         var reader = new FileReader();
         reader.onload = function() {
             var candidates = partitions(friendlify(reader.result));
-            for(let loop = 0; loop < candidates.length; loop++) normalizeNames(candidates[loop]);
-            document.getElementById('realDeal').innerHTML += '<br>Found ' + candidates.length + ' candidate CRs';
-            
-            let alot = "";
-            for(let dbg = 0; dbg < candidates.length; dbg++) alot += '<br>'+candidates[dbg].name;
-            document.getElementById('realDeal').innerHTML += alot;
+            for(let loop = 0; loop < candidates.length; loop++) normalizeNames(candidates[loop]);			
+            for(var loop = 0; loop < candidates.length; loop++) {
+                candidates[loop].feedbackRow = document.createElement("TR");
+                candidates[loop].feedbackRow.innerHTML = "<td>" + (loop + 1) + "</td><td>" + candidates[loop].name + "</td>";
+                parseListFeedback.appendChild(candidates[loop].feedbackRow);
+            }
+			
             
             //parseBestiary(monsters, friendlify(reader.result));
         };
@@ -68,27 +64,6 @@ window.onload = function() {
                 return;
             }
         }
-        
-        /*
-        let begin = index;
-        let reference = monsters[.split(/\s+/g);
-        for(let loop = 0; loop < tokens.length; loop++) {
-            let el = tokens[loop];
-            if(book.substr(index, el.length) === el) index += el.length;
-            else { // try removing a space
-                var got = book.substr(index, el.length + 1).replace(" ", "");
-                if(got === el) index += got.length + 1;
-                else return false;
-            }
-            if(loop + 1 < tokens.length) while(index < book.length && book.charAt(index) === ' ') index++;
-        }
-        // If here we found a match. Replace the string with what I need.
-        var conditioned = book.substr(0, begin);
-        conditioned += name;
-        conditioned += book.substr(index);
-        book = conditioned;
-        return true;
-        */
     }
 }
 
@@ -103,9 +78,9 @@ function partitions(book) {
     // So, what I do is: I extract all the various headers and everything to the starting newline, which should be monster's name.
     //                                                              Sometimes, an example such as "Aasimar cleric 1"
     //                                                                                      |
-    //          CR integer or fraction|      |          XPs:    3,400               |       |     |               alignment                   |Size| |Type                             |Initiative     |
-    //                  |     \1      |      |                \3                    |       v     |                  \4                       ||\5 | |\6                      |        |\7             |
-    let header = /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s)(\w+) (.+(?:\s+\([^)]+\))?)\n+Init ([+\-]?\d+);.*\n+/;
+    //          CR integer or fraction|      |          XPs:    3,400               |       |     |                              alignment                                      |Size| |Type                             |Initiative     |
+    //                  |     \1      |      |                \3                    |       v     |                                 \4                                          ||\5 | |\6                      |        |\7             |
+    let header = /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment \(same as creator\)\s)(\w+) (.+(?:\s+\([^)]+\))?)\n+Init ([+\-]?\d+);.*\n+/;
     let cand = [];
     let head = book.match(header);
     while(head && head.index < book.length) {
