@@ -30,14 +30,65 @@ window.onload = function() {
         var reader = new FileReader();
         reader.onload = function() {
             var candidates = partitions(friendlify(reader.result));
+            for(let loop = 0; loop < candidates.length; loop++) normalizeNames(candidates[loop]);
             document.getElementById('realDeal').innerHTML += '<br>Found ' + candidates.length + ' candidate CRs';
-            //let alot = "";
-            //for(let dbg = 0; dbg < candidates.length; dbg++) alot += '<br>'+candidates[dbg].name;
-            //document.getElementById('realDeal').innerHTML += alot;
+            
+            let alot = "";
+            for(let dbg = 0; dbg < candidates.length; dbg++) alot += '<br>'+candidates[dbg].name;
+            document.getElementById('realDeal').innerHTML += alot;
             
             //parseBestiary(monsters, friendlify(reader.result));
         };
         reader.readAsText(document.getElementById('realDealInput').files[0]);
+    }
+    
+    function normalizeNames(interval) {
+        for(let loop = 0; loop < monsters.length; loop++) { // fast accept matching
+            if(monsters[loop].engName.toLowerCase() == interval.name.toLowerCase()) return;
+        }
+        let whitespace = /\s+/g;
+        let match = interval.name.toLowerCase();
+        for(let loop = 0; loop < monsters.length; loop++) { // fast accept matching
+            let reference = monsters[loop].engName.toLowerCase();
+            if(match === reference) return; // found and nothing to do.
+            if(reference.replace(whitespace, "") !== match.replace(whitespace, "")) continue; // not matching ignoring spaces -> no chance
+            let src = 0, dst = 0;
+            while(src < reference.length && dst < match.length) {
+                if(reference.charAt(src) === match.charAt(dst)) {
+                    src++;
+                    dst++;
+                    continue;
+                }
+                if(reference.charAt(src) === ' ') break; // spaces must be there!
+                if(match.charAt(dst) !== ' ') break; // can ignore extra spaces only
+                dst++;
+            }
+            if(src === reference.length && dst === match.length) {
+                interval.name = monsters[loop].engName;
+                return;
+            }
+        }
+        
+        /*
+        let begin = index;
+        let reference = monsters[.split(/\s+/g);
+        for(let loop = 0; loop < tokens.length; loop++) {
+            let el = tokens[loop];
+            if(book.substr(index, el.length) === el) index += el.length;
+            else { // try removing a space
+                var got = book.substr(index, el.length + 1).replace(" ", "");
+                if(got === el) index += got.length + 1;
+                else return false;
+            }
+            if(loop + 1 < tokens.length) while(index < book.length && book.charAt(index) === ' ') index++;
+        }
+        // If here we found a match. Replace the string with what I need.
+        var conditioned = book.substr(0, begin);
+        conditioned += name;
+        conditioned += book.substr(index);
+        book = conditioned;
+        return true;
+        */
     }
 }
 
@@ -240,25 +291,7 @@ function parseMonsterList(mobs) {
 //    
 //    // Sometimes copypasting makes stupid shit, such as adding spaces to our strings... we cannot allow that so...
 //    function fixSpaces(name, index) {
-//        if(index === book.indexOf(name, index)) return false;
-//        var begin = index;
-//        var tokens = name.split(/\s+/g);
-//        for(var loop = 0; loop < tokens.length; loop++) {
-//            var el = tokens[loop];
-//            if(book.substr(index, el.length) === el) index += el.length;
-//            else { // try removing a space
-//                var got = book.substr(index, el.length + 1).replace(" ", "");
-//                if(got === el) index += got.length + 1;
-//                else return false;
-//            }
-//            if(loop + 1 < tokens.length) while(index < book.length && book.charAt(index) === ' ') index++;
-//        }
-//        // If here we found a match. Replace the string with what I need.
-//        var conditioned = book.substr(0, begin);
-//        conditioned += name;
-//        conditioned += book.substr(index);
-//        book = conditioned;
-//        return true;
+    // now gone in 'regularizeNames'
 //    }
 //}
 //
