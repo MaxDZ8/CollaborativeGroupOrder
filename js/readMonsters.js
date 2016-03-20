@@ -161,10 +161,10 @@ function parseMonster(interval) {
 	
 	const def = mangle.match(defense);
 	if(!def) return;
-	mangle = mangle.substr(def.index + def[0].length);
+	mangle = '\n' + mangle.substr(def.index + def[0].length);
 	const off = mangle.match(offense);
 	if(!off) return;
-    mangle = mangle.substr(off.index + off[0].length);
+    mangle = '\n' + mangle.substr(off.index + off[0].length);
     const stats = mangle.match(statistics);
     if(!stats) return;
     let parsed = "";
