@@ -157,77 +157,94 @@ function parseMonster(interval) {
     parsed += cell(interval.header[6]); // initiative
     interval.feedbackRow.innerHTML += parsed;
     
-    let mangled = {
-        defense: {},
-        offense: {}
-    };
-    
     let scan = 0;
-    scan = findInsensitive("\nDefense") + "\nDefense".length;
-    const defIndex = scan;
-    eatNewlines();
-    if(!matchInsensitive("AC "))
-        return;
-    if(get(scan) > '9' || get(scan) < '0')
-        return;
-    let beg = scan;
-    mangled.defense.ac = interval.body.substring(beg, goWhitespace());
-    if(mangled.defense.ac.charAt(mangled.defense.ac.length - 1) === ',') mangled.defense.ac = mangled.defense.ac.substring(0, mangled.defense.ac.length - 1);
-    if(mangled.defense.ac.match(/\D/))
-        return;
-    if(get(scan) === ',') scan++;
-    eatWhitespaces();
-    beg = scan;
-    goNewline('(', matchRoundPar);
-    mangled.defense.acNotes = interval.body.substring(beg, scan).trim();
-    eatNewlines();
-    if(!matchInsensitive("hp "))
-        return;
-    if(get(scan) > '9' || get(scan) < '0')
-        return;
-    eatDigits();
-    eatWhitespaces();
-    if(get(scan) !== '(')
-        return;
-    beg = scan + 1;
-    matchRoundPar();
-    mangled.defense.health = interval.body.substring(beg, scan);
-    scan++;
-    beg = scan;
-    mangled.defense.healthNotes = interval.body.substring(beg, findInsensitive("\nFort "));
-    if(scan >= interval.body.length) return;
-    scan += "\nFort ".length;
-    eatWhitespaces();
-    beg = scan;
-    if(get(scan) === '+' || get(scan) === '-') scan++;
-    eatDigits();
-    mangled.defense.fort = interval.body.substring(beg, scan);
-    if(get(scan) === ',') scan++;
-    eatWhitespaces();
-    if(!matchInsensitive("Ref "))
-        return;
-    beg = scan;
-    if(get(scan) === '+' || get(scan) === '-') scan++;
-    eatDigits();
-    mangled.defense.refl = interval.body.substring(beg, scan);
-    if(get(scan) === ',') scan++;
-    eatWhitespaces();
-    if(!matchInsensitive("Will "))
-        return;
-    beg = scan;
-    if(get(scan) === '+' || get(scan) === '-') scan++;
-    eatDigits();
-    mangled.defense.will = interval.body.substring(beg, scan);
-    if(get(scan) === ',') scan++;
-    eatWhitespaces();
-    beg = scan;
-    mangled.defense.extra = interval.body.substring(beg, findInsensitive("\noffense\n"));
-    
-    parsed = "";
-    parsed += cell(mangled.defense.ac + brApp(mangled.defense.acNotes)); // AC
-    parsed += cell(mangled.defense.health + brApp(mangled.defense.healthNotes)); // dice count and bonus
-    parsed += cell('F' + mangled.defense.fort + ' R' + mangled.defense.refl + ' W' + mangled.defense.will); // save
-    interval.feedbackRow.innerHTML += parsed;
+	{
+		scan = findInsensitive("\nDefense") + "\nDefense".length;
+		let def = {};
+		eatNewlines();
+		if(!matchInsensitive("AC "))
+			return;
+		if(get(scan) > '9' || get(scan) < '0')
+			return;
+		let beg = scan;
+		def.ac = interval.body.substring(beg, goWhitespace());
+		if(def.ac.charAt(def.ac.length - 1) === ',') def.ac = def.ac.substring(0, def.ac.length - 1);
+		if(def.ac.match(/\D/))
+			return;
+		if(get(scan) === ',') scan++;
+		eatWhitespaces();
+		beg = scan;
+		goNewline('(', matchRoundPar);
+		def.acNotes = interval.body.substring(beg, scan).trim();
+		eatNewlines();
+		if(!matchInsensitive("hp "))
+			return;
+		if(get(scan) > '9' || get(scan) < '0')
+			return;
+		eatDigits();
+		eatWhitespaces();
+		if(get(scan) !== '(')
+			return;
+		beg = scan + 1;
+		matchRoundPar();
+		def.health = interval.body.substring(beg, scan);
+		scan++;
+		beg = scan;
+		def.healthNotes = interval.body.substring(beg, findInsensitive("\nFort "));
+		if(scan >= interval.body.length) return;
+		scan += "\nFort ".length;
+		eatWhitespaces();
+		beg = scan;
+		if(get(scan) === '+' || get(scan) === '-') scan++;
+		eatDigits();
+		def.fort = interval.body.substring(beg, scan);
+		if(get(scan) === ',') scan++;
+		eatWhitespaces();
+		if(!matchInsensitive("Ref "))
+			return;
+		beg = scan;
+		if(get(scan) === '+' || get(scan) === '-') scan++;
+		eatDigits();
+		def.refl = interval.body.substring(beg, scan);
+		if(get(scan) === ',') scan++;
+		eatWhitespaces();
+		if(!matchInsensitive("Will "))
+			return;
+		beg = scan;
+		if(get(scan) === '+' || get(scan) === '-') scan++;
+		eatDigits();
+		def.will = interval.body.substring(beg, scan);
+		if(get(scan) === ',') scan++;
+		eatWhitespaces();
+		beg = scan;
+		def.extra = interval.body.substring(beg, findInsensitive("\noffense\n"));
+		
+		parsed = "";
+		parsed += cell(def.ac + brApp(def.acNotes)); // AC
+		parsed += cell(def.health + brApp(def.healthNotes)); // dice count and bonus
+		parsed += cell('F' + def.fort + ' R' + def.refl + ' W' + def.will); // save
+		interval.feedbackRow.innerHTML += parsed;
+	}
+	
+	{
+		if(!matchInsensitive("\noffense\n")) return;
+		findInsensitive("\nSpeed ");
+		scan += '\nSpeed '.length;
+		if(scan >= interval.body.length) return;
+		let speed = [];
+		while(parseSpeed(speed));
+		findInsensitive("\nStatistics");
+		
+		parsed = "";
+		for(let loop = 0; loop < speed.length; loop++) {
+			if(loop !== 0) parsed += '<br>';
+			parsed += speed[loop].speed;
+			if(speed[loop].action) parsed += ' ' + speed[loop].action;
+			if(speed[loop].manouver) parsed += ' (' + speed[loop].manouver + ')';
+        }
+        parsed = cell(parsed); // speed list and manouvers
+        interval.feedbackRow.innerHTML += parsed;
+    }
     
     
     
@@ -307,74 +324,41 @@ function parseMonster(interval) {
         return '<br>' + str;
     }
     
-    
-    
-    
-    //let mangle = interval.body;
-    //// With an header and an interval already parsed all we have to do is to the other stuff and comes super easy.
-    ////
-    ////
-    //const statistics = /\n+(?:Statistics|STATISTICS)\n+Str (\d+|-),\s+Dex (\d+|-),\s+Con (\d+|-),\s+Int (\d+|-),\s+Wis (\d+|-),\s+Cha (\d+|-)\n+/;
-    //
-    //const def = parseDefense();
-    //if(!def) return;
-    //mangle = '\n' + mangle.substring(def.end);
-    ////                                             speed   || extra speed modifiers such as fly, swim 
-    ////                                            |\1      ||\2|
-    //const offense = /\n+(?:Offense|OFFENSE)\n+Speed (\d+ ft\.)(.*)\n+/; // this one is very complicated!
-    //const off = mangle.match(offense);
-    //if(!off) return;
-    //parsed += cell(off[1]); // speed
-    //// parsed += cell(off[2]); // flying, in armor, swimming...
-    //
-    //
-    //////const off = mangle.match(offense);
-    //////if(!off) return;
-    //////mangle = '\n' + mangle.substr(off.index + off[0].length);
-    //////const stats = mangle.match(statistics);
-    //////if(!stats) return;
-    //////parsed += cell(stats[1]); // Str
-    //////parsed += cell(stats[2]); // Dex
-    //////parsed += cell(stats[3]); // Cos
-    //////parsed += cell(stats[4]); // Int
-    //////parsed += cell(stats[5]); // Wis
-    //////parsed += cell(stats[6]); // Cha
-    //
-    //function signed(num) {
-    //    if(num > 0) return '+' + num;
-    //    return '' + num;
-    //}
-    //
-    //
-    //// Stateful parsing >> RegExp
-    //function parseDefense() {
-    //    const start = mangle.match(/\n(?:Defense|DEFENSE)\n+AC\s(\d+),\s/);
-    //    if(!start) return;
-    //    let index = start.index + start[0].length;
-    //    index = nextLineWithPar(mangle, index);
-    //    if(index === mangle.length) return;
-    //    let sub = mangle.substr(index);
-    //    let hp = sub.match(/^hp \d+ \((\d+\sHD;\s)?(\d+d\d+(?:\+\d+d\d+)?(?:[+-]\d+)?)([A-Za-z 0-9]*)\)/);
-    //    if(!hp) return;
-    //    index += hp.index + hp[0].length;
-    //    sub = sub.substr(hp.index + hp[0].length);
-    //    index = nextLineWithPar(mangle, index);
-    //    if(index === mangle.length) return;
-    //    let save = sub.match(/Fort ((?:\+|-)\d+),?\s+Ref ((?:\+|-)\d+),?\s+Will ((?:\+|-)\d+)/);
-    //    if(!save) return;
-    //    return {
-    //        start: start.index,
-    //        end:  index + save.index + save[0].length,
-    //        
-    //        ac: +start[1],
-    //        hdCount: hp[1] && hp[1].length? hp[1] : undefined,
-    //        health: hp[2],
-    //        healthNotes: hp[3] && hp[3].length? hp[3] : undefined,
-    //        fort: +save[1],
-    //        refl: +save[2],
-    //        will: +save[3]
-    //    };
-    //}
+    // Returns true if something makes us think there's another speed measurement to take.
+    // This simply happens if we match a comma as speeds are comma separated.
+    // Due to layout, I cannot just go newline.
+    function parseSpeed(array) {
+        eatWhitespaces();
+        let beg = scan;
+        goWhitespace();
+        let action = interval.body.substring(beg, scan);
+        if(action.replace(/\d/g, "").length === 0) { // this must be a count, retry
+            action = null;
+            scan = beg;
+        }
+        else eatWhitespaces();
+        beg = scan;
+        let measure = interval.body.substring(beg, goWhitespace());
+        if(measure.replace(/\d/g, "").length !== 0) return false; // NOPE, this must be a number!
+        eatWhitespaces();
+        if(!matchInsensitive("ft.")) return false; // NOPE, this is always there!
+        eatWhitespaces();
+        let manouver = null;
+        if(get(scan) === '(') {
+            beg = scan + 1;
+            manouver = interval.body.substring(beg, matchRoundPar());
+            scan++;
+        }
+        let another = get(scan) === ',';
+        if(another) scan++;
+        let parsed = {
+            speed: measure
+        };
+        if(action) parsed.action = action;
+        if(manouver) parsed.manouver = manouver;
+        array.push(parsed);
+        return another;
+    }
 }
 
 function cell(string) {
