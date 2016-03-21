@@ -76,10 +76,10 @@ function partitions(book) {
     // It turns out this header is fairly effective in getting what I need.
     // So, what I do is: I extract all the various headers and everything to the starting newline, which should be monster's name.
     //                                                              Sometimes, an example such as "Aasimar cleric 1"
-    //                                                                                      |
-    //          CR integer or fraction|      |          XPs:    3,400               |       |     |                              alignment                                        |Size| |Type                        |Initiative 
-    //                  |     \1      |      |                \3                    |       v     |                                 \4                                            ||\5 | |\6                 |        |\7         
-    let header = /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment \(same as creator\)\s)(\w+) (.+(?:\s+\([^)]+\))?)\n+Init ([+\-]?\d+);.*\n+/;
+    //                                                                                      |                                                                                               Sometimes manuals have errors and I cannot just replace this
+    //          CR integer or fraction|      |          XPs:    3,400               |       |     |                              alignment                       |  align notes      | Size| |Type                        |       |Initiative 
+    //                  |     \1      |      |                \3                    |       v     |                                 \4                           |  \5               | |\6 | |\7                 |        v       |\8     
+    let header = /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+)(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+);.*\n+/;
     let cand = [];
     let head = book.match(header);
     while(head && head.index < book.length) {
@@ -119,17 +119,19 @@ function partitions(book) {
 
 
 function parseMonsterList(mobs) {
-    var list = mobs.split(/\s+\d+(?:-\d+)?\n\n/m);
-    if(list[list.length - 1] === "") list.length--;
-    var out = [];
-    var subType = /\(.*\)/;
-    var parAway = /\(|\)/g;
+    let list = mobs.split('\n');
+	//               name        subtype
+	//             | \1       || \2               |
+	let pattern = /([A-Za-z ]+)((?:\([A-Za-z ]+\)))?\s+\d+(?:-\d+)?/;
+	let out = [];
     for(var loop = 0; loop < list.length; loop++) {
         var el = list[loop];
-        var par = el.match(subType);
-        var build = {};
-        if(par) el = el.replace(par, "").trim();
-        build.engName = el;
+		if(el === "") continue;
+		let match = el.match(pattern);
+		if(!match) continue;
+		var build = {
+			engName: match[1].trim()
+		};
         var tokens = build.engName.split(/\s+/);
         build.engName = "";
         for(var inner = 0; inner < tokens.length; inner++) {
@@ -137,9 +139,8 @@ function parseMonsterList(mobs) {
             build.engName += tokens[inner].substr(1);
             if(inner + 1 < tokens.length) build.engName += ' ';
         }
-        if(par) build.subType = par[0];
-        if(build.subType) build.subType = build.subType.replace(parAway, "");
-        out.push(build);
+		if(match[2] && match[2].length) build.subType = match[2].substring(1, match[2].length - 1);
+		out.push(build);
     }
     return out;
 }
@@ -151,10 +152,10 @@ function parseMonster(interval) {
     parsed = cell('Regular'); // parse type
     parsed += cell(interval.header[1]); // Challange Ratio
     parsed += cell(interval.header[2]); // XP
-    parsed += cell(interval.header[3]); // alignment
-    parsed += cell(interval.header[4]); // size
-    // parsed += cell(interval.header[5]); // "type" example: outsider (native)
-    parsed += cell(interval.header[6]); // initiative
+    parsed += cell(interval.header[3] + brApp(interval.header[4])); // alignment
+    parsed += cell(interval.header[5]); // size
+    // parsed += cell(interval.header[6]); // "type" example: outsider (native)
+    parsed += cell(interval.header[7]); // initiative
     interval.feedbackRow.innerHTML += parsed;
     
     let scan = 0;
