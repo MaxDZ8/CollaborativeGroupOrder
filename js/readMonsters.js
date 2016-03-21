@@ -215,9 +215,8 @@ function parseMonster(interval) {
 		eatDigits();
 		def.will = interval.body.substring(beg, scan);
 		if(get(scan) === ',') scan++;
-		eatWhitespaces();
 		beg = scan;
-		def.extra = interval.body.substring(beg, findInsensitive("\noffense\n"));
+		def.extra = interval.body.substring(beg, findInsensitive("\noffense\n")).trim();
 		
 		parsed = "";
 		parsed += cell(def.ac + brApp(def.acNotes)); // AC
