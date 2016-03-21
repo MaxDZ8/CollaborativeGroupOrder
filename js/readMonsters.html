@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <title>Monster text to JSON!</title>
+    <script src="readMonsters.js" type='application/javascript;version=1.8'></script>
+	<style>
+	table {
+		border-collapse: collapse;
+		border: 2px solid;
+	}
+	th {
+		background: #F0F0F0;
+		border-left: 1px dotted;
+		border-right: 1px dotted;
+	}
+	td {
+	    border-left: 1px dotted;
+		border-right: 1px dotted;
+		border-bottom: 1px solid;
+		border-top: 1px solid;
+		text-align: center;
+    }
+    </style>
+</head>
+<body>
+</body>
+    Hello. Start by giving me a list of monsters you want to pull. Hit the button and give me a text file, where each non-empty line defines a monster name.<br />
+    <input id="listInput" type="file" accept="text/*" />
+    <table id="parseListFeedback">
+        <tr>
+            <th rowspan='2'>N</th>
+            <th rowspan='2'>Name</th>
+            <th rowspan='2'>Parser</th>
+            <th colspan='5'>Overview</th>
+            <th colspan='3'>Defense</th>
+            <th>Offense</th>
+            <th colspan='6'>Stats</th>
+        </tr>
+        <tr>
+            <th>CR</th>
+            <th>XP</th>
+            <th>Alg</th>
+            <th>Size</th>
+            <th>Init</th>
+            <th>AC</th>
+            <th>Health</th>
+            <th>Save</th>
+            <th>Speed [ft]</th>
+            <th>Str</th>
+            <th>Dex</th>
+            <th>Cos</th>
+            <th>Int</th>
+            <th>Wis</th>
+            <th>Cha</th>
+        </tr>
+    </table>
+    </div>
+    <div id="realDeal">
+        Ok, now give me the file you want me to read. This must be a text file. Try copypasting a manual in a <strong>.txt</strong> file using notepad.<br />
+        <input id="realDealInput" type="file" accept="text/*" />
+    </div>
+    <div id="realDealFeedback">
+        Successfully parsed <span id="parsedCount"></span> monsters.<br><br>
+        <a id="jsonOut">Json file with parsed stuff</a><br>
+        <a id="clearedOut">Text file with parsed lines cleared</a><br>
+        We're done here.
+    </div>
+</html>
