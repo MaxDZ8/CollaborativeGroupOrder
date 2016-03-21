@@ -175,11 +175,10 @@ function parseMonster(interval) {
 		if(get(scan) === ',') scan++;
 		eatWhitespaces();
 		beg = scan;
-		goNewline('(', matchRoundPar);
-		def.acNotes = interval.body.substring(beg, scan).trim();
-		eatNewlines();
-		if(!matchInsensitive("hp "))
+		if(findInsensitive("\nhp ") >= interval.body.length)
 			return;
+		def.acNotes = interval.body.substring(beg, scan).trim();
+		scan += "\nhp ".length;
 		if(get(scan) > '9' || get(scan) < '0')
 			return;
 		eatDigits();
@@ -375,11 +374,18 @@ function parseMonster(interval) {
         for(let loop = 0; loop < key.length; loop++) {
             if(!matchInsensitive(key[loop])) return null;
             let beg = scan;
-            while(scan < interval.body.length && get(scan) !== term[loop]) scan++;
+            while(scan < interval.body.length) {
+				let c = get(scan);
+				if(c < '0' || c > '9') {
+				    if(c !== '-') break;
+                }
+                scan++;
+            }
             chr.push({
                 key: dst[loop],
                 value: interval.body.substring(beg, scan++).trim()
             });
+            if(get(scan) === ',') scan++;
             eatWhitespaces();
         }
         return chr;
