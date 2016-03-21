@@ -224,7 +224,6 @@ function parseMonster(interval) {
 		parsed += cell('F' + def.fort + ' R' + def.refl + ' W' + def.will); // save
 		interval.feedbackRow.innerHTML += parsed;
 	}
-	
 	{
 		if(!matchInsensitive("\noffense\n")) return;
 		findInsensitive("\nSpeed ");
@@ -244,10 +243,18 @@ function parseMonster(interval) {
         parsed = cell(parsed); // speed list and manouvers
         interval.feedbackRow.innerHTML += parsed;
     }
-    
-    
-    
-    
+    {
+        findInsensitive('\nStatistics\n');
+        if(!matchInsensitive('\nStatistics\n')) return;
+        eatNewlines();
+        let chr = parseCharacteristics();
+        if(!chr) return;
+        
+        parsed =  + brApp() + brApp();
+        parsed += brApp() + brApp() + brApp();
+        interval.feedbackRow.innerHTML += cell(chr[0].value) + cell(chr[1].value) + cell(chr[2].value) +
+                                          cell(chr[3].value) + cell(chr[4].value) + cell(chr[5].value);
+    }
     
     
     
@@ -357,6 +364,24 @@ function parseMonster(interval) {
         if(manouver) parsed.manouver = manouver;
         array.push(parsed);
         return another;
+    }
+    
+    function parseCharacteristics() {
+        let chr = [];
+        let key  = ['Str ', 'Dex ', 'Con ', 'Int ',    'Wis ', 'Cha '];
+        let term = [',',    ',',    ',',    ',',       ',',    '\n'];
+        let dst  = ['str ', 'dex ', 'con ', 'intell ', 'wis ', 'cha '];
+        for(let loop = 0; loop < key.length; loop++) {
+            if(!matchInsensitive(key[loop])) return null;
+            let beg = scan;
+            while(scan < interval.body.length && get(scan) !== term[loop]) scan++;
+            chr.push({
+                key: dst[loop],
+                value: interval.body.substring(beg, scan++).trim()
+            });
+            eatWhitespaces();
+        }
+        return chr;
     }
 }
 
