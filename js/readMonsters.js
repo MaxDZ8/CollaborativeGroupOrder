@@ -68,7 +68,7 @@ window.onload = function() {
 
 
 function friendlify(string) {
-    return string.replace(/\u2013|\u2014/g, "-").replace(/\r/g, "\n");
+    return string.replace(/\u2013|\u2014/g, "-").replace(/\r/g, "\n").replace(/\nStat istics\n/g, "\nStatistics\n");
 }
 
 
@@ -232,9 +232,7 @@ function parseMonster(interval) {
         eatNewlines();
         let chr = parseCharacteristics();
         if(!chr) return;
-        
-        parsed =  + brApp() + brApp();
-        parsed += brApp() + brApp() + brApp();
+		
         interval.feedbackRow.innerHTML += cell(chr[0].value) + cell(chr[1].value) + cell(chr[2].value) +
                                           cell(chr[3].value) + cell(chr[4].value) + cell(chr[5].value);
     }
@@ -358,6 +356,7 @@ function parseMonster(interval) {
         eatDigits();
         let result = {};
         result.main = interval.body.substring(beg, scan);
+		let back = scan;
         eatWhitespaces();
         while(get(scan) === '(') {
             beg = scan + 1;
@@ -367,21 +366,30 @@ function parseMonster(interval) {
                 result.special.push(interval.body.substring(beg, scan));
                 scan++;
             }
+			back = scan;
             eatWhitespaces();
-            if(get(scan) === ',') scan++;
+            if(get(scan) === ',') {
+				scan++;
+				back = scan;
+			}
             eatWhitespaces();
         }
-        if(get(scan) === ',') scan++;
-        eatWhitespaces();
+        if(get(scan) === ',') {
+			scan++;
+			back = scan;
+		}
+		scan = back;
         return result;
     }
     
     function parseCharacteristics() {
         let chr = [];
-        let key  = ['Str ', 'Dex ', 'Con ', 'Int ',    'Wis ', 'Cha '];
-        let dst  = ['str ', 'dex ', 'con ', 'intell ', 'wis ', 'cha '];
+        let key  = ['Str', 'Dex', 'Con', 'Int',    'Wis', 'Cha'];
+        let dst  = ['str', 'dex', 'con', 'intell', 'wis', 'cha'];
         for(let loop = 0; loop < key.length; loop++) {
             if(!matchInsensitive(key[loop])) return null;
+			if(get(scan) > ' ') return null;
+			eatWhitespaces();
             let beg = scan;
             while(scan < interval.body.length) {
                 let c = get(scan);
@@ -393,7 +401,7 @@ function parseMonster(interval) {
             eatWhitespaces();
             let build = {
                 key: dst[loop],
-                value: interval.body.substring(beg, scan++).trim()
+                value: interval.body.substring(beg, scan).trim()
             };
             chr.push(build);
             if(get(scan) === ',') scan++;
