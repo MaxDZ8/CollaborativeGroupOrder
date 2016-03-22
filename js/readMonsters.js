@@ -192,36 +192,19 @@ function parseMonster(interval) {
 		beg = scan;
 		def.healthNotes = interval.body.substring(beg, findInsensitive("\nFort "));
 		if(scan >= interval.body.length) return;
-		scan += "\nFort ".length;
-		eatWhitespaces();
-		beg = scan;
-		if(get(scan) === '+' || get(scan) === '-') scan++;
-		eatDigits();
-		def.fort = interval.body.substring(beg, scan);
-		if(get(scan) === ',') scan++;
-		eatWhitespaces();
-		if(!matchInsensitive("Ref "))
-			return;
-		beg = scan;
-		if(get(scan) === '+' || get(scan) === '-') scan++;
-		eatDigits();
-		def.refl = interval.body.substring(beg, scan);
-		if(get(scan) === ',') scan++;
-		eatWhitespaces();
-		if(!matchInsensitive("Will "))
-			return;
-		beg = scan;
-		if(get(scan) === '+' || get(scan) === '-') scan++;
-		eatDigits();
-		def.will = interval.body.substring(beg, scan);
-		if(get(scan) === ',') scan++;
-		beg = scan;
+		scan++;
+		def.fort = parseSavingThrow('Fort');
+		if(!def.fort) return;
+		def.refl = parseSavingThrow('Ref');
+		if(!def.refl) return;
+		def.will = parseSavingThrow('Will');
+		if(!def.will) return;
 		def.extra = interval.body.substring(beg, findInsensitive("\noffense\n")).trim();
 		
 		parsed = "";
 		parsed += cell(def.ac + brApp(def.acNotes)); // AC
 		parsed += cell(def.health + brApp(def.healthNotes)); // dice count and bonus
-		parsed += cell('F' + def.fort + ' R' + def.refl + ' W' + def.will); // save
+		parsed += cell(present('F', def.fort) + present('<br>R', def.refl) + present('<br>W', def.will)); // save
 		interval.feedbackRow.innerHTML += parsed;
 	}
 	{
@@ -365,30 +348,65 @@ function parseMonster(interval) {
         array.push(parsed);
         return another;
     }
+	
+    function parseSavingThrow(name) {
+        eatWhitespaces();
+        if(!matchInsensitive(name)) return null;
+        eatWhitespaces();
+        let beg = scan;
+        if(get(scan) === '+' || get(scan) === '-') scan++;
+        eatDigits();
+        let result = {};
+        result.main = interval.body.substring(beg, scan);
+        eatWhitespaces();
+        while(get(scan) === '(') {
+            beg = scan + 1;
+            matchRoundPar();
+            if(get(scan) === ')') {
+                if(!result.special) result.special = [];
+                result.special.push(interval.body.substring(beg, scan));
+                scan++;
+            }
+            eatWhitespaces();
+            if(get(scan) === ',') scan++;
+            eatWhitespaces();
+        }
+        if(get(scan) === ',') scan++;
+        eatWhitespaces();
+        return result;
+    }
     
     function parseCharacteristics() {
         let chr = [];
         let key  = ['Str ', 'Dex ', 'Con ', 'Int ',    'Wis ', 'Cha '];
-        let term = [',',    ',',    ',',    ',',       ',',    '\n'];
         let dst  = ['str ', 'dex ', 'con ', 'intell ', 'wis ', 'cha '];
         for(let loop = 0; loop < key.length; loop++) {
             if(!matchInsensitive(key[loop])) return null;
             let beg = scan;
             while(scan < interval.body.length) {
-				let c = get(scan);
-				if(c < '0' || c > '9') {
-				    if(c !== '-') break;
+                let c = get(scan);
+                if(c < '0' || c > '9') {
+                    if(c !== '-') break;
                 }
                 scan++;
             }
-            chr.push({
+            eatWhitespaces();
+            let build = {
                 key: dst[loop],
                 value: interval.body.substring(beg, scan++).trim()
-            });
+            };
+            chr.push(build);
             if(get(scan) === ',') scan++;
             eatWhitespaces();
         }
         return chr;
+    }
+
+    function present(beg, st) {
+        let text = beg + st.main;
+        let len = st.special? st.special.length : 0;
+        for(let loop = 0; loop < len; loop++) text += '<sub><abbr title="' + attributeString(st.special[loop]) + '">[' + (loop + 1) + ']</abbr></sub>';
+        return text;
     }
 }
 
@@ -396,3 +414,15 @@ function cell(string) {
     return '<td>' + string + '</td>';
 }
 
+
+function attributeString(string) {
+    let out = "";
+    for(let loop = 0; loop < string.length; loop++) {
+        const c = string.charAt(loop);
+        if(c >= '0' && c <= '9') out += c;
+        else if(c.toUpperCase() >= 'A' && c.toUpperCase() <= 'Z') out += c;
+        else if(c === '-' || c === '_' || c === ' ' || c === '.' || c === '+') out += c;
+        else out += '&#' + c.charCodeAt(0) + ';';
+    }
+    return out;
+}
