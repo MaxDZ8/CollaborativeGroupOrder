@@ -76,7 +76,8 @@ window.onload = function() {
 
 
 function friendlify(string) {
-    return string.replace(/\u2013|\u2014/g, "-").replace(/\r/g, "\n").replace(/\nStat istics\n/g, "\nStatistics\n");
+    return string.replace(/\u2013|\u2014/g, "-").replace(/\r/g, "\n").replace(/\nStat istics\n/g, "\nStatistics\n")
+        .replace(/ fl at-footed /g, " flat-footed ");
 }
 
 
