@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <title>Bad chars go away!</title>
+    <script type='application/javascript;version=1.8'>"use strict";
+        window.onload = function() {
+            let map = [];
+            map[31] = document.getElementById('0x1F').value;
+            map[30] = document.getElementById('0x1E').value;
+            map[29] = document.getElementById('0x1D').value;
+            map[28] = document.getElementById('0x1C').value;
+            map[27] = document.getElementById('0x1B').value;
+            //map[26]// = document.getElementById('0x1C');
+            map[25] = document.getElementById('0x19').value;
+            map[24] = document.getElementById('0x18').value;
+            map[23] = document.getElementById('0x17').value;
+            map[22] = document.getElementById('0x16').value;
+            //
+            //
+            map[19] = document.getElementById('0x13').value;
+            document.getElementById('input').onchange = function(ev) {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    let cleaned = "";
+                    for(let loop = 0; loop < reader.result.length; loop++) {
+                        const c = reader.result.charCodeAt(loop);
+                        if(map[c] === undefined) cleaned += reader.result.charAt(loop);
+                        else cleaned += map[c];
+                    }
+                    output(cleaned);
+                };
+                reader.readAsText(document.getElementById('input').files[0]);
+            }
+            
+            function output(cleaned) {
+                let clickme = document.createElement('A');
+                clickme.href = URL.createObjectURL(new Blob([cleaned], { type: "text/text" }));
+                clickme.innerHTML = "Click me to save results (again).";
+                document.body.appendChild(clickme);
+                clickme.click();
+            }
+        }
+    </script>
+</head>
+<body>
+</body>
+    Control Characters To Digits<br>
+    <input id="input" type="file" accept="text/*" />
+    <table>
+        <tr>
+            <th>Escape char</th><th>Decimal</th><th>Hex</th><th>Convert to</th>
+        </tr>
+        <tr>
+            <td>US</td><td>31</td><td>0x1F</td><td><input id='0x1F' type='text' inputmode='verbatim' maxlength='1' value='2' /></td>
+        </tr>
+        <tr>
+            <td>RS</td><td>30</td><td>0x1E</td><td><input id='0x1E' type='text' inputmode='verbatim' maxlength='1' value='6' /></td>
+        </tr>
+        <tr>
+            <td>GS</td><td>29</td><td>0x1D</td><td><input id='0x1D' type='text' inputmode='verbatim' maxlength='1' value='0' /></td>
+        </tr>
+        <tr>
+            <td>FS</td><td>28</td><td>0x1C</td><td><input id='0x1C' type='text' inputmode='verbatim' maxlength='1' value='1' /></td>
+        </tr>
+        <tr>
+            <td>ESC</td><td>27</td><td>0x1B</td><td><input id='0x1B' type='text' inputmode='verbatim' maxlength='1' value='3' /></td>
+        </tr>
+        <tr>
+            <td>EM</td><td>25</td><td>0x19</td><td><input id='0x19' type='text' inputmode='verbatim' maxlength='1' value='9' /></td>
+        </tr>
+        <tr>
+            <td>CAN</td><td>24</td><td>0x18</td><td><input id='0x18' type='text' inputmode='verbatim' maxlength='1' value='8' /></td>
+        </tr>
+        <tr>
+            <td>ETB</td><td>23</td><td>0x17</td><td><input id='0x17' type='text' inputmode='verbatim' maxlength='1' value='5' /></td>
+        </tr>
+        <tr>
+            <td>SYN</td><td>22</td><td>0x16</td><td><input id='0x16' type='text' inputmode='verbatim' maxlength='1' value='4' /></td>
+        </tr>
+        <tr>
+            <td>DC3</td><td>19</td><td>0x13</td><td><input id='0x13' type='text' inputmode='verbatim' maxlength='1' value='7' /></td>
+        </tr>
+    </table>
+</html>
