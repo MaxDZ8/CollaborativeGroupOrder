@@ -83,11 +83,11 @@ function friendlify(string) {
 function partitions(book) {
     // It turns out this header is fairly effective in getting what I need.
     // So, what I do is: I extract all the various headers and everything to the starting newline, which should be monster's name.
-    //                                                              Sometimes, an example such as "Aasimar cleric 1"
-    //                                                                                      |                                                                                               Sometimes manuals have errors and I cannot just replace this
-    //          CR integer or fraction|      |          XPs:    3,400               |       |     |                              alignment                       |  align notes      | Size| |Type                        |       |Initiative 
-    //                  |     \1      |      |                \3                    |       v     |                                 \4                           |  \5               | |\6 | |\7                 |        v       |\8     
-    let header = /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+)(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+);.*\n+/;
+    //                                                                        Sometimes, an example such as "Aasimar cleric 1"
+    //                                                                                                |                                                                                               Sometimes manuals have errors and I cannot just replace this
+    //          CR integer or fraction|      |          XPs:    3,400               |                 |     |                              alignment                       |  align notes      | Size| |Type                        |       |Initiative
+    //                  |     \1      |      |                \3                    |                 v     |                                 \4                           |  \5               | |\6 | |\7                 |        v       |\8     
+    let header = /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)(?: each)?\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+)(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?;.*\n+/;
     let cand = [];
     let head = book.match(header);
     while(head && head.index < book.length) {
@@ -157,14 +157,22 @@ function parseMonsterList(mobs) {
 function parseMonster(interval) {
     if(!interval || !interval.body || !interval.header) return;
     let parsed = "";
-    parsed = cell('Regular'); // parse type
-    parsed += cell(interval.header[1]); // Challange Ratio
-    parsed += cell(interval.header[2]); // XP
-    parsed += cell(interval.header[3] + brApp(interval.header[4])); // alignment
-    parsed += cell(interval.header[5]); // size
-    // parsed += cell(interval.header[6]); // "type" example: outsider (native)
-    parsed += cell(interval.header[7]); // initiative
-    interval.feedbackRow.innerHTML += parsed;
+    {
+        parsed = cell('Regular'); // parse type
+        parsed += cell(interval.header[1]); // Challange Ratio
+        parsed += cell(interval.header[2]); // XP
+        parsed += cell(interval.header[3] + brApp(interval.header[4])); // alignment
+        parsed += cell(interval.header[5]); // size
+        // parsed += cell(interval.header[6]); // "type" example: outsider (native)
+        let init = interval.header[7];
+        if(interval.header[8]) {
+            let src = interval.header[8].trim();
+            interval.header[8] = src.substring(1, src.length - 1);
+            init += '<br><abbr title="' + attributeString(interval.header[8]) + '">[1]</abbr>';
+        }
+        parsed += cell(init); // initiative
+        interval.feedbackRow.innerHTML += parsed;
+    }
     
     let scan = 0;
     {
@@ -191,6 +199,7 @@ function parseMonster(interval) {
             return;
         eatDigits();
         eatWhitespaces();
+        if(matchInsensitive('each ')) eatWhitespaces();
         if(get(scan) !== '(')
             return;
         beg = scan + 1;
