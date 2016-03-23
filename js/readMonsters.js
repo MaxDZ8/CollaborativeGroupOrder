@@ -83,25 +83,21 @@ function friendlify(string) {
 function partitions(book) {
     // It turns out this header is fairly effective in getting what I need.
     // So, what I do is: I extract all the various headers and everything to the starting newline, which should be monster's name.
-    //                                                                        Sometimes, an example such as "Aasimar cleric 1"
-    //                                                                                                |                                                                                               Sometimes manuals have errors and I cannot just replace this
-    //          CR integer or fraction|      |          XPs:    3,400               |                 |     |                              alignment                       |  align notes      | Size| |Type                        |       |Initiative
-    //                  |     \1      |      |                \3                    |                 v     |                                 \4                           |  \5               | |\6 | |\7                 |        v       |\8     
-    let header = /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)(?: each)?\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+)(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?;.*\n+/;
     let cand = [];
-    let head = book.match(header);
+    let headerType;
+    let head = matchHeader();
     while(head && head.index < book.length) {
         let lineBeg = lineStart(head.index);
         let found = {
             name: book.substring(lineBeg, head.index),
-            header: head,
+            headInfo: head,
             body: null
         };
-        let headEnd = found.header.index + found.header[0].length;
+        let headEnd = found.headInfo.index + found.headInfo.length;
         while(book[--headEnd] === '\n');
         headEnd++;
         book = book.substr(headEnd);
-        head = book.match(header);
+        head = matchHeader();
         if(!head) {
             found.body = book;
             book = "";
@@ -122,6 +118,55 @@ function partitions(book) {
         while(pos > 0 && book.charAt(pos) !== '\n') pos--;
         if(pos === 0) return pos;
         return pos + 1;
+    }
+    
+    function matchHeader() {
+        let h = [
+        // Header as used in bestiary 1, 2, and 3
+        //                                                               Sometimes, an example such as "Aasimar cleric 1"
+        //                                                                                       |                                                                                               Sometimes manuals have errors and I cannot just replace this
+        // CR integer or fraction|      |          XPs:    3,400               |                 |     |                              alignment                       |  align notes      | Size| |Type                        |       |Initiative| Special initiative
+        //         |     \1      |      |                \2                    |                 v     |                                 \3                           |  \4               | |\5 | |\6                 |        v       |\7        | \8
+            /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)(?: each)?\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+)(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?;.*\n+/,
+            
+        
+        // Header used in AP 01-06 Rise of the runelords
+        // There are no XPs (I guess it's inferred from CR) but for the rest it's the same.
+            /\s+CR (\d+(?:\/\d+)?)\n+(?:.+\n+)?((?:Always |Usually )?(?:CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+))(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?;.*\n+/
+        ];
+        let match;
+        if(headerType === undefined) { // headers must be coherent!
+            match = book.match(h[0]);
+            if(match) headerType = 0;
+            else {
+                match = book.match(h[1]);
+                if(match) headerType = 1;
+            }
+        }
+        else match = book.match(h[headerType]);
+        if(!match) return;
+        let result = {
+            index: match.index,
+            length: match[0].length,
+            
+            cr: match[1],
+        };
+        let next = 2;
+        if(headerType === 0) {
+            result.experience = match[2];
+            next = 3;
+        }
+        result.alignment = match[next++];
+        result.alignNotes = match[next++];
+        result.size = match[next++];
+        result.type = match[next++];
+        result.initiative = match[next++];
+        result.initSpecials = match[next++];
+        if(result.initSpecials) {
+            let src = result.initSpecials.trim();
+            result.initSpecials = src.substring(1, src.length - 1);
+        }
+        return result;
     }
 }
 
@@ -155,20 +200,18 @@ function parseMonsterList(mobs) {
 
 
 function parseMonster(interval) {
-    if(!interval || !interval.body || !interval.header) return;
+    if(!interval || !interval.body || !interval.headInfo) return;
     let parsed = "";
     {
         parsed = cell('Regular'); // parse type
-        parsed += cell(interval.header[1]); // Challange Ratio
-        parsed += cell(interval.header[2]); // XP
-        parsed += cell(interval.header[3] + brApp(interval.header[4])); // alignment
-        parsed += cell(interval.header[5]); // size
+        parsed += cell(interval.headInfo.cr); // Challange Ratio
+        parsed += cell(interval.headInfo.experience || '&lt;inferred&gt;'); // XP
+        parsed += cell(interval.headInfo.alignment + brApp(interval.headInfo.alignNotes)); // alignment
+        parsed += cell(interval.headInfo.size); // size
         // parsed += cell(interval.header[6]); // "type" example: outsider (native)
-        let init = interval.header[7];
-        if(interval.header[8]) {
-            let src = interval.header[8].trim();
-            interval.header[8] = src.substring(1, src.length - 1);
-            init += '<br><abbr title="' + attributeString(interval.header[8]) + '">[1]</abbr>';
+        let init = interval.headInfo.initiative;
+        if(interval.headInfo.initSpecials) {
+            init += '<br><abbr title="' + attributeString(interval.headInfo.initSpecials) + '">[1]</abbr>';
         }
         parsed += cell(init); // initiative
         interval.feedbackRow.innerHTML += parsed;
