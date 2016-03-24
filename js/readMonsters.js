@@ -76,7 +76,10 @@ window.onload = function() {
 
 
 function friendlify(string) {
-    return string.replace(/\u2013|\u2014/g, "-").replace(/\r/g, "\n").replace(/\nStat istics\n/g, "\nStatistics\n")
+    return string.replace(/\u2013|\u2014/g, "-").replace(/\r/g, "\n")
+        .replace(/\n(?:Stat istics|Statisti cs|Stat ist ics)\n/g, "\nStatistics\n")
+        .replace(/\n(?:Offens e|Off ens e)\n/g, '\nOffense\n')
+        .replace(/\nDefens e\n/g, '\nDefense\n')
         .replace(/ fl at-footed /g, " flat-footed ");
 }
 
@@ -206,7 +209,7 @@ function parseMonster(interval) {
     {
         parsed = cell('Regular'); // parse type
         parsed += cell(interval.headInfo.cr); // Challange Ratio
-        parsed += cell(interval.headInfo.experience || '&lt;inferred&gt;'); // XP
+        parsed += cell(interval.headInfo.experience || '<em>inferred</em>'); // XP
         parsed += cell(interval.headInfo.alignment + brApp(interval.headInfo.alignNotes)); // alignment
         parsed += cell(interval.headInfo.size); // size
         // parsed += cell(interval.header[6]); // "type" example: outsider (native)
@@ -271,8 +274,10 @@ function parseMonster(interval) {
     {
         if(!matchInsensitive("\noffense\n")) return;
         findInsensitive("\nSpeed ");
-        scan += '\nSpeed '.length;
-        if(scan >= interval.body.length) return;
+        if(!matchInsensitive("\nSpeed ")) {
+            findInsensitive('\nSpd ');
+            if(!matchInsensitive('\nSpd ')) return;
+        }
         let speed = [];
         while(parseSpeed(speed));
         findInsensitive("\nStatistics");
@@ -448,7 +453,16 @@ function parseMonster(interval) {
         let key  = ['Str', 'Dex', 'Con', 'Int',    'Wis', 'Cha'];
         let dst  = ['str', 'dex', 'con', 'intell', 'wis', 'cha'];
         for(let loop = 0; loop < key.length; loop++) {
-            if(!matchInsensitive(key[loop])) return null;
+            if(!matchInsensitive(key[loop])) {
+                if(loop === 0) {
+                    if(matchInsensitive('Abilities ')) {
+                        eatWhitespaces();
+                        loop--;
+                        continue;
+                    }
+                }
+                return null;
+            }
             if(get(scan) > ' ') return null;
             eatWhitespaces();
             let beg = scan;
