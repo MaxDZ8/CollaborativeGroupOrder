@@ -77,10 +77,10 @@ window.onload = function() {
 
 function friendlify(string) {
     return string.replace(/\u2013|\u2014/g, "-").replace(/\r/g, "\n")
-        .replace(/\n(?:Stat istics|Statisti cs|Stat ist ics|Statis tics)\n/g, "\nStatistics\n")
-        .replace(/\n(?:Offens e|Off ens e)\n/g, '\nOffense\n')
-        .replace(/\n(?:Defens e|De fense|Defe nse)\n/g, '\nDefense\n')
-        .replace(/ fl at-footed /g, " flat-footed ");
+        .replace(/\n(?:Stat istics|Statisti cs|Stat ist ics|Statis tics)\n/gi, "\nStatistics\n")
+        .replace(/\n(?:Offens e|Off ens e|Offen se)\n/gi, '\nOffense\n')
+        .replace(/\n(?:Defens e|De fense|Defe nse)\n/gi, '\nDefense\n')
+        .replace(/ fl at-footed /gi, " flat-footed ");
 }
 
 
