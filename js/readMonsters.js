@@ -207,7 +207,7 @@ function parseMonster(interval) {
     if(!interval || !interval.body || !interval.headInfo) return;
     let parsed = "";
     {
-        parsed = cell('Regular'); // parse type
+        parsed = cell('Basic'); // parse type
         parsed += cell(interval.headInfo.cr); // Challange Ratio
         parsed += cell(interval.headInfo.experience || '<em>inferred</em>'); // XP
         parsed += cell(interval.headInfo.alignment + brApp(interval.headInfo.alignNotes)); // alignment
@@ -222,8 +222,15 @@ function parseMonster(interval) {
     }
     
     let scan = 0;
+    let partition = {
+        defense: findInsensitive("\nDefense"),
+        offense: findInsensitive("\noffense\n"),
+        statistics: findInsensitive('\nStatistics\n')
+    };
+    partition.ordered = partition.defense < partition.offense && partition.offense < partition.statistics;
+    if(!partition.ordered) return;
     {
-        scan = findInsensitive("\nDefense") + "\nDefense".length;
+        scan = partition.defense + "\nDefense".length;
         let def = {};
         eatNewlines();
         if(!matchInsensitive("AC "))
@@ -263,7 +270,7 @@ function parseMonster(interval) {
         if(!def.refl) return;
         def.will = parseSavingThrow('Will');
         if(!def.will) return;
-        def.extra = interval.body.substring(beg, findInsensitive("\noffense\n")).trim();
+        def.extra = interval.body.substring(beg, partition.offense).trim();
         
         parsed = "";
         parsed += cell(def.ac + brApp(def.acNotes)); // AC
@@ -272,15 +279,15 @@ function parseMonster(interval) {
         interval.feedbackRow.innerHTML += parsed;
     }
     {
+        scan = partition.offense;
         if(!matchInsensitive("\noffense\n")) return;
-        findInsensitive("\nSpeed ");
+        findInsensitive("\nSpeed ", partition.statistics);
         if(!matchInsensitive("\nSpeed ")) {
-            findInsensitive('\nSpd ');
+            findInsensitive('\nSpd ', partition.statistics);
             if(!matchInsensitive('\nSpd ')) return;
         }
         let speed = [];
         while(parseSpeed(speed));
-        findInsensitive("\nStatistics");
         
         parsed = "";
         for(let loop = 0; loop < speed.length; loop++) {
@@ -293,7 +300,7 @@ function parseMonster(interval) {
         interval.feedbackRow.innerHTML += parsed;
     }
     {
-        findInsensitive('\nStatistics\n');
+        scan = partition.statistics;
         if(!matchInsensitive('\nStatistics\n')) return;
         eatNewlines();
         let chr = parseCharacteristics();
@@ -331,8 +338,9 @@ function parseMonster(interval) {
         return match === str.length;
     }
     
-    function findInsensitive(str) {
-        for(let loop = scan; loop < interval.body.length; loop++) {
+    function findInsensitive(str, limit) {
+        if(limit === undefined) limit = interval.body.length;
+        for(let loop = scan; loop < limit; loop++) {
             if(matchInsensitive(str, loop)) {
                 scan = loop;
                 break;
