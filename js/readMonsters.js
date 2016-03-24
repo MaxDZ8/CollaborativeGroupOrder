@@ -136,7 +136,7 @@ function partitions(book) {
         
         // Header used in AP 01-06 Rise of the runelords
         // There are no XPs (I guess it's inferred from CR) but for the rest it's the same.
-            /\s+CR (\d+(?:\/\d+)?)\n+(?:.+\n+)?((?:Always |Usually )?(?:CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+))(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?[;,].*\n+/
+            /\s+CR (\d+(?:\/\d+)?)\n+(?:.+\n+)?((?:Always |Usually |Often )?(?:CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+))(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?[;,].*\n+/
         ];
         let match;
         if(headerType === undefined) { // headers must be coherent!
