@@ -77,7 +77,7 @@ window.onload = function() {
 
 function friendlify(string) {
     return string.replace(/\u2013|\u2014/g, "-").replace(/\r/g, "\n")
-        .replace(/\n(?:Stat istics|Statisti cs|Stat ist ics)\n/g, "\nStatistics\n")
+        .replace(/\n(?:Stat istics|Statisti cs|Stat ist ics|Statis tics)\n/g, "\nStatistics\n")
         .replace(/\n(?:Offens e|Off ens e)\n/g, '\nOffense\n')
         .replace(/\nDefens e\n/g, '\nDefense\n')
         .replace(/ fl at-footed /g, " flat-footed ");
@@ -131,12 +131,12 @@ function partitions(book) {
         //                                                                                       |                                                                                               Sometimes manuals have errors and I cannot just replace this
         // CR integer or fraction|      |          XPs:    3,400               |                 |     |                              alignment                       |  align notes      | Size| |Type                        |       |Initiative| Special initiative
         //         |     \1      |      |                \2                    |                 v     |                                 \3                           |  \4               | |\5 | |\6                 |        v       |\7        | \8
-            /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)(?: each)?\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+)(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?;.*\n+/,
+            /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)(?: each)?\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+)(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?[;,].*\n+/,
             
         
         // Header used in AP 01-06 Rise of the runelords
         // There are no XPs (I guess it's inferred from CR) but for the rest it's the same.
-            /\s+CR (\d+(?:\/\d+)?)\n+(?:.+\n+)?((?:Always |Usually )?(?:CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+))(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?;.*\n+/
+            /\s+CR (\d+(?:\/\d+)?)\n+(?:.+\n+)?((?:Always |Usually )?(?:CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+))(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?[;,].*\n+/
         ];
         let match;
         if(headerType === undefined) { // headers must be coherent!
