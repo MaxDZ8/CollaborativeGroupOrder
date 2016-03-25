@@ -19,24 +19,33 @@ window.onload = function() {
         };
         reader.readAsText(document.getElementById('listInput').files[0]);
     };
-    
+
     function loadFullText(ev) {
         document.getElementById('realDealInput').disabled = true;
         let reader = new FileReader();
         reader.onload = function() {
             let candidates = partitions(friendlify(reader.result));
-            for(let loop = 0; loop < candidates.length; loop++) normalizeNames(candidates[loop]);            
+            for(let loop = 0; loop < candidates.length; loop++) normalizeNames(candidates[loop]);
             for(let loop = 0; loop < candidates.length; loop++) {
-                candidates[loop].feedbackRow = document.createElement("TR");
-                candidates[loop].feedbackRow.innerHTML = "<td>" + (loop + 1) + "</td><td>" + candidates[loop].name + "</td>";
-                parseListFeedback.appendChild(candidates[loop].feedbackRow);
+                const el = candidates[loop];
+                el.feedbackRow = document.createElement("TR");
+                el.nameTagCell = document.createElement("TD");
+                el.nameTagCell.innerHTML = '<strong>' + el.name + '</strong>';
+                el.feedbackRow.innerHTML = "<td>" + (loop + 1) + "</td>";
+                el.feedbackRow.appendChild(el.nameTagCell);
+                parseListFeedback.appendChild(el.feedbackRow);
             }
-            for(let loop = 0; loop < candidates.length; loop++) parseMonster(candidates[loop]);
-            
+            for(let loop = 0; loop < candidates.length; loop++) {
+                parseMonster(candidates[loop]);
+                understandMonster(candidates[loop]);
+                feedbackMonster(candidates[loop]);
+            }
+            document.body.appendChild(realDealFeedback);
+            document.getElementById('save').onclick = extractUsefulData;
         };
         reader.readAsText(document.getElementById('realDealInput').files[0]);
     }
-    
+
     function normalizeNames(interval) {
         let titolised = "";
         let upper = true;
@@ -72,6 +81,33 @@ window.onload = function() {
             }
         }
     }
+
+    function extractUsefulData() {
+        let book = fetch([ 'best1',
+                           'best2',
+                           'best3',
+                           'ap_riseOfTheThunderlords',
+                           'ap_curseOfTheCrimsonThrone',
+                           'ap_secondDarkness',
+                           'ap_legacyOfFire',
+                           'ap_councilOfThieves',
+                           'ap_kingMaker',
+                           'ap_serpentsSkull',
+                           'ap_carrionCrown',
+                           'ap_jadeRegent' ]);
+        if(!book) {
+            alert("Select book to save first.");
+            return;
+        }
+    }
+    
+    function fetch(what) {
+        for(let loop = 0; loop < what.length; loop++) {
+            let el = document.getElementById(what[loop]);
+            if(el && el.checked) return el.value;
+        }
+        return null;
+    }
 }
 
 
@@ -93,8 +129,8 @@ function partitions(book) {
     while(head && head.index < book.length) {
         let lineBeg = lineStart(head.index);
         let found = {
-            name: book.substring(lineBeg, head.index),
-            headInfo: head,
+            name: mangleName(book.substring(lineBeg, head.index)),
+            headInfo: mangleType(head),
             body: null
         };
         let headEnd = found.headInfo.index + found.headInfo.length;
@@ -115,7 +151,7 @@ function partitions(book) {
         cand.push(found);
     }
     return cand;
-    
+
     // Given a position in the book, go to the character immediately following the previous newline.
     // Identity if book[position] is newline or pos === 0.
     function lineStart(pos) {
@@ -123,7 +159,7 @@ function partitions(book) {
         if(pos === 0) return pos;
         return pos + 1;
     }
-    
+
     function matchHeader() {
         let h = [
         // Header as used in bestiary 1, 2, and 3
@@ -132,8 +168,8 @@ function partitions(book) {
         // CR integer or fraction|      |          XPs:    3,400               |                 |     |                              alignment                       |  align notes      | Size| |Type                        |       |Initiative| Special initiative
         //         |     \1      |      |                \2                    |                 v     |                                 \3                           |  \4               | |\5 | |\6                 |        v       |\7        | \8
             /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)(?: each)?\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+)(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?[;,].*\n+/,
-            
-        
+
+
         // Header used in AP 01-06 Rise of the runelords
         // There are no XPs (I guess it's inferred from CR) but for the rest it's the same.
             /\s+CR (\d+(?:\/\d+)?)\n+(?:.+\n+)?((?:Always |Usually |Often )?(?:CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+))(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?[;,].*\n+/
@@ -152,7 +188,7 @@ function partitions(book) {
         let result = {
             index: match.index,
             length: match[0].length,
-            
+
             cr: match[1],
         };
         let next = 2;
@@ -171,6 +207,15 @@ function partitions(book) {
             result.initSpecials = src.substring(1, src.length - 1);
         }
         return result;
+    }
+
+    function mangleName(name) {
+        return name;
+    }
+
+    function mangleType(interval) {
+        interval.tags = [ '&lt;&lt;NOT IMPLEMENTED&gt;&gt;' ];
+        return interval;
     }
 }
 
@@ -205,22 +250,7 @@ function parseMonsterList(mobs) {
 
 function parseMonster(interval) {
     if(!interval || !interval.body || !interval.headInfo) return;
-    let parsed = "";
-    {
-        parsed = cell('Basic'); // parse type
-        parsed += cell(interval.headInfo.cr); // Challange Ratio
-        parsed += cell(interval.headInfo.experience || '<em>inferred</em>'); // XP
-        parsed += cell(interval.headInfo.alignment + brApp(interval.headInfo.alignNotes)); // alignment
-        parsed += cell(interval.headInfo.size); // size
-        // parsed += cell(interval.header[6]); // "type" example: outsider (native)
-        let init = interval.headInfo.initiative;
-        if(interval.headInfo.initSpecials) {
-            init += '<br><abbr title="' + attributeString(interval.headInfo.initSpecials) + '">[1]</abbr>';
-        }
-        parsed += cell(init); // initiative
-        interval.feedbackRow.innerHTML += parsed;
-    }
-    
+
     let scan = 0;
     let partition = {
         defense: findInsensitive("\nDefense"),
@@ -271,12 +301,7 @@ function parseMonster(interval) {
         def.will = parseSavingThrow('Will');
         if(!def.will) return;
         def.extra = interval.body.substring(beg, partition.offense).trim();
-        
-        parsed = "";
-        parsed += cell(def.ac + brApp(def.acNotes)); // AC
-        parsed += cell(def.health + brApp(def.healthNotes)); // dice count and bonus
-        parsed += cell(present('F', def.fort) + present('<br>R', def.refl) + present('<br>W', def.will)); // save
-        interval.feedbackRow.innerHTML += parsed;
+        interval.defense = def;
     }
     {
         scan = partition.offense;
@@ -286,19 +311,13 @@ function parseMonster(interval) {
             findInsensitive('\nSpd ', partition.statistics);
             if(!matchInsensitive('\nSpd ')) return;
         }
-        let speed = [];
-        while(parseSpeed(speed));
-        if(speed.length === 0) return;
-        
-        parsed = "";
-        for(let loop = 0; loop < speed.length; loop++) {
-            if(loop !== 0) parsed += '<br>';
-            parsed += speed[loop].speed;
-            if(speed[loop].action) parsed += ' ' + speed[loop].action;
-            if(speed[loop].manouver) parsed += ' (' + speed[loop].manouver + ')';
-        }
-        parsed = cell(parsed); // speed list and manouvers
-        interval.feedbackRow.innerHTML += parsed;
+        let mangledSpeed = [];
+        while(parseSpeed(mangledSpeed));
+        if(mangledSpeed.length === 0) return;
+
+        interval.offense = {
+            speed: mangledSpeed
+        };
     }
     {
         scan = partition.statistics;
@@ -306,15 +325,20 @@ function parseMonster(interval) {
         eatNewlines();
         let chr = parseCharacteristics();
         if(!chr) return;
-        
-        interval.feedbackRow.innerHTML += cell(chr[0].value) + cell(chr[1].value) + cell(chr[2].value) +
-                                          cell(chr[3].value) + cell(chr[4].value) + cell(chr[5].value);
+        interval.statistics = {
+            str: chr[0].value,
+            dex: chr[1].value,
+            cos: chr[2].value,
+            intell: chr[3].value,
+            wis: chr[4].value,
+            cha: chr[5].value
+        };
     }
-    
-    
-    
+
+
+
     function get(i) { return interval.body[i]; }
-    
+
     function matchRoundPar() {
         let open = get(scan) === '('? 1 : 0;
         if(open) scan++;
@@ -328,7 +352,7 @@ function parseMonster(interval) {
         }
         return scan;
     }
-    
+
     function matchInsensitive(str, offset) {
         if(offset === undefined) offset = scan;
         let match
@@ -338,7 +362,7 @@ function parseMonster(interval) {
         if(match === str.length) scan = offset + str.length;
         return match === str.length;
     }
-    
+
     function findInsensitive(str, limit) {
         if(limit === undefined) limit = interval.body.length;
         for(let loop = scan; loop < limit; loop++) {
@@ -349,7 +373,7 @@ function parseMonster(interval) {
         }
         return scan;
     }
-    
+
     function goNewline(c, func) {
         if(c === undefined) while(scan < interval.body.length && get(scan) !== '\n') scan++;
         else {
@@ -360,32 +384,27 @@ function parseMonster(interval) {
         }
         return scan;
     }
-    
+
     function eatNewlines() {
         while(scan < interval.body.length && get(scan) === '\n') scan++;
         return scan;
     }
-    
+
     function goWhitespace() {
         while(scan < interval.body.length && get(scan) > ' ') scan++;
         return scan;
     }
-    
+
     function eatWhitespaces() {
         while(scan < interval.body.length && get(scan) <= ' ') scan++;
         return scan;
     }
-    
+
     function eatDigits() {
         while(scan < interval.body.length && get(scan) >= '0' && get(scan) <= '9') scan++;
         return scan;
     }
-    
-    function brApp(str) {
-        if(!str) return "";
-        return '<br>' + str;
-    }
-    
+
     // Returns true if something makes us think there's another speed measurement to take.
     // This simply happens if we match a comma as speeds are comma separated.
     // Due to layout, I cannot just go newline.
@@ -425,7 +444,7 @@ function parseMonster(interval) {
         array.push(parsed);
         return another;
     }
-    
+
     function parseSavingThrow(name) {
         eatWhitespaces();
         if(!matchInsensitive(name)) return null;
@@ -460,7 +479,7 @@ function parseMonster(interval) {
         scan = back;
         return result;
     }
-    
+
     function parseCharacteristics() {
         let chr = [];
         let key  = ['Str', 'Dex', 'Con', 'Int',    'Wis', 'Cha'];
@@ -497,6 +516,75 @@ function parseMonster(interval) {
         }
         return chr;
     }
+}
+
+
+function understandMonster(interval) {
+}
+
+
+function feedbackMonster(interval) {
+    if(!interval || !interval.headInfo) return;
+    let parsed;
+    {
+        parsed = cell('Basic'); // parse type
+        parsed += cell(interval.headInfo.cr); // Challange Ratio
+        parsed += cell(interval.headInfo.experience || '<em>inferred</em>'); // XP
+        parsed += cell(interval.headInfo.alignment + brApp(interval.headInfo.alignNotes)); // alignment
+        parsed += cell(interval.headInfo.size); // size
+        interval.nameTagCell.innerHTML += '<br>' + interval.headInfo.type + '<br>' + list(interval.headInfo.tags); // "type" example: outsider (native)
+        let init = interval.headInfo.initiative;
+        if(interval.headInfo.initSpecials) {
+            init += '<br><abbr title="' + attributeString(interval.headInfo.initSpecials) + '">[1]</abbr>';
+        }
+        parsed += cell(init); // initiative
+        interval.feedbackRow.innerHTML += parsed;
+    }
+    if(!interval.defense) return;
+    {
+        let def = interval.defense;
+        parsed = "";
+        parsed += cell(def.ac + brApp(def.acNotes)); // AC
+        parsed += cell(def.health + brApp(def.healthNotes)); // dice count and bonus
+        parsed += cell(present('F', def.fort) + present('<br>R', def.refl) + present('<br>W', def.will)); // save
+        interval.feedbackRow.innerHTML += parsed;
+    }
+    if(!interval.offense) return;
+    {
+        let speed = interval.offense.speed;
+        parsed = "";
+        for(let loop = 0; loop < speed.length; loop++) {
+            if(loop !== 0) parsed += '<br>';
+            parsed += speed[loop].speed;
+            if(speed[loop].action) parsed += ' ' + speed[loop].action;
+            if(speed[loop].manouver) parsed += ' (' + speed[loop].manouver + ')';
+        }
+        parsed = cell(parsed); // speed list and manouvers
+        interval.feedbackRow.innerHTML += parsed;
+    }
+    if(!interval.statistics) {
+        let stat = interval.statistics;
+        interval.feedbackRow.innerHTML += cell(stat.str) + cell(stat.dex) + cell(stat.cos) +
+                                          cell(stat.intell) + cell(stat.wis) + cell(stat.cha);
+    }
+
+    function list(array) {
+        let result = '';
+        for(let loop = 0; loop < array.length; loop++) {
+            if(loop !== 0) result += ', ';
+            result += array[loop];
+        }
+        return result;
+    }
+
+    function cell(string) {
+        return '<td>' + string + '</td>';
+    }
+
+    function brApp(str) {
+        if(!str) return "";
+        return '<br>' + str;
+    }
 
     function present(beg, st) {
         let text = beg + st.main;
@@ -504,10 +592,6 @@ function parseMonster(interval) {
         for(let loop = 0; loop < len; loop++) text += '<sub><abbr title="' + attributeString(st.special[loop]) + '">[' + (loop + 1) + ']</abbr></sub>';
         return text;
     }
-}
-
-function cell(string) {
-    return '<td>' + string + '</td>';
 }
 
 
