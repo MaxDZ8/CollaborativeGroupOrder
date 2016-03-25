@@ -447,13 +447,13 @@ function parseMonster(interval) {
             }
             back = scan;
             eatWhitespaces();
-            if(get(scan) === ',') {
+            if(get(scan) === ',' || get(scan) === ';') {
                 scan++;
                 back = scan;
             }
             eatWhitespaces();
         }
-        if(get(scan) === ',') {
+        if(get(scan) === ',' || get(scan) === ';') {
             scan++;
             back = scan;
         }
