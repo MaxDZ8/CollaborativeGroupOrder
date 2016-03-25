@@ -79,7 +79,7 @@ function friendlify(string) {
     return string.replace(/\u2013|\u2014/g, "-").replace(/\r/g, "\n")
         .replace(/\n(?:Stat istics|Statisti cs|Stat ist ics|Statis tics)\n/gi, "\nStatistics\n")
         .replace(/\n(?:Offens e|Off ens e|Offen se)\n/gi, '\nOffense\n')
-        .replace(/\n(?:Defens e|De fense|Defe nse)\n/gi, '\nDefense\n')
+        .replace(/\n(?:Defens e|De fense|Defe nse|Defenses)\n/gi, '\nDefense\n')
         .replace(/ fl at-footed /gi, " flat-footed ");
 }
 
@@ -288,6 +288,7 @@ function parseMonster(interval) {
         }
         let speed = [];
         while(parseSpeed(speed));
+        if(speed.length === 0) return;
         
         parsed = "";
         for(let loop = 0; loop < speed.length; loop++) {
@@ -400,9 +401,15 @@ function parseMonster(interval) {
         else eatWhitespaces();
         beg = scan;
         let measure = interval.body.substring(beg, goWhitespace());
-        if(measure.replace(/\d/g, "").length !== 0) return false; // NOPE, this must be a number!
+        if(measure.replace(/\d/g, "").length !== 0) {  // NOPE, this must be a number!
+            array.length = 0;
+            return false;
+        }
         eatWhitespaces();
-        if(!matchInsensitive("ft.")) return false; // NOPE, this is always there!
+        if(!matchInsensitive("ft.")) {  // NOPE, this is always there!
+            array.length = 0;
+            return false;
+        }
         eatWhitespaces();
         let manouver = null;
         if(get(scan) === '(') {
