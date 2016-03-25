@@ -391,21 +391,19 @@ function parseMonster(interval) {
     // Due to layout, I cannot just go newline.
     function parseSpeed(array) {
         eatWhitespaces();
+        let measure, action;
+        while(!measure) {
+            let beg = scan;
+            goWhitespace();
+            let word = interval.body.substring(beg, scan);
+            if(word.replace(/\d/g, "").length === 0)  measure = word;
+            else {
+                action = action? (action + ' ') : "";
+                action += word;
+            }
+            eatWhitespaces();
+        }
         let beg = scan;
-        goWhitespace();
-        let action = interval.body.substring(beg, scan);
-        if(action.replace(/\d/g, "").length === 0) { // this must be a count, retry
-            action = null;
-            scan = beg;
-        }
-        else eatWhitespaces();
-        beg = scan;
-        let measure = interval.body.substring(beg, goWhitespace());
-        if(measure.replace(/\d/g, "").length !== 0) {  // NOPE, this must be a number!
-            array.length = 0;
-            return false;
-        }
-        eatWhitespaces();
         if(!matchInsensitive("ft.")) {  // NOPE, this is always there!
             array.length = 0;
             return false;
