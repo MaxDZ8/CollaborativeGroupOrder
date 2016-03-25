@@ -30,7 +30,7 @@ window.onload = function() {
                 const el = candidates[loop];
                 el.feedbackRow = document.createElement("TR");
                 el.nameTagCell = document.createElement("TD");
-                el.nameTagCell.innerHTML = '<strong>' + el.name + '</strong>';
+                el.nameTagCell.innerHTML = '<strong>' + el.name[0] + '</strong>' + alternateNames(el.name);
                 el.feedbackRow.innerHTML = "<td>" + (loop + 1) + "</td>";
                 el.feedbackRow.appendChild(el.nameTagCell);
                 parseListFeedback.appendChild(el.feedbackRow);
@@ -45,39 +45,51 @@ window.onload = function() {
         };
         reader.readAsText(document.getElementById('realDealInput').files[0]);
     }
+    
+    function alternateNames(nameArray) {
+        let str = '';
+        for(let loop = 1; loop < nameArray.length; loop++) {
+            if(loop === 1) str += '<br>aka ';
+            else str += ', ';
+            str += nameArray[loop];
+        }
+        return str;
+    }
 
     function normalizeNames(interval) {
-        let titolised = "";
-        let upper = true;
-        for(let loop = 0; loop < interval.name.length; loop++) {
-            let c = interval.name.charAt(loop);
-            titolised += upper? c.toUpperCase() : c.toLowerCase();
-            upper = c <= ' ';
-        }
-        interval.name = titolised;
-        for(let loop = 0; loop < monsters.length; loop++) { // fast accept matching
-            if(monsters[loop].engName.toLowerCase() == interval.name.toLowerCase()) return;
-        }
-        let whitespace = /\s+/g;
-        let match = interval.name.toLowerCase();
-        for(let loop = 0; loop < monsters.length; loop++) { // fast accept matching
-            let reference = monsters[loop].engName.toLowerCase();
-            if(match === reference) return; // found and nothing to do.
-            if(reference.replace(whitespace, "") !== match.replace(whitespace, "")) continue; // not matching ignoring spaces -> no chance
-            let src = 0, dst = 0;
-            while(src < reference.length && dst < match.length) {
-                if(reference.charAt(src) === match.charAt(dst)) {
-                    src++;
-                    dst++;
-                    continue;
-                }
-                if(reference.charAt(src) === ' ') break; // spaces must be there!
-                if(match.charAt(dst) !== ' ') break; // can ignore extra spaces only
-                dst++;
+        for(let outer = 0; outer < interval.name.length; outer++) { 
+            let titolised = "";
+            let upper = true;
+            for(let loop = 0; loop < interval.name[outer].length; loop++) {
+                let c = interval.name[outer].charAt(loop);
+                titolised += upper? c.toUpperCase() : c.toLowerCase();
+                upper = c <= ' ';
             }
-            if(src === reference.length && dst === match.length) {
-                interval.name = monsters[loop].engName;
-                break;
+            interval.name[outer] = titolised;
+            for(let loop = 0; loop < monsters.length; loop++) { // fast accept matching
+                if(monsters[loop].engName.toLowerCase() == interval.name[outer].toLowerCase()) return;
+            }
+            let whitespace = /\s+/g;
+            let match = interval.name[outer].toLowerCase();
+            for(let loop = 0; loop < monsters.length; loop++) { // fast accept matching
+                let reference = monsters[loop].engName.toLowerCase();
+                if(match === reference) return; // found and nothing to do.
+                if(reference.replace(whitespace, "") !== match.replace(whitespace, "")) continue; // not matching ignoring spaces -> no chance
+                let src = 0, dst = 0;
+                while(src < reference.length && dst < match.length) {
+                    if(reference.charAt(src) === match.charAt(dst)) {
+                        src++;
+                        dst++;
+                        continue;
+                    }
+                    if(reference.charAt(src) === ' ') break; // spaces must be there!
+                    if(match.charAt(dst) !== ' ') break; // can ignore extra spaces only
+                    dst++;
+                }
+                if(src === reference.length && dst === match.length) {
+                    interval.name[outer] = monsters[loop].engName;
+                    break;
+                }
             }
         }
     }
@@ -210,7 +222,23 @@ function partitions(book) {
     }
 
     function mangleName(name) {
-        return name;
+        let par = name.match(/\s+\([^)]*\)/);
+        if(par && par[0]) {
+            let list = [ name.substring(0, par.index) ];
+            par[0] = par[0].trim();
+            let inside = par[0].substr(0, par[0].length - 1).substr(1).trim();
+            if(inside.match(/(?:hybrid|human) form/i)) {
+                list[0] = name;
+                return list;
+            }
+            inside = inside.split(/,/g);
+            for(let loop = 0; loop < inside.length; loop++) {
+                let token = inside[loop].trim();
+                if(token && token.length) list.push(token);
+            }
+            return list;
+        }
+        return [ name ];
     }
 
     function mangleType(interval) {
