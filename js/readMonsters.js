@@ -37,7 +37,7 @@ window.onload = function() {
             }
             document.body.appendChild(realDealFeedback);
             for(let loop = 0; loop < candidates.length; loop++) {
-                parseMonster(candidates[loop]);
+                new MonsterParser(candidates[loop]).parse();
                 understandMonster(candidates[loop]);
                 feedbackMonster(candidates[loop]);
             }
@@ -298,194 +298,127 @@ function parseMonsterList(mobs) {
 }
 
 
-function parseMonster(interval) {
-    if(!interval || !interval.body || !interval.headInfo) return;
+function MonsterParser(interval) {
+    let res = new Parser(interval.body);
+    res.parse = function() {
+        if(!interval || !interval.body || !interval.headInfo) return;
 
-    let scan = 0;
-    let partition = {
-        defense: findInsensitive("\nDefense"),
-        offense: findInsensitive("\noffense\n"),
-        statistics: findInsensitive('\nStatistics\n')
+        let partition = {
+            defense: this.findInsensitive("\nDefense"),
+            offense: this.findInsensitive("\noffense\n"),
+            statistics: this.findInsensitive('\nStatistics\n')
+        };
+        partition.ordered = partition.defense < partition.offense && partition.offense < partition.statistics;
+        if(!partition.ordered) return;
+        {
+            this.scan = partition.defense + "\nDefense".length;
+            let def = {};
+            this.eatNewlines();
+            if(!this.matchInsensitive("AC "))
+                return;
+            if(this.get() > '9' || this.get() < '0')
+                return;
+            let beg = this.scan;
+            def.ac = interval.body.substring(beg, this.goWhitespace());
+            if(def.ac.match(/[,;]$/)) def.ac = def.ac.substring(0, def.ac.length - 1);
+            if(def.ac.match(/\D/))
+                return;
+            if(this.get() === ',') this.scan++;
+            this.eatWhitespaces();
+            beg = this.scan;
+            if(this.findInsensitive("\nhp ") >= interval.body.length)
+                return;
+            def.acNotes = interval.body.substring(beg, this.scan).trim();
+            this.scan += "\nhp ".length;
+            if(this.get() > '9' || this.get() < '0')
+                return;
+            this.eatDigits();
+            this.eatWhitespaces();
+            if(this.matchInsensitive('each ')) this.eatWhitespaces();
+            if(this.get() !== '(')
+                return;
+            beg = this.scan + 1;
+            this.matchRoundPar();
+            def.health = interval.body.substring(beg, this.scan);
+            this.scan++;
+            beg = this.scan;
+            def.healthNotes = interval.body.substring(beg, this.findInsensitive("\nFort "));
+            if(this.scan >= interval.body.length) return;
+            this.scan++;
+            def.fort = parseSavingThrow('Fort');
+            if(!def.fort) return;
+            def.refl = parseSavingThrow('Ref');
+            if(!def.refl) return;
+            def.will = parseSavingThrow('Will');
+            if(!def.will) return;
+            def.extra = interval.body.substring(beg, partition.offense).trim();
+            interval.defense = def;
+        }
+        {
+            this.scan = partition.offense;
+            if(!this.matchInsensitive("\noffense\n")) return;
+            this.findInsensitive("\nSpeed ", partition.statistics);
+            if(!this.matchInsensitive("\nSpeed ")) {
+                this.findInsensitive('\nSpd ', partition.statistics);
+                if(!this.matchInsensitive('\nSpd ')) return;
+            }
+            let mangledSpeed = [];
+            while(parseSpeed(mangledSpeed));
+            if(mangledSpeed.length === 0) return;
+
+            interval.offense = {
+                speed: mangledSpeed
+            };
+        }
+        {
+            this.scan = partition.statistics;
+            if(!this.matchInsensitive('\nStatistics\n')) return;
+            this.eatNewlines();
+            let chr = parseCharacteristics();
+            if(!chr) return;
+            interval.statistics = {
+                str: chr[0].value,
+                dex: chr[1].value,
+                cos: chr[2].value,
+                intell: chr[3].value,
+                wis: chr[4].value,
+                cha: chr[5].value
+            };
+        }
     };
-    partition.ordered = partition.defense < partition.offense && partition.offense < partition.statistics;
-    if(!partition.ordered) return;
-    {
-        scan = partition.defense + "\nDefense".length;
-        let def = {};
-        eatNewlines();
-        if(!matchInsensitive("AC "))
-            return;
-        if(get(scan) > '9' || get(scan) < '0')
-            return;
-        let beg = scan;
-        def.ac = interval.body.substring(beg, goWhitespace());
-        if(def.ac.match(/[,;]$/)) def.ac = def.ac.substring(0, def.ac.length - 1);
-        if(def.ac.match(/\D/))
-            return;
-        if(get(scan) === ',') scan++;
-        eatWhitespaces();
-        beg = scan;
-        if(findInsensitive("\nhp ") >= interval.body.length)
-            return;
-        def.acNotes = interval.body.substring(beg, scan).trim();
-        scan += "\nhp ".length;
-        if(get(scan) > '9' || get(scan) < '0')
-            return;
-        eatDigits();
-        eatWhitespaces();
-        if(matchInsensitive('each ')) eatWhitespaces();
-        if(get(scan) !== '(')
-            return;
-        beg = scan + 1;
-        matchRoundPar();
-        def.health = interval.body.substring(beg, scan);
-        scan++;
-        beg = scan;
-        def.healthNotes = interval.body.substring(beg, findInsensitive("\nFort "));
-        if(scan >= interval.body.length) return;
-        scan++;
-        def.fort = parseSavingThrow('Fort');
-        if(!def.fort) return;
-        def.refl = parseSavingThrow('Ref');
-        if(!def.refl) return;
-        def.will = parseSavingThrow('Will');
-        if(!def.will) return;
-        def.extra = interval.body.substring(beg, partition.offense).trim();
-        interval.defense = def;
-    }
-    {
-        scan = partition.offense;
-        if(!matchInsensitive("\noffense\n")) return;
-        findInsensitive("\nSpeed ", partition.statistics);
-        if(!matchInsensitive("\nSpeed ")) {
-            findInsensitive('\nSpd ', partition.statistics);
-            if(!matchInsensitive('\nSpd ')) return;
-        }
-        let mangledSpeed = [];
-        while(parseSpeed(mangledSpeed));
-        if(mangledSpeed.length === 0) return;
-
-        interval.offense = {
-            speed: mangledSpeed
-        };
-    }
-    {
-        scan = partition.statistics;
-        if(!matchInsensitive('\nStatistics\n')) return;
-        eatNewlines();
-        let chr = parseCharacteristics();
-        if(!chr) return;
-        interval.statistics = {
-            str: chr[0].value,
-            dex: chr[1].value,
-            cos: chr[2].value,
-            intell: chr[3].value,
-            wis: chr[4].value,
-            cha: chr[5].value
-        };
-    }
-
-
-
-    function get(i) { return interval.body[i]; }
-
-    function matchRoundPar() {
-        let open = get(scan) === '('? 1 : 0;
-        if(open) scan++;
-        while(scan < interval.body.length && open) {
-            if(get(scan) === '(') open++;
-            else if(get(scan) === ')') {
-                open--;
-                if(!open) break;
-            }
-            scan++;
-        }
-        return scan;
-    }
-
-    function matchInsensitive(str, offset) {
-        if(offset === undefined) offset = scan;
-        let match
-        for(match = 0; match < str.length && match + offset < interval.body.length; match++) {
-            if(str.charAt(match).toUpperCase() !== interval.body.charAt(offset + match).toUpperCase()) break;
-        }
-        if(match === str.length) scan = offset + str.length;
-        return match === str.length;
-    }
-
-    function findInsensitive(str, limit) {
-        if(limit === undefined) limit = interval.body.length;
-        for(let loop = scan; loop < limit; loop++) {
-            if(matchInsensitive(str, loop)) {
-                scan = loop;
-                break;
-            }
-        }
-        return scan;
-    }
-
-    function goNewline(c, func) {
-        if(c === undefined) while(scan < interval.body.length && get(scan) !== '\n') scan++;
-        else {
-             while(scan < interval.body.length && get(scan) !== '\n') {
-                 if(c !== get(scan)) scan++;
-                 else func();
-             }
-        }
-        return scan;
-    }
-
-    function eatNewlines() {
-        while(scan < interval.body.length && get(scan) === '\n') scan++;
-        return scan;
-    }
-
-    function goWhitespace() {
-        while(scan < interval.body.length && get(scan) > ' ') scan++;
-        return scan;
-    }
-
-    function eatWhitespaces() {
-        while(scan < interval.body.length && get(scan) <= ' ') scan++;
-        return scan;
-    }
-
-    function eatDigits() {
-        while(scan < interval.body.length && get(scan) >= '0' && get(scan) <= '9') scan++;
-        return scan;
-    }
-
+    return res;
+    
     // Returns true if something makes us think there's another speed measurement to take.
     // This simply happens if we match a comma as speeds are comma separated.
     // Due to layout, I cannot just go newline.
     function parseSpeed(array) {
-        eatWhitespaces();
+        res.eatWhitespaces();
         let measure, action;
         while(!measure) {
-            let beg = scan;
-            goWhitespace();
-            let word = interval.body.substring(beg, scan);
+            let beg = res.scan;
+            res.goWhitespace();
+            let word = interval.body.substring(beg, res.scan);
             if(word.replace(/\d/g, "").length === 0)  measure = word;
             else {
                 action = action? (action + ' ') : "";
                 action += word;
             }
-            eatWhitespaces();
+            res.eatWhitespaces();
         }
-        let beg = scan;
-        if(!matchInsensitive("ft.")) {  // NOPE, this is always there!
+        let beg = res.scan;
+        if(!res.matchInsensitive("ft.")) {  // NOPE, this is always there!
             array.length = 0;
             return false;
         }
-        eatWhitespaces();
+        res.eatWhitespaces();
         let manouver = null;
-        if(get(scan) === '(') {
-            beg = scan + 1;
-            manouver = interval.body.substring(beg, matchRoundPar());
-            scan++;
+        if(res.get() === '(') {
+            beg = res.scan + 1;
+            manouver = interval.body.substring(beg, res.matchRoundPar());
+            res.scan++;
         }
-        let another = get(scan) === ',';
-        if(another) scan++;
+        let another = res.get() === ',';
+        if(another) res.scan++;
         let parsed = {
             speed: measure
         };
@@ -496,37 +429,37 @@ function parseMonster(interval) {
     }
 
     function parseSavingThrow(name) {
-        eatWhitespaces();
-        if(!matchInsensitive(name)) return null;
-        eatWhitespaces();
-        let beg = scan;
-        if(get(scan) === '+' || get(scan) === '-') scan++;
-        eatDigits();
+        res.eatWhitespaces();
+        if(!res.matchInsensitive(name)) return null;
+        res.eatWhitespaces();
+        let beg = res.scan;
+        if(res.get() === '+' || res.get() === '-') res.scan++;
+        res.eatDigits();
         let result = {};
-        result.main = interval.body.substring(beg, scan);
-        let back = scan;
-        eatWhitespaces();
-        while(get(scan) === '(') {
-            beg = scan + 1;
-            matchRoundPar();
-            if(get(scan) === ')') {
+        result.main = interval.body.substring(beg, res.scan);
+        let back = res.scan;
+        res.eatWhitespaces();
+        while(res.get() === '(') {
+            beg = res.scan + 1;
+            res.matchRoundPar();
+            if(res.get() === ')') {
                 if(!result.special) result.special = [];
-                result.special.push(interval.body.substring(beg, scan));
-                scan++;
+                result.special.push(interval.body.substring(beg, res.scan));
+                res.scan++;
             }
-            back = scan;
-            eatWhitespaces();
-            if(get(scan) === ',' || get(scan) === ';') {
-                scan++;
-                back = scan;
+            back = res.scan;
+            res.eatWhitespaces();
+            if(res.get() === ',' || res.get() === ';') {
+                res.scan++;
+                back = res.scan;
             }
-            eatWhitespaces();
+            res.eatWhitespaces();
         }
-        if(get(scan) === ',' || get(scan) === ';') {
-            scan++;
-            back = scan;
+        if(res.get() === ',' || res.get() === ';') {
+            res.scan++;
+            back = res.scan;
         }
-        scan = back;
+        res.scan = back;
         return result;
     }
 
@@ -535,37 +468,111 @@ function parseMonster(interval) {
         let key  = ['Str', 'Dex', 'Con', 'Int',    'Wis', 'Cha'];
         let dst  = ['str', 'dex', 'con', 'intell', 'wis', 'cha'];
         for(let loop = 0; loop < key.length; loop++) {
-            if(!matchInsensitive(key[loop])) {
+            if(!res.matchInsensitive(key[loop])) {
                 if(loop === 0) {
-                    if(matchInsensitive('Abilities ')) {
-                        eatWhitespaces();
+                    if(res.matchInsensitive('Abilities ')) {
+                        res.eatWhitespaces();
                         loop--;
                         continue;
                     }
                 }
                 return null;
             }
-            if(get(scan) > ' ') return null;
-            eatWhitespaces();
-            let beg = scan;
-            while(scan < interval.body.length) {
-                let c = get(scan);
+            if(res.get() > ' ') return null;
+            res.eatWhitespaces();
+            let beg = res.scan;
+            while(res.scan < interval.body.length) {
+                let c = res.get();
                 if(c < '0' || c > '9') {
                     if(c !== '-') break;
                 }
-                scan++;
+                res.scan++;
             }
-            eatWhitespaces();
+            res.eatWhitespaces();
             let build = {
                 key: dst[loop],
-                value: interval.body.substring(beg, scan).trim()
+                value: interval.body.substring(beg, res.scan).trim()
             };
             chr.push(build);
-            if(get(scan) === ',') scan++;
-            eatWhitespaces();
+            if(res.get() === ',') res.scan++;
+            res.eatWhitespaces();
         }
         return chr;
     }
+}
+
+
+function Parser(body) {
+    return {
+        scan: 0,
+        get: function(i) { return body[i === undefined? this.scan : i]; },
+
+        matchRoundPar: function() {
+            let open = this.get(this.scan) === '('? 1 : 0;
+            if(open) this.scan++;
+            while(this.scan < body.length && open) {
+                if(this.get(this.scan) === '(') open++;
+                else if(this.get(this.scan) === ')') {
+                    open--;
+                    if(!open) break;
+                }
+                this.scan++;
+            }
+            return this.scan;
+        },
+
+        matchInsensitive: function(str, offset) {
+            if(offset === undefined) offset = this.scan;
+            let match
+            for(match = 0; match < str.length && match + offset < body.length; match++) {
+                if(str.charAt(match).toUpperCase() !== body.charAt(offset + match).toUpperCase()) break;
+            }
+            if(match === str.length) this.scan = offset + str.length;
+            return match === str.length;
+        },
+
+        findInsensitive: function(str, limit) {
+            if(limit === undefined) limit = body.length;
+            for(let loop = this.scan; loop < limit; loop++) {
+                if(this.matchInsensitive(str, loop)) {
+                    this.scan = loop;
+                    break;
+                }
+            }
+            return this.scan;
+        },
+
+        goNewline: function(c, func) {
+            if(c === undefined) while(this.scan < body.length && this.get(this.scan) !== '\n') this.scan++;
+            else {
+                 while(this.scan < body.length && this.get(this.scan) !== '\n') {
+                     if(c !== this.get(this.scan)) this.scan++;
+                     else func();
+                 }
+            }
+            return this.scan;
+        },
+
+        eatNewlines: function() {
+            while(this.scan < body.length && this.get(this.scan) === '\n') this.scan++;
+            return this.scan;
+        },
+
+        goWhitespace: function() {
+            while(this.scan < body.length && this.get(this.scan) > ' ') this.scan++;
+            return this.scan;
+        },
+
+        eatWhitespaces: function() {
+            while(this.scan < body.length && this.get(this.scan) <= ' ') this.scan++;
+            return this.scan;
+        },
+
+        eatDigits: function() {
+            while(this.scan < body.length && this.get(this.scan) >= '0' && this.get(this.scan) <= '9') this.scan++;
+            return this.scan;
+        }
+    };
 }
 
 
