@@ -678,6 +678,8 @@ function understandMonster(interval) {
                     continue;
                 }
                 interval.augmenting = originally;
+                interval.headInfo.tags = removeByIndex(interval.headInfo.tags, loop);
+                loop--;
             }
         }
     }
@@ -710,7 +712,7 @@ function feedbackMonster(interval) {
         parsed += cell(interval.headInfo.experience || '<em>inferred</em>'); // XP
         parsed += cell(interval.headInfo.alignment + brApp(interval.headInfo.alignNotes)); // alignment
         parsed += cell(interval.headInfo.size); // size
-        interval.nameTagCell.innerHTML += '<br>' + interval.headInfo.type + listSubTypes(interval.headInfo.tags); // "type" example: outsider (native)
+        interval.nameTagCell.innerHTML += '<br>' + interval.headInfo.type + listSubTypes(interval.headInfo.tags) + (interval.augmenting? ', augmenting: ' + interval.augmenting : ''); // "type" example: outsider (native)
         let init = interval.headInfo.initiative;
         if(interval.headInfo.initSpecials) {
             init += '<br><abbr title="' + attributeString(interval.headInfo.initSpecials) + '">[1]</abbr>';
