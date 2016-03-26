@@ -614,8 +614,42 @@ function understandMonster(interval) {
         "swarm",
         "water"
     ];
+    const race = {
+        'azata': true,
+        'boggard': true,
+        'giant': true,
+        'dark folk': true,
+        'demon': true,
+        'derro': true,
+        'devil': true,
+        'elf': true,
+        'dwarf': true,
+        'elemental': true,
+        'kyton': true,
+        'human': true,
+        'gnome': true,
+        'tengu': true,
+        'gnoll': true,
+        'oni': true
+    };
+    const discardWithWarn = {
+        'varies': 'This tag implies monster changes according to some conditions I cannot understand. You probably want to fix this yourself. Tag ignored.'
+    };
     if(interval.headInfo.tags) {
         for(let loop = 0; loop < interval.headInfo.tags.length; loop++) {
+            let tag = interval.headInfo.tags[loop];
+            if(race[tag.toLowerCase()]) {
+                interval.headInfo.race = tag.toLowerCase();
+                interval.headInfo.tags = removeByIndex(interval.headInfo.tags, loop);
+                loop--;
+                continue;
+            }
+            if(discardWithWarn[tag.toLowerCase()]) {
+                if(!interval.errors) interval.errors = [];
+                interval.errors.push('Warning: tag "' + tag + '" found. ' + discardWithWarn[tag.toLowerCase()]);
+                interval.headInfo.tags = removeByIndex(interval.headInfo.tags, loop);
+                continue;
+            }
             let scan;
             for(scan = 0; scan < subType.length; scan++) {
                 if(subType[scan] === interval.headInfo.tags[loop].toLowerCase()) {
@@ -640,6 +674,13 @@ function understandMonster(interval) {
             }
         }
     }
+    
+    function removeByIndex(arr, goner) {
+        let shorter = [];
+        for(let cp = 0; cp < goner; cp++) shorter.push(arr[cp]);
+        for(let cp = goner + 1; cp < arr.length; cp++) shorter.push(arr[cp]);
+        return shorter;
+    }
 }
 
 
@@ -656,6 +697,7 @@ function feedbackMonster(interval) {
         dst.innerHTML += parsed;
     }
     {
+        if(interval.headInfo.race) interval.nameTagCell.innerHTML = interval.headInfo.race + ', ' + interval.nameTagCell.innerHTML;
         parsed = cell('Basic'); // parse type
         parsed += cell(interval.headInfo.cr); // Challange Ratio
         parsed += cell(interval.headInfo.experience || '<em>inferred</em>'); // XP
