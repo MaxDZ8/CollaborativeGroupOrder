@@ -35,12 +35,12 @@ window.onload = function() {
                 el.feedbackRow.appendChild(el.nameTagCell);
                 parseListFeedback.appendChild(el.feedbackRow);
             }
+            document.body.appendChild(realDealFeedback);
             for(let loop = 0; loop < candidates.length; loop++) {
                 parseMonster(candidates[loop]);
                 understandMonster(candidates[loop]);
                 feedbackMonster(candidates[loop]);
             }
-            document.body.appendChild(realDealFeedback);
             document.getElementById('save').onclick = extractUsefulData;
         };
         reader.readAsText(document.getElementById('realDealInput').files[0]);
@@ -570,12 +570,91 @@ function parseMonster(interval) {
 
 
 function understandMonster(interval) {
+    /** Map from type to string to hit dice, it could really be everything. */
+    const monsterType = {
+        "aberration": 8,
+        "animal": 8,
+        "construct": 10,
+        "dragon": 12,
+        "elemental": 8,
+        "fey": 6,
+        "giant": 8,
+        "humanoid": 8,
+        "magical beast": 10,
+        "monstrous humanoid": 8,
+        "ooze": 10,
+        "outsider": 8,
+        "plant": 8,
+        "undead": 12,
+        "vermin": 8
+    };
+    if(!monsterType[interval.headInfo.type.toLowerCase()]) {
+        if(!interval.errors) interval.errors = [];
+        interval.errors.push('Unknown type "' + interval.headInfo.type + '"');
+    }
+    const subType = [
+        "air",
+        "angel",
+        "aquatic",
+        "archon",
+        // Augmented // Special, always comes in the form of Augmented <ORIGINAL_TYPE>
+        "chaotic",
+        "cold",
+        "earth",
+        "evil",
+        "extraplanar",
+        "fire",
+        "goblinoid",
+        "good",
+        "incorporeal",
+        "lawful",
+        "native",
+        "reptilian",
+        "shapechanger",
+        "swarm",
+        "water"
+    ];
+    if(interval.headInfo.tags) {
+        for(let loop = 0; loop < interval.headInfo.tags.length; loop++) {
+            let scan;
+            for(scan = 0; scan < subType.length; scan++) {
+                if(subType[scan] === interval.headInfo.tags[loop].toLowerCase()) {
+                    interval.headInfo.tags[loop] = subType[scan];
+                    break;
+                }
+            }
+            if(scan === subType.length) {
+                let aug = interval.headInfo.tags[loop].match(/^Augmented\s+/i);
+                if(!aug) {
+                    if(!interval.errors) interval.errors = [];
+                    interval.errors.push('Unknown sub type "' + interval.headInfo.tags[loop] + '"');
+                    continue;
+                }
+                let originally = interval.headInfo.tags[loop].substr(aug.index + aug[0].length).trim().toLowerCase();
+                if(!monsterType[originally]) {
+                    if(!interval.errors) interval.errors = [];
+                    interval.errors.push('Creature is said to be an augmented "' + originally + '", but this type is unknown to me.');
+                    continue;
+                }
+                interval.augmenting = originally;
+            }
+        }
+    }
 }
 
 
 function feedbackMonster(interval) {
     if(!interval || !interval.headInfo) return;
     let parsed;
+    if(interval.errors && interval.errors.length) {
+        let dst = document.getElementById('errors');
+        parsed = '<strong>' + interval.name + '</strong><ul>';
+        for(let loop = 0; loop < interval.errors.length; loop++) {
+            parsed += '<li>' + interval.errors[loop] + '</li>';
+        }
+        parsed += '</ul>';
+        dst.innerHTML += parsed;
+    }
     {
         parsed = cell('Basic'); // parse type
         parsed += cell(interval.headInfo.cr); // Challange Ratio

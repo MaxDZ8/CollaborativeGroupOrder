@@ -4,22 +4,22 @@
 <meta charset="UTF-8">
     <title>Monster text to JSON!</title>
     <script src="readMonsters.js" type='application/javascript;version=1.8'></script>
-	<style>
-	table {
-		border-collapse: collapse;
-		border: 2px solid;
-	}
-	th {
-		background: #F0F0F0;
-		border-left: 1px dotted;
-		border-right: 1px dotted;
-	}
-	td {
-	    border-left: 1px dotted;
-		border-right: 1px dotted;
-		border-bottom: 1px solid;
-		border-top: 1px solid;
-		text-align: center;
+    <style>
+    table {
+        border-collapse: collapse;
+        border: 2px solid;
+    }
+    th {
+        background: #F0F0F0;
+        border-left: 1px dotted;
+        border-right: 1px dotted;
+    }
+    td {
+        border-left: 1px dotted;
+        border-right: 1px dotted;
+        border-bottom: 1px solid;
+        border-top: 1px solid;
+        text-align: center;
     }
     </style>
 </head>
@@ -62,21 +62,22 @@
     </div>
     <div id="realDealFeedback">
         Are all the monsters there?<br>
-		Were they parsed correctly?<br>
-		If so, specify book and attempt a save.<br>
-		<input type='radio' name='book' id='best1'                      value='best1'                     /> <label for='best1'                     >Bestiary 1</label>                      <br/>
-		<input type='radio' name='book' id='best2'                      value='best2'                     /> <label for='best2'                     >Bestiary 2</label>                      <br/>
-		<input type='radio' name='book' id='best3'                      value='best3'                     /> <label for='best3'                     >Bestiary 3</label>                      <br/>
-		<input type='radio' name='book' id='ap_riseOfTheThunderlords'   value='ap_riseOfTheThunderlords'  /> <label for='ap_riseOfTheThunderlords'  >AP: Rise of the Thunderlords</label>    <br/>
-		<input type='radio' name='book' id='ap_curseOfTheCrimsonThrone' value='ap_curseOfTheCrimsonThrone'/> <label for='ap_curseOfTheCrimsonThrone'>AP: Curse of the Crimson Throne</label> <br/>
-		<input type='radio' name='book' id='ap_secondDarkness'          value='ap_secondDarkness'         /> <label for='ap_secondDarkness'         >AP: Second Darkness</label>             <br/>
-		<input type='radio' name='book' id='ap_legacyOfFire'            value='ap_legacyOfFire'           /> <label for='ap_legacyOfFire'           >AP: Legacy of Fire</label>              <br/>
-		<input type='radio' name='book' id='ap_councilOfThieves'        value='ap_councilOfThieves'       /> <label for='ap_councilOfThieves'       >AP: Council of Thieves</label>          <br/>
-		<input type='radio' name='book' id='ap_kingMaker'               value='ap_kingMaker'              /> <label for='ap_kingMaker'              >AP: King Maker</label>                  <br/>
-		<input type='radio' name='book' id='ap_serpentsSkull'           value='ap_serpentsSkull'          /> <label for='ap_serpentsSkull'          >AP: Serpent's Skull</label>             <br/>
-		<input type='radio' name='book' id='ap_carrionCrown'            value='ap_carrionCrown'           /> <label for='ap_carrionCrown'           >AP: Carrion Crown</label>               <br/>
-		<input type='radio' name='book' id='ap_jadeRegent'              value='ap_jadeRegent'             /> <label for='ap_jadeRegent'             >AP: Jade Regent</label>                 <br/>
-		<br>
-		<input type='button' value='Mangle &amp; save' id='save' />
+        Were they parsed correctly?<br>
+        <div id='errors'></div>
+        If so, specify book and attempt a save.<br>
+        <input type='radio' name='book' id='best1'                      value='best1'                     /> <label for='best1'                     >Bestiary 1</label>                      <br/>
+        <input type='radio' name='book' id='best2'                      value='best2'                     /> <label for='best2'                     >Bestiary 2</label>                      <br/>
+        <input type='radio' name='book' id='best3'                      value='best3'                     /> <label for='best3'                     >Bestiary 3</label>                      <br/>
+        <input type='radio' name='book' id='ap_riseOfTheThunderlords'   value='ap_riseOfTheThunderlords'  /> <label for='ap_riseOfTheThunderlords'  >AP: Rise of the Thunderlords</label>    <br/>
+        <input type='radio' name='book' id='ap_curseOfTheCrimsonThrone' value='ap_curseOfTheCrimsonThrone'/> <label for='ap_curseOfTheCrimsonThrone'>AP: Curse of the Crimson Throne</label> <br/>
+        <input type='radio' name='book' id='ap_secondDarkness'          value='ap_secondDarkness'         /> <label for='ap_secondDarkness'         >AP: Second Darkness</label>             <br/>
+        <input type='radio' name='book' id='ap_legacyOfFire'            value='ap_legacyOfFire'           /> <label for='ap_legacyOfFire'           >AP: Legacy of Fire</label>              <br/>
+        <input type='radio' name='book' id='ap_councilOfThieves'        value='ap_councilOfThieves'       /> <label for='ap_councilOfThieves'       >AP: Council of Thieves</label>          <br/>
+        <input type='radio' name='book' id='ap_kingMaker'               value='ap_kingMaker'              /> <label for='ap_kingMaker'              >AP: King Maker</label>                  <br/>
+        <input type='radio' name='book' id='ap_serpentsSkull'           value='ap_serpentsSkull'          /> <label for='ap_serpentsSkull'          >AP: Serpent's Skull</label>             <br/>
+        <input type='radio' name='book' id='ap_carrionCrown'            value='ap_carrionCrown'           /> <label for='ap_carrionCrown'           >AP: Carrion Crown</label>               <br/>
+        <input type='radio' name='book' id='ap_jadeRegent'              value='ap_jadeRegent'             /> <label for='ap_jadeRegent'             >AP: Jade Regent</label>                 <br/>
+        <br>
+        <input type='button' value='Mangle &amp; save' id='save' />
     </div>
 </html>
