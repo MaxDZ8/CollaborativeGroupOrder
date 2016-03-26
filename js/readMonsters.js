@@ -242,7 +242,29 @@ function partitions(book) {
     }
 
     function mangleType(interval) {
-        interval.tags = [ '&lt;&lt;NOT IMPLEMENTED&gt;&gt;' ];
+        let scan;
+        for(scan = 0; scan < interval.type.length; scan++) {
+            if(interval.type.charAt(scan) === '(') break;
+        }
+        if(scan === interval.type.length) return interval; // no subtype, rare, but not impossible
+        scan++;
+        let level = 1;
+        const beg = scan;
+        while(scan < interval.type.length) {
+            if(interval.type.charAt(scan) === '(') level++;
+            else if(interval.type.charAt(scan) === ')') {
+                level--;
+                if(level === 0) break;
+            }
+            scan++;
+        }
+        let par = interval.type.substring(beg, scan).split(',');
+        interval.tags = [];
+        for(let loop = 0; loop < par.length; loop++) {
+            if(par[loop]) par[loop] = par[loop].trim();
+            if(par[loop] && par[loop].length) interval.tags.push(par[loop]);
+        }
+        interval.type = interval.type.substring(0, beg - 1).trim();
         return interval;
     }
 }
@@ -560,7 +582,7 @@ function feedbackMonster(interval) {
         parsed += cell(interval.headInfo.experience || '<em>inferred</em>'); // XP
         parsed += cell(interval.headInfo.alignment + brApp(interval.headInfo.alignNotes)); // alignment
         parsed += cell(interval.headInfo.size); // size
-        interval.nameTagCell.innerHTML += '<br>' + interval.headInfo.type + '<br>' + list(interval.headInfo.tags); // "type" example: outsider (native)
+        interval.nameTagCell.innerHTML += '<br>' + interval.headInfo.type + listSubTypes(interval.headInfo.tags); // "type" example: outsider (native)
         let init = interval.headInfo.initiative;
         if(interval.headInfo.initSpecials) {
             init += '<br><abbr title="' + attributeString(interval.headInfo.initSpecials) + '">[1]</abbr>';
@@ -590,16 +612,18 @@ function feedbackMonster(interval) {
         parsed = cell(parsed); // speed list and manouvers
         interval.feedbackRow.innerHTML += parsed;
     }
-    if(!interval.statistics) {
+    if(!interval.statistics) return;
+    {
         let stat = interval.statistics;
         interval.feedbackRow.innerHTML += cell(stat.str) + cell(stat.dex) + cell(stat.cos) +
                                           cell(stat.intell) + cell(stat.wis) + cell(stat.cha);
     }
 
-    function list(array) {
+    function listSubTypes(array) {
+        if(!array) return "";
         let result = '';
         for(let loop = 0; loop < array.length; loop++) {
-            if(loop !== 0) result += ', ';
+            result += loop === 0? '<br>' : ', ';
             result += array[loop];
         }
         return result;
