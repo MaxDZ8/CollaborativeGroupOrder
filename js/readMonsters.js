@@ -137,135 +137,185 @@ function partitions(book) {
     // So, what I do is: I extract all the various headers and everything to the starting newline, which should be monster's name.
     let cand = [];
     let headerType;
-    let head = matchHeader();
-    while(head && head.index < book.length) {
-        let lineBeg = lineStart(head.index);
+    let head = new HeaderParser(book).match();
+    while(head) {
         let found = {
-            name: mangleName(book.substring(lineBeg, head.index)),
-            headInfo: mangleType(head),
+            headInfo: mangleName(mangleType(mangleAlignment(head))),
             body: null
         };
-        let headEnd = found.headInfo.index + found.headInfo.length;
-        while(book[--headEnd] === '\n');
-        headEnd++;
-        book = book.substr(headEnd);
-        head = matchHeader();
-        if(!head) {
-            found.body = book;
-            book = "";
-        }
-        else {
-            lineBeg = lineStart(head.index);
-            found.body = book.substr(0, lineBeg);
-            book = book.substr(lineBeg);
-            head.index -= lineBeg;
-        }
+        book = head.remaining;
+        head = new HeaderParser(book).match();
+        if(!head) found.body = book;
+        else found.body = book.substr(0, head.index);
         cand.push(found);
     }
     return cand;
 
-    // Given a position in the book, go to the character immediately following the previous newline.
-    // Identity if book[position] is newline or pos === 0.
-    function lineStart(pos) {
-        while(pos > 0 && book.charAt(pos) !== '\n') pos--;
-        if(pos === 0) return pos;
-        return pos + 1;
-    }
-
-    function matchHeader() {
-        let h = [
-        // Header as used in bestiary 1, 2, and 3
-        //                                                               Sometimes, an example such as "Aasimar cleric 1"
-        //                                                                                       |                                                                                               Sometimes manuals have errors and I cannot just replace this
-        // CR integer or fraction|      |          XPs:    3,400               |                 |     |                              alignment                       |  align notes      | Size| |Type                        |       |Initiative| Special initiative
-        //         |     \1      |      |                \2                    |                 v     |                                 \3                           |  \4               | |\5 | |\6                 |        v       |\7        | \8
-            /\s+CR (\d+(?:\/\d+)?)\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)(?: each)?\n+(?:.+\n+)?(CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+)(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?[;,].*\n+/,
-
-
-        // Header used in AP 01-06 Rise of the runelords
-        // There are no XPs (I guess it's inferred from CR) but for the rest it's the same.
-            /\s+CR (\d+(?:\/\d+)?)\n+(?:.+\n+)?((?:Always |Usually |Often )?(?:CE\s|CN\s|CG\s|NE\s|N\s|NG\s|LE\s|LN\s|LG\s|Any alignment?\s+))(\([A-Za-z ,;]*\)\s+)?(\w+) (.+(?:\s+\([^)]+\))?)\n+(?:Init|Int) ([+\-]?\d+)(\s+\([^)]*\))?[;,].*\n+/
-        ];
-        let match;
-        if(headerType === undefined) { // headers must be coherent!
-            match = book.match(h[0]);
-            if(match) headerType = 0;
-            else {
-                match = book.match(h[1]);
-                if(match) headerType = 1;
-            }
-        }
-        else match = book.match(h[headerType]);
-        if(!match) return;
-        let result = {
-            index: match.index,
-            length: match[0].length,
-
-            cr: match[1],
-        };
-        let next = 2;
-        if(headerType === 0) {
-            result.experience = match[2];
-            next = 3;
-        }
-        result.alignment = match[next++];
-        result.alignNotes = match[next++];
-        result.size = match[next++];
-        result.type = match[next++];
-        result.initiative = match[next++];
-        result.initSpecials = match[next++];
-        if(result.initSpecials) {
-            let src = result.initSpecials.trim();
-            result.initSpecials = src.substring(1, src.length - 1);
-        }
-        return result;
-    }
-
-    function mangleName(name) {
-        let par = name.match(/\s+\([^)]*\)/);
-        if(par && par[0]) {
-            let list = [ name.substring(0, par.index) ];
+    function mangleName(header) {
+        let par = header.name.match(/\s+\([^)]*\)/);
+        if(!par || par[0].length === 0) header.name = [ header.name ];
+        else {
+            let list = [ header.name.substring(0, par.index) ];
             par[0] = par[0].trim();
             let inside = par[0].substr(0, par[0].length - 1).substr(1).trim();
             if(inside.match(/(?:hybrid|human) form/i)) {
-                list[0] = name;
-                return list;
+                list[0] = header.name;
+                header.name = list;
+                return header;
             }
             inside = inside.split(/,/g);
             for(let loop = 0; loop < inside.length; loop++) {
                 let token = inside[loop].trim();
                 if(token && token.length) list.push(token);
             }
-            return list;
+            header.name = list;
         }
-        return [ name ];
+        return header;
     }
 
-    function mangleType(interval) {
+    function mangleType(header) {
         let scan;
-        for(scan = 0; scan < interval.type.length; scan++) {
-            if(interval.type.charAt(scan) === '(') break;
+        for(scan = 0; scan < header.type.length; scan++) {
+            if(header.type.charAt(scan) === '(') break;
         }
-        if(scan === interval.type.length) return interval; // no subtype, rare, but not impossible
+        if(scan === header.type.length) return header; // no subtype, rare, but not impossible
         scan++;
         let level = 1;
         const beg = scan;
-        while(scan < interval.type.length) {
-            if(interval.type.charAt(scan) === '(') level++;
-            else if(interval.type.charAt(scan) === ')') {
+        while(scan < header.type.length) {
+            if(header.type.charAt(scan) === '(') level++;
+            else if(header.type.charAt(scan) === ')') {
                 level--;
                 if(level === 0) break;
             }
             scan++;
         }
-        let par = interval.type.substring(beg, scan).split(',');
-        interval.tags = [];
+        let par = header.type.substring(beg, scan).split(',');
+        header.tags = [];
         for(let loop = 0; loop < par.length; loop++) {
             if(par[loop]) par[loop] = par[loop].trim();
-            if(par[loop] && par[loop].length) interval.tags.push(par[loop]);
+            if(par[loop] && par[loop].length) header.tags.push(par[loop]);
         }
-        interval.type = interval.type.substring(0, beg - 1).trim();
-        return interval;
+        header.type = header.type.substring(0, beg - 1).trim();
+        return header;
+    }
+    
+    function mangleAlignment(header) {
+        alert('todo!');
+    }
+}
+
+
+function HeaderParser(book) {
+    let res = new Parser(book);
+    res.match = function() {
+        let got = book.match(/\s+CR (\d+(?:\/\d+)?)\n/);
+        if(!got) return null;
+        let start = lineStart(got.index);
+        const headerStart = start;
+        const tempName = book.substring(start, got.index).trim();
+        const tempCR = got[1];
+        res.scan = got.index + got[0].length;
+        got = book.match(/\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)(?: each)?\n+/);
+        let xp;
+        if(got.index <= headerStart) return null;
+        if(got) {
+            xp = got[1];
+            res.scan = got.index + got[0].length;
+        }
+        else { } // nothing, this is optional as it can be inferred from CR
+        start = res.eatNewlines();
+        const line = book.substring(start, res.goNewline()).trim();
+        let leveledCreature;
+        if(endsWithNumber(line)) leveledCreature = line; // optional
+        res.eatNewlines();
+        // Matching the alignment is quite complicated because it comes with plenty of (rare) modifications
+        start = res.scan;
+        got = book.match(/\s+(Fine|Diminutive|Tiny|Small|Medium|Large|Huge|Gargantuan|Colossal)\s+/i);
+        if(!got) return null;
+        const tempAlignment = book.substring(start, got.index).trim();
+        const tempSize = got[1].trim();
+        res.scan = got.index + got[0].length;
+        res.eatWhitespaces();
+        const tempType = matchMonsterType();
+        if(!tempType) return null;
+        res.eatWhitespaces();
+        let tempTags;
+        if(res.get() === '(') {
+            start = res.scan + 1;
+            tempTags = book.substring(start, res.matchRoundPar());
+            res.scan++;
+        }
+        res.eatWhitespaces();
+        res.eatNewlines();
+        if(!res.matchInsensitive("Init")) {
+            if(!res.matchInsensitive("Int")) return null;
+        }
+        res.eatWhitespaces();
+        start = res.scan;
+        if(res.get() === '+' || res.get() === '-') res.scan++;
+        const tempInitiative = book.substring(start, res.eatDigits());
+        res.eatWhitespaces();
+        let tempSpecialInit;
+        if(res.get() === '(') {
+            start = res.scan + 1;
+            tempSpecialInit = book.substring(start, res.matchRoundPar());
+            res.scan++;
+            res.eatWhitespaces();
+        }
+        if(res.get() === ',' || res.get() === ';') res.scan++;
+        res.eatWhitespaces();
+        start = res.scan;
+        const headerEnd = res.findInsensitive("\nOffense\n");
+        if(headerEnd >= book.length) return null;
+        let tempNotes = book.substring(start, headerEnd);
+        
+        return {
+            name: tempName,
+            cr: tempCR,
+            alignment: tempAlignment,
+            size: tempSize,
+            type: tempType,
+            init: tempInitiative,
+            
+            experience: xp,
+            example: leveledCreature,
+            tags: tempTags,
+            specialInitiative: tempSpecialInit,
+            extraNotes: tempNotes,
+            
+            index: headerStart,
+            remaining: book.substring(headerEnd - 1);
+        };
+    };
+    return res;
+    
+    
+    function matchMonsterType() {
+        for(let key in monsterType) {
+            if(res.matchInsensitive(key)) return key;
+        }
+        return null;
+    }
+    
+    function endsWithNumber(string) {
+        let scan;
+        for(scan = string.length - 1; scan; scan--) {
+            if(string.charAt(scan) < '0' || string.charAt(scan) > '9') {
+                break;
+            }
+        }
+        if(scan === string.length - 1) return null;
+        if(string.charAt(scan) !== ' ' && string.charAt(scan) !== '\t') return null;
+        return string;
+    }
+    
+    // Given a position in the book, go to the character immediately following the previous newline.
+    // Identity if book[position] is newline or pos === 0.
+    function lineStart(pos) {
+        while(pos > 0 && book.charAt(pos) !== '\n') pos--;
+        if(pos === 0) return pos;
+        return pos + 1;
     }
 }
 
@@ -576,25 +626,27 @@ function Parser(body) {
 }
 
 
+const monsterType = {
+    "aberration": 8,
+    "animal": 8,
+    "construct": 10,
+    "dragon": 12,
+    "elemental": 8,
+    "fey": 6,
+    "giant": 8,
+    "humanoid": 8,
+    "magical beast": 10,
+    "monstrous humanoid": 8,
+    "ooze": 10,
+    "outsider": 8,
+    "plant": 8,
+    "undead": 12,
+    "vermin": 8
+};
+
+
 function understandMonster(interval) {
     /** Map from type to string to hit dice, it could really be everything. */
-    const monsterType = {
-        "aberration": 8,
-        "animal": 8,
-        "construct": 10,
-        "dragon": 12,
-        "elemental": 8,
-        "fey": 6,
-        "giant": 8,
-        "humanoid": 8,
-        "magical beast": 10,
-        "monstrous humanoid": 8,
-        "ooze": 10,
-        "outsider": 8,
-        "plant": 8,
-        "undead": 12,
-        "vermin": 8
-    };
     if(!monsterType[interval.headInfo.type.toLowerCase()]) {
         if(!interval.errors) interval.errors = [];
         interval.errors.push('Unknown type "' + interval.headInfo.type + '"');
