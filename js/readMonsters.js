@@ -143,9 +143,8 @@ function partitions(book) {
             headInfo: mangleName(head),
             body: null
         };
-        book = head.remaining;
-        head = new HeaderParser(book).match();
-        if(!head) found.body = book;
+        head = new HeaderParser(head.remaining).match();
+        if(!head) found.body = head.remaining;
         else found.body = book.substr(0, head.index);
         cand.push(found);
     }
@@ -185,27 +184,45 @@ function HeaderParser(book) {
         const tempName = book.substring(start, got.index).trim();
         const tempCR = got[1];
         res.scan = got.index + got[0].length;
-        got = book.match(/\n+XP ((?:(?:\d?\d?\d,){1,3}\d\d\d)|\d?\d?\d?)(?: each)?\n+/);
+        res.eatNewlines();
         let xp;
-        if(got.index <= headerStart) return null;
-        if(got) {
-            xp = got[1];
-            res.scan = got.index + got[0].length;
+        if(res.matchInsensitive('XP ')) { // optional, can be inferred from CR
+            res.eatWhitespaces();
+            let digits = '';
+            let c, separator = false;
+            while(c = res.get()) {
+                if(c >= '0' && c <= '9') {
+                    digits += c;
+                    res.scan++;
+                    separator = false;
+                }
+                else if(c === '.' || c === ',') {
+                    if(separator) return null;
+                    separator = true;
+                    res.scan++;
+                }
+                else if(c === ' ' || c === '\t' || c === '\n') break;
+                else return null;
+            }
+            xp = digits;
+            this.eatWhitespaces();
+            this.matchInsensitive('each');
         }
-        else { } // nothing, this is optional as it can be inferred from CR
         start = res.eatNewlines();
         const line = book.substring(start, res.goNewline()).trim();
         let leveledCreature;
-        if(endsWithNumber(line)) leveledCreature = line; // optional
-        else res.scan = start;
-        res.eatNewlines();
+        if(line.match(/^(?:CE|CN|CG|NE|N|NG|LE|LN|LG)\s+/i)) res.scan = start;
+        else {
+            leveledCreature = line; // optional
+            res.eatNewlines();
+        }
         // Matching the alignment is quite complicated because it comes with plenty of (rare) modifications
         start = res.scan;
-        got = book.match(/\s+(Fine|Diminutive|Tiny|Small|Medium|Large|Huge|Gargantuan|Colossal)\s+/i);
+        got = this.findNearestInsensitiveWord([ 'Fine', 'Diminutive', 'Tiny', 'Small',
+                                                'Medium', 'Large', 'Huge', 'Gargantuan', 'Colossal' ]);
         if(!got) return null;
         const tempAlignment = book.substring(start, got.index).trim();
-        const tempSize = got[1].trim();
-        res.scan = got.index + got[0].length;
+        const tempSize = got.matched;
         res.eatWhitespaces();
         const tempType = matchMonsterType();
         if(!tempType) return null;
@@ -268,18 +285,6 @@ function HeaderParser(book) {
         return null;
     }
     
-    function endsWithNumber(string) {
-        let scan;
-        for(scan = string.length - 1; scan; scan--) {
-            if(string.charAt(scan) < '0' || string.charAt(scan) > '9') {
-                break;
-            }
-        }
-        if(scan === string.length - 1) return null;
-        if(string.charAt(scan) !== ' ' && string.charAt(scan) !== '\t') return null;
-        return string;
-    }
-    
     // Given a position in the book, go to the character immediately following the previous newline.
     // Identity if book[position] is newline or pos === 0.
     function lineStart(pos) {
@@ -296,7 +301,17 @@ function HeaderParser(book) {
             'LG': true,    'LN': true,    'LE': true
         };
         if(single[al]) return headInfo;
-        alert('TODO, unrecognized alignment');
+        let parts = headInfo.alignment.split(/\sor\s|,| /gi);
+        let good = [];
+        for(let check = 0; check < parts.length; check++) {
+            const str = parts[check].trim().toUpperCase();
+            if(!single[str]) {
+                alert(headInfo.name + ': unrecognized alignment ' + str + ', ignored.');
+                continue;
+            }
+            good.push(str);
+        }
+        headInfo.alignment = good;
         return headInfo;
     }
 
@@ -614,6 +629,35 @@ function Parser(body) {
         eatDigits: function() {
             while(this.scan < body.length && this.get(this.scan) >= '0' && this.get(this.scan) <= '9') this.scan++;
             return this.scan;
+        },
+        
+        findNearestInsensitiveWord: function(wut) {
+            if(wut instanceof Array === false) wut = [ wut ];
+            for(; this.scan < body.length; this.scan++) {
+                let c = this.get();
+                if(c !== ' ' && c !== '\t' && c !== '\n') continue;
+                while(this.scan < body.length) {
+                    c = this.get();
+                    if(c !== ' ' && c !== '\t' && c !== '\n') break;
+                    this.scan++;
+                }
+                if(this.scan >= body.length) return;
+                let check, word;
+                const start = this.scan;
+                for(check = 0; check < wut.length; check++) {
+                    word = wut[check];
+                    if(this.matchInsensitive(wut[check])) break;
+                }
+                if(check === wut.length) continue;
+                c = this.get();
+                if(c !== ' ' && c !== '\t' && c !== '\n') continue;
+                this.scan++;
+                return {
+                    index: start,
+                    matched: word
+                };
+            }
+            return null;
         }
     };
 }
