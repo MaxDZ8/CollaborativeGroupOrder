@@ -30,7 +30,7 @@ window.onload = function() {
                 const el = candidates[loop];
                 el.feedbackRow = document.createElement("TR");
                 el.nameTagCell = document.createElement("TD");
-                el.nameTagCell.innerHTML = '<strong>' + el.name[0] + '</strong>' + alternateNames(el.name);
+                el.nameTagCell.innerHTML = '<strong>' + el.headInfo.name[0] + '</strong>' + alternateNames(el.headInfo.name);
                 el.feedbackRow.innerHTML = "<td>" + (loop + 1) + "</td>";
                 el.feedbackRow.appendChild(el.nameTagCell);
                 parseListFeedback.appendChild(el.feedbackRow);
@@ -57,20 +57,20 @@ window.onload = function() {
     }
 
     function normalizeNames(interval) {
-        for(let outer = 0; outer < interval.name.length; outer++) { 
+        for(let outer = 0; outer < interval.headInfo.name.length; outer++) { 
             let titolised = "";
             let upper = true;
-            for(let loop = 0; loop < interval.name[outer].length; loop++) {
-                let c = interval.name[outer].charAt(loop);
+            for(let loop = 0; loop < interval.headInfo.name[outer].length; loop++) {
+                let c = interval.headInfo.name[outer].charAt(loop);
                 titolised += upper? c.toUpperCase() : c.toLowerCase();
                 upper = c <= ' ';
             }
-            interval.name[outer] = titolised;
+            interval.headInfo.name[outer] = titolised;
             for(let loop = 0; loop < monsters.length; loop++) { // fast accept matching
-                if(monsters[loop].engName.toLowerCase() == interval.name[outer].toLowerCase()) return;
+                if(monsters[loop].engName.toLowerCase() == interval.headInfo.name[outer].toLowerCase()) return;
             }
             let whitespace = /\s+/g;
-            let match = interval.name[outer].toLowerCase();
+            let match = interval.headInfo.name[outer].toLowerCase();
             for(let loop = 0; loop < monsters.length; loop++) { // fast accept matching
                 let reference = monsters[loop].engName.toLowerCase();
                 if(match === reference) return; // found and nothing to do.
@@ -87,7 +87,7 @@ window.onload = function() {
                     dst++;
                 }
                 if(src === reference.length && dst === match.length) {
-                    interval.name[outer] = monsters[loop].engName;
+                    interval.headInfo.name[outer] = monsters[loop].engName;
                     break;
                 }
             }
@@ -140,7 +140,7 @@ function partitions(book) {
     let head = new HeaderParser(book).match();
     while(head) {
         let found = {
-            headInfo: mangleName(mangleType(mangleAlignment(head))),
+            headInfo: mangleName(head),
             body: null
         };
         book = head.remaining;
@@ -172,37 +172,6 @@ function partitions(book) {
         }
         return header;
     }
-
-    function mangleType(header) {
-        let scan;
-        for(scan = 0; scan < header.type.length; scan++) {
-            if(header.type.charAt(scan) === '(') break;
-        }
-        if(scan === header.type.length) return header; // no subtype, rare, but not impossible
-        scan++;
-        let level = 1;
-        const beg = scan;
-        while(scan < header.type.length) {
-            if(header.type.charAt(scan) === '(') level++;
-            else if(header.type.charAt(scan) === ')') {
-                level--;
-                if(level === 0) break;
-            }
-            scan++;
-        }
-        let par = header.type.substring(beg, scan).split(',');
-        header.tags = [];
-        for(let loop = 0; loop < par.length; loop++) {
-            if(par[loop]) par[loop] = par[loop].trim();
-            if(par[loop] && par[loop].length) header.tags.push(par[loop]);
-        }
-        header.type = header.type.substring(0, beg - 1).trim();
-        return header;
-    }
-    
-    function mangleAlignment(header) {
-        alert('todo!');
-    }
 }
 
 
@@ -228,6 +197,7 @@ function HeaderParser(book) {
         const line = book.substring(start, res.goNewline()).trim();
         let leveledCreature;
         if(endsWithNumber(line)) leveledCreature = line; // optional
+        else res.scan = start;
         res.eatNewlines();
         // Matching the alignment is quite complicated because it comes with plenty of (rare) modifications
         start = res.scan;
@@ -266,11 +236,11 @@ function HeaderParser(book) {
         if(res.get() === ',' || res.get() === ';') res.scan++;
         res.eatWhitespaces();
         start = res.scan;
-        const headerEnd = res.findInsensitive("\nOffense\n");
+        const headerEnd = res.findInsensitive("\nDefense\n");
         if(headerEnd >= book.length) return null;
         let tempNotes = book.substring(start, headerEnd);
         
-        return {
+        return mangleAlignment({
             name: tempName,
             cr: tempCR,
             alignment: tempAlignment,
@@ -280,13 +250,13 @@ function HeaderParser(book) {
             
             experience: xp,
             example: leveledCreature,
-            tags: tempTags,
+            tags: mangleTags(tempTags),
             specialInitiative: tempSpecialInit,
             extraNotes: tempNotes,
             
             index: headerStart,
-            remaining: book.substring(headerEnd - 1);
-        };
+            remaining: book.substring(headerEnd - 1)
+        });
     };
     return res;
     
@@ -316,6 +286,29 @@ function HeaderParser(book) {
         while(pos > 0 && book.charAt(pos) !== '\n') pos--;
         if(pos === 0) return pos;
         return pos + 1;
+    }
+    
+    function mangleAlignment(headInfo) {
+        const al = headInfo.alignment.toUpperCase();
+        const single = {
+            'CG': true,    'CN': true,    'CE': true,
+            'NE': true,     'N': true,    'NG': true,
+            'LG': true,    'LN': true,    'LE': true
+        };
+        if(single[al]) return headInfo;
+        alert('TODO, unrecognized alignment');
+        return headInfo;
+    }
+
+    function mangleTags(tagString) {
+        if(!tagString) return [];
+        let split = tagString.split(',');
+        let result = [];
+        for(let loop = 0; loop < split.length; loop++) {
+            let nice = split[loop].trim();
+            if(nice.length) result.push(nice);
+        }
+        return result;
     }
 }
 
@@ -354,7 +347,7 @@ function MonsterParser(interval) {
         if(!interval || !interval.body || !interval.headInfo) return;
 
         let partition = {
-            defense: this.findInsensitive("\nDefense"),
+            defense: this.findInsensitive("\nDefense\n"),
             offense: this.findInsensitive("\noffense\n"),
             statistics: this.findInsensitive('\nStatistics\n')
         };
@@ -765,9 +758,9 @@ function feedbackMonster(interval) {
         parsed += cell(interval.headInfo.alignment + brApp(interval.headInfo.alignNotes)); // alignment
         parsed += cell(interval.headInfo.size); // size
         interval.nameTagCell.innerHTML += '<br>' + interval.headInfo.type + listSubTypes(interval.headInfo.tags) + (interval.augmenting? ', augmenting: ' + interval.augmenting : ''); // "type" example: outsider (native)
-        let init = interval.headInfo.initiative;
-        if(interval.headInfo.initSpecials) {
-            init += '<br><abbr title="' + attributeString(interval.headInfo.initSpecials) + '">[1]</abbr>';
+        let init = interval.headInfo.init;
+        if(interval.headInfo.specialInitiative) {
+            init += '<br><abbr title="' + attributeString(interval.headInfo.specialInitiative) + '">[1]</abbr>';
         }
         parsed += cell(init); // initiative
         interval.feedbackRow.innerHTML += parsed;
