@@ -143,8 +143,9 @@ function partitions(book) {
             headInfo: mangleName(head),
             body: null
         };
+        const input = head.remaining;
         head = new HeaderParser(head.remaining).match();
-        if(!head) found.body = head.remaining;
+        if(!head) found.body = input;
         else found.body = book.substr(0, head.index);
         cand.push(found);
     }
@@ -209,20 +210,18 @@ function HeaderParser(book) {
             this.matchInsensitive('each');
         }
         start = res.eatNewlines();
-        const line = book.substring(start, res.goNewline()).trim();
         let leveledCreature;
-        if(line.match(/^(?:CE|CN|CG|NE|N|NG|LE|LN|LG)\s+/i)) res.scan = start;
-        else {
-            leveledCreature = line; // optional
-            res.eatNewlines();
-        }
+        const lastConsumed = res.scan;
         // Matching the alignment is quite complicated because it comes with plenty of (rare) modifications
         start = res.scan;
         got = this.findNearestInsensitiveWord([ 'Fine', 'Diminutive', 'Tiny', 'Small',
                                                 'Medium', 'Large', 'Huge', 'Gargantuan', 'Colossal' ]);
         if(!got) return null;
+        start = lineStart(got.index);
         const tempAlignment = book.substring(start, got.index).trim();
         const tempSize = got.matched;
+        leveledCreature = book.substring(lastConsumed, start).trim();
+        if(leveledCreature.length === 0) leveledCreature = undefined;
         res.eatWhitespaces();
         const tempType = matchMonsterType();
         if(!tempType) return null;
@@ -301,8 +300,20 @@ function HeaderParser(book) {
             'LG': true,    'LN': true,    'LE': true
         };
         if(single[al]) return headInfo;
-        let parts = headInfo.alignment.split(/\sor\s|,| /gi);
+        const asCreator = headInfo.alignment.match(/\(same as creator\)/i);
+        if(asCreator) {
+            headInfo.alignment = headInfo.alignment.replace(asCreator[0], "").trim();
+            mangleAlignment(headInfo);
+            headInfo.alignment.push('$as_creator');
+            return headInfo;
+        }
+        const any = headInfo.alignment.match(/Any alignment/i);
+        if(any) {
+            headInfo.alignment = [ '$any' ];
+            return headInfo;
+        }
         let good = [];
+        let parts = headInfo.alignment.split(/\sor\s|,| /gi);
         for(let check = 0; check < parts.length; check++) {
             const str = parts[check].trim().toUpperCase();
             if(!single[str]) {
@@ -787,7 +798,7 @@ function feedbackMonster(interval) {
     let parsed;
     if(interval.errors && interval.errors.length) {
         let dst = document.getElementById('errors');
-        parsed = '<strong>' + interval.name + '</strong><ul>';
+        parsed = '<strong>' + interval.headInfo.name[0] + '</strong><ul>';
         for(let loop = 0; loop < interval.errors.length; loop++) {
             parsed += '<li>' + interval.errors[loop] + '</li>';
         }
