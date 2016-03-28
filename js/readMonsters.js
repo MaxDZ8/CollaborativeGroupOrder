@@ -178,9 +178,24 @@ function partitions(book) {
 function HeaderParser(book) {
     let res = new Parser(book);
     res.match = function() {
-        let got = book.match(/\s+CR (\d+(?:\/\d+)?)\n/);
+        const headerStartPattern = /\s+CR (\d+(?:\/\d+)?)\n/;
+        let got = book.match(headerStartPattern);
         if(!got) return null;
         let start = lineStart(got.index);
+        res.scan = got.index + got[0].length;
+        const headerEnd = res.findInsensitive("\nDefense\n");
+        if(headerEnd >= book.length) return null;
+        res.scan = got.index + got[0].length;
+        const next = book.substring(res.goNewline(), headerEnd).match(headerStartPattern);
+        if(next) { // found a potential header before next section, can happen in generic text and it's perfectly valid.
+            // what I must do is to restart processing, that's not much of a big deal!
+            let again = lineStart(next.index) - 1; //-1 for extra safety
+            let res = new HeaderParser(book.substring(again)).match(); // let's talk about really ugly recursion
+            if(!res) return res;
+            res.index += again;
+            return res;
+        }
+        res.scan = start;
         const headerStart = start;
         const tempName = book.substring(start, got.index).trim();
         const tempCR = got[1];
@@ -215,7 +230,7 @@ function HeaderParser(book) {
         // Matching the alignment is quite complicated because it comes with plenty of (rare) modifications
         start = res.scan;
         got = this.findNearestInsensitiveWord([ 'Fine', 'Diminutive', 'Tiny', 'Small',
-                                                'Medium', 'Large', 'Huge', 'Gargantuan', 'Colossal' ]);
+                                                'Medium', 'Large', 'Huge', 'Gargantuan', 'Colossal' ], headerEnd);
         if(!got) return null;
         start = lineStart(got.index);
         const tempAlignment = book.substring(start, got.index).trim();
@@ -252,8 +267,6 @@ function HeaderParser(book) {
         if(res.get() === ',' || res.get() === ';') res.scan++;
         res.eatWhitespaces();
         start = res.scan;
-        const headerEnd = res.findInsensitive("\nDefense\n");
-        if(headerEnd >= book.length) return null;
         let tempNotes = book.substring(start, headerEnd);
         
         return mangleAlignment({
@@ -642,17 +655,18 @@ function Parser(body) {
             return this.scan;
         },
         
-        findNearestInsensitiveWord: function(wut) {
+        findNearestInsensitiveWord: function(wut, limit) {
             if(wut instanceof Array === false) wut = [ wut ];
-            for(; this.scan < body.length; this.scan++) {
+            if(limit === undefined) limit = body.length;
+            for(; this.scan < limit; this.scan++) {
                 let c = this.get();
                 if(c !== ' ' && c !== '\t' && c !== '\n') continue;
-                while(this.scan < body.length) {
+                while(this.scan < limit) {
                     c = this.get();
                     if(c !== ' ' && c !== '\t' && c !== '\n') break;
                     this.scan++;
                 }
-                if(this.scan >= body.length) return;
+                if(this.scan >= limit) return;
                 let check, word;
                 const start = this.scan;
                 for(check = 0; check < wut.length; check++) {
