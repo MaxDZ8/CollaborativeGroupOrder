@@ -312,7 +312,10 @@ function HeaderParser(book) {
             'NE': true,     'N': true,    'NG': true,
             'LG': true,    'LN': true,    'LE': true
         };
-        if(single[al]) return headInfo;
+        if(single[al]) {
+            headInfo.alignment = [ headInfo.alignment ];
+            return headInfo;
+        }
         const asCreator = headInfo.alignment.match(/\(same as creator\)/i);
         if(asCreator) {
             headInfo.alignment = headInfo.alignment.replace(asCreator[0], "").trim();
@@ -320,7 +323,19 @@ function HeaderParser(book) {
             headInfo.alignment.push('$as_creator');
             return headInfo;
         }
-        const any = headInfo.alignment.match(/Any alignment/i);
+        const always = headInfo.alignment.match(/\s*always\s+/i);
+        if(always) {
+            headInfo.alignment = headInfo.alignment.replace(always[0], "").trim();
+            mangleAlignment(headInfo);
+            headInfo.alignment.push('$restricted');
+            return headInfo;
+        }
+        const usually = headInfo.alignment.match(/\s*(?:usually|often)\s+/i); // same as 'most likely', which is the rules say: "...the alignment that the creature is most likely to have...", so just ignore
+        if(usually) {
+            headInfo.alignment = headInfo.alignment.replace(usually[0], "").trim();
+            return mangleAlignment(headInfo);
+        }
+        const any = headInfo.alignment.match(/Any(?: alignment)?/i);
         if(any) {
             headInfo.alignment = [ '$any' ];
             return headInfo;
