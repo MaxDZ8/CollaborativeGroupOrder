@@ -146,7 +146,7 @@ function partitions(book) {
         const input = head.remaining;
         head = new HeaderParser(head.remaining).match();
         if(!head) found.body = input;
-        else found.body = book.substr(0, head.index);
+        else found.body = input.substr(0, head.index);
         cand.push(found);
     }
     return cand;
