@@ -41,7 +41,8 @@ window.onload = function() {
                 understandMonster(candidates[loop]);
                 feedbackMonster(candidates[loop]);
             }
-            document.getElementById('save').onclick = extractUsefulData;
+            monsters = candidates;
+            document.getElementById('save').onclick = saveData_callback;
         };
         reader.readAsText(document.getElementById('realDealInput').files[0]);
     }
@@ -94,7 +95,7 @@ window.onload = function() {
         }
     }
 
-    function extractUsefulData() {
+    function saveData_callback() {
         let book = fetch([ 'best1',
                            'best2',
                            'best3',
@@ -111,6 +112,16 @@ window.onload = function() {
             alert("Select book to save first.");
             return;
         }
+        const serialize = {
+            wellKnown: book,
+            monsters: []
+        };
+        for(let loop = 0; loop < monsters.length; loop++) serialize.monsters.push(usefulData(monsters[loop]));
+        let clickme = document.createElement('A');
+        clickme.href = URL.createObjectURL(new Blob([ JSON.stringify(serialize, null, 4) ], { type: "text/text" }));
+        clickme.innerHTML = "Click me to save results (again).";
+        document.body.appendChild(clickme);
+        clickme.click();
     }
     
     function fetch(what) {
@@ -119,6 +130,24 @@ window.onload = function() {
             if(el && el.checked) return el.value;
         }
         return null;
+    }
+    
+    // For the time being I need everything I might need for the search, CR and init.
+    function usefulData(mob) {
+        const filtered = {
+            name: mob.headInfo.name,
+            cr: mob.headInfo.cr,
+            alignment: mob.headInfo.alignment,
+            tags: mob.headInfo.tags,
+            size: mob.headInfo.size,
+            type: mob.headInfo.type,
+            initiative: [ mob.headInfo.init ]
+        };
+        if(mob.headInfo.example) filtered.example = mob.headInfo.example;
+        if(mob.headInfo.specialInitiative) {
+            for(let cp = 0; cp < mob.headInfo.specialInitiative.length; cp++) filtered.initiative.push(mob.headInfo.specialInitiative[cp]);
+        }
+        return filtered;
     }
 }
 
@@ -849,6 +878,32 @@ function understandMonster(interval) {
         }
     }
     
+    const knownActions = {
+        'climbing': 'while_climbing'
+    };
+    const knownPlaces = {
+        'trees': 'tree'
+    };
+    
+    // Transform initiative entries.
+    interval.headInfo.init = {
+        modifier: 1 * interval.headInfo.init
+    };
+    if(interval.headInfo.specialInitiative) {
+        let parts = interval.headInfo.specialInitiative.split(' ');
+        if(parts.length !== 4) alert("Special initiative modifier, unknown syntax!");
+        else if(parts[1].toLowerCase() !== 'when') alert("conditional initiative, 'when' expected.");
+        else if(knownActions[parts[2]] === undefined) alert("conditional initiative, unknown action '" + parts[2] + "'");
+        else if(knownPlaces[parts[3]] === undefined) alert("conditional initiative, unknown place '" + parts[3] + "'");
+        else {
+            interval.headInfo.specialInitiative = [{
+                place: knownPlaces[parts[3]],
+                action: knownActions[parts[2]],
+                modifier: 1 * parts[0]
+            }];
+        }
+    }
+    
     function removeByIndex(arr, goner) {
         let shorter = [];
         for(let cp = 0; cp < goner; cp++) shorter.push(arr[cp]);
@@ -878,9 +933,11 @@ function feedbackMonster(interval) {
         parsed += cell(interval.headInfo.alignment + brApp(interval.headInfo.alignNotes)); // alignment
         parsed += cell(interval.headInfo.size); // size
         interval.nameTagCell.innerHTML += '<br>' + interval.headInfo.type + listSubTypes(interval.headInfo.tags) + (interval.augmenting? ', augmenting: ' + interval.augmenting : ''); // "type" example: outsider (native)
-        let init = interval.headInfo.init;
+        let init = interval.headInfo.init.modifier;
         if(interval.headInfo.specialInitiative) {
-            init += '<br><abbr title="' + attributeString(interval.headInfo.specialInitiative) + '">[1]</abbr>';
+            for(let loop = 0; loop < interval.headInfo.specialInitiative.length; loop++) {
+                init += '<br><abbr title="' + attributeString(describeSpecInit(interval.headInfo.specialInitiative[loop])) + '">[1]</abbr>';
+            }
         }
         parsed += cell(init); // initiative
         interval.feedbackRow.innerHTML += parsed;
@@ -938,6 +995,16 @@ function feedbackMonster(interval) {
         let len = st.special? st.special.length : 0;
         for(let loop = 0; loop < len; loop++) text += '<sub><abbr title="' + attributeString(st.special[loop]) + '">[' + (loop + 1) + ']</abbr></sub>';
         return text;
+    }
+    
+    function describeSpecInit(wut) {
+        let res = 'if(';
+        if(wut.action) res += wut.action;
+        if(wut.place) {
+            if(wut.action) res += ' AND ';
+            res += wut.place;
+        }
+        return res + ') init=' + wut.modifier;
     }
 }
 
