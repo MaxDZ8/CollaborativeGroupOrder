@@ -752,6 +752,18 @@ const monsterType = {
 
 
 function understandMonster(interval) {
+    for(let loop = 0; loop < interval.headInfo.name.length; loop++) {
+        const n = interval.headInfo.name[loop];
+        let msg;
+        if(n.match(',')) msg = ' contains a comma. You probably want to put this in tags instead.';
+        else if(n.match(/\sof\s/i) || n.match(/\s?the\s/i)) msg = ' is this an unique monster? If so, it belongs to adventure libraries.';
+        if(msg) {
+            if(!interval.errors) interval.errors = [];
+            interval.errors.push('Warning: name[' + loop + ']=\"' + n + '"' + msg);
+            interval.headInfo.tags = removeByIndex(interval.headInfo.tags, loop);
+        }
+    }
+            
     /** Map from type to string to hit dice, it could really be everything. */
     if(!monsterType[interval.headInfo.type.toLowerCase()]) {
         if(!interval.errors) interval.errors = [];
