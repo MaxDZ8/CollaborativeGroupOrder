@@ -748,7 +748,8 @@ function understandMonster(interval) {
         "reptilian",
         "shapechanger",
         "swarm",
-        "water"
+        "water",
+        'sasquatch' // best3
     ];
     const race = {
         'azata': true,
@@ -766,7 +767,33 @@ function understandMonster(interval) {
         'gnome': true,
         'tengu': true,
         'gnoll': true,
-        'oni': true
+        'oni': true,
+        'aeon': true,        // best2
+        'agathion': true,
+        'dhampir': true,
+        'grippli': true,
+        'inevitable': true,
+        'nightshade': true,
+        'protean': true,
+        'qlippoth': true,
+        'skulk': true,
+        'adlet': true, // best3
+        'asura': true,
+        'behemoth': true,
+        'catfolk': true,
+        'clockwork': true,
+        'demodand': true,
+        'div': true,
+        'kami': true,
+        'leshy': true,
+        'rakshasa': true,
+        'ratfolk': true,
+        'vanara': true,
+        'vishkanya': true,
+        'psychopomp': true // AP43-48
+    };
+    const synon = {
+        'daemon': 'demon'
     };
     const discardWithWarn = {
         'varies': 'This tag implies monster changes according to some conditions I cannot understand. You probably want to fix this yourself. Tag ignored.'
@@ -774,6 +801,7 @@ function understandMonster(interval) {
     if(interval.headInfo.tags) {
         for(let loop = 0; loop < interval.headInfo.tags.length; loop++) {
             let tag = interval.headInfo.tags[loop];
+            if(synon[tag]) tag = synon[tag];
             if(race[tag.toLowerCase()]) {
                 interval.headInfo.race = tag.toLowerCase();
                 interval.headInfo.tags = removeByIndex(interval.headInfo.tags, loop);
