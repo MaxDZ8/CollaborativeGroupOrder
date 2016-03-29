@@ -841,6 +841,14 @@ function understandMonster(interval) {
         }
     }
     
+    if(interval.headInfo.experience) {
+        const canon = canonicalXpFromCr(interval.headInfo.cr);
+        if(interval.headInfo.experience == canon) interval.headInfo.experience = undefined;
+        else {
+            interval.headInfo.experience -= canon;
+        }
+    }
+    
     function removeByIndex(arr, goner) {
         let shorter = [];
         for(let cp = 0; cp < goner; cp++) shorter.push(arr[cp]);
@@ -866,7 +874,7 @@ function feedbackMonster(interval) {
         if(interval.headInfo.race) interval.nameTagCell.innerHTML = interval.headInfo.race + ', ' + interval.nameTagCell.innerHTML;
         parsed = cell('Basic'); // parse type
         parsed += cell(interval.headInfo.cr); // Challange Ratio
-        parsed += cell(interval.headInfo.experience || '<em>inferred</em>'); // XP
+        parsed += cell(interval.headInfo.experience || '&#10003;'); // XP
         parsed += cell(interval.headInfo.alignment + brApp(interval.headInfo.alignNotes)); // alignment
         parsed += cell(interval.headInfo.size); // size
         interval.nameTagCell.innerHTML += '<br>' + interval.headInfo.type + listSubTypes(interval.headInfo.tags) + (interval.augmenting? ', augmenting: ' + interval.augmenting : ''); // "type" example: outsider (native)
@@ -944,4 +952,26 @@ function attributeString(string) {
         else out += '&#' + c.charCodeAt(0) + ';';
     }
     return out;
+}
+
+
+function canonicalXpFromCr(cr) {
+    const fractions = {
+        '1/8':  50,
+        '1/6':  65,
+        '1/4': 100,
+        '1/3': 135,
+        '1/2': 200
+    };
+    if(fractions[cr]) return fractions[cr];
+    let xp = 400;
+    let increment = 200;
+    for(let loop = 1; loop < cr; loop++) {
+        if(loop < 3) xp += increment;
+        else {
+            if(loop % 2) increment *= 2;
+            xp += increment;
+        }
+    }
+    return xp;
 }
