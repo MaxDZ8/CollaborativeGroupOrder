@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Argorth, Cinder scourge"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CE",
+            "$restricted"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 3
+    }
+}

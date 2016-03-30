@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Adaro"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

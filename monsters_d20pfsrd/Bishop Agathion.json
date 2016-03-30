@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Bishop Agathion"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "aquatic",
+            " extraplanar",
+            " good"
+        ]
+    }
+}

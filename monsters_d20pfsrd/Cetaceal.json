@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Cetaceal"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "agathion",
+            " aquatic",
+            " extraplanar",
+            " good"
+        ]
+    }
+}

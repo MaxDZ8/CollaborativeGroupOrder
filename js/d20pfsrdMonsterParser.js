@@ -1,8 +1,4 @@
-
-// Just copypaste this in the console and I have a quick and effective monster data extraction.
-// Parses d20pfsrd monster page.
-
-function extractMonsterData() {
+(function /*extractMonsterData*/() {
     "use strict";
     
     const races = {
@@ -99,19 +95,19 @@ function extractMonsterData() {
         'vermin': true
     };
     
-    const titleTable = getTitle();
+    const titleTable = getTitle('TH') || getTitle('TD');
     if(!titleTable) {
         alert('Parse failed to match title table.');
         return;
     }
-    const headerInfo = nextSiblingBeing(titleTable.node, 'P');
-    if(!headerInfo) {
+    const mob = {
+        head: parseHeader_1(titleTable) ||
+              parseHeader_2(titleTable)
+    };
+    if(!mob.head) {
         alert('Parse failed to match header info.');
         return;
     }
-    const mob = {
-        head: parseHeader(titleTable, headerInfo)
-    };
     const clickme = document.createElement('A');
     clickme.href = URL.createObjectURL(new Blob([JSON.stringify(mob, null, 4)], { type: 'text/text' }));
     clickme.innerHTML = "Click me to save results (again).";
@@ -120,31 +116,35 @@ function extractMonsterData() {
     clickme.click();
     
     
-    function getTitle(root) {
-        if(undefined === root) {
-            const all = document.getElementsByTagName('TABLE');
+    function getTitle(tagToMatch, el) {
+        if(undefined === el) {
+            const all = document.getElementsByTagName(tagToMatch);
             for(let loop = 0; loop < all.length; loop++) {
-                const matched = getTitle(all[loop]);
+                const matched = getTitle(tagToMatch, all[loop]);
                 if(matched) return matched;
             }
             return null;
         }
-        if(root.tagName !== 'TABLE') return null;
-        if(root.childNodes.length !== 3) return null;
-        if(root.childNodes[1].tagName !== 'TBODY') return null;
-        const tbody = root.childNodes[1];
-        if(tbody.childNodes.length !== 3) return null;
-        if(tbody.childNodes[1].tagName !== 'TR') return null;
-        const tr = tbody.childNodes[1];
-        if(tr.childNodes.length !== 5) return null;
-        const name = tr.childNodes[1];
-        const cr = tr.childNodes[3];
-        if(name.tagName !== cr.tagName || cr.tagName !== 'TH') return null;
-        const challangeRatio = cr.innerText.match(/^CR\s+(\d+|(?:1\/\d))$/i);
+        if(el.tagName !== tagToMatch) return null;
+        const challangeRatio = el.innerText.match(/^CR\s+(\d+|(?:1\/\d))$/i);
         if(!challangeRatio) return null;
+        const td = el;
+        el = el.parentNode;
+        let count = 0, matched = false, first;
+        for(let loop = 0; loop < el.childNodes.length; loop++) {
+            if(el.childNodes[loop].tagName === tagToMatch) {
+                if(first === undefined) first = el.childNodes[loop];
+                if(el.childNodes[loop] === td) matched = true;
+                count++;
+            }
+        }
+        if(count !== 2 || !matched) return null;
+        if(el.parentNode.tagName !== 'TBODY' && el.parentNode.tagName !== 'THEAD') return null;
+        el = el.parentNode;
+        if(el.parentNode.tagName !== 'TABLE') return null;
         return {
-            node: root,
-            name: mangleName(name.innerText),
+            node: el.parentNode,
+            name: mangleName(first.textContent),
             cr: challangeRatio[1]
         };
         
@@ -169,35 +169,24 @@ function extractMonsterData() {
     }
     
     
-    function parseHeader(title, overview) {
-        let str = overview.innerHTML.replace(/<br>/g, '').replace(/<\/?b>/g, "").replace(/<\/a>/g, "").replace(/<a href="[^"]+">/g, "").trim().split('\n');
-        let guess = 0;
-        if(str[guess].match(/^XP /)) guess++; // ignore this, CR is sufficient
-        let example;
-        if(!parseSizeLine(str[guess])) example = str[guess++];
-        const szl = parseSizeLine(str[guess++]);
-        if(!szl) {
-            alert('Size-alignment line expected.');
-            return;
-        }
-        szl.alignment = mangleAlignment(szl.alignment);
-        const tmpInit = str[guess].match(/Init ([+-]?\d\d?\d?)[,;]? /i);
-        if(!tmpInit) {
-            alert('Initiative line expected.');
-            return;
-        }
-        let result = {
-            name: title.name,
-            cr: title.cr,
-            alignment: szl.alignment,
-            size: szl.size,
-            type: szl.type,
-            init: 1 * tmpInit[1]
-        };
-        if(example) result.example = example;
-        if(szl.race) result.race = szl.race;
-        if(szl.tags) result.tags = szl.tags;
-        return result;
+    function parseHeader_1(title) {
+        let overview = nextSiblingBeing(title.node, 'P');
+        if(!overview) { // variation A
+			overview = title.node.parentNode;
+			if(overview.tagName !== 'DIV') return null;
+			overview = overview.parentNode;
+			if(overview.tagName !== 'FONT') return null;
+			const div = nextSiblingBeing(overview, 'DIV');
+			const p = nextSiblingBeing(overview, 'P');
+			if(!div && !p) return null;
+			if(div.innerText.trim().toLowerCase().match(/defense(?:s)?/)) overview = p;
+			else {
+				overview = div.firstElementChild;
+				if(overview.tagName !== 'P') return null;
+			}
+		}
+        let str = overview.innerText.trim();
+        return parseHeaderParagraph(str, title);
     }
     
     function parseSizeLine(line) {
@@ -276,4 +265,51 @@ function extractMonsterData() {
         headInfo.alignment = good;
         return headInfo;
     }
-}
+    
+    function parseHeader_2(title) {
+        if(title.node.parentNode.tagName !== 'DIV') return null;
+        const ignore = title.node.parentNode;
+        const cont = ignore.parentNode;
+        let header = '';
+        for(let loop = 0; loop < cont.childNodes.length; loop++) {
+            const el = cont.childNodes[loop];
+            if(el === ignore || !el.innerText) continue;
+            if(el.innerText.trim().toLowerCase() === 'defense') break;
+            header += el.innerText;
+        }
+        //alert(header);
+        return parseHeaderParagraph(header, title);
+    }
+    
+    
+    function parseHeaderParagraph(str, title) {
+        str = str.split('\n');
+        let guess = 0;
+        if(str[guess].match(/^XP /)) guess++; // ignore this, CR is sufficient
+        let example;
+        if(!parseSizeLine(str[guess])) example = str[guess++];
+        const szl = parseSizeLine(str[guess++]);
+        if(!szl) {
+            alert('Size-alignment line expected.');
+            return;
+        }
+        szl.alignment = mangleAlignment(szl.alignment);
+        const tmpInit = str[guess].match(/Init ([+-]?\d\d?\d?)[,;]? /i);
+        if(!tmpInit) {
+            alert('Initiative line expected.');
+            return;
+        }
+        let result = {
+            name: title.name,
+            cr: title.cr,
+            alignment: szl.alignment,
+            size: szl.size,
+            type: szl.type,
+            init: 1 * tmpInit[1]
+        };
+        if(example) result.example = example;
+        if(szl.race) result.race = szl.race;
+        if(szl.tags) result.tags = szl.tags;
+        return result;
+    }
+}());

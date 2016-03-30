@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Android"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 3,
+        "example": "Android rogue 1",
+        "race": "android"
+    }
+}

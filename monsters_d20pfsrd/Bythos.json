@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Bythos"
+        ],
+        "cr": "16",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "aeon",
+            " extraplanar"
+        ]
+    }
+}

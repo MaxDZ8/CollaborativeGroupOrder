@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Chiropteal"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "agathion",
+            " extraplanar",
+            " good"
+        ]
+    }
+}

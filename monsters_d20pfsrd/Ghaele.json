@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Ghaele"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "azata",
+            " chaotic",
+            " extraplanar",
+            " good",
+            " shapechanger"
+        ]
+    }
+}

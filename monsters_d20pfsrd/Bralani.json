@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Bralani"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "azata",
+            " chaotic",
+            " extraplanar",
+            " good",
+            " shapechanger"
+        ]
+    }
+}

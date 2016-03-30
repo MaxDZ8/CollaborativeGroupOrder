@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Cervinal"
+        ],
+        "cr": "17",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "agathion",
+            " extraplanar",
+            " good"
+        ]
+    }
+}

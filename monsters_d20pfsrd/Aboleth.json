@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Aboleth"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

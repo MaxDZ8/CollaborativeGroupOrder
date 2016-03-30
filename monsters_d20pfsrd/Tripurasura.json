@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Tripurasura"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "asura",
+            " evil",
+            " extraplanar",
+            " lawful"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Angel, Cassisian"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "angel",
+            " extraplanar",
+            " good"
+        ]
+    }
+}

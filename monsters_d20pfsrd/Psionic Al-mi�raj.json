@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "PSIONIC AL-MI’RAJ"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "psionic"
+        ]
+    }
+}

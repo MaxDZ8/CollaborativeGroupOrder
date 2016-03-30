@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Andrenjinyi"
+        ],
+        "cr": "14",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "aquatic",
+            " native"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Akhlut"
+        ],
+        "cr": "13",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 6,
+        "tags": [
+            "cold",
+            " shapechanger"
+        ]
+    }
+}

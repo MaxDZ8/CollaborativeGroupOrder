@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Adlet"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 12,
+        "tags": [
+            "adlet",
+            " cold"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Abyssal Harvester"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "aberration",
+        "init": 0,
+        "tags": [
+            "chaotic",
+            " evil",
+            " extraplanar"
+        ]
+    }
+}

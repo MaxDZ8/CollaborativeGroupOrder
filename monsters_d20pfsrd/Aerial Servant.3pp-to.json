@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Aerial Servant\n"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "air",
+            " extraplanar",
+            " elemental"
+        ]
+    }
+}

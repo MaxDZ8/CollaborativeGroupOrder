@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Harbinger Archon"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "archon",
+            " extraplanar",
+            " good",
+            " lawful"
+        ]
+    }
+}

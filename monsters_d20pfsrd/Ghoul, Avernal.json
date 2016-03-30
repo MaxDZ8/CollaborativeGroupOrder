@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Ghoul, Avernal"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "evil",
+            " extraplanar",
+            " lawful"
+        ]
+    }
+}

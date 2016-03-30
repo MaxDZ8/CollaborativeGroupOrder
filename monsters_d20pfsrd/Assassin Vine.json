@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Assassin Vine"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 0
+    }
+}

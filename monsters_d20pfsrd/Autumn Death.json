@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Autumn Death"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7
+    }
+}

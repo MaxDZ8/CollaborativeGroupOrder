@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Lantern Archon"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "archon",
+            " extraplanar",
+            " good",
+            " lawful"
+        ]
+    }
+}

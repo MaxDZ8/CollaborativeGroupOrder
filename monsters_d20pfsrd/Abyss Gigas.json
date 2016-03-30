@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Abyss Gigas"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "humanoid",
+        "init": 5,
+        "tags": [
+            "chaotic",
+            " evil",
+            " extraplanar",
+            " giant"
+        ]
+    }
+}

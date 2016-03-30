@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Hound Archon"
+        ],
+        "cr": "4",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "archon",
+            " extraplanar",
+            " good",
+            " lawful"
+        ]
+    }
+}

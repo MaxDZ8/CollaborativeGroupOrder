@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Atomie"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 7
+    }
+}

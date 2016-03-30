@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Adhukait"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "asura",
+            " evil",
+            " extraplanar",
+            " lawful"
+        ]
+    }
+}

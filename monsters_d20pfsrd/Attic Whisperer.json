@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Attic Whisperer"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 8
+    }
+}

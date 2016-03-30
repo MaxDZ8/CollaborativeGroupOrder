@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Solar"
+        ],
+        "cr": "23",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "angel",
+            " extraplanar",
+            " good"
+        ]
+    }
+}

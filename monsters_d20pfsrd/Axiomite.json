@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Axiomite"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "extraplanar",
+            " lawful"
+        ]
+    }
+}

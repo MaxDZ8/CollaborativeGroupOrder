@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ankou"
+        ],
+        "cr": "14",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "fey",
+        "init": 13,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Lyrakien"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "azata",
+            " chaotic",
+            " extraplanar",
+            " good"
+        ]
+    }
+}

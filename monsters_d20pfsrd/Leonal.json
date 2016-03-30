@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Leonal"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "agathion",
+            " extraplanar",
+            " good"
+        ]
+    }
+}

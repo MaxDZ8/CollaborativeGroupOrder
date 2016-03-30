@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Amphisbaena Encepalon Gorger"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 6,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

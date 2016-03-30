@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Azruverda"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 2
+    }
+}

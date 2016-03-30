@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Avoral"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "agathion",
+            " extraplanar",
+            " good"
+        ]
+    }
+}

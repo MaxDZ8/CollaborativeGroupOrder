@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Akaruzug\n"
+        ],
+        "cr": "14",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 2
+    }
+}

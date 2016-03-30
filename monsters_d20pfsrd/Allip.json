@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Allip"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 5,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

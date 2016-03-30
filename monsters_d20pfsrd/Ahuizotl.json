@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ahuizotl"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

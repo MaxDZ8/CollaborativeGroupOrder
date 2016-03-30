@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Aranea"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}
