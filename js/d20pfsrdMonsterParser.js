@@ -125,7 +125,7 @@
             return null;
         }
         if(el.tagName !== tagToMatch) return null;
-        const challangeRatio = el.innerText.trim().match(/^CR\s+(\d+|(?:1\/\d))$/i);
+        let challangeRatio = el.innerText.trim().match(/^CR\s*(\d+|(?:1\/\d))$/i);
         if(!challangeRatio) return null;
         const td = el;
         el = el.parentNode;
@@ -144,7 +144,7 @@
         return {
             node: el.parentNode,
             name: mangleName(first.textContent),
-            cr: challangeRatio[1]
+            cr: 'CR ' + challangeRatio[1]
         };
         
         function mangleName(str) {
@@ -250,20 +250,18 @@
         let header = '';
         const limit = /\n+\s*defense(?:s)?\n+/i;
         while(cont) {
-            let content = cont.textContent.trim();
+            // .textContent is standard but kinda broken, consider:
+            //    <b>line 1</b><span><br></br>line 2</span>
+            // The resulting .textContent is "line1line2"
+            // Whereas .innerText is not standard but correctly resolves to "line1\nline2".
+            let content = cont.innerText.trim();
             //*************************/alert("START:"+content);/****************************/
-            if(!content.startsWith(title.name[0])) {
+            const start = content.match(new RegExp('\n+\s*' + realPars(title.node.innerText) + '\s*\n+'));
+            if(!start) {
                 cont = cont.parentNode;
                 continue;
             }
-            content = content.substr(title.name[0].length).trim();
-            //*************************/alert("CR?:"+content);/****************************/
-            const search = 'CR ' + title.cr;
-            if(!content.startsWith(search)) {
-                cont = cont.parentNode;
-                continue;
-            }
-            content = content.substr(search.length);
+            content = content.substr(start.index + start[0].length).trim();
             //*************************/alert("match?:"+content);/****************************/
             const match = content.match(limit);
             if(!match) { 
@@ -284,6 +282,10 @@
         }
         //*************************/alert("mangling:"+header);/*******************************/
         return parseHeaderParagraph(header, title);
+        
+        function realPars(str) {
+            return str.replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+        }
     }
     
     
