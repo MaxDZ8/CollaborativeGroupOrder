@@ -143,29 +143,17 @@
         if(el.parentNode.tagName !== 'TABLE') return null;
         return {
             node: el.parentNode,
-            name: mangleName(first.textContent).trim(),
+            name: mangleName(first.textContent),
             cr: 'CR ' + challangeRatio[1]
         };
         
         function mangleName(str) {
             const aka = str.match(/\(([^)])\)/);
-            if(!aka) return [ str ];
-            return [ str, aka[1] ];
+            if(!aka) return [ str.trim() ];
+            return [ str.substring(0, aka.index).trim(), aka[1].trim() ];
         }
     }
     
-    
-    function nextSiblingBeing(me, tag) {
-        const parent = me.parentNode;
-        let scan = 0;
-        while(parent.childNodes[scan] !== me) scan++;
-        scan++;
-        while(scan < parent.childNodes.length) {
-            if(parent.childNodes[scan].tagName === tag) return parent.childNodes[scan];
-            scan++;
-        }
-        return null;
-    }
     
     function parseSizeLine(line) {
         const match = line.match(/\s(Fine|Diminutive|Tiny|Small|Medium|Large|Huge|Gargantuan|Colossal)\s/i);
@@ -183,7 +171,7 @@
                     continue;
                 }
                 if(filteredTags === undefined) filteredTags = [];
-                filteredTags.push(str);
+                filteredTags.push(str.trim());
             }
         }
         let matchType = line.substring(match.index + match[0].length, par? par.index : line.length).trim().toLowerCase();
@@ -231,17 +219,16 @@
         }
         
         let good = [];
-        let parts = headInfo.alignment.split(/\sor\s|,| /gi);
+        let parts = alignmentString.split(/\sor\s|,| /gi);
         for(let check = 0; check < parts.length; check++) {
             const str = parts[check].trim().toUpperCase();
             if(!single[str]) {
-                alert(headInfo.name + ': unrecognized alignment ' + str + ', ignored.');
+                alert('unrecognized alignment ' + str + ', ignored.');
                 continue;
             }
             good.push(str);
         }
-        headInfo.alignment = good;
-        return headInfo;
+        return good;
     }
     
     function parseHeader(title) {
