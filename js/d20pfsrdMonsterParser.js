@@ -143,7 +143,7 @@
         if(el.parentNode.tagName !== 'TABLE') return null;
         return {
             node: el.parentNode,
-            name: mangleName(first.textContent),
+            name: titolize(mangleName(first.textContent)),
             cr: challangeRatio[1]
         };
         
@@ -151,6 +151,14 @@
             const aka = str.match(/\(([^)])\)/);
             if(!aka) return [ str.trim() ];
             return [ str.substring(0, aka.index).trim(), aka[1].trim() ];
+        }
+        
+        function titolize(arr) {
+            for(let loop = 0; loop < arr.length; loop++) {
+                const words = arr[loop].trim().split(' ');
+                arr[loop] = words[0].charAt(0).toUpperCase() + words[0].substr(1).toLowerCase();
+                for(let cp = 1; cp < words.length; cp++) arr[loop] += ' ' + words[cp].charAt(0).toUpperCase() + words[cp].substr(1).toLowerCase();
+            }
         }
     }
     
