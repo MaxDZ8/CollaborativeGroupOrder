@@ -289,7 +289,7 @@
     
     function parseHeaderParagraph(str, title) {
         str = str.split('\n');
-        for(let loop = 0; loop < str.length; loop++) str[loop] = str[loop].replace(/\u00a0/g, " ");
+        for(let loop = 0; loop < str.length; loop++) str[loop] = str[loop].replace(/\u00a0/g, " ").replace(/\u2013/g, '-');
         let guess = 0;
         if(str[guess].match(/^XP /)) guess++; // ignore this, CR is sufficient
         let example;
@@ -300,7 +300,7 @@
             return;
         }
         szl.alignment = mangleAlignment(szl.alignment);
-        alert('!!'+str[guess]+'\n'+str[guess].charCodeAt(4)+'\n'+str[guess].charCodeAt(5));
+        //*************/alert('!!'+str[guess]+'\n'+str[guess].charCodeAt(4)+'\n'+str[guess].charCodeAt(5));/*************/
         const tmpInit = str[guess].match(/Init ([+-]?\d\d?\d?)[,;]? /i);
         if(!tmpInit) {
             alert('Initiative line expected.');
