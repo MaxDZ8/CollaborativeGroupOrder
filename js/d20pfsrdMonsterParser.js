@@ -299,7 +299,7 @@
         }
         szl.alignment = mangleAlignment(szl.alignment);
         //*************/alert('!!'+str[guess]+'\n'+str[guess].charCodeAt(4)+'\n'+str[guess].charCodeAt(5));/*************/
-        const tmpInit = str[guess].match(/Init ([+-]?\d\d?\d?)[,;]?[ \n]?/i);
+        const tmpInit = str[guess].match(/Init(?:iative)? ([+-]?\d\d?\d?)[,;]?[ \n]?/i);
         if(!tmpInit) {
             alert('Initiative line expected.');
             return;
