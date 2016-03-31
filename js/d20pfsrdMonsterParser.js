@@ -144,7 +144,7 @@
         return {
             node: el.parentNode,
             name: mangleName(first.textContent),
-            cr: 'CR ' + challangeRatio[1]
+            cr: challangeRatio[1]
         };
         
         function mangleName(str) {
