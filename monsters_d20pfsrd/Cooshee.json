@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Cooshee"
+            "COOSHEE"
         ],
-        "cr": "CR 1",
+        "cr": "CR 2",
         "alignment": [
-            "N"
+            "NG"
         ],
         "size": "Medium",
-        "type": "animal",
+        "type": "magical beast",
         "init": 3
     }
 }
