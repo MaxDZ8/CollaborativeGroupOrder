@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Crawling Hand, Giant"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2
+    }
+}

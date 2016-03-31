@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Cerebric Fungus"
+        ],
+        "cr": "CR 3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 4
+    }
+}

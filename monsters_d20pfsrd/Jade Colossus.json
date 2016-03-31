@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Jade Colossus"
+        ],
+        "cr": "CR 16",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "construct",
+        "init": 0
+    }
+}

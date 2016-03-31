@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Caterprism"
+        ],
+        "cr": "CR 6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Chon Chon Swarm"
+        ],
+        "cr": "CR 3",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Tiny",
+        "type": "aberration",
+        "init": 6,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

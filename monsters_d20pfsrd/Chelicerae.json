@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Chelicerae"
+        ],
+        "cr": "CR 8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 3
+    }
+}

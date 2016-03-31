@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Fiery Corpse Orgy"
+        ],
+        "cr": "CR 14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 8,
+        "example": "Variant corpse orgy",
+        "tags": [
+            "fire"
+        ]
+    }
+}

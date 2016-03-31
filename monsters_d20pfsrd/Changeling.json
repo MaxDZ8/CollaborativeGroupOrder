@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Changeling"
+        ],
+        "cr": "CR 1/2",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": -1,
+        "example": "Female changeling witch 1",
+        "race": "changeling"
+    }
+}

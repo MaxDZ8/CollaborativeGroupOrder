@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Coral Capuchin"
+        ],
+        "cr": "CR 1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

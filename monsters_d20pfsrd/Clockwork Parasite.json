@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Parasite"
+        ],
+        "cr": "CR 2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 0
+    }
+}

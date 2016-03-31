@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Crawling Hand"
+        ],
+        "cr": "CR 1/2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Diminutive",
+        "type": "undead",
+        "init": 0
+    }
+}

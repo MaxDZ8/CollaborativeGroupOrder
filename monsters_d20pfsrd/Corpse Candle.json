@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "CORPSE CANDLE"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "incorporeal",
+            "water"
+        ]
+    }
+}

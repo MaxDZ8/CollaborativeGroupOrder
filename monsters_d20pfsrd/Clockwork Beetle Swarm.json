@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Beetle Swarm"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 7,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Crucifixion Spirit"
+        ],
+        "cr": "CR 11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

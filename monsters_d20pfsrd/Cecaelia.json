@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Cecaelia"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 4,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

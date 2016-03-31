@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Couatl"
+        ],
+        "cr": "CR 10",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "native"
+        ]
+    }
+}

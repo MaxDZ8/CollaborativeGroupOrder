@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Carrion Moth"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 4
+    }
+}

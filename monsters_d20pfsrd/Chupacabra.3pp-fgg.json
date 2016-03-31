@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Chupacabra"
+        ],
+        "cr": "CR 2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 2
+    }
+}

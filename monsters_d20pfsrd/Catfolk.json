@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Catfolk"
+        ],
+        "cr": "CR 1/2",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 3,
+        "example": "Catfolk ranger 1",
+        "race": "catfolk"
+    }
+}

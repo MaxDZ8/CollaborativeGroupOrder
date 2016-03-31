@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "CHERUM"
+        ],
+        "cr": "CR 22",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Colossal",
+        "type": "aberration",
+        "init": 8,
+        "tags": [
+            "fire"
+        ]
+    }
+}

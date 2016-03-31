@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Charybdis"
+        ],
+        "cr": "CR 13",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Gargantuan",
+        "type": "aberration",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

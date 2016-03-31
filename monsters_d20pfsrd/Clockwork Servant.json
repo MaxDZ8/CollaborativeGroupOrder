@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Servant"
+        ],
+        "cr": "CR 2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": 6,
+        "tags": [
+            "clockwork"
+        ]
+    }
+}

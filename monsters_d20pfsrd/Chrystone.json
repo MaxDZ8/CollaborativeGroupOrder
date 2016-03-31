@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Chrystone"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": -1
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Chemosit"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 7
+    }
+}

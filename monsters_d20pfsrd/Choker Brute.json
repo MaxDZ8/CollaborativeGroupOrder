@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Choker Brute"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 8,
+        "example": "Advanced choker"
+    }
+}

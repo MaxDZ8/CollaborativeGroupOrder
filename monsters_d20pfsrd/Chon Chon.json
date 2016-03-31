@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Chon Chon"
+        ],
+        "cr": "CR 1/2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Tiny",
+        "type": "aberration",
+        "init": 2
+    }
+}

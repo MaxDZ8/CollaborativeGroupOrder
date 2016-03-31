@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Carrionstorm"
+        ],
+        "cr": "CR 1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "undead",
+        "init": 4,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

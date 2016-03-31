@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Carrion Claw"
+        ],
+        "cr": "CR 6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 6
+    }
+}

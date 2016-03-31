@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "CORPSE ROOK"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 3
+    }
+}

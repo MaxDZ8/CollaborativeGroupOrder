@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Cayhound"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6
+    }
+}

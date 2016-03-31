@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "CLOCKWORK SCOUT"
+        ],
+        "cr": "CR 1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 3
+    }
+}

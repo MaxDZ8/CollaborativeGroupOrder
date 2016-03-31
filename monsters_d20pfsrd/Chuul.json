@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Chuul"
+        ],
+        "cr": "CR 7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 7,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

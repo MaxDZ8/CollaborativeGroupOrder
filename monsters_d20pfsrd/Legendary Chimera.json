@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Legendary Chimera"
+        ],
+        "cr": "CR 13",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 4
+    }
+}

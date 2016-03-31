@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Great Cyclops"
+        ],
+        "cr": "CR 12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "giant"
+        ]
+    }
+}

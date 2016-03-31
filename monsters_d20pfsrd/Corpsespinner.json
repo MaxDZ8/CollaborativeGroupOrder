@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "CORPSESPINNER"
+        ],
+        "cr": "CR 11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

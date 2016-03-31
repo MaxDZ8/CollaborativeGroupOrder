@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "CLOCKWORK TITAN"
+        ],
+        "cr": "CR 6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 0
+    }
+}

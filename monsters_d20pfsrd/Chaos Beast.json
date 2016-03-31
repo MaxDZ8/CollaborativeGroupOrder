@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Chaos Beast"
+        ],
+        "cr": "CR 7",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "chaotic",
+            "extraplanar"
+        ]
+    }
+}

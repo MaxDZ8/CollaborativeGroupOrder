@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Cerberus"
+        ],
+        "cr": "CR 23",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 11,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

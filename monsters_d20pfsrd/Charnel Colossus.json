@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Charnel Colossus"
+        ],
+        "cr": "CR 19",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Colossal",
+        "type": "undead",
+        "init": 3
+    }
+}

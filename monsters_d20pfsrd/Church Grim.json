@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Church Grim"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ceratioidi"
+        ],
+        "cr": "CR 3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 0,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}
