@@ -143,7 +143,7 @@
         if(el.parentNode.tagName !== 'TABLE') return null;
         return {
             node: el.parentNode,
-            name: mangleName(first.textContent),
+            name: mangleName(first.textContent).trim(),
             cr: 'CR ' + challangeRatio[1]
         };
         
