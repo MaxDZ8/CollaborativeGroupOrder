@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gulper Eel"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

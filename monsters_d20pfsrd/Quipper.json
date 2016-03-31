@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Quipper"
+        ],
+        "cr": "CR 1/8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Fine",
+        "type": "animal",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

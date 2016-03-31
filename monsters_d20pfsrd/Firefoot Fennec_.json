@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Firefoot Fennec\n"
+        ],
+        "cr": "CR 1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 3
+    }
+}

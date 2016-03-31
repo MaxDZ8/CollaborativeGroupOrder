@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Snake Swarm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 6,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

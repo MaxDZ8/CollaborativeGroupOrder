@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dire Shark (Megalodon) \n"
+        ],
+        "cr": "CR 9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "animal",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

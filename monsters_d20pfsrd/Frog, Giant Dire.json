@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Frog, Giant Dire"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 1
+    }
+}

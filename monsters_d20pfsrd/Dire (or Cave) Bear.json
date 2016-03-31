@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dire (or Cave) Bear"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 5
+    }
+}

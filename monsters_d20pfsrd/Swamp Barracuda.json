@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Swamp Barracuda"
+        ],
+        "cr": "CR 2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "animal",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

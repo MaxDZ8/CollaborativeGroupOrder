@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Murder of Crows"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 6,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

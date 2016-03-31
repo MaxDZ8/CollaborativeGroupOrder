@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Viper"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 3
+    }
+}

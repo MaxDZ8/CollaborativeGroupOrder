@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dragonfish"
+        ],
+        "cr": "CR 1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

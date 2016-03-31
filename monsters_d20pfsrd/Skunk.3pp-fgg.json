@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Skunk"
+        ],
+        "cr": "1/8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 1
+    }
+}

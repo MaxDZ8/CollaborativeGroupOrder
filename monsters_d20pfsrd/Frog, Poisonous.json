@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Frog, Poisonous"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 1
+    }
+}

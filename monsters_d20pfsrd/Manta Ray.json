@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Manta Ray\n"
+        ],
+        "cr": "CR 1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

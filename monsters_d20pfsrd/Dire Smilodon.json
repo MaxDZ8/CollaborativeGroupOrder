@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dire Smilodon"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 3
+    }
+}

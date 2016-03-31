@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gar"
+        ],
+        "cr": "CR 1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "animal",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Electric Catfish"
+        ],
+        "cr": "CR 6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

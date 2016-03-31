@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Monkey"
+        ],
+        "cr": "CR 1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 2
+    }
+}

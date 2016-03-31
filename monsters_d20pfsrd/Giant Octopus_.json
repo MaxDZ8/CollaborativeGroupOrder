@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Octopus\n"
+        ],
+        "cr": "CR 8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

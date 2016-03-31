@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gorilla"
+        ],
+        "cr": "CR 2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 2
+    }
+}

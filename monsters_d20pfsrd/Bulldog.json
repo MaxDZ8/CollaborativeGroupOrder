@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Bulldog"
+        ],
+        "cr": "CR 1/3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 1
+    }
+}

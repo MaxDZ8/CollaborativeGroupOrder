@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Sheep"
+        ],
+        "cr": "CR 1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "animal",
+        "init": 1
+    }
+}

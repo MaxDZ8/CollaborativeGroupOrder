@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Seahorse"
+        ],
+        "cr": "CR 2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

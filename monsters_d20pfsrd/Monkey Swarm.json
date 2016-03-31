@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Monkey Swarm"
+        ],
+        "cr": "CR 2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 7,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

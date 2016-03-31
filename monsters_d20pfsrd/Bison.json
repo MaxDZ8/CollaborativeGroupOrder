@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Bison\n"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 0
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Pike"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 8,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

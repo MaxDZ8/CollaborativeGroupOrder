@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dire Barracuda"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "animal",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

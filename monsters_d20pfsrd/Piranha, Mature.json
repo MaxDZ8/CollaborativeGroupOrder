@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Piranha, Mature"
+        ],
+        "cr": "CR 1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Great White Shark"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "animal",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

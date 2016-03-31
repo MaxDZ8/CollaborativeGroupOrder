@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Wolf, Dire"
+        ],
+        "cr": "CR 3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 2
+    }
+}

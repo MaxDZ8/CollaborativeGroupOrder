@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Squid, Giant \n"
+        ],
+        "cr": "CR 9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "animal",
+        "init": 7,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}
