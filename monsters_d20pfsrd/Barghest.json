@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Barghest"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "evil",
+            " extraplanar",
+            " lawful",
+            " shapechanger"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Buraq"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2
+    }
+}

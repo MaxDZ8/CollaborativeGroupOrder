@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Blood Orchid"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5
+    }
+}

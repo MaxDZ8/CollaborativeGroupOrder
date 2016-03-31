@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Bone Reaper Reflection"
+        ],
+        "cr": "CR 10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 2
+    }
+}

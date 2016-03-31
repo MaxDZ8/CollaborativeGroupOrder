@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Burning Medusa Head"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 1
+    }
+}

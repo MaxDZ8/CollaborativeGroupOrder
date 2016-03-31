@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Black Jinni"
+        ],
+        "cr": "CR 12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

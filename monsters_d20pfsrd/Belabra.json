@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "BELABRA"
+        ],
+        "cr": "CR 3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 2
+    }
+}

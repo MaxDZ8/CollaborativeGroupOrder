@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "BLOOD BUSH"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 0
+    }
+}

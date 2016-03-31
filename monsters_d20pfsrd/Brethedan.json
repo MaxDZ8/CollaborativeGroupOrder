@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Brethedan"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 0
+    }
+}

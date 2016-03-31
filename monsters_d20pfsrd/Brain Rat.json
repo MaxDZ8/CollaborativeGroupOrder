@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Brain Rat"
+        ],
+        "cr": "CR 1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "psionic"
+        ]
+    }
+}

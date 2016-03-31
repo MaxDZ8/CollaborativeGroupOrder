@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "The Black Rider"
+        ],
+        "cr": "CR 13",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 5
+    }
+}

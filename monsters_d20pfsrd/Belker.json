@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Belker"
+        ],
+        "cr": "CR 6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "air",
+            "elemental",
+            "evil"
+        ]
+    }
+}

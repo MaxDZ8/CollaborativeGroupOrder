@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Blood Queen"
+        ],
+        "cr": "CR 23",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "native"
+        ]
+    }
+}

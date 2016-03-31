@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Basidirond"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 1,
+        "tags": [
+            "fungus"
+        ]
+    }
+}

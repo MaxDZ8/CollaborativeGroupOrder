@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Blightspawn"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 8
+    }
+}

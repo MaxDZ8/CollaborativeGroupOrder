@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bugbear"
+        ],
+        "cr": "CR 2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "goblinoid"
+        ]
+    }
+}

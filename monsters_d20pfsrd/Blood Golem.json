@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Blood Golem"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5
+    }
+}

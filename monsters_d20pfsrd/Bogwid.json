@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Bogwid"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 8
+    }
+}

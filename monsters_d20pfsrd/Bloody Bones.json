@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Bloody Bones"
+        ],
+        "cr": "CR 4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 1
+    }
+}

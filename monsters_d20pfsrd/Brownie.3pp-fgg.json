@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Brownie"
+        ],
+        "cr": "CR 1",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 8
+    }
+}

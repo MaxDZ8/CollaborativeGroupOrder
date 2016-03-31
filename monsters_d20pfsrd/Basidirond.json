@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Basidirond"
+        ],
+        "cr": "CR 5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 1
+    }
+}

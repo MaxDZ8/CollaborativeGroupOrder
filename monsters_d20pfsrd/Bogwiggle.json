@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bogwiggle"
+        ],
+        "cr": "CR 1",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

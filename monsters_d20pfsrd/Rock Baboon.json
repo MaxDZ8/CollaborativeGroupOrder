@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Rock Baboon"
+        ],
+        "cr": "CR 1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "animal",
+        "init": 2
+    }
+}

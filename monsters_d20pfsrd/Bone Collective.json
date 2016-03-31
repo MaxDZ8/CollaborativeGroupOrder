@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Bone Collective"
+        ],
+        "cr": "CR 11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 9,
+        "example": "9,600 XP",
+        "tags": [
+            "swarm"
+        ]
+    }
+}

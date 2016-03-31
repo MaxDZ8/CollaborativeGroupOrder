@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bunyip"
+        ],
+        "cr": "CR 3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

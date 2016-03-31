@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Variant Bodak"
+        ],
+        "cr": "CR 8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "example": "Bodak",
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

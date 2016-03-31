@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Tempest Behemoth"
+        ],
+        "cr": "CR 22",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": 9,
+        "tags": [
+            "air",
+            "behemoth"
+        ]
+    }
+}

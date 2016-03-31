@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Blodeuwedd queen"
+        ],
+        "cr": "CR 8",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 10
+    }
+}
