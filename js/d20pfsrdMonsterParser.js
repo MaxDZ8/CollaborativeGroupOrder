@@ -159,6 +159,7 @@
                 arr[loop] = words[0].charAt(0).toUpperCase() + words[0].substr(1).toLowerCase();
                 for(let cp = 1; cp < words.length; cp++) arr[loop] += ' ' + words[cp].charAt(0).toUpperCase() + words[cp].substr(1).toLowerCase();
             }
+            return arr;
         }
     }
     
