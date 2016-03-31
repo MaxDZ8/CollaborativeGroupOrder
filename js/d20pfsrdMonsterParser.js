@@ -101,8 +101,7 @@
         return;
     }
     const mob = {
-        head: parseHeader_1(titleTable) ||
-              parseHeader_2(titleTable)
+        head: parseHeader(titleTable)
     };
     if(!mob.head) {
         alert('Parse failed to match header info.');
@@ -126,7 +125,7 @@
             return null;
         }
         if(el.tagName !== tagToMatch) return null;
-        const challangeRatio = el.innerText.match(/^CR\s+(\d+|(?:1\/\d))$/i);
+        const challangeRatio = el.innerText.trim().match(/^CR\s+(\d+|(?:1\/\d))$/i);
         if(!challangeRatio) return null;
         const td = el;
         el = el.parentNode;
@@ -166,27 +165,6 @@
             scan++;
         }
         return null;
-    }
-    
-    
-    function parseHeader_1(title) {
-        let overview = nextSiblingBeing(title.node, 'P');
-        if(!overview) { // variation A
-			overview = title.node.parentNode;
-			if(overview.tagName !== 'DIV') return null;
-			overview = overview.parentNode;
-			if(overview.tagName !== 'FONT') return null;
-			const div = nextSiblingBeing(overview, 'DIV');
-			const p = nextSiblingBeing(overview, 'P');
-			if(!div && !p) return null;
-			if(div.innerText.trim().toLowerCase().match(/defense(?:s)?/)) overview = p;
-			else {
-				overview = div.firstElementChild;
-				if(overview.tagName !== 'P') return null;
-			}
-		}
-        let str = overview.innerText.trim();
-        return parseHeaderParagraph(str, title);
     }
     
     function parseSizeLine(line) {
@@ -266,24 +244,52 @@
         return headInfo;
     }
     
-    function parseHeader_2(title) {
+    function parseHeader(title) {
         if(title.node.parentNode.tagName !== 'DIV') return null;
-        const ignore = title.node.parentNode;
-        const cont = ignore.parentNode;
+        let cont = title.node;
         let header = '';
-        for(let loop = 0; loop < cont.childNodes.length; loop++) {
-            const el = cont.childNodes[loop];
-            if(el === ignore || !el.innerText) continue;
-            if(el.innerText.trim().toLowerCase() === 'defense') break;
-            header += el.innerText;
+        const limit = /\n+\s*defense(?:s)?\n+/i;
+        while(cont) {
+            let content = cont.textContent.trim();
+            //*************************/alert("START:"+content);/****************************/
+            if(!content.startsWith(title.name[0])) {
+                cont = cont.parentNode;
+                continue;
+            }
+            content = content.substr(title.name[0].length).trim();
+            //*************************/alert("CR?:"+content);/****************************/
+            const search = 'CR ' + title.cr;
+            if(!content.startsWith(search)) {
+                cont = cont.parentNode;
+                continue;
+            }
+            content = content.substr(search.length);
+            //*************************/alert("match?:"+content);/****************************/
+            const match = content.match(limit);
+            if(!match) { 
+                cont = cont.parentNode;
+                continue;
+            }
+            content = content.substring(0, match.index).trim();
+            content = content.split('\n');
+            for(let cp = 0; cp < content.length; cp++) {
+                if(content[cp].trim().length === 0) continue;
+                header += content[cp] + '\n';
+            }
+            break;
         }
-        //alert(header);
+        if(!cont) {
+            alert("Failed to match header!");
+            return null;
+        }
+        //*************************/alert("mangling:"+header);/*******************************/
         return parseHeaderParagraph(header, title);
     }
     
     
     function parseHeaderParagraph(str, title) {
         str = str.split('\n');
+        for(let loop = 0; loop < str.length; loop++) str[loop] = str[loop].replace(/\u00a0/g, " ");
         let guess = 0;
         if(str[guess].match(/^XP /)) guess++; // ignore this, CR is sufficient
         let example;
@@ -294,6 +300,7 @@
             return;
         }
         szl.alignment = mangleAlignment(szl.alignment);
+        alert('!!'+str[guess]+'\n'+str[guess].charCodeAt(4)+'\n'+str[guess].charCodeAt(5));
         const tmpInit = str[guess].match(/Init ([+-]?\d\d?\d?)[,;]? /i);
         if(!tmpInit) {
             alert('Initiative line expected.');
