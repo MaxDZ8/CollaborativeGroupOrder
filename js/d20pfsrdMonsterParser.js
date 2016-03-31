@@ -113,6 +113,7 @@
     clickme.download = mob.head.name[0] + '.json';
     document.body.appendChild(clickme);
     clickme.click();
+    return 'Success!';
     
     
     function getTitle(tagToMatch, el) {
@@ -129,15 +130,14 @@
         if(!challangeRatio) return null;
         const td = el;
         el = el.parentNode;
-        let count = 0, matched = false, first;
+        let count = 0, first;
         for(let loop = 0; loop < el.childNodes.length; loop++) {
-            if(el.childNodes[loop].tagName === tagToMatch) {
+            if(el.childNodes[loop].tagName === 'TH' || el.childNodes[loop].tagName === 'TD') {
                 if(first === undefined) first = el.childNodes[loop];
-                if(el.childNodes[loop] === td) matched = true;
                 count++;
             }
         }
-        if(count !== 2 || !matched) return null;
+        if(count !== 2) return null;
         if(el.parentNode.tagName !== 'TBODY' && el.parentNode.tagName !== 'THEAD') return null;
         el = el.parentNode;
         if(el.parentNode.tagName !== 'TABLE') return null;
@@ -183,7 +183,7 @@
                 filteredTags.push(str.trim());
             }
         }
-        let matchType = line.substring(match.index + match[0].length, par? par.index : line.length).trim().toLowerCase();
+        let matchType = line.substring(match.index + match[0].length, par? par.index : line.length).trim().toLowerCase().replace(/;$/, '');
         if(!monType[matchType.toLowerCase()]) {
             alert('Unknown monster type "' + matchType + '", ignored.');
             return null;
@@ -299,7 +299,7 @@
         }
         szl.alignment = mangleAlignment(szl.alignment);
         //*************/alert('!!'+str[guess]+'\n'+str[guess].charCodeAt(4)+'\n'+str[guess].charCodeAt(5));/*************/
-        const tmpInit = str[guess].match(/Init ([+-]?\d\d?\d?)[,;]? /i);
+        const tmpInit = str[guess].match(/Init ([+-]?\d\d?\d?)[,;]?[ \n]?/i);
         if(!tmpInit) {
             alert('Initiative line expected.');
             return;
