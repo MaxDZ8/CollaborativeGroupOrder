@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Brass Dragon, Great Wyrm"
+        ],
+        "cr": "19",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "fire"
+        ]
+    }
+}

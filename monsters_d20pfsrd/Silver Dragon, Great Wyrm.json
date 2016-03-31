@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Silver Dragon, Great Wyrm"
+        ],
+        "cr": "22",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "cold"
+        ]
+    }
+}

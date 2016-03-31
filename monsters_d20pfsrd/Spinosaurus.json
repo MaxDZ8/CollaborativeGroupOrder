@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Spinosaurus"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "animal",
+        "init": 6
+    }
+}

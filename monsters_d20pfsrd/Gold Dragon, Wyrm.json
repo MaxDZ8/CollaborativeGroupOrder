@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gold Dragon, Wyrm"
+        ],
+        "cr": "21",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": -2,
+        "tags": [
+            "fire"
+        ]
+    }
+}

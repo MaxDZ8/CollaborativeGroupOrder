@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mature Adult Cloud Dragon"
+        ],
+        "cr": "12",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "air"
+        ]
+    }
+}

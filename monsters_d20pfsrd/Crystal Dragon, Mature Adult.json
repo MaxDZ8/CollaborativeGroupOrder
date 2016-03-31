@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Crystal Dragon, Mature Adult"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "earth"
+        ]
+    }
+}

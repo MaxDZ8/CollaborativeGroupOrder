@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Young Underworld Dragon"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "fire"
+        ]
+    }
+}

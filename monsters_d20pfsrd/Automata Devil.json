@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Automata Devil"
+        ],
+        "cr": "11",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

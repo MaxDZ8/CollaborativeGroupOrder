@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Mature Adult River Dragon"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "aquatic",
+            "fire"
+        ]
+    }
+}

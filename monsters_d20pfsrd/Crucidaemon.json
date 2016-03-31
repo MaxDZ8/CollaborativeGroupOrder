@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Crucidaemon"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

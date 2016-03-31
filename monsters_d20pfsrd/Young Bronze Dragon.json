@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Young Bronze Dragon"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "water"
+        ]
+    }
+}

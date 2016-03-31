@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Barbed Devil (hamatula)"
+        ],
+        "cr": "11",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

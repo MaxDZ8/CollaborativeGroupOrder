@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Tylosaurus"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "animal",
+        "init": 1
+    }
+}

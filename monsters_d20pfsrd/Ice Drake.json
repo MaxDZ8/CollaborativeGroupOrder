@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ice Drake"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "cold"
+        ]
+    }
+}

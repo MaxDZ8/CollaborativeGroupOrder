@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Jubilex (the Faceless Lord)"
+        ],
+        "cr": "23",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

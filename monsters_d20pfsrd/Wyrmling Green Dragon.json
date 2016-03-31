@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Wyrmling Green Dragon"
+        ],
+        "cr": "4",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "air"
+        ]
+    }
+}

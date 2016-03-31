@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Young River Dragon"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 7,
+        "tags": [
+            "aquatic",
+            "fire"
+        ]
+    }
+}

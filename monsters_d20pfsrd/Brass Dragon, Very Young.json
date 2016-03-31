@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Brass Dragon, Very Young"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 6,
+        "tags": [
+            "fire"
+        ]
+    }
+}

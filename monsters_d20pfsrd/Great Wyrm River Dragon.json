@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Great Wyrm River Dragon"
+        ],
+        "cr": "19",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "aquatic",
+            "fire"
+        ]
+    }
+}

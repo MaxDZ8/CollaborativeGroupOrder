@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Magma Dragon, Wyrmling"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 7,
+        "tags": [
+            "fire"
+        ]
+    }
+}

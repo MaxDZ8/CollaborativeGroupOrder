@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ancient Sovereign Dragon"
+        ],
+        "cr": "20",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3
+    }
+}

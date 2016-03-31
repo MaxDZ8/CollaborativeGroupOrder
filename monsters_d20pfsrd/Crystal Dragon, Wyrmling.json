@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Crystal Dragon, Wyrmling"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "earth"
+        ]
+    }
+}

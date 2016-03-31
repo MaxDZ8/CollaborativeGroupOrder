@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Erodaemon"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

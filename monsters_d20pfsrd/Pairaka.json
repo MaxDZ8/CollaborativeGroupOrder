@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Pairaka"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "div",
+            "evil",
+            "extraplanar",
+            "shapechanger"
+        ]
+    }
+}

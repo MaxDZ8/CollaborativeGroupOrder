@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Tormentor Of Souls (tormentor Devil)"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

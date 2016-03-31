@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Wyrm Sovereign Dragon"
+        ],
+        "cr": "21",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 2
+    }
+}

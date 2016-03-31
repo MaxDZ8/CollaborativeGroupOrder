@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Minotaur Guard"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 6,
+        "example": "Dread skeleton elite minotaur",
+        "tags": [
+            "augmented monstrous humanoid"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Shaggy Demodand"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "chaotic",
+            "demodand",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

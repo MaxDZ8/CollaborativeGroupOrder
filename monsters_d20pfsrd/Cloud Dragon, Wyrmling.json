@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Cloud Dragon, Wyrmling"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "air"
+        ]
+    }
+}

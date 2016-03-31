@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dragon Horse"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "air"
+        ]
+    }
+}

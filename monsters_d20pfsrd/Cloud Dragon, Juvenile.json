@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Cloud Dragon, Juvenile"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 0,
+        "tags": [
+            "air"
+        ]
+    }
+}

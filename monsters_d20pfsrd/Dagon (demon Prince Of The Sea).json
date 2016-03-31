@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Dagon (demon Prince Of The Sea)"
+        ],
+        "cr": "27",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "aquatic",
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

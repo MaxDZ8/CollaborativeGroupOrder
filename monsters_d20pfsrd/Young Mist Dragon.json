@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Young Mist Dragon"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "air",
+            "fire",
+            "water"
+        ]
+    }
+}

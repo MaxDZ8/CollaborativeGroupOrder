@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Umbral Dragon, Mature Adult"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

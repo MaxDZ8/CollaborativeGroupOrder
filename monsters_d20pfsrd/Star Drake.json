@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Star Drake"
+        ],
+        "cr": "15",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 12,
+        "tags": [
+            "esoteric/material"
+        ]
+    }
+}

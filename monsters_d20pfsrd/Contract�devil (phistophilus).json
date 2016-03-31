@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Contract devil (phistophilus)"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

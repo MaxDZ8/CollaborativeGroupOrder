@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dracolisk"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 2
+    }
+}

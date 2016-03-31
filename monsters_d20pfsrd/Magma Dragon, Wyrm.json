@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Magma Dragon, Wyrm"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "fire"
+        ]
+    }
+}

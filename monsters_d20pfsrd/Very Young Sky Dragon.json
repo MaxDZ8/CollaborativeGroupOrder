@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Very Young Sky Dragon"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "air"
+        ]
+    }
+}

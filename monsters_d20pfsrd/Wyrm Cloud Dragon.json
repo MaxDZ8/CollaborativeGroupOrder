@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Wyrm Cloud Dragon"
+        ],
+        "cr": "17",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "air"
+        ]
+    }
+}

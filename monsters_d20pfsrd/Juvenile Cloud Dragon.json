@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Juvenile Cloud Dragon"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 6,
+        "tags": [
+            "air"
+        ]
+    }
+}

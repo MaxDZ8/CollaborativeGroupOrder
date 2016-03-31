@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Wyrmling River Dragon"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 7,
+        "tags": [
+            "aquatic",
+            "fire"
+        ]
+    }
+}

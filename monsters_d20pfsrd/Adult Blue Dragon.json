@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Adult Blue Dragon"
+        ],
+        "cr": "13",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "earth"
+        ]
+    }
+}

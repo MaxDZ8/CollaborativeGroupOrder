@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Vermlek"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": -1,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

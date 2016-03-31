@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Bring Dragon, Young"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "extraplanar",
+            "water"
+        ]
+    }
+}

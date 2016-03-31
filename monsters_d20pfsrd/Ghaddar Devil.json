@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Ghaddar Devil"
+        ],
+        "cr": "16",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

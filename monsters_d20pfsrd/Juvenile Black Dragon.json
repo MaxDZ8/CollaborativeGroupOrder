@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Juvenile Black Dragon"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "medium",
+        "type": "dragon",
+        "init": 6,
+        "tags": [
+            "water"
+        ]
+    }
+}

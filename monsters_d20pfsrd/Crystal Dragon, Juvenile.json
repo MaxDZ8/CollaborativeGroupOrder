@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Crystal Dragon, Juvenile"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "earth"
+        ]
+    }
+}

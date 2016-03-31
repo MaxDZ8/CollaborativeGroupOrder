@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dweomercat"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 10
+    }
+}

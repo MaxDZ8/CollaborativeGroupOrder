@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Draug"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "tags": [
+            "water"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Brine Dragon, Young Adult"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "water"
+        ]
+    }
+}

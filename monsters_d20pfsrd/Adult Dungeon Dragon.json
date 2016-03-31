@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Adult Dungeon Dragon"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 0,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

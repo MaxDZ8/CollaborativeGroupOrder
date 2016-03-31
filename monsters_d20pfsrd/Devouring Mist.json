@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Devouring Mist"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 4,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

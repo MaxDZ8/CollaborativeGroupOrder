@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dakon"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "monstrous humanoid",
+        "init": 2
+    }
+}

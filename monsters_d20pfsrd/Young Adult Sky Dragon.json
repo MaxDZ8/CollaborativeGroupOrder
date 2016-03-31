@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Young Adult Sky Dragon"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "air"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Umbral Dragon, Great Wyrm"
+        ],
+        "cr": "22",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

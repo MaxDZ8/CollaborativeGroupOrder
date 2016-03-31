@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Copper Dragon, Wyrmling"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 7,
+        "tags": [
+            "earth"
+        ]
+    }
+}

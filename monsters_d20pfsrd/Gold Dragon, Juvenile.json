@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gold Dragon, Juvenile"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "fire"
+        ]
+    }
+}

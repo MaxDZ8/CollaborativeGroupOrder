@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Adult White Dragon"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "cold"
+        ]
+    }
+}

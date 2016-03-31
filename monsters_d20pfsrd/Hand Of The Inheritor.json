@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Hand Of The Inheritor"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "angel",
+            "extraplanar",
+            "good",
+            "herald",
+            "lawful"
+        ]
+    }
+}

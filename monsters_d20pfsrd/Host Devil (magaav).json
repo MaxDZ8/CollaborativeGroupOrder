@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Host Devil (magaav)"
+        ],
+        "cr": "6",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

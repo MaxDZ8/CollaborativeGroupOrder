@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Ink Devil"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

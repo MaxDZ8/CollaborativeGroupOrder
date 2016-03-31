@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Old Green Dragon"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": -1,
+        "tags": [
+            "air"
+        ]
+    }
+}

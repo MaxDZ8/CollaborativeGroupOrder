@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Judgement Devil (ashmede)"
+        ],
+        "cr": "13",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "example": "Female ashmede (judgement) devil",
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

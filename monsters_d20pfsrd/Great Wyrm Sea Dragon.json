@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Great Wyrm Sea Dragon"
+        ],
+        "cr": "20",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "water"
+        ]
+    }
+}

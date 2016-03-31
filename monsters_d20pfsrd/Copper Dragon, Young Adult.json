@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Copper Dragon, Young Adult"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "earth"
+        ]
+    }
+}

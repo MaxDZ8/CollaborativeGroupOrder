@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ancient Underworld Dragon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "fire"
+        ]
+    }
+}

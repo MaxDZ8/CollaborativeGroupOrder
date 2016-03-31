@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Shadow Angel"
+        ],
+        "cr": "16",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "incorporeal",
+            "lawful"
+        ]
+    }
+}

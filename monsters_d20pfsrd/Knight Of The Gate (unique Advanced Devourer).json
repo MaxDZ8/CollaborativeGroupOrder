@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Knight Of The Gate (unique Advanced Devourer)"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 9,
+        "example": "Advanced devourer",
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

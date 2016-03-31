@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "The Prince In Chains"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "kyton",
+            "lawful"
+        ]
+    }
+}

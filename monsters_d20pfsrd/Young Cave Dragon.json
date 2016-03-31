@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Young Cave Dragon"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "earth"
+        ]
+    }
+}

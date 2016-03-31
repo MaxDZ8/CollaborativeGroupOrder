@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Blood Reaver Devil (garugin)"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

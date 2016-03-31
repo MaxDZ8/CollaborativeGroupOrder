@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Wyrmling Sovereign Dragon"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 6
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Azizou (pain Demon)"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

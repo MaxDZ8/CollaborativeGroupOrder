@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Juvenile Red Dragon"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "fire"
+        ]
+    }
+}

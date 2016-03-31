@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Umbral Dragon, Very Young"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

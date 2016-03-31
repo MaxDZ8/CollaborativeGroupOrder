@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Duergar"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": -1,
+        "example": "Duergar warrior 1",
+        "race": "dwarf"
+    }
+}

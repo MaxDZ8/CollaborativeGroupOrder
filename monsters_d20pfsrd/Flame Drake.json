@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Flame Drake"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "fire"
+        ]
+    }
+}

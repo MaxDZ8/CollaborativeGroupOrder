@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Adult Black Dragon"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "water"
+        ]
+    }
+}

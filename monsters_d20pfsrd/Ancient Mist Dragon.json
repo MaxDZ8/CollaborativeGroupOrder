@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Ancient Mist Dragon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "air",
+            "fire",
+            "water"
+        ]
+    }
+}

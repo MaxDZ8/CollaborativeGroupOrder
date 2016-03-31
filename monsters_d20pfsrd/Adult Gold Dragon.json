@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Adult Gold Dragon"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 0,
+        "tags": [
+            "fire"
+        ]
+    }
+}

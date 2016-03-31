@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Juvenile Sovereign Dragon"
+        ],
+        "cr": "12",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5
+    }
+}

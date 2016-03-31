@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Wyrm Red Dragon"
+        ],
+        "cr": "20",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "fire"
+        ]
+    }
+}

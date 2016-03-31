@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "The Grim White Stag"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Colossal",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "extraplanar",
+            "good",
+            "lawful"
+        ]
+    }
+}

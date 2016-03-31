@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dlurgraven"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "evil"
+        ]
+    }
+}

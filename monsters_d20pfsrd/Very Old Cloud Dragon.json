@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Very Old Cloud Dragon"
+        ],
+        "cr": "15",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "air"
+        ]
+    }
+}

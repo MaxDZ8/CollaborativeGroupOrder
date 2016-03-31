@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Young Crystal Dragon"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "earth",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Charon (boatman Of The Lower Planes)"
+        ],
+        "cr": "23",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

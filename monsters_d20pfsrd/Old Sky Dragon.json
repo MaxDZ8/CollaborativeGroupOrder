@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Old Sky Dragon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "air"
+        ]
+    }
+}

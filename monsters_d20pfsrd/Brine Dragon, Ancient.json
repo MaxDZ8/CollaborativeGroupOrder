@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Brine Dragon, Ancient"
+        ],
+        "cr": "16",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "extraplanar",
+            "water"
+        ]
+    }
+}

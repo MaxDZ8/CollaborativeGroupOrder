@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Dream Spectre"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "incorporeal"
+        ]
+    }
+}

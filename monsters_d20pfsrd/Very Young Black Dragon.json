@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Very Young Black Dragon"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "small",
+        "type": "dragon",
+        "init": 6,
+        "tags": [
+            "water"
+        ]
+    }
+}

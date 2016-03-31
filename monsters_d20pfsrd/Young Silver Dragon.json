@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Young Silver Dragon"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "cold"
+        ]
+    }
+}

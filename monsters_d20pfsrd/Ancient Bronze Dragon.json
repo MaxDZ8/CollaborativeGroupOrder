@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ancient Bronze Dragon"
+        ],
+        "cr": "18",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "water"
+        ]
+    }
+}

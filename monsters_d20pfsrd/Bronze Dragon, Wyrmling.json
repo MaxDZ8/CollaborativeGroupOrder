@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bronze Dragon, Wyrmling"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "water"
+        ]
+    }
+}

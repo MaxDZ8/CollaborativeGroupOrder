@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Wyrm White Dragon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "cold"
+        ]
+    }
+}

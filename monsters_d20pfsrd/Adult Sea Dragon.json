@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Adult Sea Dragon"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "water"
+        ]
+    }
+}

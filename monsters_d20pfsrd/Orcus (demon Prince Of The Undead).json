@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Orcus (demon Prince Of The Undead)"
+        ],
+        "cr": "35",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

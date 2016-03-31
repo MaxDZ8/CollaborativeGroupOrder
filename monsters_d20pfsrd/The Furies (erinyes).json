@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "The Furies (erinyes)"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

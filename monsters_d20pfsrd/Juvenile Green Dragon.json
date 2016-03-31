@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Juvenile Green Dragon"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "air"
+        ]
+    }
+}

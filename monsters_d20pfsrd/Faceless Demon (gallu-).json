@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Faceless Demon (gallu-)"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Awakened Demilich"
+        ],
+        "cr": "16",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "undead",
+        "init": 3,
+        "example": "Demilich necromancer 11"
+    }
+}

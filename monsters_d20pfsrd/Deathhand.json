@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Deathhand"
+        ],
+        "cr": "17",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "undead",
+        "init": 10
+    }
+}

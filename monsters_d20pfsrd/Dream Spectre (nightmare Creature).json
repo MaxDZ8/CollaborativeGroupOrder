@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Dream Spectre (nightmare Creature)"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "incorporeal"
+        ]
+    }
+}

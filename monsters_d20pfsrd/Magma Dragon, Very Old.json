@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Magma Dragon, Very Old"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "fire"
+        ]
+    }
+}

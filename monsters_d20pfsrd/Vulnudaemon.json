@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Vulnudaemon"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Handmaiden  Devil (gylou)"
+        ],
+        "cr": "14",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Hellstoker Devil (marnasoth)"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

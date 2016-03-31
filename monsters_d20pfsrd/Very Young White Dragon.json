@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Very Young White Dragon"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 6,
+        "tags": [
+            "cold"
+        ]
+    }
+}

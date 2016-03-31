@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Brass Dragon, Wyrmling"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "fire"
+        ]
+    }
+}

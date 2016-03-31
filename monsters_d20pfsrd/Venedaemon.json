@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Venedaemon"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

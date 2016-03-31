@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Daughter Of The Dead"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 7
+    }
+}

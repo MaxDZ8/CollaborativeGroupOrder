@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Very Young Sea Dragon"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "water"
+        ]
+    }
+}

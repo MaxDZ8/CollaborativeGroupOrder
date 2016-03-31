@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Great Wyrm Green Dragon"
+        ],
+        "cr": "20",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "air"
+        ]
+    }
+}

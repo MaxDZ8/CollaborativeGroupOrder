@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Cloud Dragon, Great Wyrm"
+        ],
+        "cr": "21",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "air"
+        ]
+    }
+}

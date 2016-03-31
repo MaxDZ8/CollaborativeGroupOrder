@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Horned  Devil (cornugon)"
+        ],
+        "cr": "16",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

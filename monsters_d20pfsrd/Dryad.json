@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dryad"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 4
+    }
+}

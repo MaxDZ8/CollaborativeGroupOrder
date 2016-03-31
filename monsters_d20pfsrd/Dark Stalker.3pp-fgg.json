@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dark Stalker"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 4,
+        "tags": [
+            "dark folk"
+        ]
+    }
+}

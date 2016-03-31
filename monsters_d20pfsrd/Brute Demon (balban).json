@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Brute Demon (balban)"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

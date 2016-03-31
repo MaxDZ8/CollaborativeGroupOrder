@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Copper Dragon, Wyrm"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "earth"
+        ]
+    }
+}

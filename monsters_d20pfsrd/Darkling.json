@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Darkling"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "fey",
+        "init": 3,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

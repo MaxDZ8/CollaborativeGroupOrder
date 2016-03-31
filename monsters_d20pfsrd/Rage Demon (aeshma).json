@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Rage Demon (aeshma)"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

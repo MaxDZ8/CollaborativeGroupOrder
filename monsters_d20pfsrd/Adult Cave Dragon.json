@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Adult Cave Dragon"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": -1,
+        "tags": [
+            "earth"
+        ]
+    }
+}

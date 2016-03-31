@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Great Wyrm Blue Dragon"
+        ],
+        "cr": "21",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "earth"
+        ]
+    }
+}

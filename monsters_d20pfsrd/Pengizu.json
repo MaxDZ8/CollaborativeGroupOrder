@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Pengizu"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": -1,
+        "tags": [
+            "aquatic",
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

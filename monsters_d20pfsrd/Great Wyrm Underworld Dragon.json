@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Great Wyrm Underworld Dragon"
+        ],
+        "cr": "19",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "fire"
+        ]
+    }
+}

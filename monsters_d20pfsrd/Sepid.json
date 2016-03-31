@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Sepid"
+        ],
+        "cr": "14",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "div",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

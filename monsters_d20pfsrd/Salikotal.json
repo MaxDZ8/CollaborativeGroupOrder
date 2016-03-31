@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Salikotal"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 10,
+        "example": "3,200 XP",
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

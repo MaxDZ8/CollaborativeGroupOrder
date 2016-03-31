@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Slimy Demodand"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "chaotic",
+            "demodand",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

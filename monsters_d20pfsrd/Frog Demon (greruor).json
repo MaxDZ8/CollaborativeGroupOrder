@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Frog Demon (greruor)"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

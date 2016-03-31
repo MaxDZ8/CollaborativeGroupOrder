@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Derghodaemon"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

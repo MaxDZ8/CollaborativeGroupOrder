@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Kostchtchie (demon Prince Of Wrath)"
+        ],
+        "cr": "23",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "chaotic",
+            "cold",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

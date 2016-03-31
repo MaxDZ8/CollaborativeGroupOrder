@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Doru"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "div",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

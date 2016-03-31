@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Coral Drake"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

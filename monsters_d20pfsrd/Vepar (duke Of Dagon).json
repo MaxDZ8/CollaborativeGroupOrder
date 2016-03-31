@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Vepar (duke Of Dagon)"
+        ],
+        "cr": "21",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "aquatic",
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

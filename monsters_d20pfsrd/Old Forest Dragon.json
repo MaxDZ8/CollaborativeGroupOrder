@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Old Forest Dragon"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "earth"
+        ]
+    }
+}

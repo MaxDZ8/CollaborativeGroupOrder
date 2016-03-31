@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Brine Dragon, Very Young"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "water"
+        ]
+    }
+}

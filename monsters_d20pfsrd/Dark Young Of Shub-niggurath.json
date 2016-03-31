@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dark Young Of Shub-niggurath"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 7
+    }
+}

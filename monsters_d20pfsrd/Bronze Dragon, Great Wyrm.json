@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bronze Dragon, Great Wyrm"
+        ],
+        "cr": "21",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "water"
+        ]
+    }
+}

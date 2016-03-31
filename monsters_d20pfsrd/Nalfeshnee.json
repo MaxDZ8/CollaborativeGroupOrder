@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Nalfeshnee"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

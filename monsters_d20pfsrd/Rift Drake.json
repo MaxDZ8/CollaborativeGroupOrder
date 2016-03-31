@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Rift Drake"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 7,
+        "tags": [
+            "earth"
+        ]
+    }
+}

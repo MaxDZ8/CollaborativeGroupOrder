@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Astradaemon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

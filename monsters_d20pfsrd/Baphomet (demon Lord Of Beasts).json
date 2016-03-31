@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Baphomet (demon Lord Of Beasts)"
+        ],
+        "cr": "25",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

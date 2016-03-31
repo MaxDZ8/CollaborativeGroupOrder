@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Wyrm Black Dragon"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "water"
+        ]
+    }
+}

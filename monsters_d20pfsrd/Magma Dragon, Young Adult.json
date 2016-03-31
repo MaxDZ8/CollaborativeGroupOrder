@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Magma Dragon, Young Adult"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "fire"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Drowning Devil"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

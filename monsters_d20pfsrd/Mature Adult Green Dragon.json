@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mature Adult Green Dragon"
+        ],
+        "cr": "13",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 0,
+        "tags": [
+            "air"
+        ]
+    }
+}

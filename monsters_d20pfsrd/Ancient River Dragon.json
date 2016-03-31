@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Ancient River Dragon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "aquatic",
+            "fire"
+        ]
+    }
+}
