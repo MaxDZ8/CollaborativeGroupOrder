@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Margoyle"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 2,
+        "tags": [
+            "earth"
+        ]
+    }
+}

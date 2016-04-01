@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ghul"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

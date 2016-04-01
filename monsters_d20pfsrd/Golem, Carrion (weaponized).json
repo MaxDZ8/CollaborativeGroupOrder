@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Golem, Carrion (weaponized)"
         ],
-        "cr": "1",
+        "cr": "4",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 2
+        "type": "construct",
+        "init": 1
     }
 }

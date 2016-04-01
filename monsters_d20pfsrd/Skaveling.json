@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Skaveling"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 7
+    }
+}

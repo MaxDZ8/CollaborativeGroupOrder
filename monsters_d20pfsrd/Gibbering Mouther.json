@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Gibbering Mouther"
         ],
-        "cr": "1",
+        "cr": "5",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 2
+        "type": "aberration",
+        "init": 3
     }
 }

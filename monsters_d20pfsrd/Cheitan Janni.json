@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Cheitan Janni"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "native"
+        ]
+    }
+}

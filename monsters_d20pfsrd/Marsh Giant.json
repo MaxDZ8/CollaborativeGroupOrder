@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Marsh Giant"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 3,
+        "tags": [
+            "giant"
+        ]
+    }
+}

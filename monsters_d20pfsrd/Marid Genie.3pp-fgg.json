@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Marid Genie"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "extraplanar",
+            "water"
+        ]
+    }
+}

@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Grick"
         ],
-        "cr": "1",
+        "cr": "3",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
+        "type": "aberration",
         "init": 2
     }
 }

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Sthenno"
+        ],
+        "cr": "20",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

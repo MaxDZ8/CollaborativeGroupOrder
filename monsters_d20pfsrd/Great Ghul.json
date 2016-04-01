@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Great Ghul"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

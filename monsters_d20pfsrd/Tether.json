@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Tether"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 3
+    }
+}

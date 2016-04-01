@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Grootslang"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": 4
+    }
+}

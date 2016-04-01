@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Rope Golem"
         ],
-        "cr": "1",
+        "cr": "5",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 2
+        "type": "construct",
+        "init": 0
     }
 }

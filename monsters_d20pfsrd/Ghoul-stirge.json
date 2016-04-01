@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Ghoul-stirge"
         ],
-        "cr": "1",
+        "cr": "3",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 2
+        "type": "undead",
+        "init": 3
     }
 }

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Lacedon (aquatic Ghoul)"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

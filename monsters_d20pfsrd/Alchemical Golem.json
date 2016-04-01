@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Alchemical Golem"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 4
+    }
+}

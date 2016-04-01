@@ -1,14 +1,15 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Ghoran"
         ],
         "cr": "1",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 2
+        "type": "plant",
+        "init": 1,
+        "example": "Ghoran bard 1"
     }
 }

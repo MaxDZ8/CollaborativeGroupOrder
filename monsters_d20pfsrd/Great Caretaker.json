@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Great Caretaker"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Colossal",
+        "type": "plant",
+        "init": 10
+    }
+}

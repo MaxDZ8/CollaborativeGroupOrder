@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Cannon Golem"
+        ],
+        "cr": "15",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 7
+    }
+}

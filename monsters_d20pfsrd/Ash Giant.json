@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ash Giant"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 2,
+        "tags": [
+            "giant"
+        ]
+    }
+}

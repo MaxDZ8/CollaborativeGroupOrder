@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gray Nisp"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "fey",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

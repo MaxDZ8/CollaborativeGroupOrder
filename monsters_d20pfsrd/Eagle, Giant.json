@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Eagle, Giant"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 3
+    }
+}

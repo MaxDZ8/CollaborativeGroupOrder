@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Gorilla Bear"
         ],
-        "cr": "1",
+        "cr": "5",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
-        "type": "animal",
+        "size": "Large",
+        "type": "magical beast",
         "init": 2
     }
 }

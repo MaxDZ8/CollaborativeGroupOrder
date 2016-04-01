@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Owl"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 5
+    }
+}

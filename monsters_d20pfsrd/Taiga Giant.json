@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Taiga Giant"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 2,
+        "tags": [
+            "giant"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Smoke Giant"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 3,
+        "tags": [
+            "air",
+            "extraplanar",
+            "fire",
+            "giant"
+        ]
+    }
+}

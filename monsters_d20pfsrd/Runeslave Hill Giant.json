@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Runeslave Hill Giant"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 0,
+        "tags": [
+            "giant"
+        ]
+    }
+}

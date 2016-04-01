@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Corpulent Ghoul"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 5,
+        "example": "Variant shrine-blessed human dread ghoul rogue 6",
+        "tags": [
+            "augmented humanoid"
+        ]
+    }
+}

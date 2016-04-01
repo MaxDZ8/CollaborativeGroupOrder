@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Inverted Giant"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 6,
+        "tags": [
+            "giant"
+        ]
+    }
+}

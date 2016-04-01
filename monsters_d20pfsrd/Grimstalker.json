@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Grimstalker"
         ],
-        "cr": "1",
+        "cr": "5",
         "alignment": [
-            "N"
+            "NE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 2
+        "type": "fey",
+        "init": 9
     }
 }

@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Gorbel"
         ],
-        "cr": "1",
+        "cr": "1/2",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
-        "type": "animal",
+        "size": "Small",
+        "type": "aberration",
         "init": 2
     }
 }

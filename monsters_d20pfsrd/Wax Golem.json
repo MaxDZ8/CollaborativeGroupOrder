@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Wax Golem"
         ],
-        "cr": "1",
+        "cr": "3",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 2
+        "type": "construct",
+        "init": -1
     }
 }

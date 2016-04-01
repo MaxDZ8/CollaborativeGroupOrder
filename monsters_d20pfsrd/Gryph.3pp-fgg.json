@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Gryph"
         ],
         "cr": "1",
         "alignment": [
-            "N"
+            "NE"
         ],
-        "size": "Medium",
-        "type": "animal",
+        "size": "Small",
+        "type": "magical beast",
         "init": 2
     }
 }

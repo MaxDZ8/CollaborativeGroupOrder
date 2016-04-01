@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Iron Golem"
+        ],
+        "cr": "13",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": -1
+    }
+}

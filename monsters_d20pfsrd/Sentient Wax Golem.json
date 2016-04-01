@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Sentient Wax Golem"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": 3,
+        "example": "Commoner 1"
+    }
+}

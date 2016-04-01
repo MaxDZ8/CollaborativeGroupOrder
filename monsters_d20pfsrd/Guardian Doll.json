@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Guardian Doll"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 7,
+        "tags": [
+            "cold"
+        ]
+    }
+}

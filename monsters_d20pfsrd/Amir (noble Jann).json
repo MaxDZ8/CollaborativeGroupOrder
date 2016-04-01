@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Amir (noble Jann)"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "native"
+        ]
+    }
+}

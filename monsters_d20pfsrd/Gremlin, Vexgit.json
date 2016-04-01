@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gremlin, Vexgit"
+        ],
+        "cr": "1",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 1
+    }
+}

@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Iron Ghoul"
         ],
-        "cr": "1",
+        "cr": "8",
         "alignment": [
-            "N"
+            "LE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 2
+        "type": "undead",
+        "init": 3
     }
 }

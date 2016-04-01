@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Rune Giant"
+        ],
+        "cr": "17",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Gargantuan",
+        "type": "humanoid",
+        "init": 0,
+        "tags": [
+            "giant"
+        ]
+    }
+}

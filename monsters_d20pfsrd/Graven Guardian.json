@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Graven Guardian"
         ],
-        "cr": "1",
+        "cr": "5",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
+        "type": "construct",
         "init": 2
     }
 }

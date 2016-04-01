@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Grimslake"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

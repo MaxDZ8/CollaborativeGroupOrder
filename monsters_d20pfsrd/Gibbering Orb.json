@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gibbering Orb"
+        ],
+        "cr": "27",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 16
+    }
+}

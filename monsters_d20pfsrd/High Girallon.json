@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "High Girallon"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 3
+    }
+}

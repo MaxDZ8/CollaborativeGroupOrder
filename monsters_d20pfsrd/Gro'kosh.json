@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Goblin Dog"
+            "Gro'kosh"
         ],
-        "cr": "1",
+        "cr": "10",
         "alignment": [
-            "N"
+            "NE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 2
+        "type": "plant",
+        "init": 7
     }
 }

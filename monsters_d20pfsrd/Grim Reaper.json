@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Grim Reaper"
+        ],
+        "cr": "22",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 14,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

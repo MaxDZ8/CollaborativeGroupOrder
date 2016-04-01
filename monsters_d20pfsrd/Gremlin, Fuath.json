@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gremlin, Fuath"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Desert Giant"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 3,
+        "tags": [
+            "giant"
+        ]
+    }
+}
