@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Quantum"
+        ],
+        "cr": "20",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 8,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Qlippoth, Iathavos"
+        ],
+        "cr": "20",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "outsider",
+        "init": -1,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar",
+            "qlippoth"
+        ]
+    }
+}
