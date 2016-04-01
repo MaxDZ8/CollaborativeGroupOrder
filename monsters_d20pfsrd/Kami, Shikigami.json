@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Kami, Shikigami"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "kami",
+            "native"
+        ]
+    }
+}

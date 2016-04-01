@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Khaei"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "monstrous humanoid",
+        "init": 5
+    }
+}

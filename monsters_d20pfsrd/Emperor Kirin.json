@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Emperor Kirin"
+        ],
+        "cr": "14",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 8,
+        "example": "Advanced kirin",
+        "tags": [
+            "air"
+        ]
+    }
+}

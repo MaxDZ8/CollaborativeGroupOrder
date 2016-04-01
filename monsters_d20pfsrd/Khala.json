@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Khala"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 10,
+        "tags": [
+            "cold"
+        ]
+    }
+}

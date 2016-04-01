@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Ostiarius"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "kyton",
+            "lawful"
+        ]
+    }
+}

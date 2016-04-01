@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Kappa"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "monstrous humanoid",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

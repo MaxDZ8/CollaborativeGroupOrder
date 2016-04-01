@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Kaminari Kami"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "air",
+            "kami",
+            "native"
+        ]
+    }
+}

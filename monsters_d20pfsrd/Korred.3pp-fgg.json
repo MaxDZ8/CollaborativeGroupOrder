@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Korred"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 2
+    }
+}

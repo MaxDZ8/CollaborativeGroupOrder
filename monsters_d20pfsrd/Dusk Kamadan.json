@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dusk Kamadan"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 4
+    }
+}

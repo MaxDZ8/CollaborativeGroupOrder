@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Polar Kamadan"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 4
+    }
+}

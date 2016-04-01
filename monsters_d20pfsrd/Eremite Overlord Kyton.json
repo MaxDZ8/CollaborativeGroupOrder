@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Eremite Overlord Kyton"
+        ],
+        "cr": "22",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 11,
+        "example": "Advanced (24 HD) eremite kyton",
+        "tags": [
+            "evil",
+            "extraplanar",
+            "kyton",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Zuishin"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "kami",
+            "native"
+        ]
+    }
+}
