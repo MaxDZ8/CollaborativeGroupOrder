@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Draft (heavy) Horse"
+            "Dire Hippopotamus (behemoth)"
         ],
-        "cr": "2",
+        "cr": "6",
         "alignment": [
             "N"
         ],
-        "size": "Large",
+        "size": "Huge",
         "type": "animal",
-        "init": 4
+        "init": 5
     }
 }

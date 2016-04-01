@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Boreal Annis Hag"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "monstrous humanoid",
+        "init": 1,
+        "tags": [
+            "cold"
+        ]
+    }
+}

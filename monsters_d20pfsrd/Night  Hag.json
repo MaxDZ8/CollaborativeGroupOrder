@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Fiendish Heavy War Horse"
+            "Night  Hag"
         ],
-        "cr": "2",
+        "cr": "9",
         "alignment": [
             "NE"
         ],
-        "size": "Large",
-        "type": "animal",
+        "size": "Medium",
+        "type": "outsider",
         "init": 4,
         "tags": [
             "evil",

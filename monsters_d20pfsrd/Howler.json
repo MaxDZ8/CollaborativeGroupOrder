@@ -1,16 +1,17 @@
 {
     "head": {
         "name": [
-            "Fiendish Heavy War Horse"
+            "Howler"
         ],
-        "cr": "2",
+        "cr": "3",
         "alignment": [
-            "NE"
+            "CE"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 4,
+        "type": "outsider",
+        "init": 6,
         "tags": [
+            "chaotic",
             "evil",
             "extraplanar"
         ]

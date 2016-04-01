@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Hippocampus"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": -1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

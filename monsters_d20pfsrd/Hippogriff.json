@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Draft (heavy) Horse"
+            "Hippogriff"
         ],
         "cr": "2",
         "alignment": [
             "N"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 4
+        "type": "magical beast",
+        "init": 2
     }
 }

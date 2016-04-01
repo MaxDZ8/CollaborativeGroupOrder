@@ -1,18 +1,19 @@
 {
     "head": {
         "name": [
-            "Fiendish Heavy War Horse"
+            "Hellcat"
         ],
-        "cr": "2",
+        "cr": "7",
         "alignment": [
-            "NE"
+            "LE"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 4,
+        "type": "outsider",
+        "init": 9,
         "tags": [
             "evil",
-            "extraplanar"
+            "extraplanar",
+            "lawful"
         ]
     }
 }

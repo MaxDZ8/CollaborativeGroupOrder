@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Snapjaw Homunculus"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 3,
+        "example": "Variant advanced homunculus"
+    }
+}

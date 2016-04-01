@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Bison"
+            "Hollow Serpent"
         ],
-        "cr": "4",
+        "cr": "16",
         "alignment": [
-            "N"
+            "NE"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 0
+        "type": "undead",
+        "init": 9
     }
 }

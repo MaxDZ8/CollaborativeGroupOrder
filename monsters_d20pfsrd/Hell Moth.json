@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Fiendish Heavy War Horse"
+            "Hell Moth"
         ],
-        "cr": "2",
+        "cr": "6",
         "alignment": [
+            "N",
             "NE"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 4,
+        "type": "aberration",
+        "init": 7,
         "tags": [
-            "evil",
             "extraplanar"
         ]
     }

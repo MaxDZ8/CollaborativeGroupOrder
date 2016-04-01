@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Pony"
+            "Harpy"
         ],
-        "cr": "1/2",
+        "cr": "4",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 1
+        "type": "monstrous humanoid",
+        "init": 2
     }
 }

@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Fiendish Heavy War Horse"
+            "Hound Of Tindalos"
         ],
-        "cr": "2",
+        "cr": "7",
         "alignment": [
             "NE"
         ],
-        "size": "Large",
-        "type": "animal",
-        "init": 4,
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
         "tags": [
             "evil",
             "extraplanar"

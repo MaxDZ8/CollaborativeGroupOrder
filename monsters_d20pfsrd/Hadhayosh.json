@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Hadhayosh"
+        ],
+        "cr": "18",
+        "alignment": [
+            "N",
+            "$restricted"
+        ],
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "fire"
+        ]
+    }
+}

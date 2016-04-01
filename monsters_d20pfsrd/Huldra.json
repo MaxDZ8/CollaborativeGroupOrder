@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Pony"
+            "Huldra"
         ],
-        "cr": "1/2",
+        "cr": "4",
         "alignment": [
-            "N"
+            "CN"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 1
+        "type": "fey",
+        "init": 3
     }
 }

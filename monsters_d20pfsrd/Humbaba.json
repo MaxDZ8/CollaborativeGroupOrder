@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Humbaba"
+        ],
+        "cr": "19",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Colossal",
+        "type": "monstrous humanoid",
+        "init": 7
+    }
+}

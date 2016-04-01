@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Pony"
+            "Huecuva"
         ],
-        "cr": "1/2",
+        "cr": "2",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 1
+        "type": "undead",
+        "init": 6
     }
 }

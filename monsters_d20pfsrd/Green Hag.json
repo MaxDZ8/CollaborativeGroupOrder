@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Pony"
+            "Green Hag"
         ],
-        "cr": "1/2",
+        "cr": "5",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Medium",
-        "type": "animal",
+        "type": "monstrous humanoid",
         "init": 1
     }
 }
