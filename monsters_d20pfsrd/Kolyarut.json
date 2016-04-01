@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Kolyarut"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "extraplanar",
+            "inevitable",
+            "lawful"
+        ]
+    }
+}

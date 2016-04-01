@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Marut"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "extraplanar",
+            "inevitable",
+            "lawful"
+        ]
+    }
+}
