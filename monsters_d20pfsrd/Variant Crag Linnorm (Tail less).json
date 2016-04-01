@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Variant Crag Linnorm"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 7,
+        "example": "Male variant crag linnorm"
+    }
+}

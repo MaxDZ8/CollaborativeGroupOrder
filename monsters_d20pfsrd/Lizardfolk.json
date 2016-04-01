@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Lizardfolk"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 0,
+        "tags": [
+            "reptilian"
+        ]
+    }
+}

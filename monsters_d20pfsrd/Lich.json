@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Lich"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "example": "Human lich necromancer 11",
+        "tags": [
+            "augmented humanoid"
+        ]
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Lashunta"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 1,
+        "example": "Female lashunta wizard 1",
+        "race": "lashunta"
+    }
+}

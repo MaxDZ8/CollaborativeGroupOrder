@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Lich Shade"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8
+    }
+}

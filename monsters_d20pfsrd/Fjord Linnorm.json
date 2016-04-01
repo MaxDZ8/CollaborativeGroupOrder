@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fjord Linnorm"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 10,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

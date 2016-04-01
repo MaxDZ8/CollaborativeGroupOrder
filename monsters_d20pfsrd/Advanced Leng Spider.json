@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Advanced Leng Spider"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 15,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}
