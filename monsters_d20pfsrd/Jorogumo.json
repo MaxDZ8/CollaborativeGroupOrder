@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Jorogumo"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 4,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

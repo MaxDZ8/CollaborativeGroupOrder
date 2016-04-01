@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Lesser Jabberwock"
+        ],
+        "cr": "20",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "air",
+            "fire"
+        ]
+    }
+}

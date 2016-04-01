@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Jadeling"
+        ],
+        "cr": "6",
+        "alignment": [
+            "$any"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "air"
+        ]
+    }
+}
