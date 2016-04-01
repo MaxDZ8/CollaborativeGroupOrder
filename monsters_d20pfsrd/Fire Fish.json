@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Fire Fish"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 6,
+        "tags": [
+            "aquatic*",
+            "fire"
+        ]
+    }
+}

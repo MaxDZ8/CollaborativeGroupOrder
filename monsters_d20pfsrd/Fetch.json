@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fetch"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "tags": [
+            "cold"
+        ]
+    }
+}

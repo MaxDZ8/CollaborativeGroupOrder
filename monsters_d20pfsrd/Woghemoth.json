@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Woghemoth"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

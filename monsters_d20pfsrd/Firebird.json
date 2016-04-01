@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Firebird"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 4
+    }
+}

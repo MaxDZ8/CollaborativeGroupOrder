@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Flail Snail"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": -1
+    }
+}

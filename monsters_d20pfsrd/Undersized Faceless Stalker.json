@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Undersized Faceless Stalker"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 2,
+        "example": "Undersized faceless stalker",
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

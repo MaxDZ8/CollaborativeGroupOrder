@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Faun"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 3
+    }
+}

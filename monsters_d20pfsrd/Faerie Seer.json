@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Faerie Seer"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 2
+    }
+}

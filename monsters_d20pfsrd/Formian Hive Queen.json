@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Formian Hive Queen"
+        ],
+        "cr": "14",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

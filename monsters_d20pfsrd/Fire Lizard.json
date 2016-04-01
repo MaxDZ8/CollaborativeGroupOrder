@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fire Lizard"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 0,
+        "tags": [
+            "fire"
+        ]
+    }
+}

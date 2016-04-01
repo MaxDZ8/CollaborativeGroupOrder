@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Foo Lion"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "augmented",
+            "good",
+            "extraplanar"
+        ]
+    }
+}

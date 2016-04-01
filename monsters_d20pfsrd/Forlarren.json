@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Forlarren"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 2,
+        "example": "Xp 600"
+    }
+}

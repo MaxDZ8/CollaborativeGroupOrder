@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Forester's Bane"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 0
+    }
+}

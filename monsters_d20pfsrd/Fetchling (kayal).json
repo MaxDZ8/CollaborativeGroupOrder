@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Fetchling (kayal)"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 3,
+        "example": "Fetchling rogue 1",
+        "tags": [
+            "native"
+        ]
+    }
+}

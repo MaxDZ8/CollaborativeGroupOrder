@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fungoid"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 5,
+        "tags": [
+            "fungus"
+        ]
+    }
+}

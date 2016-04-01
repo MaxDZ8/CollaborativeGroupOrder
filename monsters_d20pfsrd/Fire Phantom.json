@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Fire Phantom"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ]
+    }
+}
