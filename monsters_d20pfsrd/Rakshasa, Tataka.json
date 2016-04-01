@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Rakshasa, Tataka"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "native",
+            "rakshasa",
+            "shapechanger"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Redcap"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 8
+    }
+}

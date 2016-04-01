@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Robot, Mechanical Viper"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "construct",
+        "init": 2,
+        "example": "Robot iron cobra",
+        "tags": [
+            "robot"
+        ]
+    }
+}

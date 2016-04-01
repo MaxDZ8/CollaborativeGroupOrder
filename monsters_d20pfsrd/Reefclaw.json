@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Manta Ray"
+            "Reefclaw"
         ],
         "cr": "1",
         "alignment": [
-            "N"
+            "CN"
         ],
-        "size": "Large",
-        "type": "animal",
-        "init": 1,
+        "size": "Small",
+        "type": "aberration",
+        "init": 5,
         "tags": [
             "aquatic"
         ]

@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Manta Ray"
+            "Robot, Myrmidon"
         ],
-        "cr": "1",
+        "cr": "11",
         "alignment": [
             "N"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 1,
+        "type": "construct",
+        "init": 6,
         "tags": [
-            "aquatic"
+            "robot"
         ]
     }
 }

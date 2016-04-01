@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Riftcreeper"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "ooze",
+        "init": 12,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

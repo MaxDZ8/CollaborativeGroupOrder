@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Ancient Green Dragon Ravener"
+        ],
+        "cr": "19",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Gargantuan",
+        "type": "undead",
+        "init": -1,
+        "example": "Female ancient green dragon ravener",
+        "tags": [
+            "air"
+        ]
+    }
+}

@@ -1,17 +1,14 @@
 {
     "head": {
         "name": [
-            "Manta Ray"
+            "Woolly Rhinoceros"
         ],
-        "cr": "1",
+        "cr": "10",
         "alignment": [
             "N"
         ],
         "size": "Large",
         "type": "animal",
-        "init": 1,
-        "tags": [
-            "aquatic"
-        ]
+        "init": 0
     }
 }

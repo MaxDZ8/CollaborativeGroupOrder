@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Manta Ray"
+            "Rusalka"
         ],
-        "cr": "1",
+        "cr": "12",
         "alignment": [
-            "N"
+            "NE"
         ],
-        "size": "Large",
-        "type": "animal",
-        "init": 1,
+        "size": "Medium",
+        "type": "fey",
+        "init": 10,
         "tags": [
             "aquatic"
         ]

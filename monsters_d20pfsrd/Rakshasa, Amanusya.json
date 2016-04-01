@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Rakshasa, Amanusya"
+        ],
+        "cr": "6",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "native",
+            "rakshasa",
+            "shapechanger"
+        ]
+    }
+}

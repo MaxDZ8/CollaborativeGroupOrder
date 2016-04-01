@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Rawbones"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6
+    }
+}

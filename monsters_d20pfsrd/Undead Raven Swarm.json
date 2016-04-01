@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Undead Raven Swarm"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

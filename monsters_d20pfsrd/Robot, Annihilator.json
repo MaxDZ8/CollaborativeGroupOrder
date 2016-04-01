@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Robot, Annihilator"
+        ],
+        "cr": "16",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "construct",
+        "init": 6,
+        "tags": [
+            "robot"
+        ]
+    }
+}

@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Manta Ray"
+            "Rorkoun"
         ],
-        "cr": "1",
+        "cr": "6",
         "alignment": [
-            "N"
+            "NE"
         ],
-        "size": "Large",
-        "type": "animal",
-        "init": 1,
+        "size": "Huge",
+        "type": "aberration",
+        "init": 2,
         "tags": [
             "aquatic"
         ]

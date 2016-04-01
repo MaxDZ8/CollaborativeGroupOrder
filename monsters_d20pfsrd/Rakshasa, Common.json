@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Rakshasa, Common"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "native",
+            "shapechanger"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Rakshasa, Maharaja"
+        ],
+        "cr": "20",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 13,
+        "tags": [
+            "native",
+            "shapechanger"
+        ]
+    }
+}

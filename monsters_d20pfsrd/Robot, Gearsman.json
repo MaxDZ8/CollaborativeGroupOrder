@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Manta Ray"
+            "Robot, Gearsman"
         ],
-        "cr": "1",
+        "cr": "4",
         "alignment": [
             "N"
         ],
-        "size": "Large",
-        "type": "animal",
+        "size": "Medium",
+        "type": "construct",
         "init": 1,
         "tags": [
-            "aquatic"
+            "robot"
         ]
     }
 }

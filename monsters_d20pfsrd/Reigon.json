@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Manta Ray"
+            "Reigon"
         ],
-        "cr": "1",
+        "cr": "4",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 1,
+        "type": "magical beast",
+        "init": 2,
         "tags": [
-            "aquatic"
+            "psionic"
         ]
     }
 }
