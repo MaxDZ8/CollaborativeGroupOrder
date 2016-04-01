@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Phlegmatic Ooze Swarm"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "ooze",
+        "init": -5,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

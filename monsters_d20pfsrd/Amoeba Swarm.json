@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Amoeba Swarm"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Fine",
+        "type": "ooze",
+        "init": -5,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

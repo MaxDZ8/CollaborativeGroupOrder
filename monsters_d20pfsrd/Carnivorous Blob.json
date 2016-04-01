@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Carnivorous Blob"
+        ],
+        "cr": "13",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "ooze",
+        "init": 0
+    }
+}

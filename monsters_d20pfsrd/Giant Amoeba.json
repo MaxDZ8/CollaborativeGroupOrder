@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Amoeba"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "ooze",
+        "init": -5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Garden Ooze"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "ooze",
+        "init": 3
+    }
+}

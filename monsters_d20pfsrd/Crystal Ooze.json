@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Crystal Ooze"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "ooze",
+        "init": -5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

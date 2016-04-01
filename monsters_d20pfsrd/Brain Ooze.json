@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Brain Ooze"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "ooze",
+        "init": 6
+    }
+}

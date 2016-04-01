@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Brimstone Ooze"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -5,
+        "example": "Fiendish magma ooze",
+        "tags": [
+            "fire"
+        ]
+    }
+}

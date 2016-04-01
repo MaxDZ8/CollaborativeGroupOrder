@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Vampiric Ooze"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": -1
+    }
+}

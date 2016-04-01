@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Behemoth Pudding"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "ooze",
+        "init": -4
+    }
+}

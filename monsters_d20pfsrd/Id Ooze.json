@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Id Ooze"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "ooze",
+        "init": -1
+    }
+}

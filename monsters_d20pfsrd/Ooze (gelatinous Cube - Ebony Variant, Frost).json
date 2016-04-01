@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ooze (gelatinous Cube - Ebony Variant)"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -5
+    }
+}
