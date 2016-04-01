@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Sceaduinar"
         ],
-        "cr": "1",
+        "cr": "7",
         "alignment": [
-            "N"
+            "NE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "type": "outsider",
+        "init": 5,
         "tags": [
-            "aquatic"
+            "extraplanar"
         ]
     }
 }

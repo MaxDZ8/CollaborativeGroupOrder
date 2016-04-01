@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Stirge Swarm"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "magical beast",
+        "init": 8,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

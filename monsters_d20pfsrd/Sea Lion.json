@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Sea Lion"
         ],
         "cr": "1",
         "alignment": [
@@ -9,9 +9,6 @@
         ],
         "size": "Medium",
         "type": "animal",
-        "init": 6,
-        "tags": [
-            "aquatic"
-        ]
+        "init": 2
     }
 }

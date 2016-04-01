@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Shadow Wolf"
         ],
-        "cr": "1",
+        "cr": "3",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Medium",
-        "type": "animal",
+        "type": "undead",
         "init": 6,
         "tags": [
-            "aquatic"
+            "incorporeal"
         ]
     }
 }

@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Sudoth"
         ],
-        "cr": "1",
+        "cr": "3",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "type": "aberration",
+        "init": 3,
         "tags": [
             "aquatic"
         ]

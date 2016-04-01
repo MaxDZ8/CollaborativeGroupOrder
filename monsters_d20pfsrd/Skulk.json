@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Skulk"
         ],
         "cr": "1",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Medium",
-        "type": "animal",
+        "type": "humanoid",
         "init": 6,
         "tags": [
-            "aquatic"
+            "skulk"
         ]
     }
 }

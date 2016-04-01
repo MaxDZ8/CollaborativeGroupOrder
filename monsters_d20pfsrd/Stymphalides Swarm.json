@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Stymphalides Swarm"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "magical beast",
+        "init": 8,
+        "example": "2,400 XP",
+        "tags": [
+            "swarm"
+        ]
+    }
+}

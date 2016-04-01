@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Sprite Swarm"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Diminutive",
+        "type": "fey",
+        "init": 7,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

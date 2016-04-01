@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Stumble Fish"
         ],
         "cr": "1",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
+        "size": "Small",
         "type": "animal",
-        "init": 6,
+        "init": 1,
         "tags": [
             "aquatic"
         ]

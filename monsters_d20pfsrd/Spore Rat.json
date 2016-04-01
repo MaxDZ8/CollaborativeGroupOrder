@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Spore Rat"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 3,
+        "tags": [
+            "fungus"
+        ]
+    }
+}

@@ -1,17 +1,18 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Sabrewing"
         ],
-        "cr": "1",
+        "cr": "6",
         "alignment": [
-            "N"
+            "NE"
         ],
         "size": "Medium",
-        "type": "animal",
+        "type": "outsider",
         "init": 6,
         "tags": [
-            "aquatic"
+            "evil",
+            "extraplanar"
         ]
     }
 }

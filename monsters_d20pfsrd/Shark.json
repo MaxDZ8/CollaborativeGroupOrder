@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Shark"
         ],
-        "cr": "1",
+        "cr": "2",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
+        "size": "Large",
         "type": "animal",
-        "init": 6,
+        "init": 5,
         "tags": [
             "aquatic"
         ]

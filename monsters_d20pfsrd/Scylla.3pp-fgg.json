@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Scylla"
         ],
-        "cr": "1",
+        "cr": "10",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 2,
         "tags": [
             "aquatic"
         ]

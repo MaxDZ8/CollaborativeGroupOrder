@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Skeletal Champion"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 5,
+        "example": "Human skeletal champion warrior 1"
+    }
+}

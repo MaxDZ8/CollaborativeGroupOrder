@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Star-spawn Of Cthulhu"
+        ],
+        "cr": "20",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 5
+    }
+}

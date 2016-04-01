@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Squid, Giant"
+            "Skrik Nettle"
         ],
-        "cr": "9",
+        "cr": "6",
         "alignment": [
             "N"
         ],
-        "size": "Huge",
-        "type": "animal",
+        "size": "Large",
+        "type": "magical beast",
         "init": 7,
         "tags": [
-            "aquatic"
+            "extraplanar"
         ]
     }
 }

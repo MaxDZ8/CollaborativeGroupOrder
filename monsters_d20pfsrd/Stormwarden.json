@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Stormwarden"
         ],
         "cr": "1",
         "alignment": [
-            "N"
+            "NE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "type": "humanoid",
+        "init": 4,
         "tags": [
-            "aquatic"
+            "stormwarden"
         ]
     }
 }

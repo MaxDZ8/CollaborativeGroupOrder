@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid, Giant"
+            "Spitting Sea Serpent"
         ],
         "cr": "9",
         "alignment": [
-            "N"
+            "CE"
         ],
-        "size": "Huge",
-        "type": "animal",
-        "init": 7,
+        "size": "Large",
+        "type": "dragon",
+        "init": 10,
         "tags": [
             "aquatic"
         ]

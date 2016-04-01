@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Syrinx"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": -1,
+        "example": "Syrinx adept 1",
+        "race": "syrinx"
+    }
+}

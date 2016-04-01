@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Sea Sphere (blubble)"
         ],
-        "cr": "1",
+        "cr": "9",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "size": "Huge",
+        "type": "aberration",
+        "init": 11,
         "tags": [
             "aquatic"
         ]

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Soul Reaper"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 8
+    }
+}

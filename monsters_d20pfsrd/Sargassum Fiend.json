@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Sargassum Fiend"
         ],
-        "cr": "1",
+        "cr": "9",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
-        "type": "animal",
+        "size": "Large",
+        "type": "plant",
         "init": 6,
         "tags": [
             "aquatic"

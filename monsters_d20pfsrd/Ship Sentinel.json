@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ship Sentinel"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 9
+    }
+}

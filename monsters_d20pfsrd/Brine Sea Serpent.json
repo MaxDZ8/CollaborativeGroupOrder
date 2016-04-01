@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Brine Sea Serpent"
         ],
-        "cr": "1",
+        "cr": "14",
         "alignment": [
-            "N"
+            "CE"
         ],
-        "size": "Medium",
-        "type": "animal",
+        "size": "Huge",
+        "type": "dragon",
         "init": 6,
         "tags": [
             "aquatic"

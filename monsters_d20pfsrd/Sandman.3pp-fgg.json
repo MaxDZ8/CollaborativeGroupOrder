@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Sandman"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "earth"
+        ]
+    }
+}

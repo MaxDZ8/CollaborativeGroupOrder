@@ -1,17 +1,18 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Sylph"
         ],
-        "cr": "1",
+        "cr": "1/2",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "type": "outsider",
+        "init": 3,
+        "example": "Sylph rogue 1",
         "tags": [
-            "aquatic"
+            "native"
         ]
     }
 }

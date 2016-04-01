@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Devil Steed"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "native"
+        ]
+    }
+}

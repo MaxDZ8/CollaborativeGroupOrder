@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Pelagos Sea Spider"
         ],
-        "cr": "1",
+        "cr": "15",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 8,
         "tags": [
             "aquatic"
         ]

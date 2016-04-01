@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Sagari"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "aberration",
+        "init": 2
+    }
+}

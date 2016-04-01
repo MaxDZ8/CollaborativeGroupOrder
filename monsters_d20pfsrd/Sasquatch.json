@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Sasquatch"
         ],
-        "cr": "1",
+        "cr": "2",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "type": "humanoid",
+        "init": 2,
         "tags": [
-            "aquatic"
+            "sasquatch"
         ]
     }
 }

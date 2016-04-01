@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Siyokoy"
         ],
-        "cr": "1",
+        "cr": "10",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "type": "aberration",
+        "init": 5,
         "tags": [
             "aquatic"
         ]

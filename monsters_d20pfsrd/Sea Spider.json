@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Squid, Giant"
+            "Sea Spider"
         ],
-        "cr": "9",
+        "cr": "11",
         "alignment": [
-            "N"
+            "NE"
         ],
         "size": "Huge",
-        "type": "animal",
+        "type": "magical beast",
         "init": 7,
         "tags": [
             "aquatic"

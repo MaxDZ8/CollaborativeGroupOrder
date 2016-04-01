@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Selkie"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 7,
+        "tags": [
+            "aquatic",
+            "shapechanger"
+        ]
+    }
+}

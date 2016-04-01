@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Sinspawn (sloth)"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 4
+    }
+}

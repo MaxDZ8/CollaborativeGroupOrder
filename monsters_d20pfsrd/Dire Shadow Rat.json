@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dire Shadow Rat"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 3
+    }
+}

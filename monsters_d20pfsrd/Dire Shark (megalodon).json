@@ -1,13 +1,13 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Dire Shark (megalodon)"
         ],
-        "cr": "1",
+        "cr": "9",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
+        "size": "Gargantuan",
         "type": "animal",
         "init": 6,
         "tags": [

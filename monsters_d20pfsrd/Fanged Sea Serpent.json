@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Fanged Sea Serpent"
         ],
-        "cr": "1",
+        "cr": "6",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "size": "Large",
+        "type": "dragon",
+        "init": 1,
         "tags": [
             "aquatic"
         ]

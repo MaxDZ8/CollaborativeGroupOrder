@@ -1,17 +1,18 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Shadow Mastiff"
         ],
-        "cr": "1",
+        "cr": "5",
         "alignment": [
-            "N"
+            "NE"
         ],
         "size": "Medium",
-        "type": "animal",
+        "type": "outsider",
         "init": 6,
         "tags": [
-            "aquatic"
+            "evil",
+            "extraplanar"
         ]
     }
 }

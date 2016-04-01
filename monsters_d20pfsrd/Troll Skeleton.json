@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Troll Skeleton"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "giant"
+        ]
+    }
+}

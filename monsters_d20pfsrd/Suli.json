@@ -1,17 +1,18 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Suli"
         ],
-        "cr": "1",
+        "cr": "1/2",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "type": "outsider",
+        "init": 1,
+        "example": "Suli ranger 1",
         "tags": [
-            "aquatic"
+            "native"
         ]
     }
 }

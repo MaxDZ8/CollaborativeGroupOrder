@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Shantak"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 3
+    }
+}

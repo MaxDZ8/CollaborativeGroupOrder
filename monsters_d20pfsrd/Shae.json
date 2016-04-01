@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Shae"
         ],
-        "cr": "1",
+        "cr": "4",
         "alignment": [
             "N"
         ],
         "size": "Medium",
-        "type": "animal",
+        "type": "outsider",
         "init": 6,
         "tags": [
-            "aquatic"
+            "extraplanar"
         ]
     }
 }

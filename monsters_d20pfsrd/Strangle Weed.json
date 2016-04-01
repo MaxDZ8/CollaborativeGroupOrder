@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Strangle Weed"
         ],
-        "cr": "1",
+        "cr": "3",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "size": "Large",
+        "type": "plant",
+        "init": 0,
         "tags": [
             "aquatic"
         ]

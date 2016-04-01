@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "The Firebleeder"
+        ],
+        "cr": "24",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": 8,
+        "tags": [
+            "fire"
+        ]
+    }
+}

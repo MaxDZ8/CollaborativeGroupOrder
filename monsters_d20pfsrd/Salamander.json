@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Salamander"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Scarlet Walker"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Slaad Lord Of Entropy"
+        ],
+        "cr": "29",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "chaotic",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Slag Worm"
+        ],
+        "cr": "20",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

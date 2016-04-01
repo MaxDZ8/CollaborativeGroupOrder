@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Sahuagin, Four-armed Mutant"
         ],
-        "cr": "1",
+        "cr": "3",
         "alignment": [
-            "N"
+            "LE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "type": "monstrous humanoid",
+        "init": 1,
         "tags": [
             "aquatic"
         ]

@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Deep Sea Serpent"
         ],
-        "cr": "1",
+        "cr": "19",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": 9,
         "tags": [
             "aquatic"
         ]

@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Spectre"
         ],
-        "cr": "1",
+        "cr": "7",
         "alignment": [
-            "N"
+            "LE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "type": "undead",
+        "init": 7,
         "tags": [
-            "aquatic"
+            "incorporeal"
         ]
     }
 }

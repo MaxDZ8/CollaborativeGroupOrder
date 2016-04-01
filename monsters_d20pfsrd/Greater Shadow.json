@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Squid"
+            "Greater Shadow"
         ],
-        "cr": "1",
+        "cr": "8",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Medium",
-        "type": "animal",
-        "init": 6,
+        "type": "undead",
+        "init": 5,
         "tags": [
-            "aquatic"
+            "incorporeal"
         ]
     }
 }

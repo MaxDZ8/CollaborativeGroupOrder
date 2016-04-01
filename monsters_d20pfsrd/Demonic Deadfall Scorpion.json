@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Squid, Giant"
+            "Demonic Deadfall Scorpion"
         ],
         "cr": "9",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Huge",
-        "type": "animal",
-        "init": 7,
+        "type": "magical beast",
+        "init": 2,
         "tags": [
-            "aquatic"
+            "augmented vermin"
         ]
     }
 }

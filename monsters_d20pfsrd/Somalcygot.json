@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Somalcygot"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 7
+    }
+}
