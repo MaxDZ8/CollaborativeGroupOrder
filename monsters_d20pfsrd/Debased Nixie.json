@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Debased Nixie"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

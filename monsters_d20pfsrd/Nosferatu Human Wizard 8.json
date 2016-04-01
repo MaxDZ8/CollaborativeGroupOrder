@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Nosferatu Human Wizard 8"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7,
+        "example": "Male nosferatu human wizard 8",
+        "tags": [
+            "augmented humanoid"
+        ]
+    }
+}

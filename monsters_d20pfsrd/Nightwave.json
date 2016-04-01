@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Nightwave"
+        ],
+        "cr": "20",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "aquatic",
+            "extraplanar",
+            "nightshade"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Netherspark"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

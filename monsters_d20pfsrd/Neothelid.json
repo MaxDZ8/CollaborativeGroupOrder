@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Neothelid"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "aberration",
+        "init": 2
+    }
+}

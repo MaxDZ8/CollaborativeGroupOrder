@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Nogitsune"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "race": "kitsune",
+        "tags": [
+            "native",
+            "oni",
+            "shapechanger"
+        ]
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Immature Norn"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "fey",
+        "init": 10,
+        "example": "Variant norn"
+    }
+}
