@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Small Obsidian Quasi-elemental"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": -1,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

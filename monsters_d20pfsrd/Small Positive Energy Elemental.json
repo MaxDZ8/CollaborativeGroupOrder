@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Small Positive Energy Elemental"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

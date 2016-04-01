@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Large Positive Energy Elemental"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

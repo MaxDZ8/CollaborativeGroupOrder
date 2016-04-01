@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Elder Ice Elemental"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "air",
+            "cold",
+            "elemental",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

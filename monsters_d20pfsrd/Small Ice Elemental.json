@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Small Ice Elemental"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": -1,
+        "tags": [
+            "air",
+            "cold",
+            "elemental",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

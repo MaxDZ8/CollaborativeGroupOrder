@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Huge Water Elemental"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

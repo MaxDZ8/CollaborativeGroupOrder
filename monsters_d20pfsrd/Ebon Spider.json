@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Ebon Spider"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LE",
+            "CE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 6
+    }
+}

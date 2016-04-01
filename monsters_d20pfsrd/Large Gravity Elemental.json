@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Large Gravity Elemental"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "gravity"
+        ]
+    }
+}

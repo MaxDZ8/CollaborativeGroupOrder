@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Earthfiend"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "chaotic",
+            "earth",
+            "elemental",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

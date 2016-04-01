@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Small Air Elemental"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "air",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

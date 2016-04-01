@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Elder Positive Energy Elemental"
+        ],
+        "cr": "12",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 14,
+        "tags": [
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Elder Air Elemental"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 15,
+        "tags": [
+            "air",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

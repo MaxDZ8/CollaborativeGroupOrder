@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Small Gravity Elemental"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "gravity"
+        ]
+    }
+}

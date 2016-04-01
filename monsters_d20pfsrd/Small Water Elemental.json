@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Small Water Elemental"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

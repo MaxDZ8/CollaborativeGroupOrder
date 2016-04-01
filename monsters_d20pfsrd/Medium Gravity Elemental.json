@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Medium Gravity Elemental"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "gravity"
+        ]
+    }
+}

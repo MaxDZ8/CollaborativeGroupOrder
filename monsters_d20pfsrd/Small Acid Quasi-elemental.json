@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Small Acid Quasi-elemental"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "acid",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

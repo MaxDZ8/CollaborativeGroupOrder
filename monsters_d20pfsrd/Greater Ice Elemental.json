@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Greater Ice Elemental"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "air",
+            "cold",
+            "elemental",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

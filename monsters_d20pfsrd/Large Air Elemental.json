@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Large Air Elemental"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "air",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Large Lightning Quasi-elemental"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "air",
+            "electricity",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

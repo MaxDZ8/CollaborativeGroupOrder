@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Elder Fire Elemental"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 13,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

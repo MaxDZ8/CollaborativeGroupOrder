@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Elder Thing"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

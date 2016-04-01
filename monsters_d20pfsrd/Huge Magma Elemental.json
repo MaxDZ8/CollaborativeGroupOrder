@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Huge Magma Elemental"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

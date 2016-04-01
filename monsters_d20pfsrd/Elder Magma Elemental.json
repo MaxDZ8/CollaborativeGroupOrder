@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Elder Magma Elemental"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Earth Elemental Spider"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

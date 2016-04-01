@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Greater Negative Energy Elemental"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 13,
+        "tags": [
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

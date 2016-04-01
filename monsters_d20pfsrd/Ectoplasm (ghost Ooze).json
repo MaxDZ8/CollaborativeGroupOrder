@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ectoplasm (ghost Ooze)"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": 1,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

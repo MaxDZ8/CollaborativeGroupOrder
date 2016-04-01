@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Large Mud Elemental"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

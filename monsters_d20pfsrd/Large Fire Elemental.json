@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Large Fire Elemental"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

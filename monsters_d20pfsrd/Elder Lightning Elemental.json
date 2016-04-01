@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Elder Lightning Elemental"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 14,
+        "tags": [
+            "air",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

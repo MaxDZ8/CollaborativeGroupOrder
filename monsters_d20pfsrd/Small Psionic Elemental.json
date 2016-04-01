@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Small Psionic Elemental"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "psionic"
+        ]
+    }
+}

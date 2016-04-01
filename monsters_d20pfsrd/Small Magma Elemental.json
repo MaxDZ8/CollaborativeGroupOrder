@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Small Magma Elemental"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Medium Water Elemental"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

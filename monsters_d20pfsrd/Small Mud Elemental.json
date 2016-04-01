@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Small Mud Elemental"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": -1,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Greater Lightning Elemental"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 13,
+        "tags": [
+            "air",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

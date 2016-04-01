@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Medium Air Elemental"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "air",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Large Ice Elemental"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "air",
+            "cold",
+            "elemental",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

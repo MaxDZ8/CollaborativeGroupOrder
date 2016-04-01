@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Small Fire Elemental"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

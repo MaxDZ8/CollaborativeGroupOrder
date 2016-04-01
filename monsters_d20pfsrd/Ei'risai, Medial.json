@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Ei'risai, Medial"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "chaotic",
+            "extraplanar"
+        ]
+    }
+}

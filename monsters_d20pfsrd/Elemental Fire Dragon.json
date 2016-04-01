@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Elemental Fire Dragon"
+        ],
+        "cr": "22",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

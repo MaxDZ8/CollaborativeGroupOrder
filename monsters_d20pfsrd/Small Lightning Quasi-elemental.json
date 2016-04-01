@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Small Lightning Quasi-elemental"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "air",
+            "electricity",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

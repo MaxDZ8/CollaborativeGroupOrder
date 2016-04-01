@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Greater Acid Quasi-elemental"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "acid",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}
