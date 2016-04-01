@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Rhamphorhynchus"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 3
+    }
+}

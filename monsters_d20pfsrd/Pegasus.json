@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Pegasus"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2
+    }
+}

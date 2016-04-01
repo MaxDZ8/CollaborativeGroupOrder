@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Pelagastr Protean"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "incorporeal",
+            "protean",
+            "shapechanger"
+        ]
+    }
+}

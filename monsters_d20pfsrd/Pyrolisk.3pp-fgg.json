@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Pyrolisk"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "fire"
+        ]
+    }
+}

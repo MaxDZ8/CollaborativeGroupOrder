@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Paleoskeleton Triceratops"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "undead",
+        "init": 4,
+        "tags": [
+            "earth"
+        ]
+    }
+}

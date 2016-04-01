@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Guardian Phantom Armor"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 5
+    }
+}

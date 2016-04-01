@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Pukwudgie"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "monstrous humanoid",
+        "init": 4,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

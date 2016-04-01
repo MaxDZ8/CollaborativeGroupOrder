@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Petitioner, Human"
+        ],
+        "cr": "1",
+        "alignment": [
+            "$any"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 0,
+        "example": "Human petitioner",
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

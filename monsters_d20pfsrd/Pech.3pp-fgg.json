@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Pech"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N",
+            "NG"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 1,
+        "tags": [
+            "earth",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Protean, Voidworm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "protean",
+            "shapechanger"
+        ]
+    }
+}

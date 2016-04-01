@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Pech"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 1,
+        "tags": [
+            "earth"
+        ]
+    }
+}

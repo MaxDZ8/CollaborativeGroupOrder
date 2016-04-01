@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Protean, Imentesh"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "protean",
+            "shapechanger"
+        ]
+    }
+}

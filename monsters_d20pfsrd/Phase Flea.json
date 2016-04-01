@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Phase Flea"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "magical beast",
+        "init": 8,
+        "tags": [
+            "augmented vermin"
+        ]
+    }
+}

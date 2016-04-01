@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Phoenix"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": 11,
+        "tags": [
+            "fire"
+        ]
+    }
+}

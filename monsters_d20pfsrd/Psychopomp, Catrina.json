@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Psychopomp, Catrina"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "extraplanar",
+            "psychopomp"
+        ]
+    }
+}
