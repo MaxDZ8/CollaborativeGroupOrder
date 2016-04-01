@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Failed-apotheosis Mimic"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 4,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

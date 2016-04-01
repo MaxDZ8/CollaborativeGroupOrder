@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Magmin"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

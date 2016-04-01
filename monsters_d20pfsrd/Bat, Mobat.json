@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Bat, Mobat"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 5
+    }
+}

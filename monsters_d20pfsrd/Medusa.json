@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Medusa"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 6
+    }
+}

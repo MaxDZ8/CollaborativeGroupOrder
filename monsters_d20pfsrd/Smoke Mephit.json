@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Smoke Mephit"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "air",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mite"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 1
+    }
+}

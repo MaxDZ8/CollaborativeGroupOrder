@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Missing Lynx"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 4,
+        "example": "Leopard missing creature"
+    }
+}

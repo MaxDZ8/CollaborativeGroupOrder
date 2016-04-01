@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mandragora"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 1,
+        "tags": [
+            "fungus"
+        ]
+    }
+}

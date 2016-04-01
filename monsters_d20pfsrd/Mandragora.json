@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mandragora"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 4
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Unhallowed Mohrg"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8,
+        "example": "Unhallowed mohrg"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mohrg"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8
+    }
+}

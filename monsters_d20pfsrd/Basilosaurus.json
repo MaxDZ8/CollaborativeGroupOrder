@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Basilosaurus"
+        ],
+        "cr": "12",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "animal",
+        "init": 5
+    }
+}

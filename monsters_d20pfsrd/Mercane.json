@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mercane"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

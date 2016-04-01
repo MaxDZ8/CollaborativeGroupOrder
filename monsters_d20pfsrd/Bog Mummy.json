@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Bog Mummy"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 4,
+        "example": "Variant mummy"
+    }
+}

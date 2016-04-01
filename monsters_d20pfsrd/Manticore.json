@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Manticore"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2
+    }
+}

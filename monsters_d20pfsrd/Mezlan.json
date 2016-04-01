@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mezlan"
+        ],
+        "cr": "14",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "ooze",
+        "init": 11,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

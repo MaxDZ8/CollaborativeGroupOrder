@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mongrelman"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 1
+    }
+}

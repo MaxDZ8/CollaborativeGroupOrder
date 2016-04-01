@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mobogo"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}
