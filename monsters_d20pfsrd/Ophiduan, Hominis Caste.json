@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ophiduan, Hominis Caste"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 6,
+        "tags": [
+            "reptilian"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Void Yai"
+        ],
+        "cr": "20",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "giant",
+            "native",
+            "oni",
+            "shapechanger"
+        ]
+    }
+}

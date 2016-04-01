@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Oread"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 2,
+        "example": "Oread fighter 1",
+        "tags": [
+            "native"
+        ]
+    }
+}

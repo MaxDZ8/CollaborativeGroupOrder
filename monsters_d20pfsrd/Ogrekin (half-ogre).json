@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Ogrekin (half-ogre)"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 5,
+        "example": "Male human ogrekin fighter 2",
+        "tags": [
+            "giant"
+        ]
+    }
+}

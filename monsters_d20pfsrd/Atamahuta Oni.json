@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Atamahuta Oni"
+        ],
+        "cr": "11",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "giant",
+            "native",
+            "oni",
+            "shapechanger"
+        ]
+    }
+}

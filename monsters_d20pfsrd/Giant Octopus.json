@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Blue-ringed Octopus"
+            "Giant Octopus"
         ],
-        "cr": "1/2",
+        "cr": "8",
         "alignment": [
             "N"
         ],
-        "size": "Tiny",
+        "size": "Large",
         "type": "animal",
-        "init": 5,
+        "init": 6,
         "tags": [
             "aquatic"
         ]

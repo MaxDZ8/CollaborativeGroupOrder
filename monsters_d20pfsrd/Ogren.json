@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ogren"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 0,
+        "tags": [
+            "ogren"
+        ]
+    }
+}

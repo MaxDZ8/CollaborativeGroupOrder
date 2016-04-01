@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Yamabushi Tengu"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "native",
+            "oni",
+            "shapechanger",
+            "tengu"
+        ]
+    }
+}

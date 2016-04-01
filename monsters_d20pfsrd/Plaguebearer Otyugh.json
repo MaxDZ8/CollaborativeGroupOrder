@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Plaguebearer Otyugh"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 0
+    }
+}

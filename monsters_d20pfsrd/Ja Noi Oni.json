@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Ja Noi Oni"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "goblinoid",
+            "native",
+            "oni",
+            "shapechanger"
+        ]
+    }
+}

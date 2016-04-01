@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Kuwa"
+        ],
+        "cr": "4",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 3,
+        "race": "human",
+        "tags": [
+            "native",
+            "oni",
+            "shapechanger"
+        ]
+    }
+}

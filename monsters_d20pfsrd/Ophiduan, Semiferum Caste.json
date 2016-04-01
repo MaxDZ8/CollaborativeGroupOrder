@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ophiduan, Semiferum Caste"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 1,
+        "tags": [
+            "reptilian"
+        ]
+    }
+}
