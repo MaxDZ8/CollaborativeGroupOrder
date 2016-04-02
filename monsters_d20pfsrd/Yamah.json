@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Yamah"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "azata",
+            "chaotic",
+            "extraplanar",
+            "good"
+        ]
+    }
+}
