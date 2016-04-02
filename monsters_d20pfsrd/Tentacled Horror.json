@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Tentacled Horror"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 0
+    }
+}

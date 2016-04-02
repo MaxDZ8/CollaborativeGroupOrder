@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Trench Newt"
         ],
-        "cr": "2",
+        "cr": "5",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 2,
+        "type": "aberration",
+        "init": 3,
         "tags": [
             "aquatic"
         ]

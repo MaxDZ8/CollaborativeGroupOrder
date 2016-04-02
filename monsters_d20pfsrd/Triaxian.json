@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Triaxian"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 2,
+        "example": "Triaxian ranger 1",
+        "race": "triaxian"
+    }
+}

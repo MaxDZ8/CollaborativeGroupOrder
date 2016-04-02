@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Saltwater merrow"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 3,
+        "tags": [
+            "aquatic",
+            "giant"
+        ]
+    }
+}

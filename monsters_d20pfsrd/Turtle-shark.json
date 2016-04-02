@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Turtle-shark"
         ],
-        "cr": "2",
+        "cr": "6",
         "alignment": [
             "N"
         ],
-        "size": "Large",
-        "type": "animal",
-        "init": 2,
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 3,
         "tags": [
             "aquatic"
         ]

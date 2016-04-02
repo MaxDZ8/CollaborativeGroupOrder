@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Thriae Soldier"
+        ],
+        "cr": "4",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 3
+    }
+}

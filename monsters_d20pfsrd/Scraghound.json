@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Scraghound"
         ],
-        "cr": "2",
+        "cr": "3",
         "alignment": [
             "N"
         ],
-        "size": "Large",
-        "type": "animal",
-        "init": 2,
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 5,
         "tags": [
             "aquatic"
         ]

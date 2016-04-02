@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Thawn"
         ],
         "cr": "2",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 2,
+        "type": "humanoid",
+        "init": -1,
         "tags": [
-            "aquatic"
+            "giant"
         ]
     }
 }

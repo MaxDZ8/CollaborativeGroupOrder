@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Taotieh"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 2
+    }
+}

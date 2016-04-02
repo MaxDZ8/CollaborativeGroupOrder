@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Ice Troll"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "cold",
+            "giant"
+        ]
+    }
+}

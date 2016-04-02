@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Tetrolimulus"
         ],
-        "cr": "2",
+        "cr": "11",
         "alignment": [
-            "N"
+            "NE"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 2,
+        "type": "magical beast",
+        "init": 8,
         "tags": [
             "aquatic"
         ]

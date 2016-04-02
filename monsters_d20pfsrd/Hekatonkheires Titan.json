@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Hekatonkheires Titan"
+        ],
+        "cr": "24",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

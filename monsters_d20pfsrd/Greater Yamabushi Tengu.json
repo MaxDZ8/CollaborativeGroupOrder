@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Greater Yamabushi Tengu"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "air",
+            "earth",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

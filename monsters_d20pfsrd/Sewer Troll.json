@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Sewer Troll"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 6,
+        "tags": [
+            "giant"
+        ]
+    }
+}

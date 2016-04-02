@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Advanced Lightning Treant"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": 5
+    }
+}

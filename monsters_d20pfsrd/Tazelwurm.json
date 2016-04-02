@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Tazelwurm"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 6
+    }
+}

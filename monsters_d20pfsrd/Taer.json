@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Taer"
         ],
         "cr": "2",
         "alignment": [
             "N"
         ],
-        "size": "Large",
-        "type": "animal",
+        "size": "Medium",
+        "type": "monstrous humanoid",
         "init": 2,
         "tags": [
-            "aquatic"
+            "cold"
         ]
     }
 }

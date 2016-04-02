@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Trollhound"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 5
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Troll, Mountain"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "giant"
+        ]
+    }
+}

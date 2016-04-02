@@ -1,14 +1,15 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Tendrul"
         ],
-        "cr": "2",
+        "cr": "7",
         "alignment": [
-            "N"
+            "N",
+            "NE"
         ],
         "size": "Large",
-        "type": "animal",
+        "type": "aberration",
         "init": 2,
         "tags": [
             "aquatic"

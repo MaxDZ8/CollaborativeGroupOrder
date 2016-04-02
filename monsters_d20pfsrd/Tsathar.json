@@ -1,15 +1,15 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Tsathar"
         ],
         "cr": "2",
         "alignment": [
-            "N"
+            "CE"
         ],
-        "size": "Large",
-        "type": "animal",
-        "init": 2,
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 6,
         "tags": [
             "aquatic"
         ]

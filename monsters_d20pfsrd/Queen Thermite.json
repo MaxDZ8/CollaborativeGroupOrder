@@ -1,17 +1,18 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Queen Thermite"
         ],
-        "cr": "2",
+        "cr": "6",
         "alignment": [
             "N"
         ],
         "size": "Large",
-        "type": "animal",
+        "type": "vermin",
         "init": 2,
         "tags": [
-            "aquatic"
+            "extraplanar",
+            "fire"
         ]
     }
 }

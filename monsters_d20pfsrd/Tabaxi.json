@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Tabaxi"
         ],
         "cr": "2",
         "alignment": [
-            "N"
+            "CN"
         ],
-        "size": "Large",
-        "type": "animal",
+        "size": "Medium",
+        "type": "humanoid",
         "init": 2,
         "tags": [
-            "aquatic"
+            "tabaxi"
         ]
     }
 }

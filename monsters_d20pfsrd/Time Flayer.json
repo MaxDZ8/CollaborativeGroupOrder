@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Time Flayer"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "extraplanar",
+            "time"
+        ]
+    }
+}

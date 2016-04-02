@@ -1,17 +1,17 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Troll"
         ],
-        "cr": "2",
+        "cr": "5",
         "alignment": [
-            "N"
+            "CE"
         ],
         "size": "Large",
-        "type": "animal",
+        "type": "humanoid",
         "init": 2,
         "tags": [
-            "aquatic"
+            "giant"
         ]
     }
 }

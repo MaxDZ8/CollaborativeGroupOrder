@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Tobongo"
+        ],
+        "cr": "12",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "plant",
+        "init": -1
+    }
+}

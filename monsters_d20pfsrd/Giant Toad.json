@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Giant Toad"
         ],
         "cr": "2",
         "alignment": [
@@ -9,9 +9,6 @@
         ],
         "size": "Large",
         "type": "animal",
-        "init": 2,
-        "tags": [
-            "aquatic"
-        ]
+        "init": 1
     }
 }

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Treant"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": -1
+    }
+}

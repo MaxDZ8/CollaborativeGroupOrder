@@ -1,17 +1,18 @@
 {
     "head": {
         "name": [
-            "Giant Tiger Barb"
+            "Soldier Thermite"
         ],
-        "cr": "2",
+        "cr": "4",
         "alignment": [
             "N"
         ],
-        "size": "Large",
-        "type": "animal",
+        "size": "Medium",
+        "type": "vermin",
         "init": 2,
         "tags": [
-            "aquatic"
+            "extraplanar",
+            "fire"
         ]
     }
 }

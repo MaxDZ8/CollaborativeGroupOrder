@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Tavi (mongoose Folk)"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 8
+    }
+}
