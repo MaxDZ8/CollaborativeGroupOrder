@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ubue"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": -1,
+        "tags": [
+            "giant"
+        ]
+    }
+}
