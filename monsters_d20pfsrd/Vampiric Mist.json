@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Vampiric Mist"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 8,
+        "tags": [
+            "air",
+            "water"
+        ]
+    }
+}

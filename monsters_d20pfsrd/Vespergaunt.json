@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Vespergaunt"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "ooze",
+        "init": 6
+    }
+}

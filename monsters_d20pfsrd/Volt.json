@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Volt"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 3
+    }
+}

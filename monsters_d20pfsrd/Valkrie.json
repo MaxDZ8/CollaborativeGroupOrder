@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Valkrie"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

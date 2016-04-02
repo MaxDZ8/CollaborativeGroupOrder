@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Vapor Wasp"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 1,
+        "tags": [
+            "augmented vermin",
+            "vapor"
+        ]
+    }
+}
