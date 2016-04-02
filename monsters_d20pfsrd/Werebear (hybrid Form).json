@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Werebear (hybrid Form)"
+        ],
+        "cr": "4",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 2,
+        "example": "Human natural werebear ranger 4",
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

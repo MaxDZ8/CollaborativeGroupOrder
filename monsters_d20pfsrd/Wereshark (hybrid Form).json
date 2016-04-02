@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Wereshark (hybrid Form)"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 1,
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

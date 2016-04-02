@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Weretiger (hybrid Form)"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 7,
+        "example": "Human natural weretiger rogue 4",
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

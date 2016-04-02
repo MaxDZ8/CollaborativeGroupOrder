@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Wererat (hybrid Form)"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 3,
+        "example": "Human natural wererat rogue 2 (augmented humanoid)",
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

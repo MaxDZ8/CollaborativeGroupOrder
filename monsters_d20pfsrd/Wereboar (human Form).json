@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Wereboar (human Form)"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 1,
+        "example": "Human natural wereboar barbarian 2",
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

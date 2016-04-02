@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Wereshark (human Form)"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 1,
+        "example": "Human natural wereshark fighter 3",
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

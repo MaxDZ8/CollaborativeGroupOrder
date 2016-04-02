@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Werecrocodile (hybrid Form)"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 5,
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}
