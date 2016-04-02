@@ -95,35 +95,47 @@
         'vermin': true
     };
     
-    const titleTable = getTitle('TH') || getTitle('TD');
+    const titleTable = getDefinitionBlocks();
     if(!titleTable) {
         alert('Parse failed to match title table.');
         return;
     }
-    const mob = {
-        head: parseHeader(titleTable)
-    };
-    if(!mob.head) {
-        alert('Parse failed to match header info.');
-        return;
+    for(let loop = 0; loop < titleTable.length; loop++) {
+        const mob = {
+            head: parseHeader(titleTable[loop])
+        };
+        if(!mob.head) {
+            alert('Parse failed to match header info.');
+            return;
+        }
+        const clickme = document.createElement('A');
+        clickme.href = URL.createObjectURL(new Blob([JSON.stringify(mob, null, 4)], { type: 'text/text' }));
+        clickme.innerHTML = "Click me to save results (again).";
+        clickme.download = mob.head.name[0] + '.json';
+        document.body.appendChild(clickme);
+        clickme.click();
     }
-    const clickme = document.createElement('A');
-    clickme.href = URL.createObjectURL(new Blob([JSON.stringify(mob, null, 4)], { type: 'text/text' }));
-    clickme.innerHTML = "Click me to save results (again).";
-    clickme.download = mob.head.name[0] + '.json';
-    document.body.appendChild(clickme);
-    clickme.click();
     return 'Success!';
     
+    function getDefinitionBlocks() {
+        let found = getTitle('TH');
+        const td = getTitle('TD');
+        if(td) {
+            if(!found) found = td;
+            else for(let cp = 0; cp < td.length; cp++) found.push(td[cp]);
+        }
+        return found;
+    }
     
     function getTitle(tagToMatch, el) {
         if(undefined === el) {
             const all = document.getElementsByTagName(tagToMatch);
+            let blocks = [];
             for(let loop = 0; loop < all.length; loop++) {
                 const matched = getTitle(tagToMatch, all[loop]);
-                if(matched) return matched;
+                if(matched) blocks.push(matched);
             }
-            return null;
+            return blocks.length? blocks : null;
         }
         if(el.tagName !== tagToMatch) return null;
         let challangeRatio = el.innerText.trim().match(/^CR\s*(\d+|(?:1\/\d))$/i);
