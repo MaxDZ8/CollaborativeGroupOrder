@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Unchosen Gnoll"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 2,
+        "race": "gnoll"
+    }
+}

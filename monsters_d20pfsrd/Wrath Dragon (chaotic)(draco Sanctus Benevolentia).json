@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Wrath Dragon (chaotic)(draco Sanctus Benevolentia)"
+        ],
+        "cr": "20",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 6,
+        "tags": [
+            "extraplanar",
+            "good",
+            "chaotic"
+        ]
+    }
+}

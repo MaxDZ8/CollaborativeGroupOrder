@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Gnoll Cleric 11"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 0,
+        "example": "Male gnoll cleric",
+        "race": "gnoll"
+    }
+}
