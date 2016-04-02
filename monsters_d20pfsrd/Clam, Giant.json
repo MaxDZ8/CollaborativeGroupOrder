@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Clam, Giant"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": -5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

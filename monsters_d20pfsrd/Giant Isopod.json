@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Isopod"
+        ],
+        "cr": "1/8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "vermin",
+        "init": -1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

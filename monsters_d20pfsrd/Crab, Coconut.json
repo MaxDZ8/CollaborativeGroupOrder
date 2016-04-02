@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Crab, Coconut"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

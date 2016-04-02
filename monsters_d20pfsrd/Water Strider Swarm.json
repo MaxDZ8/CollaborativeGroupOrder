@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Water Strider Swarm"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "vermin",
+        "init": 4,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

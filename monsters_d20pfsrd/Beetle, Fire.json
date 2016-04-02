@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Beetle, Fire"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 0
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Assassin Bug"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 3
+    }
+}

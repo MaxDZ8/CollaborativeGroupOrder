@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Spider Swarm"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "vermin",
+        "init": 3,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

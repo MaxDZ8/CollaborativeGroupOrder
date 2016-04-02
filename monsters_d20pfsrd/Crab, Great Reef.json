@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Crab, Great Reef"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "vermin",
+        "init": 0,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

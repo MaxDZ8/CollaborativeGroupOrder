@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Sewer Centipede"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 3
+    }
+}

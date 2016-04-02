@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Locust Swarm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Fine",
+        "type": "vermin",
+        "init": 2,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

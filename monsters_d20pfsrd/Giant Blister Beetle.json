@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Blister Beetle"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 0
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ghost Scorpion"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 0
+    }
+}

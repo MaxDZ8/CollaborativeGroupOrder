@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "False Spider, Solifugid"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 2
+    }
+}

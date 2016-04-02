@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gargantuan Monstrous Sea Wasp"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "vermin",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

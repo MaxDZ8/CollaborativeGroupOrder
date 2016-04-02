@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Jellyfish, Giant"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

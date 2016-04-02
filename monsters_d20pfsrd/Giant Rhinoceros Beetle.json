@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Rhinoceros Beetle"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 0
+    }
+}

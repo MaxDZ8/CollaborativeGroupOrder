@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dragonfly, Giant, Nymph"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

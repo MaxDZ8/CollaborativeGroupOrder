@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Yellowjacket"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 1
+    }
+}

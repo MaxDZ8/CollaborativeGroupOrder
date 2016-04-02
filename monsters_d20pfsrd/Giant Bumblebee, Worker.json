@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Bumblebee, Worker"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 2
+    }
+}

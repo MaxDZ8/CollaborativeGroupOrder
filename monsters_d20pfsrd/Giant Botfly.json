@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Botfly"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "vermin",
+        "init": 2
+    }
+}

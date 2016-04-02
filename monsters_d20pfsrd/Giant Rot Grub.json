@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Rot Grub"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 1
+    }
+}

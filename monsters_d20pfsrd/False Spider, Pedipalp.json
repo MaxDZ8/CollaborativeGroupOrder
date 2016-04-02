@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "False Spider, Pedipalp"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 2
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Ant Lion"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 0
+    }
+}
