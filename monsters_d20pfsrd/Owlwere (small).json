@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Owlwere (small)"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

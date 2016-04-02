@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Undead Warlord"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE",
+            "LN",
+            "LG",
+            "$restricted"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8
+    }
+}

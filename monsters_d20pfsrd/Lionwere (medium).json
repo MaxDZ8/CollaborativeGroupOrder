@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Lionwere (medium)"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dire Wolfwere (large)"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}
