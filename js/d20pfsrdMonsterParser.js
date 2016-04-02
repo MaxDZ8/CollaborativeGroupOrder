@@ -169,6 +169,8 @@
         if(!match) return null;
         let filteredTags;
         let kind;
+        const alignmentString = line.substring(0, match.index).trim();
+        line = line.substr(match.index + match[0].length).trim();
         const par = line.match(/\s\(([^)]+)\)/);
         if(par) {
             let list = par[1].split(',');
@@ -183,13 +185,13 @@
                 filteredTags.push(str.trim());
             }
         }
-        let matchType = line.substring(match.index + match[0].length, par? par.index : line.length).trim().toLowerCase().replace(/;$/, '');
+        let matchType = line.substring(0, par? par.index : line.length).trim().toLowerCase().replace(/;$/, '');
         if(!monType[matchType.toLowerCase()]) {
             alert('Unknown monster type "' + matchType + '", ignored.');
             return null;
         }
         return {
-            alignment: line.substring(0, match.index).trim(),
+            alignment: alignmentString,
             size: match[1],
             type: matchType.toLowerCase(),
             tags: filteredTags,
@@ -205,12 +207,17 @@
             'LG': true,    'LN': true,    'LE': true
         };
         if(single[al]) return [ alignmentString ];
-        if(alignmentString.match(/Any(?: alignment)?/i)) return [ '$any' ];
-        
+        const anyAlignment = alignmentString.match(/Any(?: alignment)?/i);
+        if(anyAlignment) {
+            alignmentString = alignmentString.replace(anyAlignment[0], "").trim();
+            const rec = alignmentString.length? mangleAlignment(alignmentString) : [];
+            rec.push('$any');
+            return rec;
+        }
         const asCreator = alignmentString.match(/\(same as creator\)/i);
         if(asCreator) {
             alignmentString = alignmentString.replace(asCreator[0], "").trim();
-            const rec = mangleAlignment(alignmentString)
+            const rec = alignmentString.length? mangleAlignment(alignmentString) : [];
             rec.push('$as_creator');
             return rec;
         }
