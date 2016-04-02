@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Dire Wolverine"
+            "Blood Wight"
         ],
-        "cr": "4",
+        "cr": "9",
         "alignment": [
             "N"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 7
+        "type": "undead",
+        "init": 6
     }
 }

@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Dire Wolverine"
+            "Widow Creeper"
         ],
-        "cr": "4",
+        "cr": "13",
         "alignment": [
             "N"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 7
+        "type": "plant",
+        "init": 4
     }
 }

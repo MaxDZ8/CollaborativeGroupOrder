@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Whirlmaw"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 10
+    }
+}

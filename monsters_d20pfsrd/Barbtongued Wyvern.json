@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Barbtongued Wyvern"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 2,
+        "example": "Advanced variant wyvern"
+    }
+}

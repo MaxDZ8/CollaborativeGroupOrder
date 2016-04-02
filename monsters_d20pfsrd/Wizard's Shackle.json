@@ -1,13 +1,13 @@
 {
     "head": {
         "name": [
-            "Black Worm"
+            "Wizard's Shackle"
         ],
-        "cr": "18",
+        "cr": "1/3",
         "alignment": [
-            "NE"
+            "N"
         ],
-        "size": "Colossal",
+        "size": "Diminutive",
         "type": "magical beast",
         "init": 0
     }

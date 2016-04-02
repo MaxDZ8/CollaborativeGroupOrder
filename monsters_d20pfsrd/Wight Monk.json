@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Wight Monk"
+        ],
+        "cr": "6",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "example": "Male human monk 6"
+    }
+}

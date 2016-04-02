@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Winterwight"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 10,
+        "tags": [
+            "cold"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Timber Wight"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 4
+    }
+}

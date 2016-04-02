@@ -1,14 +1,17 @@
 {
     "head": {
         "name": [
-            "Black Worm"
+            "Winter Wolf"
         ],
-        "cr": "18",
+        "cr": "5",
         "alignment": [
             "NE"
         ],
-        "size": "Colossal",
+        "size": "Large",
         "type": "magical beast",
-        "init": 0
+        "init": 5,
+        "tags": [
+            "cold"
+        ]
     }
 }

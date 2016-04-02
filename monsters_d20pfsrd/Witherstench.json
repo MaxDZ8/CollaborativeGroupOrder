@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Black Worm"
+            "Witherstench"
         ],
-        "cr": "18",
+        "cr": "1",
         "alignment": [
-            "NE"
+            "N"
         ],
-        "size": "Colossal",
+        "size": "Small",
         "type": "magical beast",
-        "init": 0
+        "init": 2
     }
 }

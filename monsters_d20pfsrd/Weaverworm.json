@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Weaverworm"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 18
+    }
+}

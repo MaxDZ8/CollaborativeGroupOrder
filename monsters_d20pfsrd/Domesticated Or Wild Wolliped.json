@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Dire Wolverine"
+            "Domesticated Or Wild Wolliped"
         ],
-        "cr": "4",
+        "cr": "3",
         "alignment": [
             "N"
         ],
         "size": "Large",
         "type": "animal",
-        "init": 7
+        "init": 2
     }
 }

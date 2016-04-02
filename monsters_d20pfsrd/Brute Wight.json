@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Dire Wolverine"
+            "Brute Wight"
         ],
-        "cr": "4",
+        "cr": "5",
         "alignment": [
-            "N"
+            "LE"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 7
+        "type": "undead",
+        "init": 2
     }
 }

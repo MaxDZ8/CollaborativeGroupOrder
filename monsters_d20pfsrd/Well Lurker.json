@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Dire Wolverine"
+            "Well Lurker"
         ],
-        "cr": "4",
+        "cr": "9",
         "alignment": [
             "N"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 7
+        "type": "aberration",
+        "init": 0
     }
 }

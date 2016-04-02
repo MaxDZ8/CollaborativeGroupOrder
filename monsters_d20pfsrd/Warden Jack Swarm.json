@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Warden Jack Swarm"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Fine",
+        "type": "construct",
+        "init": 2,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

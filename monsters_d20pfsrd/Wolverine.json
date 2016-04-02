@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Dire Wolverine"
+            "Wolverine"
         ],
-        "cr": "4",
+        "cr": "2",
         "alignment": [
             "N"
         ],
-        "size": "Large",
+        "size": "Medium",
         "type": "animal",
-        "init": 7
+        "init": 2
     }
 }

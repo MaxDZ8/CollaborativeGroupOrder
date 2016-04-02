@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Woundwyrm"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "chaotic",
+            "evil"
+        ]
+    }
+}

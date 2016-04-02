@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Apostasy Wraith"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

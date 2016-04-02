@@ -1,14 +1,14 @@
 {
     "head": {
         "name": [
-            "Dire Wolverine"
+            "Witherweed"
         ],
         "cr": "4",
         "alignment": [
             "N"
         ],
         "size": "Large",
-        "type": "animal",
-        "init": 7
+        "type": "plant",
+        "init": 0
     }
 }
