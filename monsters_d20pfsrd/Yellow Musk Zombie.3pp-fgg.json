@@ -3,12 +3,12 @@
         "name": [
             "Yellow Musk Zombie"
         ],
-        "cr": "1/2",
+        "cr": "2",
         "alignment": [
-            "NE"
+            "N"
         ],
         "size": "Medium",
         "type": "plant",
-        "init": 0
+        "init": -1
     }
 }
