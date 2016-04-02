@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Flapping Head"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 2,
+        "example": "Fast zombie vargouille",
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

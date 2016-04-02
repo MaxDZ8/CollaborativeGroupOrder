@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Zombie Wolf"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 3,
+        "example": "Fast zombie wolf"
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Zomok"
+        ],
+        "cr": "16",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "plant",
+        "init": 4,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}
