@@ -95,6 +95,14 @@
         'vermin': true
     };
     
+    const extraTemplate = {
+        'advanced': true,
+        'giant': true,
+        'mighty': true,
+        'shrine-blessed': true,
+        'nocturnal': true
+    };
+    
     const titleTable = getDefinitionBlocks();
     if(!titleTable) {
         alert('Parse failed to match title table.');
@@ -198,16 +206,53 @@
             }
         }
         let matchType = line.substring(0, par? par.index : line.length).trim().toLowerCase().replace(/;$/, '');
-        if(!monType[matchType.toLowerCase()]) {
+        let mangledType = mangleType(matchType);
+        if(!mangledType) {
             alert('Unknown monster type "' + matchType + '", ignored.');
             return null;
         }
         return {
             alignment: alignmentString,
             size: match[1],
-            type: matchType.toLowerCase(),
+            type: mangledType.main,
+            templates: mangledType.modify,
             tags: filteredTags,
             race: kind
+        };
+    }
+    
+    function mangleType(string) {
+        let type = null;
+        let templates = [];
+        while(string.length) {
+            let found;
+            for(let key in extraTemplate) {
+                if(string.indexOf(key) === 0 && (string.charAt(key.length) === ' ' || key.length >= string.length)) {
+                    found = key;
+                    string = string.substr(key.length).trim();
+                    break;
+                }
+            }
+            if(found) {
+                templates.push(found);
+                continue;
+            }
+            for(let key in monType) {
+                if(string.indexOf(key) === 0 && (string.charAt(key.length) === ' ' || key.length >= string.length)) {
+                    found = key;
+                    string = string.substr(key.length).trim();
+                    break;
+                }
+            }
+            if(!found) return null;
+            if(found && type) return null;
+            type = found;
+        }
+        if(!type) return null;
+        if(templates.length === 0) templates = undefined;
+        return {
+            main: type,
+            modify: templates
         };
     }
     
@@ -310,8 +355,9 @@
         let guess = 0;
         if(str[guess].match(/^XP /)) guess++; // ignore this, CR is sufficient
         let example;
-        if(!parseSizeLine(str[guess])) example = str[guess++];
-        const szl = parseSizeLine(str[guess++]);
+        let szl = parseSizeLine(str[guess]);
+        if(!szl) example = str[guess++];
+        szl = parseSizeLine(str[guess++]);
         if(!szl) {
             alert('Size-alignment line expected.');
             return;
@@ -334,6 +380,7 @@
         if(example) result.example = example;
         if(szl.race) result.race = szl.race;
         if(szl.tags) result.tags = szl.tags;
+        if(szl.templates) result.templates = szl.templates;
         return result;
     }
 }());

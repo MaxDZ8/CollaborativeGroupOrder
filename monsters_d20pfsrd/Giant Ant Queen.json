@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Giant Ant Queen"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 1,
+        "templates": [
+            "advanced",
+            "giant"
+        ]
+    }
+}

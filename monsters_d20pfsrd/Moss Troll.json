@@ -10,6 +10,13 @@
         "size": "Large",
         "type": "humanoid",
         "init": 4,
+        "contextInit": [
+            {
+                "init": 8,
+                "conditionType": "action.climb",
+                "conditionParams": [ "tree" ]
+            }
+        ],
         "tags": [
             "giant",
             "shapechanger"
