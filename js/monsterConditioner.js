@@ -7,6 +7,14 @@ const dragonAgeCategory = [
     'ancient',         'wyrm',        'great wyrm'
 ];
 
+const sizeModifier = [
+    'fine',   'diminutive',
+    'tiny',   'small',
+    'medium', 'large',
+    'huge',   'gargantuan',
+    'colossal'
+];
+
 window.onload = function() {
     const start = document.getElementById('loader');
     const nameTable = document.getElementById('nameConditioning');
@@ -77,7 +85,7 @@ window.onload = function() {
     }
     
     function suggestFileAndHeaderHints(file, monster, tr, td) {
-        const invalidChars = /[^ a-zA-Z0-9'\u2019]/g;
+        const invalidChars = /[^- a-zA-Z0-9'\u2019]/g;
         let note = [];
         for(let loop = 0; loop < monster.head.name.length; loop++) {
             const name = monster.head.name[loop];
@@ -146,28 +154,86 @@ window.onload = function() {
                     let newName = ori.substring(0, par.open).trim();
                     const trailing = ori.substring(par.next).trim();
                     if(trailing.length) newName += ' ' + trailing;
-                    const container = document.createElement('SPAN');
-                    const apply = document.createElement('BUTTON');
-                    const cancel = document.createElement('BUTTON');
+                    let container = document.createElement('SPAN');
+                    let apply = document.createElement('BUTTON');
+                    let cancel = document.createElement('BUTTON');
                     container.appendChild(apply);
                     container.appendChild(cancel);
                     note.push(container);
                     
-                    apply.innerHTML = '"' + par.inside + '" alternate name';
-                    apply.onclick = function() {
-                        apply.disabled = cancel.disabled = true;
-                        const gotcha = document.createElement('A');
-                        document.body.appendChild(gotcha);
-                        document.body.appendChild(document.createElement('BR'));
-                        gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': extracted an alternate name.';
-                        monster.head.name[loop] = newName;
-                        monster.head.name.push(titolize(par.inside));
-                        gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
-                        gotcha.download = file.name;
-                        gotcha.click();
+                    let size;
+                    for(let check = 0; check < sizeModifier.length; check++) {
+                        if(sizeModifier[check] === par.inside.toLowerCase()) {
+                            size = sizeModifier[check];
+                            break;
+                        }
                     }
-                    cancel.innerHTML = 'Discard name extraction';
-                    cancel.onclick = function() { container.parentNode.removeChild(container); }
+                    cancel.onclick = function() { this.parentNode.parentNode.removeChild(this.parentNode); }
+                    if(size) {
+                        apply.innerHTML = 'SIZE: ' + par.inside;
+                        apply.onclick = function() {
+                            apply.disabled = cancel.disabled = true;
+                            const gotcha = document.createElement('A');
+                            document.body.appendChild(gotcha);
+                            document.body.appendChild(document.createElement('BR'));
+                            gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': added size specifier: ' + size;
+                            if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                            monster.head.name[loop] = newName;
+                            monster.head.extraNotes.push({
+                                type: 'variant.size',
+                                value: size
+                            });
+                            gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                            gotcha.download = file.name;
+                            gotcha.click();
+                        }
+                        cancel.innerHTML = 'Discard size extraction';
+                        
+                    }
+                    else {
+                        apply.innerHTML = '"' + par.inside + '" alternate name';
+                        apply.onclick = function() {
+                            apply.disabled = cancel.disabled = true;
+                            const gotcha = document.createElement('A');
+                            document.body.appendChild(gotcha);
+                            document.body.appendChild(document.createElement('BR'));
+                            gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': extracted an alternate name.';
+                            monster.head.name[loop] = newName;
+                            monster.head.name.push(titolize(par.inside));
+                            gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                            gotcha.download = file.name;
+                            gotcha.click();
+                        }
+                        cancel.innerHTML = 'Discard name extraction';
+                        container.appendChild(document.createElement('BR'));
+                        
+                        container = document.createElement('SPAN');
+                        apply = document.createElement('BUTTON');
+                        cancel = document.createElement('BUTTON');
+                        container.appendChild(apply);
+                        container.appendChild(cancel);
+                        note.push(container);
+                        
+                        apply.innerHTML = 'MISC: ' + par.inside;
+                        cancel.innerHTML = 'Discard misc variation extraction';
+                        cancel.onclick = function() { this.parentNode.parentNode.removeChild(this.parentNode); }
+                        apply.onclick = function() {
+                            apply.disabled = cancel.disabled = true;
+                            const gotcha = document.createElement('A');
+                            document.body.appendChild(gotcha);
+                            document.body.appendChild(document.createElement('BR'));
+                            gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': extracted misc variation.';
+                            if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                            monster.head.name[loop] = newName;
+                            monster.head.extraNotes.push({
+                                type: 'extraInfo',
+                                value: par.inside.trim()
+                            });
+                            gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                            gotcha.download = file.name;
+                            gotcha.click();
+                        }
+                    }
                     continue;
                 }
                 note.push(span('name[' + loop + '] contains odd chars.'));
