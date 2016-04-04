@@ -1,7 +1,10 @@
 {
     "head": {
         "name": [
-            "Brown Bear (or Grizzly, Kodiak, Russian Brown)"
+            "Brown Bear",
+            "Grizzly",
+            "Kodiak",
+            "Russian Brown"
         ],
         "cr": "5",
         "alignment": [
