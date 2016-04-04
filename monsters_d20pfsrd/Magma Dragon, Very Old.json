@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Magma Dragon, Very Old"
+            "Magma Dragon"
         ],
         "cr": "16",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 4,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very old"
+            }
         ]
     }
 }

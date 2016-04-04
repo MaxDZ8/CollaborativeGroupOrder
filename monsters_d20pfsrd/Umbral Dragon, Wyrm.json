@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Umbral Dragon, Wyrm"
+            "Umbral Dragon"
         ],
         "cr": "20",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
         ]
     }
 }

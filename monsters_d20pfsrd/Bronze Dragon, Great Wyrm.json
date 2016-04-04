@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Bronze Dragon, Great Wyrm"
+            "Bronze Dragon"
         ],
         "cr": "21",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
         ]
     }
 }

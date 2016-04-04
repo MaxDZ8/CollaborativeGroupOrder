@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Brass Dragon, Very Young"
+            "Brass Dragon"
         ],
         "cr": "5",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very young"
+            }
         ]
     }
 }

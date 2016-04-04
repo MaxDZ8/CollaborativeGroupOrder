@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Silver Dragon, Wyrm"
+            "Silver Dragon"
         ],
         "cr": "20",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
         ]
     }
 }

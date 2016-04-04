@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Gold Dragon, Old"
+            "Gold Dragon"
         ],
         "cr": "18",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": -1,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "old"
+            }
         ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Silver Dragon, Wyrmling"
+            "Silver Dragon"
         ],
         "cr": "6",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

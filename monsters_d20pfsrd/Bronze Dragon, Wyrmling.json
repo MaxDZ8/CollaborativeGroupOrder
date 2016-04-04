@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Bronze Dragon, Wyrmling"
+            "Bronze Dragon"
         ],
         "cr": "5",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

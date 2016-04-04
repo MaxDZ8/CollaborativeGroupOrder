@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Bring Dragon, Young"
+            "Bring Dragon"
         ],
         "cr": "7",
         "alignment": [
@@ -13,6 +13,12 @@
         "tags": [
             "extraplanar",
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young"
+            }
         ]
     }
 }

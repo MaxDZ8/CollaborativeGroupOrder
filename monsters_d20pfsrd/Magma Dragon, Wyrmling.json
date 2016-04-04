@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Magma Dragon, Wyrmling"
+            "Magma Dragon"
         ],
         "cr": "4",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 7,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

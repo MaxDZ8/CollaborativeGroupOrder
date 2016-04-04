@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Brine Dragon, Ancient"
+            "Brine Dragon"
         ],
         "cr": "16",
         "alignment": [
@@ -13,6 +13,12 @@
         "tags": [
             "extraplanar",
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "ancient"
+            }
         ]
     }
 }

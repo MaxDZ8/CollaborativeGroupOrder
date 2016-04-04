@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Cloud Dragon, Very Young"
+            "Cloud Dragon"
         ],
         "cr": "7",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 0,
         "tags": [
             "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very young"
+            }
         ]
     }
 }

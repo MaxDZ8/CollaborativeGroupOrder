@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Copper Dragon, Very Young"
+            "Copper Dragon"
         ],
         "cr": "6",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very young"
+            }
         ]
     }
 }

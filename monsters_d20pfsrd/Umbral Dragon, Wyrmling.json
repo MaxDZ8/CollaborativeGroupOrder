@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Umbral Dragon, Wyrmling"
+            "Umbral Dragon"
         ],
         "cr": "6",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

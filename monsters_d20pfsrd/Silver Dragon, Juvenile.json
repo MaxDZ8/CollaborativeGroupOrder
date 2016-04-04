@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Silver Dragon, Juvenile"
+            "Silver Dragon"
         ],
         "cr": "11",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "juvenile"
+            }
         ]
     }
 }

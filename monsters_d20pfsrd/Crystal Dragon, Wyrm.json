@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Crystal Dragon, Wyrm"
+            "Crystal Dragon"
         ],
         "cr": "16",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 3,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
         ]
     }
 }

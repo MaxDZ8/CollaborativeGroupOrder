@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Copper Dragon, Wyrm"
+            "Copper Dragon"
         ],
         "cr": "18",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 3,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
         ]
     }
 }

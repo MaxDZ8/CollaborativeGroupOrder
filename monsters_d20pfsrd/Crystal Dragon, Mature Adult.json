@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Crystal Dragon, Mature Adult"
+            "Crystal Dragon"
         ],
         "cr": "11",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "mature adult"
+            }
         ]
     }
 }

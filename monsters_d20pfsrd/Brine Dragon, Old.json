@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Brine Dragon, Old"
+            "Brine Dragon"
         ],
         "cr": "14",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 3,
         "tags": [
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "old"
+            }
         ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Brass Dragon, Wyrmling"
+            "Brass Dragon"
         ],
         "cr": "3",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 3,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

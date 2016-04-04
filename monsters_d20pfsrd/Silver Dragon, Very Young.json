@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Silver Dragon, Very Young"
+            "Silver Dragon"
         ],
         "cr": "8",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very young"
+            }
         ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Bronze Dragon, Juvenile"
+            "Bronze Dragon"
         ],
         "cr": "10",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "juvenile"
+            }
         ]
     }
 }

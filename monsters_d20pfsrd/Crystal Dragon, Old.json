@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Crystal Dragon, Old"
+            "Crystal Dragon"
         ],
         "cr": "13",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 0,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "old"
+            }
         ]
     }
 }

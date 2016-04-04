@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Copper Dragon, Young Adult"
+            "Copper Dragon"
         ],
         "cr": "11",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young adult"
+            }
         ]
     }
 }

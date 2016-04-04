@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Umbral Dragon, Very Young"
+            "Umbral Dragon"
         ],
         "cr": "8",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very young"
+            }
         ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Crystal Dragon, Juvenile"
+            "Crystal Dragon"
         ],
         "cr": "7",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "juvenile"
+            }
         ]
     }
 }

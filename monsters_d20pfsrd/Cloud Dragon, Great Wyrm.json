@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Cloud Dragon, Great Wyrm"
+            "Cloud Dragon"
         ],
         "cr": "21",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
         ]
     }
 }

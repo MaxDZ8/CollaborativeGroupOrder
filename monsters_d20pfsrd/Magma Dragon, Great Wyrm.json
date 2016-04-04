@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Magma Dragon, Great Wyrm"
+            "Magma Dragon"
         ],
         "cr": "20",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 3,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
         ]
     }
 }
