@@ -1,5 +1,12 @@
 "use strict";
 
+const dragonAgeCategory = [
+    'wyrmling',        'very young',  'young',
+    'juvenile',        'young adult', 'adult',
+    'mature adult',    'old',         'very old',
+    'ancient',         'wyrm',        'great wyrm'
+];
+
 window.onload = function() {
     const start = document.getElementById('loader');
     const nameTable = document.getElementById('nameConditioning');
@@ -8,10 +15,6 @@ window.onload = function() {
         start.disabled = true;
         recursiveLoad(start.files);
     };
-    
-    function loadData(file) {
-        return {}; // magic, that's async.
-    }
     
     function cell(innerHTML, colSpan) {
         let res = '<td' + (colSpan? ' colspan="' + colSpan + '"' : '') + '>';
@@ -69,7 +72,7 @@ window.onload = function() {
     }
     
     function suggestFileAndHeaderHints(file, monster, tr, td) {
-        const invalidChars = /[^ a-zA-Z0-9']/g;
+        const invalidChars = /[^ a-zA-Z0-9'\u2019]/g;
         let note = [];
         for(let loop = 0; loop < monster.head.name.length; loop++) {
             const name = monster.head.name[loop];
@@ -91,6 +94,47 @@ window.onload = function() {
                 continue;
             }
             if(monster.head.name[loop].match(invalidChars)) {
+                let parts = monster.head.name[loop].split(',');
+                for(let inner = 0; inner < parts.length; inner++) parts[inner] = parts[inner].trim();
+                let age;
+                let skipIndex;
+                for(let inner = 0; inner < parts.length; inner++) {
+                    for(let match = 0; match < dragonAgeCategory.length; match++) {
+                        if(parts[inner].toLowerCase() === dragonAgeCategory[match]) {
+                            age = dragonAgeCategory[match];
+                            skipIndex = inner;
+                            break;
+                        }
+                    }
+                }
+                if(age) {
+                    let newName = '';
+                    for(let inner = 0; inner < parts.length; inner++) {
+                        if(inner === skipIndex) continue;
+                        if(newName.length) newName += ', ';
+                        newName += parts[inner];
+                    }
+                    const apply = document.createElement('BUTTON');
+                    apply.innerHTML = 'AGE: "' + age + '" to annotation';
+                    apply.onclick = function() {
+                        apply.disabled = true;
+                        const gotcha = document.createElement('A');
+                        document.body.appendChild(gotcha);
+                        document.body.appendChild(document.createElement('BR'));
+                        gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': changed to "' + newName + '" and added annotation [[' + age + ']]';
+                        monster.head.name[loop] = newName;
+                        if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                        monster.head.extraNotes.push({
+                            type: 'ageCategory',
+                            value: age
+                        });
+                        gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                        gotcha.download = file.name;
+                        gotcha.click();
+                    }
+                    note.push(apply);
+                    continue;
+                }
                 note.push(span('name[' + loop + '] contains odd chars.'));
                 note.push(document.createElement('BR'));
             }
