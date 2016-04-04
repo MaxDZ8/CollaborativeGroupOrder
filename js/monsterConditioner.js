@@ -60,7 +60,12 @@ window.onload = function() {
                 nameTable.appendChild(tr);
                 return;
             }
-            tr.innerHTML += cell(obj.head.name);
+            let nameContent = '';
+            for(let loop = 0; loop < obj.head.name.length; loop++) {
+                if(loop !== 0) nameContent += '<br/>';
+                nameContent += obj.head.name[loop];
+            }
+            tr.innerHTML += cell(nameContent);
             const td = document.createElement('TD');
             let hints = suggestFileAndHeaderHints(files[loadIndex], obj, tr, td);
             if(!hints) return;
@@ -135,11 +140,83 @@ window.onload = function() {
                     note.push(apply);
                     continue;
                 }
+                const par = matchRoundPar(monster.head.name[loop]);
+                if(par) {
+                    const ori = monster.head.name[loop];
+                    let newName = ori.substring(0, par.open).trim();
+                    const trailing = ori.substring(par.next).trim();
+                    if(trailing.length) newName += ' ' + trailing;
+                    const container = document.createElement('SPAN');
+                    const apply = document.createElement('BUTTON');
+                    const cancel = document.createElement('BUTTON');
+                    container.appendChild(apply);
+                    container.appendChild(cancel);
+                    note.push(container);
+                    
+                    apply.innerHTML = '"' + par.inside + '" alternate name';
+                    apply.onclick = function() {
+                        apply.disabled = cancel.disabled = true;
+                        const gotcha = document.createElement('A');
+                        document.body.appendChild(gotcha);
+                        document.body.appendChild(document.createElement('BR'));
+                        gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': extracted an alternate name.';
+                        monster.head.name[loop] = newName;
+                        monster.head.name.push(titolize(par.inside));
+                        gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                        gotcha.download = file.name;
+                        gotcha.click();
+                    }
+                    cancel.innerHTML = 'Discard name extraction';
+                    cancel.onclick = function() { container.parentNode.removeChild(container); }
+                    continue;
+                }
                 note.push(span('name[' + loop + '] contains odd chars.'));
                 note.push(document.createElement('BR'));
             }
         }
         if(note.length === 0) note = null;
         return note;
+    }
+    
+    function matchRoundPar(string) {
+        let start = 0;
+        while(start < string.length && string.charAt(start) !== '(') start++;
+        if(start >= string.length) return null;
+        let scan = start + 1;
+        let count = 1;
+        while(scan < string.length) {
+            if(string.charAt(scan) === '(') count++;
+            else if(string.charAt(scan) === ')') {
+                count--;
+                if(count === 0) break;
+            }
+            scan++;
+        }
+        return {
+            open: start,
+            next: scan + (string.charAt(scan) === ')'? 1 : 0),
+            inside: string.substring(start + 1, scan).trim()
+        };
+    }
+    
+    function titolize(string) {
+        const parts = string.split(' ');
+        let nicer = '';
+        const avoid = [ 'of', 'the' ];
+        for(let loop = 0; loop < parts.length; loop++) {
+            const word = parts[loop];
+            let uppercasify = true;
+            for(let check = 0; check < avoid.length; check++) {
+                if(avoid[check] === word.toLowerCase()) {
+                    uppercasify = false;
+                    break;
+                }
+            }
+            if(loop === 0) uppercasify = true;
+            if(nicer.length) nicer += ' ';
+            if(uppercasify) nicer += word.charAt(0).toUpperCase() + word.substr(1);
+            else nicer += word.toLowerCase();
+        }
+        return nicer;
     }
 };
