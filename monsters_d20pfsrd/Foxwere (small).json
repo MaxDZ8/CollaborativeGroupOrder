@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Foxwere (small)"
+            "Foxwere"
         ],
         "cr": "2",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 3,
         "tags": [
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.size",
+                "value": "small"
+            }
         ]
     }
 }

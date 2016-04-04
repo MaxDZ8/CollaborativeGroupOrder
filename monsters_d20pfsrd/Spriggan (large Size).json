@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Spriggan (large)"
+            "Spriggan"
         ],
         "cr": "3",
         "alignment": [
@@ -10,6 +10,12 @@
         "size": "Large",
         "type": "humanoid",
         "init": 3,
-        "race": "gnome"
+        "race": "gnome",
+        "extraNotes": [
+            {
+                "type": "variant.size",
+                "value": "large"
+            }
+        ]
     }
 }
