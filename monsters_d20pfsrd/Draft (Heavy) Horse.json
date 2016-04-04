@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Draft (heavy) Horse"
+            "Draft Horse"
         ],
         "cr": "2",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Large",
         "type": "animal",
-        "init": 4
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "heavy"
+            }
+        ]
     }
 }

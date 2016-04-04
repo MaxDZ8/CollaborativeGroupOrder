@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Crab, Hermit (giant)"
+            "Crab, Hermit"
         ],
         "cr": "5",
         "alignment": [
@@ -13,6 +13,12 @@
         "example": "Advanced giant crab",
         "tags": [
             "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "giant"
+            }
         ]
     }
 }

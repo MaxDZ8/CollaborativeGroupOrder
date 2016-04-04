@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Carrion Golem (stand-in)"
+            "Carrion Golem"
         ],
         "cr": "4",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Medium",
         "type": "construct",
-        "init": 1
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "stand-in"
+            }
+        ]
     }
 }

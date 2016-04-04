@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Sinspawn (greedspawn)"
+            "Sinspawn"
         ],
         "cr": "2",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Medium",
         "type": "aberration",
-        "init": 6
+        "init": 6,
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "greed"
+            }
+        ]
     }
 }

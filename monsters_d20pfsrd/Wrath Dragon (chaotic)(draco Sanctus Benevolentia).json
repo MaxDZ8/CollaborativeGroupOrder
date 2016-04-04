@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Wrath Dragon (chaotic)",
+            "Wrath Dragon",
             "Draco Sanctus Benevolentia"
         ],
         "cr": "20",
@@ -15,6 +15,12 @@
             "extraplanar",
             "good",
             "chaotic"
+        ],
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "chaotic"
+            }
         ]
     }
 }
