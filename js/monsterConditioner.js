@@ -19,6 +19,12 @@ window.onload = function() {
         return res + '</td>';
     }
     
+    function span(innerHTML) {
+        const res = document.createElement('SPAN');
+        res.innerHTML = innerHTML;
+        return res;
+    }
+    
     function countElements(tag, container) {
         tag = tag.toUpperCase();
         let count = 0;
@@ -53,7 +59,7 @@ window.onload = function() {
             }
             tr.innerHTML += cell(obj.head.name);
             const td = document.createElement('TD');
-            let hints = suggestFileAndHeaderHints(files[loadIndex].name, obj.head, tr, td);
+            let hints = suggestFileAndHeaderHints(files[loadIndex], obj, tr, td);
             if(!hints) return;
             tr.appendChild(td);
             for(let loop = 0; loop < hints.length; loop++) td.appendChild(hints[loop]);
@@ -62,11 +68,34 @@ window.onload = function() {
         reader.readAsText(files[loadIndex]);
     }
     
-    function suggestFileAndHeaderHints(filename, header, tr, td) {
-        let dummy = document.createElement('BUTTON');
-        dummy.innerHTML = 'just a test';
-        let another = document.createElement('BUTTON');
-        another.innerHTML = 'nothing really';
-        return [dummy, document.createElement('BR'), another];
+    function suggestFileAndHeaderHints(file, monster, tr, td) {
+        const invalidChars = /[^ a-zA-Z0-9']/g;
+        let note = [];
+        for(let loop = 0; loop < monster.head.name.length; loop++) {
+            const name = monster.head.name[loop];
+            if(name !== name.trim()) {
+                const apply = document.createElement('BUTTON');
+                apply.innerHTML = 'trim name[' + loop + '].';
+                apply.onclick = function() {
+                    apply.disabled = true;
+                    const gotcha = document.createElement('A');
+                    document.body.appendChild(gotcha);
+                    document.body.appendChild(document.createElement('BR'));
+                    gotcha.innerHTML = file.name + ', trimmed name[' + loop + ']';
+                    monster.head.name[loop] = monster.head.name[loop].trim();
+                    gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                    gotcha.download = file.name;
+                    gotcha.click();
+                }
+                note.push(apply);
+                continue;
+            }
+            if(monster.head.name[loop].match(invalidChars)) {
+                note.push(span('name[' + loop + '] contains odd chars.'));
+                note.push(document.createElement('BR'));
+            }
+        }
+        if(note.length === 0) note = null;
+        return note;
     }
 };
