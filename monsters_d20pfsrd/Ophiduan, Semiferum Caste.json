@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ophiduan, Semiferum Caste"
+            "Semiferum Caste"
         ],
         "cr": "3",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "reptilian"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Ophiduan"
+            }
         ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Qlippoth, Gongorinan"
+            "Gongorinan"
         ],
         "cr": "11",
         "alignment": [
@@ -15,6 +15,12 @@
             "qlippoth",
             "evil",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Qlippoth"
+            }
         ]
     }
 }

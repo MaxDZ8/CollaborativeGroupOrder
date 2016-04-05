@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ophiduan, Hominis Caste"
+            "Hominis Caste"
         ],
         "cr": "5",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "reptilian"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Ophiduan"
+            }
         ]
     }
 }

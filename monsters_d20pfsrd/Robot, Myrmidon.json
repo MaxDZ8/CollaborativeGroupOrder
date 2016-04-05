@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Robot, Myrmidon"
+            "Myrmidon"
         ],
         "cr": "11",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "robot"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Robot"
+            }
         ]
     }
 }

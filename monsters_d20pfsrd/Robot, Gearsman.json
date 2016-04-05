@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Robot, Gearsman"
+            "Gearsman"
         ],
         "cr": "4",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "robot"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Robot"
+            }
         ]
     }
 }

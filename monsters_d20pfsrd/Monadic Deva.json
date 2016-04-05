@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Angel, Monadic Deva"
+            "Monadic Deva"
         ],
         "cr": "12",
         "alignment": [
@@ -15,6 +15,12 @@
             "aquatic",
             "extraplanar",
             "good"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Angel"
+            }
         ]
     }
 }

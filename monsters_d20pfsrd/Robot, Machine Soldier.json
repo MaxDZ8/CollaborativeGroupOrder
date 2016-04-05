@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Robot, Machine Soldier"
+            "Machine Soldier"
         ],
         "cr": "4",
         "alignment": [
@@ -13,6 +13,12 @@
         "example": "Animated object fighter 1",
         "tags": [
             "robot"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Robot"
+            }
         ]
     }
 }

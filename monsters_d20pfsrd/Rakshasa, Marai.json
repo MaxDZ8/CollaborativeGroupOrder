@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Rakshasa, Marai"
+            "Marai"
         ],
         "cr": "8",
         "alignment": [
@@ -14,6 +14,12 @@
             "native",
             "rakshasa",
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Rakshasa"
+            }
         ]
     }
 }

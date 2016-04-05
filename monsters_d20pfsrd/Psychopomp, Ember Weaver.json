@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Psychopomp, Ember Weaver"
+            "Ember Weaver"
         ],
         "cr": "8",
         "alignment": [
@@ -13,6 +13,12 @@
         "tags": [
             "psychopomp",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Psychopomp"
+            }
         ]
     }
 }

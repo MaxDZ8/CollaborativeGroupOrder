@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Archon, Star"
+            "Star"
         ],
         "cr": "19",
         "alignment": [
@@ -15,6 +15,12 @@
             "extraplanar",
             "good",
             "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Archon"
+            }
         ]
     }
 }

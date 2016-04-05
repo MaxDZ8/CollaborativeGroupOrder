@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Gremlin, Jinkin"
+            "Jinkin"
         ],
         "cr": "1",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Tiny",
         "type": "fey",
-        "init": 4
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Gremlin"
+            }
+        ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Protean, Naunet"
+            "Naunet"
         ],
         "cr": "7",
         "alignment": [
@@ -15,6 +15,12 @@
             "extraplanar",
             "protean",
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Protean"
+            }
         ]
     }
 }

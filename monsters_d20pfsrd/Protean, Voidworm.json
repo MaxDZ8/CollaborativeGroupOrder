@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Protean, Voidworm"
+            "Voidworm"
         ],
         "cr": "2",
         "alignment": [
@@ -15,6 +15,12 @@
             "extraplanar",
             "protean",
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Protean"
+            }
         ]
     }
 }

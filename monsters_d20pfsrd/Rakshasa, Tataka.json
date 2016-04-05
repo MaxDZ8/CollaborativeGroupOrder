@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Rakshasa, Tataka"
+            "Tataka"
         ],
         "cr": "15",
         "alignment": [
@@ -14,6 +14,12 @@
             "native",
             "rakshasa",
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Rakshasa"
+            }
         ]
     }
 }

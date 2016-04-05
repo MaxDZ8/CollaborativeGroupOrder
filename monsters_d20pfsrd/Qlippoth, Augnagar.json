@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Qlippoth, Augnagar"
+            "Augnagar"
         ],
         "cr": "14",
         "alignment": [
@@ -15,6 +15,12 @@
             "evil",
             "extraplanar",
             "qlippoth"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Qlippoth"
+            }
         ]
     }
 }

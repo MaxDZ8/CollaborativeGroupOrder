@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Rakshasa, Amanusya"
+            "Amanusya"
         ],
         "cr": "6",
         "alignment": [
@@ -14,6 +14,12 @@
             "native",
             "rakshasa",
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Rakshasa"
+            }
         ]
     }
 }

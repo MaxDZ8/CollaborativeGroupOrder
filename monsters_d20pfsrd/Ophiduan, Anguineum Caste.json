@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ophiduan, Anguineum Caste"
+            "Anguineum Caste"
         ],
         "cr": "7",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "reptilian"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Ophiduan"
+            }
         ]
     }
 }

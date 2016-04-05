@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Gremlin, Vexgit"
+            "Vexgit"
         ],
         "cr": "1",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Tiny",
         "type": "fey",
-        "init": 1
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Gremlin"
+            }
+        ]
     }
 }
