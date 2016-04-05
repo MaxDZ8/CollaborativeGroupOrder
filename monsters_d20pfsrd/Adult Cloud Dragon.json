@@ -3,15 +3,16 @@
         "name": [
             "Adult Cloud Dragon"
         ],
-        "cr": "11",
+        "cr": "13",
         "alignment": [
-            "N"
+            "CN"
         ],
         "size": "Huge",
         "type": "dragon",
-        "init": 5,
+        "init": 3,
         "tags": [
-            "air"
+            "air",
+            "extraplanar"
         ]
     }
 }

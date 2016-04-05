@@ -1,18 +1,17 @@
 {
     "head": {
         "name": [
-            "Adult cloud Dragon"
+            "Adult Cloud Dragon"
         ],
-        "cr": "13",
+        "cr": "11",
         "alignment": [
-            "CN"
+            "N"
         ],
         "size": "Huge",
         "type": "dragon",
-        "init": 3,
+        "init": 5,
         "tags": [
-            "air",
-            "extraplanar"
+            "air"
         ]
     }
 }
