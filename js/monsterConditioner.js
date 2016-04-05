@@ -15,6 +15,12 @@ const sizeModifier = [
     'colossal'
 ];
 
+const wellKnownTemplates = {
+    'giant': 'giant',
+    'dire': 'dire',
+    'petitioner': 'petitioner'
+};
+
 window.onload = function() {
     const start = document.getElementById('loader');
     const nameTable = document.getElementById('nameConditioning');
@@ -183,6 +189,45 @@ window.onload = function() {
                     note.push(apply);
                     continue;
                 }
+                let wkt;
+                for(let inner = 0; inner < parts.length; inner++) {
+                    if(parts[inner].toLowerCase() in wellKnownTemplates) {
+                        wkt = {
+                            skip: inner,
+                            template: wellKnownTemplates[parts[inner].toLowerCase()]
+                        };
+                        break;
+                    }
+                }
+                if(wkt) {
+                    let newName = '';
+                    for(let inner = 0; inner < parts.length; inner++) {
+                        if(inner === wkt.skip) continue;
+                        if(newName.length) newName += ', ';
+                        newName += parts[inner];
+                    }
+                    const apply = document.createElement('BUTTON');
+                    apply.innerHTML = 'TEMPLATE: ' + wkt.template;
+                    apply.onclick = function() {
+                        activateModification(monster, apply);
+                        const gotcha = document.createElement('A');
+                        document.body.appendChild(gotcha);
+                        document.body.appendChild(document.createElement('BR'));
+                        gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': changed to "' + newName + '" and added template [[' + wkt.template + ']]';
+                        monster.head.name[loop] = newName;
+                        if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                        monster.head.extraNotes.push({
+                            type: 'appliedTemplate',
+                            value: wkt.template
+                        });
+                        gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                        gotcha.download = file.name;
+                        gotcha.click();
+                    }
+                    note.push(apply);
+                    continue;
+                }
+                
                 const par = matchRoundPar(monster.head.name[loop]);
                 if(par) {
                     const ori = monster.head.name[loop];
