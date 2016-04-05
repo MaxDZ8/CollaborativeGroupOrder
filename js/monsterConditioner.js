@@ -113,38 +113,16 @@ window.onload = function() {
         for(let loop = 0; loop < monster.head.name.length; loop++) {
             const name = monster.head.name[loop];
             if(name !== name.trim()) {
-                const apply = document.createElement('BUTTON');
-                apply.innerHTML = 'trim name[' + loop + '].';
-                apply.onclick = function() {
-                    activateModification(monster, apply);
-                    const gotcha = document.createElement('A');
-                    document.body.appendChild(gotcha);
-                    document.body.appendChild(document.createElement('BR'));
-                    gotcha.innerHTML = file.name + ', trimmed name[' + loop + ']';
+                note.push(makeButton(file.name, 'trim name[' + loop + '].', monster, ', trimmed name[' + loop + ']', function() {
                     monster.head.name[loop] = monster.head.name[loop].trim();
-                    gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
-                    gotcha.download = file.name;
-                    gotcha.click();
-                }
-                note.push(apply);
+                }));
                 continue;
             }
             const nbspAway = monster.head.name[loop].replace(/\u00a0/g, ' ');
             if(nbspAway !== monster.head.name[loop]) {
-                const apply = document.createElement('BUTTON');
-                apply.innerHTML = 'name[' + loop + '].replace(&amp;NBSP, SPACE)';
-                apply.onclick = function() {
-                    activateModification(monster, apply);
-                    const gotcha = document.createElement('A');
-                    document.body.appendChild(gotcha);
-                    document.body.appendChild(document.createElement('BR'));
-                    gotcha.innerHTML = file.name + ', name[' + loop + '], replaced &amp;nbsp;';
+                note.push(makeButton(file.name, 'name[' + loop + '].replace(&amp;NBSP, SPACE)', monster, ', name[' + loop + '], replaced &amp;nbsp;', function() {
                     monster.head.name[loop] = nbspAway;
-                    gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
-                    gotcha.download = file.name;
-                    gotcha.click();
-                }
-                note.push(apply);
+                }));
                 continue;
             }
             if(monster.head.name[loop].match(invalidChars)) {
@@ -168,25 +146,14 @@ window.onload = function() {
                         if(newName.length) newName += ', ';
                         newName += parts[inner];
                     }
-                    const apply = document.createElement('BUTTON');
-                    apply.innerHTML = 'AGE: "' + age + '" to annotation';
-                    apply.onclick = function() {
-                        activateModification(monster, apply);
-                        const gotcha = document.createElement('A');
-                        document.body.appendChild(gotcha);
-                        document.body.appendChild(document.createElement('BR'));
-                        gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': changed to "' + newName + '" and added annotation [[' + age + ']]';
+                    note.push(makeButton(file.name, 'AGE: "' + age + '" to annotation', monster, ', ' + monster.head.name[loop] + ': changed to "' + newName + '" and added annotation [[' + age + ']]', function() {
                         monster.head.name[loop] = newName;
                         if(!monster.head.extraNotes) monster.head.extraNotes = [];
                         monster.head.extraNotes.push({
                             type: 'ageCategory',
                             value: age
                         });
-                        gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
-                        gotcha.download = file.name;
-                        gotcha.click();
-                    }
-                    note.push(apply);
+                    }));
                     continue;
                 }
                 let wkt;
@@ -206,25 +173,14 @@ window.onload = function() {
                         if(newName.length) newName += ', ';
                         newName += parts[inner];
                     }
-                    const apply = document.createElement('BUTTON');
-                    apply.innerHTML = 'TEMPLATE: ' + wkt.template;
-                    apply.onclick = function() {
-                        activateModification(monster, apply);
-                        const gotcha = document.createElement('A');
-                        document.body.appendChild(gotcha);
-                        document.body.appendChild(document.createElement('BR'));
-                        gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': changed to "' + newName + '" and added template [[' + wkt.template + ']]';
+                    note.push(makeButton(file.name, 'TEMPLATE: ' + wkt.template, monster, monster.head.name[loop] + ': changed to "' + newName + '" and added template [[' + wkt.template + ']]', function() {
                         monster.head.name[loop] = newName;
                         if(!monster.head.extraNotes) monster.head.extraNotes = [];
                         monster.head.extraNotes.push({
                             type: 'appliedTemplate',
                             value: wkt.template
                         });
-                        gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
-                        gotcha.download = file.name;
-                        gotcha.click();
-                    }
-                    note.push(apply);
+                    }));
                     continue;
                 }
                 
@@ -239,26 +195,14 @@ window.onload = function() {
                     
                     if(par.inside.match(/ form$/i)) {
                         const morph = par.inside.substring(0, par.inside.length - 5);
-                        apply.innerHTML = "MORPH_TARGET: " + morph;
-                        apply.onclick = function(ev) {
-                            activateModification(monster, ev.currentTarget);
-                            const gotcha = document.createElement('A');
-                            document.body.appendChild(gotcha);
-                            document.body.appendChild(document.createElement('BR'));
-                            gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': morph target variation: ' + morph;
-                            if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                        note.push(makeButton(file.name, 'MORPH_TARGET: ' + morph, monster, monster.head.name[loop] + ': morph target variation: ' + morph, function() {
                             monster.head.name[loop] = newName;
                             monster.head.extraNotes.push({
                                 type: 'variant.morphTarget',
                                 value: morph
                             });
-                            gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
-                            gotcha.download = file.name;
-                            gotcha.click();
-                        }
-                        note.push(document.createElement('BR'));
-                        apply = document.createElement('BUTTON');
-                        note.push(apply);
+                        }));
+                        continue;
                     }
                     
                     let size;
@@ -269,60 +213,26 @@ window.onload = function() {
                         }
                     }
                     if(size) {
-                        apply.innerHTML = 'SIZE: ' + par.inside;
-                        apply.onclick = function(ev) {
-                            activateModification(monster, ev.currentTarget);
-                            const gotcha = document.createElement('A');
-                            document.body.appendChild(gotcha);
-                            document.body.appendChild(document.createElement('BR'));
-                            gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': added size specifier: ' + size;
-                            if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                        note.push(makeButton(file.name, 'SIZE: ' + par.inside, monster, monster.head.name[loop] + ': added size specifier: ' + size, function() {
                             monster.head.name[loop] = newName;
                             monster.head.extraNotes.push({
                                 type: 'variant.size',
                                 value: size
                             });
-                            gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
-                            gotcha.download = file.name;
-                            gotcha.click();
-                        }
-                        
+                        }));
                     }
                     else {
-                        apply.innerHTML = '"' + par.inside + '" alternate name';
-                        apply.onclick = function(ev) {
-                            activateModification(monster, ev.currentTarget);
-                            const gotcha = document.createElement('A');
-                            document.body.appendChild(gotcha);
-                            document.body.appendChild(document.createElement('BR'));
-                            gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': extracted an alternate name.';
+                        note.push(makeButton(file.name, '"' + par.inside + '" alternate name', monster, monster.head.name[loop] + ': extracted an alternate name.', function() {
                             monster.head.name[loop] = newName;
                             monster.head.name.push(titolize(par.inside));
-                            gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
-                            gotcha.download = file.name;
-                            gotcha.click();
-                        }
-                        note.push(document.createElement('BR'));
-                        apply = document.createElement('BUTTON');
-                        note.push(apply);
-                        
-                        apply.innerHTML = 'MISC: ' + par.inside;
-                        apply.onclick = function(ev) {
-                            activateModification(monster, ev.currentTarget);
-                            const gotcha = document.createElement('A');
-                            document.body.appendChild(gotcha);
-                            document.body.appendChild(document.createElement('BR'));
-                            gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': extracted misc variation.';
-                            if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                        }));
+                        note.push(makeButton(file.name, 'MISC: ' + par.inside, monster, monster.head.name[loop] + ': extracted misc variation.', function() {
                             monster.head.name[loop] = newName;
                             monster.head.extraNotes.push({
                                 type: 'extraInfo',
                                 value: par.inside.trim()
                             });
-                            gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
-                            gotcha.download = file.name;
-                            gotcha.click();
-                        }
+                        }));
                     }
                     continue;
                 }
@@ -472,5 +382,22 @@ window.onload = function() {
             const start = monsterNames[loop].substring(0, comma).trim().toLowerCase();
             if(start === group.toLowerCase()) monsterNames[loop] = monsterNames[loop].substr(comma + 1).trim();
         }
+    }
+    
+    function makeButton(fileName, buttonInner, monster, feedbackInner, modificationCallback) {
+        const build = document.createElement('BUTTON');
+        build.innerHTML = buttonInner;
+        build.onclick = function() {
+            activateModification(monster, build);
+            const gotcha = document.createElement('A');
+            document.body.appendChild(gotcha);
+            document.body.appendChild(document.createElement('BR'));
+            gotcha.innerHTML = fileName + ',' + feedbackInner;
+            modificationCallback();
+            gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+            gotcha.download = fileName;
+            gotcha.click();
+        }
+        return build;
     }
 };
