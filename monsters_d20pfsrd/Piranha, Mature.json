@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Piranha, Mature"
+            "Piranha"
         ],
         "cr": "1",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "aquatic"
-        ]
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Mature"
+            }
+		]
     }
 }
