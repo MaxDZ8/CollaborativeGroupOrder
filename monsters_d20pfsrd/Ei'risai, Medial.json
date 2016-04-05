@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ei'risai, Medial"
+            "Ei'risai"
         ],
         "cr": "8",
         "alignment": [
@@ -13,6 +13,12 @@
         "tags": [
             "chaotic",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Medial"
+            }
         ]
     }
 }

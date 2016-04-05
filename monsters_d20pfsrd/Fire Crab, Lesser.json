@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Fire Crab, Lesser"
+            "Fire Crab"
         ],
         "cr": "1/2",
         "alignment": [
@@ -13,6 +13,12 @@
         "tags": [
             "extraplanar",
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Lesser"
+            }
         ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Nabasu (mature)"
+            "Nabasu"
         ],
         "cr": "10",
         "alignment": [
@@ -15,6 +15,12 @@
             "demon",
             "evil",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Mature"
+            }
         ]
     }
 }

@@ -12,6 +12,12 @@
         "init": 3,
         "tags": [
             "aquatic"
-        ]
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Cub"
+            }
+		]
     }
 }

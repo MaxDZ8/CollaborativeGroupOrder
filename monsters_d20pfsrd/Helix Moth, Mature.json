@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Helix Moth, Mature"
+            "Helix Moth"
         ],
         "cr": "10",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Huge",
         "type": "vermin",
-        "init": 6
+        "init": 6,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Mature"
+            }
+        ]
     }
 }
