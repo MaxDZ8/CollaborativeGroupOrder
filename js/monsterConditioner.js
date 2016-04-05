@@ -19,7 +19,12 @@ window.onload = function() {
     const start = document.getElementById('loader');
     const nameTable = document.getElementById('nameConditioning');
     const errorSpan = countElements('th', nameTable.getElementsByTagName('TR')[0]) - 1;
-    const loadedMonsters = []; // { data: <loaded>, hitst: Nullable<array of span with hint controls }
+    const loadedMonsters = []; /* {
+        data: <loaded>,
+        hints: Nullable<array of span with hint controls,
+        td: <control cell, nullable>
+        fileName: <where to save/load>
+    } */
     start.onchange = function(el) {
         start.disabled = true;
         recursiveLoad(start.files);
@@ -48,7 +53,10 @@ window.onload = function() {
     
     function recursiveLoad(files, loadIndex) {
         if(loadIndex === undefined) loadIndex = 0;
-        if(loadIndex === files.length) return;
+        if(loadIndex === files.length) {
+            guessGroups();
+            return;
+        }
         const reader = new FileReader();
         reader.onload = function() {
             recursiveLoad(files, loadIndex + 1);
@@ -71,7 +79,9 @@ window.onload = function() {
             }
             const persist = {
                 data: obj,
-                hints: null
+                hints: null,
+                td: null,
+                fileName: files[loadIndex].name
             };
             loadedMonsters.push(persist);
             let nameContent = '';
@@ -84,6 +94,7 @@ window.onload = function() {
             persist.hints = suggestFileAndHeaderHints(files[loadIndex], obj, tr, td);
             if(!persist.hints) return;
             tr.appendChild(td);
+            persist.td = td;
             for(let loop = 0; loop < persist.hints.length; loop++) td.appendChild(persist.hints[loop]);
             nameTable.appendChild(tr);
         };
@@ -316,5 +327,59 @@ window.onload = function() {
             match[loop].parentNode.removeChild(match[loop]);
         }
         apply.disabled = true;
+    }
+    
+    function guessGroups() {
+        const groups = {};
+        for(let loop = 0; loop < loadedMonsters.length; loop++) {
+            const parts = loadedMonsters[loop].data.head.name[0].split(',');
+            if(parts.length === 1) continue;
+            const candidate = parts[0].charAt(0).toUpperCase() + parts[0].substr(1);
+            if((candidate in groups) === false) {
+                groups[candidate] = {};
+                groups[candidate].likely = [];
+            }
+            groups[candidate].likely.push(loadedMonsters[loop]);            
+        }
+        // Now, ignore all groups having a single candidate, they're likely being something else.
+        // In other cases, discard current annotations if there and replace with a button.
+        for(let key in groups) {
+            if(groups[key].likely.length === 1) continue;
+            for(let loop = 0; loop < groups[key].likely.length; loop++) {
+                const el = groups[key].likely[loop];
+                if(!el.td) continue; // impossible, ',' comma triggers a 'weird character error for sure'.
+                while(el.td.firstChild) el.td.removeChild(el.td.firstChild);
+                const button = document.createElement('BUTTON');
+                button.innerHTML = 'GROUP: ' + key;
+                const monster = el.data;
+                const group = key;
+                button.onclick = function(ev) {
+                    activateModification(monster, ev.currentTarget);
+                    const gotcha = document.createElement('A');
+                    document.body.appendChild(gotcha);
+                    document.body.appendChild(document.createElement('BR'));
+                    gotcha.innerHTML = el.fileName + ': to group: ' + group;
+                    if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                    extractGroup(monster.head.name, group);
+                    monster.head.extraNotes.push({
+                        type: 'group',
+                        value: group
+                    });
+                    gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                    gotcha.download = el.fileName;
+                    gotcha.click();
+                };
+                el.hints = [ button ];
+                el.td.appendChild(button);
+            }
+        }
+    }
+    
+    function extractGroup(monsterNames, group) {
+        for(let loop = 0; loop < monsterNames.length; loop++) {
+            const comma = monsterNames[loop].indexOf(',');
+            const start = monsterNames[loop].substring(0, comma).trim().toLowerCase();
+            if(start === group.toLowerCase()) monsterNames[loop] = monsterNames[loop].substr(comma + 1).trim();
+        }
     }
 };
