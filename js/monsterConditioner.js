@@ -367,7 +367,7 @@ window.onload = function() {
                 const el = groups[key].likely[loop];
                 if(!el.td) continue; // impossible, ',' comma triggers a 'weird character error for sure'.
                 while(el.td.firstChild) el.td.removeChild(el.td.firstChild);
-                const button = document.createElement('BUTTON');
+                let button = document.createElement('BUTTON');
                 button.innerHTML = 'GROUP: ' + key;
                 const monster = el.data;
                 const group = key;
@@ -377,8 +377,8 @@ window.onload = function() {
                     document.body.appendChild(gotcha);
                     document.body.appendChild(document.createElement('BR'));
                     gotcha.innerHTML = el.fileName + ': to group: ' + group;
-                    if(!monster.head.extraNotes) monster.head.extraNotes = [];
                     extractGroup(monster.head.name, group);
+                    if(!monster.head.extraNotes) monster.head.extraNotes = [];
                     monster.head.extraNotes.push({
                         type: 'group',
                         value: group
@@ -389,6 +389,34 @@ window.onload = function() {
                 };
                 el.hints = [ button ];
                 el.td.appendChild(button);
+                for(let inner = 0; inner < monster.head.name.length; inner++) {
+                    const comma = monster.head.name[inner].indexOf(',');
+                    const start = monster.head.name[inner].substring(0, comma).trim();
+                    if(start.toLowerCase() !== group.toLowerCase()) continue;
+                    const newName = monster.head.name[inner].substr(comma + 1).trim();
+                    button = document.createElement('BUTTON');
+                    button.innerHTML = group + '&gt;' + newName;
+                    const redefine = inner;
+                    button.onclick = function(ev) {
+                        activateModification(monster, ev.currentTarget);
+                        const gotcha = document.createElement('A');
+                        document.body.appendChild(gotcha);
+                        document.body.appendChild(document.createElement('BR'));
+                        gotcha.innerHTML = el.fileName + ': ' + newName + ', variation of ' + group;
+                        monster.head.name[redefine] = start;
+                        if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                        monster.head.extraNotes.push({
+                            type: 'variation', // variantion of a monster do not confuse with 'variant'! Some sort of sub-type, while variants are the same monsters growing or getting older etc.
+                            value: newName
+                        });
+                        gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                        gotcha.download = el.fileName;
+                        gotcha.click();
+                    };
+                    el.hints.push(button);
+                    el.td.appendChild(button);
+                    
+                }
             }
         }
     }
