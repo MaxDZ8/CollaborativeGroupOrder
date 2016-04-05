@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Mouse Lord (mouse Form)"
+            "Mouse Lord"
         ],
         "cr": "13",
         "alignment": [
@@ -13,6 +13,12 @@
         "tags": [
             "native",
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "mouse"
+            }
         ]
     }
 }

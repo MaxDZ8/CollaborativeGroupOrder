@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Worm That Walks (human)"
+            "Worm That Walks"
         ],
         "cr": "14",
         "alignment": [
@@ -13,6 +13,12 @@
         "example": "Human worm that walks conjurer 13",
         "tags": [
             "augmented human"
+        ],
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "human"
+            }
         ]
     }
 }

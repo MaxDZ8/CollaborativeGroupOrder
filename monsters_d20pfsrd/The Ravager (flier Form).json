@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "The Ravager (flier Form)"
+            "The Ravager"
         ],
         "cr": "30",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Gargantuan",
         "type": "magical beast",
-        "init": 14
+        "init": 14,
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "flier"
+            }
+        ]
     }
 }

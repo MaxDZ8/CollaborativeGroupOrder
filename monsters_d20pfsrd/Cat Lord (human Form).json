@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Cat Lord (human Form)"
+            "Cat Lord"
         ],
         "cr": "15",
         "alignment": [
@@ -13,6 +13,12 @@
         "tags": [
             "native",
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "human"
+            }
         ]
     }
 }

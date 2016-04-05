@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Werecrocodile (hybrid Form)"
+            "Werecrocodile"
         ],
         "cr": "3",
         "alignment": [
@@ -13,6 +13,12 @@
         "race": "human",
         "tags": [
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "hybrid"
+            }
         ]
     }
 }

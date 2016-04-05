@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Werebear (human Form)"
+            "Werebear"
         ],
         "cr": "4",
         "alignment": [
@@ -14,6 +14,12 @@
         "race": "human",
         "tags": [
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "human"
+            }
         ]
     }
 }

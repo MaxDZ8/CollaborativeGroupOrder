@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "The Ravager (crawler Form)"
+            "The Ravager"
         ],
         "cr": "30",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Gargantuan",
         "type": "magical beast",
-        "init": 7
+        "init": 7,
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "crawler"
+            }
+        ]
     }
 }
