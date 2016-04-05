@@ -123,6 +123,24 @@ window.onload = function() {
                 note.push(apply);
                 continue;
             }
+            const nbspAway = monster.head.name[loop].replace(/\u00a0/g, ' ');
+            if(nbspAway !== monster.head.name[loop]) {
+                const apply = document.createElement('BUTTON');
+                apply.innerHTML = 'name[' + loop + '].replace(&amp;NBSP, SPACE)';
+                apply.onclick = function() {
+                    activateModification(monster, apply);
+                    const gotcha = document.createElement('A');
+                    document.body.appendChild(gotcha);
+                    document.body.appendChild(document.createElement('BR'));
+                    gotcha.innerHTML = file.name + ', name[' + loop + '], replaced &amp;nbsp;';
+                    monster.head.name[loop] = nbspAway;
+                    gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                    gotcha.download = file.name;
+                    gotcha.click();
+                }
+                note.push(apply);
+                continue;
+            }
             if(monster.head.name[loop].match(invalidChars)) {
                 let parts = monster.head.name[loop].split(',');
                 for(let inner = 0; inner < parts.length; inner++) parts[inner] = parts[inner].trim();

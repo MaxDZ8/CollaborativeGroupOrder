@@ -168,6 +168,7 @@
         };
         
         function mangleName(str) {
+            str = str.replace(/\u00a0/g, ' ');
             const aka = str.match(/\(([^)])\)/);
             if(!aka) return [ str.trim() ];
             return [ str.substring(0, aka.index).trim(), aka[1].trim() ];
