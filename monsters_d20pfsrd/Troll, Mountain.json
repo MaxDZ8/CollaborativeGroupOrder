@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Troll, Mountain"
+            "Troll"
         ],
         "cr": "14",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "giant"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Mountain"
+            }
         ]
     }
 }

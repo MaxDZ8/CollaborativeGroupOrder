@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Wolf, Dire"
+            "Wolf"
         ],
         "cr": "3",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Large",
         "type": "animal",
-        "init": 2
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "dire"
+            }
+        ]
     }
 }

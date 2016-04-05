@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Frog, Giant Dire"
+            "Frog"
         ],
         "cr": "4",
         "alignment": [
@@ -9,6 +9,16 @@
         ],
         "size": "Large",
         "type": "animal",
-        "init": 1
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "giant"
+            },
+            {
+                "type": "appliedTemplate",
+                "value": "dire"
+            }
+        ]
     }
 }

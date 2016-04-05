@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Jellyfish, Giant"
+            "Jellyfish"
         ],
         "cr": "7",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "giant"
+            }
         ]
     }
 }

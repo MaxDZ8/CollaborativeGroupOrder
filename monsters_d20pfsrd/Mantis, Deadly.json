@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Mantis, Deadly"
+            "Mantis"
         ],
         "cr": "14",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Colossal",
         "type": "vermin",
-        "init": 1
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Deadly"
+            }
+        ]
     }
 }

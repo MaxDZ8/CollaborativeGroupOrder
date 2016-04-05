@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Boar, Dire",
+            "Boar",
             "Daeodon"
         ],
         "cr": "4",
@@ -10,6 +10,12 @@
         ],
         "size": "Large",
         "type": "animal",
-        "init": 4
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "dire"
+            }
+        ]
     }
 }

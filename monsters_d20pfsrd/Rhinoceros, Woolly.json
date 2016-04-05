@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Rhinoceros, Woolly"
+            "Rhinoceros"
         ],
         "cr": "6",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Large",
         "type": "animal",
-        "init": 0
+        "init": 0,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Woolly"
+            }
+        ]
     }
 }

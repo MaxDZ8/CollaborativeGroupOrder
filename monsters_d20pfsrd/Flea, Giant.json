@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Flea, Giant"
+            "Flea"
         ],
         "cr": "1/2",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Tiny",
         "type": "vermin",
-        "init": 4
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "giant"
+            }
+        ]
     }
 }

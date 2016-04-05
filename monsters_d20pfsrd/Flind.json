@@ -10,6 +10,12 @@
         "size": "Medium",
         "type": "humanoid",
         "init": 2,
-        "race": "gnoll"
+        "race": "gnoll",
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Gnoll"
+            }
+        ]
     }
 }

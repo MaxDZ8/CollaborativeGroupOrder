@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Lion, Dire",
+            "Lion",
             "Spotted Lion"
         ],
         "cr": "5",
@@ -10,6 +10,12 @@
         ],
         "size": "Large",
         "type": "animal",
-        "init": 6
+        "init": 6,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "dire"
+            }
+        ]
     }
 }

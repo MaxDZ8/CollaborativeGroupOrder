@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Eagle, Giant"
+            "Eagle"
         ],
         "cr": "3",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Large",
         "type": "magical beast",
-        "init": 3
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "giant"
+            }
+        ]
     }
 }

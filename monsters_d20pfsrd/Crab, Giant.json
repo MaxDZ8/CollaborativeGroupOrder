@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Crab, Giant"
+            "Crab"
         ],
         "cr": "2",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "giant"
+            }
         ]
     }
 }

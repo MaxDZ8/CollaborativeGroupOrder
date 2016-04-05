@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Lurking Ray, Trapper"
+            "Lurking Ray"
         ],
         "cr": "8",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Huge",
         "type": "aberration",
-        "init": 5
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Trapper"
+            }
+        ]
     }
 }

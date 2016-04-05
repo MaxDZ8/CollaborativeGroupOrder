@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Kamadan, Poisonous"
+            "Kamadan"
         ],
         "cr": "6",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Large",
         "type": "magical beast",
-        "init": 2
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Poisonous"
+            }
+        ]
     }
 }

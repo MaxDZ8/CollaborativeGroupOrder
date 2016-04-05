@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Clam, Giant"
+            "Clam"
         ],
         "cr": "2",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": -5,
         "tags": [
             "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "giant"
+            }
         ]
     }
 }

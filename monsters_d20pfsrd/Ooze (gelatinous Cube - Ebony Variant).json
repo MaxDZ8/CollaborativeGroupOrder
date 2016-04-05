@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ooze (Ebony Variant)",
+            "Ooze",
             "Gelatinous Cube"
         ],
         "cr": "5",
@@ -10,6 +10,12 @@
         ],
         "size": "Large",
         "type": "ooze",
-        "init": -5
+        "init": -5,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Ebony"
+            }
+        ]
     }
 }

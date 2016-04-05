@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Demon, Stone"
+            "Stone Demon"
         ],
         "cr": "20",
         "alignment": [
@@ -15,6 +15,12 @@
             "demon",
             "evil",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Demon"
+            }
         ]
     }
 }

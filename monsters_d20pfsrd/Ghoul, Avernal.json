@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ghoul, Avernal"
+            "Avernal"
         ],
         "cr": "3",
         "alignment": [
@@ -14,6 +14,12 @@
             "evil",
             "extraplanar",
             "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Ghoul"
+            }
         ]
     }
 }

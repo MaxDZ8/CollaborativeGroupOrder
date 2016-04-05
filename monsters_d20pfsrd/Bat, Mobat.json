@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Bat, Mobat"
+            "Mobat"
         ],
         "cr": "3",
         "alignment": [
@@ -10,6 +10,12 @@
         ],
         "size": "Large",
         "type": "magical beast",
-        "init": 5
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Bat"
+            }
+		]
     }
 }

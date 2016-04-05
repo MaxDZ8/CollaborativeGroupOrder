@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Snail, Flail"
+            "Snail"
         ],
         "cr": "4",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Large",
         "type": "magical beast",
-        "init": -1
+        "init": -1,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Flail"
+            }
+        ]
     }
 }
