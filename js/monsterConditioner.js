@@ -1,10 +1,19 @@
 "use strict";
 
 const dragonAgeCategory = [
-    'wyrmling',        'very young',  'young',
-    'juvenile',        'young adult', 'adult',
-    'mature adult',    'old',         'very old',
-    'ancient',         'wyrm',        'great wyrm'
+    // Since we compare those as strings from first to last, I must check the longer first
+    'mature adult',
+    'young adult',
+    'great wyrm',
+    'very young',
+    'wyrmling',
+    'very old',
+    'juvenile',
+    'ancient',
+    'young',
+    'adult',
+    'wyrm',
+    'old'
 ];
 
 const sizeModifier = [
@@ -118,44 +127,28 @@ window.onload = function() {
                 }));
                 continue;
             }
-            const nbspAway = monster.head.name[loop].replace(/\u00a0/g, ' ');
-            if(nbspAway !== monster.head.name[loop]) {
+            const nbspAway = name.replace(/\u00a0/g, ' ');
+            if(nbspAway !== name) {
                 note.push(makeButton(file.name, 'name[' + loop + '].replace(&amp;NBSP, SPACE)', monster, ', name[' + loop + '], replaced &amp;nbsp;', function() {
                     monster.head.name[loop] = nbspAway;
                 }));
                 continue;
             }
-            if(monster.head.name[loop].match(invalidChars)) {
-                let parts = monster.head.name[loop].split(',');
+            const age = match(name, dragonAgeCategory);
+            if(age && (name.match(/\sdragon\s/i) || name.match(/\sdragon$/i)) {
+                note.push(makeButton(file.name, 'AGE: "' + age.matched + '" to annotation', monster, ', ' + monster.head.name[loop] + ': changed to "' + age.without + '" and added annotation [[' + age.matched + ']]', function() {
+                    monster.head.name[loop] = age.without;
+                    if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                    monster.head.extraNotes.push({
+                        type: 'ageCategory',
+                        value: age.matched
+                    });
+                }));
+                continue;
+            }
+            if(name.match(invalidChars)) {
+                let parts = name.split(',');
                 for(let inner = 0; inner < parts.length; inner++) parts[inner] = parts[inner].trim();
-                let age;
-                let skipIndex;
-                for(let inner = 0; inner < parts.length; inner++) {
-                    for(let match = 0; match < dragonAgeCategory.length; match++) {
-                        if(parts[inner].toLowerCase() === dragonAgeCategory[match]) {
-                            age = dragonAgeCategory[match];
-                            skipIndex = inner;
-                            break;
-                        }
-                    }
-                }
-                if(age) {
-                    let newName = '';
-                    for(let inner = 0; inner < parts.length; inner++) {
-                        if(inner === skipIndex) continue;
-                        if(newName.length) newName += ', ';
-                        newName += parts[inner];
-                    }
-                    note.push(makeButton(file.name, 'AGE: "' + age + '" to annotation', monster, ', ' + monster.head.name[loop] + ': changed to "' + newName + '" and added annotation [[' + age + ']]', function() {
-                        monster.head.name[loop] = newName;
-                        if(!monster.head.extraNotes) monster.head.extraNotes = [];
-                        monster.head.extraNotes.push({
-                            type: 'ageCategory',
-                            value: age
-                        });
-                    }));
-                    continue;
-                }
                 let wkt;
                 for(let inner = 0; inner < parts.length; inner++) {
                     if(parts[inner].toLowerCase() in wellKnownTemplates) {
@@ -173,7 +166,7 @@ window.onload = function() {
                         if(newName.length) newName += ', ';
                         newName += parts[inner];
                     }
-                    note.push(makeButton(file.name, 'TEMPLATE: ' + wkt.template, monster, monster.head.name[loop] + ': changed to "' + newName + '" and added template [[' + wkt.template + ']]', function() {
+                    note.push(makeButton(file.name, 'TEMPLATE: ' + wkt.template, monster, name + ': changed to "' + newName + '" and added template [[' + wkt.template + ']]', function() {
                         monster.head.name[loop] = newName;
                         if(!monster.head.extraNotes) monster.head.extraNotes = [];
                         monster.head.extraNotes.push({
@@ -184,18 +177,17 @@ window.onload = function() {
                     continue;
                 }
                 
-                const par = matchRoundPar(monster.head.name[loop]);
+                const par = matchRoundPar(name);
                 if(par) {
-                    const ori = monster.head.name[loop];
-                    let newName = ori.substring(0, par.open).trim();
-                    const trailing = ori.substring(par.next).trim();
+                    let newName = name.substring(0, par.open).trim();
+                    const trailing = name.substring(par.next).trim();
                     if(trailing.length) newName += ' ' + trailing;
                     let apply = document.createElement('BUTTON');
                     note.push(apply);
                     
                     if(par.inside.match(/ form$/i)) {
                         const morph = par.inside.substring(0, par.inside.length - 5);
-                        note.push(makeButton(file.name, 'MORPH_TARGET: ' + morph, monster, monster.head.name[loop] + ': morph target variation: ' + morph, function() {
+                        note.push(makeButton(file.name, 'MORPH_TARGET: ' + morph, monster, name + ': morph target variation: ' + morph, function() {
                             monster.head.name[loop] = newName;
                             monster.head.extraNotes.push({
                                 type: 'variant.morphTarget',
@@ -213,7 +205,7 @@ window.onload = function() {
                         }
                     }
                     if(size) {
-                        note.push(makeButton(file.name, 'SIZE: ' + par.inside, monster, monster.head.name[loop] + ': added size specifier: ' + size, function() {
+                        note.push(makeButton(file.name, 'SIZE: ' + par.inside, monster, name + ': added size specifier: ' + size, function() {
                             monster.head.name[loop] = newName;
                             monster.head.extraNotes.push({
                                 type: 'variant.size',
@@ -222,11 +214,11 @@ window.onload = function() {
                         }));
                     }
                     else {
-                        note.push(makeButton(file.name, '"' + par.inside + '" alternate name', monster, monster.head.name[loop] + ': extracted an alternate name.', function() {
+                        note.push(makeButton(file.name, '"' + par.inside + '" alternate name', monster, name + ': extracted an alternate name.', function() {
                             monster.head.name[loop] = newName;
                             monster.head.name.push(titolize(par.inside));
                         }));
-                        note.push(makeButton(file.name, 'MISC: ' + par.inside, monster, monster.head.name[loop] + ': extracted misc variation.', function() {
+                        note.push(makeButton(file.name, 'MISC: ' + par.inside, monster, name + ': extracted misc variation.', function() {
                             monster.head.name[loop] = newName;
                             monster.head.extraNotes.push({
                                 type: 'extraInfo',
@@ -399,5 +391,36 @@ window.onload = function() {
             gotcha.click();
         }
         return build;
+    }
+    
+    function match(search, oneof) {
+        let start, gotcha = -1;
+        for(let loop = 0; loop < oneof.length; loop++) {
+            for(let scan = 0; scan < search.length; scan++) {
+                if(scan && search.charAt(scan) !== ' ') continue;
+                if(search.charAt(scan) === ' ') scan++;
+                start = scan;
+                let test;
+                for(test = 0; test < oneof[loop].length && scan + test < search.length; test++) {
+                    const is = search.charAt(scan + test).toLowerCase();
+                    const should = oneof[loop].charAt(test).toLowerCase();
+                    if(is !== should) break;
+                }                    
+                if(test !== oneof[loop].length) continue;
+                const terminated = scan >= search.length || search.charAt(scan + test) === ' ';
+                if(!terminated) continue;
+                gotcha = loop;
+                loop = oneof.length;
+                break;
+            }
+        }
+        if(gotcha < 0) return null;
+        let away = search.substring(0, start).trim();
+        let rest = search.substring(start + oneof[gotcha].length).trim();
+        away += ' ' + rest;
+        return {
+            without: away.trim(),
+            matched: oneof[gotcha]
+        };
     }
 };
