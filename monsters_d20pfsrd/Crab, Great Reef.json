@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Crab, Great Reef"
+            "Crab"
         ],
         "cr": "10",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 0,
         "tags": [
             "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Great Reef"
+            }
         ]
     }
 }

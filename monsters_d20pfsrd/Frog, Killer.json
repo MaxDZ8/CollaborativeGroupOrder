@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Frog, Killer"
+            "Frog"
         ],
         "cr": "1",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Small",
         "type": "animal",
-        "init": 5
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Killer"
+            }
+        ]
     }
 }

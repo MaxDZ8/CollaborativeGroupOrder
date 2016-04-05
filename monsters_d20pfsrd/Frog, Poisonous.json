@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Frog, Poisonous"
+            "Frog"
         ],
         "cr": "1/2",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Tiny",
         "type": "animal",
-        "init": 1
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Poisonous"
+            }
+        ]
     }
 }

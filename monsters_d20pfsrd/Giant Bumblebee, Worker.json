@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Giant Bumblebee, Worker"
+            "Giant Bumblebee"
         ],
         "cr": "3",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Large",
         "type": "vermin",
-        "init": 2
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Worker"
+            }
+        ]
     }
 }

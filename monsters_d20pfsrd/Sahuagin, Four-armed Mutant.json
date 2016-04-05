@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Sahuagin, Four-armed Mutant"
+            "Sahuagin"
         ],
         "cr": "3",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Four-armed Mutant"
+            }
         ]
     }
 }

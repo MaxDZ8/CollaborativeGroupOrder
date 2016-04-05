@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Crab, Hermit"
+            "Crab"
         ],
         "cr": "5",
         "alignment": [
@@ -18,6 +18,10 @@
             {
                 "type": "extraInfo",
                 "value": "giant"
+            },
+            {
+                "type": "variation",
+                "value": "Hermit"
             }
         ]
     }

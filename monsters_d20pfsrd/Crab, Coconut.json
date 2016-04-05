@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Crab, Coconut"
+            "Crab"
         ],
         "cr": "1/2",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Coconut"
+            }
         ]
     }
 }
