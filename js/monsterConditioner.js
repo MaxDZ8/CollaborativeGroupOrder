@@ -19,6 +19,7 @@ window.onload = function() {
     const start = document.getElementById('loader');
     const nameTable = document.getElementById('nameConditioning');
     const errorSpan = countElements('th', nameTable.getElementsByTagName('TR')[0]) - 1;
+    const loadedMonsters = []; // { data: <loaded>, hitst: Nullable<array of span with hint controls }
     start.onchange = function(el) {
         start.disabled = true;
         recursiveLoad(start.files);
@@ -68,6 +69,11 @@ window.onload = function() {
                 nameTable.appendChild(tr);
                 return;
             }
+            const persist = {
+                data: obj,
+                hints: null
+            };
+            loadedMonsters.push(persist);
             let nameContent = '';
             for(let loop = 0; loop < obj.head.name.length; loop++) {
                 if(loop !== 0) nameContent += '<br/>';
@@ -75,10 +81,10 @@ window.onload = function() {
             }
             tr.innerHTML += cell(nameContent);
             const td = document.createElement('TD');
-            let hints = suggestFileAndHeaderHints(files[loadIndex], obj, tr, td);
-            if(!hints) return;
+            persist.hints = suggestFileAndHeaderHints(files[loadIndex], obj, tr, td);
+            if(!persist.hints) return;
             tr.appendChild(td);
-            for(let loop = 0; loop < hints.length; loop++) td.appendChild(hints[loop]);
+            for(let loop = 0; loop < persist.hints.length; loop++) td.appendChild(persist.hints[loop]);
             nameTable.appendChild(tr);
         };
         reader.readAsText(files[loadIndex]);
@@ -93,7 +99,7 @@ window.onload = function() {
                 const apply = document.createElement('BUTTON');
                 apply.innerHTML = 'trim name[' + loop + '].';
                 apply.onclick = function() {
-                    apply.disabled = true;
+                    activateModification(monster, apply);
                     const gotcha = document.createElement('A');
                     document.body.appendChild(gotcha);
                     document.body.appendChild(document.createElement('BR'));
@@ -130,7 +136,7 @@ window.onload = function() {
                     const apply = document.createElement('BUTTON');
                     apply.innerHTML = 'AGE: "' + age + '" to annotation';
                     apply.onclick = function() {
-                        apply.disabled = true;
+                        activateModification(monster, apply);
                         const gotcha = document.createElement('A');
                         document.body.appendChild(gotcha);
                         document.body.appendChild(document.createElement('BR'));
@@ -154,12 +160,32 @@ window.onload = function() {
                     let newName = ori.substring(0, par.open).trim();
                     const trailing = ori.substring(par.next).trim();
                     if(trailing.length) newName += ' ' + trailing;
-                    let container = document.createElement('SPAN');
                     let apply = document.createElement('BUTTON');
-                    let cancel = document.createElement('BUTTON');
-                    container.appendChild(apply);
-                    container.appendChild(cancel);
-                    note.push(container);
+                    note.push(apply);
+                    
+                    if(par.inside.match(/ form$/i)) {
+                        const morph = par.inside.substring(0, par.inside.length - 5);
+                        apply.innerHTML = "MORPH_TARGET: " + morph;
+                        apply.onclick = function(ev) {
+                            activateModification(monster, ev.currentTarget);
+                            const gotcha = document.createElement('A');
+                            document.body.appendChild(gotcha);
+                            document.body.appendChild(document.createElement('BR'));
+                            gotcha.innerHTML = file.name + ', ' + monster.head.name[loop] + ': morph target variation: ' + morph;
+                            if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                            monster.head.name[loop] = newName;
+                            monster.head.extraNotes.push({
+                                type: 'variant.morphTarget',
+                                value: morph
+                            });
+                            gotcha.href = URL.createObjectURL(new Blob([ JSON.stringify(monster, null, 4) ], { type: "application/json" }));
+                            gotcha.download = file.name;
+                            gotcha.click();
+                        }
+                        note.push(document.createElement('BR'));
+                        apply = document.createElement('BUTTON');
+                        note.push(apply);
+                    }
                     
                     let size;
                     for(let check = 0; check < sizeModifier.length; check++) {
@@ -168,11 +194,10 @@ window.onload = function() {
                             break;
                         }
                     }
-                    cancel.onclick = function() { this.parentNode.parentNode.removeChild(this.parentNode); }
                     if(size) {
                         apply.innerHTML = 'SIZE: ' + par.inside;
-                        apply.onclick = function() {
-                            apply.disabled = cancel.disabled = true;
+                        apply.onclick = function(ev) {
+                            activateModification(monster, ev.currentTarget);
                             const gotcha = document.createElement('A');
                             document.body.appendChild(gotcha);
                             document.body.appendChild(document.createElement('BR'));
@@ -187,13 +212,12 @@ window.onload = function() {
                             gotcha.download = file.name;
                             gotcha.click();
                         }
-                        cancel.innerHTML = 'Discard size extraction';
                         
                     }
                     else {
                         apply.innerHTML = '"' + par.inside + '" alternate name';
-                        apply.onclick = function() {
-                            apply.disabled = cancel.disabled = true;
+                        apply.onclick = function(ev) {
+                            activateModification(monster, ev.currentTarget);
                             const gotcha = document.createElement('A');
                             document.body.appendChild(gotcha);
                             document.body.appendChild(document.createElement('BR'));
@@ -204,21 +228,13 @@ window.onload = function() {
                             gotcha.download = file.name;
                             gotcha.click();
                         }
-                        cancel.innerHTML = 'Discard name extraction';
-                        container.appendChild(document.createElement('BR'));
-                        
-                        container = document.createElement('SPAN');
+                        note.push(document.createElement('BR'));
                         apply = document.createElement('BUTTON');
-                        cancel = document.createElement('BUTTON');
-                        container.appendChild(apply);
-                        container.appendChild(cancel);
-                        note.push(container);
+                        note.push(apply);
                         
                         apply.innerHTML = 'MISC: ' + par.inside;
-                        cancel.innerHTML = 'Discard misc variation extraction';
-                        cancel.onclick = function() { this.parentNode.parentNode.removeChild(this.parentNode); }
-                        apply.onclick = function() {
-                            apply.disabled = cancel.disabled = true;
+                        apply.onclick = function(ev) {
+                            activateModification(monster, ev.currentTarget);
                             const gotcha = document.createElement('A');
                             document.body.appendChild(gotcha);
                             document.body.appendChild(document.createElement('BR'));
@@ -284,5 +300,21 @@ window.onload = function() {
             else nicer += word.toLowerCase();
         }
         return nicer;
+    }
+    
+    function activateModification(monster, apply) {
+        let match;
+        for(let loop = 0; loop < loadedMonsters.length; loop++) {
+            if(loadedMonsters[loop].data === monster) {
+                match = loadedMonsters[loop].hints;
+                break;
+            }
+        }
+        if(!match) return; // uh?
+        for(let loop = 0; loop < match.length; loop++) {
+            if(match[loop] === apply) continue;
+            match[loop].parentNode.removeChild(match[loop]);
+        }
+        apply.disabled = true;
     }
 };
