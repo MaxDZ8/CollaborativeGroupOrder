@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Young Cave Dragon"
+            "Cave Dragon"
         ],
         "cr": "7",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young"
+            }
         ]
     }
 }

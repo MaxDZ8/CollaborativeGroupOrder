@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Wyrmling Red Dragon"
+            "Red Dragon"
         ],
         "cr": "6",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

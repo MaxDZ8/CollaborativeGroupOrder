@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Wyrmling Forest Dragon"
+            "Forest Dragon"
         ],
         "cr": "6",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

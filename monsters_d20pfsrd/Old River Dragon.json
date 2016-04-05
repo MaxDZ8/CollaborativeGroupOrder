@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Old River Dragon"
+            "River Dragon"
         ],
         "cr": "14",
         "alignment": [
@@ -13,6 +13,12 @@
         "tags": [
             "aquatic",
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "old"
+            }
         ]
     }
 }

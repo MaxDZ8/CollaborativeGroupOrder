@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Young Sovereign Dragon"
+            "Sovereign Dragon"
         ],
         "cr": "11",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Large",
         "type": "dragon",
-        "init": 5
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young"
+            }
+        ]
     }
 }

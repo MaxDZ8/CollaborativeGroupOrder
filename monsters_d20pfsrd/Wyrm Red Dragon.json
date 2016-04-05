@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Wyrm Red Dragon"
+            "Red Dragon"
         ],
         "cr": "20",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
         ]
     }
 }

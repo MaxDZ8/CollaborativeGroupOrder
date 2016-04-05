@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Wyrm Green Dragon"
+            "Green Dragon"
         ],
         "cr": "18",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
         ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Young Sea Dragon"
+            "Sea Dragon"
         ],
         "cr": "8",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young"
+            }
         ]
     }
 }

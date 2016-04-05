@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Red Wyrm Ravener"
+            "Red Ravener"
         ],
         "cr": "22",
         "alignment": [
@@ -13,6 +13,12 @@
         "example": "Wyrm red dragon ravener",
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
         ]
     }
 }

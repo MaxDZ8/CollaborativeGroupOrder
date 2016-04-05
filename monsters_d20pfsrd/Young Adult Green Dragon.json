@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Young Adult Green Dragon"
+            "Green Dragon"
         ],
         "cr": "11",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 0,
         "tags": [
             "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young adult"
+            }
         ]
     }
 }

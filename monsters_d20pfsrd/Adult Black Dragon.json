@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Adult Black Dragon"
+            "Black Dragon"
         ],
         "cr": "11",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "adult"
+            }
         ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Wyrmling Cloud Dragon"
+            "Cloud Dragon"
         ],
         "cr": "3",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 7,
         "tags": [
             "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

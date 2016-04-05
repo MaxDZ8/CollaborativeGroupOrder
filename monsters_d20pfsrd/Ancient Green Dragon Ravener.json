@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ancient Green Dragon Ravener"
+            "Green Dragon Ravener"
         ],
         "cr": "19",
         "alignment": [
@@ -13,6 +13,12 @@
         "example": "Female ancient green dragon ravener",
         "tags": [
             "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "ancient"
+            }
         ]
     }
 }

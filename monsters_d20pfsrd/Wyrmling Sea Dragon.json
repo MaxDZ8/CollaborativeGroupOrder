@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Wyrmling Sea Dragon"
+            "Sea Dragon"
         ],
         "cr": "4",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

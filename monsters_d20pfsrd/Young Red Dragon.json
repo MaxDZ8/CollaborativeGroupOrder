@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Young Red Dragon"
+            "Red Dragon"
         ],
         "cr": "10",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young"
+            }
         ]
     }
 }

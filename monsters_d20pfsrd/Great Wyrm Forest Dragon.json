@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Great Wyrm Forest Dragon"
+            "Forest Dragon"
         ],
         "cr": "22",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
         ]
     }
 }

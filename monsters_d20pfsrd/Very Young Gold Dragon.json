@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Very Young Gold Dragon"
+            "Gold Dragon"
         ],
         "cr": "9",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very young"
+            }
         ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Great Wyrm Sea Dragon"
+            "Sea Dragon"
         ],
         "cr": "20",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
         ]
     }
 }

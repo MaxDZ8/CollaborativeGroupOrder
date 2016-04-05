@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Juvenile Black Dragon"
+            "Black Dragon"
         ],
         "cr": "8",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "juvenile"
+            }
         ]
     }
 }

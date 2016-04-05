@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Wyrmling Sky Dragon"
+            "Sky Dragon"
         ],
         "cr": "5",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

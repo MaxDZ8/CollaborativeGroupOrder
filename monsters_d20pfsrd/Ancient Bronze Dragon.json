@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ancient Bronze Dragon"
+            "Bronze Dragon"
         ],
         "cr": "18",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 3,
         "tags": [
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "ancient"
+            }
         ]
     }
 }

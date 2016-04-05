@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ancient Copper Dragon"
+            "Copper Dragon"
         ],
         "cr": "17",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 4,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "ancient"
+            }
         ]
     }
 }

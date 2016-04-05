@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Adult Silver Dragon"
+            "Silver Dragon"
         ],
         "cr": "14",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 4,
         "tags": [
             "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "adult"
+            }
         ]
     }
 }

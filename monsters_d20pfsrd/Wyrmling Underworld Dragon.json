@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Wyrmling Underworld Dragon"
+            "Underworld Dragon"
         ],
         "cr": "3",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
         ]
     }
 }

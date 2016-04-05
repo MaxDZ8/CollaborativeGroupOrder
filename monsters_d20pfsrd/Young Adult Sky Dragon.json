@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Young Adult Sky Dragon"
+            "Sky Dragon"
         ],
         "cr": "12",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 4,
         "tags": [
             "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young adult"
+            }
         ]
     }
 }

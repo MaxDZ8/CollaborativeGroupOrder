@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Great Wyrm Underworld Dragon"
+            "Underworld Dragon"
         ],
         "cr": "19",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 2,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
         ]
     }
 }

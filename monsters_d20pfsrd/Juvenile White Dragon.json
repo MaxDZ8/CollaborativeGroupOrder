@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Juvenile White Dragon"
+            "White Dragon"
         ],
         "cr": "7",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "juvenile"
+            }
         ]
     }
 }

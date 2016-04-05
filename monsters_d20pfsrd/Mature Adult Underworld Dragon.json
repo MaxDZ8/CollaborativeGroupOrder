@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Mature Adult Underworld Dragon"
+            "Underworld Dragon"
         ],
         "cr": "12",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 4,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "mature adult"
+            }
         ]
     }
 }

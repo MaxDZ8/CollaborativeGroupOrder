@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ancient Sky Dragon"
+            "Sky Dragon"
         ],
         "cr": "18",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 3,
         "tags": [
             "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "ancient"
+            }
         ]
     }
 }

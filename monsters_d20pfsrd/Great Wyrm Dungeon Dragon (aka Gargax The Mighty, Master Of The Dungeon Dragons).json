@@ -1,9 +1,9 @@
 {
     "head": {
         "name": [
-            "Great Wyrm Dungeon Dragon",
-			"Gargax The Mighty",
-			"Master Of The Dungeon Dragons"
+            "Dungeon Dragon",
+            "Gargax The Mighty",
+            "Master Of The Dungeon Dragons"
         ],
         "cr": "17",
         "alignment": [
@@ -14,6 +14,12 @@
         "init": 2,
         "tags": [
             "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
         ]
     }
 }

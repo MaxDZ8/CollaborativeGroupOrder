@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Ancient Mist Dragon"
+            "Mist Dragon"
         ],
         "cr": "16",
         "alignment": [
@@ -14,6 +14,12 @@
             "air",
             "fire",
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "ancient"
+            }
         ]
     }
 }

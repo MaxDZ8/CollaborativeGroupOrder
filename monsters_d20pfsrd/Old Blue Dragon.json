@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Old Blue Dragon"
+            "Blue Dragon"
         ],
         "cr": "16",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 3,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "old"
+            }
         ]
     }
 }

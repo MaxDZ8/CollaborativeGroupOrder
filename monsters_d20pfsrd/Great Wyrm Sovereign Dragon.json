@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Great Wyrm Sovereign Dragon"
+            "Sovereign Dragon"
         ],
         "cr": "23",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Colossal",
         "type": "dragon",
-        "init": 2
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
+        ]
     }
 }

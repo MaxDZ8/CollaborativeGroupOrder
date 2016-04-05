@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Mature Adult White Dragon"
+            "White Dragon"
         ],
         "cr": "11",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "mature adult"
+            }
         ]
     }
 }

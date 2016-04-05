@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Juvenile Forest Dragon"
+            "Forest Dragon"
         ],
         "cr": "11",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "juvenile"
+            }
         ]
     }
 }

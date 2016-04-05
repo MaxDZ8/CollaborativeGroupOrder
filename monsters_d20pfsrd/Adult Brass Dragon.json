@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Adult Brass Dragon"
+            "Brass Dragon"
         ],
         "cr": "11",
         "alignment": [
@@ -12,6 +12,12 @@
         "init": 5,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "adult"
+            }
         ]
     }
 }

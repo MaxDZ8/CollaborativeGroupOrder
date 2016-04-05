@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Giant Adult Ant Lion"
+            "Giant Ant Lion"
         ],
         "cr": "6",
         "alignment": [
@@ -9,6 +9,12 @@
         ],
         "size": "Huge",
         "type": "vermin",
-        "init": 3
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "adult"
+            }
+        ]
     }
 }
