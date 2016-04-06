@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Elder Cold Iron Elemental"
+            "Cold Iron Elemental"
         ],
         "cr": "11",
         "alignment": [
@@ -14,6 +14,16 @@
             "earth",
             "elemental",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "elder"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

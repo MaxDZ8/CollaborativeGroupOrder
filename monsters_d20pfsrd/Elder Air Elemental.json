@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Elder Air Elemental"
+            "Air Elemental"
         ],
         "cr": "11",
         "alignment": [
@@ -14,6 +14,16 @@
             "air",
             "elemental",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "elder"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

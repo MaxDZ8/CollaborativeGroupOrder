@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Huge Psionic Elemental"
+            "Psionic Elemental"
         ],
         "cr": "8",
         "alignment": [
@@ -14,6 +14,16 @@
             "elemental",
             "extraplanar",
             "psionic"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "huge"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

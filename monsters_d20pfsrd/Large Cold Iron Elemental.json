@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Large Cold Iron Elemental"
+            "Cold Iron Elemental"
         ],
         "cr": "5",
         "alignment": [
@@ -14,6 +14,16 @@
             "earth",
             "elemental",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "large"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

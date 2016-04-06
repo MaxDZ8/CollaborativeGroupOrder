@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Greater Gravity Elemental"
+            "Gravity Elemental"
         ],
         "cr": "9",
         "alignment": [
@@ -14,6 +14,16 @@
             "elemental",
             "extraplanar",
             "gravity"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "greater"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

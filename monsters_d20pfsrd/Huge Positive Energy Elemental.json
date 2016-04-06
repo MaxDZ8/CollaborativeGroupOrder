@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Huge Positive Energy Elemental"
+            "Positive Energy Elemental"
         ],
         "cr": "8",
         "alignment": [
@@ -13,6 +13,16 @@
         "tags": [
             "elemental",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "huge"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

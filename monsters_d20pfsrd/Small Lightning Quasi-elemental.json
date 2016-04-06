@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Small Lightning Quasi-elemental"
+            "Lightning Quasi-elemental"
         ],
         "cr": "3",
         "alignment": [
@@ -15,6 +15,16 @@
             "electricity",
             "elemental",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "small"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

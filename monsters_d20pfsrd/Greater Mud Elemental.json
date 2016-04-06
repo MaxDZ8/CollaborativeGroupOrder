@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Greater Mud Elemental"
+            "Mud Elemental"
         ],
         "cr": "9",
         "alignment": [
@@ -15,6 +15,16 @@
             "elemental",
             "extraplanar",
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "greater"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

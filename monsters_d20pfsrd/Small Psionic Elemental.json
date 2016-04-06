@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Small Psionic Elemental"
+            "Psionic Elemental"
         ],
         "cr": "2",
         "alignment": [
@@ -14,6 +14,16 @@
             "elemental",
             "extraplanar",
             "psionic"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "small"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

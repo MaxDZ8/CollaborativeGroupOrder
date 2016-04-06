@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Greater Ice Elemental"
+            "Ice Elemental"
         ],
         "cr": "9",
         "alignment": [
@@ -16,6 +16,16 @@
             "elemental",
             "extraplanar",
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "greater"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

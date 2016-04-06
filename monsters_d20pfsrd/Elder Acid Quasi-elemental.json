@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Elder Acid Quasi-elemental"
+            "Acid Quasi-elemental"
         ],
         "cr": "9",
         "alignment": [
@@ -14,6 +14,16 @@
             "acid",
             "elemental",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "elder"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

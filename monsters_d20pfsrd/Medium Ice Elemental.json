@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Medium Ice Elemental"
+            "Ice Elemental"
         ],
         "cr": "3",
         "alignment": [
@@ -16,6 +16,16 @@
             "elemental",
             "extraplanar",
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "medium"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Elder Psionic Elemental"
+            "Psionic Elemental"
         ],
         "cr": "12",
         "alignment": [
@@ -14,6 +14,16 @@
             "elemental",
             "extraplanar",
             "psionic"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "elder"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

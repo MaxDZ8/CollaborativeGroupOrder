@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Small Positive Energy Elemental"
+            "Positive Energy Elemental"
         ],
         "cr": "2",
         "alignment": [
@@ -13,6 +13,16 @@
         "tags": [
             "elemental",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "small"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

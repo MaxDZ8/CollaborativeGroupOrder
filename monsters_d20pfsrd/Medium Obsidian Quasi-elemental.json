@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Medium Obsidian Quasi-elemental"
+            "Obsidian Quasi-elemental"
         ],
         "cr": "2",
         "alignment": [
@@ -14,6 +14,16 @@
             "earth",
             "elemental",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "medium"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

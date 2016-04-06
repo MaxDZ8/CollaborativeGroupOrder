@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Medium Water Elemental"
+            "Water Elemental"
         ],
         "cr": "3",
         "alignment": [
@@ -14,6 +14,16 @@
             "elemental",
             "extraplanar",
             "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "medium"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

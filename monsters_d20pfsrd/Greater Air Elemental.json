@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Greater Air Elemental"
+            "Air Elemental"
         ],
         "cr": "9",
         "alignment": [
@@ -14,6 +14,16 @@
             "air",
             "elemental",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "greater"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

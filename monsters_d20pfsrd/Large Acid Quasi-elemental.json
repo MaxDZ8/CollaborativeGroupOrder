@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Large Acid Quasi-elemental"
+            "Acid Quasi-elemental"
         ],
         "cr": "3",
         "alignment": [
@@ -14,6 +14,16 @@
             "acid",
             "elemental",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "large"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }

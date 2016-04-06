@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Huge Magma Elemental"
+            "Magma Elemental"
         ],
         "cr": "7",
         "alignment": [
@@ -15,6 +15,16 @@
             "elemental",
             "extraplanar",
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "huge"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
         ]
     }
 }
