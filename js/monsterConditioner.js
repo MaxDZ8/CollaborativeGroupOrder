@@ -122,8 +122,39 @@ window.onload = function() {
     }
     
     function suggestFileAndHeaderHints(file, monster, tr, td) {
-        const invalidChars = /[^- a-zA-Z0-9'\u2019]/g;
         let note = [];
+        const publisher = file.name.match(/3pp(-[A-Za-z]{1,3})?\.json$/i);
+        if(publisher) {
+            let there = false;
+            const notes = monster.head.extraNotes || [];
+            for(let check = 0; check < notes.length; check++) {
+                if(notes[check].type === 'publisher') {
+                    there = true;
+                    break;
+                }
+            }
+            if(!there) {
+                if(publisher[1]) {
+                    publisher[1] = publisher[1].substr(1);
+                    note.push(makeButton(file.name, '3pp: "' + publisher[1] + '"', monster, 'added third party publisher "' + publisher[1] + '"', function() {
+                        if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                        monster.head.extraNotes.push({
+                            type: 'publisher',
+                            value: publisher[1]
+                        });
+                    }));
+                }
+                else {
+                    note.push(makeButton(file.name, 'Mark third-party published', monster, 'marked as third party published.', function() {
+                        if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                        monster.head.extraNotes.push({
+                            type: 'publisher',
+                        });
+                    }));
+                }
+            }
+        }
+        const invalidChars = /[^- a-zA-Z0-9'\u2019]/g;
         for(let loop = 0; loop < monster.head.name.length; loop++) {
             const name = monster.head.name[loop];
             if(name !== name.trim()) {
@@ -153,7 +184,7 @@ window.onload = function() {
             }
             const elemCategory = match(name, knownElementalCategory);
             if(elemCategory && (name.match(/\s(:?quasi-)?elemental\s/i) || name.match(/\s(:?quasi-)?elemental$/i))) {
-                note.push(makeButton(file.name, 'EL_CAT: "' + elemCategory.matched + '", GRP=elemental', monster, ', ' + name + ': changed to "' + elemCategory.without + '", added annotation [[' + elemCategory.matched + ']] and group [[elemental]]', function() {
+                note.push(makeButton(file.name, 'EL_CAT: "' + elemCategory.matched + '", GRP=elemental', monster, name + ': changed to "' + elemCategory.without + '", added annotation [[' + elemCategory.matched + ']] and group [[elemental]]', function() {
                     monster.head.name[loop] = elemCategory.without;
                     if(!monster.head.extraNotes) monster.head.extraNotes = [];
                     monster.head.extraNotes.push({
