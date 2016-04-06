@@ -16,6 +16,11 @@ const dragonAgeCategory = [
     'old'
 ];
 
+const knownElementalCategory = [
+    'small', 'medium', 'large',
+    'huge', 'greater', 'elder'
+];
+
 const sizeModifier = [
     'fine',   'diminutive',
     'tiny',   'small',
@@ -135,13 +140,29 @@ window.onload = function() {
                 continue;
             }
             const age = match(name, dragonAgeCategory);
-            if(age && (name.match(/\sdragon\s/i) || name.match(/\sdragon$/i)) {
-                note.push(makeButton(file.name, 'AGE: "' + age.matched + '" to annotation', monster, ', ' + monster.head.name[loop] + ': changed to "' + age.without + '" and added annotation [[' + age.matched + ']]', function() {
+            if(age && (name.match(/\sdragon\s/i) || name.match(/\sdragon$/i))) {
+                note.push(makeButton(file.name, 'AGE: "' + age.matched + '" to annotation', monster, ', ' + name + ': changed to "' + age.without + '" and added annotation [[' + age.matched + ']]', function() {
                     monster.head.name[loop] = age.without;
                     if(!monster.head.extraNotes) monster.head.extraNotes = [];
                     monster.head.extraNotes.push({
                         type: 'ageCategory',
                         value: age.matched
+                    });
+                }));
+                continue;
+            }
+            const elemCategory = match(name, knownElementalCategory);
+            if(elemCategory && (name.match(/\s(:?quasi-)?elemental\s/i) || name.match(/\s(:?quasi-)?elemental$/i))) {
+                note.push(makeButton(file.name, 'EL_CAT: "' + elemCategory.matched + '", GRP=elemental', monster, ', ' + name + ': changed to "' + elemCategory.without + '", added annotation [[' + elemCategory.matched + ']] and group [[elemental]]', function() {
+                    monster.head.name[loop] = elemCategory.without;
+                    if(!monster.head.extraNotes) monster.head.extraNotes = [];
+                    monster.head.extraNotes.push({
+                        type: 'elemCategory',
+                        value: elemCategory.matched
+                    });
+                    monster.head.extraNotes.push({
+                        type: 'group',
+                        value: 'elemental'
                     });
                 }));
                 continue;
