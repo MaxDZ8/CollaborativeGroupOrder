@@ -13,6 +13,12 @@
         "tags": [
             "earth",
             "giant"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

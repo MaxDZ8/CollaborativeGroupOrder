@@ -15,6 +15,12 @@
             "daemon",
             "evil",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

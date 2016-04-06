@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "jbe"
+            }
         ]
     }
 }

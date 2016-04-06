@@ -12,6 +12,12 @@
         "init": 7,
         "tags": [
             "incorporeal"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

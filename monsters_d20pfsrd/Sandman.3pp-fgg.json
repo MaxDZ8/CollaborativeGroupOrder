@@ -15,6 +15,12 @@
             "elemental",
             "extraplanar",
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

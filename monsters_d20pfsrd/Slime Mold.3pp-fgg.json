@@ -12,6 +12,12 @@
         "init": -1,
         "tags": [
             "fungus"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

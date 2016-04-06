@@ -9,6 +9,12 @@
         ],
         "size": "Small",
         "type": "fey",
-        "init": 2
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
     }
 }

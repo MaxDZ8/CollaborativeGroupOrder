@@ -9,6 +9,12 @@
         ],
         "size": "Tiny",
         "type": "construct",
-        "init": 7
+        "init": 7,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "od"
+            }
+        ]
     }
 }

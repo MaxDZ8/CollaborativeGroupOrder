@@ -9,6 +9,12 @@
         ],
         "size": "Medium",
         "type": "construct",
-        "init": -1
+        "init": -1,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
     }
 }

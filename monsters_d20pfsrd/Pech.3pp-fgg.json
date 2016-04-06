@@ -14,6 +14,12 @@
         "tags": [
             "earth",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

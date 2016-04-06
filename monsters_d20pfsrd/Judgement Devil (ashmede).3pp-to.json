@@ -16,6 +16,12 @@
             "evil",
             "extraplanar",
             "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "to"
+            }
         ]
     }
 }

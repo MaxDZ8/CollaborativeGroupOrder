@@ -15,6 +15,12 @@
             "extraplanar",
             "good",
             "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "to"
+            }
         ]
     }
 }

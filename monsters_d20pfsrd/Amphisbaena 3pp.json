@@ -9,6 +9,11 @@
         ],
         "size": "Large",
         "type": "magical beast",
-        "init": 2
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "publisher"
+            }
+        ]
     }
 }

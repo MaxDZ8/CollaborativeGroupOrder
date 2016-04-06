@@ -12,6 +12,12 @@
         "init": 4,
         "tags": [
             "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

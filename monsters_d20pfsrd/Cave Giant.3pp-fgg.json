@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "giant"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

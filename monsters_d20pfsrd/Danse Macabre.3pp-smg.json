@@ -13,6 +13,12 @@
         "tags": [
             "evil",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "smg"
+            }
         ]
     }
 }

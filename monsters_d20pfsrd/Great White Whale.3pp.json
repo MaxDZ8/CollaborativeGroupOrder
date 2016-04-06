@@ -9,6 +9,11 @@
         ],
         "size": "Colossal",
         "type": "animal",
-        "init": -2
+        "init": -2,
+        "extraNotes": [
+            {
+                "type": "publisher"
+            }
+        ]
     }
 }

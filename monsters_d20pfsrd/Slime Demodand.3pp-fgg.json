@@ -15,6 +15,12 @@
             "demodand",
             "evil",
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

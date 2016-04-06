@@ -13,6 +13,12 @@
         "tags": [
             "good",
             "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "to"
+            }
         ]
     }
 }

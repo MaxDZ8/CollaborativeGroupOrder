@@ -12,6 +12,12 @@
         "init": -5,
         "tags": [
             "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

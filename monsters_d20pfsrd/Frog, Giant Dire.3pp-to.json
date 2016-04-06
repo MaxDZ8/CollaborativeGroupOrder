@@ -18,6 +18,10 @@
             {
                 "type": "appliedTemplate",
                 "value": "dire"
+            },
+            {
+                "type": "publisher",
+                "value": "to"
             }
         ]
     }

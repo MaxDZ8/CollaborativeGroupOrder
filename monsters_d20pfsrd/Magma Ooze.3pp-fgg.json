@@ -12,6 +12,12 @@
         "init": -5,
         "tags": [
             "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

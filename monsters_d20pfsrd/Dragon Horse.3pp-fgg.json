@@ -12,6 +12,12 @@
         "init": 7,
         "tags": [
             "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

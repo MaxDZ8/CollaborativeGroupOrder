@@ -9,6 +9,12 @@
         ],
         "size": "Medium",
         "type": "plant",
-        "init": 4
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "to"
+            }
+        ]
     }
 }

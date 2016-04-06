@@ -9,6 +9,12 @@
         ],
         "size": "Small",
         "type": "aberration",
-        "init": 1
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
     }
 }

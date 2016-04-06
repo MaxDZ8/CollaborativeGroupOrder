@@ -9,6 +9,12 @@
         ],
         "size": "Colossal",
         "type": "plant",
-        "init": 5
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
     }
 }

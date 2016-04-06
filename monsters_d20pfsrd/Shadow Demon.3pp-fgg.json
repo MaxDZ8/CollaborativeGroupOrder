@@ -16,6 +16,12 @@
             "evil",
             "extraplanar",
             "incorporeal"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

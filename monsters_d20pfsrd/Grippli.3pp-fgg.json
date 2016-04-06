@@ -11,6 +11,12 @@
         "type": "humanoid",
         "init": 1,
         "example": "Grippli warrior 1",
-        "race": "grippli"
+        "race": "grippli",
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
     }
 }

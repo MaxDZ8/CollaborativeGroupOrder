@@ -17,6 +17,9 @@
             {
                 "type": "ageCategory",
                 "value": "adult"
+            },
+            {
+                "type": "publisher"
             }
         ]
     }

@@ -12,6 +12,12 @@
         "init": 4,
         "tags": [
             "dark folk"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

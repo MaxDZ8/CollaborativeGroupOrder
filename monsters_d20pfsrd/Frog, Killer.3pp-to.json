@@ -14,6 +14,10 @@
             {
                 "type": "variation",
                 "value": "Killer"
+            },
+            {
+                "type": "publisher",
+                "value": "to"
             }
         ]
     }

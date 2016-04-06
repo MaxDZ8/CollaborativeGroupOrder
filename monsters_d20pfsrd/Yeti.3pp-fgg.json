@@ -12,6 +12,12 @@
         "init": 1,
         "tags": [
             "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

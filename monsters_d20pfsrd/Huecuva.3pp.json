@@ -9,6 +9,11 @@
         ],
         "size": "Medium",
         "type": "undead",
-        "init": 6
+        "init": 6,
+        "extraNotes": [
+            {
+                "type": "publisher"
+            }
+        ]
     }
 }

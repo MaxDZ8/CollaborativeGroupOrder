@@ -14,6 +14,10 @@
             {
                 "type": "variation",
                 "value": "Flail"
+            },
+            {
+                "type": "publisher",
+                "value": "to"
             }
         ]
     }

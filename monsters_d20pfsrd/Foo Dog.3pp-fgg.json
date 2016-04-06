@@ -12,6 +12,12 @@
         "init": 6,
         "tags": [
             "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }
