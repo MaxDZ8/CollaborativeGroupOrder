@@ -158,14 +158,20 @@ window.onload = function() {
         for(let loop = 0; loop < monster.head.name.length; loop++) {
             const name = monster.head.name[loop];
             if(name !== name.trim()) {
-                note.push(makeButton(file.name, 'trim name[' + loop + '].', monster, ', trimmed name[' + loop + ']', function() {
+                note.push(makeButton(file.name, 'trim name[' + loop + '].', monster, 'trimmed name[' + loop + ']', function() {
                     monster.head.name[loop] = monster.head.name[loop].trim();
+                }));
+                continue;
+            }
+            if(name === name.toUpperCase()) {
+                note.push(makeButton(file.name, 'name[' + loop + '] FIX ALL CAPS', monster, 'name[' + loop + '] changed to ' + titolize(name.toLowerCase()), function() {
+                    monster.head.name[loop] = titolize(name.toLowerCase());
                 }));
                 continue;
             }
             const nbspAway = name.replace(/\u00a0/g, ' ');
             if(nbspAway !== name) {
-                note.push(makeButton(file.name, 'name[' + loop + '].replace(&amp;NBSP, SPACE)', monster, ', name[' + loop + '], replaced &amp;nbsp;', function() {
+                note.push(makeButton(file.name, 'name[' + loop + '].replace(&amp;NBSP, SPACE)', monster, 'name[' + loop + '], replaced &amp;nbsp;', function() {
                     monster.head.name[loop] = nbspAway;
                 }));
                 continue;
