@@ -21,10 +21,22 @@ window.onload = function() {
         reader.onload = function() {
             const mob = JSON.parse(reader.result);
             const sameName = matchMonsterByNames(mob.head.name);
-            if(sameName) {
+            if(sameName) { // add variation. Complication: the 'main' creature is always the one with less annotations.
                 if(!sameName.variations) sameName.variations = [];
-                sameName.variations.push(mob);
-                mob.head.name = null;
+                let minimal = sameName.first;
+                const newCount = mob.head.extraNotes? mob.head.extraNotes.length : 0;
+                if(minimal.head.extraNotes && minimal.head.extraNotes.length > newCount) {
+                    minimal = mob;
+                }
+                if(minimal === sameName.first) {
+                    sameName.variations.push(mob);
+                    mob.head.name = null;
+                }
+                else {
+                    sameName.first.name = null;
+                    sameName.variations.push(sameName.first);
+                    sameName.first = mob;
+                }
             }
             else {
                 monsters.push({
@@ -47,12 +59,19 @@ window.onload = function() {
                 if(!mob.first.head.extraNotes) nameCell.colSpan = 2;
                 tr.appendChild(nameCell);
                 if(mob.first.head.extraNotes) tr.appendChild(cell(stringFromVariations(mob.first.head)));
+                tr.appendChild(cell(mob.first.head.cr));
+                tr.appendChild(cell(stringFromList(mob.first.head.alignment, '<br/>')));
+                tr.appendChild(cell(mob.first.head.size));
+                tr.appendChild(cell(mob.first.head.type));
+                tr.appendChild(cell(stringFromList(mob.first.head.tags, '<br/>')));
+                tr.appendChild(cell(mob.first.head.init));
                 structVis.appendChild(tr);
                 continue;
             }
             for(let inner = 0; inner < mob.variations.length + 1; inner++) {
                 const tr = document.createElement('TR');
                 let variation = '';
+                let data;
                 if(inner === 0) {
                     let td = cell(loop + '*' + (mob.variations.length + 1));
                     td.rowSpan = mob.variations.length + 1;
@@ -61,9 +80,19 @@ window.onload = function() {
                     td.rowSpan = mob.variations.length + 1;
                     tr.appendChild(td);
                     variation = '<em>main</em><br/>' + stringFromVariations(mob.first.head);
+                    data = mob.first;
                 }
-                else variation = stringFromVariations(mob.variations[inner - 1].head);
+                else {
+                    data = mob.variations[inner - 1];
+                    variation = stringFromVariations(data.head);
+                }
                 tr.appendChild(cell(variation));
+                tr.appendChild(cell(data.head.cr));
+                tr.appendChild(cell(stringFromList(data.head.alignment, '<br/>')));
+                tr.appendChild(cell(data.head.size));
+                tr.appendChild(cell(data.head.type));
+                tr.appendChild(cell(stringFromList(data.head.tags, '<br/>')));
+                tr.appendChild(cell(data.head.init));
                 structVis.appendChild(tr);
             }
         }
@@ -119,6 +148,7 @@ function cell(innerHTML) {
 
 
 function stringFromList(array, separator) {
+    if(array === undefined) return '';
     let res = '';
     for(let loop = 0; loop < array.length; loop++) {
         if(res.length) res += separator;
