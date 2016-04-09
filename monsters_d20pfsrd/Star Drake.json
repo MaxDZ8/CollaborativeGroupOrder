@@ -9,9 +9,6 @@
         ],
         "size": "Large",
         "type": "dragon",
-        "init": 12,
-        "tags": [
-            "esoteric/material"
-        ]
+        "init": 12
     }
 }

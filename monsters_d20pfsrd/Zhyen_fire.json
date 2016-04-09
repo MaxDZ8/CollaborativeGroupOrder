@@ -1,17 +1,16 @@
 {
     "head": {
         "name": [
-            "Fire Fish"
+            "Zhyen"
         ],
-        "cr": "1",
+        "cr": "1/2",
         "alignment": [
             "N"
         ],
-        "size": "Small",
-        "type": "animal",
-        "init": 6,
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 0,
         "tags": [
-            "aquatic",
             "fire"
         ]
     }

@@ -1,18 +1,17 @@
 {
     "head": {
         "name": [
-            "Tojanida"
+            "Zhyen"
         ],
-        "cr": "5",
+        "cr": "1/2",
         "alignment": [
             "N"
         ],
-        "size": "Medium",
+        "size": "Tiny",
         "type": "outsider",
-        "init": 1,
+        "init": 0,
         "tags": [
-            "extraplanar",
-            "water"
+            "air"
         ]
     }
 }

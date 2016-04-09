@@ -11,10 +11,7 @@
         "type": "outsider",
         "init": 0,
         "tags": [
-            "air",
-            "earth",
-            "fire",
-            "or water"
+            "earth"
         ]
     }
 }
