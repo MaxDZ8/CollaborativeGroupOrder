@@ -1,5 +1,6 @@
 syntax = "proto3";
 option java_package = "com.massimodz8.collaborativegrouporder.protocol";
+option cc_enable_arenas = true;
 package collaborativeGroupOrder;
 import "google/protobuf/timestamp.proto";
 
@@ -10,7 +11,7 @@ import "google/protobuf/timestamp.proto";
 // A monster book is simply an array of monsters in some order.
 
 message MonsterBook {
-    google.protobuf.Timestamp created = 1;
+	google.protobuf.Timestamp created = 1;
 	repeated Entry entries = 2;
 	
 	// What is an 'entry' in a monster list? It is a 'monster' and its 'similar' monsters, which are monsters with
@@ -47,32 +48,36 @@ message Monster {
 	}
 	
 	// There are two types of tags. "Real" tags are usually provided after the 'monster type' in manuals, usually between ().
-	// 
+	// The former is provided by TagType.CANON, the latter is extra info I have extracted and added by other means.
 	enum TagType {
-		INVALID_MONSTER_TAG_TYPE = 0;
+		TT_INVALID = 0;
 		
-		RACE = 1;
-		EXTRA_TEMPLATE = 2;
+		TT_CANON = 1; // Standard stuff that really goes between (...) even in manuals
+		TT_AUGMENTING = 2; // this is a special CANON tag which also takes data
+		TT_RACE = 3;
+		TT_EXTRA_TEMPLATE = 4;
 	}
 	
 	message Tag {
 		TagType type = 1;
-		Race race = 2; // type == RACE
-		ExtraTemplate extraTemplate = 3; // type == EXTRA_TEMPLATE
+		CanonicalTag canon = 2; // type == CANON
+		MonsterType augmenting = 3; // type == AUGMENTING, can be INVALID_MONSTER_TYPE for 'unspecified' yes, it happens!
+		Race race = 4; // type == RACE
+		ExtraTemplate extraTemplate = 5; // type == EXTRA_TEMPLATE
 	}
 }
 
 
 enum Race { // String to enum: make all caps, replace ' '->'_' and '-'->'--'
 	INVALID_RACE = 0;
-    // Core
-    DWARF = 1;
+	// Core
+	DWARF = 1;
 	ELF = 2;
 	GNOME = 3;
 	HALF_ORC = 4;
 	HALFLING = 5;
 	HUMAN = 6;
-    // Featured
+	// Featured
 	AASIMAR = 7;
 	CATFOLK = 8;
 	DHAMPIR = 9;
@@ -89,13 +94,13 @@ enum Race { // String to enum: make all caps, replace ' '->'_' and '-'->'--'
 	TENGU = 20;
 	TIEFLING = 21;
 	UNDINE = 22;
-    // Standard
+	// Standard
 	GNOLL = 23;
 	LIZARDFOLK = 24;
 	MONKEY_GOBLIN = 25;
 	SKINWALKER = 26;
 	TRIAXIAN = 27;
-    // Advanced 
+	// Advanced 
 	ANDROID = 28;
 	GATHLAIN = 29;
 	GHORAN = 30;
@@ -105,15 +110,15 @@ enum Race { // String to enum: make all caps, replace ' '->'_' and '-'->'--'
 	SYRINX = 34;
 	WYRWOOD = 35;
 	WYVARAN = 36;
-    // Monstrous
+	// Monstrous
 	CENTAUR = 37;
 	OGRE = 38;
 	SHOBHAD = 39;
 	TROX = 40;
-    // Very powerful
+	// Very powerful
 	DRIDER = 41;
 	GARGOYLE = 42;
-    // uncommon
+	// uncommon
 	CHANGELING = 43;
 	DUERGAR = 44;
 	GILLMEN = 45;
@@ -128,7 +133,7 @@ enum Race { // String to enum: make all caps, replace ' '->'_' and '-'->'--'
 	VANARA = 54;
 	VISHKANYA = 55;
 	WAYANG = 56;
-    // unknown race points
+	// unknown race points
 	AQUATIC_ELF = 57;
 	ASTMOI = 58;
 	CALIGNI = 59;
@@ -144,7 +149,7 @@ enum Race { // String to enum: make all caps, replace ' '->'_' and '-'->'--'
 enum ExtraTemplate {
 	INVALID_TEMPLATE = 0;
 	
-    ADVANCED = 1;
+	ADVANCED = 1;
 	GIANT = 2;
 	MIGHTY = 3;
 	SHRINE__BLESSED = 4;
@@ -198,6 +203,84 @@ enum MonsterType {
 	OOZE = 9;
 	OUTSIDER = 10;
 	PLANT = 11;
-	UNDED = 12;
+	UNDEAD = 12;
 	VERMIN = 13;
+};
+
+
+enum CanonicalTag {
+	CT_INVALID = 0;
+	// "Augmented magical beast" --> needs extra data, goes to AUGMENTING
+	
+	CT_AQUATIC = 1;
+	CT_DEVIL = 2;
+	CT_EVIL = 3;
+	CT_EXTRAPLANAR = 4;
+	CT_LAWFUL = 5;
+	CT_SWARM = 6;
+	CT_NATIVE = 7;
+	CT_AIR = 8;
+	CT_GIANT = 9;
+	CT_CHAOTIC = 10;
+	CT_DEMON = 11;
+	CT_FIRE = 12;
+	CT_ASURA = 13;
+	CT_ADLET = 14;
+	CT_COLD = 15;
+	CT_WATER = 16;
+	CT_EARTH = 17;
+	CT_SHAPECHANGER = 18;
+	CT_INCORPOREAL = 19;
+	CT_ELEMENTAL = 20;
+	CT_DIV = 21;
+	CT_AEON = 22;
+	CT_FUNGUS = 23;
+	CT_PSIONIC = 24;
+	CT_INEVITABLE = 25;
+	CT_HERALD = 26;
+	CT_ANGEL = 27;
+	CT_GOOD = 28;
+	CT_ONI = 29;
+	CT_KYTON = 30;
+	CT_AGATHION = 31;
+	CT_BOGGARD = 32;
+	CT_AZATA = 33;
+	CT_GOBLINOID = 34;
+	CT_REPTILIAN = 35;
+	CT_CHARAU__KA = 36;
+	CT_CLOCKWORK = 37;
+	CT_DARK_FOLK = 38;
+	CT_BEHEMOTH = 39;
+	CT_DERRO = 40;
+	CT_KAMI = 41;
+	CT_ACID = 42;
+	CT_GRAVITY = 43;
+	CT_HUMANOID = 44;
+	CT_LESHY = 45;
+	CT_GNOLL = 46;
+	CT_ARCHON = 47;
+	CT_GNOME = 48;
+	CT_KUAH__LIJ = 49;
+	CT_ELECTRICITY = 50;
+	CT_ROBOT = 51;
+	CT_NIGHTSHADE = 52;
+	CT_OGREN = 53;
+	CT_OGRILLON = 54;
+	CT_PROTEAN = 55;
+	CT_PSYCHOPOMP = 56;
+	CT_QLIPPOTH = 57;
+	CT_RAKSHASA = 58;
+	CT_SASQUATCH = 59;
+	CT_DEMODAND = 60;
+	CT_SKULK = 61;
+	CT_TIME = 62;
+	CT_FEYBLOOD = 63;
+	CT_VAPOR = 64;
+	CT_TENGU = 65;
+	CT_HORDE = 66;
+	CT_AMPHIBIOUS = 67;
+	CT_GOBLIN = 68;
+	CT_STORMWARDEN = 69;
+	CT_TABAXI = 70;
+	CT_GODSPAWN = 71;
 };
