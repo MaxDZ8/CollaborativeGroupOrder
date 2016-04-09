@@ -1,0 +1,203 @@
+syntax = "proto3";
+option java_package = "com.massimodz8.collaborativegrouporder.protocol";
+package collaborativeGroupOrder;
+import "google/protobuf/timestamp.proto";
+
+// A monster book holds templates for monsters.
+// Those monsters are never referenced unless on creation, their data is copied as required
+// so the book itself can change data or shuffle it and I have no issues. This increases network BW usage
+// but streamlines management as I have no problems with reference coherency.
+// A monster book is simply an array of monsters in some order.
+
+message MonsterBook {
+    google.protobuf.Timestamp created = 1;
+	repeated Entry entries = 2;
+	
+	// What is an 'entry' in a monster list? It is a 'monster' and its 'similar' monsters, which are monsters with
+	// the same name but a different 'variation' list. The first monster is therefore special as it provides names
+	// common to all 'variated' monsters. Do not confuse this with 'group', which is basically viz aid.
+	message Entry {
+		Monster main = 1;
+		repeated Monster variations = 2;
+	}
+}
+
+
+message Monster {
+	Header header = 1;
+	
+	message Header {
+		repeated string name = 1; // if variation monster, additional names WRT basic, otherwise must count at least 1. Empty strings invalid.
+		ChallangeRatio cr = 2;
+		repeated Alignment alignment = 3; // at least 1, nonrepeated
+		MonsterSize size = 4;
+		MonsterType type = 5;
+		int32 initiative = 6;
+		
+		// Optional
+		string example = 7;
+		//Race race = NOPE; // That's a tag!
+		repeated Tag tags = 8;
+		//repeated ExtraTemplate templates = NOPE; // again, unified in tags
+	}
+	
+	message ChallangeRatio {
+		uint32 numerator = 1; // must be at least 1.
+		uint32 denominator = 2; // if numerator === 1 can be 8|6|4|3|2|1 else must be 1
+	}
+	
+	// There are two types of tags. "Real" tags are usually provided after the 'monster type' in manuals, usually between ().
+	// 
+	enum TagType {
+		INVALID_MONSTER_TAG_TYPE = 0;
+		
+		RACE = 1;
+		EXTRA_TEMPLATE = 2;
+	}
+	
+	message Tag {
+		TagType type = 1;
+		Race race = 2; // type == RACE
+		ExtraTemplate extraTemplate = 3; // type == EXTRA_TEMPLATE
+	}
+}
+
+
+enum Race { // String to enum: make all caps, replace ' '->'_' and '-'->'--'
+	INVALID_RACE = 0;
+    // Core
+    DWARF = 1;
+	ELF = 2;
+	GNOME = 3;
+	HALF_ORC = 4;
+	HALFLING = 5;
+	HUMAN = 6;
+    // Featured
+	AASIMAR = 7;
+	CATFOLK = 8;
+	DHAMPIR = 9;
+	DROW = 10;
+	FETCHLING = 11;
+	GOBLIN = 12;
+	HOBGOBLIN = 13;
+	IFRIT = 14;
+	KOBOLD = 15;
+	ORC = 16;
+	OREAD = 17;
+	RATFOLK = 18;
+	SYLPH = 19;
+	TENGU = 20;
+	TIEFLING = 21;
+	UNDINE = 22;
+    // Standard
+	GNOLL = 23;
+	LIZARDFOLK = 24;
+	MONKEY_GOBLIN = 25;
+	SKINWALKER = 26;
+	TRIAXIAN = 27;
+    // Advanced 
+	ANDROID = 28;
+	GATHLAIN = 29;
+	GHORAN = 30;
+	KASATHA = 31;
+	LASHUNTA = 32;
+	SHABTI = 33;
+	SYRINX = 34;
+	WYRWOOD = 35;
+	WYVARAN = 36;
+    // Monstrous
+	CENTAUR = 37;
+	OGRE = 38;
+	SHOBHAD = 39;
+	TROX = 40;
+    // Very powerful
+	DRIDER = 41;
+	GARGOYLE = 42;
+    // uncommon
+	CHANGELING = 43;
+	DUERGAR = 44;
+	GILLMEN = 45;
+	GRIPPLY = 46;
+	KITSUNE = 47;
+	MERFOLK = 48;
+	NAGAJI = 49;
+	SAMSARAN = 50;
+	STRIX = 51;
+	SULI = 52;
+	SVIRFNEBLIN = 53;
+	VANARA = 54;
+	VISHKANYA = 55;
+	WAYANG = 56;
+    // unknown race points
+	AQUATIC_ELF = 57;
+	ASTMOI = 58;
+	CALIGNI = 59;
+	DEEP_ONE_HYBRID = 60;
+	GANZI = 61;
+	KURU = 62;
+	MANAVRI = 63;
+	ORANG__PENDAK = 64;
+	REPTOID = 65;
+}
+
+
+enum ExtraTemplate {
+	INVALID_TEMPLATE = 0;
+	
+    ADVANCED = 1;
+	GIANT = 2;
+	MIGHTY = 3;
+	SHRINE__BLESSED = 4;
+	NOCTURNAL = 5;
+};
+
+
+enum Alignment {
+	INVALID_ALIGNMENT = 0;
+	
+	LEGAL_GOOD = 1;
+	LEGAL_NEUTRAL = 2;
+	LEGAL_EVIL = 3;
+	NEUTRAL_GOOD = 4;
+	JUST_NEUTRAL = 5;
+	NEUTRAL_EVIL = 6;
+	CHAOTIC_GOOD = 7;
+	CHAOTIC_NEUTRAL = 8;
+	CHAOTIC_EVIL = 9;
+	
+	ALIGNMENT_RESTRICTED = 10;
+	ALIGNMENT_AS_CREATOR = 11;
+};
+
+enum MonsterSize {
+	INVALID_MONSTER_SIZE = 0;
+	
+	FINE = 1;
+	DIMINUTIVE = 2;
+	TINY = 3;
+	SMALL = 4;
+	MEDIUM = 5;
+	LARGE = 6;
+	HUGE = 7;
+	GARGANTUAN = 8;
+	COLOSSAL = 9;		
+}
+
+
+enum MonsterType {
+	INVALID_MONSTER_TYPE = 0;
+	
+	ABERRATION = 1;
+	ANIMAL = 2;
+	CONSTRUCT = 3;
+	DRAGON = 4;
+	FEY = 5;
+	HUMANOID = 6;
+	MAGICAL_BEAST = 7;
+	MONSTROUS_HUMANOID = 8;
+	OOZE = 9;
+	OUTSIDER = 10;
+	PLANT = 11;
+	UNDED = 12;
+	VERMIN = 13;
+};
