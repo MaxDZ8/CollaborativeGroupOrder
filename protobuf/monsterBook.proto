@@ -13,6 +13,7 @@ import "google/protobuf/timestamp.proto";
 message MonsterBook {
 	google.protobuf.Timestamp created = 1;
 	repeated Entry entries = 2;
+	repeated string presentationGroup = 3; // monsters can be aggregated by group, those are the name of the groups.
 	
 	// What is an 'entry' in a monster list? It is a 'monster' and its 'similar' monsters, which are monsters with
 	// the same name but a different 'variation' list. The first monster is therefore special as it provides names
@@ -52,18 +53,84 @@ message Monster {
 	enum TagType {
 		TT_INVALID = 0;
 		
-		TT_CANON = 1; // Standard stuff that really goes between (...) even in manuals
+		TT_SUBTYPE = 1; // Standard stuff that really goes between (...) even in manuals
 		TT_AUGMENTING = 2; // this is a special CANON tag which also takes data
 		TT_RACE = 3;
 		TT_EXTRA_TEMPLATE = 4;
+		TT_CONDITIONAL_INITIATIVE = 5;
+		TT_EXTRA_METADATA = 6;
 	}
 	
 	message Tag {
 		TagType type = 1;
-		CanonicalTag canon = 2; // type == CANON
+		MonsterType subtype = 2; // type == CANON
 		MonsterType augmenting = 3; // type == AUGMENTING, can be INVALID_MONSTER_TYPE for 'unspecified' yes, it happens!
 		Race race = 4; // type == RACE
 		ExtraTemplate extraTemplate = 5; // type == EXTRA_TEMPLATE
+		ConditionalInitiative ctxInit = 6; // type == CONDITIONAL_INITIATIVE
+		MetaData note = 7; // type == TT_EXTRA_METADATA
+	}
+	
+	message ConditionalInitiative {
+		int32 init = 1;
+		Condition when = 2;
+		repeated ExprToken params = 3;
+		
+		enum Condition {
+			CONDITION_INVALID = 0;
+			
+			ACTION_CLIMB = 1;
+		}
+		enum ExprToken {
+			TOKEN_INVALID = 0;
+			
+			TREE = 1;
+		}
+	}
+	
+	message MetaData {
+		Type type = 1;
+		DragonAge ageCategory = 2;
+		Publisher publisher = 3;
+		string selectionInfo = 4;
+		uint32 group = 5; // 0 = no group else group-1 index in the book to use
+	
+		enum Type {
+			INVALID = 0;
+			
+			AGE_CATEGORY = 1;
+			PUBLISHER = 2;
+			ADDITIONAL_SELECTION_INFO = 3;
+			PRESENTATION_GROUP = 4;
+		}
+		
+		enum DragonAge {
+			DA_INVALID = 0;
+			
+			DA_WYRMLING = 1;
+			DA_VERY_YOUNG = 2;
+			DA_YOUNG = 3;
+			DA_JUVENILE = 4;
+			DA_YOUNG_ADULT = 5;
+			DA_ADULT = 6;
+			DA_MATURE_ADULT = 7;
+			DA_OLD = 8;
+			DA_VERY_OLD = 9;
+			DA_ANCIENT = 10;
+			DA_WYRM = 11;
+			DA_GREAT_WYRM = 12;
+		}
+		
+		enum Publisher {
+			P_INVALID = 0;
+			
+			P_THIRD_PART_GENERIC = 1;
+			P_FGG = 2;
+			P_OD = 3;
+			P_TO = 4;
+			P_JBE = 5;
+			P_CGP = 6;
+		}
 	}
 }
 
@@ -122,7 +189,7 @@ enum Race { // String to enum: make all caps, replace ' '->'_' and '-'->'--'
 	CHANGELING = 43;
 	DUERGAR = 44;
 	GILLMEN = 45;
-	GRIPPLY = 46;
+	GRIPPLI = 46;
 	KITSUNE = 47;
 	MERFOLK = 48;
 	NAGAJI = 49;
@@ -192,95 +259,113 @@ enum MonsterSize {
 enum MonsterType {
 	INVALID_MONSTER_TYPE = 0;
 	
-	ABERRATION = 1;
-	ANIMAL = 2;
-	CONSTRUCT = 3;
-	DRAGON = 4;
-	FEY = 5;
-	HUMANOID = 6;
-	MAGICAL_BEAST = 7;
+	ABERRATION =  1;
+	ANIMAL     =  2;
+	CONSTRUCT  =  3;
+	DRAGON     =  4;
+	FEY        =  5;
+	HUMANOID   =  6;
+	MAGICAL_BEAST =  7;
 	MONSTROUS_HUMANOID = 8;
-	OOZE = 9;
+	OOZE     =  9;
 	OUTSIDER = 10;
-	PLANT = 11;
-	UNDEAD = 12;
-	VERMIN = 13;
-};
-
-
-enum CanonicalTag {
-	CT_INVALID = 0;
-	// "Augmented magical beast" --> needs extra data, goes to AUGMENTING
+	PLANT    = 11;
+	UNDEAD   = 12;
+	VERMIN   = 13;
 	
-	CT_AQUATIC = 1;
-	CT_DEVIL = 2;
-	CT_EVIL = 3;
-	CT_EXTRAPLANAR = 4;
-	CT_LAWFUL = 5;
-	CT_SWARM = 6;
-	CT_NATIVE = 7;
-	CT_AIR = 8;
-	CT_GIANT = 9;
-	CT_CHAOTIC = 10;
-	CT_DEMON = 11;
-	CT_FIRE = 12;
-	CT_ASURA = 13;
-	CT_ADLET = 14;
-	CT_COLD = 15;
-	CT_WATER = 16;
-	CT_EARTH = 17;
-	CT_SHAPECHANGER = 18;
-	CT_INCORPOREAL = 19;
-	CT_ELEMENTAL = 20;
-	CT_DIV = 21;
-	CT_AEON = 22;
-	CT_FUNGUS = 23;
-	CT_PSIONIC = 24;
-	CT_INEVITABLE = 25;
-	CT_HERALD = 26;
-	CT_ANGEL = 27;
-	CT_GOOD = 28;
-	CT_ONI = 29;
-	CT_KYTON = 30;
-	CT_AGATHION = 31;
-	CT_BOGGARD = 32;
-	CT_AZATA = 33;
-	CT_GOBLINOID = 34;
-	CT_REPTILIAN = 35;
-	CT_CHARAU__KA = 36;
-	CT_CLOCKWORK = 37;
-	CT_DARK_FOLK = 38;
-	CT_BEHEMOTH = 39;
-	CT_DERRO = 40;
-	CT_KAMI = 41;
-	CT_ACID = 42;
-	CT_GRAVITY = 43;
-	CT_HUMANOID = 44;
-	CT_LESHY = 45;
-	CT_GNOLL = 46;
-	CT_ARCHON = 47;
-	CT_GNOME = 48;
-	CT_KUAH__LIJ = 49;
-	CT_ELECTRICITY = 50;
-	CT_ROBOT = 51;
-	CT_NIGHTSHADE = 52;
-	CT_OGREN = 53;
-	CT_OGRILLON = 54;
-	CT_PROTEAN = 55;
-	CT_PSYCHOPOMP = 56;
-	CT_QLIPPOTH = 57;
-	CT_RAKSHASA = 58;
-	CT_SASQUATCH = 59;
-	CT_DEMODAND = 60;
-	CT_SKULK = 61;
-	CT_TIME = 62;
-	CT_FEYBLOOD = 63;
-	CT_VAPOR = 64;
-	CT_TENGU = 65;
-	CT_HORDE = 66;
-	CT_AMPHIBIOUS = 67;
-	CT_GOBLIN = 68;
-	CT_STORMWARDEN = 69;
-	CT_TABAXI = 70;
-	CT_GODSPAWN = 71;
+	// I also put subtypes here for easiness.
+	SUB_ACID        =  64;
+	SUB_ADLET       =  65;
+	SUB_AEON        =  66;
+	SUB_AGATHION    =  67;
+	SUB_AIR         =  68;
+	SUB_AMPHIBIOUS  =  69;
+	SUB_ANGEL       =  70;
+	SUB_AQUATIC     =  71;
+	SUB_ARCHON      =  72;
+	SUB_ASURA       =  73;
+	// SUB_AUGMENTED --> special handling
+	SUB_AZATA       =  74;
+	SUB_BEHEMOTH    =  75;
+	SUB_BOGGARD     =  76;
+	SUB_CATFOLK     =  77;
+	SUB_CHAOTIC     =  78;
+	SUB_CHARAU__KA  =  79;
+	SUB_CLOCKWORK   =  80;
+	SUB_COLD        =  81;
+	SUB_COLOSSUS    =  82;
+	SUB_DAEMON      =  83;
+	SUB_DARK_FOLK   =  84;
+	SUB_DEEP_ONE    =  85;
+	SUB_DEMODAND    =  86;
+	SUB_DEMON       =  87;
+	SUB_DERRO       =  88;
+	SUB_DEVIL       =  89;
+	SUB_DIV         =  90;
+	SUB_DWARF       =  91;
+	SUB_EARTH       =  92;
+	SUB_ELECTRICITY =  93;
+	SUB_ELEMENTAL   =  94;
+	SUB_ELF         =  95;
+	SUB_EVIL        =  96;
+	SUB_EXTRAPLANAR =  97;
+	SUB_FEYBLOOD    =  98;
+	SUB_FIRE        =  99;
+	SUB_GIANT       = 100;
+	SUB_GNOLL       = 101;
+	SUB_GNOME       = 102;
+	SUB_GOBLIN      = 103;
+	SUB_GOBLINOID   = 104;
+	SUB_GODSPAWN    = 105;
+	SUB_GOOD        = 106;
+	SUB_GRAVITY     = 107;
+	SUB_GREAT_OLD_ONE = 108;
+	SUB_HALFLING    = 109;
+	SUB_HERALD      = 110;
+	SUB_HORDE       = 111;
+	SUB_HUMAN       = 112;
+	SUB_HUMANOID    = 113;
+	SUB_INCORPOREAL = 114;
+	SUB_INEVITABLE  = 115;
+	SUB_KAIJU       = 116;
+	SUB_KAMI        = 117;
+	SUB_KASATHA     = 118;
+	SUB_KITSUNE     = 119;
+	SUB_KUAH__LIJ   = 120;
+	SUB_KYTON       = 121;
+	SUB_LAWFUL      = 122;
+	SUB_LESHY       = 123;
+	SUB_MYTHIC      = 124;
+	SUB_NATIVE      = 125;
+	SUB_NIGHTSHADE  = 126;
+	SUB_OGREN       = 127;
+	SUB_OGRILLON    = 128;
+	SUB_ONI         = 129;
+	SUB_ORC         = 130;
+	SUB_PROTEAN     = 131;
+	SUB_PSYCHOPOMP  = 132;
+	SUB_QLIPPOTH    = 133;
+	SUB_RAKSHASA    = 134;
+	SUB_RATFOLK     = 135;
+	SUB_REPTILIAN   = 136;
+	SUB_ROBOT       = 137;
+	SUB_SAMSARAN    = 138;
+	SUB_SASQUATCH   = 139;
+	SUB_SHAPECHANGER = 140;
+	SUB_SKULK       = 141;
+	SUB_STORMWARDEN = 142;
+	SUB_SWARM       = 143;
+	SUB_TABAXI      = 144;
+	SUB_TENGU       = 145;
+	SUB_TIME        = 146;
+	SUB_TROOP       = 147;
+	SUB_UDAEUS      = 148;
+	SUB_UNBREATHING = 149;
+	SUB_VANARA      = 150;
+	SUB_VAPOR       = 151;
+	SUB_VISHKANYA   = 152;
+	SUB_WATER       = 153;
+	SUB_WAYANG      = 154;
+	SUB_FUNGUS      = 155;
+	SUB_PSIONIC     = 156;
 };
