@@ -90,22 +90,27 @@ message Monster {
 	
 	message MetaData {
 		Type type = 1;
-		DragonAge ageCategory = 2;
+		Maturity maturity = 2;
 		Publisher publisher = 3;
 		string selectionInfo = 4;
 		uint32 group = 5; // 0 = no group else group-1 index in the book to use
+		KnownTemplate appliedTemplate = 6;
 	
 		enum Type {
 			INVALID = 0;
 			
-			AGE_CATEGORY = 1;
+			MATURITY = 1;
 			PUBLISHER = 2;
 			ADDITIONAL_SELECTION_INFO = 3;
 			PRESENTATION_GROUP = 4;
+			GENERIC_VARIANT = 5;		// stored as ADDITIONAL_SELECTION_INFO, same payload but slightly aumented semantics
+			VARIANT_MORPH_TARGET = 6;	// as GENERIC_VARIANT, variation due to creature shape-shifting abilities
+			VARIANT_SIZE = 7;			// this creature has somehow changed size so show new size in selection screen
+			APPLIED_TEMPLATE = 8;
 		}
 		
-		enum DragonAge {
-			DA_INVALID = 0;
+		enum Maturity { // used for dragon age category and elemental growth stage
+			M_INVALID = 0;
 			
 			DA_WYRMLING = 1;
 			DA_VERY_YOUNG = 2;
@@ -119,6 +124,13 @@ message Monster {
 			DA_ANCIENT = 10;
 			DA_WYRM = 11;
 			DA_GREAT_WYRM = 12;
+			
+			EG_SMALL = 13;
+			EG_MEDIUM = 14;
+			EG_LARGE = 15;
+			EG_HUGE = 16;
+			EG_GREATER = 17;
+			EG_ELDER = 18;
 		}
 		
 		enum Publisher {
@@ -130,7 +142,17 @@ message Monster {
 			P_TO = 4;
 			P_JBE = 5;
 			P_CGP = 6;
+			P_SMG = 7;
+			P_KP = 8;
 		}
+	}
+	
+	enum KnownTemplate {
+		KT_INVALID = 0;
+		
+		KT_DIRE = 1;
+		KT_GIANT = 2;
+		KT_PETITIONER = 3;
 	}
 }
 
