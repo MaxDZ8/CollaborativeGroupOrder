@@ -20,3 +20,12 @@ app/build/generated/source/r/debug/android/support/v7/appcompat/R.java
 app/build/generated/source/r/debug/com/massimodz8/collaborativegrouporder/R.java
 build/intermediates/dex-cache/cache.xml
 app/build/generated/source/r/debug/android/support/design/R.java
+.gradle/2.10/taskArtifacts/cache.properties.lock
+.gradle/2.10/taskArtifacts/fileHashes.bin
+.gradle/2.10/taskArtifacts/fileSnapshots.bin
+.gradle/2.10/taskArtifacts/outputFileStates.bin
+.gradle/2.10/taskArtifacts/taskArtifacts.bin
+.idea/libraries/hamcrest_core_1_3.xml
+.idea/libraries/junit_4_12.xml
+build/generated/mockable-android-23.jar
+.gradle/2.10/taskArtifacts/cache.properties
