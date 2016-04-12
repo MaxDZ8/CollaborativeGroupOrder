@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Psiwyrm"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 7,
+        "tags": [
+            "psionic"
+        ]
+    }
+}

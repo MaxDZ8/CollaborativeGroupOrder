@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Banderlog"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 2
+    }
+}

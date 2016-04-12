@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Deep Hunter Sea Serpent"
+        ],
+        "cr": "22",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

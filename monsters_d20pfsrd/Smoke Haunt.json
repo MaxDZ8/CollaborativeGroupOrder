@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Smoke Haunt"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE",
+            "$restricted"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 9,
+        "tags": [
+            "fire"
+        ]
+    }
+}

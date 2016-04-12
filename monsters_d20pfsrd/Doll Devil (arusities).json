@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Doll Devil",
+            "Arusities"
+        ],
+        "cr": "1",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

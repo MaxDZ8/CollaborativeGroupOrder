@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Ooze",
+            "Gelatinous Cube"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -5,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Ebony"
+            },
+            {
+                "type": "variation",
+                "value": "Electric"
+            }
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Undead Ningyo"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

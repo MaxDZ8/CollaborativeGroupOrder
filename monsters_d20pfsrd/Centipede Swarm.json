@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Centipede Swarm"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "vermin",
+        "init": 4,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

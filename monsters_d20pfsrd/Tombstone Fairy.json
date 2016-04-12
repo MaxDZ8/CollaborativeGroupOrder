@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Tombstone Fairy"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 8
+    }
+}

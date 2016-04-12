@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Fogwarden"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 3
+    }
+}

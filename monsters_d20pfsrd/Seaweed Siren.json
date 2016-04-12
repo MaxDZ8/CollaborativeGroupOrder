@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Seaweed Siren"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

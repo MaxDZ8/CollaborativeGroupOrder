@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Lhaksharut"
+        ],
+        "cr": "20",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "extraplanar",
+            "inevitable",
+            "lawful"
+        ]
+    }
+}

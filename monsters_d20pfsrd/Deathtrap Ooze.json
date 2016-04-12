@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Deathtrap Ooze"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -4,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

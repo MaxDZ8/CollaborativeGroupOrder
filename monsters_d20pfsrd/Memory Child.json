@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Memory Child"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

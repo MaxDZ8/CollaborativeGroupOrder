@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Pygmy Gnoll"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 2,
+        "race": "gnoll"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Demoriel",
+            "Twice-exiled Seductress"
+        ],
+        "cr": "19",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

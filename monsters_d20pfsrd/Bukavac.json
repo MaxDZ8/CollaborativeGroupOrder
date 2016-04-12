@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Bukavac"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 3
+    }
+}

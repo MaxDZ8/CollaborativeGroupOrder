@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Night Wyvern"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 7,
+        "templates": [
+            "nocturnal"
+        ]
+    }
+}

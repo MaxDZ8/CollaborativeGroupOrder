@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Grindylow"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

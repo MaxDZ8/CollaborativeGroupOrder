@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gigas Clam"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 0,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Moon Dog"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "extraplanar",
+            "good"
+        ]
+    }
+}

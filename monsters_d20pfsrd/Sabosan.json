@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Sabosan"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 8
+    }
+}

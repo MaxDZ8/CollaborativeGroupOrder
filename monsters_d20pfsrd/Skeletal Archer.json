@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Skeletal Archer"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6
+    }
+}

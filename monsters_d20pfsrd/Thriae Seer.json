@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Thriae Seer"
+        ],
+        "cr": "11",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 5
+    }
+}

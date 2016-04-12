@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Herald Of Freedom And Justice"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "azata",
+            "chaotic",
+            "extraplanar",
+            "good",
+            "shapechanger"
+        ]
+    }
+}

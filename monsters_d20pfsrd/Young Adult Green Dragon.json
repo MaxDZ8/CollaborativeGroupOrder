@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Green Dragon"
+        ],
+        "cr": "11",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 0,
+        "tags": [
+            "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young adult"
+            }
+        ]
+    }
+}

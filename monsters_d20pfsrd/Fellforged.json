@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fellforged"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": 5,
+        "tags": [
+            "evil"
+        ]
+    }
+}

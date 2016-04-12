@@ -12,7 +12,13 @@
         "init": 3,
         "tags": [
             "aquatic",
-            " native"
+            "native"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "kp"
+            }
         ]
     }
 }

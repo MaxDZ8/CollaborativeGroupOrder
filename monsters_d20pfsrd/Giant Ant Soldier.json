@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Ant Soldier"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 0
+    }
+}

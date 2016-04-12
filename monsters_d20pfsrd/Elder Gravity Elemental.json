@@ -1,0 +1,29 @@
+{
+    "head": {
+        "name": [
+            "Gravity Elemental"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 14,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "gravity"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "elder"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
+        ]
+    }
+}

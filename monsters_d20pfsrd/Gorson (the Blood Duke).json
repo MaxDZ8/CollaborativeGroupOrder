@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Gorson",
+            "The Blood Duke"
+        ],
+        "cr": "22",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 13,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Personification Of Fury"
+        ],
+        "cr": "15",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 16,
+        "tags": [
+            "air",
+            "elemental",
+            "extraplanar",
+            "herald",
+            "water"
+        ]
+    }
+}

@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Angel, Movanic Deva"
+            "Movanic Deva"
         ],
         "cr": "10",
         "alignment": [
@@ -12,8 +12,14 @@
         "init": 7,
         "tags": [
             "angel",
-            " extraplanar",
-            " good"
+            "extraplanar",
+            "good"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Angel"
+            }
         ]
     }
 }

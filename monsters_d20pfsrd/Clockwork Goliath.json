@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Goliath"
+        ],
+        "cr": "19",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "construct",
+        "init": 9,
+        "tags": [
+            "clockwork"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Vargouille"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

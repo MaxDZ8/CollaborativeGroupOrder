@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Shipbreaker Sea Serpent"
+        ],
+        "cr": "25",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

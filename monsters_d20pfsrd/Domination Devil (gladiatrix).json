@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Domination Devil",
+            "Gladiatrix"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

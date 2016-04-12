@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Sargassum Fiend"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Tarantula Spider"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "vermin",
+        "init": 1
+    }
+}

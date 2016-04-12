@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Half-fiend Griffon"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 4,
+        "example": "Male half-fiend griffon",
+        "tags": [
+            "native"
+        ]
+    }
+}

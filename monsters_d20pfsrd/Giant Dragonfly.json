@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Dragonfly"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 5
+    }
+}

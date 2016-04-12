@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Cairn Linnorm"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 11
+    }
+}

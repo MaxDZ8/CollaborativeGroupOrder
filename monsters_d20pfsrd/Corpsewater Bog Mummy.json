@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Corpsewater Bog Mummy"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 4,
+        "example": "Variant unhallowed bog mummy"
+    }
+}

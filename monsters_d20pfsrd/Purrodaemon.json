@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Purrodaemon"
+        ],
+        "cr": "18",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

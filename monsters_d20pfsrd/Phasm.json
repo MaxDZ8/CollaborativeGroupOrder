@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Phasm"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 7,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

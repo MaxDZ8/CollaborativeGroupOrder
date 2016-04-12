@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Rock Reptile"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 6
+    }
+}

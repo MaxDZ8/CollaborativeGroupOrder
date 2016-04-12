@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Sahuagin"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Malenti"
+            }
+        ]
+    }
+}

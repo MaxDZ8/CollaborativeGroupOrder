@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Four-armed Gargoyle"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "monstrous humanoid",
+        "init": 1,
+        "tags": [
+            "earth"
+        ]
+    }
+}

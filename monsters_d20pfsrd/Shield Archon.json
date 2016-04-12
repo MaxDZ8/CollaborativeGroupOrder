@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Archon, Shield"
+            "Shield"
         ],
         "cr": "10",
         "alignment": [
@@ -12,9 +12,15 @@
         "init": 5,
         "tags": [
             "archon",
-            " extraplanar",
-            " good",
-            " lawful"
+            "extraplanar",
+            "good",
+            "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Archon"
+            }
         ]
     }
 }

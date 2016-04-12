@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Defender Globe"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "elemental",
+            "native"
+        ]
+    }
+}

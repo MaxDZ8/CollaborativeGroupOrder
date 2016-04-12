@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Greater Gelid Beetle"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 4,
+        "tags": [
+            "cold"
+        ]
+    }
+}

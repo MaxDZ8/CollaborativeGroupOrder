@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Devourer"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

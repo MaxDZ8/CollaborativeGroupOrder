@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "CHALKYDRI"
+            "Chalkydri"
         ],
         "cr": "14",
         "alignment": [
@@ -12,8 +12,8 @@
         "init": 7,
         "tags": [
             "angel",
-            " extraplanar",
-            " good"
+            "extraplanar",
+            "good"
         ]
     }
 }

@@ -1,0 +1,28 @@
+{
+    "head": {
+        "name": [
+            "Positive Energy Elemental"
+        ],
+        "cr": "12",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 14,
+        "tags": [
+            "elemental",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "elder"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
+        ]
+    }
+}

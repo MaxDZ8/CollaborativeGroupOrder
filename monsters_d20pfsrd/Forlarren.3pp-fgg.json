@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Forlarren"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dodo"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 0
+    }
+}

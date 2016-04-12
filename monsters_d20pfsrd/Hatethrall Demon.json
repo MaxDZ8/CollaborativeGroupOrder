@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Hatethrall Demon"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

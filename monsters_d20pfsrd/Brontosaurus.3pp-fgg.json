@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Brontosaurus"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "animal",
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

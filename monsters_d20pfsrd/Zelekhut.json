@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Zelekhut"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "extraplanar",
+            "inevitable",
+            "lawful"
+        ]
+    }
+}

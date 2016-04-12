@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Sinspawn"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "pride"
+            }
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Zombie Horde"
+        ],
+        "cr": "14",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Colossal",
+        "type": "undead",
+        "init": 0,
+        "tags": [
+            "horde"
+        ]
+    }
+}

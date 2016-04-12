@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Dire Hippopotamus"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "animal",
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Glacial Ooze"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -5,
+        "tags": [
+            "cold"
+        ]
+    }
+}

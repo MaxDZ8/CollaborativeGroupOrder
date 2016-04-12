@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Troll"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "giant"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Mountain"
+            }
+        ]
+    }
+}

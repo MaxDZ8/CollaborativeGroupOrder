@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mobat"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Tiger",
+            "Smilodon"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 6,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "dire"
+            }
+        ]
+    }
+}

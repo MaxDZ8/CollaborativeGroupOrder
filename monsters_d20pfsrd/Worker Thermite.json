@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Worker Thermite"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 2,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

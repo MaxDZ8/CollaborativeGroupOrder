@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Biclops"
+        ],
+        "cr": "12",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "giant"
+        ]
+    }
+}

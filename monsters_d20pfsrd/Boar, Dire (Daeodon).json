@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Boar",
+            "Daeodon"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "dire"
+            }
+        ]
+    }
+}

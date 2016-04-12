@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Shedu"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 7
+    }
+}

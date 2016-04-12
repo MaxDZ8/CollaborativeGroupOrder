@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Caterwaul"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 6
+    }
+}

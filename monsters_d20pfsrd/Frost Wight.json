@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Frost Wight"
+        ],
+        "cr": "4",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 1,
+        "tags": [
+            "cold"
+        ]
+    }
+}

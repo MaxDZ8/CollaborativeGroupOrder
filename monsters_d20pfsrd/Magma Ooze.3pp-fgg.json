@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Magma Ooze"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -5,
+        "tags": [
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

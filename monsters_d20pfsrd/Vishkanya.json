@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Vishkanya"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 3,
+        "example": "Vishkanya ninja 1",
+        "race": "vishkanya"
+    }
+}

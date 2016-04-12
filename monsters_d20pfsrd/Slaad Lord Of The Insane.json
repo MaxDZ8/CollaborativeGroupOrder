@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Slaad Lord Of The Insane"
+        ],
+        "cr": "27",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "shapechanger"
+        ]
+    }
+}

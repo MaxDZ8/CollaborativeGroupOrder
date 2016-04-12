@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Frog"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Killer"
+            },
+            {
+                "type": "publisher",
+                "value": "to"
+            }
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Frostfallen Mammoth"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "undead",
+        "init": 1,
+        "tags": [
+            "cold"
+        ]
+    }
+}

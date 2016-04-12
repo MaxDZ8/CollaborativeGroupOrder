@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Wight Red Dragon"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "undead",
+        "init": 4,
+        "example": "Wight adult red dragon",
+        "tags": [
+            "augmented dragon"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "adult"
+            }
+        ]
+    }
+}

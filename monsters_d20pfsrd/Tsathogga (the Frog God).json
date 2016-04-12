@@ -1,0 +1,22 @@
+{
+    "head": {
+        "name": [
+            "Tsathogga",
+            "The Frog God"
+        ],
+        "cr": "30",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "aquatic",
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

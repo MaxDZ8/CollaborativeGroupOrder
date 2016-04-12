@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Spikestone Guardian"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": -2,
+        "example": "Variant advanced stone guardian"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Lesser Boneneedle"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 3
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Giant Constrictor Snake"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 2,
+        "example": "Advanced giant constrictor"
+    }
+}

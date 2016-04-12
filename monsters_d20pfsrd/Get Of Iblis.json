@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Get Of Iblis"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "aberration",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

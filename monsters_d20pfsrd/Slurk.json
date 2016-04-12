@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Slurk"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 6
+    }
+}

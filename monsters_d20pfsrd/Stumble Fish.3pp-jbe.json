@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Stumble Fish"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "jbe"
+            }
+        ]
+    }
+}

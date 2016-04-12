@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Moloch"
+        ],
+        "cr": "26",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Caribe"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "animal",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

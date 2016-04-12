@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Nothosaur"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 1
+    }
+}

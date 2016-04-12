@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Pale Stranger"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 9
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dread Wraith"
+        ],
+        "cr": "13",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 13,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

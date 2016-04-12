@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Sovereign Dragon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "mature adult"
+            }
+        ]
+    }
+}

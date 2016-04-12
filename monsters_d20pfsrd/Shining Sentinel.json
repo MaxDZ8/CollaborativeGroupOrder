@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Shining Sentinel"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": 0,
+        "example": "Gold-clad caryatid column"
+    }
+}

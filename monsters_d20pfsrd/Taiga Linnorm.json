@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Taiga Linnorm"
+        ],
+        "cr": "19",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 11
+    }
+}

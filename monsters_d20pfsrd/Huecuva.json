@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Huecuva"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6
+    }
+}

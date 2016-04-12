@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Beheaded"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "undead",
+        "init": 2
+    }
+}

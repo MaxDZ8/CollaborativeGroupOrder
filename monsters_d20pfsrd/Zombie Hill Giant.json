@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Zombie Hill Giant"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": -2,
+        "example": "Male zombie hill giant"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Sprite"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N",
+            "NG"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

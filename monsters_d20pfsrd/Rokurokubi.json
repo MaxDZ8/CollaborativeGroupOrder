@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Rokurokubi"
+        ],
+        "cr": "14",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 10
+    }
+}

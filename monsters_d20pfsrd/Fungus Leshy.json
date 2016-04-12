@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Fungus Leshy"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 2,
+        "tags": [
+            "leshy",
+            "shapechanger"
+        ]
+    }
+}

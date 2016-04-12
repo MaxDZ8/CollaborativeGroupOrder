@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Svirfneblin"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 2,
+        "example": "Svirfneblin ranger 1",
+        "race": "gnome"
+    }
+}

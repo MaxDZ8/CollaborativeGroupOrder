@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ghoul Wolf"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2
+    }
+}

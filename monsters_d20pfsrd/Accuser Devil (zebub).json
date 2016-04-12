@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Accuser Devil",
+            "Zebub"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

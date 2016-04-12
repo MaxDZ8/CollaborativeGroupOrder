@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Kuru"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 0,
+        "example": "Male barbarian 1",
+        "race": "kuru"
+    }
+}

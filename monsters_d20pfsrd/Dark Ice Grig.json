@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dark Ice Grig"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 4
+    }
+}

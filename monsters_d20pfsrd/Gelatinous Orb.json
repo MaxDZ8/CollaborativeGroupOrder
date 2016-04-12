@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gelatinous Orb"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "ooze",
+        "init": 3
+    }
+}

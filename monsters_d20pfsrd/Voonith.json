@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Voonith"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

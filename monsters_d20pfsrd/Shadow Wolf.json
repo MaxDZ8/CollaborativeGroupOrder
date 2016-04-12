@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Shadow Wolf"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

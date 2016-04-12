@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Mother Of Oblivion"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "aquatic",
+            "native"
+        ]
+    }
+}

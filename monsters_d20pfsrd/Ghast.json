@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ghast"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 4
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Helix Moth"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 0,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Larva"
+            }
+        ]
+    }
+}

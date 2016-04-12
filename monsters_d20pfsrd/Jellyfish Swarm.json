@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Jellyfish Swarm"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "vermin",
+        "init": 1,
+        "tags": [
+            "aquatic",
+            "swarm"
+        ]
+    }
+}

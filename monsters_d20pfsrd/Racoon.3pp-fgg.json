@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Racoon"
+        ],
+        "cr": "1/6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

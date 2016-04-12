@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Mouse Lord"
+        ],
+        "cr": "13",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "native",
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "human"
+            }
+        ]
+    }
+}

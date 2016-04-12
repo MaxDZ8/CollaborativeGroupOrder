@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Alastor"
+        ],
+        "cr": "23",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

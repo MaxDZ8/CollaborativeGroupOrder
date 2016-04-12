@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Shaitan"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "earth",
+            "extraplanar"
+        ]
+    }
+}

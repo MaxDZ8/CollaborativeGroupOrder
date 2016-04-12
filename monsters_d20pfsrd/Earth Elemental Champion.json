@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Earth Elemental Champion"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": -1,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

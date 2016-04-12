@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Moonflower"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": 4
+    }
+}

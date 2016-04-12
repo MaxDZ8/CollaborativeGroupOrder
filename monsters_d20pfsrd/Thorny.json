@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Thorny"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 2
+    }
+}

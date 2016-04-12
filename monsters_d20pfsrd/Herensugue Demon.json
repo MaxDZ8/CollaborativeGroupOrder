@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Herensugue Demon"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "air",
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

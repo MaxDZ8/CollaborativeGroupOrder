@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Advanced Unhallowed Bodak"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "example": "Advanced unhallowed bodak",
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Greater Basilisk"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": -2
+    }
+}

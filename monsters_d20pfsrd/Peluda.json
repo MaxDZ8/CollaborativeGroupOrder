@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Peluda"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5
+    }
+}

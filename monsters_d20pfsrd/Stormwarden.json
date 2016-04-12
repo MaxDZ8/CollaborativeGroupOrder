@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Stormwarden"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 4,
+        "tags": [
+            "stormwarden"
+        ]
+    }
+}

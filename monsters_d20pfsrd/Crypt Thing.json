@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Crypt Thing"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6
+    }
+}

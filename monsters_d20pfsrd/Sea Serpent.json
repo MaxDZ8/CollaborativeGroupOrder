@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Sea Serpent"
+        ],
+        "cr": "12",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

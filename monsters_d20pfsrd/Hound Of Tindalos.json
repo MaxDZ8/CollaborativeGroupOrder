@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Hound Of Tindalos"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

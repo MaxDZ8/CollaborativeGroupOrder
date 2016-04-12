@@ -1,0 +1,27 @@
+{
+    "head": {
+        "name": [
+            "Thognorok"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": -1,
+        "tags": [
+            "aquatic",
+            "chaotic",
+            "evil",
+            "extraplanar",
+            "qlippoth"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Qlippoth"
+            }
+        ]
+    }
+}

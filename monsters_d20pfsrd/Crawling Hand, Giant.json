@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Crawling Hand"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "giant"
+            }
+        ]
+    }
+}

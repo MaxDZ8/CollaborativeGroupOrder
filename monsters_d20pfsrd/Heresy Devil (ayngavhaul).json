@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Heresy Devil",
+            "Ayngavhaul"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

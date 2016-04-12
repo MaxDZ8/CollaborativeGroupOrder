@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Shikigami"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "evil",
+            "goblin",
+            "oni",
+            "shapechanger"
+        ]
+    }
+}

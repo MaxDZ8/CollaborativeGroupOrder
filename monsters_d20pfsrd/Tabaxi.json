@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Tabaxi"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 2,
+        "tags": [
+            "tabaxi"
+        ]
+    }
+}

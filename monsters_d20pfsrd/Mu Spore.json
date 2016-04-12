@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mu Spore"
+        ],
+        "cr": "21",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Colossal",
+        "type": "plant",
+        "init": 3
+    }
+}

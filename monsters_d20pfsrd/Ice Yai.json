@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Ice Yai"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "cold",
+            "oni",
+            "giant",
+            "native",
+            "shapechanger"
+        ]
+    }
+}

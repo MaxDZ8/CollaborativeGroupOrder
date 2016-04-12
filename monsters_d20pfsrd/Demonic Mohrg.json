@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Demonic Mohrg"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 10,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Manimal Triceratops"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "monstrous humanoid",
+        "init": -1,
+        "tags": [
+            "augmented animal"
+        ]
+    }
+}

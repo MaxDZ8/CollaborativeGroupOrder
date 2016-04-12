@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Piranha Swarm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "animal",
+        "init": 2,
+        "tags": [
+            "aquatic",
+            "swarm"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

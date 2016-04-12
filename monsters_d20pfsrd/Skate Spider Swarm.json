@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Skate Spider Swarm"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "vermin",
+        "init": 0,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

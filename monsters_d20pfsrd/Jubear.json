@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Jubear"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5
+    }
+}

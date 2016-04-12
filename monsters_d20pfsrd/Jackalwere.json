@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Jackalwere"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

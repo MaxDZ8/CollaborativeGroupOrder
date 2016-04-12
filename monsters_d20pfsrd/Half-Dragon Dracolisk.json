@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Dracolisk"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": -1,
+        "example": "Half-black dragon basilisk"
+    }
+}

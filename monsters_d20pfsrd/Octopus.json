@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Octopus"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

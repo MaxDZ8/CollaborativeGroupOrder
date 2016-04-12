@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Oma"
+        ],
+        "cr": "16",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": -2
+    }
+}

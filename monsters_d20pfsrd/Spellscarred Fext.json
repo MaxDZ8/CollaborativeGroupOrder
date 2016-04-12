@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Spellscarred Fext"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7
+    }
+}

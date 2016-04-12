@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "The End-singer"
+        ],
+        "cr": "22",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": 10
+    }
+}

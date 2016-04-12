@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Hieracosphinx"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2
+    }
+}

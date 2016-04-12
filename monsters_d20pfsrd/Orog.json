@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Orog"
+        ],
+        "cr": "1",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 0,
+        "race": "orc"
+    }
+}

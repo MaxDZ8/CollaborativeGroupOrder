@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Destrachan"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5
+    }
+}

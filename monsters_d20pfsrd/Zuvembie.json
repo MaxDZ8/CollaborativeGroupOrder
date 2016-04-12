@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Zuvembie"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2
+    }
+}

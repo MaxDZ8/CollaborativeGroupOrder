@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Yithian Elder"
+        ],
+        "cr": "13",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 3
+    }
+}

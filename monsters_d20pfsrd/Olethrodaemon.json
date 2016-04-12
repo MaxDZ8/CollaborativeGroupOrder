@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Olethrodaemon"
+        ],
+        "cr": "20",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Gargantuan",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

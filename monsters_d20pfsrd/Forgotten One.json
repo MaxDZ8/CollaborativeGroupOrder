@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Forgotten One"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "fey",
+        "init": 4
+    }
+}

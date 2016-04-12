@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Triton"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "native",
+            "water"
+        ]
+    }
+}

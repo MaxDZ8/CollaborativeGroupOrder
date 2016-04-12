@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Fukujin Kami"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "kami",
+            "native"
+        ]
+    }
+}

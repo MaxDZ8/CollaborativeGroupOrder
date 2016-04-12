@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Rust Monster"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 3
+    }
+}

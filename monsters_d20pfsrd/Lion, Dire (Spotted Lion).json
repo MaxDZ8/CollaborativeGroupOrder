@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Lion",
+            "Spotted Lion"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 6,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "dire"
+            }
+        ]
+    }
+}

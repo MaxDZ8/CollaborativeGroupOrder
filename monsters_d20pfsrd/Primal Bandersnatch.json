@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bandersnatch"
+        ],
+        "cr": "19",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": 11,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

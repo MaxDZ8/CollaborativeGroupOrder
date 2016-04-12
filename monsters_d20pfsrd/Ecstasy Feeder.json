@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ecstasy Feeder"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 4
+    }
+}

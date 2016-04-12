@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Norn"
+        ],
+        "cr": "18",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "fey",
+        "init": 16
+    }
+}

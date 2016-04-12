@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Ghoran"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 1,
+        "example": "Ghoran bard 1"
+    }
+}

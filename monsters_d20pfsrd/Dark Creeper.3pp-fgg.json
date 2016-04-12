@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Dark Creeper"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 3,
+        "tags": [
+            "dark folk"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

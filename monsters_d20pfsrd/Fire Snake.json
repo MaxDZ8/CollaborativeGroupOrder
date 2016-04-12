@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Fire Snake"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

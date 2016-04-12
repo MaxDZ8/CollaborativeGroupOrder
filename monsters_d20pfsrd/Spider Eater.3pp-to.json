@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Spider Eater"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 6,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "to"
+            }
+        ]
+    }
+}

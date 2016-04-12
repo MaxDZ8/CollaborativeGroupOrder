@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Clamor"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 11,
+        "tags": [
+            "extraplanar",
+            "incorporeal"
+        ]
+    }
+}

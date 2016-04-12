@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Fen Witch"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 1
+    }
+}

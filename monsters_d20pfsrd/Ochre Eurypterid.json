@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ochre Eurypterid"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

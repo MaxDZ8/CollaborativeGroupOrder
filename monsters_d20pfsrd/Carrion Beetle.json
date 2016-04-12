@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Carrion Beetle"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 1
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Lesser Ceustodaemon"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

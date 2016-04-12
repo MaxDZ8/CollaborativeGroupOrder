@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Soul Eater"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

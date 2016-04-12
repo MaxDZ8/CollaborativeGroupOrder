@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Stalk Beetle"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 1
+    }
+}

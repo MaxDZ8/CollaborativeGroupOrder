@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Beast Demon",
+            "Chaaor"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

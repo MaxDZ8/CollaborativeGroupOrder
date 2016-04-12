@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Aerial Servant\n"
+            "Aerial Servant"
         ],
         "cr": "11",
         "alignment": [
@@ -12,8 +12,14 @@
         "init": 9,
         "tags": [
             "air",
-            " extraplanar",
-            " elemental"
+            "extraplanar",
+            "elemental"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "to"
+            }
         ]
     }
 }

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Magnesium Spirit"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "incorporeal",
+            "lawful"
+        ]
+    }
+}

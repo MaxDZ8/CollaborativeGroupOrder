@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Immense Mandragora"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "plant",
+        "init": 7
+    }
+}

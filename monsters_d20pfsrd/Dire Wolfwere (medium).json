@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Dire Wolfwere"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.size",
+                "value": "medium"
+            }
+        ]
+    }
+}

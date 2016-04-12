@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Familiar"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 6,
+        "tags": [
+            "clockwork"
+        ]
+    }
+}

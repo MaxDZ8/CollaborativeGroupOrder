@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Kijimuna"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 3,
+        "tags": [
+            "goblinoid"
+        ]
+    }
+}

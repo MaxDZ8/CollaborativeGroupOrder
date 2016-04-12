@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Grig Swarm"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 4,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

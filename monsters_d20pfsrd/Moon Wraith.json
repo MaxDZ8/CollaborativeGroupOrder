@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Moon Wraith"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

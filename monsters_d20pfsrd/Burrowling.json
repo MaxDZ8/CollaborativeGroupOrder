@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Burrowling"
+        ],
+        "cr": "1",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Small",
+        "type": "monstrous humanoid",
+        "init": 2
+    }
+}

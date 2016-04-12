@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Advanced Nightmare"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bog Nixie"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

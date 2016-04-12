@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Thrasfyr"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 5,
+        "tags": [
+            "fire"
+        ]
+    }
+}

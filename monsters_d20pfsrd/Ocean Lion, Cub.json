@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Ocean Lion"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Cub"
+            }
+		]
+    }
+}

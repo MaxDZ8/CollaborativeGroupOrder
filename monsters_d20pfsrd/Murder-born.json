@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Murder-born"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Tiny",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Nightmare"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

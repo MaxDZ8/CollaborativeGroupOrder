@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Abasheen Genie"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "air",
+            "extraplanar"
+        ]
+    }
+}

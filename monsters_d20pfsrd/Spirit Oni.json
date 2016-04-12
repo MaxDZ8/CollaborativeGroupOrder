@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Spirit Oni"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "native",
+            "oni"
+        ]
+    }
+}

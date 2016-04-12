@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Cacodaemon"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

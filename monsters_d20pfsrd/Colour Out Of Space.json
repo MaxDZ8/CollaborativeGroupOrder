@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Colour Out Of Space"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "ooze",
+        "init": 12,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

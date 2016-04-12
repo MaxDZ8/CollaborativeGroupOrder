@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Grodair"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": -1,
+        "tags": [
+            "aquatic",
+            "extraplanar"
+        ]
+    }
+}

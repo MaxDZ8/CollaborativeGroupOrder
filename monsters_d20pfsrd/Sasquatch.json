@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Sasquatch"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 2,
+        "tags": [
+            "sasquatch"
+        ]
+    }
+}

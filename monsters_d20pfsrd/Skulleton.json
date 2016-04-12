@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Skulleton"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "undead",
+        "init": 0
+    }
+}

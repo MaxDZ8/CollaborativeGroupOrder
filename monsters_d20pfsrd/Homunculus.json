@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Homunculus"
+        ],
+        "cr": "1",
+        "alignment": [
+            "$as_creator",
+            "$any"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 2
+    }
+}

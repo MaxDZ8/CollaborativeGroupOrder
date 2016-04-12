@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Brown Bear",
+            "Grizzly",
+            "Kodiak",
+            "Russian Brown"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 1
+    }
+}

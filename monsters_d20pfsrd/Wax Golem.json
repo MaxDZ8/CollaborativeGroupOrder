@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Wax Golem"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": -1
+    }
+}

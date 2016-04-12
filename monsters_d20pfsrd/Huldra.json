@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Huldra"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 3
+    }
+}

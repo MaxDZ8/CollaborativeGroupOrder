@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Star Monarch"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 10
+    }
+}

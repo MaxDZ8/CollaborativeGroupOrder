@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Herald Of The Pirate Queen"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Colossal",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

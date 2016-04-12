@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Charda"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "monstrous humanoid",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

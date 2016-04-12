@@ -1,0 +1,27 @@
+{
+    "head": {
+        "name": [
+            "Red Dragon"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "juvenile"
+            },
+            {
+                "type": "extraInfo",
+                "value": "Unique (AP:FSG)"
+            }
+        ]
+    }
+}

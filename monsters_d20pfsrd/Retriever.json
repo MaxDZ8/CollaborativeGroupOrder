@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Retriever"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "construct",
+        "init": 7,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

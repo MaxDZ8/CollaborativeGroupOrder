@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bluetip Eurypterid"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 7,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

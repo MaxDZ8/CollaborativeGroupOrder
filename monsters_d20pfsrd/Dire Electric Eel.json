@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dire Electric Eel"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

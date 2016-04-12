@@ -1,0 +1,22 @@
+{
+    "head": {
+        "name": [
+            "Two-headed Troll"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 0,
+        "tags": [
+            "giant"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher"
+            }
+        ]
+    }
+}

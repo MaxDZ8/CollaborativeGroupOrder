@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Wizard's Shackle"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "magical beast",
+        "init": 0
+    }
+}

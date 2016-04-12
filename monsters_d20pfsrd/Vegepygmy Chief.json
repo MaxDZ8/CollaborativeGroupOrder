@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Vegepygmy Chief"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 1,
+        "tags": [
+            "fungus"
+        ]
+    }
+}

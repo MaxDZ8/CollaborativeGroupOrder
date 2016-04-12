@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Lead-clad Wyvern"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 2
+    }
+}

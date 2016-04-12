@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Crab"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 0,
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Rock"
+            }
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Medium Skeleton"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Hive Mind Beetle Swarm"
+        ],
+        "cr": "13",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Diminutive",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

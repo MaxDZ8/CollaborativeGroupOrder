@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Red Ravener"
+        ],
+        "cr": "22",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "undead",
+        "init": 3,
+        "example": "Wyrm red dragon ravener",
+        "tags": [
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
+        ]
+    }
+}

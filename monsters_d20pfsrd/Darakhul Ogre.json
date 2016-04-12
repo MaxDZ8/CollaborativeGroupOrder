@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Darakhul Ogre"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 0,
+        "example": "Male ogre darakhul",
+        "tags": [
+            "augmented giant"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Skulk"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 6,
+        "tags": [
+            "skulk"
+        ]
+    }
+}

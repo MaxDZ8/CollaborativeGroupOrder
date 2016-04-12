@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Globster"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

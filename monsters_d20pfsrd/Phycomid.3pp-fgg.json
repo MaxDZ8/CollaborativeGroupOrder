@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Phycomid"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 0,
+        "tags": [
+            "fungus"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Black Dragon"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "tiny",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
+        ]
+    }
+}

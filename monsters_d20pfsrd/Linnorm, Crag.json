@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Linnorm"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 8,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Crag"
+            }
+        ]
+    }
+}

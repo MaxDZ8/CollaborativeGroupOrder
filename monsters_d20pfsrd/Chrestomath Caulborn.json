@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Chrestomath Caulborn"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

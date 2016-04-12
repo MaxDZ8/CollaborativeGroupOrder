@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Drain Spider"
+        ],
+        "cr": "1/6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "vermin",
+        "init": 7
+    }
+}

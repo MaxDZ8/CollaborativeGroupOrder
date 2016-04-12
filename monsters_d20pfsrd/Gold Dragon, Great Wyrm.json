@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Gold Dragon"
+        ],
+        "cr": "23",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": -2,
+        "tags": [
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
+        ]
+    }
+}

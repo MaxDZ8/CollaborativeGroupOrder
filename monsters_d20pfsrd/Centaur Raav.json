@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Centaur Raav"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 4,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

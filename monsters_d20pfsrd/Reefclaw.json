@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Reefclaw"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

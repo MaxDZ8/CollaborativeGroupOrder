@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Drowned Maiden"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

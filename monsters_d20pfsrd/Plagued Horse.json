@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Plagued Horse"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 3,
+        "tags": [
+            "augmented animal"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Hungerer"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "monstrous humanoid",
+        "init": 5
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Huggermugger"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 3,
+        "tags": [
+            "dark folk"
+        ]
+    }
+}

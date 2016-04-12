@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Argorth, Cinder scourge"
+            "Argorth"
         ],
         "cr": "12",
         "alignment": [
@@ -10,6 +10,12 @@
         ],
         "size": "Huge",
         "type": "aberration",
-        "init": 3
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Cinder scourge"
+            }
+        ]
     }
 }

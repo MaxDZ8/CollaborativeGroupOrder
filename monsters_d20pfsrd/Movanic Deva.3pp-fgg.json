@@ -12,8 +12,14 @@
         "init": 8,
         "tags": [
             "angel",
-            " extraplanar",
-            " good"
+            "extraplanar",
+            "good"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

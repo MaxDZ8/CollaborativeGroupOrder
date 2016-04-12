@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Wood Giant"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 3,
+        "tags": [
+            "giant"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

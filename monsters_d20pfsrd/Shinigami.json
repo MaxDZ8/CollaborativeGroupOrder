@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Shinigami"
+        ],
+        "cr": "17",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

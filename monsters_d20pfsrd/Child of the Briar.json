@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Child of the Briar"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "plant",
+        "init": 3
+    }
+}

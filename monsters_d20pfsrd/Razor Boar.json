@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Razor Boar"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 5
+    }
+}

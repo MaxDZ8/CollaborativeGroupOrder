@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Brute Wight"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 2
+    }
+}

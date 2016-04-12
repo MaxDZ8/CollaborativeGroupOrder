@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Gold Dragon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 0,
+        "tags": [
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "mature adult"
+            }
+        ]
+    }
+}

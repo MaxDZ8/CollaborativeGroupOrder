@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Kobold"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 1,
+        "example": "Kobold warrior 1",
+        "tags": [
+            "reptilian"
+        ]
+    }
+}

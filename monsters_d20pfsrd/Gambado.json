@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gambado"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 1
+    }
+}

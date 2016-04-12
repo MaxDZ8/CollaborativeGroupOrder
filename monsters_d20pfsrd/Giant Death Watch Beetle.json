@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Death Watch Beetle"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 0
+    }
+}

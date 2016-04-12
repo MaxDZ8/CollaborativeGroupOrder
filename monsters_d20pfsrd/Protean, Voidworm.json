@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Voidworm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "protean",
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Protean"
+            }
+        ]
+    }
+}

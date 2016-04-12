@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Nirento"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 6
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Chernobue"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar",
+            "qlippoth"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Qlippoth"
+            }
+        ]
+    }
+}

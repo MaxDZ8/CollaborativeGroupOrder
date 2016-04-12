@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Nightwing"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "undead",
+        "init": 8,
+        "tags": [
+            "extraplanar",
+            "nightshade"
+        ]
+    }
+}

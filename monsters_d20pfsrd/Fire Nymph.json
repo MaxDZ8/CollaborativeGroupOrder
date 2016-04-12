@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Fire Nymph"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CN",
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

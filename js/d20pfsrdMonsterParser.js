@@ -95,83 +95,103 @@
         'vermin': true
     };
     
-    const titleTable = getTitle('TH') || getTitle('TD');
+    const extraTemplate = {
+        'advanced': true,
+        'giant': true,
+        'mighty': true,
+        'shrine-blessed': true,
+        'nocturnal': true
+    };
+    
+    const titleTable = getDefinitionBlocks();
     if(!titleTable) {
         alert('Parse failed to match title table.');
         return;
     }
-    const mob = {
-        head: parseHeader(titleTable)
-    };
-    if(!mob.head) {
-        alert('Parse failed to match header info.');
-        return;
+    for(let loop = 0; loop < titleTable.length; loop++) {
+        const mob = {
+            head: parseHeader(titleTable[loop])
+        };
+        if(!mob.head) {
+            alert('Parse failed to match header info.');
+            return;
+        }
+        const clickme = document.createElement('A');
+        clickme.href = URL.createObjectURL(new Blob([JSON.stringify(mob, null, 4)], { type: 'text/text' }));
+        clickme.innerHTML = "Click me to save results (again).";
+        clickme.download = mob.head.name[0] + '.json';
+        document.body.appendChild(clickme);
+        clickme.click();
     }
-    const clickme = document.createElement('A');
-    clickme.href = URL.createObjectURL(new Blob([JSON.stringify(mob, null, 4)], { type: 'text/text' }));
-    clickme.innerHTML = "Click me to save results (again).";
-    clickme.download = mob.head.name[0] + '.json';
-    document.body.appendChild(clickme);
-    clickme.click();
+    return 'Success!';
     
+    function getDefinitionBlocks() {
+        let found = getTitle('TH');
+        const td = getTitle('TD');
+        if(td) {
+            if(!found) found = td;
+            else for(let cp = 0; cp < td.length; cp++) found.push(td[cp]);
+        }
+        return found;
+    }
     
     function getTitle(tagToMatch, el) {
         if(undefined === el) {
             const all = document.getElementsByTagName(tagToMatch);
+            let blocks = [];
             for(let loop = 0; loop < all.length; loop++) {
                 const matched = getTitle(tagToMatch, all[loop]);
-                if(matched) return matched;
+                if(matched) blocks.push(matched);
             }
-            return null;
+            return blocks.length? blocks : null;
         }
         if(el.tagName !== tagToMatch) return null;
         let challangeRatio = el.innerText.trim().match(/^CR\s*(\d+|(?:1\/\d))$/i);
         if(!challangeRatio) return null;
         const td = el;
         el = el.parentNode;
-        let count = 0, matched = false, first;
+        let count = 0, first;
         for(let loop = 0; loop < el.childNodes.length; loop++) {
-            if(el.childNodes[loop].tagName === tagToMatch) {
+            if(el.childNodes[loop].tagName === 'TH' || el.childNodes[loop].tagName === 'TD') {
                 if(first === undefined) first = el.childNodes[loop];
-                if(el.childNodes[loop] === td) matched = true;
                 count++;
             }
         }
-        if(count !== 2 || !matched) return null;
+        if(count !== 2) return null;
         if(el.parentNode.tagName !== 'TBODY' && el.parentNode.tagName !== 'THEAD') return null;
         el = el.parentNode;
         if(el.parentNode.tagName !== 'TABLE') return null;
         return {
             node: el.parentNode,
-            name: mangleName(first.textContent),
-            cr: 'CR ' + challangeRatio[1]
+            name: titolize(mangleName(first.textContent)),
+            cr: challangeRatio[1]
         };
         
         function mangleName(str) {
+            str = str.replace(/\u00a0/g, ' ');
             const aka = str.match(/\(([^)])\)/);
-            if(!aka) return [ str ];
-            return [ str, aka[1] ];
+            if(!aka) return [ str.trim() ];
+            return [ str.substring(0, aka.index).trim(), aka[1].trim() ];
+        }
+        
+        function titolize(arr) {
+            for(let loop = 0; loop < arr.length; loop++) {
+                const words = arr[loop].trim().split(' ');
+                arr[loop] = words[0].charAt(0).toUpperCase() + words[0].substr(1).toLowerCase();
+                for(let cp = 1; cp < words.length; cp++) arr[loop] += ' ' + words[cp].charAt(0).toUpperCase() + words[cp].substr(1).toLowerCase();
+            }
+            return arr;
         }
     }
     
-    
-    function nextSiblingBeing(me, tag) {
-        const parent = me.parentNode;
-        let scan = 0;
-        while(parent.childNodes[scan] !== me) scan++;
-        scan++;
-        while(scan < parent.childNodes.length) {
-            if(parent.childNodes[scan].tagName === tag) return parent.childNodes[scan];
-            scan++;
-        }
-        return null;
-    }
     
     function parseSizeLine(line) {
         const match = line.match(/\s(Fine|Diminutive|Tiny|Small|Medium|Large|Huge|Gargantuan|Colossal)\s/i);
         if(!match) return null;
         let filteredTags;
         let kind;
+        const alignmentString = line.substring(0, match.index).trim();
+        line = line.substr(match.index + match[0].length).trim();
         const par = line.match(/\s\(([^)]+)\)/);
         if(par) {
             let list = par[1].split(',');
@@ -183,20 +203,57 @@
                     continue;
                 }
                 if(filteredTags === undefined) filteredTags = [];
-                filteredTags.push(str);
+                filteredTags.push(str.trim());
             }
         }
-        let matchType = line.substring(match.index + match[0].length, par? par.index : line.length).trim().toLowerCase();
-        if(!monType[matchType.toLowerCase()]) {
+        let matchType = line.substring(0, par? par.index : line.length).trim().toLowerCase().replace(/;$/, '');
+        let mangledType = mangleType(matchType);
+        if(!mangledType) {
             alert('Unknown monster type "' + matchType + '", ignored.');
             return null;
         }
         return {
-            alignment: line.substring(0, match.index).trim(),
+            alignment: alignmentString,
             size: match[1],
-            type: matchType.toLowerCase(),
+            type: mangledType.main,
+            templates: mangledType.modify,
             tags: filteredTags,
             race: kind
+        };
+    }
+    
+    function mangleType(string) {
+        let type = null;
+        let templates = [];
+        while(string.length) {
+            let found;
+            for(let key in extraTemplate) {
+                if(string.indexOf(key) === 0 && (string.charAt(key.length) === ' ' || key.length >= string.length)) {
+                    found = key;
+                    string = string.substr(key.length).trim();
+                    break;
+                }
+            }
+            if(found) {
+                templates.push(found);
+                continue;
+            }
+            for(let key in monType) {
+                if(string.indexOf(key) === 0 && (string.charAt(key.length) === ' ' || key.length >= string.length)) {
+                    found = key;
+                    string = string.substr(key.length).trim();
+                    break;
+                }
+            }
+            if(!found) return null;
+            if(found && type) return null;
+            type = found;
+        }
+        if(!type) return null;
+        if(templates.length === 0) templates = undefined;
+        return {
+            main: type,
+            modify: templates
         };
     }
     
@@ -208,12 +265,17 @@
             'LG': true,    'LN': true,    'LE': true
         };
         if(single[al]) return [ alignmentString ];
-        if(alignmentString.match(/Any(?: alignment)?/i)) return [ '$any' ];
-        
+        const anyAlignment = alignmentString.match(/Any(?: alignment)?/i);
+        if(anyAlignment) {
+            alignmentString = alignmentString.replace(anyAlignment[0], "").trim();
+            const rec = alignmentString.length? mangleAlignment(alignmentString) : [];
+            rec.push('$any');
+            return rec;
+        }
         const asCreator = alignmentString.match(/\(same as creator\)/i);
         if(asCreator) {
             alignmentString = alignmentString.replace(asCreator[0], "").trim();
-            const rec = mangleAlignment(alignmentString)
+            const rec = alignmentString.length? mangleAlignment(alignmentString) : [];
             rec.push('$as_creator');
             return rec;
         }
@@ -231,17 +293,16 @@
         }
         
         let good = [];
-        let parts = headInfo.alignment.split(/\sor\s|,| /gi);
+        let parts = alignmentString.split(/\sor\s|,| /gi);
         for(let check = 0; check < parts.length; check++) {
             const str = parts[check].trim().toUpperCase();
             if(!single[str]) {
-                alert(headInfo.name + ': unrecognized alignment ' + str + ', ignored.');
+                alert('unrecognized alignment ' + str + ', ignored.');
                 continue;
             }
             good.push(str);
         }
-        headInfo.alignment = good;
-        return headInfo;
+        return good;
     }
     
     function parseHeader(title) {
@@ -295,15 +356,16 @@
         let guess = 0;
         if(str[guess].match(/^XP /)) guess++; // ignore this, CR is sufficient
         let example;
-        if(!parseSizeLine(str[guess])) example = str[guess++];
-        const szl = parseSizeLine(str[guess++]);
+        let szl = parseSizeLine(str[guess]);
+        if(!szl) example = str[guess++];
+        szl = parseSizeLine(str[guess++]);
         if(!szl) {
             alert('Size-alignment line expected.');
             return;
         }
         szl.alignment = mangleAlignment(szl.alignment);
         //*************/alert('!!'+str[guess]+'\n'+str[guess].charCodeAt(4)+'\n'+str[guess].charCodeAt(5));/*************/
-        const tmpInit = str[guess].match(/Init ([+-]?\d\d?\d?)[,;]? /i);
+        const tmpInit = str[guess].match(/Init(?:iative)? ([+-]?\d\d?\d?)[,;]?[ \n]?/i);
         if(!tmpInit) {
             alert('Initiative line expected.');
             return;
@@ -319,6 +381,7 @@
         if(example) result.example = example;
         if(szl.race) result.race = szl.race;
         if(szl.tags) result.tags = szl.tags;
+        if(szl.templates) result.templates = szl.templates;
         return result;
     }
 }());

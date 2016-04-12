@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Thessalhydra"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "aberration",
+        "init": 1
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Djinni"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "air",
+            "extraplanar"
+        ]
+    }
+}

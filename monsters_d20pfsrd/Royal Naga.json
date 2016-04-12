@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Royal Naga"
+        ],
+        "cr": "11",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 7,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

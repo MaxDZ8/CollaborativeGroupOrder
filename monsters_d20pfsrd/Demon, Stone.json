@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Stone Demon"
+        ],
+        "cr": "20",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Demon"
+            }
+        ]
+    }
+}

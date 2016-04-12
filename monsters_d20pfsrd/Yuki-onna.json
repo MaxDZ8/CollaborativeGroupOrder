@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Yuki-onna"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8,
+        "tags": [
+            "cold",
+            "incorporeal"
+        ]
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Caizel",
+            "Deposed Queen of Succubi"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

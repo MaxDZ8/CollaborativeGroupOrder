@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Myrmidon"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 6,
+        "tags": [
+            "robot"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Robot"
+            }
+        ]
+    }
+}

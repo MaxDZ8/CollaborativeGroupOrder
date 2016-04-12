@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Baccae"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 3
+    }
+}

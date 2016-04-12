@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <title>Help me with monsters!</title>
+    <script src="monsterConditioner.js" type='application/javascript;version=1.8'></script>
+    <style>
+    table {
+        border-collapse: collapse;
+        border: 2px solid;
+    }
+    th {
+        background: #F0F0F0;
+        border-left: 1px dotted;
+        border-right: 1px dotted;
+    }
+    td {
+        border-left: 1px dotted;
+        border-right: 1px dotted;
+        border-bottom: 1px solid;
+        border-top: 1px solid;
+        text-align: center;
+    }
+    </style>
+</head>
+<body>
+</body>
+    So! Monsters are really badly formatted. Help me group them and normalize their data, yes Sir! Load up everything first!<br />
+    <input id="loader" type="file" accept="application/json" multiple />
+    <table id="nameConditioning">
+        <thead>
+            <tr>
+                <th>N</th>
+                <th>File name</th>
+                <th>Name</th>
+                <th>Suggested normalizations</th>
+            </tr>
+        </thead>
+    </table>
+    If the table is empty you're probably good! Otherwise, keep reloading and conditioning until it is empty.<br>
+</html>

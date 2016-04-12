@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fanged Sea Serpent"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

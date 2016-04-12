@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Half Ogre"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 0,
+        "tags": [
+            "giant"
+        ]
+    }
+}

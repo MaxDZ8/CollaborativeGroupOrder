@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Baaphel",
+            "Duke of Hell"
+        ],
+        "cr": "21",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

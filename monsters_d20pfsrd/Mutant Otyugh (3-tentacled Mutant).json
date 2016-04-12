@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Mutant Otyugh"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 0,
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "3-tentacled Mutant"
+            }
+        ]
+    }
+}

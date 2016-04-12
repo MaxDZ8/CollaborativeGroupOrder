@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Avatarana"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "native",
+            "rakshasa",
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Rakshasa"
+            }
+        ]
+    }
+}

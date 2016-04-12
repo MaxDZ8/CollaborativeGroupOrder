@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Gearsman"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": 1,
+        "tags": [
+            "robot"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Robot"
+            }
+        ]
+    }
+}

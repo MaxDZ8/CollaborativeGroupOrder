@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Large Monstrous Sea Wasp"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Troblin"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "goblinoid"
+        ]
+    }
+}

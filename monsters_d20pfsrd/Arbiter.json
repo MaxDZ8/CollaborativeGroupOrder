@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Arbiter"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "extraplanar",
+            "inevitable",
+            "lawful"
+        ]
+    }
+}

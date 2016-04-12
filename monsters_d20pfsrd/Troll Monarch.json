@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Troll Monarch"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 5,
+        "example": "Troll fighter 10",
+        "tags": [
+            "giant"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Raiju"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "air",
+            "extraplanar",
+            "shapechanger"
+        ]
+    }
+}

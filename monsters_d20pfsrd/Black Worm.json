@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Black Worm"
+        ],
+        "cr": "18",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": 0
+    }
+}

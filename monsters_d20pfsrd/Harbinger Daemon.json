@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Harbinger Daemon"
+        ],
+        "cr": "21",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Spy"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 5,
+        "tags": [
+            "clockwork"
+        ]
+    }
+}

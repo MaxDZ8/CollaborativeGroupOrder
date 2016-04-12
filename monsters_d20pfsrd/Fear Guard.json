@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fear Guard"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

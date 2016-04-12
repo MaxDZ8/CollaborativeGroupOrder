@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Advanced Leukodaemon"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 13,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Intellect Devourer"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 10
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Nosoi"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "extraplanar",
+            "psychopomp"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Psychopomp"
+            }
+        ]
+    }
+}

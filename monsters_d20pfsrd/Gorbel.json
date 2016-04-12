@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gorbel"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 2
+    }
+}

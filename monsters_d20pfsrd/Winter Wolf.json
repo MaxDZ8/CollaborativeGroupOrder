@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Winter Wolf"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 5,
+        "tags": [
+            "cold"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Vydrarch"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": 3
+    }
+}

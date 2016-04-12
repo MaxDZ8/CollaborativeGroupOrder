@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Cobra Flower"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 1
+    }
+}

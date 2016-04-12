@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Piscodaemon"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "aquatic",
+            "daemon",
+            "evil",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

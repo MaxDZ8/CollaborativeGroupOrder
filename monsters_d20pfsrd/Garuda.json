@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Garuda"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "native"
+        ]
+    }
+}

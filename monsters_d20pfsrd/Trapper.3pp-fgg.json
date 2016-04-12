@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Trapper"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

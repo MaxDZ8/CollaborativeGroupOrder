@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Flame-spawned Troll"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "elemental",
+            "fire"
+        ]
+    }
+}

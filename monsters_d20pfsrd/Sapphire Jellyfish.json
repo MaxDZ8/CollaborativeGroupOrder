@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Sapphire Jellyfish"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "vermin",
+        "init": 4,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Androsphinx"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 0
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Cloud Dragon"
+        ],
+        "cr": "19",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
+        ]
+    }
+}

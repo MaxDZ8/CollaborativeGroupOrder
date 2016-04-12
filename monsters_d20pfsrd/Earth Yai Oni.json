@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Earth Yai Oni"
+        ],
+        "cr": "13",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "giant",
+            "native",
+            "oni",
+            "shapechanger"
+        ]
+    }
+}

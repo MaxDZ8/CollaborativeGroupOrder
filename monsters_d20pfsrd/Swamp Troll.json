@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Swamp Troll"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 2,
+        "tags": [
+            "giant"
+        ]
+    }
+}

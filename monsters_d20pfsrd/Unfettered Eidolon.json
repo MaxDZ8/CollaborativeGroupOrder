@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Unfettered Eidolon"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

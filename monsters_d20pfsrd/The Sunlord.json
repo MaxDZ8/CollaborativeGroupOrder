@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "The Sunlord"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "angel",
+            "extraplanar",
+            "good",
+            "herald",
+            "shapechanger"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Decapus"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Cobra-back Inphidian"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 3,
+        "tags": [
+            "reptilian"
+        ]
+    }
+}

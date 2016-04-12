@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Crab Spider"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 2
+    }
+}

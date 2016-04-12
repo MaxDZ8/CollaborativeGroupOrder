@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Saw-toothed Beetle"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 0
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "The Red Rider"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 9
+    }
+}

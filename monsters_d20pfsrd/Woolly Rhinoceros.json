@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Woolly Rhinoceros"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 0
+    }
+}

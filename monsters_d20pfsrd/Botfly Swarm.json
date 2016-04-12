@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Botfly Swarm"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Fine",
+        "type": "vermin",
+        "init": 0,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

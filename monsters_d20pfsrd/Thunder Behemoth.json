@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Thunder Behemoth"
+        ],
+        "cr": "18",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": -2,
+        "tags": [
+            "behemoth",
+            "earth"
+        ]
+    }
+}

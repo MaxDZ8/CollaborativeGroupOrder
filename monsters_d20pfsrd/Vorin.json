@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Vorin"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 8
+    }
+}

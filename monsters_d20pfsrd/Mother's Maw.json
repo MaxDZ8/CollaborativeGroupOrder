@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Mother's Maw"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 11,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "herald"
+        ]
+    }
+}

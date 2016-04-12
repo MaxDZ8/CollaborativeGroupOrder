@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Kapre"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": 2
+    }
+}

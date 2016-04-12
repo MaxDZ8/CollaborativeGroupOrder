@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Enslaved Spawn"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 3,
+        "example": "Advanced vampire spawn"
+    }
+}

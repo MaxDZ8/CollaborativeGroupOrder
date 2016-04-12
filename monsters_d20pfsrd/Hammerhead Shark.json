@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Hammerhead Shark"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 7,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Faerie Dragon",
+            "Draco Fraudatio Minimus"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Silver Dragon"
+        ],
+        "cr": "17",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "old"
+            }
+        ]
+    }
+}

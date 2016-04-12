@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mimic"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 5,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

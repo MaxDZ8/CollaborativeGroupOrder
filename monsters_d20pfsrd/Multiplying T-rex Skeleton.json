@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Multiplying T-rex Skeleton"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Gargantuan",
+        "type": "undead",
+        "init": 6
+    }
+}

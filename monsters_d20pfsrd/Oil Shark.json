@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Oil Shark"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 6,
+        "tags": [
+            "aquatic",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

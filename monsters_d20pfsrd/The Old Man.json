@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "The Old Man"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "extraplanar",
+            "herald",
+            "lawful"
+        ]
+    }
+}

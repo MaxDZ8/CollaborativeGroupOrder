@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Ravager Spawn"
+        ],
+        "cr": "20",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 8,
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "flier"
+            }
+        ]
+    }
+}

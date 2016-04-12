@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Ice Golem"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": -1,
+        "tags": [
+            "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Kirin"
+        ],
+        "cr": "13",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "air",
+            "extraplanar",
+            "good",
+            "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "to"
+            }
+        ]
+    }
+}

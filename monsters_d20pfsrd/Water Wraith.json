@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Water Wraith"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

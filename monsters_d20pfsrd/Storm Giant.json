@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Storm Giant"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 2,
+        "tags": [
+            "giant"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Hydrodaemon"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "aquatic",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

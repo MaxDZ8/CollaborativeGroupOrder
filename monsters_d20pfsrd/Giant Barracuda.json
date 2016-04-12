@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Barracuda"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

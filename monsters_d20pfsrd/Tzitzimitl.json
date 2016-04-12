@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Tzitzimitl"
+        ],
+        "cr": "19",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Gargantuan",
+        "type": "undead",
+        "init": 9
+    }
+}

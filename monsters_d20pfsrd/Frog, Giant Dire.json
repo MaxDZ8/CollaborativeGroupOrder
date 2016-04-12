@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Frog"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "giant"
+            },
+            {
+                "type": "appliedTemplate",
+                "value": "dire"
+            }
+        ]
+    }
+}

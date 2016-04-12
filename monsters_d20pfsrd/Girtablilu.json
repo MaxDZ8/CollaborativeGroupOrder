@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Girtablilu"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "monstrous humanoid",
+        "init": 6
+    }
+}

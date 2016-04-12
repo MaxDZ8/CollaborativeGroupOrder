@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Kelpie"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 6,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

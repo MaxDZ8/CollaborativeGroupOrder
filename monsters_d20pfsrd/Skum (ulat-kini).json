@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Skum",
+            "Ulat-kini"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

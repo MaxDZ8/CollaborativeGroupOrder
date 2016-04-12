@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Phantom Fungus"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 0
+    }
+}

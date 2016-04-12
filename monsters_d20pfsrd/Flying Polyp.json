@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Flying Polyp"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 6,
+        "tags": [
+            "air"
+        ]
+    }
+}

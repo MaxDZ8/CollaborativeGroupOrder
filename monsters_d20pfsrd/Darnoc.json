@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Darnoc"
+        ],
+        "cr": "6",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

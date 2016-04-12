@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Wood Giant"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 5,
+        "tags": [
+            "giant"
+        ]
+    }
+}

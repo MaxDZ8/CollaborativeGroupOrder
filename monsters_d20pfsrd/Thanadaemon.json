@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Thanadaemon"
+        ],
+        "cr": "13",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

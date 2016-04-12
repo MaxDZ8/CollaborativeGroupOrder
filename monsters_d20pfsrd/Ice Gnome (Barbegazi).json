@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Ice Gnome",
+            "Barbegazi"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "cold",
+            "gnome"
+        ]
+    }
+}

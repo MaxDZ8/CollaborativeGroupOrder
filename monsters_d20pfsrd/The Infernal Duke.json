@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "The Infernal Duke"
+        ],
+        "cr": "25",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Ei'risai"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "chaotic",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Master"
+            }
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Slaughterford"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 8
+    }
+}

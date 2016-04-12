@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Kodama"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "kami",
+            "native"
+        ]
+    }
+}

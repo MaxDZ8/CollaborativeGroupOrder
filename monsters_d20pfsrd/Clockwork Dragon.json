@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Dragon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "construct",
+        "init": 8,
+        "tags": [
+            "clockwork"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mantidrake"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2
+    }
+}

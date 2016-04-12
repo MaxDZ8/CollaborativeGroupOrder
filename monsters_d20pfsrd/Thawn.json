@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Thawn"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": -1,
+        "tags": [
+            "giant"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Vegepygmy Worker"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 2,
+        "tags": [
+            "fungus"
+        ]
+    }
+}

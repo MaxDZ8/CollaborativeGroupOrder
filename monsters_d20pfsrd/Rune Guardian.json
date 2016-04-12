@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Rune Guardian"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 6
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dullahan"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2
+    }
+}

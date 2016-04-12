@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Oakman"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 1
+    }
+}

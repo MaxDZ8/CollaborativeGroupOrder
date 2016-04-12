@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Jungle Grick"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 4
+    }
+}

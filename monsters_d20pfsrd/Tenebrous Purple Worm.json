@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Tenebrous Purple Worm"
+        ],
+        "cr": "15",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "outsider",
+        "init": -2,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

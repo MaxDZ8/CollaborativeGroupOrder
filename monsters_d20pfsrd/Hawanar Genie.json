@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Hawanar Genie"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "air",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

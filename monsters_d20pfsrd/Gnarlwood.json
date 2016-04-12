@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gnarlwood"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": 4
+    }
+}

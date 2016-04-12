@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Danse Macabre"
+        ],
+        "cr": "14",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 11,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

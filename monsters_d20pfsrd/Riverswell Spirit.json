@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Riverswell Spirit"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 1,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

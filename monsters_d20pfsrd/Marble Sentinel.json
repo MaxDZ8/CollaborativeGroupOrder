@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Marble Sentinel"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "construct",
+        "init": 7
+    }
+}

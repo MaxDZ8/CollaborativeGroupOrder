@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Brimorak"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

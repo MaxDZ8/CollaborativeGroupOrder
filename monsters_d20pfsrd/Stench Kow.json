@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Stench Kow"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 0,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

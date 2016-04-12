@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Nightmare Mount"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 7,
+        "example": "Unhallowed bloody skeletal champion nightmare",
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

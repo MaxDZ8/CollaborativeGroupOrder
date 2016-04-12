@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Elemental Water Dragon"
+        ],
+        "cr": "18",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Ember Weaver"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "psychopomp",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Psychopomp"
+            }
+        ]
+    }
+}

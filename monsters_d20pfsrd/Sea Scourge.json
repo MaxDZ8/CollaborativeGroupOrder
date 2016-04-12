@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Sea Scourge"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

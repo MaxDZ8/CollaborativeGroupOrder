@@ -1,0 +1,29 @@
+{
+    "head": {
+        "name": [
+            "Psionic Elemental"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "psionic"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "greater"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
+        ]
+    }
+}

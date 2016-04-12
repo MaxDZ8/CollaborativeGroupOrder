@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Tidepool Dragon"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

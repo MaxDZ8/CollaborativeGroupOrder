@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Dungeon Dragon",
+			"Draco Carcer Dominus",
+            "Gargax The Mighty",
+            "Master Of The Dungeon Dragons"
+        ],
+        "cr": "17",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
+        ]
+    }
+}

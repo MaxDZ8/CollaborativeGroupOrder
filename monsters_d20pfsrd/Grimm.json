@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Grimm"
+        ],
+        "cr": "13",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "fey",
+        "init": 8
+    }
+}

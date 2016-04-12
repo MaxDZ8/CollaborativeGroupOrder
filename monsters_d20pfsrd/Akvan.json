@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Akvan"
+        ],
+        "cr": "20",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Gargantuan",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "div",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

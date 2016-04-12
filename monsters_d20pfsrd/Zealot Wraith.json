@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Zealot Wraith"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

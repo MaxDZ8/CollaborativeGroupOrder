@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Scylla"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 11,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Demonic Deadfall Scorpion"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "augmented vermin"
+        ]
+    }
+}

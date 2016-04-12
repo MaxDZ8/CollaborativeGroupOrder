@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gug Savant"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 1
+    }
+}

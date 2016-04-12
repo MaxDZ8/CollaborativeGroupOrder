@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Blood Pudding"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "ooze",
+        "init": 0
+    }
+}

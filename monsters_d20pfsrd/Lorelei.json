@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Lorelei"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

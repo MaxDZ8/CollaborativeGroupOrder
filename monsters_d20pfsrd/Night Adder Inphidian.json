@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Night Adder Inphidian"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 6,
+        "tags": [
+            "reptilian"
+        ]
+    }
+}

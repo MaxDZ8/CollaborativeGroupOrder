@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Invisible Stalker"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "air",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

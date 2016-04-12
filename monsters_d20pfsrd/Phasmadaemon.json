@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Phasmadaemon"
+        ],
+        "cr": "17",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

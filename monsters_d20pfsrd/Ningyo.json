@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ningyo"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "monstrous humanoid",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

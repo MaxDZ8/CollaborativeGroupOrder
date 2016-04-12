@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Guardian Of The Tower"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 1,
+        "example": "Variant advanced girallon flesh golem"
+    }
+}

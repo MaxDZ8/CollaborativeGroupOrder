@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Nightwalker"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "undead",
+        "init": 2,
+        "tags": [
+            "extraplanar",
+            "nightshade"
+        ]
+    }
+}

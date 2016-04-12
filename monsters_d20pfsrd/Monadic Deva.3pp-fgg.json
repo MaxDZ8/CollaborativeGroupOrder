@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Monadic Deva\n"
+            "Monadic Deva"
         ],
         "cr": "12",
         "alignment": [
@@ -12,8 +12,14 @@
         "init": 7,
         "tags": [
             "angel",
-            " extraplanar",
-            " good"
+            "extraplanar",
+            "good"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

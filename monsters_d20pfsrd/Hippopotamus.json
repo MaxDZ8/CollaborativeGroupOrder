@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Hippopotamus"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 4
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Thorny Advanced Tyrannosaurus"
+        ],
+        "cr": "17",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "plant",
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

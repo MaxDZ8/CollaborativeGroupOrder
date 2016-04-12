@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Mantis"
+        ],
+        "cr": "14",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "vermin",
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Deadly"
+            }
+        ]
+    }
+}

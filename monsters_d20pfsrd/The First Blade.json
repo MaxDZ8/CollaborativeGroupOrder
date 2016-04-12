@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "The First Blade"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "herald"
+        ]
+    }
+}

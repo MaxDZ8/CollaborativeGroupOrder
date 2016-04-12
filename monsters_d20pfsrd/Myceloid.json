@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Myceloid"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 4
+    }
+}

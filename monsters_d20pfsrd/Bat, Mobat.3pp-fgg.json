@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Mobat"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Bat"
+            },
+			{
+				"type": "publisher",
+				"value": "fgg"
+			}
+		]
+    }
+}

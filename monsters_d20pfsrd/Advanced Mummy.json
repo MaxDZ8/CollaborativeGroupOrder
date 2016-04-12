@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Advanced Mummy"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "example": "Male elite advanced HD mummy"
+    }
+}

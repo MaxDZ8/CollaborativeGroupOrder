@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Sovereign Dragon"
+        ],
+        "cr": "23",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
+        ]
+    }
+}

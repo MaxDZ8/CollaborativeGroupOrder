@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Poisonous Frog Swarm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "animal",
+        "init": 1,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Cloud Giant"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NG",
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "giant"
+        ]
+    }
+}

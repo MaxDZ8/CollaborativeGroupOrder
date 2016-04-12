@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Urdefhan"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "native"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Advanced Hangman Tree"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": 5
+    }
+}

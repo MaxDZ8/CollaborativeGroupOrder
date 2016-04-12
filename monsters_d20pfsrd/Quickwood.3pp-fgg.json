@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Quickwood"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

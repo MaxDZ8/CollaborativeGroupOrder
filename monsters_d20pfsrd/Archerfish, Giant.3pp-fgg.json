@@ -1,0 +1,27 @@
+{
+    "head": {
+        "name": [
+            "Archerfish"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "animal",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "giant"
+            },
+			{
+				"type": "publisher",
+				"value": "fgg"
+			}
+        ]
+    }
+}

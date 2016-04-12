@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mindslaver Mold"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 7
+    }
+}

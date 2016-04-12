@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Machine Soldier"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": 2,
+        "example": "Animated object fighter 1",
+        "tags": [
+            "robot"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Robot"
+            }
+        ]
+    }
+}

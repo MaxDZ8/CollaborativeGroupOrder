@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Iron Golem Archer"
+        ],
+        "cr": "13",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": -1,
+        "example": "Variant iron golem"
+    }
+}

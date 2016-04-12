@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dark Naga"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5
+    }
+}

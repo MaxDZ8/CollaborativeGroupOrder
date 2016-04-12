@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Tick"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 0
+    }
+}

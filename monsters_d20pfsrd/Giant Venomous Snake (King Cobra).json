@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Giant Venomous Snake",
+            "King Cobra"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 6,
+        "example": "Advanced giant venomous snake"
+    }
+}

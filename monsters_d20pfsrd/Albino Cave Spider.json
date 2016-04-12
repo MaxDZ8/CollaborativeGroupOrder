@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Albino Cave Spider"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "vermin",
+        "init": 4
+    }
+}

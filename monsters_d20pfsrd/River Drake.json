@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "River Drake"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 7,
+        "tags": [
+            "aquatic",
+            "water"
+        ]
+    }
+}

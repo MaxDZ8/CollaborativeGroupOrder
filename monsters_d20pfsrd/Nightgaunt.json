@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Nightgaunt"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 6,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

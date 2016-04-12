@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Witchwyrd"
+        ],
+        "cr": "6",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 6
+    }
+}

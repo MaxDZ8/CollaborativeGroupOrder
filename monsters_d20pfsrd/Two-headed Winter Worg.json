@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Two-headed Winter Worg"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 5,
+        "example": "Two-headed winter wolf",
+        "tags": [
+            "cold"
+        ]
+    }
+}

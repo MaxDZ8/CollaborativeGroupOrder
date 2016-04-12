@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Stone Troglodyte"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": -1,
+        "tags": [
+            "earth",
+            "reptillian"
+        ]
+    }
+}

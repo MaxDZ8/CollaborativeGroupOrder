@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Advanced Giant Scorpion"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 0
+    }
+}

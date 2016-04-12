@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Tataka"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "native",
+            "rakshasa",
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Rakshasa"
+            }
+        ]
+    }
+}

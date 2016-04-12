@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Bloody Skeleton"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6
+    }
+}

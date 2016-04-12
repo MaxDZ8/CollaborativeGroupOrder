@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Snow Giant"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 0,
+        "tags": [
+            "giant"
+        ]
+    }
+}

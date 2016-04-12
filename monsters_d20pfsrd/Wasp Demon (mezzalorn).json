@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Wasp Demon",
+            "Mezzalorn"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

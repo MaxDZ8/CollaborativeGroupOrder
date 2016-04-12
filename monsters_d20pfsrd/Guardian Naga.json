@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Guardian Naga"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 6
+    }
+}

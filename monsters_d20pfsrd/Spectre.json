@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Spectre"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ogre Spider"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "vermin",
+        "init": 2
+    }
+}

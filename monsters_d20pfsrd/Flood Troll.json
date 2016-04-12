@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Flood Troll"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 8,
+        "tags": [
+            "giant"
+        ]
+    }
+}

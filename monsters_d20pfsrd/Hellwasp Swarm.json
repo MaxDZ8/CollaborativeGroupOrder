@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Hellwasp Swarm"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Diminutive",
+        "type": "vermin",
+        "init": 10,
+        "tags": [
+            "extraplanar",
+            "swarm"
+        ]
+    }
+}

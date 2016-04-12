@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Brownie"
+        ],
+        "cr": "1",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 8,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

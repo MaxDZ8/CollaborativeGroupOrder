@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Green Guardian"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 2,
+        "tags": [
+            "earth"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Plant-imbued Ape"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 2
+    }
+}

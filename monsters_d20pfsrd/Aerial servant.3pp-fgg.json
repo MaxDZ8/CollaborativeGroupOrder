@@ -12,8 +12,14 @@
         "init": 10,
         "tags": [
             "air",
-            " elemental",
-            " extraplanar"
+            "elemental",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
         ]
     }
 }

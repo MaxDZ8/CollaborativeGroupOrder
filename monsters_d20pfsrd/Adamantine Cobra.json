@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Adamantine Cobra"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "construct",
+        "init": 2
+    }
+}

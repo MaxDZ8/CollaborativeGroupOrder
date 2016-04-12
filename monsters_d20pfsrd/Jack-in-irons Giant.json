@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Jack-in-irons Giant"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "giant"
+        ]
+    }
+}

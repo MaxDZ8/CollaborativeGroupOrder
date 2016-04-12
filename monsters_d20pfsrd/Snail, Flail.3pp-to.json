@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Snail"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": -1,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Flail"
+            },
+            {
+                "type": "publisher",
+                "value": "to"
+            }
+        ]
+    }
+}

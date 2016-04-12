@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ettercap"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 7
+    }
+}

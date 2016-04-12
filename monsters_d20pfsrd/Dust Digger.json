@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dust Digger"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 4
+    }
+}

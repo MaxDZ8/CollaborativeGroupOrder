@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Shadow"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

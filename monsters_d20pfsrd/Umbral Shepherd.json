@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Umbral Shepherd"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Skin Stealer"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 3
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Tatzlwyrm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 2
+    }
+}

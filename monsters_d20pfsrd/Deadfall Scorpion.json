@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Deadfall Scorpion"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "vermin",
+        "init": 2
+    }
+}

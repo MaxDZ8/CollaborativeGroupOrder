@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Salt Drake"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "earth"
+        ]
+    }
+}

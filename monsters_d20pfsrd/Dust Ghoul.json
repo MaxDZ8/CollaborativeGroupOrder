@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Dust Ghoul"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "air",
+            "earth",
+            "extraplanar"
+        ]
+    }
+}

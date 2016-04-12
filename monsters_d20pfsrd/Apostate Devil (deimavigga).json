@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Apostate Devil",
+            "Deimavigga"
+        ],
+        "cr": "17",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 14,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

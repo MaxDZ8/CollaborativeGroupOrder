@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Forgefiend",
+            "Scanderig"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "earth",
+            "extraplanar"
+        ]
+    }
+}

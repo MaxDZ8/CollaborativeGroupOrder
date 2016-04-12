@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Scorpion Demon",
+            "Gharros"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

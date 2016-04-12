@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Totenmaske"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 10,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

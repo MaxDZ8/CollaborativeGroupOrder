@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Foo Dog"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "augmented",
+            "good",
+            "extraplanar"
+        ]
+    }
+}

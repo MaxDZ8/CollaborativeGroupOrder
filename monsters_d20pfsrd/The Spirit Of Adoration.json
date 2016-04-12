@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "The Spirit Of Adoration"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "extraplanar",
+            "good",
+            "herald",
+            "shapechanger"
+        ]
+    }
+}

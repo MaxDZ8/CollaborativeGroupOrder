@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Flayer Devil",
+            "Marzach"
+        ],
+        "cr": "11",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

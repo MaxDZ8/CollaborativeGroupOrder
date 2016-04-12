@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Bonesucker"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5
+    }
+}

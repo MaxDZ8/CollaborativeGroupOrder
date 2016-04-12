@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Velvet Ant Swarm"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "vermin",
+        "init": 3,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Nemhain"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 12,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

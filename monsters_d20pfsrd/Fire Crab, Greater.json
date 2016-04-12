@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Fire Crab"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 0,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Greater"
+            }
+        ]
+    }
+}

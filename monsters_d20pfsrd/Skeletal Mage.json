@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Skeletal Mage"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "example": "Human skeletal mage necromancer 3"
+    }
+}

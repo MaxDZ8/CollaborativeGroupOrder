@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Shahzada",
+            "Noble Marid"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "extraplanar",
+            "water"
+        ]
+    }
+}

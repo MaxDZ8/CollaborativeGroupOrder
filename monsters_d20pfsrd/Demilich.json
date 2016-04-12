@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Demilich"
+        ],
+        "cr": "14",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "undead",
+        "init": 7
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Pit Fiend"
+        ],
+        "cr": "20",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 13,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

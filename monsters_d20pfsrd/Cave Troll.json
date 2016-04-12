@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Cave Troll"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 6,
+        "tags": [
+            "giant"
+        ]
+    }
+}

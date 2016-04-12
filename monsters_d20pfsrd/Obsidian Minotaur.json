@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Obsidian Minotaur"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 0
+    }
+}

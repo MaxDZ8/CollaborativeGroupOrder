@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Widow Creeper"
+        ],
+        "cr": "13",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 4
+    }
+}

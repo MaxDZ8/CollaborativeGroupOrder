@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ethereal Rat"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 1
+    }
+}

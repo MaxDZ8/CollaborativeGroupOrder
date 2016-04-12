@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Undine"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 2,
+        "example": "Undine cleric 1",
+        "tags": [
+            "native"
+        ]
+    }
+}

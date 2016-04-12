@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Popobala"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 10,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

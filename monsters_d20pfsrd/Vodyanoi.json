@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Vodyanoi"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 8,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

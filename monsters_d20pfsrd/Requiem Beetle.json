@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Requiem Beetle"
+        ],
+        "cr": "18",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "vermin",
+        "init": 1
+    }
+}

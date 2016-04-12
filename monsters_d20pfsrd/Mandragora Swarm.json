@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mandragora Swarm"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Fine",
+        "type": "plant",
+        "init": 13,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

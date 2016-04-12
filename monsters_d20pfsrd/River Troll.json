@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "River Troll"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 2,
+        "tags": [
+            "amphibious",
+            "giant"
+        ]
+    }
+}

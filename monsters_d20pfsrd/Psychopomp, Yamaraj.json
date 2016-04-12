@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Yamaraj"
+        ],
+        "cr": "20",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 16,
+        "tags": [
+            "extraplanar",
+            "psychopomp"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Psychopomp"
+            }
+        ]
+    }
+}

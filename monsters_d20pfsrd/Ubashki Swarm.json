@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ubashki Swarm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "undead",
+        "init": 3,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

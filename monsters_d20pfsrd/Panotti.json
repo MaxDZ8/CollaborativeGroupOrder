@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Panotti"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 1
+    }
+}

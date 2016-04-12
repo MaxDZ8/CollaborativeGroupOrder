@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Rorkoun"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

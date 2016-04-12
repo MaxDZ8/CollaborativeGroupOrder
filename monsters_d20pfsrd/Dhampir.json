@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Dhampir"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 3,
+        "example": "Dhampir fighter 1",
+        "race": "dhampir"
+    }
+}

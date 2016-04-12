@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Silid"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 2,
+        "example": "Male silid warrior 1",
+        "tags": [
+            "goblinoid"
+        ]
+    }
+}

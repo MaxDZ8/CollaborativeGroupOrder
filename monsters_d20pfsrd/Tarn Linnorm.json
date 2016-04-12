@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Tarn Linnorm"
+        ],
+        "cr": "20",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 12,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Great White Whale"
+        ],
+        "cr": "14",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "animal",
+        "init": -2,
+        "extraNotes": [
+            {
+                "type": "publisher"
+            }
+        ]
+    }
+}
