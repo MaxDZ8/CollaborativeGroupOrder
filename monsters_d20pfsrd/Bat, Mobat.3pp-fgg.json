@@ -15,7 +15,11 @@
             {
                 "type": "group",
                 "value": "Bat"
-            }
+            },
+			{
+				"type": "publisher",
+				"value": "fgg"
+			}
 		]
     }
 }

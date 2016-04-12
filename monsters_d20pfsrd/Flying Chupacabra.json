@@ -9,6 +9,12 @@
         ],
         "size": "Small",
         "type": "magical beast",
-        "init": 7
+        "init": 7,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "flying"
+            }
+		]
     }
 }

@@ -17,7 +17,11 @@
             {
                 "type": "ageCategory",
                 "value": "juvenile"
-            }
+            },
+			{
+				"type": "extraInfo",
+				"value": "(fan variant)"
+			}
         ]
     }
 }

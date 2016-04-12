@@ -17,6 +17,10 @@
             {
                 "type": "ageCategory",
                 "value": "juvenile"
+            },
+            {
+                "type": "extraInfo",
+                "value": "Unique (AP:FSG)"
             }
         ]
     }

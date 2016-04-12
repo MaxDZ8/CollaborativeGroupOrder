@@ -1,7 +1,8 @@
 {
     "head": {
         "name": [
-            "Cloud Dragon"
+            "Cloud Dragon",
+			"Draco Nimbus Caelo"
         ],
         "cr": "5",
         "alignment": [
@@ -17,7 +18,10 @@
             {
                 "type": "ageCategory",
                 "value": "very young"
-            }
+            },
+			{
+				"type": "publisher"
+			}
         ]
     }
 }
