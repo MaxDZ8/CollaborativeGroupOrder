@@ -12,16 +12,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.support.v7.widget.Toolbar;
 
 import com.massimodz8.collaborativegrouporder.HealthBar;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
@@ -37,6 +35,9 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         setContentView(R.layout.activity_free_roaming);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        SearchView swidget = (SearchView)findViewById(R.id.fra_searchMobs);
+        swidget.setIconifiedByDefault(false);
+        swidget.setQueryHint(getString(R.string.fra_searchable_hint));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -83,25 +84,6 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         if(game != null) game.end();
         if(mustUnbind) unbindService(this);
         super.onDestroy();
-    }
-
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.free_roaming_activity, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.fra_menu_addMonster: {
-                startActivityForResult(new Intent(this, SpawnMonsterActivity.class), REQUEST_ADD_MONSTER);
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

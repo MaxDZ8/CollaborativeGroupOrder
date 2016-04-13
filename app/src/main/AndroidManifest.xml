@@ -124,15 +124,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".master.GatheringActivity" />
         </activity>
-
-        <activity
-            android:name=".master.SpawnMonsterActivity"
-            android:label="@string/sma_title"
-            android:parentActivityName=".master.FreeRoamingActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".master.FreeRoamingActivity" />
-        </activity>
     </application>
 
 </manifest>
