@@ -79,7 +79,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
             MaxUtils.beginDelayedTransition(this);
             TextView ohno = (TextView) findViewById(R.id.fra_instructions);
-            ohno.setText(R.string.fra_failedBind);
+            ohno.setText(R.string.master_cannotBindAdventuringService);
             return;
         }
         mustUnbind = true;

@@ -1,13 +1,10 @@
 package com.massimodz8.collaborativegrouporder.master;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
 
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
-import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.util.ArrayList;
@@ -30,19 +27,26 @@ public class SessionHelper {
     public final PersistentDataUtils.SessionStructs stats;
     public final ArrayList<AbsLiveActor> existByDef;
 
-    SessionHelper(StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs stats, ArrayList<AbsLiveActor> existByDef) {
+    SessionHelper(StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs stats, ArrayList<AbsLiveActor> existByDef, MonsterData.MonsterBook monsters) {
         this.party = party;
         this.stats = stats;
         this.existByDef = existByDef;
+        this.monsters = monsters;
     }
 
     PlayState getSession() {
-        if(session == null) session = new PlayState();
+        if(session == null) session = new PlayState(monsters);
         return session;
     }
 
     /// Activity interface so I can avoid dealing with the service and all.
     public class PlayState {
+        public final MonsterData.MonsterBook monsters;
+
+        public PlayState(MonsterData.MonsterBook monsters) {
+            this.monsters = monsters;
+        }
+
         void begin(@NonNull Runnable onComplete) {
             onComplete.run();
         }
@@ -64,6 +68,7 @@ public class SessionHelper {
     }
 
     private PlayState session;
+    private final MonsterData.MonsterBook monsters;
     private final ArrayList<AbsLiveActor> temporaries = new ArrayList<>();
     private final HashSet<AbsLiveActor> fighters = new HashSet<>();
     private Pumper netPump;

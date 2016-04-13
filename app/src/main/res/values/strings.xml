@@ -16,6 +16,7 @@
     <string name="master_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
     <string name="master_exitConfirmedDlgAction">Interrupt operations</string>
     <string name="master_cannotBindPartyService">Failed to get an handle to the party creation service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
+    <string name="master_cannotBindAdventuringService">Failed to get an handle to the party adventuring service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
 
     <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
     <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
@@ -146,15 +147,11 @@
     <string name="sfga_explicitConnectionInstructions">Cannot find your party? Try an explicit connection!</string>
     <string name="sfga_confirmInstructions">You will advance to next step automatically as soon as the party is formed.</string>
     <string name="selectFormingGroupActivity_startExplicitConnection">Explicit connection</string>
-    <string name="couldNotBindInternalService">Could not bind to the cross-activity data sharing service. This is required for everything else to work.</string>
     <string name="giveUpAndGoBack">Give up and go back</string>
     <string name="initializing">Initializing…</string>
     <string name="selectFormingGroup_networkDiscoveryFail">Network discovery failed to start. You can still join a group by attempting an explicit connection.</string>
     <string name="selectFormingGroupActivity_lostConnection">Lost connection to group \"%1$s\", reason given: %2$s.</string>
     <string name="lostCrossActivitySharingService">Lost handle over the cross-activity data sharing service. This is required to work.</string>
-    <string name="mainMenuActivity_couldNotBindInternalService">Could not bind to the cross-activity data sharing service. This is required for everything else to work so the app will now quit.</string>
-    <string name="mainMenuActivity_couldNotBindExit">Exit app</string>
-    <string name="mainMenuActivity_lostCrossActivitySharingService">Lost handle over the cross-activity data sharing service. Nothing else will work without it so the app will now close.</string>
     <string name="formingNewPartyActivity_partyName">Party name:</string>
 
     <string name="eca_title">Initiate explicit connection</string>
@@ -182,6 +179,8 @@
     <string name="mma_noDigestDlgMsg">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
     <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
     <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
+    <string name="mma_tooManyMonsters">Impossible, monster data exceeding maximum size.</string>
+    <string name="mma_failedAssetRead">Impossible, failed asset read.</string>
 
     <string name="npdsa_badParty_title">Bad party name</string>
     <string name="npdsa_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
@@ -402,7 +401,6 @@
 
     <string name="fra_title">Adventuring</string>
     <string name="fra_instructions">Select everyone taking part in next battle.</string>
-    <string name="fra_failedBind">Could not bind to internal playing service. This is a very serious error.\nIt might go away retrying or not.</string>
     <string name="fra_actorType_playingCharacter">PC</string>
     <string name="fra_actorType_monster">MOB</string>
     <string name="fra_actorType_npc">NPC</string>
@@ -414,5 +412,15 @@
     <string name="fra_searchable_hint">Search mobs to battle</string>
 
     <string name="sma_title">Spawn monsters</string>
+    <string name="sma_searchingMessage">Searching…</string>
+    <string name="sma_showMonsterInfo">Show monster book information</string>
+    <string name="sma_short_showMonsterInfo">Monster info</string>
+    <string name="sma_dlg_monsterBookInfo_title">Monster book information</string>
+    <string name="sma_dlg_smbi_title">Monster book informations</string>
+    <string name="sma_dlg_smbi_created">Created:</string>
+    <string name="sma_dlg_smbi_entries">Entries:</string>
+    <string name="sma_dlg_smbi_monsterCount">Monsters total:</string>
+    <string name="sma_challangeRatio_integral">"CR %1$d"</string>
+    <string name="sma_challangeRatio_fraction">CR %1$d/%2$d</string>
 
 </resources>

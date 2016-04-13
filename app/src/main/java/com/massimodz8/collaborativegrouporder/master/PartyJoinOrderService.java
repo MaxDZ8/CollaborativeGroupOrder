@@ -11,6 +11,7 @@ import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
@@ -30,15 +31,15 @@ import java.util.ArrayList;
  */
 public class PartyJoinOrderService extends PublishAcceptService {
     /* Section 3: identifying joining devices and binding characters. ------------------------------
-    This goes in parallel with landing socket and publish management so you're better set this up ASAP.
-    As usual, it can be initialized only once and then the service will have to be destroyed.
-    */
-    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs live, @NonNull JoinVerificator keyMaster) {
+        This goes in parallel with landing socket and publish management so you're better set this up ASAP.
+        As usual, it can be initialized only once and then the service will have to be destroyed.
+        */
+    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster);
         ArrayList<AbsLiveActor> byDef = new ArrayList<>();
         for(StartData.ActorDefinition el : party.party) byDef.add(makeLiveActor(el, true));
         for(StartData.ActorDefinition el : party.npcs) byDef.add(makeLiveActor(el, false));
-        sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef);
+        sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef, monsterBook);
     }
 
     public void shutdownPartyManagement() {
@@ -89,7 +90,6 @@ public class PartyJoinOrderService extends PublishAcceptService {
         assignmentHelper.onBoundPc = listener;
     }
 
-    public PcAssignmentHelper getAssignmentHelper() { return assignmentHelper; }
     public SessionHelper.PlayState getPlaySession() { return sessionHelper.getSession(); }
 
     private PcAssignmentHelper assignmentHelper;
