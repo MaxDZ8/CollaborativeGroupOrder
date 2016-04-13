@@ -9,27 +9,4 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.massimodz8.collaborativegrouporder.master.SpawnMonsterActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/generic_initializing"
-        android:id="@+id/sma_status"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_toRightOf="@+id/sma_searching"
-        android:layout_toStartOf="@id/sma_searching"
-        android:gravity="right" />
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/sma_searching"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginLeft="4dp" />
-
 </RelativeLayout>

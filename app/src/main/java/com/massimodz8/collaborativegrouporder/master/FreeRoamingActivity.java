@@ -1,7 +1,9 @@
 package com.massimodz8.collaborativegrouporder.master;
 
 
+import android.app.SearchManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -38,6 +40,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         SearchView swidget = (SearchView)findViewById(R.id.fra_searchMobs);
         swidget.setIconifiedByDefault(false);
         swidget.setQueryHint(getString(R.string.fra_searchable_hint));
+
+        final SearchManager sm = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        final ComponentName compName = new ComponentName(this, SpawnMonsterActivity.class);
+        swidget.setSearchableInfo(sm.getSearchableInfo(compName));
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
