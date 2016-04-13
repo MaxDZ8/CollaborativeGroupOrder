@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 
 
@@ -94,6 +96,29 @@ public abstract class MaxUtils {
     public static void beginDelayedTransition(Activity ctx) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             TransitionManager.beginDelayedTransition((ViewGroup) ctx.findViewById(R.id.activityRoot));
+        }
+    }
+
+    public static class TotalLoader {
+        final int validBytes;
+        final byte[] fullData;
+        public TotalLoader(@NonNull InputStream src, @Nullable byte[] buffer) throws IOException {
+            final int increment = 4 * 1024;
+            int loaded = 0;
+            if(buffer == null) buffer = new byte[increment];
+            int chunks = 0;
+            while(true) {
+                int got = src.read(buffer, loaded, buffer.length - loaded);
+                if(got == -1) break;
+                loaded += got;
+                if(loaded == buffer.length) {
+                    byte[] realloc = new byte[buffer.length + (increment << (chunks / 10))];
+                    System.arraycopy(buffer, 0, realloc, 0, buffer.length);
+                    buffer = realloc;
+                }
+            }
+            validBytes = loaded;
+            fullData = buffer;
         }
     }
 }

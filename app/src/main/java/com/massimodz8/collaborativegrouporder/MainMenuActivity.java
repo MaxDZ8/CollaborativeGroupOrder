@@ -5,6 +5,8 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,8 +16,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.view.View;
 
+import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
@@ -25,11 +29,14 @@ import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.ServerSocket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -60,7 +67,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     .show();
             return;
         }
-
         new AsyncLoadAll().execute();
     }
 
@@ -175,12 +181,16 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     private class AsyncLoadAll extends AsyncTask<Void, Void, Exception> {
         StartData.PartyOwnerData owned;
         StartData.PartyClientData joined;
+        MonsterData.MonsterBook monsterBook;
+
+        MonsterData.MonsterBook knownMobs;
         final PersistentDataUtils loader = new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
             protected String getString(int resource) {
                 return MainMenuActivity.this.getString(resource);
             }
         };
+        final AssetManager rawRes = MainMenuActivity.this.getAssets();
 
         @Override
         protected Exception doInBackground(Void... params) {
@@ -194,8 +204,20 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             if(srck.exists()) loader.mergeExistingGroupData(pullk, srck);
             else pullk.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
 
+            MonsterData.MonsterBook pullMon = new MonsterData.MonsterBook();
+            try {
+                final InputStream srcMon = rawRes.open("monsterData.bin");
+                final MaxUtils.TotalLoader loaded = new MaxUtils.TotalLoader(srcMon, new byte[128 * 1024]);
+                srcMon.close();
+                pullMon.mergeFrom(CodedInputByteBufferNano.newInstance(loaded.fullData, 0, loaded.validBytes));
+            } catch (IOException e) {
+                // Nightly impossible!
+                return e;
+            }
+
             owned = pullo;
             joined = pullk;
+            monsterBook = pullMon;
 
             return null;
         }
@@ -226,6 +248,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                         .show();
                 return;
             }
+            monsters = monsterBook;
             Collections.addAll(groupDefs, owned.everything);
             Collections.addAll(groupKeys, joined.everything);
             MaxUtils.setEnabled(MainMenuActivity.this, true,
@@ -356,7 +379,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             PartyJoinOrderService real =  binder.getConcreteService();
             StartData.PartyOwnerData.Group owned = (StartData.PartyOwnerData.Group) activeParty;
             JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
-            real.initializePartyManagement(owned, activeStats, keyMaster);
+            real.initializePartyManagement(owned, activeStats, keyMaster, monsters);
             real.pumpClients(activeConnections);
             // TODO: reuse landing if there!
             if(activeLanding != null) {
@@ -377,7 +400,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             activeConnections = null;
             activeParty = null;
             activeStats = null;
-
             startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_NEW_SESSION);
             unbindService(this);
         }
@@ -416,6 +438,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     // some things easier as we can compare by reference.
     private ArrayList<StartData.PartyOwnerData.Group> groupDefs = new ArrayList<>();
     private ArrayList<StartData.PartyClientData.Group> groupKeys = new ArrayList<>();
+    private MonsterData.MonsterBook monsters;
 
     interface ErrorFeedbackFunc {
         void feedback(int errors);
