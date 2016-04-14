@@ -1,10 +1,10 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
@@ -28,16 +28,17 @@ import java.util.ArrayList;
  *
  */
 public abstract class PreSeparatorDecorator extends RecyclerView.ItemDecoration {
-    public PreSeparatorDecorator(RecyclerView container, AppCompatActivity ctx, int thickness) {
+    public PreSeparatorDecorator(RecyclerView container, Context ctx, int thickness) {
         this.container = container;
         int color = new ResourcesCompat().getColor(ctx.getResources(), R.color.listSeparator, ctx.getTheme());
         this.thickness = thickness;
         paint = new Paint();
         paint.setColor(color);
     }
-    public PreSeparatorDecorator(RecyclerView container, AppCompatActivity ctx) {
+    public PreSeparatorDecorator(RecyclerView container, Context ctx) {
         this(container, ctx, Math.round(ctx.getResources().getDimension(R.dimen.list_separator_thickness)));
     }
+
     protected abstract boolean isEligible(int position);
 
     final RecyclerView container;
@@ -74,6 +75,8 @@ public abstract class PreSeparatorDecorator extends RecyclerView.ItemDecoration 
             rect.top -= thickness;
             rect.left -= parentRect.left;
             rect.right = rect.left + width;
+            rect.top += parent.getScrollY();
+            rect.bottom += parent.getScrollY();
             c.drawRect(rect, paint);
         }
         drawn = true;
