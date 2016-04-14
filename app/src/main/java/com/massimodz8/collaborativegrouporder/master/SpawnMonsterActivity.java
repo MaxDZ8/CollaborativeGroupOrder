@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +21,10 @@ import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.IdentityHashMap;
 import java.util.Locale;
@@ -60,11 +64,22 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.sma_menu_showMonsterBookInfo: {
+                final ArrayList<MonsterData.Monster> flat = new ArrayList<>();
+                final ArrayList<String[]> names = new ArrayList<>();
+                for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+                    final MonsterData.Monster main = entry.main;
+                    flat.add(main);
+                    names.add(main.header.name);
+                    for (MonsterData.Monster modi : entry.variations) {
+                        flat.add(modi);
+                        names.add(completeVariationNames(main.header.name, modi.header.name));
+                    }
+                }
                 final android.support.v7.app.AlertDialog dlg = new android.support.v7.app.AlertDialog.Builder(this)
                         .setView(R.layout.dialog_monster_book_info)
                         .show();
                 final RecyclerView rv = (RecyclerView) dlg.findViewById(R.id.sma_dlg_smbi_list);
-                final CompleteListAdapter la = new CompleteListAdapter(monsters, rv);
+                final CompleteListAdapter la = new CompleteListAdapter(flat, names, rv);
                 final TextView created = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_created);
                 final TextView entries = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_entries);
                 final TextView count = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_monstersCount);
@@ -133,10 +148,12 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     }
 
     private class CompleteListAdapter extends RecyclerView.Adapter<MonsterVH> {
-        final MonsterData.MonsterBook monsters;
-        public CompleteListAdapter(MonsterData.MonsterBook monsters, RecyclerView rv) {
+        final ArrayList<MonsterData.Monster> monsters;
+        final ArrayList<String[]> names;
+        public CompleteListAdapter(ArrayList<MonsterData.Monster> flat, ArrayList<String[]> names, RecyclerView rv) {
             setHasStableIds(true);
-            this.monsters = monsters;
+            monsters = flat;
+            this.names = names;
             rv.setAdapter(this);
             rv.addItemDecoration(new PreSeparatorDecorator(rv, SpawnMonsterActivity.this) {
                 @Override
@@ -153,34 +170,11 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
 
         @Override
         public void onBindViewHolder(MonsterVH holder, int position) {
-            // As it stands now, variations are identified when the name is the same so...
-            for(int loop = 0; loop < monsters.entries.length; loop++) {
-                final MonsterData.Monster.Header mh = monsters.entries[loop].main.header;
-                if(position == 0) {
-                    holder.bindData(mh.name, mh);
-                    break;
-                }
-                position--;
-                for(int inner = 0; inner < monsters.entries[loop].variations.length; inner++) {
-                    if(position == 0) {
-                        final MonsterData.Monster.Header variation = monsters.entries[loop].variations[inner].header;
-                        holder.bindData(mh.name, variation);
-
-                    }
-                    position--;
-                }
-            }
+            holder.bindData(names.get(position), monsters.get(position).header);
         }
 
         @Override
-        public int getItemCount() {
-            int count = 0;
-            for(int loop = 0; loop < monsters.entries.length; loop++) {
-                count++;
-                count += monsters.entries[loop].variations.length;
-            }
-            return count;
-        }
+        public int getItemCount() { return monsters.size(); }
 
         @Override
         public long getItemId(int position) { return position; }
@@ -190,6 +184,45 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     private MenuItem showBookInfo;
     private MonsterData.MonsterBook monsters;
 
+    private static boolean anyStarts(String[] arr, String prefix) {
+        for (String s : arr) {
+            if(s.toLowerCase().startsWith(prefix)) return true;
+        }
+        return false;
+    }
+
+    private static boolean anyContains(String[] arr, String prefix) {
+        for (String s : arr) {
+            if(s.toLowerCase().contains(prefix)) return true;
+        }
+        return false;
+    }
+
+    private static String[] completeVariationNames(String[] main, String[] modi) {
+        if(modi.length == 0) return main;
+        String[] all = new String[main.length + modi.length];
+        System.arraycopy(main, 0, all, 0, main.length);
+        System.arraycopy(modi, 0, all, main.length, modi.length);
+        return all;
+    }
+
+    private void showSearchResults(ArrayList<MonsterData.Monster> mobs, ArrayList<String[]> names) {
+        MaxUtils.beginDelayedTransition(this);
+        final RecyclerView list = (RecyclerView) findViewById(R.id.sma_matchedList);
+        list.setAdapter(new CompleteListAdapter(mobs, names, list));
+        list.addItemDecoration(new PreSeparatorDecorator(list, this) {
+            @Override
+            protected boolean isEligible(int position) {
+                return position != 0;
+            }
+        });
+        list.setVisibility(View.VISIBLE);
+        MaxUtils.setVisibility(this, View.GONE, R.id.sma_progress);
+        final TextView status = (TextView) findViewById(R.id.sma_status);
+        if(mobs.size() == 1) status.setText(R.string.sma_status_matchedSingleMonster);
+        else status.setText(String.format(getString(R.string.sma_status_matchedMultipleMonsters), mobs.size()));
+    }
+
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -198,6 +231,43 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         monsters = serv.getPlaySession().monsters;
         showBookInfo.setVisible(true);
         unbindService(this);
+
+        new AsyncTask<Void, Void, Void>() {
+            final ArrayList<MonsterData.Monster> mobs = new ArrayList<>();
+            final ArrayList<String[]> names = new ArrayList<>();
+            final String lcq = query.toLowerCase();
+            @Override
+            protected Void doInBackground(Void... params) {
+                for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+                    if(anyStarts(entry.main.header.name, lcq)) {
+                        mobs.add(entry.main);
+                        names.add(entry.main.header.name);
+                    }
+                    for (MonsterData.Monster variation : entry.variations) {
+                        if(anyStarts(variation.header.name, lcq)) {
+                            mobs.add(variation);
+                            names.add(completeVariationNames(entry.main.header.name, variation.header.name));
+                        }
+                    }
+                }
+                for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+                    if(anyContains(entry.main.header.name, lcq)) {
+                        mobs.add(entry.main);
+                        names.add(entry.main.header.name);
+                    }
+                    for (MonsterData.Monster variation : entry.variations) {
+                        if(anyContains(variation.header.name, lcq)) {
+                            mobs.add(variation);
+                            names.add(completeVariationNames(entry.main.header.name, variation.header.name));
+                        }
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) { showSearchResults(mobs, names); }
+        }.execute();
     }
 
     @Override
