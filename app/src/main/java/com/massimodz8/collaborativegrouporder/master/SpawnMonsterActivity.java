@@ -51,7 +51,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
             findViewById(R.id.sma_progress).setVisibility(View.GONE);
             TextView ohno = (TextView) findViewById(R.id.sma_status);
             ohno.setText(R.string.master_cannotBindAdventuringService);
-    }
+        }
 
         return super.onCreateOptionsMenu(menu);
     }
