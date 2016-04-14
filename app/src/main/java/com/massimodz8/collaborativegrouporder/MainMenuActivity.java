@@ -251,10 +251,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             monsters = monsterBook;
             Collections.addAll(groupDefs, owned.everything);
             Collections.addAll(groupKeys, joined.everything);
+            MaxUtils.beginDelayedTransition(MainMenuActivity.this);
             MaxUtils.setEnabled(MainMenuActivity.this, true,
                     R.id.mma_newParty,
                     R.id.mma_joinParty);
             findViewById(R.id.mma_goAdventuring).setEnabled(groupDefs.size() + groupKeys.size() > 0);
+            MaxUtils.setVisibility(MainMenuActivity.this, View.GONE, R.id.mma_progress, R.id.mma_waitMessage);
             onSuccessfullyRefreshed();
         }
         protected void onSuccessfullyRefreshed() { }
