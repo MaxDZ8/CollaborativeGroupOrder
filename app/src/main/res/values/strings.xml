@@ -430,5 +430,12 @@
     <string name="vhMLE_challangeRatio_fraction">CR %1$d/%2$d</string>
     <string name="vhMLE_initiative">Initiative:</string>
     <string name="vhMLE_tappedFeedback">Tap to battle</string>
+    <string name="vhMLE_spawnCountFeedback">Spawncount to battle: %1$s</string>
+    <string name="vhMLE_badActionClimbToken">!! Unknown ACTION_CLIMB token !!</string>
+    <string name="vhMLE_badActionClimbParamArray">!! ACTION_CLIMB param array bad size !!</string>
+    <string name="vhMLE_actionClimb_tree">tree</string>
+    <string name="vhMLE_badConditionalInitiative">!! Unknown conditional initiative action !!</string>
+    <string name="vhMLE_actionClimbing">climbing</string>
+    <string name="vhMLE_actionClimbingMessage">%1$d if %2$s %3$s</string>
 
 </resources>

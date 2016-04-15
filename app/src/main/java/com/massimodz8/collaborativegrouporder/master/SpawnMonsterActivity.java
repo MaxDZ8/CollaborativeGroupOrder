@@ -80,7 +80,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                         .setView(R.layout.dialog_monster_book_info)
                         .show();
                 final RecyclerView rv = (RecyclerView) dlg.findViewById(R.id.sma_dlg_smbi_list);
-                final CompleteListAdapter la = new CompleteListAdapter(flat, names, rv);
+                final CompleteListAdapter la = new CompleteListAdapter(flat, names, rv, MonsterVH.MODE_MINIMAL);
                 final TextView created = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_created);
                 final TextView entries = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_entries);
                 final TextView count = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_monstersCount);
@@ -95,10 +95,13 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     }
 
     private class CompleteListAdapter extends RecyclerView.Adapter<MonsterVH> {
+        final int visMode;
+
         final ArrayList<MonsterData.Monster> monsters;
         final ArrayList<String[]> names;
-        public CompleteListAdapter(ArrayList<MonsterData.Monster> flat, ArrayList<String[]> names, RecyclerView rv) {
+        public CompleteListAdapter(ArrayList<MonsterData.Monster> flat, ArrayList<String[]> names, RecyclerView rv, int visMode) {
             setHasStableIds(true);
+            this.visMode = visMode;
             monsters = flat;
             this.names = names;
             rv.setAdapter(this);
@@ -112,12 +115,14 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
 
         @Override
         public MonsterVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new MonsterVH(getLayoutInflater(), parent, SpawnMonsterActivity.this);
+            final MonsterVH res = new MonsterVH(getLayoutInflater(), parent, SpawnMonsterActivity.this, null);
+            res.visMode = visMode;
+            return res;
         }
 
         @Override
         public void onBindViewHolder(MonsterVH holder, int position) {
-            holder.bindData(names.get(position), monsters.get(position).header);
+            holder.bindData(names.get(position), monsters.get(position));
         }
 
         @Override
@@ -156,7 +161,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     private void showSearchResults(ArrayList<MonsterData.Monster> mobs, ArrayList<String[]> names) {
         MaxUtils.beginDelayedTransition(this);
         final RecyclerView list = (RecyclerView) findViewById(R.id.sma_matchedList);
-        list.setAdapter(new CompleteListAdapter(mobs, names, list));
+        list.setAdapter(new CompleteListAdapter(mobs, names, list, MonsterVH.MODE_STANDARD));
         list.addItemDecoration(new PreSeparatorDecorator(list, this) {
             @Override
             protected boolean isEligible(int position) {
