@@ -3,7 +3,6 @@ package com.massimodz8.collaborativegrouporder;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,25 +90,36 @@ public class MonsterVH extends RecyclerView.ViewHolder {
             publisherStrings.put(MonsterData.Monster.MetaData.P_KP, "(KP)");
 
             maturityStrings = new IdentityHashMap<>();
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_WYRMLING, ctx.getString(R.string.mobs_da_wyrmling));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_VERY_YOUNG, ctx.getString(R.string.mobs_da_veryYoung));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_YOUNG, ctx.getString(R.string.mobs_da_young));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_JUVENILE, ctx.getString(R.string.mobs_da_juvenile));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_YOUNG_ADULT, ctx.getString(R.string.mobs_da_youngAdult));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_ADULT, ctx.getString(R.string.mobs_da_adult));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_MATURE_ADULT, ctx.getString(R.string.mobs_da_matureAdult));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_OLD, ctx.getString(R.string.mobs_da_old));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_VERY_OLD, ctx.getString(R.string.mobs_da_veryOld));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_ANCIENT, ctx.getString(R.string.mobs_da_ancient));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_WYRM, ctx.getString(R.string.mobs_da_wyrm));
-            maturityStrings.put(MonsterData.Monster.MetaData.DA_GREAT_WYRM, ctx.getString(R.string.mobs_da_greatWyrm));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_WYRMLING, ctx.getString(R.string.mobs_maturity_da_wyrmling));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_VERY_YOUNG, ctx.getString(R.string.mobs_maturity_da_veryYoung));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_YOUNG, ctx.getString(R.string.mobs_maturity_da_young));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_JUVENILE, ctx.getString(R.string.mobs_maturity_da_juvenile));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_YOUNG_ADULT, ctx.getString(R.string.mobs_maturity_da_youngAdult));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_ADULT, ctx.getString(R.string.mobs_maturity_da_adult));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_MATURE_ADULT, ctx.getString(R.string.mobs_maturity_da_matureAdult));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_OLD, ctx.getString(R.string.mobs_maturity_da_old));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_VERY_OLD, ctx.getString(R.string.mobs_maturity_da_veryOld));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_ANCIENT, ctx.getString(R.string.mobs_maturity_da_ancient));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_WYRM, ctx.getString(R.string.mobs_maturity_da_wyrm));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_GREAT_WYRM, ctx.getString(R.string.mobs_maturity_da_greatWyrm));
             
-            maturityStrings.put(MonsterData.Monster.MetaData.EG_SMALL, ctx.getString(R.string.mobs_eg_small));
-            maturityStrings.put(MonsterData.Monster.MetaData.EG_MEDIUM, ctx.getString(R.string.mobs_eg_medium));
-            maturityStrings.put(MonsterData.Monster.MetaData.EG_LARGE, ctx.getString(R.string.mobs_eg_large));
-            maturityStrings.put(MonsterData.Monster.MetaData.EG_HUGE, ctx.getString(R.string.mobs_eg_huge));
-            maturityStrings.put(MonsterData.Monster.MetaData.EG_GREATER, ctx.getString(R.string.mobs_eg_greater));
-            maturityStrings.put(MonsterData.Monster.MetaData.EG_ELDER, ctx.getString(R.string.mobs_eg_elder));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_SMALL, ctx.getString(R.string.mobs_maturity_eg_small));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_MEDIUM, ctx.getString(R.string.mobs_maturity_maturity_eg_medium));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_LARGE, ctx.getString(R.string.mobs_maturity_eg_large));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_HUGE, ctx.getString(R.string.mobs_maturity_eg_huge));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_GREATER, ctx.getString(R.string.mobs_maturity_eg_greater));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_ELDER, ctx.getString(R.string.mobs_maturity_eg_elder));
+
+            sizeStrings = new IdentityHashMap<>();
+            sizeStrings.put(MonsterData.FINE, ctx.getString(R.string.mobs_size_fine));
+            sizeStrings.put(MonsterData.DIMINUTIVE, ctx.getString(R.string.mobs_size_diminutive));
+            sizeStrings.put(MonsterData.TINY, ctx.getString(R.string.mobs_size_tiny));
+            sizeStrings.put(MonsterData.SMALL, ctx.getString(R.string.mobs_size_small));
+            sizeStrings.put(MonsterData.MEDIUM, ctx.getString(R.string.mobs_size_medium));
+            sizeStrings.put(MonsterData.LARGE, ctx.getString(R.string.mobs_size_large));
+            sizeStrings.put(MonsterData.HUGE, ctx.getString(R.string.mobs_size_huge));
+            sizeStrings.put(MonsterData.GARGANTUAN, ctx.getString(R.string.mobs_size_gargantuan));
+            sizeStrings.put(MonsterData.COLOSSAL, ctx.getString(R.string.mobs_size_colossal));
         }
     }
 
@@ -151,7 +161,9 @@ public class MonsterVH extends RecyclerView.ViewHolder {
                     extraNotes.append(tag.note.selectionInfo);
                 } break;
                 case MonsterData.Monster.MetaData.VARIANT_SIZE: {
-                    Log.i("+vs", tag.note.selectionInfo);
+                    if(extraNotes == null) extraNotes = new StringBuilder("(");
+                    if(extraNotes.length() > 1) extraNotes.append(", ");
+                    extraNotes.append(sizeStrings.get(data.header.size));
                 } break;
             }
         }
@@ -209,6 +221,6 @@ public class MonsterVH extends RecyclerView.ViewHolder {
     }
 
     private MonsterData.Monster currentBinding;
-    private static IdentityHashMap<Integer, String> publisherStrings, maturityStrings;
+    private static IdentityHashMap<Integer, String> publisherStrings, maturityStrings, sizeStrings;
     private final Context ctx;
 }
