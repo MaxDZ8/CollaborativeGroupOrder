@@ -426,7 +426,9 @@
     <string name="sma_dlg_mbi_incoherentPublisherInvalid">!!! Invalid publisher !!!</string>
     <string name="sma_dlg_mbi_thirdPartyPublisher">(3rd party)</string>
 	
-    <string name="vhML_challangeRatio_integral">"CR %1$d"</string>
-    <string name="vhML_challangeRatio_fraction">CR %1$d/%2$d</string>
+    <string name="vhMLE_challangeRatio_integral">"CR %1$d"</string>
+    <string name="vhMLE_challangeRatio_fraction">CR %1$d/%2$d</string>
+    <string name="vhMLE_initiative">Initiative:</string>
+    <string name="vhMLE_tappedFeedback">Tap to battle</string>
 
 </resources>

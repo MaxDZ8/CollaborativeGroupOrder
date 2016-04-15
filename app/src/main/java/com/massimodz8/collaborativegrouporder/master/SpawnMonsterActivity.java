@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.MonsterVH;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
@@ -93,60 +94,6 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         return false;
     }
 
-    private static IdentityHashMap<Integer, String> publisherStrings;
-
-    private class MonsterVH extends RecyclerView.ViewHolder {
-        final TextView name, otherNames, cr, publisherInfo;
-
-        public MonsterVH(LayoutInflater li, ViewGroup parent) {
-            super(li.inflate(R.layout.vh_monster_list_entry, parent, false));
-            name = (TextView) itemView.findViewById(R.id.vhMLE_primaryName);
-            otherNames = (TextView) itemView.findViewById(R.id.vhMLE_otherNames);
-            cr = (TextView) itemView.findViewById(R.id.vhMLE_cr);
-            publisherInfo = (TextView) itemView.findViewById(R.id.vhMLE_publisherNotes);
-            if(publisherStrings == null) {
-                publisherStrings = new IdentityHashMap<>();
-                publisherStrings.put(MonsterData.Monster.MetaData.P_INVALID, getString(R.string.sma_dlg_mbi_incoherentPublisherInvalid));
-                publisherStrings.put(MonsterData.Monster.MetaData.P_THIRD_PART_GENERIC, getString(R.string.sma_dlg_mbi_thirdPartyPublisher));
-                publisherStrings.put(MonsterData.Monster.MetaData.P_FGG, "(FGG)");
-                publisherStrings.put(MonsterData.Monster.MetaData.P_OD, "(OD)");
-                publisherStrings.put(MonsterData.Monster.MetaData.P_TO, "(TO)");
-                publisherStrings.put(MonsterData.Monster.MetaData.P_JBE, "(JBE)");
-                publisherStrings.put(MonsterData.Monster.MetaData.P_CGP, "(CGP)");
-                publisherStrings.put(MonsterData.Monster.MetaData.P_SMG, "(SMG)");
-                publisherStrings.put(MonsterData.Monster.MetaData.P_KP, "(KP)");
-            }
-        }
-
-        public void bindData(String[] names, MonsterData.Monster.Header data) {
-            name.setText(names[0]);
-            String concat = "";
-            for(int loop = 1; loop < names.length; loop++) {
-                if(loop != 1) concat += '\n';
-                concat += " aka " + names[loop];
-            }
-            MaxUtils.setTextUnlessNull(otherNames, concat.length() == 0? null : concat, View.GONE);
-            if(data.cr.denominator == 1) {
-                final String crInt = getString(R.string.vhML_challangeRatio_integral);
-                cr.setText(String.format(Locale.ENGLISH, crInt, data.cr.numerator));  // TODO: how are numbers going here?
-            }
-            else {
-                final String crFrac = getString(R.string.vhML_challangeRatio_fraction);
-                cr.setText(String.format(Locale.ENGLISH, crFrac, data.cr.numerator, data.cr.denominator)); // TODO: how are numbers going here?
-            }
-            concat = "";
-            for (MonsterData.Monster.Tag tag : data.tags) {
-                if(tag.type != MonsterData.Monster.TT_EXTRA_METADATA) continue;
-                if(tag.note.type != MonsterData.Monster.MetaData.PUBLISHER) continue;
-                String known = publisherStrings.get(tag.note.publisher);
-                if(null == known) known = getString(R.string.sma_dlg_mbi_incoherentPublisherUnknown);
-                concat = known;
-                break;
-            }
-            MaxUtils.setTextUnlessNull(publisherInfo, concat.length() == 0? null : concat, View.GONE);
-        }
-    }
-
     private class CompleteListAdapter extends RecyclerView.Adapter<MonsterVH> {
         final ArrayList<MonsterData.Monster> monsters;
         final ArrayList<String[]> names;
@@ -165,7 +112,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
 
         @Override
         public MonsterVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new MonsterVH(getLayoutInflater(), parent);
+            return new MonsterVH(getLayoutInflater(), parent, SpawnMonsterActivity.this);
         }
 
         @Override
