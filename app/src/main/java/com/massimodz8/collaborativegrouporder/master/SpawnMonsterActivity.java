@@ -143,9 +143,9 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         return false;
     }
 
-    private static boolean anyContains(String[] arr, String prefix) {
+    private static boolean anyContains(String[] arr, String prefix, int minIndex) {
         for (String s : arr) {
-            if(s.toLowerCase().contains(prefix)) return true;
+            if(s.toLowerCase().indexOf(prefix) >= minIndex) return true;
         }
         return false;
     }
@@ -203,12 +203,12 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                     }
                 }
                 for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
-                    if(anyContains(entry.main.header.name, lcq)) {
+                    if(anyContains(entry.main.header.name, lcq, 1)) {
                         mobs.add(entry.main);
                         names.add(entry.main.header.name);
                     }
                     for (MonsterData.Monster variation : entry.variations) {
-                        if(anyContains(variation.header.name, lcq)) {
+                        if(anyContains(variation.header.name, lcq, 1)) {
                             mobs.add(variation);
                             names.add(completeVariationNames(entry.main.header.name, variation.header.name));
                         }
