@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,13 +21,9 @@ import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.IdentityHashMap;
-import java.util.Locale;
 
 public class SpawnMonsterActivity extends AppCompatActivity implements ServiceConnection {
 
@@ -191,24 +186,28 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
             @Override
             protected Void doInBackground(Void... params) {
                 for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+                    boolean matched = false;
                     if(anyStarts(entry.main.header.name, lcq)) {
                         mobs.add(entry.main);
                         names.add(entry.main.header.name);
+                        matched = true;
                     }
                     for (MonsterData.Monster variation : entry.variations) {
-                        if(anyStarts(variation.header.name, lcq)) {
+                        if(matched || anyStarts(variation.header.name, lcq)) {
                             mobs.add(variation);
                             names.add(completeVariationNames(entry.main.header.name, variation.header.name));
                         }
                     }
                 }
                 for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+                    boolean matched = false;
                     if(anyContains(entry.main.header.name, lcq, 1)) {
                         mobs.add(entry.main);
                         names.add(entry.main.header.name);
+                        matched = true;
                     }
                     for (MonsterData.Monster variation : entry.variations) {
-                        if(anyContains(variation.header.name, lcq, 1)) {
+                        if(matched || anyContains(variation.header.name, lcq, 1)) {
                             mobs.add(variation);
                             names.add(completeVariationNames(entry.main.header.name, variation.header.name));
                         }
