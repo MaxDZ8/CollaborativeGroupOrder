@@ -437,5 +437,26 @@
     <string name="vhMLE_badConditionalInitiative">!! Unknown conditional initiative action !!</string>
     <string name="vhMLE_actionClimbing">climbing</string>
     <string name="vhMLE_actionClimbingMessage">%1$d if %2$s %3$s</string>
+    <string name="vhMLE_dragonMaturityNameExpansion">%1$s, %2$s</string>
+    <string name="vhMLE_elementalMaturityNameExpansion">%1$s, %2$s</string>
+
+    <string name="mobs_da_wyrmling">Wyrmling</string>
+    <string name="mobs_da_veryYoung">Very Young</string>
+    <string name="mobs_da_young">Young</string>
+    <string name="mobs_da_juvenile">Juvenile</string>
+    <string name="mobs_da_youngAdult">Young Adult</string>
+    <string name="mobs_da_adult">Adult</string>
+    <string name="mobs_da_matureAdult">Mature Adult</string>
+    <string name="mobs_da_old">Old</string>
+    <string name="mobs_da_veryOld">Very Old</string>
+    <string name="mobs_da_ancient">Ancient</string>
+    <string name="mobs_da_wyrm">Wyrm</string>
+    <string name="mobs_da_greatWyrm">Great Wyrm</string>
+    <string name="mobs_eg_small">Small</string>
+    <string name="mobs_eg_medium">Medium</string>
+    <string name="mobs_eg_large">Large</string>
+    <string name="mobs_eg_huge">Huge</string>
+    <string name="mobs_eg_greater">Greater</string>
+    <string name="mobs_eg_elder">Elder</string>
 
 </resources>

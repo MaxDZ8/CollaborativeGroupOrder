@@ -3,6 +3,7 @@ package com.massimodz8.collaborativegrouporder;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import java.util.Map;
  * the logic to set up the Views is a bit more complicated and useful to have in its own class.
  */
 public class MonsterVH extends RecyclerView.ViewHolder {
-    final TextView name, otherNames, cr, publisherInfo;
+    final TextView name, otherNames, cr, publisherInfo, extraNotes;
     final TextView exampleCreature, initLabel, init, conditionalInitiative;
     final CheckBox inBattle;
     final Map<MonsterData.Monster, Integer> battleCount;
@@ -49,6 +50,7 @@ public class MonsterVH extends RecyclerView.ViewHolder {
         name = (TextView) itemView.findViewById(R.id.vhMLE_primaryName);
         otherNames = (TextView) itemView.findViewById(R.id.vhMLE_otherNames);
         cr = (TextView) itemView.findViewById(R.id.vhMLE_cr);
+        extraNotes = (TextView) itemView.findViewById(R.id.vhMLE_extraNotes);
         publisherInfo = (TextView) itemView.findViewById(R.id.vhMLE_publisherNotes);
         exampleCreature = (TextView) itemView.findViewById(R.id.vhMLE_exampleCreature);
         init = (TextView) itemView.findViewById(R.id.vhMLE_initiative);
@@ -87,6 +89,27 @@ public class MonsterVH extends RecyclerView.ViewHolder {
             publisherStrings.put(MonsterData.Monster.MetaData.P_CGP, "(CGP)");
             publisherStrings.put(MonsterData.Monster.MetaData.P_SMG, "(SMG)");
             publisherStrings.put(MonsterData.Monster.MetaData.P_KP, "(KP)");
+
+            maturityStrings = new IdentityHashMap<>();
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_WYRMLING, ctx.getString(R.string.mobs_da_wyrmling));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_VERY_YOUNG, ctx.getString(R.string.mobs_da_veryYoung));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_YOUNG, ctx.getString(R.string.mobs_da_young));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_JUVENILE, ctx.getString(R.string.mobs_da_juvenile));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_YOUNG_ADULT, ctx.getString(R.string.mobs_da_youngAdult));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_ADULT, ctx.getString(R.string.mobs_da_adult));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_MATURE_ADULT, ctx.getString(R.string.mobs_da_matureAdult));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_OLD, ctx.getString(R.string.mobs_da_old));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_VERY_OLD, ctx.getString(R.string.mobs_da_veryOld));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_ANCIENT, ctx.getString(R.string.mobs_da_ancient));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_WYRM, ctx.getString(R.string.mobs_da_wyrm));
+            maturityStrings.put(MonsterData.Monster.MetaData.DA_GREAT_WYRM, ctx.getString(R.string.mobs_da_greatWyrm));
+            
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_SMALL, ctx.getString(R.string.mobs_eg_small));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_MEDIUM, ctx.getString(R.string.mobs_eg_medium));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_LARGE, ctx.getString(R.string.mobs_eg_large));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_HUGE, ctx.getString(R.string.mobs_eg_huge));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_GREATER, ctx.getString(R.string.mobs_eg_greater));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_ELDER, ctx.getString(R.string.mobs_eg_elder));
         }
     }
 
@@ -101,7 +124,44 @@ public class MonsterVH extends RecyclerView.ViewHolder {
 
         }
         // Minimal
-        name.setText(names[0]);
+        String main = names[0];
+        StringBuilder extraNotes = null;
+        for (MonsterData.Monster.Tag tag : data.header.tags) {
+            if(tag.type != MonsterData.Monster.TT_EXTRA_METADATA) continue;
+            switch(tag.note.type) {
+                case MonsterData.Monster.MetaData.MATURITY: {
+                    final int mat = tag.note.maturity;
+                    final int expansion = mat < MonsterData.Monster.MetaData.EG_SMALL? R.string.vhMLE_dragonMaturityNameExpansion : R.string.vhMLE_elementalMaturityNameExpansion;
+                    final String str = maturityStrings.get(mat);
+                    main = String.format(ctx.getString(expansion), main, str);
+                } break;
+                case MonsterData.Monster.MetaData.ADDITIONAL_SELECTION_INFO: {
+                    if(extraNotes == null) extraNotes = new StringBuilder("(");
+                    if(extraNotes.length() > 1) extraNotes.append(", ");
+                    extraNotes.append(tag.note.selectionInfo);
+                } break;
+                case MonsterData.Monster.MetaData.GENERIC_VARIANT: {
+                    if(extraNotes == null) extraNotes = new StringBuilder("(");
+                    if(extraNotes.length() > 1) extraNotes.append(", ");
+                    extraNotes.append(tag.note.selectionInfo);
+                } break;
+                case MonsterData.Monster.MetaData.VARIANT_MORPH_TARGET: {
+                    if(extraNotes == null) extraNotes = new StringBuilder("(");
+                    if(extraNotes.length() > 1) extraNotes.append(", ");
+                    extraNotes.append(tag.note.selectionInfo);
+                } break;
+                case MonsterData.Monster.MetaData.VARIANT_SIZE: {
+                    Log.i("+vs", tag.note.selectionInfo);
+                } break;
+            }
+        }
+        name.setText(main);
+        String noteString = null;
+        if(extraNotes != null && extraNotes.length() > 1) {
+            extraNotes.append(')');
+            noteString = extraNotes.toString();
+        }
+        MaxUtils.setTextUnlessNull(this.extraNotes, noteString, View.GONE);
         String concat = "";
         for(int loop = 1; loop < names.length; loop++) {
             if(loop != 1) concat += '\n';
@@ -149,6 +209,6 @@ public class MonsterVH extends RecyclerView.ViewHolder {
     }
 
     private MonsterData.Monster currentBinding;
-    private static IdentityHashMap<Integer, String> publisherStrings;
+    private static IdentityHashMap<Integer, String> publisherStrings, maturityStrings;
     private final Context ctx;
 }
