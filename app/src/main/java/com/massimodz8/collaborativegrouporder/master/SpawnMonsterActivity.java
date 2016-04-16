@@ -25,11 +25,14 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class SpawnMonsterActivity extends AppCompatActivity implements ServiceConnection {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.spawn_monster_activity, menu);
         showBookInfo = menu.findItem(R.id.sma_menu_showMonsterBookInfo);
+        addMonsters = menu.findItem(R.id.sma_menu_addMonsters);
 
         if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
             MaxUtils.beginDelayedTransition(this);
@@ -98,6 +102,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         final ArrayList<MonsterData.Monster> monsters;
         final ArrayList<String[]> names;
         final Map<MonsterData.Monster, Integer> spawnCount;
+        Runnable onSpawnableChanged;
         public CompleteListAdapter(ArrayList<MonsterData.Monster> flat, ArrayList<String[]> names, RecyclerView rv, int visMode, @Nullable Map<MonsterData.Monster, Integer> spawnCount) {
             setHasStableIds(true);
             this.visMode = visMode;
@@ -117,6 +122,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         public MonsterVH onCreateViewHolder(ViewGroup parent, int viewType) {
             final MonsterVH res = new MonsterVH(getLayoutInflater(), parent, SpawnMonsterActivity.this, spawnCount);
             res.visMode = visMode;
+            res.onSpawnableChanged = onSpawnableChanged;
             return res;
         }
 
@@ -132,10 +138,13 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         public long getItemId(int position) { return position; }
     }
 
+
     private String query;
-    private MenuItem showBookInfo;
+    private MenuItem showBookInfo, addMonsters;
     private MonsterData.MonsterBook monsters;
     private IdentityHashMap<MonsterData.Monster, Integer> spawnCounts = new IdentityHashMap<>();
+    private SessionHelper.PlayState session;
+
 
     private static boolean anyStarts(String[] arr, String prefix) {
         for (String s : arr) {
@@ -162,7 +171,23 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     private void showSearchResults(ArrayList<MonsterData.Monster> mobs, ArrayList<String[]> names) {
         MaxUtils.beginDelayedTransition(this);
         final RecyclerView list = (RecyclerView) findViewById(R.id.sma_matchedList);
-        list.setAdapter(new CompleteListAdapter(mobs, names, list, MonsterVH.MODE_STANDARD, spawnCounts));
+        final CompleteListAdapter adapter = new CompleteListAdapter(mobs, names, list, MonsterVH.MODE_STANDARD, spawnCounts);
+        adapter.onSpawnableChanged = new Runnable() {
+            @Override
+            public void run() {
+                final Iterator<Map.Entry<MonsterData.Monster, Integer>> iter = spawnCounts.entrySet().iterator();
+                int count = 0;
+                while(true) {
+                    try {
+                        final Map.Entry<MonsterData.Monster, Integer> sc = iter.next();
+                        if (sc.getValue() == null || sc.getValue() < 1) continue;
+                        count += sc.getValue();
+                    } catch(NoSuchElementException e) { break; }
+                }
+                addMonsters.setVisible(count != 0);
+            }
+        };
+        list.setAdapter(adapter);
         list.addItemDecoration(new PreSeparatorDecorator(list, this) {
             @Override
             protected boolean isEligible(int position) {
@@ -181,7 +206,8 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder) service;
         final PartyJoinOrderService serv = real.getConcreteService();
-        monsters = serv.getPlaySession().monsters;
+        session = serv.getPlaySession();
+        monsters = session.monsters;
         showBookInfo.setVisible(true);
         unbindService(this);
 

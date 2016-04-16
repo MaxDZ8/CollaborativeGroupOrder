@@ -416,8 +416,12 @@
     <string name="sma_searchingMessage">Searching…</string>
     <string name="sma_showMonsterInfo">Show monster book information</string>
     <string name="sma_short_showMonsterInfo">Monster info</string>
+    <string name="sma_addMonsters">Add monsters to battle</string>
+    <string name="sma_short_addMonsters">Add monsters</string>
     <string name="sma_status_matchedSingleMonster">Found a single monster.</string>
     <string name="sma_status_matchedMultipleMonsters">Matched %1$d monsters.</string>
+    <string name="sma_monsterNameSpawnNote">%1$s (%2$d)</string>
+
     <string name="sma_dlg_mbi_title">Monster book informations</string>
     <string name="sma_dlg_mbi_created">Created:</string>
     <string name="sma_dlg_mbi_entries">Entries:</string>

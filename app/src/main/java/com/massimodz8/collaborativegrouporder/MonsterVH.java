@@ -34,6 +34,7 @@ public class MonsterVH extends RecyclerView.ViewHolder {
     public static final int MODE_STANDARD = 1; // MINIMAL, example creature?, initiative, cond initiative?
 
     public int visMode;
+    public Runnable onSpawnableChanged; // called every time the spawn count changes as the monster has been toggled.
 
     /**
      * @param li Layout inflater used once to generate the itemView.
@@ -236,6 +237,7 @@ public class MonsterVH extends RecyclerView.ViewHolder {
             inBattle.setText(R.string.vhMLE_tappedFeedback);
             inBattle.setCompoundDrawables(null, null, null, null);
         }
+        if(onSpawnableChanged != null) onSpawnableChanged.run();
     }
 
     private MonsterData.Monster currentBinding;

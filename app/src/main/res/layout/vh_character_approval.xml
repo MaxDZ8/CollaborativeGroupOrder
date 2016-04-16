@@ -104,7 +104,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/vhCA_acceptedCharacter"
         android:id="@+id/vhCA_accepted"
-        android:drawableLeft="@mipmap/ic_done_black_24dp"
+        android:drawableLeft="@mipmap/ic_done_white_24dp"
         android:layout_row="5"
         android:layout_column="0"
         android:layout_columnSpan="3"
