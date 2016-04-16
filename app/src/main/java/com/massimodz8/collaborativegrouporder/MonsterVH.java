@@ -1,12 +1,12 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
@@ -26,7 +26,8 @@ import java.util.Map;
 public class MonsterVH extends RecyclerView.ViewHolder {
     final TextView name, otherNames, cr, publisherInfo, extraNotes;
     final TextView exampleCreature, initLabel, init, conditionalInitiative;
-    final CheckBox inBattle;
+    final TextView inBattle;
+    final Drawable battlingIcon;
     final Map<MonsterData.Monster, Integer> battleCount;
 
     public static final int MODE_MINIMAL = 0; // Primary name, CR, alternate names?, publisher?
@@ -55,9 +56,18 @@ public class MonsterVH extends RecyclerView.ViewHolder {
         init = (TextView) itemView.findViewById(R.id.vhMLE_initiative);
         conditionalInitiative = (TextView) itemView.findViewById(R.id.vhMLE_conditionalInitiative);
         initLabel = (TextView) itemView.findViewById(R.id.vhMLE_initiativeLabel);
-        if(battleCount != null) {
+        final TextView temp = (TextView) itemView.findViewById(R.id.vhMLE_inBattle);
+        if(battleCount == null) {
+            temp.setVisibility(View.GONE);
+            this.battleCount = null;
+            inBattle = null;
+            battlingIcon = null;
+        }
+        else {
             this.battleCount = battleCount;
-            inBattle = (CheckBox) itemView.findViewById(R.id.vhMLE_inBattle);
+            inBattle = temp;
+            battlingIcon = inBattle.getCompoundDrawables()[2];
+            inBattle.setCompoundDrawables(null, null, null, null);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -65,16 +75,9 @@ public class MonsterVH extends RecyclerView.ViewHolder {
                     Integer count = battleCount.get(currentBinding);
                     count = count != null? -count : 1;
                     battleCount.put(currentBinding, count);
-                    inBattle.setChecked(!inBattle.isChecked());
-                    if(inBattle.isChecked()) inBattle.setText(String.format(ctx.getString(R.string.vhMLE_spawnCountFeedback), String.valueOf(count)));
-                    else inBattle.setText(R.string.vhMLE_tappedFeedback);
+                    updatedBattleCount(count);
                 }
             });
-        }
-        else {
-            this.battleCount = null;
-            inBattle = null;
-            itemView.findViewById(R.id.vhMLE_inBattle).setVisibility(View.GONE);
         }
 
         if(publisherStrings == null) {
@@ -198,6 +201,10 @@ public class MonsterVH extends RecyclerView.ViewHolder {
             break;
         }
         MaxUtils.setTextUnlessNull(publisherInfo, concat.length() == 0? null : concat, View.GONE);
+        if(battleCount != null) {
+            final Integer integer = battleCount.get(currentBinding);
+            updatedBattleCount(integer != null? integer : 0);
+        }
     }
 
     private String buildCondInitString() {
@@ -218,6 +225,17 @@ public class MonsterVH extends RecyclerView.ViewHolder {
             }
         }
         return result.length() == 0? null : result.toString();
+    }
+
+    private void updatedBattleCount(int count) {
+        if(count > 0) {
+            inBattle.setText(String.format(ctx.getString(R.string.vhMLE_spawnCountFeedback), String.valueOf(count)));
+            inBattle.setCompoundDrawables(null, null, battlingIcon, null);
+        }
+        else {
+            inBattle.setText(R.string.vhMLE_tappedFeedback);
+            inBattle.setCompoundDrawables(null, null, null, null);
+        }
     }
 
     private MonsterData.Monster currentBinding;

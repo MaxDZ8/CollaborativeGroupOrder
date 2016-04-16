@@ -96,12 +96,14 @@
         android:layout_marginLeft="16sp"
         android:visibility="visible" />
 
-    <CheckBox
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/vhMLE_inBattle"
         android:layout_row="6"
         android:layout_column="0"
         android:layout_columnSpan="4"
-        android:text="@string/vhMLE_tappedFeedback" />
+        android:text="@string/vhMLE_tappedFeedback"
+        android:drawableRight="@mipmap/ic_start_battle"
+        android:layout_gravity="right" />
 </GridLayout>

@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -24,6 +25,8 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
 public class SpawnMonsterActivity extends AppCompatActivity implements ServiceConnection {
 
@@ -75,7 +78,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                         .setView(R.layout.dialog_monster_book_info)
                         .show();
                 final RecyclerView rv = (RecyclerView) dlg.findViewById(R.id.sma_dlg_smbi_list);
-                final CompleteListAdapter la = new CompleteListAdapter(flat, names, rv, MonsterVH.MODE_MINIMAL);
+                final CompleteListAdapter la = new CompleteListAdapter(flat, names, rv, MonsterVH.MODE_MINIMAL, null);
                 final TextView created = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_created);
                 final TextView entries = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_entries);
                 final TextView count = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_monstersCount);
@@ -94,9 +97,11 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
 
         final ArrayList<MonsterData.Monster> monsters;
         final ArrayList<String[]> names;
-        public CompleteListAdapter(ArrayList<MonsterData.Monster> flat, ArrayList<String[]> names, RecyclerView rv, int visMode) {
+        final Map<MonsterData.Monster, Integer> spawnCount;
+        public CompleteListAdapter(ArrayList<MonsterData.Monster> flat, ArrayList<String[]> names, RecyclerView rv, int visMode, @Nullable Map<MonsterData.Monster, Integer> spawnCount) {
             setHasStableIds(true);
             this.visMode = visMode;
+            this.spawnCount = spawnCount;
             monsters = flat;
             this.names = names;
             rv.setAdapter(this);
@@ -110,7 +115,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
 
         @Override
         public MonsterVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            final MonsterVH res = new MonsterVH(getLayoutInflater(), parent, SpawnMonsterActivity.this, null);
+            final MonsterVH res = new MonsterVH(getLayoutInflater(), parent, SpawnMonsterActivity.this, spawnCount);
             res.visMode = visMode;
             return res;
         }
@@ -130,6 +135,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     private String query;
     private MenuItem showBookInfo;
     private MonsterData.MonsterBook monsters;
+    private IdentityHashMap<MonsterData.Monster, Integer> spawnCounts = new IdentityHashMap<>();
 
     private static boolean anyStarts(String[] arr, String prefix) {
         for (String s : arr) {
@@ -156,7 +162,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     private void showSearchResults(ArrayList<MonsterData.Monster> mobs, ArrayList<String[]> names) {
         MaxUtils.beginDelayedTransition(this);
         final RecyclerView list = (RecyclerView) findViewById(R.id.sma_matchedList);
-        list.setAdapter(new CompleteListAdapter(mobs, names, list, MonsterVH.MODE_STANDARD));
+        list.setAdapter(new CompleteListAdapter(mobs, names, list, MonsterVH.MODE_STANDARD, spawnCounts));
         list.addItemDecoration(new PreSeparatorDecorator(list, this) {
             @Override
             protected boolean isEligible(int position) {
