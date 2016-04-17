@@ -4,6 +4,7 @@ package com.massimodz8.collaborativegrouporder.master;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -28,6 +29,8 @@ import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 
+import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.IdentityHashMap;
 
 public class FreeRoamingActivity extends AppCompatActivity implements ServiceConnection {
@@ -58,10 +61,15 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                     else count += add;
                 }
                 if(pgCount == 0) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_zeroPcs, Snackbar.LENGTH_LONG).show();
-                else if(count == 0)Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_nobody, Snackbar.LENGTH_LONG).show();
-                else {
-                    new AlertDialog.Builder(FreeRoamingActivity.this).setMessage("TODO").show();
+                else if(count + pgCount != game.getNumActors()) {
+                    new AlertDialog.Builder(FreeRoamingActivity.this)
+                            .setMessage(getString(R.string.fra_dlgMsg_missingChars))
+                            .setPositiveButton(getString(R.string.fra_dlgActionIgnoreMissingCharacters), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) { buildInitiativeArray(); }
+                            }).show();
                 }
+                else buildInitiativeArray();
             }
         });
         final ActionBar sab = getSupportActionBar();
@@ -86,18 +94,20 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     }
 
     @Override
+    protected void onResume() { // maybe we got there after a monster has been added.
+        super.onResume();
+        if(game == null) return; // no connection yet -> nothing really to do.
+        final int added = game.getNumActors() - numDefinedActors;
+        if(added == 0) return;
+        for(int loop = 0; loop < added; loop++) actorId.put(game.getActor(numDefinedActors + loop), numDefinedActors + loop);
+        lister.notifyItemRangeInserted(numDefinedActors, added);
+    }
+
+    @Override
     protected void onDestroy() {
         if(game != null) game.end();
         if(mustUnbind) unbindService(this);
         super.onDestroy();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch(requestCode) {
-            case REQUEST_ADD_MONSTER: lister.notifyDataSetChanged();
-            default: super.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
     private boolean mustUnbind;
@@ -105,8 +115,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     private AdventuringActorAdapter lister = new AdventuringActorAdapter();
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
     private int numDefinedActors; // those won't get expunged, no matter what
-
-    private static final int REQUEST_ADD_MONSTER = 1;
+    private final SecureRandom randomizer = new SecureRandom();
 
     private class AdventuringActorVH extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
         final CheckBox selected;
@@ -176,6 +185,49 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             holder.hbar.maxHp = hp[1];
             holder.hbar.invalidate();
         }
+    }
+
+
+    private void buildInitiativeArray() {
+        int count = 0;
+        for(int loop = 0; loop < game.getNumActors(); loop++) {
+            if(game.willFight(game.getActor(loop), null)) count++;
+        }
+        int[] initiative = new int[count]; // guaranteed to be count > 0 by calling context
+        int[] actorIndex = new int[count];
+        final int range = 20;
+        for(int loop = 0; loop < initiative.length; loop++) initiative[loop] = randomizer.nextInt(range);
+        count = 0;
+        for(int loop = 0; loop < game.getNumActors(); loop++) {
+            final AbsLiveActor actor = game.getActor(loop);
+            if(game.willFight(actor, null)) {
+                initiative[count] += actor.getInitiativeBonus();
+                actorIndex[count] = loop;
+                count++;
+            }
+        }
+        // Sorting ints is easy and I want to reduce the amount of classes I use, looks like it saves. So...
+        // I have an additional problem: if two actors have same initiative value then I need to sort them by initiative bonus
+        // if they also have the same initiative bonus I have to shuffle them casually. What to do...
+        final int SPACE = 8;
+        for(int loop = 0; loop < initiative.length; loop++) {
+            initiative[loop] <<= SPACE;
+            initiative[loop] |= game.getActor(actorIndex[loop]).getInitiativeBonus(); // one would hope initiative < 256
+            initiative[loop] <<= SPACE;
+            initiative[loop] |= randomizer.nextInt(256);
+            initiative[loop] <<= SPACE;
+            initiative[loop] |= loop; // so we have full sort and key.
+        }
+        Arrays.sort(initiative);
+        AbsLiveActor[] battlers = new AbsLiveActor[count]; // todo in the future a slight optimization might involve those being ints to list so GC doesn't traverse them
+        for(int loop = 0; loop < initiative.length; loop++) {
+            final int init = (initiative[loop] & 0xFF000000) >> 24;
+            final int slot = initiative[loop] & 0x000000FF;
+            initiative[loop] = init;
+            battlers[loop] = game.getActor(actorIndex[slot]);
+        }
+        game.battleState = new BattleHelper(initiative, battlers);
+        startActivity(new Intent(this, BattleActivity.class));
     }
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

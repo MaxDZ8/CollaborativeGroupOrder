@@ -92,6 +92,34 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                 count.setText(String.valueOf(la.getItemCount()));
                 break;
             }
+            case R.id.sma_menu_addMonsters: {
+                final Iterator<Map.Entry<MonsterData.Monster, Integer>> iter = spawnCounts.entrySet().iterator();
+                HashMap<String, Integer> nameColl = new HashMap<>();
+                while(true) {
+                    final Map.Entry<MonsterData.Monster, Integer> entry;
+                    try {
+                        entry = iter.next();
+                    } catch(NoSuchElementException e) { break; }
+                    final Integer count = entry.getValue();
+                    if(count == null) continue; // impossible
+                    if(count < 1) continue;
+                    final MonsterData.Monster mob = entry.getKey();
+                    final String presentation = getPreferredName(mob);
+                    for(int spawn = 0; spawn < count; spawn++) {
+                        String display = presentation;
+                        Integer previously = nameColl.get(presentation);
+                        if(previously == null) previously = 0;
+                        else display = String.format(Locale.getDefault(), getString(R.string.sma_monsterNameSpawnNote), display, previously);
+                        MonsterActor actor = new MonsterActor(display);
+                        actor.currentHealth = actor.maxHealth = 666; // todo generate(mob.defense.hp)
+                        actor.initiativeBonus = mob.header.initiative; // todo select conditional initiatives.
+                        session.add(actor);
+                        session.willFight(actor, true);
+                        nameColl.put(presentation, previously + 1);
+                    }
+                }
+                finish();
+            } break;
         }
         return false;
     }
@@ -199,6 +227,22 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         final TextView status = (TextView) findViewById(R.id.sma_status);
         if(mobs.size() == 1) status.setText(R.string.sma_status_matchedSingleMonster);
         else status.setText(String.format(getString(R.string.sma_status_matchedMultipleMonsters), mobs.size()));
+    }
+
+    /**
+     * The main problem here being that mob might be an inner monster, thereby I would have to
+     * find its parent and use its 'real' name [0], which is assumed to be preferred over variations.
+     * @param mob Monster to search for parents.
+     * @return mob name[0] if monster is a parent, otherwise parent.name[0]
+     */
+    private String getPreferredName(MonsterData.Monster mob) {
+        for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+            if(mob == entry.main) return entry.main.header.name[0];
+            for (MonsterData.Monster inner : entry.variations) {
+                if(mob == inner) return entry.main.header.name[0];
+            }
+        }
+        return "!! Not found !!"; // impossible
     }
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
