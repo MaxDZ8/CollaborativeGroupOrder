@@ -39,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@mipmap/ic_start_battle" />
+        android:src="@mipmap/ic_start_battle"
+        android:tint="@android:color/black" />
 
 </android.support.design.widget.CoordinatorLayout>
