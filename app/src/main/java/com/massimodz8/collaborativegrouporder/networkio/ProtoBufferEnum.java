@@ -15,4 +15,6 @@ public interface ProtoBufferEnum {
     int GROUP_READY = 7;
 
     int CHARACTER_OWNERSHIP = 8;
+
+    int ROLL_REQUEST = 9;
 }

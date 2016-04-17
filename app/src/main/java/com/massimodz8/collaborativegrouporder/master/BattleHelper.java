@@ -5,8 +5,8 @@ package com.massimodz8.collaborativegrouporder.master;
  * Getting to the real deal!
  */
 public class BattleHelper {
-    private final int[] initiative;
-    private final AbsLiveActor[] battlers;
+    public final int[] initiative;
+    public final AbsLiveActor[] battlers;
 
     /**
      * @param initiative Sorted array of initiative scores.

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -28,10 +29,16 @@ import com.massimodz8.collaborativegrouporder.HealthBar;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
+import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.IdentityHashMap;
+import java.util.Map;
 
 public class FreeRoamingActivity extends AppCompatActivity implements ServiceConnection {
     @Override
@@ -54,22 +61,23 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             public void onClick(View view) {
                 int count = 0;
                 int pgCount = 0;
-                for(int loop = 0; loop < game.getNumActors(); loop++) {
-                    AbsLiveActor actor = game.getActor(loop);
-                    int add = game.willFight(actor, null)? 1 : 0;
+                final SessionHelper.PlayState session = game.getPlaySession();
+                for(int loop = 0; loop < session.getNumActors(); loop++) {
+                    AbsLiveActor actor = session.getActor(loop);
+                    int add = session.willFight(actor, null)? 1 : 0;
                     if(actor.type == AbsLiveActor.TYPE_PLAYING_CHARACTER) pgCount += add;
                     else count += add;
                 }
                 if(pgCount == 0) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_zeroPcs, Snackbar.LENGTH_LONG).show();
-                else if(count + pgCount != game.getNumActors()) {
+                else if(count + pgCount != session.getNumActors()) {
                     new AlertDialog.Builder(FreeRoamingActivity.this)
                             .setMessage(getString(R.string.fra_dlgMsg_missingChars))
                             .setPositiveButton(getString(R.string.fra_dlgActionIgnoreMissingCharacters), new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) { buildInitiativeArray(); }
+                                public void onClick(DialogInterface dialog, int which) { sendInitiativeRollRequests(); }
                             }).show();
                 }
-                else buildInitiativeArray();
+                else sendInitiativeRollRequests();
             }
         });
         final ActionBar sab = getSupportActionBar();
@@ -97,25 +105,31 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     protected void onResume() { // maybe we got there after a monster has been added.
         super.onResume();
         if(game == null) return; // no connection yet -> nothing really to do.
-        final int added = game.getNumActors() - numDefinedActors;
+        final SessionHelper.PlayState session = game.getPlaySession();
+        final int added = session.getNumActors() - numDefinedActors;
         if(added == 0) return;
-        for(int loop = 0; loop < added; loop++) actorId.put(game.getActor(numDefinedActors + loop), numDefinedActors + loop);
+        for(int loop = 0; loop < added; loop++) actorId.put(session.getActor(numDefinedActors + loop), numDefinedActors + loop);
         lister.notifyItemRangeInserted(numDefinedActors, added);
     }
 
     @Override
     protected void onDestroy() {
-        if(game != null) game.end();
+        if(game != null) game.getPlaySession().end();
         if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
 
     private boolean mustUnbind;
-    private SessionHelper.PlayState game;
+    private PartyJoinOrderService game;
     private AdventuringActorAdapter lister = new AdventuringActorAdapter();
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
     private int numDefinedActors; // those won't get expunged, no matter what
     private final SecureRandom randomizer = new SecureRandom();
+    private Map<AbsLiveActor, Pair<Integer, Integer>> initRolls; // if this is null we're not starting a new battle, otherwise
+    // There is a key for each 'will battle' actor. Each key value is built non-null.
+    // .first is nullable. It is the roll request ID sent to remote players and set to null as soon as we receive a result.
+    // .second is the roll.
+    // Therefore, only one of the two fields are set at time. When all rolls are there, we build order and go to battle.
 
     private class AdventuringActorVH extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
         final CheckBox selected;
@@ -142,7 +156,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            game.willFight(actor, isChecked);
+            game.getPlaySession().willFight(actor, isChecked);
         }
     }
 
@@ -152,11 +166,11 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         }
 
         @Override
-        public int getItemCount() { return game != null? game.getNumActors() : 0; }
+        public int getItemCount() { return game != null? game.getPlaySession().getNumActors() : 0; }
 
         @Override
         public long getItemId(int position) {
-            Integer index = actorId.get(game.getActor(position));
+            Integer index = actorId.get(game.getPlaySession().getActor(position));
             return index != null ? index : RecyclerView.NO_ID;
         }
 
@@ -167,9 +181,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
 
         @Override
         public void onBindViewHolder(AdventuringActorVH holder, int position) {
-            AbsLiveActor actor = game.getActor(position);
+            final SessionHelper.PlayState session = game.getPlaySession();
+            AbsLiveActor actor = session.getActor(position);
             holder.actor = actor;
-            holder.selected.setChecked(game.willFight(actor, null));
+            holder.selected.setChecked(session.willFight(actor, null));
             // TODO holder.avatar
             int res;
             switch(actor.type) {
@@ -188,45 +203,91 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     }
 
 
-    private void buildInitiativeArray() {
-        int count = 0;
-        for(int loop = 0; loop < game.getNumActors(); loop++) {
-            if(game.willFight(game.getActor(loop), null)) count++;
-        }
-        int[] initiative = new int[count]; // guaranteed to be count > 0 by calling context
-        int[] actorIndex = new int[count];
-        final int range = 20;
-        for(int loop = 0; loop < initiative.length; loop++) initiative[loop] = randomizer.nextInt(range);
-        count = 0;
-        for(int loop = 0; loop < game.getNumActors(); loop++) {
-            final AbsLiveActor actor = game.getActor(loop);
-            if(game.willFight(actor, null)) {
-                initiative[count] += actor.getInitiativeBonus();
-                actorIndex[count] = loop;
-                count++;
+    private void sendInitiativeRollRequests() {
+        final SessionHelper.PlayState session = game.getPlaySession();
+        final ArrayList<AbsLiveActor> local = new ArrayList<>();
+        initRolls = new IdentityHashMap<>();
+        for(int loop = 0; loop < session.getNumActors(); loop++) {
+            final AbsLiveActor actor = session.getActor(loop);
+            if (!session.willFight(actor, null)) continue;
+            final CharacterActor pc = actor instanceof CharacterActor ? (CharacterActor) actor : null;
+            final MessageChannel pipe = pc == null ? null : game.getMessageChannel(pc.character);
+            if (pipe != null) { // send a roll request.
+                final Network.ManualRollRequest rq = new Network.ManualRollRequest();
+                rq.note = getString(R.string.fra_rollRequestInitiativeMsg);
+                rq.unique = pc.nextRollRequestIndex++;
+                rq.what = Network.ManualRollRequest.TWENTY;
+                initRolls.put(actor, new Pair<>(rq.unique, (Integer)null));
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            pipe.writeSync(ProtoBufferEnum.ROLL_REQUEST, rq);
+                        } catch (IOException e) {
+                            // ignore, it will just timeout and somebody else will take care.
+                        }
+                    }
+                }.start();
+            } else {
+                initRolls.put(actor, new Pair<>((Integer)null, (Integer)null));
+                local.add(actor);
             }
         }
-        // Sorting ints is easy and I want to reduce the amount of classes I use, looks like it saves. So...
-        // I have an additional problem: if two actors have same initiative value then I need to sort them by initiative bonus
-        // if they also have the same initiative bonus I have to shuffle them casually. What to do...
-        final int SPACE = 8;
-        for(int loop = 0; loop < initiative.length; loop++) {
-            initiative[loop] <<= SPACE;
-            initiative[loop] |= game.getActor(actorIndex[loop]).getInitiativeBonus(); // one would hope initiative < 256
-            initiative[loop] <<= SPACE;
-            initiative[loop] |= randomizer.nextInt(256);
-            initiative[loop] <<= SPACE;
-            initiative[loop] |= loop; // so we have full sort and key.
+        if(local.isEmpty()) return;
+        // For the time being, those are rolled automatically.
+        final int range = 20;
+        for (AbsLiveActor actor : local) {
+            final Pair<Integer, Integer> pair = initRolls.get(actor);
+            final int init = randomizer.nextInt(range) + actor.getInitiativeBonus();
+            initRolls.put(actor, new Pair<>(pair.first, init));
         }
-        Arrays.sort(initiative);
+        attemptBattleStart();
+    }
+
+    /// Called every time at least one initiative is written so we can try sorting & starting.
+    void attemptBattleStart() {
+        int count = 0;
+        for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> entry : initRolls.entrySet()) {
+            if(entry.getValue().second == null) return;
+            count++;
+        }
+        // Everyone got a number. We go.
+        int[] initiative = new int[count]; // guaranteed to be count > 0 by calling context
         AbsLiveActor[] battlers = new AbsLiveActor[count]; // todo in the future a slight optimization might involve those being ints to list so GC doesn't traverse them
-        for(int loop = 0; loop < initiative.length; loop++) {
-            final int init = (initiative[loop] & 0xFF000000) >> 24;
-            final int slot = initiative[loop] & 0x000000FF;
-            initiative[loop] = init;
-            battlers[loop] = game.getActor(actorIndex[slot]);
+        // Sorting ints is easy and I want to reduce the amount of classes I use, looks like it saves something in Android. So...
+        // I need to sort by total initiative scores. Solve ties preferring higher bonus. Solve further ties at random.
+        // Plus, keep actor index around or we won't know how to shuffle! This is irrelevant to sorting.
+        final int SPACE = 8;
+        count = 0;
+        final SessionHelper.PlayState session = game.getPlaySession();
+        final int numActors = session.getNumActors();
+        for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> entry : initRolls.entrySet()) {
+            int value = entry.getValue().second << SPACE;
+            value |= entry.getKey().getInitiativeBonus();
+            value <<= SPACE;
+            value |= randomizer.nextInt(256) & 0xFF;
+            value <<= SPACE;
+            int actorIndex = 0;
+            for(int loop = 0; loop < numActors; loop++) {
+                if(entry.getKey() == session.getActor(loop)) {
+                    actorIndex = loop;
+                    break;
+                }
+            }
+            initiative[count] = value | (actorIndex & 0xFF);
+            count++;
         }
-        game.battleState = new BattleHelper(initiative, battlers);
+        initRolls = null;
+        Arrays.sort(initiative);
+        count = 0;
+        for (int blob : initiative) {
+            final int init = (blob & 0xFF000000) >> 24;
+            final int slot = blob & 0x000000FF;
+            initiative[count] = init;
+            battlers[count] = session.getActor(slot);
+            count++;
+        }
+        session.battleState = new BattleHelper(initiative, battlers);
         startActivity(new Intent(this, BattleActivity.class));
     }
 
@@ -234,13 +295,13 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
-        PartyJoinOrderService serv = real.getConcreteService();
-        game = serv.getPlaySession();
-        game.begin(new Runnable() {
+        game = real.getConcreteService();
+        final SessionHelper.PlayState session = game.getPlaySession();
+        session.begin(new Runnable() {
             @Override
             public void run() {
-                numDefinedActors = game.getNumActors();
-                for(int loop = 0; loop < numDefinedActors; loop++) actorId.put(game.getActor(loop), loop);
+                numDefinedActors = session.getNumActors();
+                for(int loop = 0; loop < numDefinedActors; loop++) actorId.put(session.getActor(loop), loop);
                 lister.notifyDataSetChanged();
                 Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_dataLoadedFeedback, Snackbar.LENGTH_SHORT).show();
             }

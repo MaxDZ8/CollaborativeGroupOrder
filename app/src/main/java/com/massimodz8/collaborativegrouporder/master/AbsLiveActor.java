@@ -2,6 +2,8 @@ package com.massimodz8.collaborativegrouporder.master;
 
 import android.support.annotation.StringRes;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+
 /**
  * It might be a monster, it might be a PG, it might be mananged remotely or locally, we don't
  * care! For the purpose of the game, there's a set of operations we want to do on the thing!
@@ -13,6 +15,8 @@ public abstract class AbsLiveActor {
     public static final int TYPE_PLAYING_CHARACTER = 0;
     public static final int TYPE_MONSTER = 1;
     public static final int TYPE_NPC = 2;
+
+    public int nextRollRequestIndex;
 
     protected AbsLiveActor(String displayName, int type) {
         this.displayName = displayName;

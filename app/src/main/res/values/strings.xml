@@ -412,6 +412,7 @@
     <string name="fra_searchable_hint">Search mobs to battle</string>
     <string name="fra_dlgActionIgnoreMissingCharacters">Ignore and start battle</string>
     <string name="fra_dlgMsg_missingChars">Someone will not take part to battle. Is that what you intended?\nInitial surprise round can be managed later.</string>
+    <string name="fra_rollRequestInitiativeMsg">Initiative!</string>
 
     <string name="sma_title">Spawn monsters</string>
     <string name="sma_searchingMessage">Searching…</string>

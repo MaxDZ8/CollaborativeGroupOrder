@@ -141,6 +141,17 @@ public class PcAssignmentHelper {
         if(onBoundPc != null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
     }
 
+    public MessageChannel getMessageChannel(StartData.ActorDefinition actor) {
+        int match;
+        for(match = 0; match < party.party.length; match++) {
+            if(actor == party.party[match]) break;
+        }
+        if(match == party.party.length) return null;
+        final Integer ownerIndex = assignment.get(match);
+        if(ownerIndex == null || ownerIndex == LOCAL_BINDING) return null;
+        return peers.get(ownerIndex).pipe;
+    }
+
 
     public void shutdown() {
         out.add(new SendRequest());
