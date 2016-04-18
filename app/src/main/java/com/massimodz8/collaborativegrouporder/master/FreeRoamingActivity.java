@@ -19,13 +19,8 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.HealthBar;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
@@ -123,8 +118,13 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
 
     private boolean mustUnbind;
     private PartyJoinOrderService game;
-    private AdventuringActorAdapter lister = new AdventuringActorAdapter();
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
+    private AdventuringActorAdapter lister = new AdventuringActorAdapter(getLayoutInflater(), actorId) {
+        @Override
+        PartyJoinOrderService getGame() {
+            return game;
+        }
+    };
     private int numDefinedActors; // those won't get expunged, no matter what
     private final SecureRandom randomizer = new SecureRandom();
     private Map<AbsLiveActor, Pair<Integer, Integer>> initRolls; // if this is null we're not starting a new battle, otherwise
@@ -132,77 +132,6 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     // .first is nullable. It is the roll request ID sent to remote players and set to null as soon as we receive a result.
     // .second is the roll.
     // Therefore, only one of the two fields are set at time. When all rolls are there, we build order and go to battle.
-
-    private class AdventuringActorVH extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-        final CheckBox selected;
-        final ImageView avatar;
-        final TextView actorShortType, name;
-        final HealthBar hbar;
-        public AbsLiveActor actor;
-
-        public AdventuringActorVH(View iv) {
-            super(iv);
-            selected = (CheckBox) iv.findViewById(R.id.vhAA_selected);
-            avatar = (ImageView) iv.findViewById(R.id.vhAA_avatar);
-            actorShortType = (TextView) iv.findViewById(R.id.vhAA_actorTypeShort);
-            name = (TextView) iv.findViewById(R.id.vhAA_name);
-            hbar = (HealthBar) iv.findViewById(R.id.vhAA_health);
-            iv.setOnClickListener(this);
-            selected.setOnCheckedChangeListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            selected.performClick();
-        }
-
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            game.getPlaySession().willFight(actor, isChecked);
-        }
-    }
-
-    private class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringActorVH> {
-        AdventuringActorAdapter() {
-            setHasStableIds(true);
-        }
-
-        @Override
-        public int getItemCount() { return game != null? game.getPlaySession().getNumActors() : 0; }
-
-        @Override
-        public long getItemId(int position) {
-            Integer index = actorId.get(game.getPlaySession().getActor(position));
-            return index != null ? index : RecyclerView.NO_ID;
-        }
-
-        @Override
-        public AdventuringActorVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new AdventuringActorVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor, parent, false));
-        }
-
-        @Override
-        public void onBindViewHolder(AdventuringActorVH holder, int position) {
-            final SessionHelper.PlayState session = game.getPlaySession();
-            AbsLiveActor actor = session.getActor(position);
-            holder.actor = actor;
-            holder.selected.setChecked(session.willFight(actor, null));
-            // TODO holder.avatar
-            int res;
-            switch(actor.type) {
-                case AbsLiveActor.TYPE_PLAYING_CHARACTER: res = R.string.fra_actorType_playingCharacter; break;
-                case AbsLiveActor.TYPE_MONSTER: res = R.string.fra_actorType_monster; break;
-                case AbsLiveActor.TYPE_NPC: res = R.string.fra_actorType_npc; break;
-                default: res = R.string.fra_actorType_unmatched;
-            }
-            holder.actorShortType.setText(res);
-            holder.name.setText(actor.displayName);
-            int[] hp = actor.getHealth();
-            holder.hbar.currentHp = hp[0];
-            holder.hbar.maxHp = hp[1];
-            holder.hbar.invalidate();
-        }
-    }
 
 
     private void sendInitiativeRollRequests() {
@@ -276,7 +205,6 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         SortEntry[] order = new SortEntry[count];
         count = 0;
         final SessionHelper.PlayState session = game.getPlaySession();
-        final int numActors = session.getNumActors();
         for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> entry : initRolls.entrySet()) {
             final AbsLiveActor actor = entry.getKey();
             SortEntry put = new SortEntry(entry.getValue().second, actor.getInitiativeBonus(),
