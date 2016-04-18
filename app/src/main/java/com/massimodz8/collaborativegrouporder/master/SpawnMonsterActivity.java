@@ -93,13 +93,8 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                 break;
             }
             case R.id.sma_menu_addMonsters: {
-                final Iterator<Map.Entry<MonsterData.Monster, Integer>> iter = spawnCounts.entrySet().iterator();
                 HashMap<String, Integer> nameColl = new HashMap<>();
-                while(true) {
-                    final Map.Entry<MonsterData.Monster, Integer> entry;
-                    try {
-                        entry = iter.next();
-                    } catch(NoSuchElementException e) { break; }
+                for (Map.Entry<MonsterData.Monster, Integer> entry : spawnCounts.entrySet()) {
                     final Integer count = entry.getValue();
                     if(count == null) continue; // impossible
                     if(count < 1) continue;
@@ -203,14 +198,10 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         adapter.onSpawnableChanged = new Runnable() {
             @Override
             public void run() {
-                final Iterator<Map.Entry<MonsterData.Monster, Integer>> iter = spawnCounts.entrySet().iterator();
                 int count = 0;
-                while(true) {
-                    try {
-                        final Map.Entry<MonsterData.Monster, Integer> sc = iter.next();
-                        if (sc.getValue() == null || sc.getValue() < 1) continue;
-                        count += sc.getValue();
-                    } catch(NoSuchElementException e) { break; }
+                for (Map.Entry<MonsterData.Monster, Integer> sc : spawnCounts.entrySet()) {
+                    if (sc.getValue() == null || sc.getValue() < 1) continue;
+                    count += sc.getValue();
                 }
                 addMonsters.setVisible(count != 0);
             }
