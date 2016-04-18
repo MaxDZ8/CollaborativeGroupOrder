@@ -1,6 +1,8 @@
 package com.massimodz8.collaborativegrouporder.master;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -16,40 +18,34 @@ import java.util.IdentityHashMap;
  * The way integers are mapped is fixed here: it's a map lookup.
  */
 abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringActorVH> {
-    final LayoutInflater inflater;
     final IdentityHashMap<AbsLiveActor, Integer> actorId;
 
-    AdventuringActorAdapter(LayoutInflater inflater, IdentityHashMap<AbsLiveActor, Integer> actorId) {
-        this.inflater = inflater;
+    AdventuringActorAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId) {
         this.actorId = actorId;
         setHasStableIds(true);
     }
 
     @Override
-    public int getItemCount() { return getGame() != null? getGame().getPlaySession().getNumActors() : 0; }
-
-    @Override
     public long getItemId(int position) {
-        Integer index = actorId.get(getGame().getPlaySession().getActor(position));
+        Integer index = actorId.get(getActorByPos(position));
         return index != null ? index : RecyclerView.NO_ID;
     }
 
     @Override
     public AdventuringActorVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AdventuringActorVH(inflater.inflate(R.layout.vh_adventuring_actor, parent, false)) {
+        return new AdventuringActorVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor, parent, false)) {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                getGame().getPlaySession().willFight(actor, isChecked);
+                enabledSetOrGet(actor, isChecked);
             }
         };
     }
 
     @Override
     public void onBindViewHolder(AdventuringActorVH holder, int position) {
-        final SessionHelper.PlayState session = getGame().getPlaySession();
-        AbsLiveActor actor = session.getActor(position);
+        AbsLiveActor actor = getActorByPos(position);
         holder.actor = actor;
-        holder.selected.setChecked(session.willFight(actor, null));
+        holder.selected.setChecked(enabledSetOrGet(actor, null));
         // TODO holder.avatar
         int res;
         switch(actor.type) {
@@ -66,6 +62,19 @@ abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringA
         holder.hbar.invalidate();
     }
 
-    abstract PartyJoinOrderService getGame();
+
+    protected abstract AbsLiveActor getActorByPos(int position);
+
+    /**
+     * So, I want to modify... or get a value, the setting is driven by VH clicking while the get
+     * happens when rebinding data.
+     * @param actor What we're talking about. Objects are unique so easy!
+     * @param newValue New value to set, if provided.
+     * @return Current value. Will be newValue if it was non-null.
+     */
+    protected abstract boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue);
+
+    /// Used to inflate new VHs.
+    abstract LayoutInflater getLayoutInflater();
 }
 

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
@@ -18,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -70,7 +72,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                             .setMessage(getString(R.string.fra_dlgMsg_missingChars))
                             .setPositiveButton(getString(R.string.fra_dlgActionIgnoreMissingCharacters), new DialogInterface.OnClickListener() {
                                 @Override
-                                public void onClick(DialogInterface dialog, int which) { sendInitiativeRollRequests(); }
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    sendInitiativeRollRequests();
+                                }
                             }).show();
                 }
                 else sendInitiativeRollRequests();
@@ -119,10 +124,25 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     private boolean mustUnbind;
     private PartyJoinOrderService game;
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
-    private AdventuringActorAdapter lister = new AdventuringActorAdapter(getLayoutInflater(), actorId) {
+    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId) {
         @Override
-        PartyJoinOrderService getGame() {
-            return game;
+        protected AbsLiveActor getActorByPos(int position) {
+            if(game == null) return null;
+            if(game.getPlaySession() == null) return null; // impossible
+            return game.getPlaySession().getActor(position);
+        }
+
+        @Override
+        protected boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue) {
+            return game.getPlaySession().willFight(actor, newValue);
+        }
+
+        @Override
+        public int getItemCount() { return game != null? game.getPlaySession().getNumActors() : 0; }
+
+        @Override
+        LayoutInflater getLayoutInflater() {
+            return FreeRoamingActivity.this.getLayoutInflater();
         }
     };
     private int numDefinedActors; // those won't get expunged, no matter what

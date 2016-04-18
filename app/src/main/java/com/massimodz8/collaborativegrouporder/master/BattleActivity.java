@@ -5,13 +5,22 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
+
+import java.util.IdentityHashMap;
 
 public class BattleActivity extends AppCompatActivity implements ServiceConnection {
     @Override
@@ -30,10 +39,52 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             return;
         }
         mustUnbind = true;
+
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fab.setVisibility(View.GONE);
+                new AlertDialog.Builder(BattleActivity.this).setMessage("gotta do something").show();
+            }
+        });
     }
 
     boolean mustUnbind;
     private PartyJoinOrderService game;
+    private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
+    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId) {
+        @Override
+        public int getItemCount() {
+            return game.getPlaySession().battleState.battlers.length;
+        }
+
+        @Override
+        protected AbsLiveActor getActorByPos(int position) {
+            return game.getPlaySession().battleState.battlers[position];
+        }
+
+        @Override
+        protected boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue) {
+            int index = 0;
+            final BattleHelper battle = game.getPlaySession().battleState;
+            for (AbsLiveActor test : battle.battlers) {
+                if(actor == test) {
+                    if(newValue != null) battle.enabled[index] = newValue;
+                    return battle.enabled[index];
+                }
+                index++;
+            }
+
+            return false;
+        }
+
+        @Override
+        LayoutInflater getLayoutInflater() {
+            return BattleActivity.this.getLayoutInflater();
+        }
+    };
+    private int numDefinedActors; // those won't get expunged, no matter what
 
     @Override
     protected void onDestroy() {
@@ -49,15 +100,16 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
         final BattleHelper battle = game.getPlaySession().battleState;
-        final TextView target = (TextView) findViewById(R.id.ba_temporaryFeedback);
-        String meh = "";
-        for(int loop = 0; loop < battle.initiative.length; loop++) {
-            meh += String.valueOf(battle.initiative[loop]);
-            meh += " - ";
-            meh += battle.battlers[loop].displayName;
-            meh += '\n';
-        }
-        target.setText(meh);
+        for (AbsLiveActor actor : battle.battlers) actorId.put(actor, numDefinedActors++);
+        lister.notifyDataSetChanged();
+        final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);
+        rv.setAdapter(lister);
+        rv.addItemDecoration(new PreSeparatorDecorator(rv, this) {
+            @Override
+            protected boolean isEligible(int position) {
+                return true;
+            }
+        });
     }
 
     @Override
