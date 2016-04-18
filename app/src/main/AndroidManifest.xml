@@ -141,7 +141,8 @@
         </activity>
         <activity android:name=".master.BattleActivity"
             android:label="@string/ba_title"
-            android:parentActivityName=".master.FreeRoamingActivity">
+            android:parentActivityName=".master.FreeRoamingActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".master.FreeRoamingActivity" />

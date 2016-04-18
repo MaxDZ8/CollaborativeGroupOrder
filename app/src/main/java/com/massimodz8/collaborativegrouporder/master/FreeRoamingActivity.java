@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -110,6 +111,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         if(added == 0) return;
         for(int loop = 0; loop < added; loop++) actorId.put(session.getActor(numDefinedActors + loop), numDefinedActors + loop);
         lister.notifyItemRangeInserted(numDefinedActors, added);
+        numDefinedActors += added;
     }
 
     @Override
@@ -254,37 +256,49 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         // Everyone got a number. We go.
         int[] initiative = new int[count]; // guaranteed to be count > 0 by calling context
         AbsLiveActor[] battlers = new AbsLiveActor[count]; // todo in the future a slight optimization might involve those being ints to list so GC doesn't traverse them
-        // Sorting ints is easy and I want to reduce the amount of classes I use, looks like it saves something in Android. So...
+        // OFC I would like to pack everything in an integer and be done. Unfortunately, initiative rolls can be negative and would get me screwed so,
+        // As much as I'd like to not define anything extra, I'm forced to use an helper class and an extra alloc. Meh.
         // I need to sort by total initiative scores. Solve ties preferring higher bonus. Solve further ties at random.
         // Plus, keep actor index around or we won't know how to shuffle! This is irrelevant to sorting.
-        final int SPACE = 8;
+        class SortEntry {
+            final int initRoll;
+            final int bonus;
+            final int rand;
+            final AbsLiveActor actor;
+
+            SortEntry(int initRoll, int bonus, int rand, AbsLiveActor actor) {
+                this.initRoll = initRoll;
+                this.bonus = bonus;
+                this.rand = rand;
+                this.actor = actor;
+            }
+        }
+        SortEntry[] order = new SortEntry[count];
         count = 0;
         final SessionHelper.PlayState session = game.getPlaySession();
         final int numActors = session.getNumActors();
         for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> entry : initRolls.entrySet()) {
-            int value = entry.getValue().second << SPACE;
-            value |= entry.getKey().getInitiativeBonus();
-            value <<= SPACE;
-            value |= randomizer.nextInt(256) & 0xFF;
-            value <<= SPACE;
-            int actorIndex = 0;
-            for(int loop = 0; loop < numActors; loop++) {
-                if(entry.getKey() == session.getActor(loop)) {
-                    actorIndex = loop;
-                    break;
-                }
-            }
-            initiative[count] = value | (actorIndex & 0xFF);
-            count++;
+            final AbsLiveActor actor = entry.getKey();
+            SortEntry put = new SortEntry(entry.getValue().second, actor.getInitiativeBonus(),
+                    randomizer.nextInt(1024), actor);
+            order[count++] = put;
         }
-        initRolls = null;
-        Arrays.sort(initiative);
+        Arrays.sort(order, new Comparator<SortEntry>() {
+            @Override
+            public int compare(SortEntry left, SortEntry right) {
+                if(left.initRoll > right.initRoll) return -1;
+                else if(left.initRoll < right.initRoll) return 1;
+                if(left.bonus > right.bonus) return -1;
+                else if(left.bonus < right.bonus) return 1;
+                if(left.rand > right.rand) return -1;
+                else if(left.rand < right.rand) return 1;
+                return 0; // super unlikely!
+            }
+        });
         count = 0;
-        for (int blob : initiative) {
-            final int init = (blob & 0xFF000000) >> 24;
-            final int slot = blob & 0x000000FF;
-            initiative[count] = init;
-            battlers[count] = session.getActor(slot);
+        for (SortEntry se : order) {
+            initiative[count] = se.initRoll;
+            battlers[count] = se.actor;
             count++;
         }
         session.battleState = new BattleHelper(initiative, battlers);
