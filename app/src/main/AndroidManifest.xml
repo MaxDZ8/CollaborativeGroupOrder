@@ -139,7 +139,8 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        <activity android:name=".master.BattleActivity"
+        <activity
+            android:name=".master.BattleActivity"
             android:label="@string/ba_title"
             android:parentActivityName=".master.FreeRoamingActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -147,6 +148,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".master.FreeRoamingActivity" />
         </activity>
+        <activity android:name=".MyActorRoundActivity"></activity>
     </application>
 
 </manifest>

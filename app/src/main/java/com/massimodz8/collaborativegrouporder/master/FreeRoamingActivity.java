@@ -126,6 +126,11 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
     private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId) {
         @Override
+        protected boolean isCurrent(AbsLiveActor actor) {
+            return false;
+        }
+
+        @Override
         protected AbsLiveActor getActorByPos(int position) {
             if(game == null) return null;
             if(game.getPlaySession() == null) return null; // impossible

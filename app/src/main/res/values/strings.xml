@@ -473,8 +473,12 @@
     <string name="mobs_size_huge">huge</string>
     <string name="mobs_size_gargantuan">gargantuan</string>
     <string name="mobs_size_colossal">colossal</string>
-	
+
     <string name="ba_title">Fight!</string>
-    <string name="ba_initialInstructions">Not fighting yet!\nActors without a check mark will skip round.\nUse this for surprise rounds!</string>
+    <string name="ba_initialInstructions">Not fighting yet!\nActors wit no check will skip round.\nUse this for surprise rounds!</string>
+    <string name="ba_roundNumber">Round %1$d</string>
+
+    <string name="mara_placeholder">I\'m just a placeholder!</string>
+    <string name="mara_endTurn">End your turn</string>
 
 </resources>

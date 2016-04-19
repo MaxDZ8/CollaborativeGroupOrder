@@ -17,10 +17,13 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 
 import java.util.IdentityHashMap;
+import java.util.Locale;
 
 public class BattleActivity extends AppCompatActivity implements ServiceConnection {
     @Override
@@ -45,7 +48,9 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             @Override
             public void onClick(View view) {
                 fab.setVisibility(View.GONE);
-                new AlertDialog.Builder(BattleActivity.this).setMessage("gotta do something").show();
+                MaxUtils.beginDelayedTransition(BattleActivity.this);
+                beginRound(1);
+                nextEnabledActor(0);
             }
         });
     }
@@ -57,6 +62,18 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         @Override
         public int getItemCount() {
             return game.getPlaySession().battleState.battlers.length;
+        }
+
+        @Override
+        protected boolean isCurrent(AbsLiveActor actor) {
+            if (game == null) return false;
+            final BattleHelper battle = game.getPlaySession().battleState;
+            int matched = 0;
+            for (AbsLiveActor check : battle.battlers) {
+                if (check == actor) break;
+                matched++;
+            }
+            return matched == battle.currentActor;
         }
 
         @Override
@@ -93,6 +110,53 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         super.onDestroy();
     }
 
+    /// It's just an helper function to set the round string.
+    /// TODO: those two could easily be a single call with nullable Integer params.
+    private void beginRound(int round) {
+        if(game == null || game.getPlaySession() == null) return; // impossible by construction
+        final BattleHelper battle = game.getPlaySession().battleState;
+        if(battle == null) return; // impossible by construction
+        final TextView status = (TextView) findViewById(R.id.ba_status);
+        battle.round = round;
+        status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
+    }
+
+    private void nextEnabledActor(int startIndex) {
+        if(game == null || game.getPlaySession() == null) return; // impossible by construction
+        final BattleHelper battle = game.getPlaySession().battleState;
+        if(battle == null) return; // impossible by construction
+        int prev = battle.currentActor;
+        startIndex %= battle.battlers.length;
+        while(!battle.enabled[startIndex]) startIndex++;
+        startIndex %= battle.battlers.length; // not necessary but just for extra safety.
+        battle.currentActor = startIndex;
+        if(prev >= 0) lister.notifyItemChanged(prev);
+        lister.notifyItemChanged(startIndex);
+        // If played here open detail screen. Otherwise, send your-turn message.
+        final AbsLiveActor active = battle.battlers[battle.currentActor];
+        final MessageChannel pipe;
+        if(active instanceof CharacterActor) {
+            pipe = game.getMessageChannel(((CharacterActor) active).character);
+        }
+        else pipe = null;
+        if(pipe != null) {
+            new AlertDialog.Builder(this).setMessage("TODO: real networking.").show();
+            return;
+        }
+        startActivityForResult(new Intent(this, MyActorRoundActivity.class), REQUEST_MONSTER_TURN);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode != REQUEST_MONSTER_TURN) return;
+        final BattleHelper battle = game.getPlaySession().battleState;
+        MaxUtils.beginDelayedTransition(this);
+        if(battle.currentActor + 1 >= battle.battlers.length) beginRound(battle.round + 1);
+        nextEnabledActor(battle.currentActor + 1);
+    }
+
+    private static final int REQUEST_MONSTER_TURN = 1;
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override

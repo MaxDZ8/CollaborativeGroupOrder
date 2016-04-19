@@ -21,6 +21,7 @@ abstract class AdventuringActorVH extends RecyclerView.ViewHolder implements Vie
     final ImageView avatar;
     final TextView actorShortType, name;
     final HealthBar hbar;
+    final View hilite;
     public AbsLiveActor actor;
 
     public AdventuringActorVH(View iv) {
@@ -32,6 +33,7 @@ abstract class AdventuringActorVH extends RecyclerView.ViewHolder implements Vie
         hbar = (HealthBar) iv.findViewById(R.id.vhAA_health);
         iv.setOnClickListener(this);
         selected.setOnCheckedChangeListener(this);
+        hilite = iv.findViewById(R.id.vhAA_currentPlayerHighlight);
     }
 
     @Override

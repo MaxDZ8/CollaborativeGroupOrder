@@ -51,4 +51,17 @@
         android:layout_alignRight="@+id/vhAA_avatar"
         android:gravity="center_horizontal" />
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/vhAA_avatar"
+        android:layout_alignBottom="@+id/vhAA_actorTypeShort"
+        android:layout_toLeftOf="@+id/vhAA_avatar"
+        android:focusable="false"
+        android:clickable="false"
+        android:id="@+id/vhAA_currentPlayerHighlight"
+        android:visibility="visible"
+        android:background="@color/listSeparator" />
+
 </RelativeLayout>

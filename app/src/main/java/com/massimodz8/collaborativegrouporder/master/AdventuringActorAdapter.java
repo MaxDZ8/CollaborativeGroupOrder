@@ -2,8 +2,8 @@ package com.massimodz8.collaborativegrouporder.master;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
@@ -44,8 +44,10 @@ abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringA
     @Override
     public void onBindViewHolder(AdventuringActorVH holder, int position) {
         AbsLiveActor actor = getActorByPos(position);
+        boolean active = isCurrent(actor);
         holder.actor = actor;
         holder.selected.setChecked(enabledSetOrGet(actor, null));
+        holder.selected.setEnabled(!active);
         // TODO holder.avatar
         int res;
         switch(actor.type) {
@@ -60,9 +62,10 @@ abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringA
         holder.hbar.currentHp = hp[0];
         holder.hbar.maxHp = hp[1];
         holder.hbar.invalidate();
+        holder.hilite.setVisibility(active ? View.VISIBLE : View.GONE);
     }
 
-
+    protected abstract boolean isCurrent(AbsLiveActor actor);
     protected abstract AbsLiveActor getActorByPos(int position);
 
     /**

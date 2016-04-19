@@ -12,7 +12,7 @@ public class BattleHelper {
     public final boolean[] enabled;
 
     int round = -1;
-    int currently = -1;
+    int currentActor = -1;
 
     /**
      * @param initiative Sorted array of initiative scores.
