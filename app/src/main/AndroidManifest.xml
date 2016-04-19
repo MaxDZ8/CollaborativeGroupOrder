@@ -148,7 +148,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".master.FreeRoamingActivity" />
         </activity>
-        <activity android:name=".MyActorRoundActivity"></activity>
+
+        <activity android:name=".MyActorRoundActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/mara_title"
+            android:parentActivityName=".master.BattleActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".master.BattleActivity" />
+        </activity>
     </application>
 
 </manifest>

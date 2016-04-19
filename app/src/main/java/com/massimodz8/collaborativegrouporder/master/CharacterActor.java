@@ -23,7 +23,7 @@ public class CharacterActor extends AbsLiveActor {
     int getInitiativeBonus() { return initiativeBonus; }
 
     @Override
-    int[] getHealth() {
+    public int[] getHealth() {
         return new int[] { currentHealth, maxHealth };
     }
 }

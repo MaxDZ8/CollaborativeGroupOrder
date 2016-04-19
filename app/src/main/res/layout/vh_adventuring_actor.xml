@@ -61,7 +61,7 @@
         android:focusable="false"
         android:clickable="false"
         android:id="@+id/vhAA_currentPlayerHighlight"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@color/listSeparator" />
 
 </RelativeLayout>

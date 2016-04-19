@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
@@ -146,7 +147,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         public int getItemCount() { return game != null? game.getPlaySession().getNumActors() : 0; }
 
         @Override
-        LayoutInflater getLayoutInflater() {
+        protected LayoutInflater getLayoutInflater() {
             return FreeRoamingActivity.this.getLayoutInflater();
         }
     };

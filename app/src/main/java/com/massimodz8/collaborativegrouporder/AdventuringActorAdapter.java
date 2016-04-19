@@ -1,13 +1,12 @@
-package com.massimodz8.collaborativegrouporder.master;
+package com.massimodz8.collaborativegrouporder;
 
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
-import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
 
 import java.util.IdentityHashMap;
 
@@ -17,10 +16,11 @@ import java.util.IdentityHashMap;
  * and be cool! Somebody will therefore have to maintain persistent IDs.
  * The way integers are mapped is fixed here: it's a map lookup.
  */
-abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringActorVH> {
+public abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringActorVH> {
     final IdentityHashMap<AbsLiveActor, Integer> actorId;
+    boolean clickable = true;
 
-    AdventuringActorAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId) {
+    public AdventuringActorAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId) {
         this.actorId = actorId;
         setHasStableIds(true);
     }
@@ -33,9 +33,10 @@ abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringA
 
     @Override
     public AdventuringActorVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AdventuringActorVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor, parent, false)) {
+        return new AdventuringActorVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor, parent, false), clickable) {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isCurrent(actor)) return;
                 enabledSetOrGet(actor, isChecked);
             }
         };
@@ -44,25 +45,10 @@ abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringA
     @Override
     public void onBindViewHolder(AdventuringActorVH holder, int position) {
         AbsLiveActor actor = getActorByPos(position);
-        boolean active = isCurrent(actor);
-        holder.actor = actor;
-        holder.selected.setChecked(enabledSetOrGet(actor, null));
-        holder.selected.setEnabled(!active);
-        // TODO holder.avatar
-        int res;
-        switch(actor.type) {
-            case AbsLiveActor.TYPE_PLAYING_CHARACTER: res = R.string.fra_actorType_playingCharacter; break;
-            case AbsLiveActor.TYPE_MONSTER: res = R.string.fra_actorType_monster; break;
-            case AbsLiveActor.TYPE_NPC: res = R.string.fra_actorType_npc; break;
-            default: res = R.string.fra_actorType_unmatched;
-        }
-        holder.actorShortType.setText(res);
-        holder.name.setText(actor.displayName);
-        int[] hp = actor.getHealth();
-        holder.hbar.currentHp = hp[0];
-        holder.hbar.maxHp = hp[1];
-        holder.hbar.invalidate();
-        holder.hilite.setVisibility(active ? View.VISIBLE : View.GONE);
+        int flags = 0;
+        if(isCurrent(actor)) flags |= AdventuringActorVH.SHOW_HIGHLIGHT;
+        if(enabledSetOrGet(actor, null)) flags |= AdventuringActorVH.CHECKED;
+        holder.bindData(flags, actor);
     }
 
     protected abstract boolean isCurrent(AbsLiveActor actor);
@@ -78,6 +64,6 @@ abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringA
     protected abstract boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue);
 
     /// Used to inflate new VHs.
-    abstract LayoutInflater getLayoutInflater();
+    protected abstract LayoutInflater getLayoutInflater();
 }
 

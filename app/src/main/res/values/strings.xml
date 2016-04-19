@@ -475,10 +475,14 @@
     <string name="mobs_size_colossal">colossal</string>
 
     <string name="ba_title">Fight!</string>
-    <string name="ba_initialInstructions">Not fighting yet!\nActors wit no check will skip round.\nUse this for surprise rounds!</string>
+    <string name="ba_initialInstructions">Not fighting yet!\nActors with no check will skip round.\nUse this for surprise rounds!</string>
     <string name="ba_roundNumber">Round %1$d</string>
 
-    <string name="mara_placeholder">I\'m just a placeholder!</string>
+    <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
     <string name="mara_endTurn">End your turn</string>
+    <string name="mara_title">Act now!</string>
+    <string name="mara_willActAfterYou">After you:</string>
+    <string name="mara_next_title">Pass round to next player</string>
+    <string name="mara_next_titleShort">Next</string>
 
 </resources>

@@ -30,5 +30,5 @@ public abstract class AbsLiveActor {
      * @return A 2D vector with [0] being current health and [1] being max defined health.
      * Note [0] can be > [1] as some actors might get temporary hit points.
      */
-    abstract int[] getHealth();
+    public abstract int[] getHealth();
 }

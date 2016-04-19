@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
@@ -97,7 +98,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         }
 
         @Override
-        LayoutInflater getLayoutInflater() {
+        protected LayoutInflater getLayoutInflater() {
             return BattleActivity.this.getLayoutInflater();
         }
     };

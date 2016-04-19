@@ -11,8 +11,8 @@ public class BattleHelper {
     public final AbsLiveActor[] battlers;
     public final boolean[] enabled;
 
-    int round = -1;
-    int currentActor = -1;
+    public int round = -1;
+    public int currentActor = -1;
 
     /**
      * @param initiative Sorted array of initiative scores.
