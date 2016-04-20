@@ -106,7 +106,6 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
     @Override
     protected void onDestroy() {
-        if(game != null) game.getPlaySession().battleState = null;
         if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
@@ -151,6 +150,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode != REQUEST_MONSTER_TURN) return;
+        if(resultCode != RESULT_OK) return;
         final BattleHelper battle = game.getPlaySession().battleState;
         MaxUtils.beginDelayedTransition(this);
         if(battle.currentActor + 1 >= battle.battlers.length) beginRound(battle.round + 1);

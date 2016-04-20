@@ -47,7 +47,6 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
 
     @Override
     protected void onDestroy() {
-        if(game != null) game.getPlaySession().battleState = null;
         if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
