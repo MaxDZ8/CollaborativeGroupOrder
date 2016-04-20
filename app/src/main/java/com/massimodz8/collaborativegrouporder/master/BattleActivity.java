@@ -190,6 +190,11 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 return true;
             }
         });
+        if(battle.round > 0) { // battle already started...
+            findViewById(R.id.fab).setVisibility(View.GONE);
+            final TextView status = (TextView) findViewById(R.id.ba_status);
+            status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
+        }
     }
 
     @Override

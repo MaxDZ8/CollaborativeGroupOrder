@@ -20,6 +20,8 @@ import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.master.BattleHelper;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 
+import java.util.Locale;
+
 public class MyActorRoundActivity extends AppCompatActivity implements ServiceConnection {
 
     @Override
@@ -91,9 +93,12 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         holder.setVisibility(View.VISIBLE);
         int nextIndex = battle.currentActor + 1;
         nextIndex %= battle.battlers.length;
-        while(nextIndex < battle.currentActor && !battle.enabled[nextIndex]) nextIndex++;
-        final TextView nextName = (TextView) findViewById(R.id.mara_nextActorName);
-        nextName.setText(String.format(getString(R.string.mara_nextToAct), battle.battlers[nextIndex].displayName));
+        while(nextIndex != battle.currentActor && nextIndex < battle.enabled.length && !battle.enabled[nextIndex]) nextIndex++;
+        nextIndex %= battle.battlers.length;
+        TextView tv = (TextView) findViewById(R.id.mara_nextActorName);
+        tv.setText(String.format(getString(R.string.mara_nextToAct), battle.battlers[nextIndex].displayName));
+        tv = (TextView) findViewById(R.id.mara_round);
+        tv.setText(String.format(Locale.ROOT, getString(R.string.mara_round), battle.round));
     }
 
     @Override
