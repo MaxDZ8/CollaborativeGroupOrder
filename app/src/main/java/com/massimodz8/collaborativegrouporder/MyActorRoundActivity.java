@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,6 +44,23 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
             return;
         }
         mustUnbind = true;
+
+        if(savedInstanceState != null) return; // when regenerated, probably because of user rotating device, no need to gain more attention.
+
+        // We cheat and give out notifications right away. By the time the user reacts we'll have
+        // managed to connect to service and pulled the data.
+        final Vibrator vibro = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        if(vibro != null && vibro.hasVibrator()) {
+            final long[] intervals = { 0, 350, 300, 250 };
+            vibro.vibrate(intervals, -1);
+        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        // This apparently does not work on several devices, including mine.
+        ////final AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        ////if(am != null) am.playSoundEffect(AudioManager.FX_KEY_CLICK);
+
+        // Using ringtones is too complicated, seems to require extra permissions and sound is distracting anyway.
+        // I would like to try using the notification led but my smartphone does not have it anyway.
     }
 
     @Override
