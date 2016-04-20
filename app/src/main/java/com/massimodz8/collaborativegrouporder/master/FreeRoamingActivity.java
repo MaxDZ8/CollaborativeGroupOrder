@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
+import com.massimodz8.collaborativegrouporder.AdventuringActorVH;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
@@ -125,7 +126,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     private boolean mustUnbind;
     private PartyJoinOrderService game;
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
-    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId) {
+    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId, new AdventuringActorVH.ClickSelected()) {
         @Override
         protected boolean isCurrent(AbsLiveActor actor) {
             return false;

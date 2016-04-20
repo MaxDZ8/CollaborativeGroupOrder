@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
+import com.massimodz8.collaborativegrouporder.AdventuringActorVH;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
@@ -59,7 +60,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     boolean mustUnbind;
     private PartyJoinOrderService game;
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
-    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId) {
+    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId, new DifferentClickCallback()) {
         @Override
         public int getItemCount() {
             return game.getPlaySession().battleState.battlers.length;
@@ -102,6 +103,20 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             return BattleActivity.this.getLayoutInflater();
         }
     };
+    private class DifferentClickCallback extends AdventuringActorVH.ClickSelected {
+        @Override
+        public void onClick(AdventuringActorVH self, View view) {
+            if(game == null || game.getPlaySession() == null || game.getPlaySession().battleState == null) super.onClick(self, view); // impossible
+            final BattleHelper state = game.getPlaySession().battleState;
+            int myIndex = 0;
+            for (AbsLiveActor test : state.battlers) {
+                if(test == self.actor) break;
+                myIndex++;
+            }
+            if(myIndex != state.currentActor) super.onClick(self, view); // toggle 'will act next round'
+            else startActivityForResult(new Intent(BattleActivity.this, MyActorRoundActivity.class), REQUEST_MONSTER_TURN);
+        }
+    }
     private int numDefinedActors; // those won't get expunged, no matter what
 
     @Override

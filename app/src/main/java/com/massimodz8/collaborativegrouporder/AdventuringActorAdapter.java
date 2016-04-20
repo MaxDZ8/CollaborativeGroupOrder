@@ -18,10 +18,11 @@ import java.util.IdentityHashMap;
  */
 public abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringActorVH> {
     final IdentityHashMap<AbsLiveActor, Integer> actorId;
-    boolean clickable = true;
+    AdventuringActorVH.ClickCallback clickCallback;
 
-    public AdventuringActorAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId) {
+    public AdventuringActorAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId, AdventuringActorVH.ClickCallback clickCallback) {
         this.actorId = actorId;
+        this.clickCallback = clickCallback;
         setHasStableIds(true);
     }
 
@@ -33,7 +34,7 @@ public abstract class AdventuringActorAdapter extends RecyclerView.Adapter<Adven
 
     @Override
     public AdventuringActorVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AdventuringActorVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor, parent, false), clickable) {
+        return new AdventuringActorVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor, parent, false), clickCallback) {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isCurrent(actor)) return;

@@ -1,6 +1,5 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -9,7 +8,6 @@ import android.os.IBinder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -83,7 +81,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         final BattleHelper battle = game.getPlaySession().battleState;
         AbsLiveActor actor = battle.battlers[battle.currentActor];
         RelativeLayout holder = (RelativeLayout) findViewById(R.id.vhAA_actorTypeShort).getParent();
-        AdventuringActorVH helper = new AdventuringActorVH(holder, false) {
+        AdventuringActorVH helper = new AdventuringActorVH(holder, null) {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             }

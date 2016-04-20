@@ -1,5 +1,6 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
@@ -17,29 +18,43 @@ import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
  * 'free roaming' and 'battle'. They are sorta the same but managed differently. I want them to be
  * consistent so always present them using this thing.
  */
-abstract class AdventuringActorVH extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public abstract class AdventuringActorVH extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     final CheckBox selected;
     final ImageView avatar;
     final TextView actorShortType, name;
     final HealthBar hbar;
     final View hilite;
+    final public ClickCallback onClickCallback;
     public AbsLiveActor actor;
 
-    public AdventuringActorVH(View iv, boolean clickable) {
+    public interface ClickCallback {
+        void onClick(AdventuringActorVH self, View view);
+    }
+
+    public static class ClickSelected implements ClickCallback {
+        @Override
+        public void onClick(AdventuringActorVH self, View view) {
+            self.selected.performClick();
+        }
+    }
+
+    public AdventuringActorVH(View iv, @Nullable ClickCallback onClick) {
         super(iv);
         selected = (CheckBox) iv.findViewById(R.id.vhAA_selected);
         avatar = (ImageView) iv.findViewById(R.id.vhAA_avatar);
         actorShortType = (TextView) iv.findViewById(R.id.vhAA_actorTypeShort);
         name = (TextView) iv.findViewById(R.id.vhAA_name);
         hbar = (HealthBar) iv.findViewById(R.id.vhAA_health);
-        if(clickable) iv.setOnClickListener(this);
         selected.setOnCheckedChangeListener(this);
         hilite = iv.findViewById(R.id.vhAA_currentPlayerHighlight);
+
+        if(null != onClick) iv.setOnClickListener(this);
+        onClickCallback = onClick;
     }
 
     @Override
     public void onClick(View v) {
-        selected.performClick();
+        if(null != onClickCallback) onClickCallback.onClick(this, v);
     }
 
     static final int SHOW_HIGHLIGHT = 1;
