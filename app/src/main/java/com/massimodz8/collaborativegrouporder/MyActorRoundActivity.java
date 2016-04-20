@@ -92,6 +92,11 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         MaxUtils.beginDelayedTransition(this);
         helper.bindData(0, actor);
         holder.setVisibility(View.VISIBLE);
+        int nextIndex = battle.currentActor + 1;
+        nextIndex %= battle.battlers.length;
+        while(nextIndex < battle.currentActor && !battle.enabled[nextIndex]) nextIndex++;
+        final TextView nextName = (TextView) findViewById(R.id.mara_nextActorName);
+        nextName.setText(String.format(getString(R.string.mara_nextToAct), battle.battlers[nextIndex].displayName));
     }
 
     @Override

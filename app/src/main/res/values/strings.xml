@@ -484,5 +484,6 @@
     <string name="mara_willActAfterYou">After you:</string>
     <string name="mara_next_title">Pass round to next player</string>
     <string name="mara_next_titleShort">Next</string>
+    <string name="mara_nextToAct">Next to act: %1$s</string>
 
 </resources>
