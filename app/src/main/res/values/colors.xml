@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#0D47A1</color>
-        <!-- blue 800 #1565c0
-             looks dark on PC but it's really bright on my phone,
-             blue 900 is better.
+        <!-- blue 900.
+             Also tried: blue 800 #1565c0
+             looks dark on PC but it's really bright on my phone.
         -->
     <color name="colorPrimaryDark">#1B5E20</color> <!-- green 900 -->
     <color name="colorAccent">#76ff03</color> <!-- Light Green A200 -->
