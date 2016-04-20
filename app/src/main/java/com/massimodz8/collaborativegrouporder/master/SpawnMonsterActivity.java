@@ -8,8 +8,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,16 +30,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 public class SpawnMonsterActivity extends AppCompatActivity implements ServiceConnection {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spawn_monster);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final ActionBar sab = getSupportActionBar();
+        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
@@ -44,6 +49,36 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         query = intent.getStringExtra(SearchManager.QUERY);
 
         // Stop there. We must also create the action bar first.
+
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setVisibility(View.INVISIBLE);
+        fab.setEnabled(false);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HashMap<String, Integer> nameColl = new HashMap<>();
+                for (Map.Entry<MonsterData.Monster, Integer> entry : spawnCounts.entrySet()) {
+                    final Integer count = entry.getValue();
+                    if(count == null) continue; // impossible
+                    if(count < 1) continue;
+                    final MonsterData.Monster mob = entry.getKey();
+                    final String presentation = getPreferredName(mob);
+                    for(int spawn = 0; spawn < count; spawn++) {
+                        String display = presentation;
+                        Integer previously = nameColl.get(presentation);
+                        if(previously == null) previously = 0;
+                        else display = String.format(Locale.getDefault(), getString(R.string.sma_monsterNameSpawnNote), display, previously);
+                        MonsterActor actor = new MonsterActor(display);
+                        actor.currentHealth = actor.maxHealth = 666; // todo generate(mob.defense.hp)
+                        actor.initiativeBonus = mob.header.initiative; // todo select conditional initiatives.
+                        session.add(actor);
+                        session.willFight(actor, true);
+                        nameColl.put(presentation, previously + 1);
+                    }
+                }
+                finish();
+            }
+        });
     }
 
 
@@ -51,7 +86,6 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.spawn_monster_activity, menu);
         showBookInfo = menu.findItem(R.id.sma_menu_showMonsterBookInfo);
-        addMonsters = menu.findItem(R.id.sma_menu_addMonsters);
 
         if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
             MaxUtils.beginDelayedTransition(this);
@@ -92,29 +126,6 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                 count.setText(String.valueOf(la.getItemCount()));
                 break;
             }
-            case R.id.sma_menu_addMonsters: {
-                HashMap<String, Integer> nameColl = new HashMap<>();
-                for (Map.Entry<MonsterData.Monster, Integer> entry : spawnCounts.entrySet()) {
-                    final Integer count = entry.getValue();
-                    if(count == null) continue; // impossible
-                    if(count < 1) continue;
-                    final MonsterData.Monster mob = entry.getKey();
-                    final String presentation = getPreferredName(mob);
-                    for(int spawn = 0; spawn < count; spawn++) {
-                        String display = presentation;
-                        Integer previously = nameColl.get(presentation);
-                        if(previously == null) previously = 0;
-                        else display = String.format(Locale.getDefault(), getString(R.string.sma_monsterNameSpawnNote), display, previously);
-                        MonsterActor actor = new MonsterActor(display);
-                        actor.currentHealth = actor.maxHealth = 666; // todo generate(mob.defense.hp)
-                        actor.initiativeBonus = mob.header.initiative; // todo select conditional initiatives.
-                        session.add(actor);
-                        session.willFight(actor, true);
-                        nameColl.put(presentation, previously + 1);
-                    }
-                }
-                finish();
-            } break;
         }
         return false;
     }
@@ -163,7 +174,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
 
 
     private String query;
-    private MenuItem showBookInfo, addMonsters;
+    private MenuItem showBookInfo;
     private MonsterData.MonsterBook monsters;
     private IdentityHashMap<MonsterData.Monster, Integer> spawnCounts = new IdentityHashMap<>();
     private SessionHelper.PlayState session;
@@ -203,7 +214,10 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                     if (sc.getValue() == null || sc.getValue() < 1) continue;
                     count += sc.getValue();
                 }
-                addMonsters.setVisible(count != 0);
+                final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                MaxUtils.beginDelayedTransition(SpawnMonsterActivity.this);
+                fab.setEnabled(count != 0);
+                fab.setVisibility(count != 0? View.VISIBLE : View.INVISIBLE);
             }
         };
         list.setAdapter(adapter);

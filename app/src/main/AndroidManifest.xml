@@ -127,7 +127,8 @@
         <activity
             android:name=".master.SpawnMonsterActivity"
             android:label="@string/sma_title"
-            android:parentActivityName=".master.FreeRoamingActivity">
+            android:parentActivityName=".master.FreeRoamingActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
