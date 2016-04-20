@@ -24,4 +24,17 @@ public class BattleHelper {
         enabled = new boolean[battlers.length];
         Arrays.fill(enabled, true);
     }
+
+    public void tickRound() {
+        if(round == -1) {
+            round = 1;
+            currentActor = 0;
+            return;
+        }
+        int next = currentActor + 1;
+        while(next < battlers.length && !enabled[next]) next++;
+        next %= battlers.length;
+        while(next < currentActor && !enabled[next]) next++;
+        currentActor = next;
+    }
 }

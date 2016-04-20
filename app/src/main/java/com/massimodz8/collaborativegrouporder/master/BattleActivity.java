@@ -51,8 +51,8 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             public void onClick(View view) {
                 fab.setVisibility(View.GONE);
                 MaxUtils.beginDelayedTransition(BattleActivity.this);
-                beginRound(1);
-                nextEnabledActor(0);
+                game.getPlaySession().battleState.tickRound();
+                activateNewActor();
             }
         });
     }
@@ -125,29 +125,24 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         super.onDestroy();
     }
 
-    /// It's just an helper function to set the round string.
-    /// TODO: those two could easily be a single call with nullable Integer params.
-    private void beginRound(int round) {
-        if(game == null || game.getPlaySession() == null) return; // impossible by construction
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode != REQUEST_MONSTER_TURN) return;
+        if(resultCode != RESULT_OK) return;
         final BattleHelper battle = game.getPlaySession().battleState;
-        if(battle == null) return; // impossible by construction
+        final int prev = battle.currentActor;
+        battle.tickRound();
+        MaxUtils.beginDelayedTransition(this);
         final TextView status = (TextView) findViewById(R.id.ba_status);
-        battle.round = round;
         status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
+        if(prev >= 0) lister.notifyItemChanged(prev);
+        lister.notifyItemChanged(battle.currentActor);
+        activateNewActor();
     }
 
-    private void nextEnabledActor(int startIndex) {
-        if(game == null || game.getPlaySession() == null) return; // impossible by construction
+    private void activateNewActor() {        // If played here open detail screen. Otherwise, send your-turn message.
         final BattleHelper battle = game.getPlaySession().battleState;
-        if(battle == null) return; // impossible by construction
-        int prev = battle.currentActor;
-        startIndex %= battle.battlers.length;
-        while(!battle.enabled[startIndex]) startIndex++;
-        startIndex %= battle.battlers.length; // not necessary but just for extra safety.
-        battle.currentActor = startIndex;
-        if(prev >= 0) lister.notifyItemChanged(prev);
-        lister.notifyItemChanged(startIndex);
-        // If played here open detail screen. Otherwise, send your-turn message.
         final AbsLiveActor active = battle.battlers[battle.currentActor];
         final MessageChannel pipe;
         if(active instanceof CharacterActor) {
@@ -159,17 +154,6 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             return;
         }
         startActivityForResult(new Intent(this, MyActorRoundActivity.class), REQUEST_MONSTER_TURN);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode != REQUEST_MONSTER_TURN) return;
-        if(resultCode != RESULT_OK) return;
-        final BattleHelper battle = game.getPlaySession().battleState;
-        MaxUtils.beginDelayedTransition(this);
-        if(battle.currentActor + 1 >= battle.battlers.length) beginRound(battle.round + 1);
-        nextEnabledActor(battle.currentActor + 1);
     }
 
     private static final int REQUEST_MONSTER_TURN = 1;
