@@ -6,7 +6,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -62,14 +61,11 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         switch(item.getItemId()) {
             case R.id.mara_menu_done:
                 // That's quite small and remote, unlikely it gets hit by accident.
-                nextCharacter();
+                setResult(RESULT_OK);
+                finish();
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void nextCharacter() {
-        new AlertDialog.Builder(this).setMessage("Let's go next man!").show();
     }
 
     boolean mustUnbind;

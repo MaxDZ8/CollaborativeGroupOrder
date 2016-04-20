@@ -35,6 +35,7 @@ public class BattleHelper {
         while(next < battlers.length && !enabled[next]) next++;
         next %= battlers.length;
         while(next < currentActor && !enabled[next]) next++;
+        if(next <= currentActor) round++;
         currentActor = next;
     }
 }
