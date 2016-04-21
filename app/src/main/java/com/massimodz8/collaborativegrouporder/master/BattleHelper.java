@@ -4,23 +4,19 @@ import android.support.annotation.NonNull;
 
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 
-import java.util.Arrays;
-
 /**
  * Created by Massimo on 17/04/2016.
  * Getting to the real deal!
  */
 public class BattleHelper {
     public final InitiativeScore[] ordered;
-    public final boolean[] enabled;
 
     public int round = -1;
     public int currentActor = -1;
+    public boolean dontTick;
 
     public BattleHelper(@NonNull InitiativeScore[] ordered) {
         this.ordered = ordered;
-        enabled = new boolean[ordered.length];
-        Arrays.fill(enabled, true);
     }
 
     public void tickRound() {
@@ -29,10 +25,14 @@ public class BattleHelper {
             currentActor = 0;
             return;
         }
+        if(dontTick) { // then, this is nop.
+            dontTick = false;
+            return;
+        }
         int next = currentActor + 1;
-        while(next < ordered.length && !enabled[next]) next++;
+        while(next < ordered.length && !ordered[next].enabled) next++;
         next %= ordered.length;
-        while(next < currentActor && !enabled[next]) next++;
+        while(next < currentActor && !ordered[next].enabled) next++;
         if(next <= currentActor) round++;
         currentActor = next;
     }

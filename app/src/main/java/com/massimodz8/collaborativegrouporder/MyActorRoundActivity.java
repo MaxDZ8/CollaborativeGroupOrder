@@ -7,7 +7,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +23,8 @@ import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.master.BattleHelper;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Locale;
 
@@ -106,7 +107,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 AbsLiveActor[] order = new AbsLiveActor[battle.ordered.length];
-                                IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<AbsLiveActor, Integer>(battle.ordered.length);
+                                IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>(battle.ordered.length);
                                 int cp = 0;
                                 for (InitiativeScore el : battle.ordered) {
                                     order[cp] = el.actor;
@@ -117,7 +118,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                                         .show(MyActorRoundActivity.this, new InitiativeShuffleDialog.OnApplyCallback() {
                                             @Override
                                             public void newOrder(AbsLiveActor[] target) {
-                                                new AlertDialog.Builder(MyActorRoundActivity.this).setMessage("changed").show();
+                                                applyNewOrder(target);
                                             }
                                         });
                             }
@@ -126,15 +127,53 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         return super.onOptionsItemSelected(item);
     }
 
-    boolean mustUnbind;
-    BattleHelper battle;
+    /// Called from the 'wait' dialog to request to shuffle my actor somewhere else.
+    private void applyNewOrder(AbsLiveActor[] target) {
+        final InitiativeScore me = battle.ordered[battle.currentActor];
+        int newPos = 0;
+        while(newPos < target.length && target[newPos] != me.actor) newPos++;
+        if(newPos == target.length) return; // wut? Impossible!
+        if(newPos == battle.currentActor) return; // he hit apply but really did nothing.
+        final InitiativeScore next = battle.ordered[(battle.currentActor + 1) % battle.ordered.length];
+        if(localGame != null) { // This is cool, we approve of ourselves :P
+            // Setting the .rand so it sorts correctly is complicated. Easier to rebuild them in a
+            // predictable way so I can trivially infer a value transform.
+            int count = 0;
+            for (AbsLiveActor actor : target) {
+                for (InitiativeScore el : battle.ordered) {
+                    if(el.actor == actor) {
+                        el.rand = count;
+                        break;
+                    }
+                }
+                count++;
+            }
+            Arrays.sort(battle.ordered, new Comparator<InitiativeScore>() {
+                @Override
+                public int compare(InitiativeScore left, InitiativeScore right) {
+                    if(left.rand < right.rand) return -1;
+                    if(left.rand == right.rand) return 0;
+                    return 1;
+                }
+            });
+            battle.dontTick = next == battle.ordered[battle.currentActor];
+            setResult(RESULT_OK);
+            finish();
+            return;
+        }
+        new AlertDialog.Builder(this).setMessage("TODO: ask permission to server").show();
+    }
+
+    private boolean mustUnbind;
+    private PartyJoinOrderService localGame;
+    private BattleHelper battle;
     private MenuItem imDone;
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        PartyJoinOrderService game = ((PartyJoinOrderService.LocalBinder)service).getConcreteService();
-        battle = game.getPlaySession().battleState;
+        localGame = ((PartyJoinOrderService.LocalBinder)service).getConcreteService();
+        battle = localGame.getPlaySession().battleState;
         AbsLiveActor actor = battle.ordered[battle.currentActor].actor;
         RelativeLayout holder = (RelativeLayout) findViewById(R.id.vhAA_actorTypeShort).getParent();
         AdventuringActorVH helper = new AdventuringActorVH(holder, null, true) {
@@ -151,9 +190,9 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         TextView tv = (TextView) findViewById(R.id.mara_nextActorName);
         tv.setText(String.format(getString(R.string.mara_nextToAct), battle.ordered[battle.currentActor].actor.displayName));
         tv = (TextView) findViewById(R.id.mara_round);
-        tv.setText(String.format(Locale.ROOT, getString(R.string.mara_round), battle.round));
         battle.currentActor = pactor;
         battle.round = pround;
+        tv.setText(String.format(Locale.ROOT, getString(R.string.mara_round), battle.round));
     }
 
     @Override

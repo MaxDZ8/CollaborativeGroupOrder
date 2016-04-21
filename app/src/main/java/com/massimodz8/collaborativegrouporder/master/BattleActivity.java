@@ -91,8 +91,8 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             final BattleHelper battle = game.getPlaySession().battleState;
             for (InitiativeScore test : battle.ordered) {
                 if(actor == test.actor) {
-                    if(newValue != null) battle.enabled[index] = newValue;
-                    return battle.enabled[index];
+                    if(newValue != null) battle.ordered[index].enabled = newValue;
+                    return battle.ordered[index].enabled;
                 }
                 index++;
             }

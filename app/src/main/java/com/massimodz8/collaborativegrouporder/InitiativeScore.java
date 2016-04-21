@@ -20,10 +20,15 @@ import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
  * We have full control on that and we can transform it as we want, it's not exposed to user anyway!
  */
 public class InitiativeScore implements Comparable<InitiativeScore> {
-    public final int initRoll;
-    public final int bonus;
-    public final int rand;
+    public int initRoll;
+    final public int bonus;
+    public int rand;
+    // We will try to keep those 'constant' and faithful to the original dice rolls BUT
+    // this is just best effort. Better to never show those to the user as shuffle initiative
+    // will change those values and will no more be coherent with actor bonus.
     public final AbsLiveActor actor;
+
+    public boolean enabled = true; // if false, do not get round actions. Not sorted.
 
     public InitiativeScore(int initRoll, int bonus, int rand, AbsLiveActor actor) {
         this.initRoll = initRoll;
