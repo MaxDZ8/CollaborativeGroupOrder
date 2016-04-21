@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
 import com.massimodz8.collaborativegrouporder.AdventuringActorVH;
+import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
@@ -63,7 +64,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId, new DifferentClickCallback()) {
         @Override
         public int getItemCount() {
-            return game.getPlaySession().battleState.battlers.length;
+            return game.getPlaySession().battleState.ordered.length;
         }
 
         @Override
@@ -71,8 +72,8 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             if (game == null) return false;
             final BattleHelper battle = game.getPlaySession().battleState;
             int matched = 0;
-            for (AbsLiveActor check : battle.battlers) {
-                if (check == actor) break;
+            for (InitiativeScore check : battle.ordered) {
+                if (check.actor == actor) break;
                 matched++;
             }
             return matched == battle.currentActor;
@@ -80,15 +81,15 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
         @Override
         protected AbsLiveActor getActorByPos(int position) {
-            return game.getPlaySession().battleState.battlers[position];
+            return game.getPlaySession().battleState.ordered[position].actor;
         }
 
         @Override
         protected boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue) {
             int index = 0;
             final BattleHelper battle = game.getPlaySession().battleState;
-            for (AbsLiveActor test : battle.battlers) {
-                if(actor == test) {
+            for (InitiativeScore test : battle.ordered) {
+                if(actor == test.actor) {
                     if(newValue != null) battle.enabled[index] = newValue;
                     return battle.enabled[index];
                 }
@@ -109,8 +110,8 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             if(game == null || game.getPlaySession() == null || game.getPlaySession().battleState == null) super.onClick(self, view); // impossible
             final BattleHelper state = game.getPlaySession().battleState;
             int myIndex = 0;
-            for (AbsLiveActor test : state.battlers) {
-                if(test == self.actor) break;
+            for (InitiativeScore test : state.ordered) {
+                if(test.actor == self.actor) break;
                 myIndex++;
             }
             if(myIndex != state.currentActor) super.onClick(self, view); // toggle 'will act next round'
@@ -143,7 +144,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
     private void activateNewActor() {        // If played here open detail screen. Otherwise, send your-turn message.
         final BattleHelper battle = game.getPlaySession().battleState;
-        final AbsLiveActor active = battle.battlers[battle.currentActor];
+        final AbsLiveActor active = battle.ordered[battle.currentActor].actor;
         final MessageChannel pipe;
         if(active instanceof CharacterActor) {
             pipe = game.getMessageChannel(((CharacterActor) active).character);
@@ -164,7 +165,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
         final BattleHelper battle = game.getPlaySession().battleState;
-        for (AbsLiveActor actor : battle.battlers) actorId.put(actor, numDefinedActors++);
+        for (InitiativeScore el : battle.ordered) actorId.put(el.actor, numDefinedActors++);
         lister.notifyDataSetChanged();
         final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);
         rv.setAdapter(lister);

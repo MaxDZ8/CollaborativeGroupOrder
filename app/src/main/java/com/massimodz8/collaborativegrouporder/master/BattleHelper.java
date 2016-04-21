@@ -1,5 +1,9 @@
 package com.massimodz8.collaborativegrouporder.master;
 
+import android.support.annotation.NonNull;
+
+import com.massimodz8.collaborativegrouporder.InitiativeScore;
+
 import java.util.Arrays;
 
 /**
@@ -7,21 +11,15 @@ import java.util.Arrays;
  * Getting to the real deal!
  */
 public class BattleHelper {
-    public final int[] initiative;
-    public final AbsLiveActor[] battlers;
+    public final InitiativeScore[] ordered;
     public final boolean[] enabled;
 
     public int round = -1;
     public int currentActor = -1;
 
-    /**
-     * @param initiative Sorted array of initiative scores.
-     * @param battlers Array of actors where battlers[i] corresponds to initiative[i]
-     */
-    public BattleHelper(int[] initiative, AbsLiveActor[] battlers) {
-        this.initiative = initiative;
-        this.battlers = battlers;
-        enabled = new boolean[battlers.length];
+    public BattleHelper(@NonNull InitiativeScore[] ordered) {
+        this.ordered = ordered;
+        enabled = new boolean[ordered.length];
         Arrays.fill(enabled, true);
     }
 
@@ -32,8 +30,8 @@ public class BattleHelper {
             return;
         }
         int next = currentActor + 1;
-        while(next < battlers.length && !enabled[next]) next++;
-        next %= battlers.length;
+        while(next < ordered.length && !enabled[next]) next++;
+        next %= ordered.length;
         while(next < currentActor && !enabled[next]) next++;
         if(next <= currentActor) round++;
         currentActor = next;

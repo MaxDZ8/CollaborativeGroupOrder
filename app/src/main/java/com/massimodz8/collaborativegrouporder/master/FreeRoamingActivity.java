@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
 import com.massimodz8.collaborativegrouporder.AdventuringActorVH;
+import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
@@ -210,53 +211,16 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             count++;
         }
         // Everyone got a number. We go.
-        int[] initiative = new int[count]; // guaranteed to be count > 0 by calling context
-        AbsLiveActor[] battlers = new AbsLiveActor[count]; // todo in the future a slight optimization might involve those being ints to list so GC doesn't traverse them
-        // OFC I would like to pack everything in an integer and be done. Unfortunately, initiative rolls can be negative and would get me screwed so,
-        // As much as I'd like to not define anything extra, I'm forced to use an helper class and an extra alloc. Meh.
-        // I need to sort by total initiative scores. Solve ties preferring higher bonus. Solve further ties at random.
-        // Plus, keep actor index around or we won't know how to shuffle! This is irrelevant to sorting.
-        class SortEntry {
-            final int initRoll;
-            final int bonus;
-            final int rand;
-            final AbsLiveActor actor;
-
-            SortEntry(int initRoll, int bonus, int rand, AbsLiveActor actor) {
-                this.initRoll = initRoll;
-                this.bonus = bonus;
-                this.rand = rand;
-                this.actor = actor;
-            }
-        }
-        SortEntry[] order = new SortEntry[count];
+        InitiativeScore[] order = new InitiativeScore[count];
         count = 0;
         final SessionHelper.PlayState session = game.getPlaySession();
         for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> entry : initRolls.entrySet()) {
             final AbsLiveActor actor = entry.getKey();
-            SortEntry put = new SortEntry(entry.getValue().second, actor.getInitiativeBonus(),
-                    randomizer.nextInt(1024), actor);
-            order[count++] = put;
+            final Integer irl = entry.getValue().second;
+            order[count++] = new InitiativeScore(irl, actor.getInitiativeBonus(), randomizer.nextInt(1024), actor);
         }
-        Arrays.sort(order, new Comparator<SortEntry>() {
-            @Override
-            public int compare(SortEntry left, SortEntry right) {
-                if(left.initRoll > right.initRoll) return -1;
-                else if(left.initRoll < right.initRoll) return 1;
-                if(left.bonus > right.bonus) return -1;
-                else if(left.bonus < right.bonus) return 1;
-                if(left.rand > right.rand) return -1;
-                else if(left.rand < right.rand) return 1;
-                return 0; // super unlikely!
-            }
-        });
-        count = 0;
-        for (SortEntry se : order) {
-            initiative[count] = se.initRoll;
-            battlers[count] = se.actor;
-            count++;
-        }
-        session.battleState = new BattleHelper(initiative, battlers);
+        Arrays.sort(order);
+        session.battleState = new BattleHelper(order);
         startActivity(new Intent(this, BattleActivity.class));
     }
 
