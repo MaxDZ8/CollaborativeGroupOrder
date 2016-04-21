@@ -61,7 +61,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     boolean mustUnbind;
     private PartyJoinOrderService game;
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
-    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId, new DifferentClickCallback()) {
+    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId, new DifferentClickCallback(), false) {
         @Override
         public int getItemCount() {
             return game.getPlaySession().battleState.ordered.length;

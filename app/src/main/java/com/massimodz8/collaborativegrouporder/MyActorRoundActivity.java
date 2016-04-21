@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.master.BattleHelper;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 
+import java.util.IdentityHashMap;
 import java.util.Locale;
 
 public class MyActorRoundActivity extends AppCompatActivity implements ServiceConnection {
@@ -100,12 +102,24 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                                         .setMessage("TODO: ready action!")
                                         .show();
                             }
-                        }).setNeutralButton("Wait", new DialogInterface.OnClickListener() {
+                        }).setNeutralButton(getString(R.string.mara_dlg_readyActionButtonLabel), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                new AlertDialog.Builder(MyActorRoundActivity.this)
-                                        .setMessage("TODO: wait!")
-                                        .show();
+                                AbsLiveActor[] order = new AbsLiveActor[battle.ordered.length];
+                                IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<AbsLiveActor, Integer>(battle.ordered.length);
+                                int cp = 0;
+                                for (InitiativeScore el : battle.ordered) {
+                                    order[cp] = el.actor;
+                                    actorId.put(el.actor, cp);
+                                    cp++;
+                                }
+                                new InitiativeShuffleDialog(order, battle.currentActor, actorId)
+                                        .show(MyActorRoundActivity.this, new InitiativeShuffleDialog.OnApplyCallback() {
+                                            @Override
+                                            public void newOrder(AbsLiveActor[] target) {
+                                                new AlertDialog.Builder(MyActorRoundActivity.this).setMessage("changed").show();
+                                            }
+                                        });
                             }
                         }).show();
         }
@@ -113,16 +127,17 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     }
 
     boolean mustUnbind;
+    BattleHelper battle;
     private MenuItem imDone;
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService game = ((PartyJoinOrderService.LocalBinder)service).getConcreteService();
-        final BattleHelper battle = game.getPlaySession().battleState;
+        battle = game.getPlaySession().battleState;
         AbsLiveActor actor = battle.ordered[battle.currentActor].actor;
         RelativeLayout holder = (RelativeLayout) findViewById(R.id.vhAA_actorTypeShort).getParent();
-        AdventuringActorVH helper = new AdventuringActorVH(holder, null) {
+        AdventuringActorVH helper = new AdventuringActorVH(holder, null, true) {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             }

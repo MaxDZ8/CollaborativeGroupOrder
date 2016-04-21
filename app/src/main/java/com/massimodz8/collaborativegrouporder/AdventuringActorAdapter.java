@@ -19,10 +19,12 @@ import java.util.IdentityHashMap;
 public abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringActorVH> {
     final IdentityHashMap<AbsLiveActor, Integer> actorId;
     AdventuringActorVH.ClickCallback clickCallback;
+    private final boolean hideCheckbox;
 
-    public AdventuringActorAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId, AdventuringActorVH.ClickCallback clickCallback) {
+    public AdventuringActorAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId, AdventuringActorVH.ClickCallback clickCallback, boolean hideCheckbox) {
         this.actorId = actorId;
         this.clickCallback = clickCallback;
+        this.hideCheckbox = hideCheckbox;
         setHasStableIds(true);
     }
 
@@ -34,7 +36,7 @@ public abstract class AdventuringActorAdapter extends RecyclerView.Adapter<Adven
 
     @Override
     public AdventuringActorVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AdventuringActorVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor, parent, false), clickCallback) {
+        return new AdventuringActorVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor, parent, false), clickCallback, hideCheckbox) {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isCurrent(actor)) return;

@@ -29,3 +29,4 @@ app/build/generated/source/r/debug/android/support/design/R.java
 .idea/libraries/junit_4_12.xml
 build/generated/mockable-android-23.jar
 .gradle/2.10/taskArtifacts/cache.properties
+app/build/generated/res/pngs

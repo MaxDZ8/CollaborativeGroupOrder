@@ -127,7 +127,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     private boolean mustUnbind;
     private PartyJoinOrderService game;
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
-    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId, new AdventuringActorVH.ClickSelected()) {
+    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId, new AdventuringActorVH.ClickSelected(), false) {
         @Override
         protected boolean isCurrent(AbsLiveActor actor) {
             return false;
