@@ -180,16 +180,16 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     private SessionHelper.PlayState session;
 
 
-    private static boolean anyStarts(String[] arr, String prefix) {
+    private static boolean anyStarts(String[] arr, String prefix, IdentityHashMap<String, String> tolower) {
         for (String s : arr) {
-            if(s.toLowerCase().startsWith(prefix)) return true;
+            if(tolower.get(s).startsWith(prefix)) return true;
         }
         return false;
     }
 
-    private static boolean anyContains(String[] arr, String prefix, int minIndex) {
+    private static boolean anyContains(String[] arr, String prefix, int minIndex, IdentityHashMap<String, String> tolower) {
         for (String s : arr) {
-            if(s.toLowerCase().indexOf(prefix) >= minIndex) return true;
+            if(tolower.get(s).indexOf(prefix) >= minIndex) return true;
         }
         return false;
     }
@@ -264,17 +264,27 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
             final ArrayList<MonsterData.Monster> mobs = new ArrayList<>();
             final ArrayList<String[]> names = new ArrayList<>();
             final String lcq = query.toLowerCase();
+
+
             @Override
             protected Void doInBackground(Void... params) {
+                final IdentityHashMap<String, String> tolower = new IdentityHashMap<>();
+                for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+                    for (String s : entry.main.header.name) tolower.put(s, s.toLowerCase());
+                    for (MonsterData.Monster variation : entry.variations) {
+                        for (String s : variation.header.name) tolower.put(s, s.toLowerCase());
+                    }
+                }
+
                 for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
                     boolean matched = false;
-                    if(anyStarts(entry.main.header.name, lcq)) {
+                    if(anyStarts(entry.main.header.name, lcq, tolower)) {
                         mobs.add(entry.main);
                         names.add(entry.main.header.name);
                         matched = true;
                     }
                     for (MonsterData.Monster variation : entry.variations) {
-                        if(matched || anyStarts(variation.header.name, lcq)) {
+                        if(matched || anyStarts(variation.header.name, lcq, tolower)) {
                             mobs.add(variation);
                             names.add(completeVariationNames(entry.main.header.name, variation.header.name));
                         }
@@ -282,13 +292,13 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                 }
                 for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
                     boolean matched = false;
-                    if(anyContains(entry.main.header.name, lcq, 1)) {
+                    if(anyContains(entry.main.header.name, lcq, 1, tolower)) {
                         mobs.add(entry.main);
                         names.add(entry.main.header.name);
                         matched = true;
                     }
                     for (MonsterData.Monster variation : entry.variations) {
-                        if(matched || anyContains(variation.header.name, lcq, 1)) {
+                        if(matched || anyContains(variation.header.name, lcq, 1, tolower)) {
                             mobs.add(variation);
                             names.add(completeVariationNames(entry.main.header.name, variation.header.name));
                         }
