@@ -51,13 +51,7 @@ public abstract class AdventuringActorVH extends RecyclerView.ViewHolder impleme
         if(null != onClick) iv.setOnClickListener(this);
         onClickCallback = onClick;
 
-        if(hideSelectCheck) {
-            selected.setVisibility(View.INVISIBLE);
-            // I cannot just make this GONE because I need some thickness for current player highlight.
-            selected.setScaleX(.125f);
-            selected.setScaleY(.125f);
-            // But I can make it 1/8 of the size and it'll still be nice.
-        }
+        if(hideSelectCheck) selected.setVisibility(View.INVISIBLE);
     }
 
     @Override

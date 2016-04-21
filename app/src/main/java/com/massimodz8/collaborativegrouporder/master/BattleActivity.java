@@ -53,6 +53,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 fab.setVisibility(View.GONE);
                 MaxUtils.beginDelayedTransition(BattleActivity.this);
                 game.getPlaySession().battleState.tickRound();
+                lister.notifyItemChanged(game.getPlaySession().battleState.currentActor);
                 activateNewActor();
             }
         });
@@ -130,16 +131,15 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode != REQUEST_MONSTER_TURN) return;
-        if(resultCode != RESULT_OK) return;
         final BattleHelper battle = game.getPlaySession().battleState;
-        final int prev = battle.currentActor;
-        battle.tickRound();
+        if(resultCode == RESULT_OK) battle.tickRound();
         MaxUtils.beginDelayedTransition(this);
         final TextView status = (TextView) findViewById(R.id.ba_status);
         status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
-        if(prev >= 0) lister.notifyItemChanged(prev);
-        lister.notifyItemChanged(battle.currentActor);
-        activateNewActor();
+        // Even if the dude is still doing his round we regen everything. Why?
+        // Typical case: he did an attack and made damage. It's not like I want to track those things.
+        lister.notifyDataSetChanged();
+        if(resultCode == RESULT_OK) activateNewActor();
     }
 
     private void activateNewActor() {        // If played here open detail screen. Otherwise, send your-turn message.

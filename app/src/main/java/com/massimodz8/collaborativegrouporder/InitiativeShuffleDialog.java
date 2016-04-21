@@ -1,6 +1,5 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -13,7 +12,6 @@ import android.widget.Button;
 
 import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
 
-import java.util.Arrays;
 import java.util.IdentityHashMap;
 
 /**
@@ -89,7 +87,7 @@ public class InitiativeShuffleDialog {
                 actor--;
                 if(actor == 0) before.setEnabled(false);
                 after.setEnabled(true);
-                list.getAdapter().notifyItemMoved(actor, actor - 1);
+                list.getAdapter().notifyDataSetChanged();
             }
         });
         after.setOnClickListener(new View.OnClickListener() {
@@ -100,80 +98,11 @@ public class InitiativeShuffleDialog {
                 order[actor + 1] = temp;
                 actor++;
                 before.setEnabled(true);
-                if(actor == order.length) after.setEnabled(false);
-                list.getAdapter().notifyItemMoved(actor, actor + 1);
+                if(actor == order.length - 1) after.setEnabled(false);
+                list.getAdapter().notifyDataSetChanged();
             }
         });
-        before.setEnabled(actor != 0);
-        after.setEnabled(actor != order.length);
+        before.setEnabled(actor > 0);
+        after.setEnabled(actor < order.length - 1);
     }
-
-
-
-
-/*
-    AppCompatActivity activity;
-    int serverPort;
-    public ConnectionInfoDialog(AppCompatActivity activity, int serverPort) {
-        diag = new AlertDialog.Builder(activity).create();
-        this.activity = activity;
-        this.serverPort = serverPort;
-    }
-    public void show() {
-        diag.show();
-        diag.setContentView(R.layout.dialog_info_explicit_connect);
-        final TextView port = (TextView) diag.findViewById(R.id.dlg_iec_port);
-        final TextView addr = (TextView) diag.findViewById(R.id.dlg_iec_addresses);
-        port.setText(String.format(activity.getString(R.string.dlg_iec_port), serverPort));
-        addr.setText(listAddresses(activity));
-        MaxUtils.setVisibility(diag, serverPort == 0? View.GONE : View.VISIBLE,
-                R.id.dlg_iec_addrInstructions,
-                R.id.dlg_iec_port,
-                R.id.dlg_iec_portInstructions);
-        diag.findViewById(R.id.dlg_iec_noPort).setVisibility(serverPort == 0? View.VISIBLE : View.GONE);
-    }
-    private final AlertDialog diag;
-
-
-
-    private static String listAddresses(Context ctx) {
-        Enumeration<NetworkInterface> nics;
-        try {
-            nics = NetworkInterface.getNetworkInterfaces();
-        } catch (SocketException e) {
-            return ctx.getString(R.string.cannotEnumerateNICs);
-        }
-        String hostInfo = "";
-        if (nics != null) {
-            while (nics.hasMoreElements()) {
-                NetworkInterface n = nics.nextElement();
-                Enumeration<InetAddress> addrs = n.getInetAddresses();
-                Inet4Address ipFour = null;
-                Inet6Address ipSix = null;
-                while (addrs.hasMoreElements()) {
-                    InetAddress a = addrs.nextElement();
-                    if (a.isAnyLocalAddress()) continue; // ~0.0.0.0 or ::, sure not useful
-                    if (a.isLoopbackAddress()) continue; // ~127.0.0.1 or ::1, not useful
-                    if (ipFour == null && a instanceof Inet4Address) ipFour = (Inet4Address) a;
-                    if (ipSix == null && a instanceof Inet6Address) ipSix = (Inet6Address) a;
-                }
-                if (ipFour != null)
-                    hostInfo += String.format(ctx.getString(R.string.explicit_address), stripUselessChars(ipFour.toString()));
-                if (ipSix != null)
-                    hostInfo += String.format(ctx.getString(R.string.explicit_address), stripUselessChars(ipSix.toString()));
-            }
-        }
-        return hostInfo.substring(0, hostInfo.length() - 1);
-    }
-
-    private static String stripUselessChars(String s) {
-        for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == '%') {
-                s = s.substring(0, i);
-                break;
-            }
-        }
-        return s.charAt(0) == '/' ? s.substring(1) : s;
-    }
-    */
 }

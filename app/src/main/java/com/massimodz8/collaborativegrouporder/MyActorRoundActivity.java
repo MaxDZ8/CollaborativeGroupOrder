@@ -145,11 +145,15 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         MaxUtils.beginDelayedTransition(this);
         helper.bindData(0, actor);
         holder.setVisibility(View.VISIBLE);
+        final int pround = battle.round;
+        final int pactor = battle.currentActor;
         battle.tickRound();
         TextView tv = (TextView) findViewById(R.id.mara_nextActorName);
         tv.setText(String.format(getString(R.string.mara_nextToAct), battle.ordered[battle.currentActor].actor.displayName));
         tv = (TextView) findViewById(R.id.mara_round);
         tv.setText(String.format(Locale.ROOT, getString(R.string.mara_round), battle.round));
+        battle.currentActor = pactor;
+        battle.round = pround;
     }
 
     @Override
