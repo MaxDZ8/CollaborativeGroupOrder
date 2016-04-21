@@ -486,5 +486,6 @@
     <string name="mara_next_titleShort">Next</string>
     <string name="mara_nextToAct">Next to act: %1$s</string>
     <string name="mara_round">Round %1$d</string>
+    <string name="mara_shuffle_title">Wait or ready action</string>
 
 </resources>

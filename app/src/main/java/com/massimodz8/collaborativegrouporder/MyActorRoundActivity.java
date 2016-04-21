@@ -1,12 +1,14 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -24,6 +26,7 @@ import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import java.util.Locale;
 
 public class MyActorRoundActivity extends AppCompatActivity implements ServiceConnection {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +75,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.my_actor_round_activity, menu);
+        imDone = menu.findItem(R.id.mara_menu_doneConfirmed);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -79,24 +83,44 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch(item.getItemId()) {
             case R.id.mara_menu_done:
+                imDone.setVisible(true);
+                item.setVisible(false);
+                break;
+            case R.id.mara_menu_doneConfirmed:
                 // That's quite small and remote, unlikely it gets hit by accident.
                 setResult(RESULT_OK);
                 finish();
                 break;
+            case R.id.mara_menu_shuffle:
+                new AlertDialog.Builder(this)
+                        .setPositiveButton("Ready action", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new AlertDialog.Builder(MyActorRoundActivity.this)
+                                        .setMessage("TODO: ready action!")
+                                        .show();
+                            }
+                        }).setNeutralButton("Wait", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new AlertDialog.Builder(MyActorRoundActivity.this)
+                                        .setMessage("TODO: wait!")
+                                        .show();
+                            }
+                        }).show();
         }
         return super.onOptionsItemSelected(item);
     }
 
     boolean mustUnbind;
-    private PartyJoinOrderService game;
+    private MenuItem imDone;
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
-        game = real.getConcreteService();
+        PartyJoinOrderService game = ((PartyJoinOrderService.LocalBinder)service).getConcreteService();
         final BattleHelper battle = game.getPlaySession().battleState;
-        AbsLiveActor actor = battle.battlers[battle.currentActor];
+        AbsLiveActor actor = battle.ordered[battle.currentActor].actor;
         RelativeLayout holder = (RelativeLayout) findViewById(R.id.vhAA_actorTypeShort).getParent();
         AdventuringActorVH helper = new AdventuringActorVH(holder, null) {
             @Override
@@ -106,12 +130,9 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         MaxUtils.beginDelayedTransition(this);
         helper.bindData(0, actor);
         holder.setVisibility(View.VISIBLE);
-        int nextIndex = battle.currentActor + 1;
-        nextIndex %= battle.battlers.length;
-        while(nextIndex != battle.currentActor && nextIndex < battle.enabled.length && !battle.enabled[nextIndex]) nextIndex++;
-        nextIndex %= battle.battlers.length;
+        battle.tickRound();
         TextView tv = (TextView) findViewById(R.id.mara_nextActorName);
-        tv.setText(String.format(getString(R.string.mara_nextToAct), battle.battlers[nextIndex].displayName));
+        tv.setText(String.format(getString(R.string.mara_nextToAct), battle.ordered[battle.currentActor].actor.displayName));
         tv = (TextView) findViewById(R.id.mara_round);
         tv.setText(String.format(Locale.ROOT, getString(R.string.mara_round), battle.round));
     }
