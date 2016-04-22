@@ -94,35 +94,28 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                 setResult(RESULT_OK);
                 finish();
                 break;
-            case R.id.mara_menu_shuffle:
-                new AlertDialog.Builder(this)
-                        .setPositiveButton("Ready action", new DialogInterface.OnClickListener() {
+            case R.id.mara_menu_shuffle: {
+                AbsLiveActor[] order = new AbsLiveActor[battle.ordered.length];
+                IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>(battle.ordered.length);
+                int cp = 0;
+                for (InitiativeScore el : battle.ordered) {
+                    order[cp] = el.actor;
+                    actorId.put(el.actor, cp);
+                    cp++;
+                }
+                new InitiativeShuffleDialog(order, battle.currentActor, actorId)
+                        .show(MyActorRoundActivity.this, new InitiativeShuffleDialog.OnApplyCallback() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                new AlertDialog.Builder(MyActorRoundActivity.this)
-                                        .setMessage("TODO: ready action!")
-                                        .show();
+                            public void newOrder(AbsLiveActor[] target) {
+                                applyNewOrder(target);
                             }
-                        }).setNeutralButton(getString(R.string.mara_dlg_readyActionButtonLabel), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                AbsLiveActor[] order = new AbsLiveActor[battle.ordered.length];
-                                IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>(battle.ordered.length);
-                                int cp = 0;
-                                for (InitiativeScore el : battle.ordered) {
-                                    order[cp] = el.actor;
-                                    actorId.put(el.actor, cp);
-                                    cp++;
-                                }
-                                new InitiativeShuffleDialog(order, battle.currentActor, actorId)
-                                        .show(MyActorRoundActivity.this, new InitiativeShuffleDialog.OnApplyCallback() {
-                                            @Override
-                                            public void newOrder(AbsLiveActor[] target) {
-                                                applyNewOrder(target);
-                                            }
-                                        });
-                            }
-                        }).show();
+                        });
+            } break;
+            case R.id.mara_menu_readiedAction: {
+                new AlertDialog.Builder(MyActorRoundActivity.this)
+                        .setMessage("TODO: ready action!")
+                        .show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }

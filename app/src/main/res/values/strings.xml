@@ -486,7 +486,8 @@
     <string name="mara_next_titleShort">Next</string>
     <string name="mara_nextToAct">Next to act: %1$s</string>
     <string name="mara_round">Round %1$d</string>
-    <string name="mara_dlg_shuffle_title">Wait or ready action</string>
+    <string name="mara_dlg_shuffle_title">Wait</string>
+    <string name="mara_dlg_readyAction_title">Ready action</string>
 
     <string name="mara_dlg_readyActionButtonLabel">Wait</string>
     <string name="mara_dlgSIO_title">Wait action</string>

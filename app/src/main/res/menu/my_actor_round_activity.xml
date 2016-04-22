@@ -6,15 +6,20 @@
         android:title="@string/mara_dlg_shuffle_title"
         android:titleCondensed="@string/mara_dlg_shuffle_title"
         app:showAsAction="ifRoom" />
+    <item android:icon="@mipmap/ic_readied_action_white_24dp"
+        android:id="@+id/mara_menu_readiedAction"
+        android:title="@string/mara_dlg_readyAction_title"
+        android:titleCondensed="@string/mara_dlg_readyAction_title"
+        app:showAsAction="ifRoom" />
     <item android:icon="@mipmap/ic_skip_next_white_24dp"
         android:id="@+id/mara_menu_done"
         android:title="@string/mara_next_title"
         android:titleCondensed="@string/mara_next_titleShort"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item android:icon="@mipmap/ic_done_white_24dp"
         android:id="@+id/mara_menu_doneConfirmed"
         android:title="@string/mara_next_title"
         android:titleCondensed="@string/mara_next_titleShort"
         android:visible="false"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>
