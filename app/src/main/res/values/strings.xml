@@ -477,6 +477,9 @@
     <string name="ba_title">Fight!</string>
     <string name="ba_initialInstructions">Not fighting yet!\nActors with no check will skip round.\nUse this for surprise rounds!</string>
     <string name="ba_roundNumber">Round %1$d</string>
+    <string name="ba_dlg_gotPreparedAction">%1$s has a readied action. You can renew the prepared action or discard it.</string>
+    <string name="ba_dlg_gotPreparedAction_renew">Renew prepared action and go next</string>
+    <string name="ba_dlg_gotPreparedAction_discard">Discard and act</string>
 
     <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
     <string name="mara_endTurn">End your turn</string>

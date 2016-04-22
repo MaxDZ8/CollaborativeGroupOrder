@@ -1,6 +1,7 @@
 package com.massimodz8.collaborativegrouporder.master;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.util.IdentityHashMap;
 import java.util.Locale;
@@ -137,15 +139,57 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode != REQUEST_MONSTER_TURN) return;
+        if(resultCode != RESULT_OK) {
+            MaxUtils.beginDelayedTransition(this);
+            // Even if the dude is still doing his round we regen everything. Why?
+            // Typical case: he did an attack and made damage. It's not like I want to track those things.
+            lister.notifyDataSetChanged();
+            return;
+        }
+        actionCompleted();
+    }
+
+    private void actionCompleted() {
         final BattleHelper battle = game.getPlaySession().battleState;
-        if(resultCode == RESULT_OK) battle.tickRound();
+        final int prev = battle.currentActor;
+        battle.tickRound();
+        lister.notifyItemChanged(prev);
+        lister.notifyItemChanged(battle.currentActor);
         MaxUtils.beginDelayedTransition(this);
         final TextView status = (TextView) findViewById(R.id.ba_status);
         status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
-        // Even if the dude is still doing his round we regen everything. Why?
-        // Typical case: he did an attack and made damage. It's not like I want to track those things.
-        lister.notifyDataSetChanged();
-        if(resultCode == RESULT_OK) activateNewActor();
+        final InitiativeScore init = battle.ordered[battle.currentActor];
+        if(init.actor.actionCondition == null) {
+            activateNewActor();
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setMessage(String.format(getString(R.string.ba_dlg_gotPreparedAction), init.actor.displayName))
+                .setPositiveButton(R.string.ba_dlg_gotPreparedAction_renew, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Renewing is super cool - the dude will just not act and we're nice with it.
+                        actionCompleted();
+                    }
+                }).setNegativeButton(getString(R.string.ba_dlg_gotPreparedAction_discard), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Getting the rid of an action is nontrivial, we might have to signal it. It's just a curtesy anyway.
+                StartData.ActorDefinition def = init.actor instanceof CharacterActor? ((CharacterActor)init.actor).character : null;
+                MessageChannel pipe = def != null? game.getMessageChannel(def) : null;
+                if(pipe == null) { // we mangle it there. That's nice.
+                    init.actor.actionCondition = null;
+                    MaxUtils.beginDelayedTransition(BattleActivity.this);
+                    lister.notifyItemChanged(battle.currentActor);
+                    activateNewActor();
+                    return;
+                }
+                new AlertDialog.Builder(BattleActivity.this)
+                        .setMessage("TODO: notify remote peer his action has been cleared, give turn to him")
+                        .show();
+            }
+        }).setCancelable(false)
+                .show();
     }
 
     private void activateNewActor() {        // If played here open detail screen. Otherwise, send your-turn message.
