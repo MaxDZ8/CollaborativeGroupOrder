@@ -19,7 +19,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
@@ -42,7 +41,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
-        RelativeLayout holder = (RelativeLayout) findViewById(R.id.vhAA_actorTypeShort).getParent();
+        View holder = findViewById(R.id.vhRoot);
         holder.setVisibility(View.INVISIBLE);
         holder.findViewById(R.id.vhAA_selected).setVisibility(View.GONE);
 
@@ -201,7 +200,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         localGame = ((PartyJoinOrderService.LocalBinder)service).getConcreteService();
         battle = localGame.getPlaySession().battleState;
         AbsLiveActor actor = battle.ordered[battle.currentActor].actor;
-        RelativeLayout holder = (RelativeLayout) findViewById(R.id.vhAA_actorTypeShort).getParent();
+        View holder = findViewById(R.id.vhRoot);
         AdventuringActorVH helper = new AdventuringActorVH(holder, null, true) {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -209,6 +208,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         };
         MaxUtils.beginDelayedTransition(this);
         helper.bindData(0, actor);
+        helper.selected.setVisibility(View.GONE);
         holder.setVisibility(View.VISIBLE);
         final int pround = battle.round;
         final int pactor = battle.currentActor;

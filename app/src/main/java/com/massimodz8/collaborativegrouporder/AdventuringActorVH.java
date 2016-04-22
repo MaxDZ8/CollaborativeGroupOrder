@@ -57,7 +57,7 @@ public abstract class AdventuringActorVH extends RecyclerView.ViewHolder impleme
         prepared.setOnClickListener(this);
         onClickCallback = onClick;
 
-        if(hideSelectCheck) selected.setVisibility(View.INVISIBLE);
+        if(hideSelectCheck) selected.setVisibility(View.GONE);
     }
 
     @Override
