@@ -1,5 +1,6 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -107,21 +111,39 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                         .show(MyActorRoundActivity.this, new InitiativeShuffleDialog.OnApplyCallback() {
                             @Override
                             public void newOrder(AbsLiveActor[] target) {
-                                applyNewOrder(target);
+                                requestNewOrder(target);
                             }
                         });
             } break;
             case R.id.mara_menu_readiedAction: {
-                new AlertDialog.Builder(MyActorRoundActivity.this)
-                        .setMessage("TODO: ready action!")
-                        .show();
-            }
+                final AlertDialog dlg = new AlertDialog.Builder(this).setView(R.layout.dialog_ready_action_proposal)
+                        .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                            @Override
+                            public void onDismiss(DialogInterface dialog) {
+                                InputMethodManager imm = (InputMethodManager)MyActorRoundActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                                final View focused = MyActorRoundActivity.this.getCurrentFocus();
+                                if(focused != null && imm != null && imm.isActive()) {
+                                    imm.hideSoftInputFromWindow(focused.getWindowToken(), 0);
+                                }
+                            }
+                        }).create();
+                dlg.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.mara_dlgRAP_apply), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            EditText text = (EditText) dlg.findViewById(R.id.mara_dlgRAP_optionalMessage);
+                            requestReadiedAction(text.getText().toString());
+                        }
+                    }
+                );
+                dlg.show();
+                dlg.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+            } break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     /// Called from the 'wait' dialog to request to shuffle my actor somewhere else.
-    private void applyNewOrder(AbsLiveActor[] target) {
+    private void requestNewOrder(AbsLiveActor[] target) {
         final InitiativeScore me = battle.ordered[battle.currentActor];
         int newPos = 0;
         while(newPos < target.length && target[newPos] != me.actor) newPos++;
@@ -155,6 +177,11 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
             return;
         }
         new AlertDialog.Builder(this).setMessage("TODO: ask permission to server").show();
+    }
+
+
+    private void requestReadiedAction(String s) {
+        Snackbar.make(findViewById(R.id.activityRoot), s, Snackbar.LENGTH_INDEFINITE).show();
     }
 
     private boolean mustUnbind;

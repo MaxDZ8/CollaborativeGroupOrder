@@ -494,5 +494,8 @@
     <string name="mara_dlgSIO_moveBefore">Move up in order</string>
     <string name="mara_dlgSIO_moveAfter">Move down in order</string>
     <string name="mara_dlgSIO_apply">Apply</string>
+    <string name="mara_dlgRAP_title">Ready Action</string>
+    <string name="mara_dlgRAP_optionalMessageHint">Optional condition description.</string>
+    <string name="mara_dlgRAP_apply">Apply</string>
 
 </resources>
