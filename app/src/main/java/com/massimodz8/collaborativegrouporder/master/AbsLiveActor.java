@@ -16,6 +16,8 @@ public abstract class AbsLiveActor {
     public static final int TYPE_MONSTER = 1;
     public static final int TYPE_NPC = 2;
 
+    public String actionCondition; // if non-null (can be empty) this is condition text memo, skip normal order.
+
     public int nextRollRequestIndex;
 
     protected AbsLiveActor(String displayName, int type) {

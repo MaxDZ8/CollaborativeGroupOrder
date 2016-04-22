@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -117,6 +118,11 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             }
             if(myIndex != state.currentActor) super.onClick(self, view); // toggle 'will act next round'
             else startActivityForResult(new Intent(BattleActivity.this, MyActorRoundActivity.class), REQUEST_MONSTER_TURN);
+        }
+
+        @Override
+        public void onPreparedActionTriggered(AdventuringActorVH self, View view) {
+            Snackbar.make(findViewById(R.id.activityRoot), "triggered action!", Snackbar.LENGTH_LONG).show();
         }
     }
     private int numDefinedActors; // those won't get expunged, no matter what

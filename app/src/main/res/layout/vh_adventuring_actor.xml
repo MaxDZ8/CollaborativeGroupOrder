@@ -6,7 +6,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/vhAA_selected"
-        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -63,5 +62,16 @@
         android:id="@+id/vhAA_currentPlayerHighlight"
         android:visibility="gone"
         android:background="@color/listSeparator" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@mipmap/ic_readied_action_white_24dp"
+        android:id="@+id/vhAA_preparedAction"
+        android:layout_below="@+id/vhAA_actorTypeShort"
+        android:layout_toRightOf="@+id/vhAA_currentPlayerHighlight"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

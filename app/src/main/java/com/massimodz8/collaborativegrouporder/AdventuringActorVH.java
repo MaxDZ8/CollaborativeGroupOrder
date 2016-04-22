@@ -3,13 +3,12 @@ package com.massimodz8.collaborativegrouporder;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.HealthBar;
-import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
 
 /**
@@ -24,11 +23,13 @@ public abstract class AdventuringActorVH extends RecyclerView.ViewHolder impleme
     final TextView actorShortType, name;
     final HealthBar hbar;
     final View hilite;
+    final Button prepared;
     final public ClickCallback onClickCallback;
     public AbsLiveActor actor;
 
     public interface ClickCallback {
         void onClick(AdventuringActorVH self, View view);
+        void onPreparedActionTriggered(AdventuringActorVH self, View view);
     }
 
     public static class ClickSelected implements ClickCallback {
@@ -36,6 +37,9 @@ public abstract class AdventuringActorVH extends RecyclerView.ViewHolder impleme
         public void onClick(AdventuringActorVH self, View view) {
             self.selected.performClick();
         }
+
+        @Override
+        public void onPreparedActionTriggered(AdventuringActorVH self, View view) { }
     }
 
     public AdventuringActorVH(View iv, @Nullable ClickCallback onClick, boolean hideSelectCheck) {
@@ -47,8 +51,10 @@ public abstract class AdventuringActorVH extends RecyclerView.ViewHolder impleme
         hbar = (HealthBar) iv.findViewById(R.id.vhAA_health);
         selected.setOnCheckedChangeListener(this);
         hilite = iv.findViewById(R.id.vhAA_currentPlayerHighlight);
+        prepared = (Button) iv.findViewById(R.id.vhAA_preparedAction);
 
-        if(null != onClick) iv.setOnClickListener(this);
+        iv.setOnClickListener(this);
+        prepared.setOnClickListener(this);
         onClickCallback = onClick;
 
         if(hideSelectCheck) selected.setVisibility(View.INVISIBLE);
@@ -56,7 +62,10 @@ public abstract class AdventuringActorVH extends RecyclerView.ViewHolder impleme
 
     @Override
     public void onClick(View v) {
-        if(null != onClickCallback) onClickCallback.onClick(this, v);
+        if(null != onClickCallback) {
+            if(v == prepared) onClickCallback.onPreparedActionTriggered(this, v);
+            else onClickCallback.onClick(this, v);
+        }
     }
 
     static final int SHOW_HIGHLIGHT = 1;
@@ -90,5 +99,12 @@ public abstract class AdventuringActorVH extends RecyclerView.ViewHolder impleme
         hbar.maxHp = hp[1];
         hbar.invalidate();
         hilite.setVisibility(showHilight ? View.VISIBLE : View.GONE);
+        if(actor.actionCondition == null) prepared.setVisibility(View.GONE);
+        else {
+            prepared.setVisibility(View.VISIBLE);
+            if(actor.actionCondition.length() == 0) prepared.setText(R.string.vhAA_preparedActionNoNoteGiven);
+            else prepared.setText(actor.actionCondition);
+
+        }
     }
 }

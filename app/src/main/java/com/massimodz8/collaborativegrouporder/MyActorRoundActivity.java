@@ -8,7 +8,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -181,7 +180,14 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
 
 
     private void requestReadiedAction(String s) {
-        Snackbar.make(findViewById(R.id.activityRoot), s, Snackbar.LENGTH_INDEFINITE).show();
+        if(localGame != null) {
+            final InitiativeScore me = battle.ordered[battle.currentActor];
+            me.actor.actionCondition = s;
+            setResult(RESULT_OK);
+            finish();
+            return;
+        }
+        new AlertDialog.Builder(this).setMessage("TODO: send condition to server").show();
     }
 
     private boolean mustUnbind;

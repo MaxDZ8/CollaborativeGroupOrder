@@ -498,4 +498,6 @@
     <string name="mara_dlgRAP_optionalMessageHint">Optional condition description.</string>
     <string name="mara_dlgRAP_apply">Apply</string>
 
+    <string name="vhAA_preparedActionNoNoteGiven">Prepared action</string>
+
 </resources>
