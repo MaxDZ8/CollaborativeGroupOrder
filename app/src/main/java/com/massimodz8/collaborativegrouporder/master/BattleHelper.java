@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 
+import java.util.ArrayList;
+
 /**
  * Created by Massimo on 17/04/2016.
  * Getting to the real deal!
@@ -13,6 +15,12 @@ public class BattleHelper {
 
     public int round = -1;
     public int currentActor = -1;
+    /**
+     * Stack of triggered actions, they temporarily suppress normal order.
+     * Triggering a readied action is no real problem: it is a pre-spent action so it does have no permanent effects on order.
+     * It also always happen while some other actor is acting. This is either null or contains at least 1 element.
+     */
+    public ArrayList<AbsLiveActor> triggered;
     public boolean dontTick;
 
     public BattleHelper(@NonNull InitiativeScore[] ordered) {

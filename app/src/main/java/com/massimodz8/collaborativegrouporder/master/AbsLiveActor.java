@@ -17,6 +17,7 @@ public abstract class AbsLiveActor {
     public static final int TYPE_NPC = 2;
 
     public String actionCondition; // if non-null (can be empty) this is condition text memo, skip normal order.
+    public boolean conditionTriggered; // true if the condition has been triggered and is being resolved.
 
     public int nextRollRequestIndex;
 

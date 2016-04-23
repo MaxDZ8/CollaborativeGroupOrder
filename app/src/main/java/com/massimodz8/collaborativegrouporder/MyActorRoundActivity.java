@@ -199,7 +199,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     public void onServiceConnected(ComponentName name, IBinder service) {
         localGame = ((PartyJoinOrderService.LocalBinder)service).getConcreteService();
         battle = localGame.getPlaySession().battleState;
-        AbsLiveActor actor = battle.ordered[battle.currentActor].actor;
+        AbsLiveActor actor = battle.triggered == null? battle.ordered[battle.currentActor].actor : battle.triggered.get(battle.triggered.size() - 1);
         View holder = findViewById(R.id.vhRoot);
         AdventuringActorVH helper = new AdventuringActorVH(holder, null, true) {
             @Override

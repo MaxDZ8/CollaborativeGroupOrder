@@ -23,7 +23,7 @@ public abstract class AdventuringActorVH extends RecyclerView.ViewHolder impleme
     final TextView actorShortType, name;
     final HealthBar hbar;
     final View hilite;
-    final Button prepared;
+    final public Button prepared;
     final public ClickCallback onClickCallback;
     public AbsLiveActor actor;
 
@@ -99,11 +99,15 @@ public abstract class AdventuringActorVH extends RecyclerView.ViewHolder impleme
         hbar.maxHp = hp[1];
         hbar.invalidate();
         hilite.setVisibility(showHilight ? View.VISIBLE : View.GONE);
-        if(actor.actionCondition == null) prepared.setVisibility(View.GONE);
+        if(actor.actionCondition == null) {
+            prepared.setVisibility(View.GONE);
+            prepared.setEnabled(true);
+        }
         else {
             prepared.setVisibility(View.VISIBLE);
             if(actor.actionCondition.length() == 0) prepared.setText(R.string.vhAA_preparedActionNoNoteGiven);
             else prepared.setText(actor.actionCondition);
+            prepared.setEnabled(!actor.conditionTriggered);
 
         }
     }

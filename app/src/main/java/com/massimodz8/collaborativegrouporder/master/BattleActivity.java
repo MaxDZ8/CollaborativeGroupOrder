@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +27,7 @@ import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
+import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.Locale;
 
@@ -62,6 +62,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         });
     }
 
+    private int numDefinedActors; // those won't get expunged, no matter what
     boolean mustUnbind;
     private PartyJoinOrderService game;
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
@@ -124,10 +125,14 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
         @Override
         public void onPreparedActionTriggered(AdventuringActorVH self, View view) {
-            Snackbar.make(findViewById(R.id.activityRoot), "triggered action!", Snackbar.LENGTH_LONG).show();
+            if(self.actor == null || self.actor.actionCondition == null) return; // impossible by context
+            final BattleHelper battle = game.getPlaySession().battleState;
+            if(battle.triggered == null) battle.triggered = new ArrayList<>();
+            battle.triggered.add(self.actor);
+            self.actor.conditionTriggered = true;
+            activateNewActor();
         }
     }
-    private int numDefinedActors; // those won't get expunged, no matter what
 
     @Override
     protected void onDestroy() {
@@ -151,15 +156,44 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
     private void actionCompleted() {
         final BattleHelper battle = game.getPlaySession().battleState;
-        final int prev = battle.currentActor;
-        battle.tickRound();
+        final int prev, currently;
+        boolean fromReadiedStack = false;
+        if(battle.triggered == null) {
+            prev = battle.currentActor;
+            battle.tickRound();
+            currently = battle.currentActor;
+        }
+        else {
+            int match = 0;
+            int active = battle.triggered.size() - 1;
+            for (InitiativeScore test : battle.ordered) {
+                if(test.actor == battle.triggered.get(active)) break;
+                match++;
+            }
+            prev = match;
+            battle.ordered[match].actor.actionCondition = null;
+            battle.ordered[match].actor.conditionTriggered = false;
+            battle.triggered.remove(active);
+            active--;
+            if(battle.triggered.isEmpty()) battle.triggered = null;
+            if(battle.triggered == null) currently = battle.currentActor;
+            else {
+                match = 0;
+                for (InitiativeScore test : battle.ordered) {
+                    if(test.actor == battle.triggered.get(active)) break;
+                    match++;
+                }
+                currently = match;
+                fromReadiedStack = true;
+            }
+        }
         lister.notifyItemChanged(prev);
-        lister.notifyItemChanged(battle.currentActor);
+        lister.notifyItemChanged(currently);
         MaxUtils.beginDelayedTransition(this);
         final TextView status = (TextView) findViewById(R.id.ba_status);
         status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
-        final InitiativeScore init = battle.ordered[battle.currentActor];
-        if(init.actor.actionCondition == null) {
+        final InitiativeScore init = battle.ordered[currently];
+        if(init.actor.actionCondition == null || fromReadiedStack) {
             activateNewActor();
             return;
         }
@@ -180,7 +214,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 if(pipe == null) { // we mangle it there. That's nice.
                     init.actor.actionCondition = null;
                     MaxUtils.beginDelayedTransition(BattleActivity.this);
-                    lister.notifyItemChanged(battle.currentActor);
+                    lister.notifyItemChanged(currently);
                     activateNewActor();
                     return;
                 }
@@ -194,7 +228,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
     private void activateNewActor() {        // If played here open detail screen. Otherwise, send your-turn message.
         final BattleHelper battle = game.getPlaySession().battleState;
-        final AbsLiveActor active = battle.ordered[battle.currentActor].actor;
+        final AbsLiveActor active = battle.triggered == null? battle.ordered[battle.currentActor].actor : battle.triggered.get(battle.triggered.size() - 1);
         final MessageChannel pipe;
         if(active instanceof CharacterActor) {
             pipe = game.getMessageChannel(((CharacterActor) active).character);
