@@ -489,11 +489,11 @@
     <string name="mara_next_titleShort">Next</string>
     <string name="mara_nextToAct">Next to act: %1$s</string>
     <string name="mara_round">Round %1$d</string>
-    <string name="mara_dlg_shuffle_title">Wait</string>
+    <string name="mara_dlg_shuffle_title">Delay action</string>
     <string name="mara_dlg_readyAction_title">Ready action</string>
 
-    <string name="mara_dlg_readyActionButtonLabel">Wait</string>
-    <string name="mara_dlgSIO_title">Wait action</string>
+    <string name="mara_dlg_readyActionButtonLabel">Delay</string>
+    <string name="mara_dlgSIO_title">Delay action</string>
     <string name="mara_dlgSIO_moveBefore">Move up in order</string>
     <string name="mara_dlgSIO_moveAfter">Move down in order</string>
     <string name="mara_dlgSIO_apply">Apply</string>
