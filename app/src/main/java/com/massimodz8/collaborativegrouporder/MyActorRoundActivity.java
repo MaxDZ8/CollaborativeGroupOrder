@@ -33,6 +33,8 @@ import java.util.Locale;
 public class MyActorRoundActivity extends AppCompatActivity implements ServiceConnection {
 
 
+    public static final String EXTRA_SUPPRESS_VIBRATION = "com.massimodz8.collaborativegrouporder.MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,12 +57,14 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
 
         if(savedInstanceState != null) return; // when regenerated, probably because of user rotating device, no need to gain more attention.
 
-        // We cheat and give out notifications right away. By the time the user reacts we'll have
-        // managed to connect to service and pulled the data.
-        final Vibrator vibro = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        if(vibro != null && vibro.hasVibrator()) {
-            final long[] intervals = { 0, 350, 300, 250 };
-            vibro.vibrate(intervals, -1);
+        if(!getIntent().getBooleanExtra(EXTRA_SUPPRESS_VIBRATION, false)) {
+            // We cheat and give out notifications right away. By the time the user reacts we'll have
+            // managed to connect to service and pulled the data.
+            final Vibrator vibro = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+            if (vibro != null && vibro.hasVibrator()) {
+                final long[] intervals = {0, 350, 300, 250};
+                vibro.vibrate(intervals, -1);
+            }
         }
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         // This apparently does not work on several devices, including mine.

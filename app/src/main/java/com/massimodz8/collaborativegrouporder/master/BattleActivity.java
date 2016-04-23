@@ -120,7 +120,11 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 myIndex++;
             }
             if(myIndex != state.currentActor) super.onClick(self, view); // toggle 'will act next round'
-            else startActivityForResult(new Intent(BattleActivity.this, MyActorRoundActivity.class), REQUEST_MONSTER_TURN);
+            else {
+                final Intent intent = new Intent(BattleActivity.this, MyActorRoundActivity.class)
+                        .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true);
+                startActivityForResult(intent, REQUEST_MONSTER_TURN);
+            }
         }
 
         @Override
@@ -238,7 +242,9 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             new AlertDialog.Builder(this).setMessage("TODO: real networking.").show();
             return;
         }
-        startActivityForResult(new Intent(this, MyActorRoundActivity.class), REQUEST_MONSTER_TURN);
+        final Intent intent = new Intent(this, MyActorRoundActivity.class)
+                .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true);
+        startActivityForResult(intent, REQUEST_MONSTER_TURN);
     }
 
     private static final int REQUEST_MONSTER_TURN = 1;
