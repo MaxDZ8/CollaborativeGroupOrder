@@ -151,29 +151,8 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         while(newPos < target.length && target[newPos] != me.actor) newPos++;
         if(newPos == target.length) return; // wut? Impossible!
         if(newPos == battle.currentActor) return; // he hit apply but really did nothing.
-        final InitiativeScore next = battle.ordered[(battle.currentActor + 1) % battle.ordered.length];
         if(localGame != null) { // This is cool, we approve of ourselves :P
-            // Setting the .rand so it sorts correctly is complicated. Easier to rebuild them in a
-            // predictable way so I can trivially infer a value transform.
-            int count = 0;
-            for (AbsLiveActor actor : target) {
-                for (InitiativeScore el : battle.ordered) {
-                    if(el.actor == actor) {
-                        el.rand = count;
-                        break;
-                    }
-                }
-                count++;
-            }
-            Arrays.sort(battle.ordered, new Comparator<InitiativeScore>() {
-                @Override
-                public int compare(InitiativeScore left, InitiativeScore right) {
-                    if(left.rand < right.rand) return -1;
-                    if(left.rand == right.rand) return 0;
-                    return 1;
-                }
-            });
-            battle.dontTick = next == battle.ordered[battle.currentActor];
+            battle.shuffleCurrent(newPos);
             setResult(RESULT_OK);
             finish();
             return;
