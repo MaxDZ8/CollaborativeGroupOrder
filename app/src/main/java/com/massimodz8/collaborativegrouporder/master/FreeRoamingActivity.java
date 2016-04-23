@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -219,7 +220,18 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             final Integer irl = entry.getValue().second;
             order[count++] = new InitiativeScore(irl, actor.getInitiativeBonus(), randomizer.nextInt(1024), actor);
         }
-        Arrays.sort(order);
+        Arrays.sort(order, new Comparator<InitiativeScore>() {
+            @Override
+            public int compare(InitiativeScore left, InitiativeScore right) {
+                if(left.initRoll > right.initRoll) return -1;
+                else if(left.initRoll < right.initRoll) return 1;
+                if(left.bonus > right.bonus) return -1;
+                else if(left.bonus < right.bonus) return 1;
+                if(left.rand > right.rand) return -1;
+                else if(left.rand < right.rand) return 1;
+                return 0; // super unlikely!
+            }
+        });
         session.battleState = new BattleHelper(order);
         startActivity(new Intent(this, BattleActivity.class));
     }

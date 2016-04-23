@@ -19,7 +19,7 @@ import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
  * key to move them around in the same roll+bonus pair. This is why our rand helps.
  * We have full control on that and we can transform it as we want, it's not exposed to user anyway!
  */
-public class InitiativeScore implements Comparable<InitiativeScore> {
+public class InitiativeScore {
     public int initRoll;
     final public int bonus;
     public int rand;
@@ -35,16 +35,5 @@ public class InitiativeScore implements Comparable<InitiativeScore> {
         this.bonus = bonus;
         this.rand = rand;
         this.actor = actor;
-    }
-
-    @Override
-    public int compareTo(@NonNull InitiativeScore other) {
-        if(initRoll > other.initRoll) return -1;
-        else if(initRoll < other.initRoll) return 1;
-        if(bonus > other.bonus) return -1;
-        else if(bonus < other.bonus) return 1;
-        if(rand > other.rand) return -1;
-        else if(rand < other.rand) return 1;
-        return 0; // super unlikely!
     }
 }
