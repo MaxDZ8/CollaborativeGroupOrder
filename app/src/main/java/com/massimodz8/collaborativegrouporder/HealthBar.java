@@ -65,7 +65,8 @@ public class HealthBar extends View {
     private float widthFraction;
     private Paint fill, stroke;
     private static float[] points =       new float[] { .0f,        .15f,       .66f,       .85f,       1.0f };
-    private static @ColorInt int[] colors = new int[] { 0xFFFF0000, 0xFFFF0000, 0xFFFFFF00, 0xFF00FF00, 0xFF0000FF };
+    private static @ColorInt int[] colors = new int[] { 0xFFFF0000, 0xFFFF0000, 0xFFFFFF00, 0xFF00FF00, 0xFF2979FF };
+    //                                                                                                  Blue A400
 
     private static ArgbEvaluator lerp = new ArgbEvaluator(); // because apparently .getInstance() does not get resolved you mofo
 

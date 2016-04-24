@@ -408,9 +408,11 @@
     <string name="fra_actorType_unmatched">\???</string>
     <string name="fra_dataLoadedFeedback">Started brand new session.</string>
     <string name="fra_noBattle_zeroPcs">At least one playing character required.</string>
-    <string name="fra_noBattle_nobody">Nobody would be fighting.</string>
     <string name="fra_searchLabel">Add mobs to battle</string>
     <string name="fra_searchable_hint">Search mobs to battle</string>
+    <string name="fra_dlgActionIgnoreMissingCharacters">Ignore and start battle</string>
+    <string name="fra_dlgMsg_missingChars">Someone will not take part to battle. Is that what you intended?\nInitial surprise round can be managed later.</string>
+    <string name="fra_rollRequestInitiativeMsg">Initiative!</string>
 
     <string name="sma_title">Spawn monsters</string>
     <string name="sma_searchingMessage">Searching…</string>
@@ -429,7 +431,7 @@
     <string name="sma_dlg_mbi_incoherentPublisherUnknown">!!! Unknown publisher !!!</string>
     <string name="sma_dlg_mbi_incoherentPublisherInvalid">!!! Invalid publisher !!!</string>
     <string name="sma_dlg_mbi_thirdPartyPublisher">(3rd party)</string>
-	
+
     <string name="vhMLE_challangeRatio_integral">"CR %1$d"</string>
     <string name="vhMLE_challangeRatio_fraction">CR %1$d/%2$d</string>
     <string name="vhMLE_initiative">Initiative:</string>
@@ -471,5 +473,34 @@
     <string name="mobs_size_huge">huge</string>
     <string name="mobs_size_gargantuan">gargantuan</string>
     <string name="mobs_size_colossal">colossal</string>
+
+    <string name="ba_title">Fight!</string>
+    <string name="ba_initialInstructions">Not fighting yet!\nActors with no check will skip round.\nUse this for surprise rounds!</string>
+    <string name="ba_roundNumber">Round %1$d</string>
+    <string name="ba_dlg_gotPreparedAction">%1$s has a readied action. You can renew the prepared action or discard it.</string>
+    <string name="ba_dlg_gotPreparedAction_renew">Renew prepared action and go next</string>
+    <string name="ba_dlg_gotPreparedAction_discard">Discard and act</string>
+
+    <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
+    <string name="mara_endTurn">End your turn</string>
+    <string name="mara_title">Act now!</string>
+    <string name="mara_willActAfterYou">After you:</string>
+    <string name="mara_next_title">Pass round to next player</string>
+    <string name="mara_next_titleShort">Next</string>
+    <string name="mara_nextToAct">Next to act: %1$s</string>
+    <string name="mara_round">Round %1$d</string>
+    <string name="mara_dlg_shuffle_title">Delay action</string>
+    <string name="mara_dlg_readyAction_title">Ready action</string>
+
+    <string name="mara_dlg_readyActionButtonLabel">Delay</string>
+    <string name="mara_dlgSIO_title">Delay action</string>
+    <string name="mara_dlgSIO_moveBefore">Move up in order</string>
+    <string name="mara_dlgSIO_moveAfter">Move down in order</string>
+    <string name="mara_dlgSIO_apply">Apply</string>
+    <string name="mara_dlgRAP_title">Ready Action</string>
+    <string name="mara_dlgRAP_optionalMessageHint">Optional condition description.</string>
+    <string name="mara_dlgRAP_apply">Apply</string>
+
+    <string name="vhAA_preparedActionNoNoteGiven">Prepared action</string>
 
 </resources>

@@ -42,6 +42,7 @@ public class SessionHelper {
     /// Activity interface so I can avoid dealing with the service and all.
     public class PlayState {
         public final MonsterData.MonsterBook monsters;
+        public BattleHelper battleState;
 
         public PlayState(MonsterData.MonsterBook monsters) {
             this.monsters = monsters;

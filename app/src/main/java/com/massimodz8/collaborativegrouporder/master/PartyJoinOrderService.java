@@ -76,9 +76,8 @@ public class PartyJoinOrderService extends PublishAcceptService {
     }
 
     /// Marks the given character to be managed locally. Will trigger ownership change.
-    public void local(StartData.ActorDefinition actor) {
-        assignmentHelper.local(actor);
-    }
+    public void local(StartData.ActorDefinition actor) { assignmentHelper.local(actor); }
+    public MessageChannel getMessageChannel(StartData.ActorDefinition actor) { return assignmentHelper.getMessageChannel(actor); }
 
     /// Promotes freshly connected clients to anonymous handshaking clients.
     public void pumpClients(@Nullable Pumper.MessagePumpingThread[] existing) {
@@ -96,7 +95,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
     private SessionHelper sessionHelper;
 
     private AbsLiveActor makeLiveActor(StartData.ActorDefinition definition, boolean playingCharacter) {
-        CharacterActor build = new CharacterActor(definition.name, playingCharacter);
+        CharacterActor build = new CharacterActor(definition.name, playingCharacter, definition);
         build.initiativeBonus = definition.stats[0].initBonus;
         build.currentHealth = build.maxHealth = definition.stats[0].healthPoints;
         build.experience = definition.experience;

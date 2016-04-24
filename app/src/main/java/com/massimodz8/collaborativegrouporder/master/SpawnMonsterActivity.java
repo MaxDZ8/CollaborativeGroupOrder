@@ -8,8 +8,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,16 +30,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 public class SpawnMonsterActivity extends AppCompatActivity implements ServiceConnection {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spawn_monster);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final ActionBar sab = getSupportActionBar();
+        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
@@ -44,6 +49,36 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         query = intent.getStringExtra(SearchManager.QUERY);
 
         // Stop there. We must also create the action bar first.
+
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setVisibility(View.INVISIBLE);
+        fab.setEnabled(false);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                HashMap<String, Integer> nameColl = new HashMap<>();
+                for (Map.Entry<MonsterData.Monster, Integer> entry : spawnCounts.entrySet()) {
+                    final Integer count = entry.getValue();
+                    if(count == null) continue; // impossible
+                    if(count < 1) continue;
+                    final MonsterData.Monster mob = entry.getKey();
+                    final String presentation = getPreferredName(mob);
+                    for(int spawn = 0; spawn < count; spawn++) {
+                        String display = presentation;
+                        Integer previously = nameColl.get(presentation);
+                        if(previously == null) previously = 0;
+                        else display = String.format(Locale.getDefault(), getString(R.string.sma_monsterNameSpawnNote), display, previously);
+                        MonsterActor actor = new MonsterActor(display);
+                        actor.currentHealth = actor.maxHealth = 666; // todo generate(mob.defense.hp)
+                        actor.initiativeBonus = mob.header.initiative; // todo select conditional initiatives.
+                        session.add(actor);
+                        session.willFight(actor, true);
+                        nameColl.put(presentation, previously + 1);
+                    }
+                }
+                finish();
+            }
+        });
     }
 
 
@@ -51,7 +86,6 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.spawn_monster_activity, menu);
         showBookInfo = menu.findItem(R.id.sma_menu_showMonsterBookInfo);
-        addMonsters = menu.findItem(R.id.sma_menu_addMonsters);
 
         if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
             MaxUtils.beginDelayedTransition(this);
@@ -140,22 +174,22 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
 
 
     private String query;
-    private MenuItem showBookInfo, addMonsters;
+    private MenuItem showBookInfo;
     private MonsterData.MonsterBook monsters;
     private IdentityHashMap<MonsterData.Monster, Integer> spawnCounts = new IdentityHashMap<>();
     private SessionHelper.PlayState session;
 
 
-    private static boolean anyStarts(String[] arr, String prefix) {
+    private static boolean anyStarts(String[] arr, String prefix, IdentityHashMap<String, String> tolower) {
         for (String s : arr) {
-            if(s.toLowerCase().startsWith(prefix)) return true;
+            if(tolower.get(s).startsWith(prefix)) return true;
         }
         return false;
     }
 
-    private static boolean anyContains(String[] arr, String prefix, int minIndex) {
+    private static boolean anyContains(String[] arr, String prefix, int minIndex, IdentityHashMap<String, String> tolower) {
         for (String s : arr) {
-            if(s.toLowerCase().indexOf(prefix) >= minIndex) return true;
+            if(tolower.get(s).indexOf(prefix) >= minIndex) return true;
         }
         return false;
     }
@@ -175,16 +209,15 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         adapter.onSpawnableChanged = new Runnable() {
             @Override
             public void run() {
-                final Iterator<Map.Entry<MonsterData.Monster, Integer>> iter = spawnCounts.entrySet().iterator();
                 int count = 0;
-                while(true) {
-                    try {
-                        final Map.Entry<MonsterData.Monster, Integer> sc = iter.next();
-                        if (sc.getValue() == null || sc.getValue() < 1) continue;
-                        count += sc.getValue();
-                    } catch(NoSuchElementException e) { break; }
+                for (Map.Entry<MonsterData.Monster, Integer> sc : spawnCounts.entrySet()) {
+                    if (sc.getValue() == null || sc.getValue() < 1) continue;
+                    count += sc.getValue();
                 }
-                addMonsters.setVisible(count != 0);
+                final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                MaxUtils.beginDelayedTransition(SpawnMonsterActivity.this);
+                fab.setEnabled(count != 0);
+                fab.setVisibility(count != 0? View.VISIBLE : View.INVISIBLE);
             }
         };
         list.setAdapter(adapter);
@@ -201,6 +234,22 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         else status.setText(String.format(getString(R.string.sma_status_matchedMultipleMonsters), mobs.size()));
     }
 
+    /**
+     * The main problem here being that mob might be an inner monster, thereby I would have to
+     * find its parent and use its 'real' name [0], which is assumed to be preferred over variations.
+     * @param mob Monster to search for parents.
+     * @return mob name[0] if monster is a parent, otherwise parent.name[0]
+     */
+    private String getPreferredName(MonsterData.Monster mob) {
+        for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+            if(mob == entry.main) return entry.main.header.name[0];
+            for (MonsterData.Monster inner : entry.variations) {
+                if(mob == inner) return entry.main.header.name[0];
+            }
+        }
+        return "!! Not found !!"; // impossible
+    }
+
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -215,17 +264,27 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
             final ArrayList<MonsterData.Monster> mobs = new ArrayList<>();
             final ArrayList<String[]> names = new ArrayList<>();
             final String lcq = query.toLowerCase();
+
+
             @Override
             protected Void doInBackground(Void... params) {
+                final IdentityHashMap<String, String> tolower = new IdentityHashMap<>();
+                for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+                    for (String s : entry.main.header.name) tolower.put(s, s.toLowerCase());
+                    for (MonsterData.Monster variation : entry.variations) {
+                        for (String s : variation.header.name) tolower.put(s, s.toLowerCase());
+                    }
+                }
+
                 for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
                     boolean matched = false;
-                    if(anyStarts(entry.main.header.name, lcq)) {
+                    if(anyStarts(entry.main.header.name, lcq, tolower)) {
                         mobs.add(entry.main);
                         names.add(entry.main.header.name);
                         matched = true;
                     }
                     for (MonsterData.Monster variation : entry.variations) {
-                        if(matched || anyStarts(variation.header.name, lcq)) {
+                        if(matched || anyStarts(variation.header.name, lcq, tolower)) {
                             mobs.add(variation);
                             names.add(completeVariationNames(entry.main.header.name, variation.header.name));
                         }
@@ -233,13 +292,13 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                 }
                 for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
                     boolean matched = false;
-                    if(anyContains(entry.main.header.name, lcq, 1)) {
+                    if(anyContains(entry.main.header.name, lcq, 1, tolower)) {
                         mobs.add(entry.main);
                         names.add(entry.main.header.name);
                         matched = true;
                     }
                     for (MonsterData.Monster variation : entry.variations) {
-                        if(matched || anyContains(variation.header.name, lcq, 1)) {
+                        if(matched || anyContains(variation.header.name, lcq, 1, tolower)) {
                             mobs.add(variation);
                             names.add(completeVariationNames(entry.main.header.name, variation.header.name));
                         }
