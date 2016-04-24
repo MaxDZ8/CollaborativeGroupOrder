@@ -18,7 +18,7 @@ import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
  * consistent so always present them using this thing.
  */
 public abstract class AdventuringActorVH extends RecyclerView.ViewHolder implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
-    final CheckBox selected;
+    public final CheckBox selected;
     final ImageView avatar;
     final TextView actorShortType, name;
     final HealthBar hbar;
@@ -34,9 +34,7 @@ public abstract class AdventuringActorVH extends RecyclerView.ViewHolder impleme
 
     public static class ClickSelected implements ClickCallback {
         @Override
-        public void onClick(AdventuringActorVH self, View view) {
-            self.selected.performClick();
-        }
+        public void onClick(AdventuringActorVH self, View view) { self.selected.performClick(); }
 
         @Override
         public void onPreparedActionTriggered(AdventuringActorVH self, View view) { }

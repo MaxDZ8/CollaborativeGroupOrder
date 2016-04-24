@@ -81,6 +81,10 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 if (check.actor == actor) break;
                 matched++;
             }
+            if(battle.triggered != null) {
+                final AbsLiveActor interruptor = battle.triggered.get(battle.triggered.size() - 1);
+                if(interruptor.conditionTriggered && actor == interruptor) return true;
+            }
             return matched == battle.currentActor;
         }
 
@@ -119,10 +123,11 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 if(test.actor == self.actor) break;
                 myIndex++;
             }
-            if(myIndex != state.currentActor) super.onClick(self, view); // toggle 'will act next round'
+            if(myIndex != state.currentActor && self.selected.isEnabled()) super.onClick(self, view); // toggle 'will act next round'
             else {
                 final Intent intent = new Intent(BattleActivity.this, MyActorRoundActivity.class)
-                        .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true);
+                        .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent, REQUEST_MONSTER_TURN);
             }
         }
@@ -134,6 +139,19 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             if(battle.triggered == null) battle.triggered = new ArrayList<>();
             battle.triggered.add(self.actor);
             self.actor.conditionTriggered = true;
+            final int interrupted = battle.currentActor;
+            final InitiativeScore prev = battle.ordered[interrupted];
+            battle.currentActor = 0;
+            for (InitiativeScore el : battle.ordered) {
+                if(el.actor == self.actor) break;
+                battle.currentActor++;
+            }
+            battle.shuffleCurrent(interrupted - (interrupted != 0? 1 : 0));
+            battle.currentActor = 0;
+            for (InitiativeScore el : battle.ordered) {
+                if(el == prev) break;
+                battle.currentActor++;
+            }
             activateNewActor();
         }
     }
@@ -243,7 +261,8 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             return;
         }
         final Intent intent = new Intent(this, MyActorRoundActivity.class)
-                .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true);
+                .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityForResult(intent, REQUEST_MONSTER_TURN);
     }
 

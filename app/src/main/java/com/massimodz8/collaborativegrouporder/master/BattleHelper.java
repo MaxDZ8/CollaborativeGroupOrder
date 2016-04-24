@@ -52,6 +52,7 @@ public class BattleHelper {
      * @param newPos Current actor will move back this one and take its place, unless this is last.
      */
     public void shuffleCurrent(int newPos) {
+        if(currentActor == newPos) return; // it happens with readied actions and I'm lazy
         final InitiativeScore me = ordered[currentActor];
         final InitiativeScore next = ordered[(currentActor + 1) % ordered.length];
         // Setting the .rand so it sorts correctly is complicated. Easier to rebuild them in a
