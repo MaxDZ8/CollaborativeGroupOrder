@@ -25,8 +25,6 @@ import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.master.BattleHelper;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.Locale;
 
