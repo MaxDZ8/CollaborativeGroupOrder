@@ -91,7 +91,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
 
     public SessionHelper.PlayState getPlaySession() { return sessionHelper.getSession(); }
 
-    private PcAssignmentHelper assignmentHelper;
+    PcAssignmentHelper assignmentHelper;
     private SessionHelper sessionHelper;
 
     private AbsLiveActor makeLiveActor(StartData.ActorDefinition definition, boolean playingCharacter) {

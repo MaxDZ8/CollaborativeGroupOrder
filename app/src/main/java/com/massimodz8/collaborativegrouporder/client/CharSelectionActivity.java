@@ -35,7 +35,7 @@ public class CharSelectionActivity extends AppCompatActivity {
     private static Pumper.MessagePumpingThread serverPipe; // inout
     private static StartData.PartyClientData.Group connectedParty; // inout
     private static Network.PlayingCharacterDefinition character; // In only
-    private static ArrayList<Network.PlayingCharacterDefinition> playChars; // inout
+    private static int[] playChars; // inout, server ids of actors to manage here
 
     // to move on myState.
     private StartData.PartyClientData.Group party;
@@ -58,8 +58,8 @@ public class CharSelectionActivity extends AppCompatActivity {
         serverPipe = null;
         return res;
     }
-    public static ArrayList<Network.PlayingCharacterDefinition> movePlayChars() {
-        final ArrayList<Network.PlayingCharacterDefinition> res = playChars;
+    public static int[] movePlayChars() {
+        final int[] res = playChars;
         playChars = null;
         return res;
     }
@@ -182,7 +182,10 @@ public class CharSelectionActivity extends AppCompatActivity {
                 case MSG_DISCONNECT: {
                 } break;
                 case MSG_DETACH: {
-                    self.gotoTheRealDeal();
+                    serverPipe = self.netPump.move(self.pipe);
+                    connectedParty = self.party;
+                    self.setResult(RESULT_OK);
+                    self.finish();
                 } break;
                 case MSG_CHARACTER_DEFINITION: {
                     Network.PlayingCharacterDefinition real = (Network.PlayingCharacterDefinition) msg.obj;
@@ -207,29 +210,10 @@ public class CharSelectionActivity extends AppCompatActivity {
                                 .show();
                         return;
                     }
-                    ArrayList<TransactingCharacter> definitive = new ArrayList<>(real.yours.length);
-                    for (Network.PlayingCharacterDefinition take : real.yours) {
-                        final TransactingCharacter here = new TransactingCharacter(take);
-                        here.type = TransactingCharacter.PLAYED_HERE;
-                        definitive.add(here);
-                    }
-                    self.chars = definitive;
+                    playChars = real.yours;
                 } break;
             }
         }
-    }
-
-    private void gotoTheRealDeal() {
-        ArrayList<Network.PlayingCharacterDefinition> temp = new ArrayList<>();
-        for (TransactingCharacter pc : chars) {
-            if(pc.type != TransactingCharacter.PLAYED_HERE) continue;
-            temp.add(pc.pc);
-        }
-        serverPipe = netPump.move(pipe);
-        connectedParty = party;
-        playChars = temp;
-        setResult(RESULT_OK);
-        finish();
     }
 
     private static class TransactingCharacter {

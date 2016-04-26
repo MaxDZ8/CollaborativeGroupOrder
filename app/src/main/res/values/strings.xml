@@ -309,6 +309,8 @@
     <string name="ga_pleaseUpdateFriend">Please ask your friend to upgrade app.</string>
     <string name="ga_versionMismatchDialogMessage">Device \"%1$s\" connected running version %2$d.\nYou\'re running version %3$d.\nIt is strongly suggested all devices to run the same protocol version.\n%4$s</string>
     <string name="ga_noPcsOnDevice">No playing characters on this device.</string>
+    <string name="ga_dlg_errorWhileFormingGroup_title">Whoops!</string>
+    <string name="ga_dlg_errorWhileFormingGroup_msg">Something went wrong while giving out session data. This is very wrong and state is now likely inconsistent. Please report this issue.</string>
 
     <string name="dialog_explicitConnectionInfo_title">Connection informations</string>
     <string name="dlg_iec_port">Port: %1$s</string>

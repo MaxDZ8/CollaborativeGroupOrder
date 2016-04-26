@@ -71,7 +71,10 @@ message PlayingCharacterDefinition {
 // Server -> client
 message GroupReady {
     bool go_adventuring = 1; // if true then terminate "join group" activity and open "go adventuring" activity right away.
-    repeated PlayingCharacterDefinition yours = 2; // only considered when terminating the character ownership process below.
+	bool charAssignment = 2; // if true, then yours is specified even when empty.
+    repeated uint32 yours = 3;
+	// ^ Group ready as result of character ownership assignment, list of peerkeys.
+	// The client will then send LiveActorDataRequest objects to get the full info about the clients.
 }
 
 
@@ -119,6 +122,20 @@ message CharacterOwnership {
         BOUND = 6; // unsolicited server->client
     }
     Type type = 3;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Ok, the group was formed and the client got a GroupReady with a peerKey list.
+// So far we got away with 'canonical' actor definitions, but running a game takes much more!
+// The client uses this message to ask the server about full actor data. The reply is not defined by this protocol
+// but rather from somewhere else (currently startData.proto).
+// Implementations should query only peerKey values they have been confirmed ownership.
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+message LiveActorDataRequest {
+    uint32 peerKey = 1;
 }
 
 

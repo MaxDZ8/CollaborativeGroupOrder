@@ -214,7 +214,7 @@ public class PcAssignmentHelper {
 
     private final SecureRandom randomizer = new SecureRandom();
     private final JoinVerificator verifier;
-    private ArrayList<Integer> assignment;
+    ArrayList<Integer> assignment;
     private int nextValidRequest;
     private Handler handler = new MyHandler(this);
     private Pumper netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
@@ -246,11 +246,11 @@ public class PcAssignmentHelper {
                     return false;
                 }
             });
-    private ArrayList<PlayingDevice> peers = new ArrayList<>();
+    ArrayList<PlayingDevice> peers = new ArrayList<>();
     private BlockingQueue<SendRequest> out = new ArrayBlockingQueue<>(USUAL_CLIENT_COUNT * USUAL_AVERAGE_MESSAGES_PENDING_COUNT);
 
     /// Not sure what should I put there, but it seems I might want to track state besides connection channel in the future.
-    private static class PlayingDevice {
+    static class PlayingDevice {
         public @Nullable MessageChannel pipe; /// This is usually not-null, but becomes null to signal disconnected. Keep those around anyway to allow players to reconnect with ease.
         public int clientVersion;
         public @Nullable byte[] doormat; /// next doormat to send or to consider for key verification.

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.BitmapFactory;
 import android.net.nsd.NsdManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -28,6 +29,8 @@ import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PublishedService;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
@@ -136,18 +139,67 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
 
     public void startSession_callback(View btn) {
         final ArrayList<StartData.ActorDefinition> free = room.getUnboundedPcs();
-        if(free.isEmpty()) {
-            room.stopPublishing();
-            room.stopListening(false);
-            startActivity(new Intent(this, FreeRoamingActivity.class));
+        if(!free.isEmpty()) {
+            String firstLine = free.size() == 1? getString(R.string.ga_oneCharNotBound)
+                    : String.format(getString(R.string.ga_someCharsNotBound), free.size());
+            String message = getString(R.string.ga_unboundCharsDlgMsg);
+            new AlertDialog.Builder(this)
+                    .setMessage(String.format(message, firstLine))
+                    .show();
             return;
         }
-        String firstLine = free.size() == 1? getString(R.string.ga_oneCharNotBound)
-                : String.format(getString(R.string.ga_someCharsNotBound), free.size());
-        String message = getString(R.string.ga_unboundCharsDlgMsg);
-        new AlertDialog.Builder(this)
-                .setMessage(String.format(message, firstLine))
-                .show();
+        room.stopPublishing();
+        room.stopListening(false);
+        new AsyncTask<Void, Void, Void>() {
+            int errorCount;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                Network.GroupReady yours = new Network.GroupReady();
+                final StartData.ActorDefinition[] playingChars = room.assignmentHelper.party.party;
+                int devIndex = -1;
+                for (PcAssignmentHelper.PlayingDevice known : room.assignmentHelper.peers) {
+                    devIndex++;
+                    if(known.pipe == null) continue; // not very likely but possible if connection has just gone down!
+                    int count = 0;
+                    for(int index = 0; index < playingChars.length; index++) {
+                        final Integer which = room.assignmentHelper.assignment.get(index);
+                        if(which == null) continue;
+                        if(which == devIndex) count++;
+                    }
+                    yours.charAssignment = true;
+                    yours.yours = new int[count];
+                    count = 0;
+                    for(int index = 0; index < playingChars.length; index++) {
+                        final Integer which = room.assignmentHelper.assignment.get(index);
+                        if(which == null) continue;
+                        if(which == devIndex) {
+                            yours.yours[count] = index;
+                            count++;
+                        }
+                    }
+                    try {
+                        known.pipe.writeSync(ProtoBufferEnum.GROUP_READY, yours);
+                    } catch (IOException e) {
+                        errorCount++;
+                    }
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if(errorCount == 0) {
+                    startActivity(new Intent(GatheringActivity.this, FreeRoamingActivity.class));
+                    return;
+                }
+                new AlertDialog.Builder(GatheringActivity.this)
+                        .setTitle(R.string.ga_dlg_errorWhileFormingGroup_title)
+                        .setMessage(R.string.ga_dlg_errorWhileFormingGroup_msg)
+                        .show();
+            }
+        }.execute();
+
     }
 
     // ServiceConnection ___________________________________________________________________________

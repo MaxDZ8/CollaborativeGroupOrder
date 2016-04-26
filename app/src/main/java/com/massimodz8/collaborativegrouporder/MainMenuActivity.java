@@ -349,11 +349,11 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             } break;
             case REQUEST_BIND_CHARACTERS: {
                 final StartData.PartyClientData.Group party = CharSelectionActivity.movePlayingParty();
-                final ArrayList<Network.PlayingCharacterDefinition> here = CharSelectionActivity.movePlayChars();
+                final int[] here = CharSelectionActivity.movePlayChars();
                 final Pumper.MessagePumpingThread worker = CharSelectionActivity.moveServerWorker();
                             worker.interrupt();
                 String s = party.name + " > ";
-                for(Network.PlayingCharacterDefinition pc : here) s += pc.name + " > ";
+                for(int key : here) s += String.valueOf(key) + ", ";
                 new AlertDialog.Builder(this).setMessage(s).show();
             } break;
         }
