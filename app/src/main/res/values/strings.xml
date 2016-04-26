@@ -504,5 +504,12 @@
     <string name="mara_dlgRAP_apply">Apply</string>
 
     <string name="vhAA_preparedActionNoNoteGiven">Prepared action</string>
+    <string name="generic_fatalError">Fatal error</string>
+    <string name="generic_failedAdventuringServiceBind">Could not bind to internal \'adventuring\' structures. This is required to prevent data loss when you turn your phone (and other technicalities).\nThis should be a transient problem.</string>
+    <string name="mma_actorDataGetFailed">Errors detected in getting data from master device. Giving up.</string>
+    <string name="as_failedDataRequestSend">Failed sending data request.</string>
+
+    <string name="aoa_title">Hanging around…</string>
+    <string name="aoa_startingStatus">Waiting master device.</string>
 
 </resources>

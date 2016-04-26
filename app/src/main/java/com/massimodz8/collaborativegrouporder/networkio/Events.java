@@ -1,6 +1,7 @@
 package com.massimodz8.collaborativegrouporder.networkio;
 
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.net.Socket;
 
@@ -108,6 +109,26 @@ public interface Events {
         public final Network.CharacterOwnership payload;
 
         public CharOwnership(MessageChannel origin, Network.CharacterOwnership payload) {
+            this.origin = origin;
+            this.payload = payload;
+        }
+    }
+
+    class ActorDataRequest {
+        public final MessageChannel origin;
+        public final Network.LiveActorDataRequest payload;
+
+        public ActorDataRequest(MessageChannel origin, Network.LiveActorDataRequest payload) {
+            this.origin = origin;
+            this.payload = payload;
+        }
+    }
+
+    class ActorData {
+        public final MessageChannel origin;
+        public final StartData.ActorDefinition payload;
+
+        public ActorData(MessageChannel origin, StartData.ActorDefinition payload) {
             this.origin = origin;
             this.payload = payload;
         }

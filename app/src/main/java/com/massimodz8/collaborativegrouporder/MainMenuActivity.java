@@ -5,22 +5,21 @@ import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.app.NotificationCompat;
-import android.util.Log;
 import android.view.View;
 
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
+import com.massimodz8.collaborativegrouporder.client.ActorOverviewActivity;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
 import com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity;
@@ -31,10 +30,8 @@ import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
-import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -183,7 +180,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         StartData.PartyClientData joined;
         MonsterData.MonsterBook monsterBook;
 
-        MonsterData.MonsterBook knownMobs;
         final PersistentDataUtils loader = new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
             protected String getString(int resource) {
@@ -348,13 +344,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                final StartData.PartyClientData.Group party = CharSelectionActivity.movePlayingParty();
-                final int[] here = CharSelectionActivity.movePlayChars();
-                final Pumper.MessagePumpingThread worker = CharSelectionActivity.moveServerWorker();
-                            worker.interrupt();
-                String s = party.name + " > ";
-                for(int key : here) s += String.valueOf(key) + ", ";
-                new AlertDialog.Builder(this).setMessage(s).show();
+                ActorOverviewActivity.prepare(CharSelectionActivity.movePlayingParty(),
+                        CharSelectionActivity.movePlayChars(),
+                        CharSelectionActivity.moveServerWorker());
+                startActivity(new Intent(this, ActorOverviewActivity.class));
             } break;
         }
     }

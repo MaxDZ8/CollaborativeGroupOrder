@@ -35,7 +35,7 @@ import java.util.concurrent.BlockingQueue;
  * internally and being this designed to work with PartyJoinOrderService, it accumulates changes
  * leaving Activity (not guaranteed to exist at the time it's generated) to probe for results.
  */
-public class PcAssignmentHelper {
+public abstract class PcAssignmentHelper {
     public final StartData.PartyOwnerData.Group party;
 
     public interface OnBoundPcCallback {
@@ -245,6 +245,15 @@ public class PcAssignmentHelper {
                     handler.sendMessage(handler.obtainMessage(MSG_CHAR_OWNERSHIP_REQUEST, new Events.CharOwnership(from, msg)));
                     return false;
                 }
+            }).add(ProtoBufferEnum.ACTOR_DATA, new PumpTarget.Callbacks<Network.LiveActorDataRequest>() {
+                @Override
+                public Network.LiveActorDataRequest make() { return new Network.LiveActorDataRequest(); }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.LiveActorDataRequest msg) throws IOException {
+                    handler.sendMessage(handler.obtainMessage(MSG_CHAR_DATA_REQUEST, new Events.ActorDataRequest(from, msg)));
+                    return true;
+                }
             });
     ArrayList<PlayingDevice> peers = new ArrayList<>();
     private BlockingQueue<SendRequest> out = new ArrayBlockingQueue<>(USUAL_CLIENT_COUNT * USUAL_AVERAGE_MESSAGES_PENDING_COUNT);
@@ -328,6 +337,10 @@ public class PcAssignmentHelper {
                     self.charOwnership(real.origin, real.payload);
                     break;
                 }
+                case MSG_CHAR_DATA_REQUEST: {
+                    final Events.ActorDataRequest real = (Events.ActorDataRequest) msg.obj;
+                    self.characterDataRequest(real.origin, real.payload);
+                }
             }
         }
     }
@@ -337,6 +350,7 @@ public class PcAssignmentHelper {
     private static final int MSG_HELLO_ANON = 3;
     private static final int MSG_HELLO_AUTH = 4;
     private static final int MSG_CHAR_OWNERSHIP_REQUEST = 5;
+    private static final int MSG_CHAR_DATA_REQUEST = 6;
 
     /// Caution. This currently must match PartyCreationService.closeGroup
     public static final int DOORMAT_BYTES = 32;
@@ -364,6 +378,21 @@ public class PcAssignmentHelper {
         }
         return null;
     }
+
+
+    private void characterDataRequest(MessageChannel origin, Network.LiveActorDataRequest payload) {
+        StartData.ActorDefinition reply[] = new StartData.ActorDefinition[payload.peerKey.length];
+        int count = 0;
+        for (int pcIndex : payload.peerKey) {
+            reply[count] = getActorData(pcIndex);
+            count++;
+        }
+        final PlayingDevice dev = getDevice(origin);
+        if(null == dev || null == dev.pipe) return; // impossible!
+        out.add(new SendRequest(dev, ProtoBufferEnum.ACTOR_DATA, reply));
+    }
+
+    protected abstract StartData.ActorDefinition getActorData(int unique);
 
     private void disconnected(final MessageChannel goner) {
         PlayingDevice dev = getDevice(goner);

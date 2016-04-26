@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.massimodz8.collaborativegrouporder">
+
     <uses-permission
-        android:required="true"
-        android:name="android.permission.VIBRATE"/>
+        android:name="android.permission.VIBRATE"
+        android:required="true" />
 
     <!--
     <uses-permission
@@ -152,14 +153,29 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".master.FreeRoamingActivity" />
         </activity>
-
-        <activity android:name=".MyActorRoundActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+        <activity
+            android:name=".MyActorRoundActivity"
             android:label="@string/mara_title"
-            android:parentActivityName=".master.BattleActivity">
+            android:parentActivityName=".master.BattleActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".master.BattleActivity" />
+        </activity>
+
+        <service
+            android:name=".client.AdventuringService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity android:name=".client.ActorOverviewActivity"
+            android:label="@string/aoa_title"
+            android:parentActivityName=".MainMenuActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainMenuActivity" />
+
         </activity>
     </application>
 

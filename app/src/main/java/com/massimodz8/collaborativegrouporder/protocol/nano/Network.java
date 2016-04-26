@@ -1071,15 +1071,15 @@ public interface Network {
       return _emptyArray;
     }
 
-    // optional uint32 peerKey = 1;
-    public int peerKey;
+    // repeated uint32 peerKey = 1;
+    public int[] peerKey;
 
     public LiveActorDataRequest() {
       clear();
     }
 
     public LiveActorDataRequest clear() {
-      peerKey = 0;
+      peerKey = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
       cachedSize = -1;
       return this;
     }
@@ -1087,8 +1087,10 @@ public interface Network {
     @Override
     public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
         throws java.io.IOException {
-      if (this.peerKey != 0) {
-        output.writeUInt32(1, this.peerKey);
+      if (this.peerKey != null && this.peerKey.length > 0) {
+        for (int i = 0; i < this.peerKey.length; i++) {
+          output.writeUInt32(1, this.peerKey[i]);
+        }
       }
       super.writeTo(output);
     }
@@ -1096,9 +1098,15 @@ public interface Network {
     @Override
     protected int computeSerializedSize() {
       int size = super.computeSerializedSize();
-      if (this.peerKey != 0) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(1, this.peerKey);
+      if (this.peerKey != null && this.peerKey.length > 0) {
+        int dataSize = 0;
+        for (int i = 0; i < this.peerKey.length; i++) {
+          int element = this.peerKey[i];
+          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeUInt32SizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1 * this.peerKey.length;
       }
       return size;
     }
@@ -1119,7 +1127,43 @@ public interface Network {
             break;
           }
           case 8: {
-            this.peerKey = input.readUInt32();
+            int arrayLength = com.google.protobuf.nano.WireFormatNano
+                .getRepeatedFieldArrayLength(input, 8);
+            int i = this.peerKey == null ? 0 : this.peerKey.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.peerKey, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length - 1; i++) {
+              newArray[i] = input.readUInt32();
+              input.readTag();
+            }
+            // Last one without readTag.
+            newArray[i] = input.readUInt32();
+            this.peerKey = newArray;
+            break;
+          }
+          case 10: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            // First pass to compute array length.
+            int arrayLength = 0;
+            int startPos = input.getPosition();
+            while (input.getBytesUntilLimit() > 0) {
+              input.readUInt32();
+              arrayLength++;
+            }
+            input.rewindToPosition(startPos);
+            int i = this.peerKey == null ? 0 : this.peerKey.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.peerKey, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length; i++) {
+              newArray[i] = input.readUInt32();
+            }
+            this.peerKey = newArray;
+            input.popLimit(limit);
             break;
           }
         }
