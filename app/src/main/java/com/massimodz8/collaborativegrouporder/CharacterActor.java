@@ -1,4 +1,4 @@
-package com.massimodz8.collaborativegrouporder.master;
+package com.massimodz8.collaborativegrouporder;
 
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
@@ -14,16 +14,27 @@ public class CharacterActor extends AbsLiveActor {
     public int currentHealth;
     public int experience;
 
-    protected CharacterActor(String displayName, boolean isPlayingCharacter, StartData.ActorDefinition key) {
+    public CharacterActor(String displayName, boolean isPlayingCharacter, StartData.ActorDefinition key) {
         super(displayName, isPlayingCharacter? TYPE_PLAYING_CHARACTER : TYPE_NPC);
         character = key;
     }
 
     @Override
-    int getInitiativeBonus() { return initiativeBonus; }
+    public int getInitiativeBonus() { return initiativeBonus; }
 
     @Override
     public int[] getHealth() {
         return new int[] { currentHealth, maxHealth };
+    }
+
+
+
+    // Copy-paste from JoinOrderService!
+    public static CharacterActor makeLiveActor(StartData.ActorDefinition definition, boolean playingCharacter) {
+        CharacterActor build = new CharacterActor(definition.name, playingCharacter, definition);
+        build.initiativeBonus = definition.stats[0].initBonus;
+        build.currentHealth = build.maxHealth = definition.stats[0].healthPoints;
+        build.experience = definition.experience;
+        return build;
     }
 }

@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder.master;
 
 import android.support.annotation.NonNull;
 
+import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;

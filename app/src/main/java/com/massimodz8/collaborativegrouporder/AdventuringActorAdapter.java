@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
-import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
-
 import java.util.IdentityHashMap;
 
 /**

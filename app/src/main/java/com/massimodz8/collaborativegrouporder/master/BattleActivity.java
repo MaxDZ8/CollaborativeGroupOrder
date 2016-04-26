@@ -17,8 +17,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
 import com.massimodz8.collaborativegrouporder.AdventuringActorVH;
+import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
@@ -231,7 +233,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Getting the rid of an action is nontrivial, we might have to signal it. It's just a curtesy anyway.
-                StartData.ActorDefinition def = init.actor instanceof CharacterActor? ((CharacterActor)init.actor).character : null;
+                StartData.ActorDefinition def = init.actor instanceof CharacterActor ? ((CharacterActor)init.actor).character : null;
                 MessageChannel pipe = def != null? game.getMessageChannel(def) : null;
                 if(pipe == null) { // we mangle it there. That's nice.
                     init.actor.actionCondition = null;

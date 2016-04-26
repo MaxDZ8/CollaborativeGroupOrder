@@ -1,9 +1,5 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.support.annotation.NonNull;
-
-import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
-
 /**
  * Created by Massimo on 21/04/2016.
  * What is the initiative score? Initiative is very easy at a glance: roll a dice + bonus and sort.

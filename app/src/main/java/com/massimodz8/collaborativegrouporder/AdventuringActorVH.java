@@ -9,8 +9,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.master.AbsLiveActor;
-
 /**
  * Created by Massimo on 18/04/2016.
  * Adventuring actors are drawn in a consistent way across various activities, at least

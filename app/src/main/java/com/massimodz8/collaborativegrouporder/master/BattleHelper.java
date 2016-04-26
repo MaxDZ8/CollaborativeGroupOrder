@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder.master;
 
 import android.support.annotation.NonNull;
 
+import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 
 import java.util.ArrayList;

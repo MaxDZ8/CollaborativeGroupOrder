@@ -1,8 +1,4 @@
-package com.massimodz8.collaborativegrouporder.master;
-
-import android.support.annotation.StringRes;
-
-import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+package com.massimodz8.collaborativegrouporder;
 
 /**
  * It might be a monster, it might be a PG, it might be mananged remotely or locally, we don't
@@ -26,7 +22,7 @@ public abstract class AbsLiveActor {
         this.type = type;
     }
 
-    abstract int getInitiativeBonus();
+    public abstract int getInitiativeBonus();
 
     /**
      * Health is fairly complicated.

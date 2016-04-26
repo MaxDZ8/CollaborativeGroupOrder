@@ -1,5 +1,7 @@
 package com.massimodz8.collaborativegrouporder.master;
 
+import com.massimodz8.collaborativegrouporder.AbsLiveActor;
+
 /**
  * Created by Massimo on 16/03/2016.
  * Characters (not monsters) might be here, they might be on remote... they have stuff we are
@@ -15,7 +17,7 @@ public class MonsterActor extends AbsLiveActor {
     }
 
     @Override
-    int getInitiativeBonus() { return initiativeBonus; }
+    public int getInitiativeBonus() { return initiativeBonus; }
 
     @Override
     public int[] getHealth() {
