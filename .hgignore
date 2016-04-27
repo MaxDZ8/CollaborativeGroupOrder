@@ -30,3 +30,4 @@ app/build/generated/source/r/debug/android/support/design/R.java
 build/generated/mockable-android-23.jar
 .gradle/2.10/taskArtifacts/cache.properties
 app/build/generated/res/pngs
+.gradle/2.10/tasks/_app_compileDebugJavaWithJavac

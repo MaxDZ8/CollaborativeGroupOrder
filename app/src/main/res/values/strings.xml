@@ -511,5 +511,9 @@
 
     <string name="aoa_title">Hanging around…</string>
     <string name="aoa_startingStatus">Waiting master device.</string>
+    <string name="client_failedServiceBind">Failed to connect to adventuring service. This is required to prevent data loss.\nThis is hopefully a transient error. Try rebooting your device.</string>
+    <string name="aoa_notificationDesc">Adventuring</string>
+    <string name="aoa_fetchingData">Fetching data from master device...</string>
+    <string name="aoa_waitingForBattleStart">Not engaged in battle.</string>
 
 </resources>

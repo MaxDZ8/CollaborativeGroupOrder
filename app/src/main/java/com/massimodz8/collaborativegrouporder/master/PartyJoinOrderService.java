@@ -37,10 +37,16 @@ public class PartyJoinOrderService extends PublishAcceptService {
         As usual, it can be initialized only once and then the service will have to be destroyed.
         */
     public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook) {
-        assignmentHelper = new PcAssignmentHelper(party, keyMaster);
+        assignmentHelper = new PcAssignmentHelper(party, keyMaster) {
+            @Override
+            protected StartData.ActorDefinition getActorData(int unique) {
+                final StartData.PartyOwnerData.Group group = getPartyOwnerData();
+                return group.party[unique];
+            }
+        };
         ArrayList<AbsLiveActor> byDef = new ArrayList<>();
-        for(StartData.ActorDefinition el : party.party) byDef.add(makeLiveActor(el, true));
-        for(StartData.ActorDefinition el : party.npcs) byDef.add(makeLiveActor(el, false));
+        for(StartData.ActorDefinition el : party.party) byDef.add(CharacterActor.makeLiveActor(el, true));
+        for(StartData.ActorDefinition el : party.npcs) byDef.add(CharacterActor.makeLiveActor(el, false));
         sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef, monsterBook);
     }
 
@@ -95,14 +101,6 @@ public class PartyJoinOrderService extends PublishAcceptService {
 
     PcAssignmentHelper assignmentHelper;
     private SessionHelper sessionHelper;
-
-    private AbsLiveActor makeLiveActor(StartData.ActorDefinition definition, boolean playingCharacter) {
-        CharacterActor build = new CharacterActor(definition.name, playingCharacter, definition);
-        build.initiativeBonus = definition.stats[0].initBonus;
-        build.currentHealth = build.maxHealth = definition.stats[0].healthPoints;
-        build.experience = definition.experience;
-        return build;
-    }
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override

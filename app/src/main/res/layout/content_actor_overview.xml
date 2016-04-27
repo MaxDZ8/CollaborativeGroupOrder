@@ -21,4 +21,29 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/aoa_list"
+        android:layout_below="@+id/aoa_status"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/textView"
+        app:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/vh_adventuring_actor_data"
+        android:visibility="invisible" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="ADVERTISING"
+        android:id="@+id/textView"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="#16a800"
+        android:background="#b388ff"
+        android:layout_marginTop="16sp"
+        android:layout_marginBottom="16sp" />
 </RelativeLayout>
