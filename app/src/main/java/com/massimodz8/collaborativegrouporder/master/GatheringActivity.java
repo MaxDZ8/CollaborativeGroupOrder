@@ -69,6 +69,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             room.setNewAuthDevicesAdapter(null);
             room.setNewUnassignedPcsAdapter(null);
             room.onNewPublishStatus = null;
+            if(room.assignmentHelper != null) room.assignmentHelper.onDetached = null;
         }
         super.onDestroy();
     }
@@ -190,7 +191,9 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             @Override
             protected void onPostExecute(Void aVoid) {
                 if(errorCount == 0) {
-                    startActivity(new Intent(GatheringActivity.this, FreeRoamingActivity.class));
+                    // Ideally do nothing. We wait until the various devices give us back the ACTOR_DATA_REQUEST.
+                    // However, if no devices are there nothing will ever detach so... have an extra check
+                    room.assignmentHelper.onDetached.run();
                     return;
                 }
                 new AlertDialog.Builder(GatheringActivity.this)
@@ -255,6 +258,19 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             }
         });
         room.accept();
+        room.assignmentHelper.onDetached = new Runnable() {
+            @Override
+            public void run() {
+                boolean completed = true;
+                for (PcAssignmentHelper.PlayingDevice dev : room.assignmentHelper.peers) completed &= dev.assignmentAccepted;
+                int assigned = 0;
+                for (Integer el : room.assignmentHelper.assignment) {
+                    if(el != null) assigned++;
+                }
+                completed &= assigned == room.assignmentHelper.assignment.size();
+                if(completed) startActivity(new Intent(GatheringActivity.this, FreeRoamingActivity.class));
+            }
+        };
         beginDelayedTransition();
         findViewById(R.id.ga_pcUnassignedListDesc).setVisibility(View.VISIBLE);
         final RecyclerView devList = (RecyclerView) findViewById(R.id.ga_deviceList);
@@ -312,6 +328,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             }
             room.beginPublishing((NsdManager) getSystemService(NSD_SERVICE), room.getPartyOwnerData().name, PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
         }
+        room.assignmentHelper.onDetached.run(); // check right now, just in case we switched configs while setting up and lost a signal
     }
 
     private void beginDelayedTransition() {

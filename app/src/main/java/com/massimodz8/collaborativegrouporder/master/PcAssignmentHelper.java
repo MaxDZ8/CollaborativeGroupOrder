@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.os.ResultReceiver;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -37,6 +38,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public abstract class PcAssignmentHelper {
     public final StartData.PartyOwnerData.Group party;
+    Runnable onDetached;
 
     public interface OnBoundPcCallback {
         void onUnboundCountChanged(int stillToBind);
@@ -245,7 +247,7 @@ public abstract class PcAssignmentHelper {
                     handler.sendMessage(handler.obtainMessage(MSG_CHAR_OWNERSHIP_REQUEST, new Events.CharOwnership(from, msg)));
                     return false;
                 }
-            }).add(ProtoBufferEnum.ACTOR_DATA, new PumpTarget.Callbacks<Network.LiveActorDataRequest>() {
+            }).add(ProtoBufferEnum.ACTOR_DATA_REQUEST, new PumpTarget.Callbacks<Network.LiveActorDataRequest>() {
                 @Override
                 public Network.LiveActorDataRequest make() { return new Network.LiveActorDataRequest(); }
 
@@ -265,6 +267,7 @@ public abstract class PcAssignmentHelper {
         public @Nullable byte[] doormat; /// next doormat to send or to consider for key verification.
         public int keyIndex = ANON; /// if isRemote, index of the matched device key --> bound to remote, otherwise check specials
         public Vector<Exception> errors = new Vector<>();
+        public boolean assignmentAccepted; // this is set to true when the corresponding socket worker is detached from the pump as device accepted player bindings.
 
         /// Using null will create this in 'disconnected' mode. Does not make sense to me but w/e.
         public PlayingDevice(@Nullable MessageChannel pipe) {
@@ -322,7 +325,7 @@ public abstract class PcAssignmentHelper {
                     break;
                 }
                 case MSG_DETACHED: {
-                    // Code incoherent, not currently thrown
+                    self.detached((MessageChannel)msg.obj);
                     break;
                 }
                 case MSG_HELLO_ANON:
@@ -411,6 +414,13 @@ public abstract class PcAssignmentHelper {
         }.start();
         dev.pipe = null;
         if(dev.isAnonymous()) peers.remove(dev);
+    }
+
+    private void detached(final MessageChannel pipe) {
+        PlayingDevice dev = getDevice(pipe);
+        if(null == dev) return; // impossible
+        dev.assignmentAccepted = true;
+        if(onDetached != null) onDetached.run();
     }
 
     private void helloAnon(@NonNull MessageChannel origin, @NonNull Network.Hello msg) {
