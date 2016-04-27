@@ -15,11 +15,11 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.AbsLiveActor;
-import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
-import com.massimodz8.collaborativegrouporder.AdventuringActorVH;
 import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
@@ -68,10 +68,46 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     boolean mustUnbind;
     private PartyJoinOrderService game;
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
-    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId, new DifferentClickCallback(), false) {
+    private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter(actorId) {
         @Override
-        public int getItemCount() {
-            return game.getPlaySession().battleState.ordered.length;
+        public AdventuringActorControlsVH onCreateViewHolder(ViewGroup parent, int viewType) {
+            final AdventuringActorControlsVH result = new AdventuringActorControlsVH(BattleActivity.this.getLayoutInflater().inflate(R.layout.vh_adventuring_actor_controls, parent, false)) {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (actor == null) return;
+                    for (InitiativeScore el : game.getPlaySession().battleState.ordered) {
+                        if(el.actor == actor) {
+                            el.enabled = isChecked;
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onClick(View v) {
+                    if (game == null || game.getPlaySession() == null || game.getPlaySession().battleState == null) {
+                        if (selected.isEnabled())
+                            selected.setChecked(!selected.isChecked()); // toggle 'will act next round'
+                        return;
+                    }
+                    final BattleHelper state = game.getPlaySession().battleState;
+                    int myIndex = 0;
+                    for (InitiativeScore test : state.ordered) {
+                        if (test.actor == actor) break;
+                        myIndex++;
+                    }
+                    if (myIndex != state.currentActor && selected.isEnabled()) {
+                        selected.setChecked(!selected.isChecked()); // toggle 'will act next round'
+                    } else {
+                        final Intent intent = new Intent(BattleActivity.this, MyActorRoundActivity.class)
+                                .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true)
+                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivityForResult(intent, REQUEST_MONSTER_TURN);
+                    }
+                }
+            };
+            result.prepared.setOnClickListener(new TriggerPreparedActionListener(result));
+            return result;
         }
 
         @Override
@@ -88,6 +124,15 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 if(interruptor.conditionTriggered && actor == interruptor) return true;
             }
             return matched == battle.currentActor;
+        }
+
+        @Override
+        protected LayoutInflater getLayoutInflater() {
+            return BattleActivity.this.getLayoutInflater();
+        }
+        @Override
+        public int getItemCount() {
+            return game.getPlaySession().battleState.ordered.length;
         }
 
         @Override
@@ -109,49 +154,35 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
             return false;
         }
-
-        @Override
-        protected LayoutInflater getLayoutInflater() {
-            return BattleActivity.this.getLayoutInflater();
-        }
     };
-    private class DifferentClickCallback extends AdventuringActorVH.ClickSelected {
-        @Override
-        public void onClick(AdventuringActorVH self, View view) {
-            if(game == null || game.getPlaySession() == null || game.getPlaySession().battleState == null) super.onClick(self, view); // impossible
-            final BattleHelper state = game.getPlaySession().battleState;
-            int myIndex = 0;
-            for (InitiativeScore test : state.ordered) {
-                if(test.actor == self.actor) break;
-                myIndex++;
-            }
-            if(myIndex != state.currentActor && self.selected.isEnabled()) super.onClick(self, view); // toggle 'will act next round'
-            else {
-                final Intent intent = new Intent(BattleActivity.this, MyActorRoundActivity.class)
-                        .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivityForResult(intent, REQUEST_MONSTER_TURN);
-            }
+
+
+    private class TriggerPreparedActionListener implements View.OnClickListener {
+        final AdventuringActorControlsVH target;
+
+        public TriggerPreparedActionListener(AdventuringActorControlsVH target) {
+            this.target = target;
         }
 
         @Override
-        public void onPreparedActionTriggered(AdventuringActorVH self, View view) {
-            if(self.actor == null || self.actor.actionCondition == null) return; // impossible by context
+        public void onClick(View v) {
+            if (target.actor == null || target.actor.actionCondition == null)
+                return; // impossible by context
             final BattleHelper battle = game.getPlaySession().battleState;
-            if(battle.triggered == null) battle.triggered = new ArrayList<>();
-            battle.triggered.add(self.actor);
-            self.actor.conditionTriggered = true;
+            if (battle.triggered == null) battle.triggered = new ArrayList<>();
+            battle.triggered.add(target.actor);
+            target.actor.conditionTriggered = true;
             final int interrupted = battle.currentActor;
             final InitiativeScore prev = battle.ordered[interrupted];
             battle.currentActor = 0;
             for (InitiativeScore el : battle.ordered) {
-                if(el.actor == self.actor) break;
+                if (el.actor == target.actor) break;
                 battle.currentActor++;
             }
-            battle.shuffleCurrent(interrupted - (interrupted != 0? 1 : 0));
+            battle.shuffleCurrent(interrupted - (interrupted != 0 ? 1 : 0));
             battle.currentActor = 0;
             for (InitiativeScore el : battle.ordered) {
-                if(el == prev) break;
+                if (el == prev) break;
                 battle.currentActor++;
             }
             activateNewActor();
@@ -275,6 +306,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
+        lister.game = game;
         final BattleHelper battle = game.getPlaySession().battleState;
         for (InitiativeScore el : battle.ordered) actorId.put(el.actor, numDefinedActors++);
         lister.notifyDataSetChanged();

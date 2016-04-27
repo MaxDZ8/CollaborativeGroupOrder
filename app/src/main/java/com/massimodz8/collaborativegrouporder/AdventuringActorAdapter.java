@@ -3,8 +3,6 @@ package com.massimodz8.collaborativegrouporder;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import java.util.IdentityHashMap;
 
@@ -14,15 +12,11 @@ import java.util.IdentityHashMap;
  * and be cool! Somebody will therefore have to maintain persistent IDs.
  * The way integers are mapped is fixed here: it's a map lookup.
  */
-public abstract class AdventuringActorAdapter extends RecyclerView.Adapter<AdventuringActorVH> {
+public abstract class AdventuringActorAdapter<AAVH extends AdventuringActorDataVH> extends RecyclerView.Adapter<AAVH> {
     final IdentityHashMap<AbsLiveActor, Integer> actorId;
-    AdventuringActorVH.ClickCallback clickCallback;
-    private final boolean hideCheckbox;
 
-    public AdventuringActorAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId, AdventuringActorVH.ClickCallback clickCallback, boolean hideCheckbox) {
+    public AdventuringActorAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId) {
         this.actorId = actorId;
-        this.clickCallback = clickCallback;
-        this.hideCheckbox = hideCheckbox;
         setHasStableIds(true);
     }
 
@@ -30,26 +24,6 @@ public abstract class AdventuringActorAdapter extends RecyclerView.Adapter<Adven
     public long getItemId(int position) {
         Integer index = actorId.get(getActorByPos(position));
         return index != null ? index : RecyclerView.NO_ID;
-    }
-
-    @Override
-    public AdventuringActorVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new AdventuringActorVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor, parent, false), clickCallback, hideCheckbox) {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isCurrent(actor)) return;
-                enabledSetOrGet(actor, isChecked);
-            }
-        };
-    }
-
-    @Override
-    public void onBindViewHolder(AdventuringActorVH holder, int position) {
-        AbsLiveActor actor = getActorByPos(position);
-        int flags = 0;
-        if(isCurrent(actor)) flags |= AdventuringActorVH.SHOW_HIGHLIGHT;
-        if(enabledSetOrGet(actor, null)) flags |= AdventuringActorVH.CHECKED;
-        holder.bindData(flags, actor);
     }
 
     protected abstract boolean isCurrent(AbsLiveActor actor);

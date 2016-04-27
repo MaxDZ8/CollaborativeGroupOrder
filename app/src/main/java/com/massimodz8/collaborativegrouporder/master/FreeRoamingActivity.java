@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.util.Pair;
@@ -24,8 +23,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.AbsLiveActor;
-import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
-import com.massimodz8.collaborativegrouporder.AdventuringActorVH;
 import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
@@ -129,32 +126,14 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     private boolean mustUnbind;
     private PartyJoinOrderService game;
     private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
-    private AdventuringActorAdapter lister = new AdventuringActorAdapter(actorId, new AdventuringActorVH.ClickSelected(), false) {
+    private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter(actorId) {
         @Override
-        protected boolean isCurrent(AbsLiveActor actor) {
-            return false;
-        }
+        protected boolean isCurrent(AbsLiveActor actor) { return false; }
 
         @Override
-        protected AbsLiveActor getActorByPos(int position) {
-            if(game == null) return null;
-            if(game.getPlaySession() == null) return null; // impossible
-            return game.getPlaySession().getActor(position);
-        }
-
-        @Override
-        protected boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue) {
-            return game.getPlaySession().willFight(actor, newValue);
-        }
-
-        @Override
-        public int getItemCount() { return game != null? game.getPlaySession().getNumActors() : 0; }
-
-        @Override
-        protected LayoutInflater getLayoutInflater() {
-            return FreeRoamingActivity.this.getLayoutInflater();
-        }
+        protected LayoutInflater getLayoutInflater() { return FreeRoamingActivity.this.getLayoutInflater(); }
     };
+
     private int numDefinedActors; // those won't get expunged, no matter what
     private final SecureRandom randomizer = new SecureRandom();
     private Map<AbsLiveActor, Pair<Integer, Integer>> initRolls; // if this is null we're not starting a new battle, otherwise
@@ -242,6 +221,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
+        lister.game = game;
         final SessionHelper.PlayState session = game.getPlaySession();
         session.begin(new Runnable() {
             @Override

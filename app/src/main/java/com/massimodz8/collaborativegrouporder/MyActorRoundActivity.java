@@ -17,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -42,7 +41,6 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
         View holder = findViewById(R.id.vhRoot);
         holder.setVisibility(View.INVISIBLE);
-        holder.findViewById(R.id.vhAA_selected).setVisibility(View.GONE);
 
         if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
             MaxUtils.beginDelayedTransition(this);
@@ -181,14 +179,12 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         battle = localGame.getPlaySession().battleState;
         AbsLiveActor actor = battle.triggered == null? battle.ordered[battle.currentActor].actor : battle.triggered.get(battle.triggered.size() - 1);
         View holder = findViewById(R.id.vhRoot);
-        AdventuringActorVH helper = new AdventuringActorVH(holder, null, true) {
+        AdventuringActorDataVH helper = new AdventuringActorDataVH(holder) {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            }
+            public void onClick(View v) { }
         };
         MaxUtils.beginDelayedTransition(this);
-        helper.bindData(0, actor);
-        helper.selected.setVisibility(View.GONE);
+        helper.bindData(actor);
         holder.setVisibility(View.VISIBLE);
         final int pround = battle.round;
         final int pactor = battle.currentActor;

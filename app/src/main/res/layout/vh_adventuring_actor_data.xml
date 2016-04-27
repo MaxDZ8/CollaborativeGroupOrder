@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:id="@+id/vhRoot">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/vhAAD_avatar"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/placeholder_todo"
+        android:contentDescription="@string/vhAC_avatarDesc"
+        android:layout_marginRight="4dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/vhAAD_name"
+        android:layout_alignParentTop="false"
+        android:layout_toRightOf="@+id/vhAAD_avatar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/vhAAD_preparedAction" />
+
+    <com.massimodz8.collaborativegrouporder.HealthBar
+        android:layout_width="wrap_content"
+        android:layout_height="8dp"
+        android:layout_toRightOf="@+id/vhAAD_avatar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/vhAAD_name"
+        android:id="@+id/vhAAD_health" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/vhAAD_actorTypeShort"
+        android:layout_alignParentTop="false"
+        android:layout_alignLeft="@+id/vhAAD_avatar"
+        android:layout_below="@+id/vhAAD_avatar"
+        android:layout_alignRight="@+id/vhAAD_avatar"
+        android:gravity="center_horizontal" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawableStart="@mipmap/ic_readied_action_white_24dp"
+        android:id="@+id/vhAAD_preparedAction"
+        android:visibility="visible"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="false" />
+
+</RelativeLayout>

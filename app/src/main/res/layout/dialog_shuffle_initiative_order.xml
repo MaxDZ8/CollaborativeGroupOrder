@@ -33,7 +33,7 @@
         android:id="@+id/mara_dlgSIO_list"
         android:layout_weight=".5"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/vh_adventuring_actor" />
+        tools:listitem="@layout/vh_adventuring_actor_data" />
 
     <Button
         android:layout_width="fill_parent"

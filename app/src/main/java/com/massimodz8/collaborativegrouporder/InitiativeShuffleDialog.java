@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 
 import java.util.IdentityHashMap;
@@ -42,7 +43,27 @@ public class InitiativeShuffleDialog {
                 })
                 .show();
         final RecyclerView list = (RecyclerView) dlg.findViewById(R.id.mara_dlgSIO_list);
-        list.setAdapter(new AdventuringActorAdapter(actorId, null, true) {
+        list.setAdapter(new AdventuringActorAdapter<AdventuringActorDataVH>(actorId) {
+            @Override
+            public AdventuringActorDataVH onCreateViewHolder(ViewGroup parent, int viewType) {
+                return new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
+                    @Override
+                    public void onClick(View v) {
+                        // nothing, this thing is not click enabled.
+                    }
+                };
+            }
+
+            @Override
+            public void onBindViewHolder(AdventuringActorDataVH holder, int position) {
+                holder.bindData(getActorByPos(position));
+            }
+
+            @Override
+            public int getItemCount() {
+                return order.length;
+            }
+
             @Override
             protected boolean isCurrent(AbsLiveActor actor) {
                 return order[InitiativeShuffleDialog.this.actor] == actor;
@@ -61,11 +82,6 @@ public class InitiativeShuffleDialog {
             @Override
             protected LayoutInflater getLayoutInflater() {
                 return activity.getLayoutInflater();
-            }
-
-            @Override
-            public int getItemCount() {
-                return order.length;
             }
         });
         list.addItemDecoration(new PreSeparatorDecorator(list, activity) {

@@ -19,7 +19,7 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-        <include layout="@layout/vh_adventuring_actor" />
+        <include layout="@layout/vh_adventuring_actor_data" />
 
         <!--
             android:iconifiedByDefault="false"
