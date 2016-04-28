@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.NonNull;
 
+import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
@@ -21,6 +22,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 
@@ -34,8 +36,10 @@ public class AdventuringService extends Service {
     public int[] actorServerKey;            // actorServerKey[i] corresponds to playedHere[i]
     public CharacterActor[] playedHere;
     public ArrayList<String> errors;
-    private Runnable onComplete;
+    Runnable onComplete;
+    Runnable onRollRequestPushed;
     public CharacterActor currentActor; // One of the actors from playedHere or null.
+    ArrayDeque<Events.Roll> rollRequests = new ArrayDeque<>();
 
     public AdventuringService() {
     }
@@ -57,6 +61,15 @@ public class AdventuringService extends Service {
                         handler.sendMessage(handler.obtainMessage(MSG_ACTOR_DATA, new Events.ActorData(from, msg)));
                         got++;
                         return got == AdventuringService.this.playedHere.length;
+                    }
+                }).add(ProtoBufferEnum.ROLL, new PumpTarget.Callbacks<Network.Roll>() {
+                    @Override
+                    public Network.Roll make() { return new Network.Roll(); }
+
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.Roll msg) throws IOException {
+                        handler.sendMessage(handler.obtainMessage(MSG_ROLL, new Events.Roll(from, msg)));
+                        return false;
                     }
                 });
         netPump.pump(server);
@@ -86,12 +99,13 @@ public class AdventuringService extends Service {
         return new LocalBinder(); // this is called once by the OS when first bind is received.
     }
 
-    private Pumper netPump;
+    Pumper netPump;
     private Handler handler = new MyHandler(this);
 
     private static final int MSG_DISCONNECT = 0;
     private static final int MSG_DETACH = 1;
     private static final int MSG_ACTOR_DATA = 2;
+    private static final int MSG_ROLL = 3;
 
     private static class MyHandler extends Handler {
         final WeakReference<AdventuringService> self;
@@ -119,6 +133,11 @@ public class AdventuringService extends Service {
                         count++;
                     }
                     self.playedHere[count] = CharacterActor.makeLiveActor(real.payload, true);
+                } break;
+                case MSG_ROLL: {
+                    final Events.Roll real = (Events.Roll) msg.obj;
+                    self.rollRequests.push(real);
+                    if(self.onRollRequestPushed != null) self.onRollRequestPushed.run();
                 } break;
             }
             super.handleMessage(msg);

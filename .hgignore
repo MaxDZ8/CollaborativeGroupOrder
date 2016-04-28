@@ -31,3 +31,5 @@ build/generated/mockable-android-23.jar
 .gradle/2.10/taskArtifacts/cache.properties
 app/build/generated/res/pngs
 .gradle/2.10/tasks/_app_compileDebugJavaWithJavac
+.gradle/2.10/tasks/_app_compileDebugAndroidTestJavaWithJavac
+.gradle/2.10/tasks/_app_compileDebugUnitTestJavaWithJavac

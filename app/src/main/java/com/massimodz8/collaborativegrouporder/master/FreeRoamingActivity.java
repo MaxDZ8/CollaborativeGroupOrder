@@ -165,7 +165,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                     @Override
                     public void run() {
                         try {
-                            pipe.writeSync(ProtoBufferEnum.ROLL_REQUEST, rq);
+                            pipe.writeSync(ProtoBufferEnum.ROLL, rq);
                         } catch (IOException e) {
                             // ignore, it will just timeout and somebody else will take care.
                         }

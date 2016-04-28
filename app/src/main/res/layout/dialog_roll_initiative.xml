@@ -14,30 +14,29 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/fra_dlgWIR_title"
+        android:text="@string/aoa_dlgRI_title"
         android:textStyle="bold"
+        android:layout_gravity="center_horizontal" />
+
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/vh_adventuring_actor_data"
+        android:layout_gravity="center_horizontal" />
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/aoa_dlgRI_rollResult"
         android:layout_gravity="center_horizontal" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/fra_dlgWIR_info" />
-
-    <ProgressBar
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/aoa_dlgRI_descAndBonus"
         android:layout_gravity="center_horizontal"
-        android:indeterminate="true"
-        android:indeterminateOnly="true" />
+        android:gravity="center_horizontal" />
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/fra_dlgWIR_list"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/vh_adventuring_actor_controls" />
 
 </LinearLayout>

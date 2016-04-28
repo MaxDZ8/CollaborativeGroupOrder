@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.AbsLiveActor;
@@ -26,9 +28,13 @@ import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.networkio.Events;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
+import java.io.IOException;
 import java.util.IdentityHashMap;
 
 public class ActorOverviewActivity extends AppCompatActivity implements ServiceConnection {
@@ -70,17 +76,28 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mustUnbind) unbindService(this);
+        if(mustUnbind) {
+            if(ticker != null) {
+                ticker.onComplete = null;
+                ticker.onRollRequestPushed = null;
+            }
+            unbindService(this);
+        }
         if(!isChangingConfigurations()) {
-            ticker.stopForeground(true);
+            if(ticker != null) ticker.stopForeground(true);
             final Intent intent = new Intent(this, AdventuringService.class);
             stopService(intent);
         }
+        if(rollDialog != null) {
+            rollDialog.dlg.dismiss(); // I'm going to regenerate this next time anyway.
+        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     boolean mustUnbind;
     static final int NOTIFICATION_ID = 100;
     private AdventuringService ticker;
+    private RollInitiativeDialog rollDialog;
     private IdentityHashMap<AbsLiveActor, Integer> actorIds = new IdentityHashMap<>();
     private RecyclerView.Adapter lister = new AdventuringActorAdapter<AdventuringActorDataVH>(actorIds) {
         @Override
@@ -142,6 +159,64 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         rv.setVisibility(View.VISIBLE);
     }
 
+    private void rollRequested() {
+        if (rollDialog != null) return;
+        if (ticker.rollRequests.isEmpty()) return; // async recursion stop
+        final Events.Roll request = ticker.rollRequests.getFirst();
+        if(request.payload.type == Network.Roll.T_BATTLE_START) {
+            MaxUtils.beginDelayedTransition(this);
+            final TextView status = (TextView) findViewById(R.id.aoa_status);
+            status.setText(R.string.aoa_status_fightingIdle);
+            final ActionBar sab = getSupportActionBar();
+            if(sab != null) sab.setTitle(R.string.aoa_title_fighting);
+        }
+        int index = 0;
+        for (int key : ticker.actorServerKey) {
+            if(key == request.payload.peerKey) break;
+            index++;
+        }
+        final Vibrator vibro = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        if (vibro != null && vibro.hasVibrator()) {
+            final long[] intervals = {0, 350, 300, 250};
+            vibro.vibrate(intervals, -1);
+        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+        final CharacterActor actor = ticker.playedHere[index];
+        rollDialog = new RollInitiativeDialog(actor, request, new SendRollCallback(actor.getInitiativeBonus()), this);
+    }
+
+    private class SendRollCallback implements Runnable {
+        private final int modifier;
+
+        public SendRollCallback(int modifier) {
+            this.modifier = modifier;
+        }
+
+        @Override
+        public void run() {
+            final Events.Roll ready = ticker.rollRequests.pop();
+            final Network.Roll reply = new Network.Roll();
+            reply.result = ready.payload.result + modifier;
+            reply.unique = ready.payload.unique;
+            reply.peerKey = ready.payload.peerKey;
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        ready.from.writeSync(ProtoBufferEnum.ROLL, reply);
+                    } catch (IOException e) {
+                        // todo: collect those in the service mailman maybe and have better error support.
+                    }
+                }
+            }.start();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            rollDialog.dlg.dismiss();
+            rollDialog = null;
+            rollRequested(); // there might be more rolls pending.
+        }
+    }
+
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -149,7 +224,13 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         if(ticker.playedHere == null) { // Initiate data pull
             ticker.getActorData(actorKeys, serverPipe, new Runnable() {
                 @Override
-                public void run() { actorDataFetched(); }
+                public void run() {
+                    // This callback triggers after I got all my actor info, the worker thread detaches.
+                    // This really counts just one.
+                    final Pumper.MessagePumpingThread[] worker = ticker.netPump.move();
+                    actorDataFetched();
+                    ticker.netPump.pump(worker[0]); // reattach and start pumping roll requests.
+                }
             });
             actorKeys = null;
             serverPipe = null;
@@ -167,6 +248,12 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             }
             ticker.startForeground(NOTIFICATION_ID, help.build());
         }
+        ticker.onRollRequestPushed = new Runnable() {
+            @Override
+            public void run() {
+                rollRequested();
+            }
+        };
         int waiting = 0;
         for (CharacterActor check : ticker.playedHere) {
             if(check == null) waiting++;
@@ -177,6 +264,7 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             final TextView status = (TextView) findViewById(R.id.aoa_status);
             status.setText(R.string.aoa_fetchingData);
         }
+        rollRequested();
     }
 
     @Override

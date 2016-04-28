@@ -3,8 +3,6 @@ package com.massimodz8.collaborativegrouporder.networkio;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
-import java.net.Socket;
-
 /**
  * Created by Massimo on 13/01/2016.
  * A single namespace-like thing to hold the various events to be pushed to GUI handler.
@@ -130,6 +128,16 @@ public interface Events {
 
         public ActorData(MessageChannel origin, StartData.ActorDefinition payload) {
             this.origin = origin;
+            this.payload = payload;
+        }
+    }
+
+    class Roll {
+        public final MessageChannel from;
+        public final Network.Roll payload;
+
+        public Roll(MessageChannel from, Network.Roll payload) {
+            this.from = from;
             this.payload = payload;
         }
     }

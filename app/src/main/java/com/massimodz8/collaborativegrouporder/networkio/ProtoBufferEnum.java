@@ -19,5 +19,5 @@ public interface ProtoBufferEnum {
     int ACTOR_DATA_REQUEST = 9;
     int ACTOR_DATA = 10;
 
-    int ROLL_REQUEST = 11;
+    int ROLL = 11;
 }
