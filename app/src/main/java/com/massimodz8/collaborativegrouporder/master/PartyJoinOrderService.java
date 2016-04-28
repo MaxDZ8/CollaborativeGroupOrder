@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder.master;
 
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,13 +12,19 @@ import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
+import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
+import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 /** Encapsulates states and manipulations involved in creating a socket and publishing it to the
  * network for the purposes of having player devices "join" the game.
@@ -33,9 +40,9 @@ import java.util.ArrayList;
  */
 public class PartyJoinOrderService extends PublishAcceptService {
     /* Section 3: identifying joining devices and binding characters. ------------------------------
-        This goes in parallel with landing socket and publish management so you're better set this up ASAP.
-        As usual, it can be initialized only once and then the service will have to be destroyed.
-        */
+            This goes in parallel with landing socket and publish management so you're better set this up ASAP.
+            As usual, it can be initialized only once and then the service will have to be destroyed.
+            */
     public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster) {
             @Override
@@ -47,7 +54,28 @@ public class PartyJoinOrderService extends PublishAcceptService {
         ArrayList<AbsLiveActor> byDef = new ArrayList<>();
         for(StartData.ActorDefinition el : party.party) byDef.add(CharacterActor.makeLiveActor(el, true));
         for(StartData.ActorDefinition el : party.npcs) byDef.add(CharacterActor.makeLiveActor(el, false));
-        sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef, monsterBook);
+        sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef);
+        sessionHelper.session = new SessionHelper.PlayState(sessionHelper, monsterBook) {
+            @Override
+            void onRollReceived() {
+                while(!sessionHelper.session.rollResults.isEmpty()) {
+                    final Events.Roll got = sessionHelper.session.rollResults.pop();
+                    matchRoll(got.from, got.payload);
+                }
+            }
+        };
+        battleHandler = new MyBattleHandler(this);
+        battlePumper = new Pumper(battleHandler, MyBattleHandler.MSG_DISCONNECTED, MyBattleHandler.MSG_DETACHED)
+                .add(ProtoBufferEnum.ROLL, new PumpTarget.Callbacks<Network.Roll>() {
+                    @Override
+                    public Network.Roll make() { return new Network.Roll(); }
+
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.Roll msg) throws IOException {
+                        battleHandler.sendMessage(battleHandler.obtainMessage(MyBattleHandler.MSG_ROLL, new Events.Roll(from, msg)));
+                        return false;
+                    }
+                });
     }
 
     public void shutdownPartyManagement() {
@@ -97,10 +125,30 @@ public class PartyJoinOrderService extends PublishAcceptService {
         assignmentHelper.onBoundPc = listener;
     }
 
-    public SessionHelper.PlayState getPlaySession() { return sessionHelper.getSession(); }
-
     PcAssignmentHelper assignmentHelper;
-    private SessionHelper sessionHelper;
+    public SessionHelper sessionHelper;
+    Pumper battlePumper;
+    Handler battleHandler;
+    /**
+     * Roll requests are unique across all devices so we can be super sure of what to do.
+     */
+    int rollRequest;
+    Runnable onRollReceived; // called when a roll has been matched to some updated state.
+
+
+    private void matchRoll(MessageChannel from, Network.Roll dice) {
+        // The first consumer of rolls is initiative building.
+        if(sessionHelper != null && sessionHelper.initiatives != null) {
+            for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> el : sessionHelper.initiatives.entrySet()) {
+                final SessionHelper.Initiative val = el.getValue();
+                if(val.request != null && dice.unique == val.request.unique) {
+                    val.rolled = dice.result + el.getKey().getInitiativeBonus();
+                    if(onRollReceived != null) onRollReceived.run();
+                    return;
+                }
+            }
+        }
+    }
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override

@@ -2,7 +2,6 @@ package com.massimodz8.collaborativegrouporder.master;
 
 
 import android.support.annotation.NonNull;
-import android.support.v4.util.Pair;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -24,11 +23,11 @@ import java.util.Map;
  */
 public class WaitInitiativeDialog {
     final IdentityHashMap<AbsLiveActor, Integer> actorId;
-    final Map<AbsLiveActor, Pair<Integer, Integer>> initRolls;
+    final Map<AbsLiveActor, SessionHelper.Initiative> initRolls;
     RecyclerView.Adapter<AdventuringActorControlsVH> lister;
     AlertDialog dlg;
 
-    public WaitInitiativeDialog(IdentityHashMap<AbsLiveActor, Integer> actorId, Map<AbsLiveActor, Pair<Integer, Integer>> initRolls) {
+    public WaitInitiativeDialog(IdentityHashMap<AbsLiveActor, Integer> actorId, Map<AbsLiveActor, SessionHelper.Initiative> initRolls) {
         this.actorId = actorId;
         this.initRolls = initRolls;
     }
@@ -55,8 +54,8 @@ public class WaitInitiativeDialog {
             @Override
             public void onBindViewHolder(AdventuringActorControlsVH holder, int position) {
                 AbsLiveActor match = null;
-                for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> el : initRolls.entrySet()) {
-                    if(el.getValue().first == null) continue;
+                for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> el : initRolls.entrySet()) {
+                    if(el.getValue().request == null) continue;
                     if(position == 0) {
                         match = el.getKey();
                         break;
@@ -64,7 +63,7 @@ public class WaitInitiativeDialog {
                     position--;
                 }
                 if(match == null) return;
-                holder.checked = initRolls.get(match).second != null;
+                holder.checked = initRolls.get(match).rolled != null;
                 holder.bindData(match);
                 holder.selected.setEnabled(false);
             }
@@ -72,8 +71,8 @@ public class WaitInitiativeDialog {
             @Override
             public int getItemCount() {
                 int count = 0;
-                for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> el : initRolls.entrySet()) {
-                    if(el.getValue().first != null) count++;
+                for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> el : initRolls.entrySet()) {
+                    if(el.getValue().request != null) count++;
                     // else rolled automatically, do not list.
                 }
 
@@ -83,8 +82,8 @@ public class WaitInitiativeDialog {
             @Override
             public long getItemId(int position) {
                 AbsLiveActor match = null;
-                for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> el : initRolls.entrySet()) {
-                    if(el.getValue().first == null) continue;
+                for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> el : initRolls.entrySet()) {
+                    if(el.getValue().request == null) continue;
                     if(position == 0) {
                         match = el.getKey();
                         break;

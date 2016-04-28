@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.util.Pair;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -62,7 +61,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             public void onClick(View view) {
                 int count = 0;
                 int pgCount = 0;
-                final SessionHelper.PlayState session = game.getPlaySession();
+                final SessionHelper.PlayState session = game.sessionHelper.session;
                 for(int loop = 0; loop < session.getNumActors(); loop++) {
                     AbsLiveActor actor = session.getActor(loop);
                     int add = session.willFight(actor, null)? 1 : 0;
@@ -109,7 +108,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     protected void onResume() { // maybe we got there after a monster has been added.
         super.onResume();
         if(game == null) return; // no connection yet -> nothing really to do.
-        final SessionHelper.PlayState session = game.getPlaySession();
+        final SessionHelper.PlayState session = game.sessionHelper.session;
         final int added = session.getNumActors() - numDefinedActors;
         if(added == 0) return;
         for(int loop = 0; loop < added; loop++) actorId.put(session.getActor(numDefinedActors + loop), numDefinedActors + loop);
@@ -119,7 +118,12 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
 
     @Override
     protected void onDestroy() {
-        if(game != null) game.getPlaySession().end();
+        if(game != null) {
+            game.onRollReceived = null;
+            game.assignmentHelper.onDetached = null;
+            game.sessionHelper.session.end();
+        }
+        if(waiting != null) waiting.dlg.dismiss();
         if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
@@ -137,18 +141,13 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
 
     private int numDefinedActors; // those won't get expunged, no matter what
     private final SecureRandom randomizer = new SecureRandom();
-    private Map<AbsLiveActor, Pair<Integer, Integer>> initRolls; // if this is null we're not starting a new battle, otherwise
-    // There is a key for each 'will battle' actor. Each key value is built non-null.
-    // .first is nullable. It is the roll request ID sent to remote players and set to null as soon as we receive a result.
-    // .second is the roll.
-    // Therefore, only one of the two fields are set at time. When all rolls are there, we build order and go to battle.
     private WaitInitiativeDialog waiting;
 
 
     private void sendInitiativeRollRequests() {
-        final SessionHelper.PlayState session = game.getPlaySession();
+        final SessionHelper.PlayState session = game.sessionHelper.session;
         final ArrayList<AbsLiveActor> local = new ArrayList<>();
-        initRolls = new IdentityHashMap<>();
+        game.sessionHelper.initiatives = new IdentityHashMap<>();
         for(int loop = 0; loop < session.getNumActors(); loop++) {
             final AbsLiveActor actor = session.getActor(loop);
             if (!session.willFight(actor, null)) continue;
@@ -160,7 +159,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 rq.range = 20;
                 rq.peerKey = loop;
                 rq.type = Network.Roll.T_BATTLE_START;
-                initRolls.put(actor, new Pair<>(rq.unique, (Integer)null));
+                game.sessionHelper.initiatives.put(actor, new SessionHelper.Initiative(rq));
                 new Thread() {
                     @Override
                     public void run() {
@@ -172,7 +171,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                     }
                 }.start();
             } else {
-                initRolls.put(actor, new Pair<>((Integer)null, (Integer)null));
+                game.sessionHelper.initiatives.put(actor, new SessionHelper.Initiative(null));
                 local.add(actor);
             }
         }
@@ -180,29 +179,29 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         // For the time being, those are rolled automatically.
         final int range = 20;
         for (AbsLiveActor actor : local) {
-            final Pair<Integer, Integer> pair = initRolls.get(actor);
-            final int init = randomizer.nextInt(range) + actor.getInitiativeBonus();
-            initRolls.put(actor, new Pair<>(pair.first, init));
+            final SessionHelper.Initiative pair = game.sessionHelper.initiatives.get(actor);
+            pair.rolled = randomizer.nextInt(range) + actor.getInitiativeBonus();
         }
-        if(!attemptBattleStart()) {
-            waiting = new WaitInitiativeDialog(actorId, initRolls).show(this);
-        }
+        attemptBattleStart();
+        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(actorId, game.sessionHelper.initiatives).show(this);
     }
 
     /// Called every time at least one initiative is written so we can try sorting & starting.
     boolean attemptBattleStart() {
+        if(game == null || game.sessionHelper.initiatives == null) return false;
         int count = 0;
-        for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> entry : initRolls.entrySet()) {
-            if(entry.getValue().second == null) return false;
+        if(waiting != null) waiting.lister.notifyDataSetChanged(); // maybe not but I take it easy.
+        for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> entry : game.sessionHelper.initiatives.entrySet()) {
+            if(entry.getValue().rolled == null) return false;
             count++;
         }
         // Everyone got a number. We go.
         InitiativeScore[] order = new InitiativeScore[count];
         count = 0;
-        final SessionHelper.PlayState session = game.getPlaySession();
-        for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> entry : initRolls.entrySet()) {
+        final SessionHelper.PlayState session = game.sessionHelper.session;
+        for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> entry : game.sessionHelper.initiatives.entrySet()) {
             final AbsLiveActor actor = entry.getKey();
-            final Integer irl = entry.getValue().second;
+            final Integer irl = entry.getValue().rolled;
             order[count++] = new InitiativeScore(irl, actor.getInitiativeBonus(), randomizer.nextInt(1024), actor);
         }
         Arrays.sort(order, new Comparator<InitiativeScore>() {
@@ -228,7 +227,22 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
         lister.game = game;
-        final SessionHelper.PlayState session = game.getPlaySession();
+        game.assignmentHelper.onDetached = null;
+        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(actorId, game.sessionHelper.initiatives).show(this);
+        game.onRollReceived = new Runnable() {
+            @Override
+            public void run() {
+                attemptBattleStart();
+            }
+        };
+        // Promote everything to battle pumper.
+        for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+            if(!dev.assignmentAccepted) continue;
+            if(dev.movedToBattlePumper) continue;
+            game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
+        }
+        attemptBattleStart();
+        final SessionHelper.PlayState session = game.sessionHelper.session;
         session.begin(new Runnable() {
             @Override
             public void run() {

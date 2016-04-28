@@ -57,8 +57,8 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             public void onClick(View view) {
                 fab.setVisibility(View.GONE);
                 MaxUtils.beginDelayedTransition(BattleActivity.this);
-                game.getPlaySession().battleState.tickRound();
-                lister.notifyItemChanged(game.getPlaySession().battleState.currentActor);
+                game.sessionHelper.session.battleState.tickRound();
+                lister.notifyItemChanged(game.sessionHelper.session.battleState.currentActor);
                 activateNewActor();
             }
         });
@@ -75,7 +75,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (actor == null) return;
-                    for (InitiativeScore el : game.getPlaySession().battleState.ordered) {
+                    for (InitiativeScore el : game.sessionHelper.session.battleState.ordered) {
                         if(el.actor == actor) {
                             el.enabled = isChecked;
                             break;
@@ -85,12 +85,12 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
                 @Override
                 public void onClick(View v) {
-                    if (game == null || game.getPlaySession() == null || game.getPlaySession().battleState == null) {
+                    if (game == null || game.sessionHelper.session == null || game.sessionHelper.session.battleState == null) {
                         if (selected.isEnabled())
                             selected.setChecked(!selected.isChecked()); // toggle 'will act next round'
                         return;
                     }
-                    final BattleHelper state = game.getPlaySession().battleState;
+                    final BattleHelper state = game.sessionHelper.session.battleState;
                     int myIndex = 0;
                     for (InitiativeScore test : state.ordered) {
                         if (test.actor == actor) break;
@@ -113,7 +113,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         @Override
         protected boolean isCurrent(AbsLiveActor actor) {
             if (game == null) return false;
-            final BattleHelper battle = game.getPlaySession().battleState;
+            final BattleHelper battle = game.sessionHelper.session.battleState;
             int matched = 0;
             for (InitiativeScore check : battle.ordered) {
                 if (check.actor == actor) break;
@@ -132,18 +132,18 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         }
         @Override
         public int getItemCount() {
-            return game.getPlaySession().battleState.ordered.length;
+            return game.sessionHelper.session.battleState.ordered.length;
         }
 
         @Override
         protected AbsLiveActor getActorByPos(int position) {
-            return game.getPlaySession().battleState.ordered[position].actor;
+            return game.sessionHelper.session.battleState.ordered[position].actor;
         }
 
         @Override
         protected boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue) {
             int index = 0;
-            final BattleHelper battle = game.getPlaySession().battleState;
+            final BattleHelper battle = game.sessionHelper.session.battleState;
             for (InitiativeScore test : battle.ordered) {
                 if(actor == test.actor) {
                     if(newValue != null) battle.ordered[index].enabled = newValue;
@@ -168,7 +168,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         public void onClick(View v) {
             if (target.actor == null || target.actor.actionCondition == null)
                 return; // impossible by context
-            final BattleHelper battle = game.getPlaySession().battleState;
+            final BattleHelper battle = game.sessionHelper.session.battleState;
             if (battle.triggered == null) battle.triggered = new ArrayList<>();
             battle.triggered.add(target.actor);
             target.actor.conditionTriggered = true;
@@ -210,7 +210,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     }
 
     private void actionCompleted() {
-        final BattleHelper battle = game.getPlaySession().battleState;
+        final BattleHelper battle = game.sessionHelper.session.battleState;
         final int prev, currently;
         boolean fromReadiedStack = false;
         if(battle.triggered == null) {
@@ -282,7 +282,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     }
 
     private void activateNewActor() {        // If played here open detail screen. Otherwise, send your-turn message.
-        final BattleHelper battle = game.getPlaySession().battleState;
+        final BattleHelper battle = game.sessionHelper.session.battleState;
         final AbsLiveActor active = battle.triggered == null? battle.ordered[battle.currentActor].actor : battle.triggered.get(battle.triggered.size() - 1);
         final MessageChannel pipe;
         if(active instanceof CharacterActor) {
@@ -307,7 +307,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
         lister.game = game;
-        final BattleHelper battle = game.getPlaySession().battleState;
+        final BattleHelper battle = game.sessionHelper.session.battleState;
         for (InitiativeScore el : battle.ordered) actorId.put(el.actor, numDefinedActors++);
         lister.notifyDataSetChanged();
         final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);

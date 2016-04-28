@@ -4,12 +4,15 @@ import android.support.annotation.NonNull;
 
 import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
-import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 
 /**
  * Created by Massimo on 14/03/2016.
@@ -28,25 +31,41 @@ public class SessionHelper {
     public final PersistentDataUtils.SessionStructs stats;
     public final ArrayList<AbsLiveActor> existByDef;
 
-    SessionHelper(StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs stats, ArrayList<AbsLiveActor> existByDef, MonsterData.MonsterBook monsters) {
+    /**
+     * If this is non-null then we're preparing to start a new battle.
+     * For each actor involved in battle, this map holds the original request sent and the result.
+     * This is supposed to be an identity reference hash map reset to null as soon as the battle is done.
+     */
+    public Map<AbsLiveActor, Initiative> initiatives;
+
+    public static class Initiative {
+        final Network.Roll request; // can be null for 'local' actors, automatically rolled
+        Integer rolled; // if null, no result got yet!
+
+        public Initiative(Network.Roll request) {
+            this.request = request;
+        }
+    }
+
+
+    SessionHelper(StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs stats, ArrayList<AbsLiveActor> existByDef) {
         this.party = party;
         this.stats = stats;
         this.existByDef = existByDef;
-        this.monsters = monsters;
-    }
-
-    PlayState getSession() {
-        if(session == null) session = new PlayState(monsters);
-        return session;
     }
 
     /// Activity interface so I can avoid dealing with the service and all.
-    public class PlayState {
+    public static abstract class PlayState {
         public final MonsterData.MonsterBook monsters;
+        private final SessionHelper session;
         public BattleHelper battleState;
+        public ArrayDeque<Events.Roll> rollResults = new ArrayDeque<>(); // this is to be used even before battle starts.
 
-        public PlayState(MonsterData.MonsterBook monsters) {
+        abstract void onRollReceived(); // called after rollRequest.push
+
+        public PlayState(SessionHelper session, MonsterData.MonsterBook monsters) {
             this.monsters = monsters;
+            this.session = session;
         }
 
         void begin(@NonNull Runnable onComplete) {
@@ -54,25 +73,22 @@ public class SessionHelper {
         }
         void end() { }
 
-        void add(AbsLiveActor actor) { temporaries.add(actor); }
+        void add(AbsLiveActor actor) { session.temporaries.add(actor); }
         boolean willFight(AbsLiveActor actor, Boolean newFlag) {
-            boolean currently = fighters.contains(actor);
+            boolean currently = session.fighters.contains(actor);
             if(newFlag == null) return currently;
-            if(newFlag) fighters.add(actor);
-            else fighters.remove(actor);
+            if(newFlag) session.fighters.add(actor);
+            else session.fighters.remove(actor);
             return newFlag;
         }
-        int getNumActors() { return existByDef.size() + temporaries.size(); }
+        int getNumActors() { return session.existByDef.size() + session.temporaries.size(); }
         AbsLiveActor getActor(int i) {
-            int sz = existByDef.size();
-            return i < sz ? existByDef.get(i) : temporaries.get(i - sz);
+            int sz = session.existByDef.size();
+            return i < sz ? session.existByDef.get(i) : session.temporaries.get(i - sz);
         }
     }
 
-    private PlayState session;
-    private final MonsterData.MonsterBook monsters;
+    public PlayState session;
     private final ArrayList<AbsLiveActor> temporaries = new ArrayList<>();
     private final HashSet<AbsLiveActor> fighters = new HashSet<>();
-    private Pumper netPump;
-
 }

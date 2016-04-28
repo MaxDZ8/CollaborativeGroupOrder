@@ -34,6 +34,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /** The server is 'gathering' player devices so they can join a new session.
@@ -42,6 +43,19 @@ import java.util.ArrayList;
  */
 public class GatheringActivity extends AppCompatActivity implements ServiceConnection {
     private PartyJoinOrderService room;
+    private final Runnable myDetachCallback = new Runnable() {
+        @Override
+        public void run() {
+            boolean completed = true;
+            for (PcAssignmentHelper.PlayingDevice dev : room.assignmentHelper.peers) completed &= dev.assignmentAccepted;
+            int assigned = 0;
+            for (Integer el : room.assignmentHelper.assignment) {
+                if(el != null) assigned++;
+            }
+            completed &= assigned == room.assignmentHelper.assignment.size();
+            if(completed) startActivity(new Intent(GatheringActivity.this, FreeRoamingActivity.class));
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,13 +90,19 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
 
     @Override
     protected void onStop() {
-        if(room != null) room.stopListening(false);
+        if(room != null) {
+            room.stopListening(false);
+            if(room.assignmentHelper != null) room.assignmentHelper.onDetached = null;
+        }
         super.onStop();
     }
 
     @Override
     protected void onStart() {
-        if(room != null) room.accept();
+        if(room != null) {
+            room.accept();
+            if(room.assignmentHelper != null) room.assignmentHelper.onDetached = new WeakReference<>(myDetachCallback);
+        }
         super.onStart();
     }
 
@@ -193,7 +213,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                 if(errorCount == 0) {
                     // Ideally do nothing. We wait until the various devices give us back the ACTOR_DATA_REQUEST.
                     // However, if no devices are there nothing will ever detach so... have an extra check
-                    room.assignmentHelper.onDetached.run();
+                    myDetachCallback.run();
                     return;
                 }
                 new AlertDialog.Builder(GatheringActivity.this)
@@ -258,19 +278,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             }
         });
         room.accept();
-        room.assignmentHelper.onDetached = new Runnable() {
-            @Override
-            public void run() {
-                boolean completed = true;
-                for (PcAssignmentHelper.PlayingDevice dev : room.assignmentHelper.peers) completed &= dev.assignmentAccepted;
-                int assigned = 0;
-                for (Integer el : room.assignmentHelper.assignment) {
-                    if(el != null) assigned++;
-                }
-                completed &= assigned == room.assignmentHelper.assignment.size();
-                if(completed) startActivity(new Intent(GatheringActivity.this, FreeRoamingActivity.class));
-            }
-        };
+        room.assignmentHelper.onDetached = new WeakReference<Runnable>(myDetachCallback);
         beginDelayedTransition();
         findViewById(R.id.ga_pcUnassignedListDesc).setVisibility(View.VISIBLE);
         final RecyclerView devList = (RecyclerView) findViewById(R.id.ga_deviceList);
@@ -328,7 +336,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             }
             room.beginPublishing((NsdManager) getSystemService(NSD_SERVICE), room.getPartyOwnerData().name, PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
         }
-        room.assignmentHelper.onDetached.run(); // check right now, just in case we switched configs while setting up and lost a signal
+        myDetachCallback.run(); // check right now, just in case we switched configs while setting up and lost a signal
     }
 
     private void beginDelayedTransition() {

@@ -255,7 +255,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder) service;
         final PartyJoinOrderService serv = real.getConcreteService();
-        session = serv.getPlaySession();
+        session = serv.sessionHelper.session;
         monsters = session.monsters;
         showBookInfo.setVisible(true);
         unbindService(this);

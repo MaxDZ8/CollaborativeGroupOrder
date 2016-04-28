@@ -24,13 +24,13 @@ public abstract class AdventuringActorWithControlsAdapter extends AdventuringAct
     @Override
     protected AbsLiveActor getActorByPos(int position) {
         if(game == null) return null;
-        if(game.getPlaySession() == null) return null; // impossible
-        return game.getPlaySession().getActor(position);
+        if(game.sessionHelper.session == null) return null; // impossible
+        return game.sessionHelper.session.getActor(position);
     }
 
     @Override
     protected boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue) {
-        return game.getPlaySession().willFight(actor, newValue);
+        return game.sessionHelper.session.willFight(actor, newValue);
     }
 
     @Override
@@ -39,7 +39,7 @@ public abstract class AdventuringActorWithControlsAdapter extends AdventuringAct
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(actor == null) return;
-                game.getPlaySession().willFight(actor, isChecked);
+                game.sessionHelper.session.willFight(actor, isChecked);
             }
 
             @Override
@@ -58,5 +58,5 @@ public abstract class AdventuringActorWithControlsAdapter extends AdventuringAct
     }
 
     @Override
-    public int getItemCount() { return game != null? game.getPlaySession().getNumActors() : 0; }
+    public int getItemCount() { return game != null? game.sessionHelper.session.getNumActors() : 0; }
 }
