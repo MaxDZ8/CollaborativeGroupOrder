@@ -15,8 +15,6 @@ public abstract class AbsLiveActor {
     public String actionCondition; // if non-null (can be empty) this is condition text memo, skip normal order.
     public boolean conditionTriggered; // true if the condition has been triggered and is being resolved.
 
-    public int nextRollRequestIndex;
-
     protected AbsLiveActor(String displayName, int type) {
         this.displayName = displayName;
         this.type = type;

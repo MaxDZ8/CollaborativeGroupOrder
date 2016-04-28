@@ -156,7 +156,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             final MessageChannel pipe = pc == null ? null : game.getMessageChannel(pc.character);
             if (pipe != null) { // send a roll request.
                 final Network.Roll rq = new Network.Roll();
-                rq.unique = pc.nextRollRequestIndex++;
+                rq.unique = ++game.rollRequest;
                 rq.range = 20;
                 rq.peerKey = loop;
                 rq.type = Network.Roll.T_BATTLE_START;
