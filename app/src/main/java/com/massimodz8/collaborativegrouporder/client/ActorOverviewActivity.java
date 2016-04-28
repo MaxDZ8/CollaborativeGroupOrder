@@ -183,21 +183,15 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         final CharacterActor actor = ticker.playedHere[index];
-        rollDialog = new RollInitiativeDialog(actor, request, new SendRollCallback(actor.getInitiativeBonus()), this);
+        rollDialog = new RollInitiativeDialog(actor, request, new SendRollCallback(), this);
     }
 
     private class SendRollCallback implements Runnable {
-        private final int modifier;
-
-        public SendRollCallback(int modifier) {
-            this.modifier = modifier;
-        }
-
         @Override
         public void run() {
             final Events.Roll ready = ticker.rollRequests.pop();
             final Network.Roll reply = new Network.Roll();
-            reply.result = ready.payload.result + modifier;
+            reply.result = ready.payload.result;
             reply.unique = ready.payload.unique;
             reply.peerKey = ready.payload.peerKey;
             new Thread() {
