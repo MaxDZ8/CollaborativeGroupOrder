@@ -41,6 +41,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class FreeRoamingActivity extends AppCompatActivity implements ServiceConnection {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +142,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     // .first is nullable. It is the roll request ID sent to remote players and set to null as soon as we receive a result.
     // .second is the roll.
     // Therefore, only one of the two fields are set at time. When all rolls are there, we build order and go to battle.
+    private WaitInitiativeDialog waiting;
 
 
     private void sendInitiativeRollRequests() {
@@ -153,10 +155,11 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             final CharacterActor pc = actor instanceof CharacterActor ? (CharacterActor) actor : null;
             final MessageChannel pipe = pc == null ? null : game.getMessageChannel(pc.character);
             if (pipe != null) { // send a roll request.
-                final Network.ManualRollRequest rq = new Network.ManualRollRequest();
-                rq.note = getString(R.string.fra_rollRequestInitiativeMsg);
+                final Network.Roll rq = new Network.Roll();
                 rq.unique = pc.nextRollRequestIndex++;
-                rq.what = Network.ManualRollRequest.TWENTY;
+                rq.range = 20;
+                rq.peerKey = loop;
+                rq.type = Network.Roll.T_BATTLE_START;
                 initRolls.put(actor, new Pair<>(rq.unique, (Integer)null));
                 new Thread() {
                     @Override
@@ -181,14 +184,16 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             final int init = randomizer.nextInt(range) + actor.getInitiativeBonus();
             initRolls.put(actor, new Pair<>(pair.first, init));
         }
-        attemptBattleStart();
+        if(!attemptBattleStart()) {
+            waiting = new WaitInitiativeDialog(actorId, initRolls).show(this);
+        }
     }
 
     /// Called every time at least one initiative is written so we can try sorting & starting.
-    void attemptBattleStart() {
+    boolean attemptBattleStart() {
         int count = 0;
         for (Map.Entry<AbsLiveActor, Pair<Integer, Integer>> entry : initRolls.entrySet()) {
-            if(entry.getValue().second == null) return;
+            if(entry.getValue().second == null) return false;
             count++;
         }
         // Everyone got a number. We go.
@@ -214,6 +219,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         });
         session.battleState = new BattleHelper(order);
         startActivity(new Intent(this, BattleActivity.class));
+        return true;
     }
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

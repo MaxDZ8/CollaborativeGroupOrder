@@ -1182,26 +1182,21 @@ public interface Network {
     }
   }
 
-  public static final class ManualRollRequest extends
+  public static final class Roll extends
       com.google.protobuf.nano.MessageNano {
 
-    // enum Dice
-    public static final int FOUR = 0;
-    public static final int SIX = 1;
-    public static final int EIGHT = 2;
-    public static final int TEN = 3;
-    public static final int TWELVE = 4;
-    public static final int TWENTY = 5;
-    public static final int HUNDRED = 6;
+    // enum Type
+    public static final int T_MISC = 0;
+    public static final int T_BATTLE_START = 1;
 
-    private static volatile ManualRollRequest[] _emptyArray;
-    public static ManualRollRequest[] emptyArray() {
+    private static volatile Roll[] _emptyArray;
+    public static Roll[] emptyArray() {
       // Lazily initializes the empty array
       if (_emptyArray == null) {
         synchronized (
             com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
           if (_emptyArray == null) {
-            _emptyArray = new ManualRollRequest[0];
+            _emptyArray = new Roll[0];
           }
         }
       }
@@ -1214,17 +1209,29 @@ public interface Network {
     // optional uint32 unique = 2;
     public int unique;
 
-    // optional .ManualRollRequest.Dice what = 3;
-    public int what;
+    // optional uint32 range = 3;
+    public int range;
 
-    public ManualRollRequest() {
+    // optional uint32 peerKey = 4;
+    public int peerKey;
+
+    // optional int32 result = 5;
+    public int result;
+
+    // optional .Roll.Type type = 6;
+    public int type;
+
+    public Roll() {
       clear();
     }
 
-    public ManualRollRequest clear() {
+    public Roll clear() {
       note = "";
       unique = 0;
-      what = com.massimodz8.collaborativegrouporder.protocol.nano.Network.ManualRollRequest.FOUR;
+      range = 0;
+      peerKey = 0;
+      result = 0;
+      type = com.massimodz8.collaborativegrouporder.protocol.nano.Network.Roll.T_MISC;
       cachedSize = -1;
       return this;
     }
@@ -1238,8 +1245,17 @@ public interface Network {
       if (this.unique != 0) {
         output.writeUInt32(2, this.unique);
       }
-      if (this.what != com.massimodz8.collaborativegrouporder.protocol.nano.Network.ManualRollRequest.FOUR) {
-        output.writeInt32(3, this.what);
+      if (this.range != 0) {
+        output.writeUInt32(3, this.range);
+      }
+      if (this.peerKey != 0) {
+        output.writeUInt32(4, this.peerKey);
+      }
+      if (this.result != 0) {
+        output.writeInt32(5, this.result);
+      }
+      if (this.type != com.massimodz8.collaborativegrouporder.protocol.nano.Network.Roll.T_MISC) {
+        output.writeInt32(6, this.type);
       }
       super.writeTo(output);
     }
@@ -1255,15 +1271,27 @@ public interface Network {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(2, this.unique);
       }
-      if (this.what != com.massimodz8.collaborativegrouporder.protocol.nano.Network.ManualRollRequest.FOUR) {
+      if (this.range != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-          .computeInt32Size(3, this.what);
+            .computeUInt32Size(3, this.range);
+      }
+      if (this.peerKey != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(4, this.peerKey);
+      }
+      if (this.result != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(5, this.result);
+      }
+      if (this.type != com.massimodz8.collaborativegrouporder.protocol.nano.Network.Roll.T_MISC) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeInt32Size(6, this.type);
       }
       return size;
     }
 
     @Override
-    public ManualRollRequest mergeFrom(
+    public Roll mergeFrom(
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
       while (true) {
@@ -1286,16 +1314,23 @@ public interface Network {
             break;
           }
           case 24: {
+            this.range = input.readUInt32();
+            break;
+          }
+          case 32: {
+            this.peerKey = input.readUInt32();
+            break;
+          }
+          case 40: {
+            this.result = input.readInt32();
+            break;
+          }
+          case 48: {
             int value = input.readInt32();
             switch (value) {
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ManualRollRequest.FOUR:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ManualRollRequest.SIX:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ManualRollRequest.EIGHT:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ManualRollRequest.TEN:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ManualRollRequest.TWELVE:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ManualRollRequest.TWENTY:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ManualRollRequest.HUNDRED:
-                this.what = value;
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.Roll.T_MISC:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.Roll.T_BATTLE_START:
+                this.type = value;
                 break;
             }
             break;
@@ -1304,765 +1339,15 @@ public interface Network {
       }
     }
 
-    public static ManualRollRequest parseFrom(byte[] data)
+    public static Roll parseFrom(byte[] data)
         throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new ManualRollRequest(), data);
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new Roll(), data);
     }
 
-    public static ManualRollRequest parseFrom(
+    public static Roll parseFrom(
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
-      return new ManualRollRequest().mergeFrom(input);
-    }
-  }
-
-  public static final class RollResult extends
-      com.google.protobuf.nano.MessageNano {
-
-    private static volatile RollResult[] _emptyArray;
-    public static RollResult[] emptyArray() {
-      // Lazily initializes the empty array
-      if (_emptyArray == null) {
-        synchronized (
-            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-          if (_emptyArray == null) {
-            _emptyArray = new RollResult[0];
-          }
-        }
-      }
-      return _emptyArray;
-    }
-
-    // optional uint32 generator = 1;
-    public int generator;
-
-    // optional sint32 result = 2;
-    public int result;
-
-    public RollResult() {
-      clear();
-    }
-
-    public RollResult clear() {
-      generator = 0;
-      result = 0;
-      cachedSize = -1;
-      return this;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-        throws java.io.IOException {
-      if (this.generator != 0) {
-        output.writeUInt32(1, this.generator);
-      }
-      if (this.result != 0) {
-        output.writeSInt32(2, this.result);
-      }
-      super.writeTo(output);
-    }
-
-    @Override
-    protected int computeSerializedSize() {
-      int size = super.computeSerializedSize();
-      if (this.generator != 0) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(1, this.generator);
-      }
-      if (this.result != 0) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeSInt32Size(2, this.result);
-      }
-      return size;
-    }
-
-    @Override
-    public RollResult mergeFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      while (true) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            return this;
-          default: {
-            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-              return this;
-            }
-            break;
-          }
-          case 8: {
-            this.generator = input.readUInt32();
-            break;
-          }
-          case 16: {
-            this.result = input.readSInt32();
-            break;
-          }
-        }
-      }
-    }
-
-    public static RollResult parseFrom(byte[] data)
-        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new RollResult(), data);
-    }
-
-    public static RollResult parseFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      return new RollResult().mergeFrom(input);
-    }
-  }
-
-  public static final class NewOrder extends
-      com.google.protobuf.nano.MessageNano {
-
-    public static final class Temporary extends
-        com.google.protobuf.nano.MessageNano {
-
-      private static volatile Temporary[] _emptyArray;
-      public static Temporary[] emptyArray() {
-        // Lazily initializes the empty array
-        if (_emptyArray == null) {
-          synchronized (
-              com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-            if (_emptyArray == null) {
-              _emptyArray = new Temporary[0];
-            }
-          }
-        }
-        return _emptyArray;
-      }
-
-      // optional string name = 1;
-      public java.lang.String name;
-
-      // optional uint32 id = 2;
-      public int id;
-
-      public Temporary() {
-        clear();
-      }
-
-      public Temporary clear() {
-        name = "";
-        id = 0;
-        cachedSize = -1;
-        return this;
-      }
-
-      @Override
-      public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-          throws java.io.IOException {
-        if (!this.name.equals("")) {
-          output.writeString(1, this.name);
-        }
-        if (this.id != 0) {
-          output.writeUInt32(2, this.id);
-        }
-        super.writeTo(output);
-      }
-
-      @Override
-      protected int computeSerializedSize() {
-        int size = super.computeSerializedSize();
-        if (!this.name.equals("")) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeStringSize(1, this.name);
-        }
-        if (this.id != 0) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeUInt32Size(2, this.id);
-        }
-        return size;
-      }
-
-      @Override
-      public Temporary mergeFrom(
-              com.google.protobuf.nano.CodedInputByteBufferNano input)
-          throws java.io.IOException {
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              return this;
-            default: {
-              if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-                return this;
-              }
-              break;
-            }
-            case 10: {
-              this.name = input.readString();
-              break;
-            }
-            case 16: {
-              this.id = input.readUInt32();
-              break;
-            }
-          }
-        }
-      }
-
-      public static Temporary parseFrom(byte[] data)
-          throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-        return com.google.protobuf.nano.MessageNano.mergeFrom(new Temporary(), data);
-      }
-
-      public static Temporary parseFrom(
-              com.google.protobuf.nano.CodedInputByteBufferNano input)
-          throws java.io.IOException {
-        return new Temporary().mergeFrom(input);
-      }
-    }
-
-    private static volatile NewOrder[] _emptyArray;
-    public static NewOrder[] emptyArray() {
-      // Lazily initializes the empty array
-      if (_emptyArray == null) {
-        synchronized (
-            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-          if (_emptyArray == null) {
-            _emptyArray = new NewOrder[0];
-          }
-        }
-      }
-      return _emptyArray;
-    }
-
-    // repeated .NewOrder.Temporary temporaries = 1;
-    public com.massimodz8.collaborativegrouporder.protocol.nano.Network.NewOrder.Temporary[] temporaries;
-
-    // repeated uint32 sequence = 2;
-    public int[] sequence;
-
-    public NewOrder() {
-      clear();
-    }
-
-    public NewOrder clear() {
-      temporaries = com.massimodz8.collaborativegrouporder.protocol.nano.Network.NewOrder.Temporary.emptyArray();
-      sequence = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
-      cachedSize = -1;
-      return this;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-        throws java.io.IOException {
-      if (this.temporaries != null && this.temporaries.length > 0) {
-        for (int i = 0; i < this.temporaries.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.Network.NewOrder.Temporary element = this.temporaries[i];
-          if (element != null) {
-            output.writeMessage(1, element);
-          }
-        }
-      }
-      if (this.sequence != null && this.sequence.length > 0) {
-        for (int i = 0; i < this.sequence.length; i++) {
-          output.writeUInt32(2, this.sequence[i]);
-        }
-      }
-      super.writeTo(output);
-    }
-
-    @Override
-    protected int computeSerializedSize() {
-      int size = super.computeSerializedSize();
-      if (this.temporaries != null && this.temporaries.length > 0) {
-        for (int i = 0; i < this.temporaries.length; i++) {
-          com.massimodz8.collaborativegrouporder.protocol.nano.Network.NewOrder.Temporary element = this.temporaries[i];
-          if (element != null) {
-            size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeMessageSize(1, element);
-          }
-        }
-      }
-      if (this.sequence != null && this.sequence.length > 0) {
-        int dataSize = 0;
-        for (int i = 0; i < this.sequence.length; i++) {
-          int element = this.sequence[i];
-          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeUInt32SizeNoTag(element);
-        }
-        size += dataSize;
-        size += 1 * this.sequence.length;
-      }
-      return size;
-    }
-
-    @Override
-    public NewOrder mergeFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      while (true) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            return this;
-          default: {
-            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-              return this;
-            }
-            break;
-          }
-          case 10: {
-            int arrayLength = com.google.protobuf.nano.WireFormatNano
-                .getRepeatedFieldArrayLength(input, 10);
-            int i = this.temporaries == null ? 0 : this.temporaries.length;
-            com.massimodz8.collaborativegrouporder.protocol.nano.Network.NewOrder.Temporary[] newArray =
-                new com.massimodz8.collaborativegrouporder.protocol.nano.Network.NewOrder.Temporary[i + arrayLength];
-            if (i != 0) {
-              java.lang.System.arraycopy(this.temporaries, 0, newArray, 0, i);
-            }
-            for (; i < newArray.length - 1; i++) {
-              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.NewOrder.Temporary();
-              input.readMessage(newArray[i]);
-              input.readTag();
-            }
-            // Last one without readTag.
-            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.NewOrder.Temporary();
-            input.readMessage(newArray[i]);
-            this.temporaries = newArray;
-            break;
-          }
-          case 16: {
-            int arrayLength = com.google.protobuf.nano.WireFormatNano
-                .getRepeatedFieldArrayLength(input, 16);
-            int i = this.sequence == null ? 0 : this.sequence.length;
-            int[] newArray = new int[i + arrayLength];
-            if (i != 0) {
-              java.lang.System.arraycopy(this.sequence, 0, newArray, 0, i);
-            }
-            for (; i < newArray.length - 1; i++) {
-              newArray[i] = input.readUInt32();
-              input.readTag();
-            }
-            // Last one without readTag.
-            newArray[i] = input.readUInt32();
-            this.sequence = newArray;
-            break;
-          }
-          case 18: {
-            int length = input.readRawVarint32();
-            int limit = input.pushLimit(length);
-            // First pass to compute array length.
-            int arrayLength = 0;
-            int startPos = input.getPosition();
-            while (input.getBytesUntilLimit() > 0) {
-              input.readUInt32();
-              arrayLength++;
-            }
-            input.rewindToPosition(startPos);
-            int i = this.sequence == null ? 0 : this.sequence.length;
-            int[] newArray = new int[i + arrayLength];
-            if (i != 0) {
-              java.lang.System.arraycopy(this.sequence, 0, newArray, 0, i);
-            }
-            for (; i < newArray.length; i++) {
-              newArray[i] = input.readUInt32();
-            }
-            this.sequence = newArray;
-            input.popLimit(limit);
-            break;
-          }
-        }
-      }
-    }
-
-    public static NewOrder parseFrom(byte[] data)
-        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new NewOrder(), data);
-    }
-
-    public static NewOrder parseFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      return new NewOrder().mergeFrom(input);
-    }
-  }
-
-  public static final class RoundProgress extends
-      com.google.protobuf.nano.MessageNano {
-
-    private static volatile RoundProgress[] _emptyArray;
-    public static RoundProgress[] emptyArray() {
-      // Lazily initializes the empty array
-      if (_emptyArray == null) {
-        synchronized (
-            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-          if (_emptyArray == null) {
-            _emptyArray = new RoundProgress[0];
-          }
-        }
-      }
-      return _emptyArray;
-    }
-
-    // optional uint32 id = 1;
-    public int id;
-
-    public RoundProgress() {
-      clear();
-    }
-
-    public RoundProgress clear() {
-      id = 0;
-      cachedSize = -1;
-      return this;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-        throws java.io.IOException {
-      if (this.id != 0) {
-        output.writeUInt32(1, this.id);
-      }
-      super.writeTo(output);
-    }
-
-    @Override
-    protected int computeSerializedSize() {
-      int size = super.computeSerializedSize();
-      if (this.id != 0) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(1, this.id);
-      }
-      return size;
-    }
-
-    @Override
-    public RoundProgress mergeFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      while (true) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            return this;
-          default: {
-            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-              return this;
-            }
-            break;
-          }
-          case 8: {
-            this.id = input.readUInt32();
-            break;
-          }
-        }
-      }
-    }
-
-    public static RoundProgress parseFrom(byte[] data)
-        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new RoundProgress(), data);
-    }
-
-    public static RoundProgress parseFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      return new RoundProgress().mergeFrom(input);
-    }
-  }
-
-  public static final class ActiveStatus extends
-      com.google.protobuf.nano.MessageNano {
-
-    private static volatile ActiveStatus[] _emptyArray;
-    public static ActiveStatus[] emptyArray() {
-      // Lazily initializes the empty array
-      if (_emptyArray == null) {
-        synchronized (
-            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-          if (_emptyArray == null) {
-            _emptyArray = new ActiveStatus[0];
-          }
-        }
-      }
-      return _emptyArray;
-    }
-
-    // optional bool active = 1;
-    public boolean active;
-
-    // optional string reason = 2;
-    public java.lang.String reason;
-
-    // optional bool waiting = 3;
-    public boolean waiting;
-
-    public ActiveStatus() {
-      clear();
-    }
-
-    public ActiveStatus clear() {
-      active = false;
-      reason = "";
-      waiting = false;
-      cachedSize = -1;
-      return this;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-        throws java.io.IOException {
-      if (this.active != false) {
-        output.writeBool(1, this.active);
-      }
-      if (!this.reason.equals("")) {
-        output.writeString(2, this.reason);
-      }
-      if (this.waiting != false) {
-        output.writeBool(3, this.waiting);
-      }
-      super.writeTo(output);
-    }
-
-    @Override
-    protected int computeSerializedSize() {
-      int size = super.computeSerializedSize();
-      if (this.active != false) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeBoolSize(1, this.active);
-      }
-      if (!this.reason.equals("")) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeStringSize(2, this.reason);
-      }
-      if (this.waiting != false) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeBoolSize(3, this.waiting);
-      }
-      return size;
-    }
-
-    @Override
-    public ActiveStatus mergeFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      while (true) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            return this;
-          default: {
-            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-              return this;
-            }
-            break;
-          }
-          case 8: {
-            this.active = input.readBool();
-            break;
-          }
-          case 18: {
-            this.reason = input.readString();
-            break;
-          }
-          case 24: {
-            this.waiting = input.readBool();
-            break;
-          }
-        }
-      }
-    }
-
-    public static ActiveStatus parseFrom(byte[] data)
-        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new ActiveStatus(), data);
-    }
-
-    public static ActiveStatus parseFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      return new ActiveStatus().mergeFrom(input);
-    }
-  }
-
-  public static final class EndTurn extends
-      com.google.protobuf.nano.MessageNano {
-
-    private static volatile EndTurn[] _emptyArray;
-    public static EndTurn[] emptyArray() {
-      // Lazily initializes the empty array
-      if (_emptyArray == null) {
-        synchronized (
-            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-          if (_emptyArray == null) {
-            _emptyArray = new EndTurn[0];
-          }
-        }
-      }
-      return _emptyArray;
-    }
-
-    public EndTurn() {
-      clear();
-    }
-
-    public EndTurn clear() {
-      cachedSize = -1;
-      return this;
-    }
-
-    @Override
-    public EndTurn mergeFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      while (true) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            return this;
-          default: {
-            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-              return this;
-            }
-            break;
-          }
-        }
-      }
-    }
-
-    public static EndTurn parseFrom(byte[] data)
-        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new EndTurn(), data);
-    }
-
-    public static EndTurn parseFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      return new EndTurn().mergeFrom(input);
-    }
-  }
-
-  public static final class Reorder extends
-      com.google.protobuf.nano.MessageNano {
-
-    // enum When
-    public static final int FIRST = 0;
-    public static final int LAST = 1;
-    public static final int BEFORE = 2;
-    public static final int CONDITIONAL = 3;
-
-    private static volatile Reorder[] _emptyArray;
-    public static Reorder[] emptyArray() {
-      // Lazily initializes the empty array
-      if (_emptyArray == null) {
-        synchronized (
-            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-          if (_emptyArray == null) {
-            _emptyArray = new Reorder[0];
-          }
-        }
-      }
-      return _emptyArray;
-    }
-
-    // optional .Reorder.When newPos = 1;
-    public int newPos;
-
-    // optional string description = 2;
-    public java.lang.String description;
-
-    // optional uint32 id = 3;
-    public int id;
-
-    public Reorder() {
-      clear();
-    }
-
-    public Reorder clear() {
-      newPos = com.massimodz8.collaborativegrouporder.protocol.nano.Network.Reorder.FIRST;
-      description = "";
-      id = 0;
-      cachedSize = -1;
-      return this;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-        throws java.io.IOException {
-      if (this.newPos != com.massimodz8.collaborativegrouporder.protocol.nano.Network.Reorder.FIRST) {
-        output.writeInt32(1, this.newPos);
-      }
-      if (!this.description.equals("")) {
-        output.writeString(2, this.description);
-      }
-      if (this.id != 0) {
-        output.writeUInt32(3, this.id);
-      }
-      super.writeTo(output);
-    }
-
-    @Override
-    protected int computeSerializedSize() {
-      int size = super.computeSerializedSize();
-      if (this.newPos != com.massimodz8.collaborativegrouporder.protocol.nano.Network.Reorder.FIRST) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-          .computeInt32Size(1, this.newPos);
-      }
-      if (!this.description.equals("")) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeStringSize(2, this.description);
-      }
-      if (this.id != 0) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(3, this.id);
-      }
-      return size;
-    }
-
-    @Override
-    public Reorder mergeFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      while (true) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            return this;
-          default: {
-            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-              return this;
-            }
-            break;
-          }
-          case 8: {
-            int value = input.readInt32();
-            switch (value) {
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.Reorder.FIRST:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.Reorder.LAST:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.Reorder.BEFORE:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.Reorder.CONDITIONAL:
-                this.newPos = value;
-                break;
-            }
-            break;
-          }
-          case 18: {
-            this.description = input.readString();
-            break;
-          }
-          case 24: {
-            this.id = input.readUInt32();
-            break;
-          }
-        }
-      }
-    }
-
-    public static Reorder parseFrom(byte[] data)
-        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new Reorder(), data);
-    }
-
-    public static Reorder parseFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      return new Reorder().mergeFrom(input);
+      return new Roll().mergeFrom(input);
     }
   }
 }

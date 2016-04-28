@@ -415,6 +415,8 @@
     <string name="fra_dlgActionIgnoreMissingCharacters">Ignore and start battle</string>
     <string name="fra_dlgMsg_missingChars">Someone will not take part to battle. Is that what you intended?\nInitial surprise round can be managed later.</string>
     <string name="fra_rollRequestInitiativeMsg">Initiative!</string>
+    <string name="fra_dlgWIR_title">Waiting initiative rolls</string>
+    <string name="fra_dlgWIR_info">I will switch to battle as soon as I can figure out an order of initiative.\nFor the time being, you must wait.</string>
 
     <string name="sma_title">Spawn monsters</string>
     <string name="sma_searchingMessage">Searching…</string>

@@ -9,7 +9,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.NonNull;
 
-import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
