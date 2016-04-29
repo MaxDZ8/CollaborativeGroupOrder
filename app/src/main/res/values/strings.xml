@@ -479,11 +479,12 @@
     <string name="mobs_size_colossal">colossal</string>
 
     <string name="ba_title">Fight!</string>
-    <string name="ba_initialInstructions">Not fighting yet!\nActors with no check will skip round.\nUse this for surprise rounds!</string>
+    <string name="ba_initialInstructions">Actors with no check will skip round.\nUse this for surprise rounds!</string>
     <string name="ba_roundNumber">Round %1$d</string>
     <string name="ba_dlg_gotPreparedAction">%1$s has a readied action. You can renew the prepared action or discard it.</string>
     <string name="ba_dlg_gotPreparedAction_renew">Renew prepared action and go next</string>
     <string name="ba_dlg_gotPreparedAction_discard">Discard and act</string>
+    <string name="ba_roundCount">Not fighting yet!\nInitiative order as below.</string>
 
     <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
     <string name="mara_endTurn">End your turn</string>
@@ -516,7 +517,7 @@
     <string name="aoa_startingStatus">Waiting master device.</string>
     <string name="client_failedServiceBind">Failed to connect to adventuring service. This is required to prevent data loss.\nThis is hopefully a transient error. Try rebooting your device.</string>
     <string name="aoa_notificationDesc">Adventuring</string>
-    <string name="aoa_fetchingData">Fetching data from master device...</string>
+    <string name="aoa_fetchingData">Fetching data from master device…</string>
     <string name="aoa_status_fightingIdle">Device will vibrate when your attention is required.</string>
     <string name="aoa_waitingForBattleStart">Not engaged in battle.</string>
     <string name="aoa_dlgRI_done">Confirm</string>

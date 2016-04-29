@@ -57,8 +57,11 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             public void onClick(View view) {
                 fab.setVisibility(View.GONE);
                 MaxUtils.beginDelayedTransition(BattleActivity.this);
-                game.sessionHelper.session.battleState.tickRound();
-                lister.notifyItemChanged(game.sessionHelper.session.battleState.currentActor);
+                final BattleHelper battle = game.sessionHelper.session.battleState;
+                battle.tickRound();
+                final TextView status = (TextView) findViewById(R.id.ba_roundCount);
+                status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
+                lister.notifyItemChanged(battle.currentActor);
                 activateNewActor();
             }
         });
@@ -245,7 +248,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         lister.notifyItemChanged(prev);
         lister.notifyItemChanged(currently);
         MaxUtils.beginDelayedTransition(this);
-        final TextView status = (TextView) findViewById(R.id.ba_status);
+        final TextView status = (TextView) findViewById(R.id.ba_roundCount);
         status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
         final InitiativeScore init = battle.ordered[currently];
         if(init.actor.actionCondition == null || fromReadiedStack) {
@@ -320,7 +323,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         });
         if(battle.round > 0) { // battle already started...
             findViewById(R.id.fab).setVisibility(View.GONE);
-            final TextView status = (TextView) findViewById(R.id.ba_status);
+            final TextView status = (TextView) findViewById(R.id.ba_roundCount);
             status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
         }
     }
