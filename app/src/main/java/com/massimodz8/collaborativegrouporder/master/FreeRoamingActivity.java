@@ -112,11 +112,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         super.onResume();
         if(game == null) return; // no connection yet -> nothing really to do.
         final SessionHelper.PlayState session = game.sessionHelper.session;
-        final int added = session.getNumActors() - numDefinedActors;
-        if(added == 0) return;
-        for(int loop = 0; loop < added; loop++) actorId.put(session.getActor(numDefinedActors + loop), numDefinedActors + loop);
-        lister.notifyItemRangeInserted(numDefinedActors, added);
-        numDefinedActors += added;
+        if(session.lastPushed == session.getNumActors()) return;
+        for(int loop = session.lastPushed; loop < session.getNumActors(); loop++) game.actorId.put(session.getActor(loop), game.nextActorId++);
+        lister.notifyItemRangeInserted(session.lastPushed, session.getNumActors() - session.lastPushed);
+        session.lastPushed = session.getNumActors();
     }
 
     @Override
@@ -133,8 +132,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
 
     private boolean mustUnbind;
     private PartyJoinOrderService game;
-    private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
-    private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter(actorId) {
+    private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter() {
         @Override
         protected boolean isCurrent(AbsLiveActor actor) { return false; }
 
@@ -142,7 +140,6 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         protected LayoutInflater getLayoutInflater() { return FreeRoamingActivity.this.getLayoutInflater(); }
     };
 
-    private int numDefinedActors; // those won't get expunged, no matter what
     private final SecureRandom randomizer = new SecureRandom();
     private WaitInitiativeDialog waiting;
 
@@ -186,7 +183,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             pair.rolled = randomizer.nextInt(range) + actor.getInitiativeBonus();
         }
         attemptBattleStart();
-        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(actorId, game.sessionHelper.initiatives).show(this);
+        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(game.actorId, game.sessionHelper.initiatives).show(this);
     }
 
     /// Called every time at least one initiative is written so we can try sorting & starting.
@@ -229,9 +226,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
-        lister.game = game;
+        lister.actorId = game.actorId;
+        lister.playState = game.sessionHelper.session;
         game.assignmentHelper.onDetached = null;
-        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(actorId, game.sessionHelper.initiatives).show(this);
+        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(game.actorId, game.sessionHelper.initiatives).show(this);
         game.onRollReceived = new Runnable() {
             @Override
             public void run() {
@@ -249,8 +247,9 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         session.begin(new Runnable() {
             @Override
             public void run() {
-                numDefinedActors = session.getNumActors();
-                for(int loop = 0; loop < numDefinedActors; loop++) actorId.put(session.getActor(loop), loop);
+                int numDefinedActors = session.getNumActors();
+                for(int loop = 0; loop < numDefinedActors; loop++) game.actorId.put(session.getActor(loop), game.nextActorId++);
+                session.lastPushed = numDefinedActors;
                 lister.notifyDataSetChanged();
                 Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_dataLoadedFeedback, Snackbar.LENGTH_SHORT).show();
             }

@@ -98,8 +98,7 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
     static final int NOTIFICATION_ID = 100;
     private AdventuringService ticker;
     private RollInitiativeDialog rollDialog;
-    private IdentityHashMap<AbsLiveActor, Integer> actorIds = new IdentityHashMap<>();
-    private RecyclerView.Adapter lister = new AdventuringActorAdapter<AdventuringActorDataVH>(actorIds) {
+    private AdventuringActorAdapter<AdventuringActorDataVH> lister = new AdventuringActorAdapter<AdventuringActorDataVH>() {
         @Override
         public AdventuringActorDataVH onCreateViewHolder(ViewGroup parent, int viewType) {
             return new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
@@ -144,8 +143,9 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         final TextView status = (TextView) findViewById(R.id.aoa_status);
         status.setText(R.string.aoa_waitingForBattleStart);
         int index = 0;
+        lister.actorId = new IdentityHashMap<>();
         for (CharacterActor el : ticker.playedHere) {
-            actorIds.put(el, ticker.actorServerKey[index]);
+            lister.actorId.put(el, ticker.actorServerKey[index]);
             index++;
         }
         final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);

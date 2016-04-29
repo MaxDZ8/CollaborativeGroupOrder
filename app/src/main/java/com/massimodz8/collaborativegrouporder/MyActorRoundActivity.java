@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.massimodz8.collaborativegrouporder.master.BattleHelper;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 
-import java.util.IdentityHashMap;
 import java.util.Locale;
 
 public class MyActorRoundActivity extends AppCompatActivity implements ServiceConnection {
@@ -97,14 +96,13 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                 break;
             case R.id.mara_menu_shuffle: {
                 AbsLiveActor[] order = new AbsLiveActor[battle.ordered.length];
-                IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>(battle.ordered.length);
                 int cp = 0;
                 for (InitiativeScore el : battle.ordered) {
                     order[cp] = el.actor;
-                    actorId.put(el.actor, cp);
+                    localGame.actorId.put(el.actor, cp);
                     cp++;
                 }
-                new InitiativeShuffleDialog(order, battle.currentActor, actorId)
+                new InitiativeShuffleDialog(order, battle.currentActor, localGame.actorId)
                         .show(MyActorRoundActivity.this, new InitiativeShuffleDialog.OnApplyCallback() {
                             @Override
                             public void newOrder(AbsLiveActor[] target) {

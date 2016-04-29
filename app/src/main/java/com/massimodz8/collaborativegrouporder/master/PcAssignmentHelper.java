@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.os.ResultReceiver;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
@@ -16,8 +15,8 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
-import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -269,6 +268,7 @@ public abstract class PcAssignmentHelper {
         public Vector<Exception> errors = new Vector<>();
         public boolean assignmentAccepted; // this is set to true when the corresponding socket worker is detached from the pump as device accepted player bindings.
         public boolean movedToBattlePumper; // if this is set, device is already moved to battle pumper, somewhere else.
+        public int activeActor; // peerKey > 0 of active actor, otherwise -1
 
         /// Using null will create this in 'disconnected' mode. Does not make sense to me but w/e.
         public PlayingDevice(@Nullable MessageChannel pipe) {
@@ -678,4 +678,5 @@ public abstract class PcAssignmentHelper {
         }
     }
     public UnassignedPcsAdapter unboundPcAdapter;
+}
 }

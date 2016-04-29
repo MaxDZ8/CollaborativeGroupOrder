@@ -16,21 +16,17 @@ import java.util.IdentityHashMap;
  * Lots of stuff in common by adapter based on battle state. Used by free roaming and battle mode.
  */
 public abstract class AdventuringActorWithControlsAdapter extends AdventuringActorAdapter<AdventuringActorControlsVH> {
-    public PartyJoinOrderService game;
-    public AdventuringActorWithControlsAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId) {
-        super(actorId);
-    }
+    SessionHelper.PlayState playState;
 
     @Override
     protected AbsLiveActor getActorByPos(int position) {
-        if(game == null) return null;
-        if(game.sessionHelper.session == null) return null; // impossible
-        return game.sessionHelper.session.getActor(position);
+        if(playState == null) return null;
+        return playState.getActor(position);
     }
 
     @Override
     protected boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue) {
-        return game.sessionHelper.session.willFight(actor, newValue);
+        return playState.willFight(actor, newValue);
     }
 
     @Override
@@ -39,7 +35,7 @@ public abstract class AdventuringActorWithControlsAdapter extends AdventuringAct
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(actor == null) return;
-                game.sessionHelper.session.willFight(actor, isChecked);
+                playState.willFight(actor, isChecked);
             }
 
             @Override
@@ -58,5 +54,5 @@ public abstract class AdventuringActorWithControlsAdapter extends AdventuringAct
     }
 
     @Override
-    public int getItemCount() { return game != null? game.sessionHelper.session.getNumActors() : 0; }
+    public int getItemCount() { return playState != null? playState.getNumActors() : 0; }
 }

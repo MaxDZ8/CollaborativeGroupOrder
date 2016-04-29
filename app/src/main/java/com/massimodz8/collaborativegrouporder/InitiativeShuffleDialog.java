@@ -43,7 +43,7 @@ public class InitiativeShuffleDialog {
                 })
                 .show();
         final RecyclerView list = (RecyclerView) dlg.findViewById(R.id.mara_dlgSIO_list);
-        list.setAdapter(new AdventuringActorAdapter<AdventuringActorDataVH>(actorId) {
+        final AdventuringActorAdapter<AdventuringActorDataVH> lister = new AdventuringActorAdapter<AdventuringActorDataVH>() {
             @Override
             public AdventuringActorDataVH onCreateViewHolder(ViewGroup parent, int viewType) {
                 return new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
@@ -83,7 +83,9 @@ public class InitiativeShuffleDialog {
             protected LayoutInflater getLayoutInflater() {
                 return activity.getLayoutInflater();
             }
-        });
+        };
+        lister.actorId = actorId;
+        list.setAdapter(lister);
         list.addItemDecoration(new PreSeparatorDecorator(list, activity) {
             @Override
             protected boolean isEligible(int position) {

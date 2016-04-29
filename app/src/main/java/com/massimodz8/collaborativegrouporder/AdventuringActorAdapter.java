@@ -13,16 +13,15 @@ import java.util.IdentityHashMap;
  * The way integers are mapped is fixed here: it's a map lookup.
  */
 public abstract class AdventuringActorAdapter<AAVH extends AdventuringActorDataVH> extends RecyclerView.Adapter<AAVH> {
-    final IdentityHashMap<AbsLiveActor, Integer> actorId;
+    public IdentityHashMap<AbsLiveActor, Integer> actorId;
 
-    public AdventuringActorAdapter(IdentityHashMap<AbsLiveActor, Integer> actorId) {
-        this.actorId = actorId;
+    public AdventuringActorAdapter() {
         setHasStableIds(true);
     }
 
     @Override
     public long getItemId(int position) {
-        Integer index = actorId.get(getActorByPos(position));
+        Integer index = actorId == null? null : actorId.get(getActorByPos(position));
         return index != null ? index : RecyclerView.NO_ID;
     }
 

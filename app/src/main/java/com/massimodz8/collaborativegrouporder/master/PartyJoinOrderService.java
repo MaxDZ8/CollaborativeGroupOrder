@@ -23,8 +23,8 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /** Encapsulates states and manipulations involved in creating a socket and publishing it to the
  * network for the purposes of having player devices "join" the game.
@@ -40,9 +40,9 @@ import java.util.Set;
  */
 public class PartyJoinOrderService extends PublishAcceptService {
     /* Section 3: identifying joining devices and binding characters. ------------------------------
-            This goes in parallel with landing socket and publish management so you're better set this up ASAP.
-            As usual, it can be initialized only once and then the service will have to be destroyed.
-            */
+                This goes in parallel with landing socket and publish management so you're better set this up ASAP.
+                As usual, it can be initialized only once and then the service will have to be destroyed.
+                */
     public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster) {
             @Override
@@ -55,13 +55,18 @@ public class PartyJoinOrderService extends PublishAcceptService {
         for(StartData.ActorDefinition el : party.party) byDef.add(CharacterActor.makeLiveActor(el, true));
         for(StartData.ActorDefinition el : party.npcs) byDef.add(CharacterActor.makeLiveActor(el, false));
         sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef);
-        sessionHelper.session = new SessionHelper.PlayState(sessionHelper, monsterBook) {
+        sessionHelper.session = new SessionHelper.PlayState(sessionHelper, monsterBook, assignmentHelper) {
             @Override
             void onRollReceived() {
                 while(!sessionHelper.session.rollResults.isEmpty()) {
                     final Events.Roll got = sessionHelper.session.rollResults.pop();
                     matchRoll(got.from, got.payload);
                 }
+            }
+
+            @Override
+            int getActorId(@NonNull AbsLiveActor active) {
+                return actorId.get(active);
             }
         };
         battleHandler = new MyBattleHandler(this);
@@ -149,6 +154,19 @@ public class PartyJoinOrderService extends PublishAcceptService {
             }
         }
     }
+
+    /**
+     * Mapping actors to unique ids is big deal. IDs are unique across the group. This keeps an
+     * unsorted list of actors and their corresponding ids. In theory I could have a stack but this
+     * is searched relatively more often and I get extra flexibility.
+     * In general, party playing characters are added here right away and will always stay here.
+     * FreeRoamingActivity adds new monsters here as well as the session monsters list; somebody
+     * will pop those monsters when the session is terminated. There is in fact a stack of lifetimes.
+     * Note the next ID to use is not necessarily the size of this map as ID could still be deleted
+     * explicitly by user swiping away one.
+     */
+    public final IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
+    public int nextActorId;
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override

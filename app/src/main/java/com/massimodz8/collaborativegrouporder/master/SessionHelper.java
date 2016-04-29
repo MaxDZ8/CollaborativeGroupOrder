@@ -3,8 +3,10 @@ package com.massimodz8.collaborativegrouporder.master;
 import android.support.annotation.NonNull;
 
 import com.massimodz8.collaborativegrouporder.AbsLiveActor;
+import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
+import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
@@ -58,10 +60,13 @@ public class SessionHelper {
     public static abstract class PlayState {
         public final MonsterData.MonsterBook monsters;
         private final SessionHelper session;
+        private final PcAssignmentHelper assignment;
         public BattleHelper battleState;
         public ArrayDeque<Events.Roll> rollResults = new ArrayDeque<>(); // this is to be used even before battle starts.
+        public int lastPushed; // how many monsters pushed to ID pool. The first few are always party PCs.
 
         abstract void onRollReceived(); // called after rollRequest.push
+        abstract int getActorId(@NonNull AbsLiveActor active);
 
         public PlayState(SessionHelper session, MonsterData.MonsterBook monsters) {
             this.monsters = monsters;

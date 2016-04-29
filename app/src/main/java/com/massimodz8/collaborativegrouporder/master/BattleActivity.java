@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -27,10 +28,10 @@ import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.Locale;
 
 public class BattleActivity extends AppCompatActivity implements ServiceConnection {
@@ -70,8 +71,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     private int numDefinedActors; // those won't get expunged, no matter what
     boolean mustUnbind;
     private PartyJoinOrderService game;
-    private IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
-    private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter(actorId) {
+    private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter() {
         @Override
         public AdventuringActorControlsVH onCreateViewHolder(ViewGroup parent, int viewType) {
             final AdventuringActorControlsVH result = new AdventuringActorControlsVH(BattleActivity.this.getLayoutInflater().inflate(R.layout.vh_adventuring_actor_controls, parent, false)) {
@@ -309,9 +309,10 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
-        lister.game = game;
+        lister.playState = game.sessionHelper.session;
+        lister.actorId = game.actorId;
         final BattleHelper battle = game.sessionHelper.session.battleState;
-        for (InitiativeScore el : battle.ordered) actorId.put(el.actor, numDefinedActors++);
+        for (InitiativeScore el : battle.ordered) game.actorId.put(el.actor, numDefinedActors++);
         lister.notifyDataSetChanged();
         final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);
         rv.setAdapter(lister);
