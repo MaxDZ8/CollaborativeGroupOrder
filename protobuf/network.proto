@@ -160,3 +160,17 @@ message Roll {
 		T_BATTLE_START = 1; // initiative roll which also begins a battle
 	}
 }
+
+// Server -> client
+// Sent by the server to let an actor on a remote device play. Can also terminate its turn.
+message TurnControl {
+	enum Type {
+		T_FORCE_DONE = 0;
+		T_REGULAR = 1;
+		T_PREPARED_TRIGGERED = 2;
+		T_OPPORTUNITY = 3;
+		
+		T_PREPARED_CANCELLED = 32; // special, not really a turn but seems nice to have it there.
+	}
+	Type type = 1;
+}

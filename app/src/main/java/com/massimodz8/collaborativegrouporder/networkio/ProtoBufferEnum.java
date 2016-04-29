@@ -20,4 +20,5 @@ public interface ProtoBufferEnum {
     int ACTOR_DATA = 10;
 
     int ROLL = 11;
+    int TURN_CONTROL = 12;
 }

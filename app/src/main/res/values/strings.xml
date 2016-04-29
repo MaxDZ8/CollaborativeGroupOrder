@@ -485,6 +485,7 @@
     <string name="ba_dlg_gotPreparedAction_renew">Renew prepared action and go next</string>
     <string name="ba_dlg_gotPreparedAction_discard">Discard and act</string>
     <string name="ba_roundCount">Not fighting yet!\nInitiative order as below.</string>
+    <string name="ba_actorByPlayerSnack">Actor by player.</string>
 
     <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
     <string name="mara_endTurn">End your turn</string>

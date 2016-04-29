@@ -369,7 +369,7 @@ public abstract class PcAssignmentHelper {
         return blob;
     }
 
-    private PlayingDevice getDevice(MessageChannel pipe) {
+    public PlayingDevice getDevice(MessageChannel pipe) {
         for (PlayingDevice check : peers) {
             if(check.pipe == pipe) return check;
         }
@@ -678,5 +678,13 @@ public abstract class PcAssignmentHelper {
         }
     }
     public UnassignedPcsAdapter unboundPcAdapter;
-}
+
+
+    public void activateRemote(@NonNull PlayingDevice dev, int actorKey, int roundType) {
+        Network.TurnControl payload = new Network.TurnControl();
+        payload.peerKey = actorKey;
+        payload.type = roundType;
+        out.add(new SendRequest(dev, ProtoBufferEnum.TURN_CONTROL, payload));
+        if(roundType != Network.TurnControl.T_PREPARED_CANCELLED) dev.activeActor = actorKey;
+    }
 }

@@ -68,9 +68,10 @@ public class SessionHelper {
         abstract void onRollReceived(); // called after rollRequest.push
         abstract int getActorId(@NonNull AbsLiveActor active);
 
-        public PlayState(SessionHelper session, MonsterData.MonsterBook monsters) {
+        public PlayState(SessionHelper session, MonsterData.MonsterBook monsters, PcAssignmentHelper assignment) {
             this.monsters = monsters;
             this.session = session;
+            this.assignment = assignment;
         }
 
         void begin(@NonNull Runnable onComplete) {
@@ -90,6 +91,20 @@ public class SessionHelper {
         AbsLiveActor getActor(int i) {
             int sz = session.existByDef.size();
             return i < sz ? session.existByDef.get(i) : session.temporaries.get(i - sz);
+        }
+
+
+        public MessageChannel activateNewActor() {
+            final AbsLiveActor active = battleState.triggered == null? battleState.ordered[battleState.currentActor].actor : battleState.triggered.get(battleState.triggered.size() - 1);
+            final MessageChannel pipe;
+            if(active instanceof CharacterActor) {
+                pipe = assignment.getMessageChannel(((CharacterActor) active).character);
+                int roundType = battleState.triggered == null? Network.TurnControl.T_REGULAR : Network.TurnControl.T_PREPARED_TRIGGERED;
+                final PcAssignmentHelper.PlayingDevice dev = assignment.getDevice(pipe);
+                assignment.activateRemote(dev, getActorId(active), roundType);
+            }
+            else pipe = null;
+            return pipe;
         }
     }
 

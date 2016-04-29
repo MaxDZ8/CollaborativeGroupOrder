@@ -102,10 +102,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                     if (myIndex != state.currentActor && selected.isEnabled()) {
                         selected.setChecked(!selected.isChecked()); // toggle 'will act next round'
                     } else {
-                        final Intent intent = new Intent(BattleActivity.this, MyActorRoundActivity.class)
-                                .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true)
-                                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivityForResult(intent, REQUEST_MONSTER_TURN);
+                        activateNewActor();
                     }
                 }
             };
@@ -276,24 +273,17 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                     activateNewActor();
                     return;
                 }
-                new AlertDialog.Builder(BattleActivity.this)
-                        .setMessage("TODO: notify remote peer his action has been cleared, give turn to him")
-                        .show();
+                final PcAssignmentHelper.PlayingDevice dev = game.assignmentHelper.getDevice(pipe);
+                game.assignmentHelper.activateRemote(dev, game.actorId.get(init.actor), Network.TurnControl.T_PREPARED_CANCELLED);
+                game.assignmentHelper.activateRemote(dev, game.actorId.get(init.actor), Network.TurnControl.T_REGULAR);
             }
         }).setCancelable(false)
                 .show();
     }
 
     private void activateNewActor() {        // If played here open detail screen. Otherwise, send your-turn message.
-        final BattleHelper battle = game.sessionHelper.session.battleState;
-        final AbsLiveActor active = battle.triggered == null? battle.ordered[battle.currentActor].actor : battle.triggered.get(battle.triggered.size() - 1);
-        final MessageChannel pipe;
-        if(active instanceof CharacterActor) {
-            pipe = game.getMessageChannel(((CharacterActor) active).character);
-        }
-        else pipe = null;
-        if(pipe != null) {
-            new AlertDialog.Builder(this).setMessage("TODO: real networking.").show();
+        if(game.sessionHelper.session.activateNewActor() != null) {
+            Snackbar.make(findViewById(R.id.activityRoot), R.string.ba_actorByPlayerSnack, Snackbar.LENGTH_SHORT).show();
             return;
         }
         final Intent intent = new Intent(this, MyActorRoundActivity.class)

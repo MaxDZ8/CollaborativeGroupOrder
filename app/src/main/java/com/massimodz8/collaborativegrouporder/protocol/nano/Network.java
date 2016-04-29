@@ -1350,4 +1350,119 @@ public interface Network {
       return new Roll().mergeFrom(input);
     }
   }
+
+  public static final class TurnControl extends
+      com.google.protobuf.nano.MessageNano {
+
+    // enum Type
+    public static final int T_FORCE_DONE = 0;
+    public static final int T_REGULAR = 1;
+    public static final int T_PREPARED_TRIGGERED = 2;
+    public static final int T_OPPORTUNITY = 3;
+    public static final int T_PREPARED_CANCELLED = 32;
+
+    private static volatile TurnControl[] _emptyArray;
+    public static TurnControl[] emptyArray() {
+      // Lazily initializes the empty array
+      if (_emptyArray == null) {
+        synchronized (
+            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+          if (_emptyArray == null) {
+            _emptyArray = new TurnControl[0];
+          }
+        }
+      }
+      return _emptyArray;
+    }
+
+    // optional .TurnControl.Type type = 1;
+    public int type;
+
+    // optional uint32 peerKey = 2;
+    public int peerKey;
+
+    public TurnControl() {
+      clear();
+    }
+
+    public TurnControl clear() {
+      type = com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_FORCE_DONE;
+      peerKey = 0;
+      cachedSize = -1;
+      return this;
+    }
+
+    @Override
+    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+        throws java.io.IOException {
+      if (this.type != com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_FORCE_DONE) {
+        output.writeInt32(1, this.type);
+      }
+      if (this.peerKey != 0) {
+        output.writeUInt32(2, this.peerKey);
+      }
+      super.writeTo(output);
+    }
+
+    @Override
+    protected int computeSerializedSize() {
+      int size = super.computeSerializedSize();
+      if (this.type != com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_FORCE_DONE) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeInt32Size(1, this.type);
+      }
+      if (this.peerKey != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(2, this.peerKey);
+      }
+      return size;
+    }
+
+    @Override
+    public TurnControl mergeFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      while (true) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            return this;
+          default: {
+            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+              return this;
+            }
+            break;
+          }
+          case 8: {
+            int value = input.readInt32();
+            switch (value) {
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_FORCE_DONE:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_REGULAR:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_PREPARED_TRIGGERED:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_OPPORTUNITY:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_PREPARED_CANCELLED:
+                this.type = value;
+                break;
+            }
+            break;
+          }
+          case 16: {
+            this.peerKey = input.readUInt32();
+            break;
+          }
+        }
+      }
+    }
+
+    public static TurnControl parseFrom(byte[] data)
+        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new TurnControl(), data);
+    }
+
+    public static TurnControl parseFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      return new TurnControl().mergeFrom(input);
+    }
+  }
 }
