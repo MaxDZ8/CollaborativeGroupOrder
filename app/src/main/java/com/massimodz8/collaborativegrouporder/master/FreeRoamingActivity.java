@@ -55,7 +55,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         final ComponentName compName = new ComponentName(this, SpawnMonsterActivity.class);
         swidget.setSearchableInfo(sm.getSearchableInfo(compName));
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +80,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                                 }
                             }).show();
                 }
-                else sendInitiativeRollRequests();
+                else {
+                    fab.setEnabled(false);
+                    sendInitiativeRollRequests();
+                }
             }
         });
         final ActionBar sab = getSupportActionBar();

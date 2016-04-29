@@ -171,6 +171,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         }
         room.stopPublishing();
         room.stopListening(false);
+        findViewById(R.id.ga_startSession).setEnabled(false);
         new AsyncTask<Void, Void, Void>() {
             int errorCount;
 
@@ -278,7 +279,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             }
         });
         room.accept();
-        room.assignmentHelper.onDetached = new WeakReference<Runnable>(myDetachCallback);
+        room.assignmentHelper.onDetached = new WeakReference<>(myDetachCallback);
         beginDelayedTransition();
         findViewById(R.id.ga_pcUnassignedListDesc).setVisibility(View.VISIBLE);
         final RecyclerView devList = (RecyclerView) findViewById(R.id.ga_deviceList);
