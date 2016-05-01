@@ -112,16 +112,6 @@ public interface Events {
         }
     }
 
-    class ActorDataRequest {
-        public final MessageChannel origin;
-        public final Network.LiveActorDataRequest payload;
-
-        public ActorDataRequest(MessageChannel origin, Network.LiveActorDataRequest payload) {
-            this.origin = origin;
-            this.payload = payload;
-        }
-    }
-
     class ActorData {
         public final MessageChannel origin;
         public final StartData.ActorDefinition payload;

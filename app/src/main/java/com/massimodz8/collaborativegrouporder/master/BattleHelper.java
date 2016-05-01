@@ -24,6 +24,7 @@ public class BattleHelper {
      * It also always happen while some other actor is acting. This is either null or contains at least 1 element.
      */
     public ArrayList<AbsLiveActor> triggered;
+    public boolean orderChanged = true;
 
     public BattleHelper(@NonNull InitiativeScore[] ordered) {
         this.ordered = ordered;
@@ -52,8 +53,8 @@ public class BattleHelper {
      * throw value so it stays coherent with 'global' order to be used when a new actor is added.
      * @param newPos Current actor will move back this one and take its place, unless this is last.
      */
-    public void shuffleCurrent(int newPos) {
-        if(currentActor == newPos) return; // it happens with readied actions and I'm lazy
+    public boolean shuffleCurrent(int newPos) {
+        if(currentActor == newPos) return false; // it happens with readied actions and I'm lazy
         final InitiativeScore me = ordered[currentActor];
         final InitiativeScore next = ordered[(currentActor + 1) % ordered.length];
         // Setting the .rand so it sorts correctly is complicated. Easier to rebuild them in a
@@ -75,6 +76,8 @@ public class BattleHelper {
             }
         });
         dontTick = next == ordered[currentActor];
+        orderChanged = true;
+        return true;
     }
 
     private boolean dontTick;

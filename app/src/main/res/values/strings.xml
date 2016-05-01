@@ -524,5 +524,8 @@
     <string name="aoa_dlgRI_done">Confirm</string>
     <string name="aoa_dlgRI_title">Roll for Initiative!</string>
     <string name="aoa_dlgRI_instructionsAndModifier">Just roll dice and enter result.\nModifier (%1$s) applied automatically.</string>
+    <string name="mara_dlgWS_instructions">Please wait while master gives battle order.\nI will go away ASAP.</string>
+    <string name="mara_dlgWS_title">Waiting sequence</string>
+    <string name="aoa_waitingOtherPlayers">Waiting other players to roll.</string>
 
 </resources>

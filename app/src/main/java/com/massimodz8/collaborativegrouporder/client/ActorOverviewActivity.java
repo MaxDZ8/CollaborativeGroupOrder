@@ -41,14 +41,14 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
     // Before starting this activity, make sure to populate its connection parameters and friends.
     // Those will be cleared as soon as the activity goes onCreate and then never reused again.
     // onCreate assumes those non-null. Just call prepare(...)
-    private static Pumper.MessagePumpingThread serverPipe; // in
+    private static Pumper.MessagePumpingThread serverWorker; // in
     private static StartData.PartyClientData.Group connectedParty; // in
     private static int[] actorKeys; // in, server ids of actors to manage here
 
     public static void prepare(StartData.PartyClientData.Group group, int[] actorKeys_, Pumper.MessagePumpingThread serverWorker) {
         connectedParty = group;
         actorKeys = actorKeys_;
-        serverPipe = serverWorker;
+        ActorOverviewActivity.serverWorker = serverWorker;
     }
 
     @Override
@@ -91,13 +91,14 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         if(rollDialog != null) {
             rollDialog.dlg.dismiss(); // I'm going to regenerate this next time anyway.
         }
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     boolean mustUnbind;
     static final int NOTIFICATION_ID = 100;
     private AdventuringService ticker;
     private RollInitiativeDialog rollDialog;
+    private MessageChannel serverPipe;
     private AdventuringActorAdapter<AdventuringActorDataVH> lister = new AdventuringActorAdapter<AdventuringActorDataVH>() {
         @Override
         public AdventuringActorDataVH onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -162,8 +163,8 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
     private void rollRequested() {
         if (rollDialog != null) return;
         if (ticker.rollRequests.isEmpty()) return; // async recursion stop
-        final Events.Roll request = ticker.rollRequests.getFirst();
-        if(request.payload.type == Network.Roll.T_BATTLE_START) {
+        final Network.Roll request = ticker.rollRequests.getFirst();
+        if(request.type == Network.Roll.T_BATTLE_START) {
             MaxUtils.beginDelayedTransition(this);
             final TextView status = (TextView) findViewById(R.id.aoa_status);
             status.setText(R.string.aoa_status_fightingIdle);
@@ -172,7 +173,7 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         }
         int index = 0;
         for (int key : ticker.actorServerKey) {
-            if(key == request.payload.peerKey) break;
+            if(key == request.peerKey) break;
             index++;
         }
         final Vibrator vibro = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -189,16 +190,16 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
     private class SendRollCallback implements Runnable {
         @Override
         public void run() {
-            final Events.Roll ready = ticker.rollRequests.pop();
+            final Network.Roll ready = ticker.rollRequests.pop();
             final Network.Roll reply = new Network.Roll();
-            reply.result = ready.payload.result;
-            reply.unique = ready.payload.unique;
-            reply.peerKey = ready.payload.peerKey;
+            reply.result = ready.result;
+            reply.unique = ready.unique;
+            reply.peerKey = ready.peerKey;
             new Thread() {
                 @Override
                 public void run() {
                     try {
-                        ready.from.writeSync(ProtoBufferEnum.ROLL, reply);
+                        serverPipe.writeSync(ProtoBufferEnum.ROLL, reply);
                     } catch (IOException e) {
                         // todo: collect those in the service mailman maybe and have better error support.
                     }
@@ -207,6 +208,10 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             rollDialog.dlg.dismiss();
             rollDialog = null;
+            MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
+            MaxUtils.setVisibility(ActorOverviewActivity.this, View.VISIBLE,
+                    R.id.aoa_progress,
+                    R.id.aoa_waitingOtherPlayers);
             rollRequested(); // there might be more rolls pending.
         }
     }
@@ -215,8 +220,35 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         ticker = ((AdventuringService.LocalBinder) service).getConcreteService();
+        final Runnable turnCallback = new Runnable() {
+            @Override
+            public void run() {
+                while(!ticker.turnCommands.isEmpty()) {
+                    final Network.TurnControl got = ticker.turnCommands.pop();
+                    if(ticker.turnTick(got)) {
+                        switch(got.type) {
+                            case Network.TurnControl.T_PREPARED_CANCELLED: lister.notifyDataSetChanged(); break;
+                            case Network.TurnControl.T_OPPORTUNITY:
+                            case Network.TurnControl.T_PREPARED_TRIGGERED:
+                            case Network.TurnControl.T_REGULAR:
+                                if(ticker.currentActor != null) {
+                                    MaxUtils.setVisibility(ActorOverviewActivity.this, View.GONE,
+                                            R.id.aoa_waitingOtherPlayers,
+                                            R.id.aoa_progress);
+                                    final Intent intent = new Intent(ActorOverviewActivity.this, MyActorRoundActivity.class)
+                                            .putExtra(MyActorRoundActivity.EXTRA_CLIENT_MODE, true)
+                                            .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivityForResult(intent, REQUEST_MONSTER_TURN);
+                                }
+                        }
+
+                    }
+                }
+            }
+        };
         if(ticker.playedHere == null) { // Initiate data pull
-            ticker.getActorData(actorKeys, serverPipe, new Runnable() {
+            serverPipe = serverWorker.getSource();
+            ticker.getActorData(actorKeys, serverWorker, new Runnable() {
                 @Override
                 public void run() {
                     // This callback triggers after I got all my actor info, the worker thread detaches.
@@ -224,10 +256,11 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                     final Pumper.MessagePumpingThread[] worker = ticker.netPump.move();
                     actorDataFetched();
                     ticker.netPump.pump(worker[0]); // reattach and start pumping roll requests.
+                    actorKeys = null;
+                    serverWorker = null;
+                    ticker.onDetach = turnCallback;
                 }
             });
-            actorKeys = null;
-            serverPipe = null;
 
             final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
                     .setOngoing(true)
@@ -242,12 +275,20 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             }
             ticker.startForeground(NOTIFICATION_ID, help.build());
         }
+        else {
+            Pumper.MessagePumpingThread[] move = ticker.netPump.move();
+            serverPipe = move[0].getSource();
+            ticker.netPump.pump(move[0]);
+            ticker.onDetach = turnCallback;
+            turnCallback.run();
+        }
         ticker.onRollRequestPushed = new Runnable() {
             @Override
             public void run() {
                 rollRequested();
             }
         };
+        ticker.onOrderReceived.run();
         int waiting = 0;
         for (CharacterActor check : ticker.playedHere) {
             if(check == null) waiting++;
@@ -266,4 +307,6 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         // I still don't get what to do here.
     }
     // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    private static final int REQUEST_MONSTER_TURN = 1;
 }

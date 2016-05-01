@@ -125,21 +125,6 @@ message CharacterOwnership {
 }
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Ok, the group was formed and the client got a GroupReady with a peerKey list.
-// So far we got away with 'canonical' actor definitions, but running a game takes much more!
-// The client uses this message to ask the server about full actor data. The reply is not defined by this protocol
-// but rather from somewhere else (currently startData.proto).
-// Implementations should query only peerKey values they have been confirmed ownership.
-//
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-message LiveActorDataRequest {
-    repeated uint32 peerKey = 1;
-	// The reply is a stream of 'reply' objects.
-}
-
-
 // Server <-> Client.
 // When .range is != 0 then this is Server->Client, roll request.
 // If .range is 0 then this is client->server, due to modifiers this can be any value.
@@ -161,8 +146,20 @@ message Roll {
 	}
 }
 
+// Server<->Client
+// When sent by server, this is the new order of battle. It is used for the 'shuffle order' dialog.
+// When sent by client it is a 'shuffle request'. They are ignored if invalid or applied with no confirmation.
+// In all cases, there's no reply (albeit shuffles generate a new order).
+message BattleOrder {
+	uint32 asKnownBy = 1; // each list is specific to a certain actor. Some actors might be unknown to others.
+	repeated uint32 order = 2;
+	// Server: current known order. Most likely including unknown actors.
+	// Client: a single value, new position in order.
+}
+
 // Server -> client
 // Sent by the server to let an actor on a remote device play. Can also terminate its turn.
+// OFC it is specific to an actor on this device.
 message TurnControl {
 	enum Type {
 		T_FORCE_DONE = 0;
@@ -171,6 +168,9 @@ message TurnControl {
 		T_OPPORTUNITY = 3;
 		
 		T_PREPARED_CANCELLED = 32; // special, not really a turn but seems nice to have it there.
+		T_ACTORDATA_KEY = 33; // not really a turn, specifies an 'active' key. Next actor data received will be relative to this key. Round is irrelevant.
 	}
 	Type type = 1;
+	uint32 peerKey = 2;
+	uint32 round = 3; // while we're at it, we always push round so the client knows.
 }

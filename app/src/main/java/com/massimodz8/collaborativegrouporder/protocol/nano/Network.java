@@ -1054,134 +1054,6 @@ public interface Network {
     }
   }
 
-  public static final class LiveActorDataRequest extends
-      com.google.protobuf.nano.MessageNano {
-
-    private static volatile LiveActorDataRequest[] _emptyArray;
-    public static LiveActorDataRequest[] emptyArray() {
-      // Lazily initializes the empty array
-      if (_emptyArray == null) {
-        synchronized (
-            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-          if (_emptyArray == null) {
-            _emptyArray = new LiveActorDataRequest[0];
-          }
-        }
-      }
-      return _emptyArray;
-    }
-
-    // repeated uint32 peerKey = 1;
-    public int[] peerKey;
-
-    public LiveActorDataRequest() {
-      clear();
-    }
-
-    public LiveActorDataRequest clear() {
-      peerKey = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
-      cachedSize = -1;
-      return this;
-    }
-
-    @Override
-    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-        throws java.io.IOException {
-      if (this.peerKey != null && this.peerKey.length > 0) {
-        for (int i = 0; i < this.peerKey.length; i++) {
-          output.writeUInt32(1, this.peerKey[i]);
-        }
-      }
-      super.writeTo(output);
-    }
-
-    @Override
-    protected int computeSerializedSize() {
-      int size = super.computeSerializedSize();
-      if (this.peerKey != null && this.peerKey.length > 0) {
-        int dataSize = 0;
-        for (int i = 0; i < this.peerKey.length; i++) {
-          int element = this.peerKey[i];
-          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeUInt32SizeNoTag(element);
-        }
-        size += dataSize;
-        size += 1 * this.peerKey.length;
-      }
-      return size;
-    }
-
-    @Override
-    public LiveActorDataRequest mergeFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      while (true) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            return this;
-          default: {
-            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-              return this;
-            }
-            break;
-          }
-          case 8: {
-            int arrayLength = com.google.protobuf.nano.WireFormatNano
-                .getRepeatedFieldArrayLength(input, 8);
-            int i = this.peerKey == null ? 0 : this.peerKey.length;
-            int[] newArray = new int[i + arrayLength];
-            if (i != 0) {
-              java.lang.System.arraycopy(this.peerKey, 0, newArray, 0, i);
-            }
-            for (; i < newArray.length - 1; i++) {
-              newArray[i] = input.readUInt32();
-              input.readTag();
-            }
-            // Last one without readTag.
-            newArray[i] = input.readUInt32();
-            this.peerKey = newArray;
-            break;
-          }
-          case 10: {
-            int length = input.readRawVarint32();
-            int limit = input.pushLimit(length);
-            // First pass to compute array length.
-            int arrayLength = 0;
-            int startPos = input.getPosition();
-            while (input.getBytesUntilLimit() > 0) {
-              input.readUInt32();
-              arrayLength++;
-            }
-            input.rewindToPosition(startPos);
-            int i = this.peerKey == null ? 0 : this.peerKey.length;
-            int[] newArray = new int[i + arrayLength];
-            if (i != 0) {
-              java.lang.System.arraycopy(this.peerKey, 0, newArray, 0, i);
-            }
-            for (; i < newArray.length; i++) {
-              newArray[i] = input.readUInt32();
-            }
-            this.peerKey = newArray;
-            input.popLimit(limit);
-            break;
-          }
-        }
-      }
-    }
-
-    public static LiveActorDataRequest parseFrom(byte[] data)
-        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new LiveActorDataRequest(), data);
-    }
-
-    public static LiveActorDataRequest parseFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      return new LiveActorDataRequest().mergeFrom(input);
-    }
-  }
-
   public static final class Roll extends
       com.google.protobuf.nano.MessageNano {
 
@@ -1351,6 +1223,149 @@ public interface Network {
     }
   }
 
+  public static final class BattleOrder extends
+      com.google.protobuf.nano.MessageNano {
+
+    private static volatile BattleOrder[] _emptyArray;
+    public static BattleOrder[] emptyArray() {
+      // Lazily initializes the empty array
+      if (_emptyArray == null) {
+        synchronized (
+            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+          if (_emptyArray == null) {
+            _emptyArray = new BattleOrder[0];
+          }
+        }
+      }
+      return _emptyArray;
+    }
+
+    // optional uint32 asKnownBy = 1;
+    public int asKnownBy;
+
+    // repeated uint32 order = 2;
+    public int[] order;
+
+    public BattleOrder() {
+      clear();
+    }
+
+    public BattleOrder clear() {
+      asKnownBy = 0;
+      order = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
+      cachedSize = -1;
+      return this;
+    }
+
+    @Override
+    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+        throws java.io.IOException {
+      if (this.asKnownBy != 0) {
+        output.writeUInt32(1, this.asKnownBy);
+      }
+      if (this.order != null && this.order.length > 0) {
+        for (int i = 0; i < this.order.length; i++) {
+          output.writeUInt32(2, this.order[i]);
+        }
+      }
+      super.writeTo(output);
+    }
+
+    @Override
+    protected int computeSerializedSize() {
+      int size = super.computeSerializedSize();
+      if (this.asKnownBy != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(1, this.asKnownBy);
+      }
+      if (this.order != null && this.order.length > 0) {
+        int dataSize = 0;
+        for (int i = 0; i < this.order.length; i++) {
+          int element = this.order[i];
+          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeUInt32SizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1 * this.order.length;
+      }
+      return size;
+    }
+
+    @Override
+    public BattleOrder mergeFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      while (true) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            return this;
+          default: {
+            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+              return this;
+            }
+            break;
+          }
+          case 8: {
+            this.asKnownBy = input.readUInt32();
+            break;
+          }
+          case 16: {
+            int arrayLength = com.google.protobuf.nano.WireFormatNano
+                .getRepeatedFieldArrayLength(input, 16);
+            int i = this.order == null ? 0 : this.order.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.order, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length - 1; i++) {
+              newArray[i] = input.readUInt32();
+              input.readTag();
+            }
+            // Last one without readTag.
+            newArray[i] = input.readUInt32();
+            this.order = newArray;
+            break;
+          }
+          case 18: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            // First pass to compute array length.
+            int arrayLength = 0;
+            int startPos = input.getPosition();
+            while (input.getBytesUntilLimit() > 0) {
+              input.readUInt32();
+              arrayLength++;
+            }
+            input.rewindToPosition(startPos);
+            int i = this.order == null ? 0 : this.order.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.order, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length; i++) {
+              newArray[i] = input.readUInt32();
+            }
+            this.order = newArray;
+            input.popLimit(limit);
+            break;
+          }
+        }
+      }
+    }
+
+    public static BattleOrder parseFrom(byte[] data)
+        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new BattleOrder(), data);
+    }
+
+    public static BattleOrder parseFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      return new BattleOrder().mergeFrom(input);
+    }
+  }
+
   public static final class TurnControl extends
       com.google.protobuf.nano.MessageNano {
 
@@ -1360,6 +1375,7 @@ public interface Network {
     public static final int T_PREPARED_TRIGGERED = 2;
     public static final int T_OPPORTUNITY = 3;
     public static final int T_PREPARED_CANCELLED = 32;
+    public static final int T_ACTORDATA_KEY = 33;
 
     private static volatile TurnControl[] _emptyArray;
     public static TurnControl[] emptyArray() {
@@ -1381,6 +1397,9 @@ public interface Network {
     // optional uint32 peerKey = 2;
     public int peerKey;
 
+    // optional uint32 round = 3;
+    public int round;
+
     public TurnControl() {
       clear();
     }
@@ -1388,6 +1407,7 @@ public interface Network {
     public TurnControl clear() {
       type = com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_FORCE_DONE;
       peerKey = 0;
+      round = 0;
       cachedSize = -1;
       return this;
     }
@@ -1400,6 +1420,9 @@ public interface Network {
       }
       if (this.peerKey != 0) {
         output.writeUInt32(2, this.peerKey);
+      }
+      if (this.round != 0) {
+        output.writeUInt32(3, this.round);
       }
       super.writeTo(output);
     }
@@ -1414,6 +1437,10 @@ public interface Network {
       if (this.peerKey != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(2, this.peerKey);
+      }
+      if (this.round != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(3, this.round);
       }
       return size;
     }
@@ -1441,6 +1468,7 @@ public interface Network {
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_PREPARED_TRIGGERED:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_OPPORTUNITY:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_PREPARED_CANCELLED:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_ACTORDATA_KEY:
                 this.type = value;
                 break;
             }
@@ -1448,6 +1476,10 @@ public interface Network {
           }
           case 16: {
             this.peerKey = input.readUInt32();
+            break;
+          }
+          case 24: {
+            this.round = input.readUInt32();
             break;
           }
         }

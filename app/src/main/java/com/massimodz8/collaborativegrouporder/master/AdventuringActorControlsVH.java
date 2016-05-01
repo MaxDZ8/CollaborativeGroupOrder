@@ -1,6 +1,5 @@
 package com.massimodz8.collaborativegrouporder.master;
 
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;

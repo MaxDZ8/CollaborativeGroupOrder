@@ -246,15 +246,6 @@ public abstract class PcAssignmentHelper {
                     handler.sendMessage(handler.obtainMessage(MSG_CHAR_OWNERSHIP_REQUEST, new Events.CharOwnership(from, msg)));
                     return false;
                 }
-            }).add(ProtoBufferEnum.ACTOR_DATA_REQUEST, new PumpTarget.Callbacks<Network.LiveActorDataRequest>() {
-                @Override
-                public Network.LiveActorDataRequest make() { return new Network.LiveActorDataRequest(); }
-
-                @Override
-                public boolean mangle(MessageChannel from, Network.LiveActorDataRequest msg) throws IOException {
-                    handler.sendMessage(handler.obtainMessage(MSG_CHAR_DATA_REQUEST, new Events.ActorDataRequest(from, msg)));
-                    return true;
-                }
             });
     ArrayList<PlayingDevice> peers = new ArrayList<>();
     private BlockingQueue<SendRequest> out = new ArrayBlockingQueue<>(USUAL_CLIENT_COUNT * USUAL_AVERAGE_MESSAGES_PENDING_COUNT);
@@ -341,10 +332,6 @@ public abstract class PcAssignmentHelper {
                     self.charOwnership(real.origin, real.payload);
                     break;
                 }
-                case MSG_CHAR_DATA_REQUEST: {
-                    final Events.ActorDataRequest real = (Events.ActorDataRequest) msg.obj;
-                    self.characterDataRequest(real.origin, real.payload);
-                }
             }
         }
     }
@@ -354,13 +341,12 @@ public abstract class PcAssignmentHelper {
     private static final int MSG_HELLO_ANON = 3;
     private static final int MSG_HELLO_AUTH = 4;
     private static final int MSG_CHAR_OWNERSHIP_REQUEST = 5;
-    private static final int MSG_CHAR_DATA_REQUEST = 6;
 
     /// Caution. This currently must match PartyCreationService.closeGroup
     public static final int DOORMAT_BYTES = 32;
     private static final int USUAL_CLIENT_COUNT = 20; // not really! Usually 5 or less but that's for safety!
     private static final int USUAL_AVERAGE_MESSAGES_PENDING_COUNT = 10; // pretty a lot, those will be small!
-    private static final int LOCAL_BINDING = -1;
+    public static final int LOCAL_BINDING = -1;
 
     private synchronized byte[] random(int count) {
         if(count < 0) count = -count;
@@ -381,19 +367,6 @@ public abstract class PcAssignmentHelper {
             if(check.keyIndex == index) return check;
         }
         return null;
-    }
-
-
-    private void characterDataRequest(MessageChannel origin, Network.LiveActorDataRequest payload) {
-        StartData.ActorDefinition reply[] = new StartData.ActorDefinition[payload.peerKey.length];
-        int count = 0;
-        for (int pcIndex : payload.peerKey) {
-            reply[count] = getActorData(pcIndex);
-            count++;
-        }
-        final PlayingDevice dev = getDevice(origin);
-        if(null == dev || null == dev.pipe) return; // impossible!
-        out.add(new SendRequest(dev, ProtoBufferEnum.ACTOR_DATA, reply));
     }
 
     protected abstract StartData.ActorDefinition getActorData(int unique);
@@ -559,6 +532,10 @@ public abstract class PcAssignmentHelper {
         }
     }
 
+    public void sendToRemote(PlayingDevice dev, int msgType, MessageNano payload) {
+        out.add(new SendRequest(dev, msgType, payload));
+    }
+
 
     public interface AuthDeviceHolderFactoryBinder<VH extends RecyclerView.ViewHolder> {
         VH createUnbound(ViewGroup parent, int viewType);
@@ -680,10 +657,11 @@ public abstract class PcAssignmentHelper {
     public UnassignedPcsAdapter unboundPcAdapter;
 
 
-    public void activateRemote(@NonNull PlayingDevice dev, int actorKey, int roundType) {
+    public void activateRemote(@NonNull PlayingDevice dev, int actorKey, int roundType, int roundCount) {
         Network.TurnControl payload = new Network.TurnControl();
         payload.peerKey = actorKey;
         payload.type = roundType;
+        payload.round = roundCount;
         out.add(new SendRequest(dev, ProtoBufferEnum.TURN_CONTROL, payload));
         if(roundType != Network.TurnControl.T_PREPARED_CANCELLED) dev.activeActor = actorKey;
     }

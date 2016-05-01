@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.CharacterActor;
+import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
@@ -118,7 +119,6 @@ public class PartyJoinOrderService extends PublishAcceptService {
 
     /// Marks the given character to be managed locally. Will trigger ownership change.
     public void local(StartData.ActorDefinition actor) { assignmentHelper.local(actor); }
-    public MessageChannel getMessageChannel(StartData.ActorDefinition actor) { return assignmentHelper.getMessageChannel(actor); }
 
     /// Promotes freshly connected clients to anonymous handshaking clients.
     public void pumpClients(@Nullable Pumper.MessagePumpingThread[] existing) {
@@ -167,6 +167,56 @@ public class PartyJoinOrderService extends PublishAcceptService {
      */
     public final IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
     public int nextActorId;
+
+
+    public boolean notifyBattleOrder_CHECK_ME() {
+        if(!sessionHelper.session.battleState.orderChanged) return false;
+        final InitiativeScore[] order = sessionHelper.session.battleState.ordered;
+        int[] sequence = new int[order.length];
+        int cp = 0;
+        for (InitiativeScore score : order) {
+            sequence[cp] = actorId.get(score.actor);
+            cp++;
+        }
+        int devIndex = -1;
+        for (PcAssignmentHelper.PlayingDevice dev : assignmentHelper.peers) {
+            devIndex++;
+            if(dev.pipe == null) continue;
+            int actorKey = -1;
+            for (Integer binding : assignmentHelper.assignment) {
+                actorKey++; // keys here are just their order of definition.
+                if(binding == null) continue; // should not be possible at this point
+                if(binding != devIndex) continue;
+                final Network.BattleOrder bo = new Network.BattleOrder();
+                bo.asKnownBy = actorKey;
+                bo.order = sequence;
+                assignmentHelper.sendToRemote(dev, ProtoBufferEnum.BATTLE_ORDER, bo);
+            }
+        }
+        sessionHelper.session.battleState.orderChanged = false;
+        return true;
+    }
+
+    public void sendBattlingActorData() {
+        for(int loop = 0; loop < assignmentHelper.party.party.length; loop++) {
+            final Integer binding = assignmentHelper.assignment.get(loop);
+            if(binding == null) continue; // impossible
+            if(binding == PcAssignmentHelper.LOCAL_BINDING) continue; // no need to let it know, dialog will pull server data directly.
+            final PcAssignmentHelper.PlayingDevice dev = assignmentHelper.peers.get(binding);
+            final MessageChannel pipe = dev.pipe;
+            if(pipe == null) continue; // connection lost
+            for (InitiativeScore el : sessionHelper.session.battleState.ordered) {
+                final Network.TurnControl tc = new Network.TurnControl();
+                tc.type = Network.TurnControl.T_ACTORDATA_KEY;
+                tc.peerKey = actorId.get(el.actor);
+                final StartData.ActorDefinition ad = assignmentHelper.getActorData(tc.peerKey);
+                assignmentHelper.sendToRemote(dev, ProtoBufferEnum.TURN_CONTROL, tc);
+                assignmentHelper.sendToRemote(dev, ProtoBufferEnum.ACTOR_DATA, ad);
+            }
+            // TODO: it would be a better idea to resolve unique peerkey from order lists across all characters from a device.
+            // This has quite some repetition instead but it's way easier for everybody.
+        }
+    }
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override

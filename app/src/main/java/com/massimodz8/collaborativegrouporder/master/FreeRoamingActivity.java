@@ -81,7 +81,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                             }).show();
                 }
                 else {
-                    fab.setEnabled(false);
+                    fab.setVisibility(View.GONE);
                     sendInitiativeRollRequests();
                 }
             }
@@ -160,16 +160,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 rq.peerKey = loop;
                 rq.type = Network.Roll.T_BATTLE_START;
                 game.sessionHelper.initiatives.put(actor, new SessionHelper.Initiative(rq));
-                new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            pipe.writeSync(ProtoBufferEnum.ROLL, rq);
-                        } catch (IOException e) {
-                            // ignore, it will just timeout and somebody else will take care.
-                        }
-                    }
-                }.start();
+                game.assignmentHelper.sendToRemote(game.assignmentHelper.getDevice(pipe), ProtoBufferEnum.ROLL, rq);
             } else {
                 game.sessionHelper.initiatives.put(actor, new SessionHelper.Initiative(null));
                 local.add(actor);
