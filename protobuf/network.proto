@@ -191,4 +191,7 @@ message ActorState {
 	uint32 maxHP = 5;
 	string prepareCondition = 6;
 	bool preparedTriggered = 7;
+	
+	// Those are not typically used across the wire but they are useful to have at runtime!
+	int32 initiativeBonus = 128;
 }

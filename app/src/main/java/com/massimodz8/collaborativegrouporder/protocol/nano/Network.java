@@ -1542,6 +1542,9 @@ public interface Network {
     // optional bool preparedTriggered = 7;
     public boolean preparedTriggered;
 
+    // optional int32 initiativeBonus = 128;
+    public int initiativeBonus;
+
     public ActorState() {
       clear();
     }
@@ -1554,6 +1557,7 @@ public interface Network {
       maxHP = 0;
       prepareCondition = "";
       preparedTriggered = false;
+      initiativeBonus = 0;
       cachedSize = -1;
       return this;
     }
@@ -1581,6 +1585,9 @@ public interface Network {
       }
       if (this.preparedTriggered != false) {
         output.writeBool(7, this.preparedTriggered);
+      }
+      if (this.initiativeBonus != 0) {
+        output.writeInt32(128, this.initiativeBonus);
       }
       super.writeTo(output);
     }
@@ -1615,6 +1622,10 @@ public interface Network {
       if (this.preparedTriggered != false) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeBoolSize(7, this.preparedTriggered);
+      }
+      if (this.initiativeBonus != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(128, this.initiativeBonus);
       }
       return size;
     }
@@ -1668,6 +1679,10 @@ public interface Network {
           }
           case 56: {
             this.preparedTriggered = input.readBool();
+            break;
+          }
+          case 1024: {
+            this.initiativeBonus = input.readInt32();
             break;
           }
         }
