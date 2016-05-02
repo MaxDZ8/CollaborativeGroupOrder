@@ -168,9 +168,27 @@ message TurnControl {
 		T_OPPORTUNITY = 3;
 		
 		T_PREPARED_CANCELLED = 32; // special, not really a turn but seems nice to have it there.
-		T_ACTORDATA_KEY = 33; // not really a turn, specifies an 'active' key. Next actor data received will be relative to this key. Round is irrelevant.
+		T_BATTLE_ENDED = 33;
 	}
 	Type type = 1;
 	uint32 peerKey = 2;
 	uint32 round = 3; // while we're at it, we always push round so the client knows.
+}
+
+
+// Server -> Client; define/update actor.
+message ActorState {
+	enum Type {
+		T_UNDEFINED = 0; // can be used when storing, if type can be inferred from position.
+		T_PLAYING_CHARACTER = 1;
+		T_NPC = 2;
+		T_MOB = 3;
+	}
+	Type type = 1;
+	uint32 peerKey = 2;
+	string name = 3;
+	int32 currentHP = 4;
+	uint32 maxHP = 5;
+	string prepareCondition = 6;
+	bool preparedTriggered = 7;
 }

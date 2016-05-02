@@ -16,7 +16,7 @@ public interface ProtoBufferEnum {
 
     int CHARACTER_OWNERSHIP = 8;
 
-    int ACTOR_DATA = 9;
+    int ACTOR_DATA_UPDATE = 9;
 
     int ROLL = 10;
     int TURN_CONTROL = 11;

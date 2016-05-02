@@ -1375,7 +1375,7 @@ public interface Network {
     public static final int T_PREPARED_TRIGGERED = 2;
     public static final int T_OPPORTUNITY = 3;
     public static final int T_PREPARED_CANCELLED = 32;
-    public static final int T_ACTORDATA_KEY = 33;
+    public static final int T_BATTLE_ENDED = 33;
 
     private static volatile TurnControl[] _emptyArray;
     public static TurnControl[] emptyArray() {
@@ -1468,7 +1468,7 @@ public interface Network {
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_PREPARED_TRIGGERED:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_OPPORTUNITY:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_PREPARED_CANCELLED:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_ACTORDATA_KEY:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_BATTLE_ENDED:
                 this.type = value;
                 break;
             }
@@ -1495,6 +1495,194 @@ public interface Network {
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
       return new TurnControl().mergeFrom(input);
+    }
+  }
+
+  public static final class ActorState extends
+      com.google.protobuf.nano.MessageNano {
+
+    // enum Type
+    public static final int T_UNDEFINED = 0;
+    public static final int T_PLAYING_CHARACTER = 1;
+    public static final int T_NPC = 2;
+    public static final int T_MOB = 3;
+
+    private static volatile ActorState[] _emptyArray;
+    public static ActorState[] emptyArray() {
+      // Lazily initializes the empty array
+      if (_emptyArray == null) {
+        synchronized (
+            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+          if (_emptyArray == null) {
+            _emptyArray = new ActorState[0];
+          }
+        }
+      }
+      return _emptyArray;
+    }
+
+    // optional .ActorState.Type type = 1;
+    public int type;
+
+    // optional uint32 peerKey = 2;
+    public int peerKey;
+
+    // optional string name = 3;
+    public java.lang.String name;
+
+    // optional int32 currentHP = 4;
+    public int currentHP;
+
+    // optional uint32 maxHP = 5;
+    public int maxHP;
+
+    // optional string prepareCondition = 6;
+    public java.lang.String prepareCondition;
+
+    // optional bool preparedTriggered = 7;
+    public boolean preparedTriggered;
+
+    public ActorState() {
+      clear();
+    }
+
+    public ActorState clear() {
+      type = com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_UNDEFINED;
+      peerKey = 0;
+      name = "";
+      currentHP = 0;
+      maxHP = 0;
+      prepareCondition = "";
+      preparedTriggered = false;
+      cachedSize = -1;
+      return this;
+    }
+
+    @Override
+    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+        throws java.io.IOException {
+      if (this.type != com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_UNDEFINED) {
+        output.writeInt32(1, this.type);
+      }
+      if (this.peerKey != 0) {
+        output.writeUInt32(2, this.peerKey);
+      }
+      if (!this.name.equals("")) {
+        output.writeString(3, this.name);
+      }
+      if (this.currentHP != 0) {
+        output.writeInt32(4, this.currentHP);
+      }
+      if (this.maxHP != 0) {
+        output.writeUInt32(5, this.maxHP);
+      }
+      if (!this.prepareCondition.equals("")) {
+        output.writeString(6, this.prepareCondition);
+      }
+      if (this.preparedTriggered != false) {
+        output.writeBool(7, this.preparedTriggered);
+      }
+      super.writeTo(output);
+    }
+
+    @Override
+    protected int computeSerializedSize() {
+      int size = super.computeSerializedSize();
+      if (this.type != com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_UNDEFINED) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeInt32Size(1, this.type);
+      }
+      if (this.peerKey != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(2, this.peerKey);
+      }
+      if (!this.name.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(3, this.name);
+      }
+      if (this.currentHP != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(4, this.currentHP);
+      }
+      if (this.maxHP != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(5, this.maxHP);
+      }
+      if (!this.prepareCondition.equals("")) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeStringSize(6, this.prepareCondition);
+      }
+      if (this.preparedTriggered != false) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeBoolSize(7, this.preparedTriggered);
+      }
+      return size;
+    }
+
+    @Override
+    public ActorState mergeFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      while (true) {
+        int tag = input.readTag();
+        switch (tag) {
+          case 0:
+            return this;
+          default: {
+            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+              return this;
+            }
+            break;
+          }
+          case 8: {
+            int value = input.readInt32();
+            switch (value) {
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_UNDEFINED:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_PLAYING_CHARACTER:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_NPC:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_MOB:
+                this.type = value;
+                break;
+            }
+            break;
+          }
+          case 16: {
+            this.peerKey = input.readUInt32();
+            break;
+          }
+          case 26: {
+            this.name = input.readString();
+            break;
+          }
+          case 32: {
+            this.currentHP = input.readInt32();
+            break;
+          }
+          case 40: {
+            this.maxHP = input.readUInt32();
+            break;
+          }
+          case 50: {
+            this.prepareCondition = input.readString();
+            break;
+          }
+          case 56: {
+            this.preparedTriggered = input.readBool();
+            break;
+          }
+        }
+      }
+    }
+
+    public static ActorState parseFrom(byte[] data)
+        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new ActorState(), data);
+    }
+
+    public static ActorState parseFrom(
+            com.google.protobuf.nano.CodedInputByteBufferNano input)
+        throws java.io.IOException {
+      return new ActorState().mergeFrom(input);
     }
   }
 }

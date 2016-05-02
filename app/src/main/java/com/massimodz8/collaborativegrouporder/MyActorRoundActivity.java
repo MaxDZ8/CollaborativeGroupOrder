@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.provider.Telephony;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,8 +21,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.client.AdventuringService;
 import com.massimodz8.collaborativegrouporder.master.BattleHelper;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.util.Locale;
 
@@ -29,6 +32,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
 
 
     public static final String EXTRA_SUPPRESS_VIBRATION = "com.massimodz8.collaborativegrouporder.MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION";
+    public static final String EXTRA_CLIENT_MODE = "com.massimodz8.collaborativegrouporder.MyActorRoundActivity.EXTRA_CLIENT_MODE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +45,13 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         View holder = findViewById(R.id.vhRoot);
         holder.setVisibility(View.INVISIBLE);
 
-        if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
+        if(getIntent().getBooleanExtra(EXTRA_CLIENT_MODE, false) && !bindService(new Intent(this, AdventuringService.class), this, 0)) {
+            MaxUtils.beginDelayedTransition(this);
+            TextView ohno = (TextView) findViewById(R.id.mara_instructions);
+            ohno.setText(R.string.client_failedServiceBind);
+            return;
+        }
+        else if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
             MaxUtils.beginDelayedTransition(this);
             TextView ohno = (TextView) findViewById(R.id.mara_instructions);
             ohno.setText(R.string.master_cannotBindAdventuringService);
@@ -72,6 +82,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     @Override
     protected void onDestroy() {
         if(mustUnbind) unbindService(this);
+        if(!isChangingConfigurations()) getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onDestroy();
     }
 
@@ -95,17 +106,13 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                 finish();
                 break;
             case R.id.mara_menu_shuffle: {
-                AbsLiveActor[] order = new AbsLiveActor[battle.ordered.length];
+                Network.ActorState[] order = new Network.ActorState[battle.ordered.length];
                 int cp = 0;
-                for (InitiativeScore el : battle.ordered) {
-                    order[cp] = el.actor;
-                    localGame.actorId.put(el.actor, cp);
-                    cp++;
-                }
-                new InitiativeShuffleDialog(order, battle.currentActor, localGame.actorId)
+                for (InitiativeScore el : battle.ordered) order[cp] = el.actor;
+                new InitiativeShuffleDialog(order, battle.currentActor)
                         .show(MyActorRoundActivity.this, new InitiativeShuffleDialog.OnApplyCallback() {
                             @Override
-                            public void newOrder(AbsLiveActor[] target) {
+                            public void newOrder(Network.ActorState[] target) {
                                 requestNewOrder(target);
                             }
                         });
@@ -138,13 +145,13 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     }
 
     /// Called from the 'wait' dialog to request to shuffle my actor somewhere else.
-    private void requestNewOrder(AbsLiveActor[] target) {
+    private void requestNewOrder(Network.ActorState[] target) {
         final InitiativeScore me = battle.ordered[battle.currentActor];
         int newPos = 0;
         while(newPos < target.length && target[newPos] != me.actor) newPos++;
         if(newPos == target.length) return; // wut? Impossible!
         if(newPos == battle.currentActor) return; // he hit apply but really did nothing.
-        if(localGame != null) { // This is cool, we approve of ourselves :P
+        if(server != null) { // This is cool, we approve of ourselves :P
             battle.shuffleCurrent(newPos);
             setResult(RESULT_OK);
             finish();
@@ -155,9 +162,9 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
 
 
     private void requestReadiedAction(String s) {
-        if(localGame != null) {
+        if(server != null) {
             final InitiativeScore me = battle.ordered[battle.currentActor];
-            me.actor.actionCondition = s;
+            me.actor.prepareCondition = s;
             setResult(RESULT_OK);
             finish();
             return;
@@ -166,33 +173,45 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     }
 
     private boolean mustUnbind;
-    private PartyJoinOrderService localGame;
+    private PartyJoinOrderService server;
+    private AdventuringService client;
     private BattleHelper battle;
     private MenuItem imDone;
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        localGame = ((PartyJoinOrderService.LocalBinder)service).getConcreteService();
-        battle = localGame.sessionHelper.session.battleState;
-        AbsLiveActor actor = battle.triggered == null? battle.ordered[battle.currentActor].actor : battle.triggered.get(battle.triggered.size() - 1);
+        server = service instanceof PartyJoinOrderService? (PartyJoinOrderService)service : null;
+        client = service instanceof AdventuringService? (AdventuringService)service : null;
+        final Network.ActorState actor;
+        final int round;
+        final String nextActor;
+        if(server != null) {
+            battle = server.sessionHelper.session.battleState;
+            actor = battle.triggered == null ? battle.ordered[battle.currentActor].actor : battle.triggered.get(battle.triggered.size() - 1);
+            round = battle.round;
+            final int pactor = battle.currentActor;
+            battle.tickRound();
+            nextActor = battle.ordered[battle.currentActor].actor.name;
+            battle.currentActor = pactor;
+            battle.round = round;
+        }
+        else {
+            actor = client.currentActor.actor;
+            round = client.round;
+            nextActor = null;
+        }
         View holder = findViewById(R.id.vhRoot);
         AdventuringActorDataVH helper = new AdventuringActorDataVH(holder) {
             @Override
-            public void onClick(View v) { }
+            public void onClick(View v) {
+            }
         };
         MaxUtils.beginDelayedTransition(this);
         helper.bindData(actor);
         holder.setVisibility(View.VISIBLE);
-        final int pround = battle.round;
-        final int pactor = battle.currentActor;
-        battle.tickRound();
-        TextView tv = (TextView) findViewById(R.id.mara_nextActorName);
-        tv.setText(String.format(getString(R.string.mara_nextToAct), battle.ordered[battle.currentActor].actor.displayName));
-        tv = (TextView) findViewById(R.id.mara_round);
-        battle.currentActor = pactor;
-        battle.round = pround;
-        tv.setText(String.format(Locale.ROOT, getString(R.string.mara_round), battle.round));
+        ((TextView) findViewById(R.id.mara_round)).setText(String.format(Locale.ROOT, getString(R.string.mara_round), round));
+        MaxUtils.setTextUnlessNull((TextView) findViewById(R.id.mara_nextActorName), nextActor, View.GONE);
     }
 
     @Override
