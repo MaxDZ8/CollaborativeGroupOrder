@@ -4,9 +4,9 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.AdventuringActorDataVH;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 /**
  * Created by Massimo on 27/04/2016.
@@ -29,7 +29,7 @@ public abstract class AdventuringActorControlsVH  extends AdventuringActorDataVH
     boolean checked;
 
     @Override
-    public void bindData(AbsLiveActor actor) {
+    public void bindData(Network.ActorState actor) {
         super.bindData(actor);
         selected.setChecked(checked);
         selected.setEnabled(!showHilight);

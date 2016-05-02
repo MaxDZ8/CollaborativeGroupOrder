@@ -21,8 +21,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.AbsLiveActor;
-import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
@@ -31,7 +29,6 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
-import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,9 +60,9 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 int pgCount = 0;
                 final SessionHelper.PlayState session = game.sessionHelper.session;
                 for(int loop = 0; loop < session.getNumActors(); loop++) {
-                    AbsLiveActor actor = session.getActor(loop);
+                    Network.ActorState actor = session.getActor(loop);
                     int add = session.willFight(actor, null)? 1 : 0;
-                    if(actor.type == AbsLiveActor.TYPE_PLAYING_CHARACTER) pgCount += add;
+                    if(actor.type == Network.ActorState.T_PLAYING_CHARACTER) pgCount += add;
                     else count += add;
                 }
                 if(pgCount == 0) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_zeroPcs, Snackbar.LENGTH_LONG).show();
@@ -111,11 +108,9 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     protected void onResume() { // maybe we got there after a monster has been added.
         super.onResume();
         if(game == null) return; // no connection yet -> nothing really to do.
-        final SessionHelper.PlayState session = game.sessionHelper.session;
-        if(session.lastPushed == session.getNumActors()) return;
-        for(int loop = session.lastPushed; loop < session.getNumActors(); loop++) game.actorId.put(session.getActor(loop), game.nextActorId++);
-        lister.notifyItemRangeInserted(session.lastPushed, session.getNumActors() - session.lastPushed);
-        session.lastPushed = session.getNumActors();
+        int now = lister.getItemCount();
+        if(now > numActors) lister.notifyItemRangeInserted(numActors, now - numActors);
+        numActors = now;
     }
 
     @Override
@@ -123,7 +118,6 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         if(game != null) {
             game.onRollReceived = null;
             game.assignmentHelper.onDetached = null;
-            game.sessionHelper.session.end();
         }
         if(waiting != null) waiting.dlg.dismiss();
         if(mustUnbind) unbindService(this);
@@ -132,9 +126,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
 
     private boolean mustUnbind;
     private PartyJoinOrderService game;
+    private int numActors;
     private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter() {
         @Override
-        protected boolean isCurrent(AbsLiveActor actor) { return false; }
+        protected boolean isCurrent(Network.ActorState actor) { return false; }
 
         @Override
         protected LayoutInflater getLayoutInflater() { return FreeRoamingActivity.this.getLayoutInflater(); }
@@ -146,35 +141,34 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
 
     private void sendInitiativeRollRequests() {
         final SessionHelper.PlayState session = game.sessionHelper.session;
-        final ArrayList<AbsLiveActor> local = new ArrayList<>();
+        final ArrayList<Network.ActorState> local = new ArrayList<>();
         game.sessionHelper.initiatives = new IdentityHashMap<>();
         for(int loop = 0; loop < session.getNumActors(); loop++) {
-            final AbsLiveActor actor = session.getActor(loop);
+            final Network.ActorState actor = session.getActor(loop);
             if (!session.willFight(actor, null)) continue;
-            final CharacterActor pc = actor instanceof CharacterActor ? (CharacterActor) actor : null;
-            final MessageChannel pipe = pc == null ? null : game.getMessageChannel(pc.character);
+            final MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
             if (pipe != null) { // send a roll request.
                 final Network.Roll rq = new Network.Roll();
                 rq.unique = ++game.rollRequest;
                 rq.range = 20;
                 rq.peerKey = loop;
                 rq.type = Network.Roll.T_BATTLE_START;
-                game.sessionHelper.initiatives.put(actor, new SessionHelper.Initiative(rq));
+                game.sessionHelper.initiatives.put(actor.peerKey, new SessionHelper.Initiative(rq));
                 game.assignmentHelper.sendToRemote(game.assignmentHelper.getDevice(pipe), ProtoBufferEnum.ROLL, rq);
             } else {
-                game.sessionHelper.initiatives.put(actor, new SessionHelper.Initiative(null));
+                game.sessionHelper.initiatives.put(actor.peerKey, new SessionHelper.Initiative(null));
                 local.add(actor);
             }
         }
         if(local.isEmpty()) return;
         // For the time being, those are rolled automatically.
         final int range = 20;
-        for (AbsLiveActor actor : local) {
-            final SessionHelper.Initiative pair = game.sessionHelper.initiatives.get(actor);
-            pair.rolled = randomizer.nextInt(range) + actor.getInitiativeBonus();
+        for (Network.ActorState actor : local) {
+            final SessionHelper.Initiative pair = game.sessionHelper.initiatives.get(actor.peerKey);
+            pair.rolled = randomizer.nextInt(range) + actor.initiativeBonus;
         }
         attemptBattleStart();
-        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(game.actorId, game.sessionHelper.initiatives).show(this);
+        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(game.sessionHelper).show(this);
     }
 
     /// Called every time at least one initiative is written so we can try sorting & starting.
@@ -182,7 +176,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         if(game == null || game.sessionHelper.initiatives == null) return false;
         int count = 0;
         if(waiting != null) waiting.lister.notifyDataSetChanged(); // maybe not but I take it easy.
-        for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> entry : game.sessionHelper.initiatives.entrySet()) {
+        for (Map.Entry<Integer, SessionHelper.Initiative> entry : game.sessionHelper.initiatives.entrySet()) {
             if(entry.getValue().rolled == null) return false;
             count++;
         }
@@ -190,10 +184,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         InitiativeScore[] order = new InitiativeScore[count];
         count = 0;
         final SessionHelper.PlayState session = game.sessionHelper.session;
-        for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> entry : game.sessionHelper.initiatives.entrySet()) {
-            final AbsLiveActor actor = entry.getKey();
+        for (Map.Entry<Integer, SessionHelper.Initiative> entry : game.sessionHelper.initiatives.entrySet()) {
             final Integer irl = entry.getValue().rolled;
-            order[count++] = new InitiativeScore(irl, actor.getInitiativeBonus(), randomizer.nextInt(1024), actor);
+            final Network.ActorState actor = session.getActorById(entry.getKey());
+            order[count++] = new InitiativeScore(irl, actor.initiativeBonus, randomizer.nextInt(1024), actor);
         }
         Arrays.sort(order, new Comparator<InitiativeScore>() {
             @Override
@@ -217,10 +211,9 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
-        lister.actorId = game.actorId;
         lister.playState = game.sessionHelper.session;
         game.assignmentHelper.onDetached = null;
-        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(game.actorId, game.sessionHelper.initiatives).show(this);
+        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(game.sessionHelper).show(this);
         game.onRollReceived = new Runnable() {
             @Override
             public void run() {
@@ -234,17 +227,9 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
         }
         attemptBattleStart();
-        final SessionHelper.PlayState session = game.sessionHelper.session;
-        session.begin(new Runnable() {
-            @Override
-            public void run() {
-                int numDefinedActors = session.getNumActors();
-                for(int loop = 0; loop < numDefinedActors; loop++) game.actorId.put(session.getActor(loop), game.nextActorId++);
-                session.lastPushed = numDefinedActors;
-                lister.notifyDataSetChanged();
-                Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_dataLoadedFeedback, Snackbar.LENGTH_SHORT).show();
-            }
-        });
+        lister.notifyDataSetChanged();
+        Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_dataLoadedFeedback, Snackbar.LENGTH_SHORT).show();
+        numActors = lister.getItemCount();
     }
 
     @Override

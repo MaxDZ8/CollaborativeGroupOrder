@@ -182,7 +182,6 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         server = service instanceof PartyJoinOrderService? (PartyJoinOrderService)service : null;
-        client = service instanceof AdventuringService? (AdventuringService)service : null;
         final Network.ActorState actor;
         final int round;
         final String nextActor;
@@ -197,6 +196,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
             battle.round = round;
         }
         else {
+            client = (AdventuringService)service;
             actor = client.currentActor.actor;
             round = client.round;
             nextActor = null;

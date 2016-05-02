@@ -1,5 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+
 /**
  * Created by Massimo on 21/04/2016.
  * What is the initiative score? Initiative is very easy at a glance: roll a dice + bonus and sort.
@@ -22,11 +24,11 @@ public class InitiativeScore {
     // We will try to keep those 'constant' and faithful to the original dice rolls BUT
     // this is just best effort. Better to never show those to the user as shuffle initiative
     // will change those values and will no more be coherent with actor bonus.
-    public final AbsLiveActor actor;
+    public final Network.ActorState actor;
 
     public boolean enabled = true; // if false, do not get round actions. Not sorted.
 
-    public InitiativeScore(int initRoll, int bonus, int rand, AbsLiveActor actor) {
+    public InitiativeScore(int initRoll, int bonus, int rand, Network.ActorState actor) {
         this.initRoll = initRoll;
         this.bonus = bonus;
         this.rand = rand;

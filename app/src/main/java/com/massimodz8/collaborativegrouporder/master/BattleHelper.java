@@ -2,8 +2,8 @@ package com.massimodz8.collaborativegrouporder.master;
 
 import android.support.annotation.NonNull;
 
-import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ public class BattleHelper {
      * Triggering a readied action is no real problem: it is a pre-spent action so it does have no permanent effects on order.
      * It also always happen while some other actor is acting. This is either null or contains at least 1 element.
      */
-    public ArrayList<AbsLiveActor> triggered;
+    public ArrayList<Network.ActorState> triggered;
     public boolean orderChanged = true;
 
     public BattleHelper(@NonNull InitiativeScore[] ordered) {

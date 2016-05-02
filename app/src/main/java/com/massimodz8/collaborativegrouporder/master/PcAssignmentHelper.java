@@ -142,15 +142,13 @@ public abstract class PcAssignmentHelper {
         if(onBoundPc != null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
     }
 
-    public MessageChannel getMessageChannel(StartData.ActorDefinition actor) {
-        int match;
-        for(match = 0; match < party.party.length; match++) {
-            if(actor == party.party[match]) break;
+    public MessageChannel getMessageChannelByPeerKey(int id) {
+        if(id < assignment.size()) {
+            final Integer ownerIndex = assignment.get(id);
+            if(ownerIndex == null || ownerIndex == LOCAL_BINDING) return null;
+            return peers.get(ownerIndex).pipe;
         }
-        if(match == party.party.length) return null;
-        final Integer ownerIndex = assignment.get(match);
-        if(ownerIndex == null || ownerIndex == LOCAL_BINDING) return null;
-        return peers.get(ownerIndex).pipe;
+        return null;
     }
 
 

@@ -8,29 +8,26 @@ import android.view.View;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.AdventuringActorDataVH;
 import com.massimodz8.collaborativegrouporder.R;
-import com.massimodz8.collaborativegrouporder.networkio.Events;
-
-import java.util.Locale;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 /**
  * Created by Massimo on 28/04/2016.
  * A dialog to request a dice roll. This is the simplest form, which is the point of the whole app.
  */
 public class RollInitiativeDialog {
-    final Events.Roll request;
+    final Network.Roll request;
     final AlertDialog dlg;
 
-    public RollInitiativeDialog(AbsLiveActor actor, final Events.Roll request, final Runnable onEntered, @NonNull final AppCompatActivity activity) {
+    public RollInitiativeDialog(Network.ActorState actor, final Network.Roll request, final Runnable onEntered, @NonNull final AppCompatActivity activity) {
         this.request = request;
         dlg = new AlertDialog.Builder(activity).setView(R.layout.dialog_roll_initiative)
                 .setCancelable(false)
                 .setPositiveButton(activity.getString(R.string.aoa_dlgRI_done), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        request.payload.result = picker.getValue();
+                        request.result = picker.getValue();
                         onEntered.run();
                     }
                 })
@@ -42,7 +39,7 @@ public class RollInitiativeDialog {
         };
         help.bindData(actor);
         final TextView db = (TextView) dlg.findViewById(R.id.aoa_dlgRI_descAndBonus);
-        int modifier = actor.getInitiativeBonus();
+        int modifier = actor.initiativeBonus;
         String ms = String.valueOf(modifier);
         if(modifier >= 0) ms = '+' + ms;
         db.setText(String.format(activity.getString(R.string.aoa_dlgRI_instructionsAndModifier), ms));

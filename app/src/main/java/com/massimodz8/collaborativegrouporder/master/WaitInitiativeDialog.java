@@ -9,11 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
-import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.R;
-
-import java.util.IdentityHashMap;
-import java.util.Map;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 /**
  * Created by Massimo on 28/04/2016.
@@ -22,14 +19,12 @@ import java.util.Map;
  * Some outer component pushes state changes here so it's already monitoring when to dismiss this.
  */
 public class WaitInitiativeDialog {
-    final IdentityHashMap<AbsLiveActor, Integer> actorId;
-    final Map<AbsLiveActor, SessionHelper.Initiative> initRolls;
+    final SessionHelper session;
     RecyclerView.Adapter<AdventuringActorControlsVH> lister;
     AlertDialog dlg;
 
-    public WaitInitiativeDialog(IdentityHashMap<AbsLiveActor, Integer> actorId, Map<AbsLiveActor, SessionHelper.Initiative> initRolls) {
-        this.actorId = actorId;
-        this.initRolls = initRolls;
+    public WaitInitiativeDialog(SessionHelper session) {
+        this.session = session;
     }
     public WaitInitiativeDialog show(@NonNull final AppCompatActivity activity) {
         dlg = new AlertDialog.Builder(activity).setView(R.layout.dialog_wait_initiative_rolls)
@@ -53,17 +48,23 @@ public class WaitInitiativeDialog {
 
             @Override
             public void onBindViewHolder(AdventuringActorControlsVH holder, int position) {
-                AbsLiveActor match = null;
-                for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> el : initRolls.entrySet()) {
-                    if(el.getValue().request == null) continue;
-                    if(position == 0) {
-                        match = el.getKey();
-                        break;
+                SessionHelper.Initiative initiative = null;
+                Network.ActorState match = null;
+                for(int loop = 0; loop < session.session.getNumActors(); loop++) {
+                    final Network.ActorState actor = session.session.getActor(loop);
+                    final SessionHelper.Initiative test = session.initiatives.get(actor.peerKey);
+                    if(test.request != null) {
+                        if(position == 0) {
+                            initiative = test;
+                            match = actor;
+                            break;
+                        }
+                        position--;
                     }
-                    position--;
+                    // else rolled automatically, do not list.
                 }
-                if(match == null) return;
-                holder.checked = initRolls.get(match).rolled != null;
+                if(initiative == null) return;
+                holder.checked = initiative.rolled != null;
                 holder.bindData(match);
                 holder.selected.setEnabled(false);
             }
@@ -71,27 +72,27 @@ public class WaitInitiativeDialog {
             @Override
             public int getItemCount() {
                 int count = 0;
-                for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> el : initRolls.entrySet()) {
-                    if(el.getValue().request != null) count++;
+                for(int loop = 0; loop < session.session.getNumActors(); loop++) {
+                    final SessionHelper.Initiative initiative = session.initiatives.get(session.session.getActor(loop).peerKey);
+                    if(initiative.request != null) count++;
                     // else rolled automatically, do not list.
                 }
-
                 return count;
             }
 
             @Override
             public long getItemId(int position) {
-                AbsLiveActor match = null;
-                for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> el : initRolls.entrySet()) {
-                    if(el.getValue().request == null) continue;
-                    if(position == 0) {
-                        match = el.getKey();
-                        break;
+                Network.ActorState match = null;
+                for(int loop = 0; loop < session.session.getNumActors(); loop++) {
+                    final Network.ActorState actor = session.session.getActor(loop);
+                    final SessionHelper.Initiative test = session.initiatives.get(actor.peerKey);
+                    if(test.request != null) {
+                        if(position == 0) return actor.peerKey;
+                        position--;
                     }
-                    position--;
+                    // else rolled automatically, do not list.
                 }
-                if(match == null) return RecyclerView.NO_ID;
-                return actorId.get(match);
+                return RecyclerView.NO_ID;
             }
         };
         lister.setHasStableIds(true);

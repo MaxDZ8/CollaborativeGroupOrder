@@ -8,8 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
-import com.massimodz8.collaborativegrouporder.AbsLiveActor;
-import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
@@ -24,7 +22,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 /** Encapsulates states and manipulations involved in creating a socket and publishing it to the
@@ -52,9 +49,9 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 return group.party[unique];
             }
         };
-        ArrayList<AbsLiveActor> byDef = new ArrayList<>();
-        for(StartData.ActorDefinition el : party.party) byDef.add(CharacterActor.makeLiveActor(el, true));
-        for(StartData.ActorDefinition el : party.npcs) byDef.add(CharacterActor.makeLiveActor(el, false));
+        ArrayList<Network.ActorState> byDef = new ArrayList<>();
+        for(StartData.ActorDefinition el : party.party) byDef.add(makeActorState(el, nextActorId++, Network.ActorState.T_PLAYING_CHARACTER));
+        for(StartData.ActorDefinition el : party.npcs) byDef.add(makeActorState(el, nextActorId++, Network.ActorState.T_NPC));
         sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef);
         sessionHelper.session = new SessionHelper.PlayState(sessionHelper, monsterBook, assignmentHelper) {
             @Override
@@ -63,11 +60,6 @@ public class PartyJoinOrderService extends PublishAcceptService {
                     final Events.Roll got = sessionHelper.session.rollResults.pop();
                     matchRoll(got.from, got.payload);
                 }
-            }
-
-            @Override
-            int getActorId(@NonNull AbsLiveActor active) {
-                return actorId.get(active);
             }
         };
         battleHandler = new MyBattleHandler(this);
@@ -144,10 +136,10 @@ public class PartyJoinOrderService extends PublishAcceptService {
     private void matchRoll(MessageChannel from, Network.Roll dice) {
         // The first consumer of rolls is initiative building.
         if(sessionHelper != null && sessionHelper.initiatives != null) {
-            for (Map.Entry<AbsLiveActor, SessionHelper.Initiative> el : sessionHelper.initiatives.entrySet()) {
+            for (Map.Entry<Integer, SessionHelper.Initiative> el : sessionHelper.initiatives.entrySet()) {
                 final SessionHelper.Initiative val = el.getValue();
                 if(val.request != null && dice.unique == val.request.unique) {
-                    val.rolled = dice.result + el.getKey().getInitiativeBonus();
+                    val.rolled = dice.result + sessionHelper.session.getActorById(el.getKey()).peerKey;
                     if(onRollReceived != null) onRollReceived.run();
                     return;
                 }
@@ -156,26 +148,19 @@ public class PartyJoinOrderService extends PublishAcceptService {
     }
 
     /**
-     * Mapping actors to unique ids is big deal. IDs are unique across the group. This keeps an
-     * unsorted list of actors and their corresponding ids. In theory I could have a stack but this
-     * is searched relatively more often and I get extra flexibility.
-     * In general, party playing characters are added here right away and will always stay here.
-     * FreeRoamingActivity adds new monsters here as well as the session monsters list; somebody
-     * will pop those monsters when the session is terminated. There is in fact a stack of lifetimes.
-     * Note the next ID to use is not necessarily the size of this map as ID could still be deleted
-     * explicitly by user swiping away one.
+     * Mapping actors to unique ids has always been a problem. Now I use the network representation
+     * directly and they contain their own id so I just need a counter to keep those unique.
      */
-    public final IdentityHashMap<AbsLiveActor, Integer> actorId = new IdentityHashMap<>();
-    public int nextActorId;
+    public int nextActorId = 1;
 
 
-    public boolean notifyBattleOrder_CHECK_ME() {
+    public boolean notifyBattleOrder() {
         if(!sessionHelper.session.battleState.orderChanged) return false;
         final InitiativeScore[] order = sessionHelper.session.battleState.ordered;
         int[] sequence = new int[order.length];
         int cp = 0;
         for (InitiativeScore score : order) {
-            sequence[cp] = actorId.get(score.actor);
+            sequence[cp] = score.actor.peerKey;
             cp++;
         }
         int devIndex = -1;
@@ -206,16 +191,20 @@ public class PartyJoinOrderService extends PublishAcceptService {
             final MessageChannel pipe = dev.pipe;
             if(pipe == null) continue; // connection lost
             for (InitiativeScore el : sessionHelper.session.battleState.ordered) {
-                final Network.TurnControl tc = new Network.TurnControl();
-                tc.type = Network.TurnControl.T_ACTORDATA_KEY;
-                tc.peerKey = actorId.get(el.actor);
-                final StartData.ActorDefinition ad = assignmentHelper.getActorData(tc.peerKey);
-                assignmentHelper.sendToRemote(dev, ProtoBufferEnum.TURN_CONTROL, tc);
-                assignmentHelper.sendToRemote(dev, ProtoBufferEnum.ACTOR_DATA, ad);
+                assignmentHelper.sendToRemote(dev, ProtoBufferEnum.ACTOR_DATA_UPDATE, el.actor);
             }
             // TODO: it would be a better idea to resolve unique peerkey from order lists across all characters from a device.
             // This has quite some repetition instead but it's way easier for everybody.
         }
+    }
+
+    private static Network.ActorState makeActorState(StartData.ActorDefinition el, int id, int type) {
+        final Network.ActorState res = new Network.ActorState();
+        res.peerKey = id;
+        res.type = type;
+        res.name = el.name;
+        res.maxHP = res.currentHP = el.stats[0].healthPoints;
+        return res;
     }
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

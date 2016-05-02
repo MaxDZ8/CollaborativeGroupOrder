@@ -1,15 +1,12 @@
 package com.massimodz8.collaborativegrouporder.master;
 
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 
-import com.massimodz8.collaborativegrouporder.AbsLiveActor;
 import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
 import com.massimodz8.collaborativegrouporder.R;
-
-import java.util.IdentityHashMap;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 /**
  * Created by Massimo on 27/04/2016.
@@ -19,14 +16,9 @@ public abstract class AdventuringActorWithControlsAdapter extends AdventuringAct
     SessionHelper.PlayState playState;
 
     @Override
-    protected AbsLiveActor getActorByPos(int position) {
+    public Network.ActorState getActorByPos(int position) {
         if(playState == null) return null;
         return playState.getActor(position);
-    }
-
-    @Override
-    protected boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue) {
-        return playState.willFight(actor, newValue);
     }
 
     @Override
@@ -47,10 +39,14 @@ public abstract class AdventuringActorWithControlsAdapter extends AdventuringAct
 
     @Override
     public void onBindViewHolder(AdventuringActorControlsVH holder, int position) {
-        AbsLiveActor actor = getActorByPos(position);
+        Network.ActorState actor = getActorByPos(position);
         holder.showHilight = isCurrent(actor);
-        holder.checked = enabledSetOrGet(actor, null);
+        holder.checked = isChecked(actor);
         holder.bindData(actor);
+    }
+
+    protected boolean isChecked(Network.ActorState actor) {
+        return playState.willFight(actor, null);
     }
 
     @Override

@@ -519,13 +519,13 @@
     <string name="client_failedServiceBind">Failed to connect to adventuring service. This is required to prevent data loss.\nThis is hopefully a transient error. Try rebooting your device.</string>
     <string name="aoa_notificationDesc">Adventuring</string>
     <string name="aoa_fetchingData">Fetching data from master device…</string>
-    <string name="aoa_status_fightingIdle">Device will vibrate when your attention is required.</string>
-    <string name="aoa_waitingForBattleStart">Not engaged in battle.</string>
+    <string name="aoa_waitingForBattleStart">Waiting for battle start.</string>
     <string name="aoa_dlgRI_done">Confirm</string>
     <string name="aoa_dlgRI_title">Roll for Initiative!</string>
     <string name="aoa_dlgRI_instructionsAndModifier">Just roll dice and enter result.\nModifier (%1$s) applied automatically.</string>
     <string name="mara_dlgWS_instructions">Please wait while master gives battle order.\nI will go away ASAP.</string>
     <string name="mara_dlgWS_title">Waiting sequence</string>
-    <string name="aoa_waitingOtherPlayers">Waiting other players to roll.</string>
+    <string name="aoa_waitingOtherPlayersRoll">Waiting other players to roll.</string>
+    <string name="aoa_waitingMyTurn">Waiting turn.\nDevice will vibrate when your attention is required.</string>
 
 </resources>

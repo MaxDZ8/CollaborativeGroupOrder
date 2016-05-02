@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+
 /**
  * Created by Massimo on 18/04/2016.
  * Adventuring actors are drawn in a consistent way across various activities, at least
@@ -18,7 +20,7 @@ public abstract class AdventuringActorDataVH extends RecyclerView.ViewHolder imp
     final TextView actorShortType, name;
     final HealthBar hbar;
     final public Button prepared;
-    public AbsLiveActor actor;
+    public Network.ActorState actor;
 
     public AdventuringActorDataVH(View iv) {
         super(iv);
@@ -32,39 +34,36 @@ public abstract class AdventuringActorDataVH extends RecyclerView.ViewHolder imp
         prepared.setOnClickListener(this);
     }
 
-    public void bindData(AbsLiveActor actor) {
+    public void bindData(Network.ActorState actor) {
         this.actor = actor;
         // TODO holder.avatar
         int res;
         switch (actor.type) {
-            case AbsLiveActor.TYPE_PLAYING_CHARACTER:
+            case Network.ActorState.T_PLAYING_CHARACTER:
                 res = R.string.fra_actorType_playingCharacter;
                 break;
-            case AbsLiveActor.TYPE_MONSTER:
+            case Network.ActorState.T_MOB:
                 res = R.string.fra_actorType_monster;
                 break;
-            case AbsLiveActor.TYPE_NPC:
+            case Network.ActorState.T_NPC:
                 res = R.string.fra_actorType_npc;
                 break;
             default:
                 res = R.string.fra_actorType_unmatched;
         }
         actorShortType.setText(res);
-        name.setText(actor.displayName);
-        int[] hp = actor.getHealth();
-        hbar.currentHp = hp[0];
-        hbar.maxHp = hp[1];
+        name.setText(actor.name);
+        hbar.currentHp = actor.currentHP;
+        hbar.maxHp = actor.maxHP;
         hbar.invalidate();
-        if(actor.actionCondition == null) {
+        if(actor.prepareCondition.isEmpty()) {
             prepared.setVisibility(View.GONE);
             prepared.setEnabled(true);
         }
         else {
             prepared.setVisibility(View.VISIBLE);
-            if(actor.actionCondition.length() == 0) prepared.setText(R.string.vhAA_preparedActionNoNoteGiven);
-            else prepared.setText(actor.actionCondition);
-            prepared.setEnabled(!actor.conditionTriggered);
-
+            prepared.setText(actor.prepareCondition);
+            prepared.setEnabled(!actor.preparedTriggered);
         }
     }
 }

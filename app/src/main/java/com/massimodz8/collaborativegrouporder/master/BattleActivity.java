@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -20,8 +19,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.AbsLiveActor;
-import com.massimodz8.collaborativegrouporder.CharacterActor;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
@@ -29,7 +26,6 @@ import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -68,7 +64,6 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         });
     }
 
-    private int numDefinedActors; // those won't get expunged, no matter what
     boolean mustUnbind;
     private PartyJoinOrderService game;
     private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter() {
@@ -111,22 +106,6 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         }
 
         @Override
-        protected boolean isCurrent(AbsLiveActor actor) {
-            if (game == null) return false;
-            final BattleHelper battle = game.sessionHelper.session.battleState;
-            int matched = 0;
-            for (InitiativeScore check : battle.ordered) {
-                if (check.actor == actor) break;
-                matched++;
-            }
-            if(battle.triggered != null) {
-                final AbsLiveActor interruptor = battle.triggered.get(battle.triggered.size() - 1);
-                if(interruptor.conditionTriggered && actor == interruptor) return true;
-            }
-            return matched == battle.currentActor;
-        }
-
-        @Override
         protected LayoutInflater getLayoutInflater() {
             return BattleActivity.this.getLayoutInflater();
         }
@@ -136,22 +115,34 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         }
 
         @Override
-        protected AbsLiveActor getActorByPos(int position) {
+        protected boolean isCurrent(Network.ActorState actor) {
+            if (game == null) return false;
+            final BattleHelper battle = game.sessionHelper.session.battleState;
+            int matched = 0;
+            for (InitiativeScore check : battle.ordered) {
+                if (check.actor == actor) break;
+                matched++;
+            }
+            if(battle.triggered != null) {
+                final Network.ActorState interruptor = battle.triggered.get(battle.triggered.size() - 1);
+                if(interruptor.preparedTriggered && actor == interruptor) return true;
+            }
+            return matched == battle.currentActor;
+        }
+
+        @Override
+        public Network.ActorState getActorByPos(int position) {
             return game.sessionHelper.session.battleState.ordered[position].actor;
         }
 
         @Override
-        protected boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue) {
+        protected boolean isChecked(Network.ActorState actor) {
             int index = 0;
             final BattleHelper battle = game.sessionHelper.session.battleState;
             for (InitiativeScore test : battle.ordered) {
-                if(actor == test.actor) {
-                    if(newValue != null) battle.ordered[index].enabled = newValue;
-                    return battle.ordered[index].enabled;
-                }
+                if(actor.peerKey == test.actor.peerKey) return battle.ordered[index].enabled;
                 index++;
             }
-
             return false;
         }
     };
@@ -166,12 +157,12 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
         @Override
         public void onClick(View v) {
-            if (target.actor == null || target.actor.actionCondition == null)
+            if (target.actor == null || target.actor.prepareCondition == null)
                 return; // impossible by context
             final BattleHelper battle = game.sessionHelper.session.battleState;
             if (battle.triggered == null) battle.triggered = new ArrayList<>();
             battle.triggered.add(target.actor);
-            target.actor.conditionTriggered = true;
+            target.actor.preparedTriggered = true;
             final int interrupted = battle.currentActor;
             final InitiativeScore prev = battle.ordered[interrupted];
             battle.currentActor = 0;
@@ -227,8 +218,8 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 match++;
             }
             prev = match;
-            battle.ordered[match].actor.actionCondition = null;
-            battle.ordered[match].actor.conditionTriggered = false;
+            battle.ordered[match].actor.prepareCondition = null;
+            battle.ordered[match].actor.preparedTriggered = false;
             battle.triggered.remove(active);
             active--;
             if(battle.triggered.isEmpty()) battle.triggered = null;
@@ -249,12 +240,12 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         final TextView status = (TextView) findViewById(R.id.ba_roundCount);
         status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
         final InitiativeScore init = battle.ordered[currently];
-        if(init.actor.actionCondition == null || fromReadiedStack) {
+        if(init.actor.prepareCondition == null || fromReadiedStack) {
             activateNewActor();
             return;
         }
         new AlertDialog.Builder(this)
-                .setMessage(String.format(getString(R.string.ba_dlg_gotPreparedAction), init.actor.displayName))
+                .setMessage(String.format(getString(R.string.ba_dlg_gotPreparedAction), init.actor.name))
                 .setPositiveButton(R.string.ba_dlg_gotPreparedAction_renew, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -265,18 +256,17 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Getting the rid of an action is nontrivial, we might have to signal it. It's just a curtesy anyway.
-                StartData.ActorDefinition def = init.actor instanceof CharacterActor ? ((CharacterActor)init.actor).character : null;
-                MessageChannel pipe = def != null? game.getMessageChannel(def) : null;
+                MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(init.actor.peerKey);
                 if(pipe == null) { // we mangle it there. That's nice.
-                    init.actor.actionCondition = null;
+                    init.actor.prepareCondition = null;
                     MaxUtils.beginDelayedTransition(BattleActivity.this);
                     lister.notifyItemChanged(currently);
                     activateNewActor();
                     return;
                 }
                 final PcAssignmentHelper.PlayingDevice dev = game.assignmentHelper.getDevice(pipe);
-                game.assignmentHelper.activateRemote(dev, game.actorId.get(init.actor), Network.TurnControl.T_PREPARED_CANCELLED);
-                game.assignmentHelper.activateRemote(dev, game.actorId.get(init.actor), Network.TurnControl.T_REGULAR);
+                game.assignmentHelper.activateRemote(dev, init.actor.peerKey, Network.TurnControl.T_PREPARED_CANCELLED, battle.round);
+                game.assignmentHelper.activateRemote(dev, init.actor.peerKey, Network.TurnControl.T_REGULAR, battle.round);
             }
         }).setCancelable(false)
                 .show();
@@ -301,9 +291,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
         lister.playState = game.sessionHelper.session;
-        lister.actorId = game.actorId;
         final BattleHelper battle = game.sessionHelper.session.battleState;
-        for (InitiativeScore el : battle.ordered) game.actorId.put(el.actor, numDefinedActors++);
         lister.notifyDataSetChanged();
         final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);
         rv.setAdapter(lister);
@@ -313,6 +301,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 return true;
             }
         });
+        rv.setVisibility(View.VISIBLE);
         if(battle.round > 0) { // battle already started...
             findViewById(R.id.fab).setVisibility(View.GONE);
             final TextView status = (TextView) findViewById(R.id.ba_roundCount);

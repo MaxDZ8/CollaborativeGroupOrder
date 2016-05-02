@@ -24,6 +24,7 @@ import com.massimodz8.collaborativegrouporder.MonsterVH;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class SpawnMonsterActivity extends AppCompatActivity implements ServiceConnection {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,11 +70,14 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                         Integer previously = nameColl.get(presentation);
                         if(previously == null) previously = 0;
                         else display = String.format(Locale.getDefault(), getString(R.string.sma_monsterNameSpawnNote), display, previously);
-                        MonsterActor actor = new MonsterActor(display);
-                        actor.currentHealth = actor.maxHealth = 666; // todo generate(mob.defense.hp)
-                        actor.initiativeBonus = mob.header.initiative; // todo select conditional initiatives.
-                        session.add(actor);
-                        session.willFight(actor, true);
+                        Network.ActorState build = new Network.ActorState();
+                        build.type = Network.ActorState.T_MOB;
+                        build.peerKey = serv.nextActorId++;
+                        build.name = mob.header.name[0];
+                        build.currentHP = build.maxHP = 666; // todo generate(mob.defense.hp)
+                        build.initiativeBonus = mob.header.initiative;  // todo select conditional initiatives.
+                        session.add(build);
+                        session.willFight(build, true);
                         nameColl.put(presentation, previously + 1);
                     }
                 }
@@ -178,6 +183,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     private MonsterData.MonsterBook monsters;
     private IdentityHashMap<MonsterData.Monster, Integer> spawnCounts = new IdentityHashMap<>();
     private SessionHelper.PlayState session;
+    private PartyJoinOrderService serv;
 
 
     private static boolean anyStarts(String[] arr, String prefix, IdentityHashMap<String, String> tolower) {
@@ -254,7 +260,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder) service;
-        final PartyJoinOrderService serv = real.getConcreteService();
+        serv = real.getConcreteService();
         session = serv.sessionHelper.session;
         monsters = session.monsters;
         showBookInfo.setVisible(true);

@@ -2,7 +2,6 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import java.util.IdentityHashMap;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 /**
  * Created by Massimo on 20/04/2016.
@@ -20,18 +19,16 @@ import java.util.IdentityHashMap;
  * will have been shuffled.
  */
 public class InitiativeShuffleDialog {
-    private final AbsLiveActor[] order;
-    private IdentityHashMap<AbsLiveActor, Integer> actorId;
+    private final Network.ActorState[] order;
     private int actor;
 
     interface OnApplyCallback {
-        void newOrder(AbsLiveActor[] target);
+        void newOrder(Network.ActorState[] target);
     }
 
-    public InitiativeShuffleDialog(AbsLiveActor[] order, int actor, IdentityHashMap<AbsLiveActor, Integer> actorId) {
+    public InitiativeShuffleDialog(Network.ActorState[] order, int actor) {
         this.order = order;
         this.actor = actor;
-        this.actorId = actorId;
     }
     public void show(@NonNull final AppCompatActivity activity, @NonNull final OnApplyCallback confirmed) {
         final AlertDialog dlg = new AlertDialog.Builder(activity).setView(R.layout.dialog_shuffle_initiative_order)
@@ -65,18 +62,13 @@ public class InitiativeShuffleDialog {
             }
 
             @Override
-            protected boolean isCurrent(AbsLiveActor actor) {
-                return order[InitiativeShuffleDialog.this.actor] == actor;
+            protected boolean isCurrent(Network.ActorState actor) {
+                return order[InitiativeShuffleDialog.this.actor].peerKey == actor.peerKey;
             }
 
             @Override
-            protected AbsLiveActor getActorByPos(int position) {
+            public Network.ActorState getActorByPos(int position) {
                 return order[position];
-            }
-
-            @Override
-            protected boolean enabledSetOrGet(AbsLiveActor actor, @Nullable Boolean newValue) {
-                return false; // we don't do this.
             }
 
             @Override
@@ -84,7 +76,6 @@ public class InitiativeShuffleDialog {
                 return activity.getLayoutInflater();
             }
         };
-        lister.actorId = actorId;
         list.setAdapter(lister);
         list.addItemDecoration(new PreSeparatorDecorator(list, activity) {
             @Override
@@ -97,7 +88,7 @@ public class InitiativeShuffleDialog {
         before.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AbsLiveActor temp = order[actor - 1];
+                final Network.ActorState temp = order[actor - 1];
                 order[actor - 1] = order[actor];
                 order[actor] = temp;
                 actor--;
@@ -109,7 +100,7 @@ public class InitiativeShuffleDialog {
         after.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final AbsLiveActor temp = order[actor];
+                final Network.ActorState temp = order[actor];
                 order[actor] = order[actor + 1];
                 order[actor + 1] = temp;
                 actor++;
