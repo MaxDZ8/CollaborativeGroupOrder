@@ -108,7 +108,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
             case R.id.mara_menu_shuffle: {
                 Network.ActorState[] order = new Network.ActorState[battle.ordered.length];
                 int cp = 0;
-                for (InitiativeScore el : battle.ordered) order[cp] = el.actor;
+                for (InitiativeScore el : battle.ordered) order[cp++] = server.sessionHelper.session.getActorById(el.actorID);
                 new InitiativeShuffleDialog(order, battle.currentActor)
                         .show(MyActorRoundActivity.this, new InitiativeShuffleDialog.OnApplyCallback() {
                             @Override
