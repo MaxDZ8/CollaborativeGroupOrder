@@ -150,8 +150,11 @@ public class PartyJoinOrderService extends PublishAcceptService {
     /**
      * Mapping actors to unique ids has always been a problem. Now I use the network representation
      * directly and they contain their own id so I just need a counter to keep those unique.
+     * Those must start at 0. Why? So we can trivially map to actors created by loaded data from
+     * party definitions: pcs and npcs
+     * or session data loaded from previous stuff etc etc
      */
-    public int nextActorId = 1;
+    public int nextActorId = 0;
 
 
     public boolean notifyBattleOrder() {
@@ -183,29 +186,13 @@ public class PartyJoinOrderService extends PublishAcceptService {
         return true;
     }
 
-    public void sendBattlingActorData() {
-        for(int loop = 0; loop < assignmentHelper.party.party.length; loop++) {
-            final Integer binding = assignmentHelper.assignment.get(loop);
-            if(binding == null) continue; // impossible
-            if(binding == PcAssignmentHelper.LOCAL_BINDING) continue; // no need to let it know, dialog will pull server data directly.
-            final PcAssignmentHelper.PlayingDevice dev = assignmentHelper.peers.get(binding);
-            final MessageChannel pipe = dev.pipe;
-            if(pipe == null) continue; // connection lost
-            for (InitiativeScore el : sessionHelper.session.battleState.ordered) {
-                final Network.ActorState actor = sessionHelper.session.getActorById(el.actorID);
-                assignmentHelper.sendToRemote(dev, ProtoBufferEnum.ACTOR_DATA_UPDATE, actor);
-            }
-            // TODO: it would be a better idea to resolve unique peerkey from order lists across all characters from a device.
-            // This has quite some repetition instead but it's way easier for everybody.
-        }
-    }
-
     private static Network.ActorState makeActorState(StartData.ActorDefinition el, int id, int type) {
         final Network.ActorState res = new Network.ActorState();
         res.peerKey = id;
         res.type = type;
         res.name = el.name;
         res.maxHP = res.currentHP = el.stats[0].healthPoints;
+        res.initiativeBonus = el.stats[0].initBonus;
         return res;
     }
 

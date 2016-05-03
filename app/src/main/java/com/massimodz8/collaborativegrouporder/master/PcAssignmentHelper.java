@@ -37,7 +37,6 @@ import java.util.concurrent.BlockingQueue;
  */
 public abstract class PcAssignmentHelper {
     public final StartData.PartyOwnerData.Group party;
-    WeakReference<Runnable> onDetached;
 
     public interface OnBoundPcCallback {
         void onUnboundCountChanged(int stillToBind);
@@ -255,7 +254,6 @@ public abstract class PcAssignmentHelper {
         public @Nullable byte[] doormat; /// next doormat to send or to consider for key verification.
         public int keyIndex = ANON; /// if isRemote, index of the matched device key --> bound to remote, otherwise check specials
         public Vector<Exception> errors = new Vector<>();
-        public boolean assignmentAccepted; // this is set to true when the corresponding socket worker is detached from the pump as device accepted player bindings.
         public boolean movedToBattlePumper; // if this is set, device is already moved to battle pumper, somewhere else.
         public int activeActor; // peerKey > 0 of active actor, otherwise -1
 
@@ -315,7 +313,7 @@ public abstract class PcAssignmentHelper {
                     break;
                 }
                 case MSG_DETACHED: {
-                    self.detached((MessageChannel)msg.obj);
+                    // Never happens now!
                     break;
                 }
                 case MSG_HELLO_ANON:
@@ -386,14 +384,6 @@ public abstract class PcAssignmentHelper {
         }.start();
         dev.pipe = null;
         if(dev.isAnonymous()) peers.remove(dev);
-    }
-
-    private void detached(final MessageChannel pipe) {
-        PlayingDevice dev = getDevice(pipe);
-        if(null == dev) return; // impossible
-        dev.assignmentAccepted = true;
-        final Runnable onDetached = this.onDetached == null? null : this.onDetached.get();
-        if(onDetached != null) onDetached.run();
     }
 
     private void helloAnon(@NonNull MessageChannel origin, @NonNull Network.Hello msg) {

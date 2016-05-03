@@ -182,7 +182,7 @@ public class CharSelectionActivity extends AppCompatActivity {
                 case MSG_DISCONNECT: {
                 } break;
                 case MSG_DETACH: {
-                    serverPipe = self.netPump.move(self.pipe);
+                    serverPipe = self.netPump.move()[0];
                     connectedParty = self.party;
                     self.setResult(RESULT_OK);
                     self.finish();

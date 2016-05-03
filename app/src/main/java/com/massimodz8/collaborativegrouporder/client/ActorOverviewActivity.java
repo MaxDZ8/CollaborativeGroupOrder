@@ -186,7 +186,90 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         ticker = ((AdventuringService.LocalBinder) service).getConcreteService();
-        if(ticker.playedHere == null) { // Initialize service and start pumping.
+        ticker.onActorUpdated.push(new Runnable() {
+            boolean first = true;
+            @Override
+            public void run() {
+                int known = 0, knownOrders = 0;
+                for (int id : ticker.playedHere) {
+                    final AdventuringService.ActorWithKnownOrder awo = ticker.actors.get(id);
+                    if (awo != null && awo.actor != null) {
+                        known++;
+                        if(awo.keyOrder != null) knownOrders++;
+                    }
+                }
+                if (known == 0) return;
+                if (first) {
+                    first = false;
+                    MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
+                    final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);
+                    rv.setAdapter(lister);
+                    rv.addItemDecoration(new PreSeparatorDecorator(rv, ActorOverviewActivity.this) {
+                        @Override
+                        protected boolean isEligible(int position) {
+                            return position != 0;
+                        }
+                    });
+                    rv.setVisibility(View.VISIBLE);
+                    if(ticker.playedHere.length > 1) return;
+                }
+                MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
+                final TextView status = (TextView) findViewById(R.id.aoa_status);
+                if(ticker.round == -1) status.setText(R.string.aoa_waitingForBattleStart);
+                else if(ticker.round == 0) status.setText(R.string.aoa_waitingOtherPlayersRoll);
+                else status.setText(R.string.aoa_waitingMyTurn);
+                lister.notifyDataSetChanged();
+                if(knownOrders == ticker.playedHere.length) rollDialog = null;
+            }
+        });
+        ticker.onRollRequestPushed.push(new Runnable() {
+            @Override
+            public void run() {
+                if (rollDialog != null) return;
+                if (ticker.rollRequests.isEmpty()) return; // async recursion stop
+                final Network.Roll request = ticker.rollRequests.getFirst();
+                final Vibrator vibro = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+                if (vibro != null && vibro.hasVibrator()) {
+                    final long[] intervals = {0, 350, 300, 250};
+                    vibro.vibrate(intervals, -1);
+                }
+                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                if(request.type == Network.Roll.T_BATTLE_START) {
+                    final ActionBar sab = getSupportActionBar();
+                    if(sab != null) sab.setTitle(R.string.aoa_title_fighting);
+                    // todo: update round count into title bar!
+                }
+                if(request.type == Network.Roll.T_BATTLE_START) {
+                    final TextView status = (TextView) findViewById(R.id.aoa_status);
+                    status.setText(R.string.aoa_waitingOtherPlayersRoll);
+                }
+
+                final Network.ActorState actor = ticker.actors.get(request.peerKey).actor;
+                rollDialog = new RollInitiativeDialog(actor, request, new SendRollCallback(), ActorOverviewActivity.this);
+            }
+        });
+        ticker.onCurrentActorChanged.push(new Runnable() {
+            @Override
+            public void run() {
+                final ActionBar sab = getSupportActionBar();
+                if(sab != null) sab.setTitle(ticker.round == -1? R.string.aoa_title : R.string.aoa_title_fighting);
+                boolean here = false;
+                if (ticker.currentActor != null) {
+                    for (int key : ticker.playedHere) {
+                        if (key == ticker.currentActor.actor.peerKey) {
+                            here = true;
+                            break;
+                        }
+                    }
+                }
+                if (!here) return; // in the future maybe current actor will be signaled to other peers as well, not now!
+                final Intent intent = new Intent(ActorOverviewActivity.this, MyActorRoundActivity.class)
+                        .putExtra(MyActorRoundActivity.EXTRA_CLIENT_MODE, true)
+                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+        if(serverWorker != null) { // Initialize service and start pumping.
             serverPipe = serverWorker.getSource();
             ticker.playedHere = actorKeys;
             ticker.netPump.pump(serverWorker);
@@ -205,80 +288,8 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             }
             ticker.startForeground(NOTIFICATION_ID, help.build());
         }
-        ticker.onActorUpdated.push(new Runnable() {
-            @Override
-            public void run() {
-                int known = 0, knownOrders = 0;
-                for (int id : ticker.playedHere) {
-                    final AdventuringService.ActorWithKnownOrder awo = ticker.actors.get(id);
-                    if (awo != null && awo.actor != null) {
-                        known++;
-                        if(awo.keyOrder != null) knownOrders++;
-                    }
-                }
-                if (known == 0) return;
-                if (known == 1) {
-                    MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
-                    final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);
-                    rv.setAdapter(lister);
-                    rv.addItemDecoration(new PreSeparatorDecorator(rv, ActorOverviewActivity.this) {
-                        @Override
-                        protected boolean isEligible(int position) {
-                            return position != 0;
-                        }
-                    });
-                    rv.setVisibility(View.VISIBLE);
-                    return;
-                }
-                if (known == ticker.playedHere.length) { // all played here defined.
-                    boolean waitMyTurn = ticker.round > 0 && knownOrders == ticker.playedHere.length;
-                    MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
-                    final TextView status = (TextView) findViewById(R.id.aoa_status);
-                    if(ticker.round == 0) status.setText(R.string.aoa_waitingForBattleStart);
-                    else status.setText(waitMyTurn? R.string.aoa_waitingMyTurn : R.string.aoa_waitingOtherPlayersRoll);
-                }
-                lister.notifyDataSetChanged();
-                if(knownOrders == ticker.playedHere.length) rollDialog = null;
-            }
-        });
         ticker.onActorUpdated.getLast().run();
-        ticker.onRollRequestPushed.push(new Runnable() {
-            @Override
-            public void run() {
-                if (rollDialog != null) return;
-                if (ticker.rollRequests.isEmpty()) return; // async recursion stop
-                final Network.Roll request = ticker.rollRequests.getFirst();
-                final Vibrator vibro = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-                if (vibro != null && vibro.hasVibrator()) {
-                    final long[] intervals = {0, 350, 300, 250};
-                    vibro.vibrate(intervals, -1);
-                }
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-                final Network.ActorState actor = ticker.actors.get(request.peerKey).actor;
-                rollDialog = new RollInitiativeDialog(actor, request, new SendRollCallback(), ActorOverviewActivity.this);
-            }
-        });
         ticker.onRollRequestPushed.getLast().run();
-        ticker.onCurrentActorChanged.push(new Runnable() {
-            @Override
-            public void run() {
-                boolean here = false;
-                if (ticker.currentActor != null) {
-                    for (int key : ticker.playedHere) {
-                        if (key == ticker.currentActor.actor.peerKey) {
-                            here = true;
-                            break;
-                        }
-                    }
-                }
-                if (!here) return; // in the future maybe current actor will be signaled to other peers as well, not now!
-                final Intent intent = new Intent(ActorOverviewActivity.this, MyActorRoundActivity.class)
-                        .putExtra(MyActorRoundActivity.EXTRA_CLIENT_MODE, true)
-                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-        });
         ticker.onCurrentActorChanged.getLast().run();
     }
 

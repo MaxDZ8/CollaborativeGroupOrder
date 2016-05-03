@@ -117,7 +117,6 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     protected void onDestroy() {
         if(game != null) {
             game.onRollReceived = null;
-            game.assignmentHelper.onDetached = null;
         }
         if(waiting != null) waiting.dlg.dismiss();
         if(mustUnbind) unbindService(this);
@@ -140,6 +139,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
 
 
     private void sendInitiativeRollRequests() {
+        for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+            game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
+            dev.movedToBattlePumper = true;
+        }
         final SessionHelper.PlayState session = game.sessionHelper.session;
         final ArrayList<Network.ActorState> local = new ArrayList<>();
         game.sessionHelper.initiatives = new IdentityHashMap<>();
@@ -212,7 +215,6 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
         lister.playState = game.sessionHelper.session;
-        game.assignmentHelper.onDetached = null;
         if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(game.sessionHelper).show(this);
         game.onRollReceived = new Runnable() {
             @Override
@@ -220,12 +222,6 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 attemptBattleStart();
             }
         };
-        // Promote everything to battle pumper.
-        for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
-            if(!dev.assignmentAccepted) continue;
-            if(dev.movedToBattlePumper) continue;
-            game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
-        }
         attemptBattleStart();
         lister.notifyDataSetChanged();
         Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_dataLoadedFeedback, Snackbar.LENGTH_SHORT).show();

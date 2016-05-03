@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -31,7 +31,7 @@ import java.util.HashMap;
 public class AdventuringService extends Service {
     public StartData.PartyClientData party;
     int[] playedHere; // actors played here, added automatically to this.actors after flushed
-    HashMap<Integer, ActorWithKnownOrder> actors; // ID -> struct, flushed every time a new battle starts
+    HashMap<Integer, ActorWithKnownOrder> actors = new HashMap<>(); // ID -> struct, flushed every time a new battle starts
     public ArrayList<String> errors;
 
     public ArrayDeque<Runnable> onActorUpdated = new ArrayDeque<>();
@@ -40,10 +40,10 @@ public class AdventuringService extends Service {
 
     public ActorWithKnownOrder currentActor;
     ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
-    public int round; // 0 == not fighting
+    public int round = -1; // -1 == not fighting, 0 = waiting other players roll 1+ fighting
 
     public static class ActorWithKnownOrder {
-        public Network.ActorState actor;
+        public Network.ActorState actor; // 'owner'
         public @Nullable  int[] keyOrder; // peerkeys of known actors.
         public boolean updated;
     }
@@ -129,7 +129,7 @@ public class AdventuringService extends Service {
                 } break;
                 case MSG_ROLL: {
                     final Network.Roll real = (Network.Roll) msg.obj;
-                    if(real.type == Network.Roll.T_BATTLE_START) self.round = 1;
+                    if(real.type == Network.Roll.T_BATTLE_START) self.round = 0;
                     self.rollRequests.push(real);
                     if(self.onRollRequestPushed.size() > 0) self.onRollRequestPushed.getLast().run();
                 } break;
@@ -139,12 +139,17 @@ public class AdventuringService extends Service {
                     if(target == null) break; // players must be defined before sending their order
                     target.keyOrder = real.order;
                     target.updated = true;
+                    int knownOrder = 0;
+                    for (Map.Entry<Integer, ActorWithKnownOrder> el : self.actors.entrySet()) {
+                        if(el.getValue().keyOrder != null) knownOrder++;
+                    }
+                    if(self.round == 0 && knownOrder == self.actors.size()) self.round = 1;
                     if(self.onActorUpdated.size() > 0) self.onActorUpdated.getLast().run();
                 } break;
                 case MSG_TURN_CONTROL: {
                     final Network.TurnControl real = (Network.TurnControl) msg.obj;
                     if(real.type == Network.TurnControl.T_BATTLE_ENDED) { // clear list of actors, easier to just rebuild it.
-                        self.round = 0;
+                        self.round = -1;
                         ArrayList<ActorWithKnownOrder> reuse = new ArrayList<>();
                         for (int key : self.playedHere) {
                             final ActorWithKnownOrder exist = self.actors.get(key);
