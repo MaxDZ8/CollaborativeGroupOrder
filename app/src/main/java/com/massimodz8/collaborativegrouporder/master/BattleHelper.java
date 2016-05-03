@@ -3,7 +3,6 @@ package com.massimodz8.collaborativegrouporder.master;
 import android.support.annotation.NonNull;
 
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
-import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,8 +21,9 @@ public class BattleHelper {
      * Stack of triggered actions, they temporarily suppress normal order.
      * Triggering a readied action is no real problem: it is a pre-spent action so it does have no permanent effects on order.
      * It also always happen while some other actor is acting. This is either null or contains at least 1 element.
+     * Do not mess with me. Go with IDs, they are truly persistent while objects might be not.
      */
-    public ArrayList<Network.ActorState> triggered;
+    public ArrayList<Integer> triggered;
     public boolean orderChanged = true;
 
     public BattleHelper(@NonNull InitiativeScore[] ordered) {

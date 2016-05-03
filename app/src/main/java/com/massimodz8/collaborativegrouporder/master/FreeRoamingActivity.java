@@ -167,7 +167,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             final SessionHelper.Initiative pair = game.sessionHelper.initiatives.get(actor.peerKey);
             pair.rolled = randomizer.nextInt(range) + actor.initiativeBonus;
         }
-        attemptBattleStart();
+        if(attemptBattleStart()) return;
         if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(game.sessionHelper).show(this);
     }
 
@@ -187,7 +187,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         for (Map.Entry<Integer, SessionHelper.Initiative> entry : game.sessionHelper.initiatives.entrySet()) {
             final Integer irl = entry.getValue().rolled;
             final Network.ActorState actor = session.getActorById(entry.getKey());
-            order[count++] = new InitiativeScore(irl, actor.initiativeBonus, randomizer.nextInt(1024), actor);
+            order[count++] = new InitiativeScore(irl, actor.initiativeBonus, randomizer.nextInt(1024), actor.peerKey);
         }
         Arrays.sort(order, new Comparator<InitiativeScore>() {
             @Override

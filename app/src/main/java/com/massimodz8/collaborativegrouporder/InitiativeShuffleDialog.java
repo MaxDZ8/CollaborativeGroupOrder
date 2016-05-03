@@ -54,6 +54,7 @@ public class InitiativeShuffleDialog {
             @Override
             public void onBindViewHolder(AdventuringActorDataVH holder, int position) {
                 holder.bindData(getActorByPos(position));
+                holder.avatar.setVisibility(View.GONE); // we need something denser here
             }
 
             @Override

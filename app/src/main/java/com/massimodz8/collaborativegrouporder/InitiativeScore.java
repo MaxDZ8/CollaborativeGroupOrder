@@ -24,14 +24,14 @@ public class InitiativeScore {
     // We will try to keep those 'constant' and faithful to the original dice rolls BUT
     // this is just best effort. Better to never show those to the user as shuffle initiative
     // will change those values and will no more be coherent with actor bonus.
-    public final Network.ActorState actor;
+    public final int actorID;
 
     public boolean enabled = true; // if false, do not get round actions. Not sorted.
 
-    public InitiativeScore(int initRoll, int bonus, int rand, Network.ActorState actor) {
+    public InitiativeScore(int initRoll, int bonus, int rand, int actorID) {
         this.initRoll = initRoll;
         this.bonus = bonus;
         this.rand = rand;
-        this.actor = actor;
+        this.actorID = actorID;
     }
 }

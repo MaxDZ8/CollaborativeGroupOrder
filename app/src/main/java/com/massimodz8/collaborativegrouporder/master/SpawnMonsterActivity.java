@@ -73,7 +73,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                         Network.ActorState build = new Network.ActorState();
                         build.type = Network.ActorState.T_MOB;
                         build.peerKey = serv.nextActorId++;
-                        build.name = mob.header.name[0];
+                        build.name = display;
                         build.currentHP = build.maxHP = 666; // todo generate(mob.defense.hp)
                         build.initiativeBonus = mob.header.initiative;  // todo select conditional initiatives.
                         session.add(build);

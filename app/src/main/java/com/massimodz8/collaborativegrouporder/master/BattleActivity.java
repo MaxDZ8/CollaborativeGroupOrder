@@ -74,7 +74,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if (actor == null) return;
                     for (InitiativeScore el : game.sessionHelper.session.battleState.ordered) {
-                        if(el.actor == actor) {
+                        if(el.actorID == actor.peerKey) {
                             el.enabled = isChecked;
                             break;
                         }
@@ -91,7 +91,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                     final BattleHelper state = game.sessionHelper.session.battleState;
                     int myIndex = 0;
                     for (InitiativeScore test : state.ordered) {
-                        if (test.actor == actor) break;
+                        if (test.actorID == actor.peerKey) break;
                         myIndex++;
                     }
                     if (myIndex != state.currentActor && selected.isEnabled()) {
@@ -120,11 +120,11 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             final BattleHelper battle = game.sessionHelper.session.battleState;
             int matched = 0;
             for (InitiativeScore check : battle.ordered) {
-                if (check.actor == actor) break;
+                if (check.actorID == actor.peerKey) break;
                 matched++;
             }
             if(battle.triggered != null) {
-                final Network.ActorState interruptor = battle.triggered.get(battle.triggered.size() - 1);
+                final Network.ActorState interruptor = game.sessionHelper.session.getActorById(battle.triggered.get(battle.triggered.size() - 1));
                 if(interruptor.preparedTriggered && actor == interruptor) return true;
             }
             return matched == battle.currentActor;
@@ -132,7 +132,8 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
         @Override
         public Network.ActorState getActorByPos(int position) {
-            return game.sessionHelper.session.battleState.ordered[position].actor;
+            final SessionHelper.PlayState session = game.sessionHelper.session;
+            return session.getActorById(session.battleState.ordered[position].actorID);
         }
 
         @Override
@@ -140,7 +141,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             int index = 0;
             final BattleHelper battle = game.sessionHelper.session.battleState;
             for (InitiativeScore test : battle.ordered) {
-                if(actor.peerKey == test.actor.peerKey) return battle.ordered[index].enabled;
+                if(actor.peerKey == test.actorID) return battle.ordered[index].enabled;
                 index++;
             }
             return false;
@@ -161,13 +162,14 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 return; // impossible by context
             final BattleHelper battle = game.sessionHelper.session.battleState;
             if (battle.triggered == null) battle.triggered = new ArrayList<>();
-            battle.triggered.add(target.actor);
+            battle.triggered.add(target.actor.peerKey);
             target.actor.preparedTriggered = true;
             final int interrupted = battle.currentActor;
             final InitiativeScore prev = battle.ordered[interrupted];
             battle.currentActor = 0;
             for (InitiativeScore el : battle.ordered) {
-                if (el.actor == target.actor) break;
+                final Network.ActorState cand = game.sessionHelper.session.getActorById(el.actorID);
+                if (cand.peerKey == target.actor.peerKey) break;
                 battle.currentActor++;
             }
             battle.shuffleCurrent(interrupted - (interrupted != 0 ? 1 : 0));
@@ -214,12 +216,13 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             int match = 0;
             int active = battle.triggered.size() - 1;
             for (InitiativeScore test : battle.ordered) {
-                if(test.actor == battle.triggered.get(active)) break;
+                if(test.actorID == active) break;
                 match++;
             }
             prev = match;
-            battle.ordered[match].actor.prepareCondition = null;
-            battle.ordered[match].actor.preparedTriggered = false;
+            final Network.ActorState actor = game.sessionHelper.session.getActorById(battle.ordered[match].actorID);
+            actor.prepareCondition = null;
+            actor.preparedTriggered = false;
             battle.triggered.remove(active);
             active--;
             if(battle.triggered.isEmpty()) battle.triggered = null;
@@ -227,7 +230,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             else {
                 match = 0;
                 for (InitiativeScore test : battle.ordered) {
-                    if(test.actor == battle.triggered.get(active)) break;
+                    if(test.actorID == active) break;
                     match++;
                 }
                 currently = match;
@@ -239,13 +242,13 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         MaxUtils.beginDelayedTransition(this);
         final TextView status = (TextView) findViewById(R.id.ba_roundCount);
         status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
-        final InitiativeScore init = battle.ordered[currently];
-        if(init.actor.prepareCondition == null || fromReadiedStack) {
+        final Network.ActorState actor = game.sessionHelper.session.getActorById(battle.ordered[currently].actorID);
+        if(actor.prepareCondition.isEmpty() || fromReadiedStack) {
             activateNewActor();
             return;
         }
         new AlertDialog.Builder(this)
-                .setMessage(String.format(getString(R.string.ba_dlg_gotPreparedAction), init.actor.name))
+                .setMessage(String.format(getString(R.string.ba_dlg_gotPreparedAction), actor.name))
                 .setPositiveButton(R.string.ba_dlg_gotPreparedAction_renew, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -256,17 +259,17 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Getting the rid of an action is nontrivial, we might have to signal it. It's just a curtesy anyway.
-                MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(init.actor.peerKey);
+                MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
                 if(pipe == null) { // we mangle it there. That's nice.
-                    init.actor.prepareCondition = null;
+                    actor.prepareCondition = null;
                     MaxUtils.beginDelayedTransition(BattleActivity.this);
                     lister.notifyItemChanged(currently);
                     activateNewActor();
                     return;
                 }
                 final PcAssignmentHelper.PlayingDevice dev = game.assignmentHelper.getDevice(pipe);
-                game.assignmentHelper.activateRemote(dev, init.actor.peerKey, Network.TurnControl.T_PREPARED_CANCELLED, battle.round);
-                game.assignmentHelper.activateRemote(dev, init.actor.peerKey, Network.TurnControl.T_REGULAR, battle.round);
+                game.assignmentHelper.activateRemote(dev, actor.peerKey, Network.TurnControl.T_PREPARED_CANCELLED, battle.round);
+                game.assignmentHelper.activateRemote(dev, actor.peerKey, Network.TurnControl.T_REGULAR, battle.round);
             }
         }).setCancelable(false)
                 .show();

@@ -85,11 +85,13 @@ public class SessionHelper {
 
 
         public MessageChannel activateNewActor() {
-            final Network.ActorState active = battleState.triggered == null ? battleState.ordered[battleState.currentActor].actor : battleState.triggered.get(battleState.triggered.size() - 1);
-            final MessageChannel pipe = assignment.getMessageChannelByPeerKey(active.peerKey);
-            int roundType = battleState.triggered == null ? Network.TurnControl.T_REGULAR : Network.TurnControl.T_PREPARED_TRIGGERED;
-            final PcAssignmentHelper.PlayingDevice dev = assignment.getDevice(pipe);
-            assignment.activateRemote(dev, active.peerKey, roundType, battleState.round);
+            final int active = battleState.triggered == null ? battleState.ordered[battleState.currentActor].actorID : battleState.triggered.get(battleState.triggered.size() - 1);
+            final MessageChannel pipe = assignment.getMessageChannelByPeerKey(active);
+            if(pipe != null) {
+                int roundType = battleState.triggered == null ? Network.TurnControl.T_REGULAR : Network.TurnControl.T_PREPARED_TRIGGERED;
+                final PcAssignmentHelper.PlayingDevice dev = assignment.getDevice(pipe);
+                assignment.activateRemote(dev, active, roundType, battleState.round);
+            }
             return pipe;
         }
 

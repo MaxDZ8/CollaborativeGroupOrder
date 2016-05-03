@@ -8,7 +8,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
-import android.provider.Telephony;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -133,7 +132,9 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             EditText text = (EditText) dlg.findViewById(R.id.mara_dlgRAP_optionalMessage);
-                            requestReadiedAction(text.getText().toString());
+                            final String s = text.getText().toString();
+                            if(!s.isEmpty()) requestReadiedAction(s);
+                            else requestReadiedAction(getString(R.string.mara_dlg_readyAction_title));
                         }
                     }
                 );
@@ -148,7 +149,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     private void requestNewOrder(Network.ActorState[] target) {
         final InitiativeScore me = battle.ordered[battle.currentActor];
         int newPos = 0;
-        while(newPos < target.length && target[newPos] != me.actor) newPos++;
+        while(newPos < target.length && target[newPos].peerKey != me.actorID) newPos++;
         if(newPos == target.length) return; // wut? Impossible!
         if(newPos == battle.currentActor) return; // he hit apply but really did nothing.
         if(server != null) { // This is cool, we approve of ourselves :P
@@ -164,7 +165,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     private void requestReadiedAction(String s) {
         if(server != null) {
             final InitiativeScore me = battle.ordered[battle.currentActor];
-            me.actor.prepareCondition = s;
+            server.sessionHelper.session.getActorById(me.actorID).prepareCondition = s;
             setResult(RESULT_OK);
             finish();
             return;
@@ -181,26 +182,28 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        server = service instanceof PartyJoinOrderService? (PartyJoinOrderService)service : null;
+        server = service instanceof PartyJoinOrderService.LocalBinder? ((PartyJoinOrderService.LocalBinder) service).getConcreteService() : null;
         final Network.ActorState actor;
         final int round;
         final String nextActor;
         if(server != null) {
             battle = server.sessionHelper.session.battleState;
-            actor = battle.triggered == null ? battle.ordered[battle.currentActor].actor : battle.triggered.get(battle.triggered.size() - 1);
+            int curid = battle.triggered == null? battle.ordered[battle.currentActor].actorID : battle.triggered.get(battle.triggered.size() - 1);
+            actor = server.sessionHelper.session.getActorById(curid);
             round = battle.round;
             final int pactor = battle.currentActor;
             battle.tickRound();
-            nextActor = battle.ordered[battle.currentActor].actor.name;
+            nextActor = server.sessionHelper.session.getActorById(battle.ordered[battle.currentActor].actorID).name;
             battle.currentActor = pactor;
             battle.round = round;
         }
-        else {
-            client = (AdventuringService)service;
+        else if(service instanceof  AdventuringService.LocalBinder){
+            client = ((AdventuringService.LocalBinder)service).getConcreteService();
             actor = client.currentActor.actor;
             round = client.round;
             nextActor = null;
         }
+        else throw new RuntimeException(); // impossible
         View holder = findViewById(R.id.vhRoot);
         AdventuringActorDataVH helper = new AdventuringActorDataVH(holder) {
             @Override

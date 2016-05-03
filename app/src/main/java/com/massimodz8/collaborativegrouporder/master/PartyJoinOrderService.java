@@ -160,7 +160,8 @@ public class PartyJoinOrderService extends PublishAcceptService {
         int[] sequence = new int[order.length];
         int cp = 0;
         for (InitiativeScore score : order) {
-            sequence[cp] = score.actor.peerKey;
+            final Network.ActorState actor = sessionHelper.session.getActorById(score.actorID);
+            sequence[cp] = actor.peerKey;
             cp++;
         }
         int devIndex = -1;
@@ -191,7 +192,8 @@ public class PartyJoinOrderService extends PublishAcceptService {
             final MessageChannel pipe = dev.pipe;
             if(pipe == null) continue; // connection lost
             for (InitiativeScore el : sessionHelper.session.battleState.ordered) {
-                assignmentHelper.sendToRemote(dev, ProtoBufferEnum.ACTOR_DATA_UPDATE, el.actor);
+                final Network.ActorState actor = sessionHelper.session.getActorById(el.actorID);
+                assignmentHelper.sendToRemote(dev, ProtoBufferEnum.ACTOR_DATA_UPDATE, actor);
             }
             // TODO: it would be a better idea to resolve unique peerkey from order lists across all characters from a device.
             // This has quite some repetition instead but it's way easier for everybody.
