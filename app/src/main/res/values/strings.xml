@@ -9,6 +9,9 @@
     <string name="generic_lostServiceConn">Lost connection to internal service. Not supposed to happen. Maybe clearing some memory will help.</string>
     <string name="generic_carefulDlgTitle">Careful!</string>
     <string name="generic_action_rename">Rename</string>
+    <string name="generic_fatalError">Fatal error</string>
+    <string name="generic_failedAdventuringServiceBind">Could not bind to internal \'adventuring\' structures. This is required to prevent data loss when you turn your phone (and other technicalities).\nThis should be a transient problem.</string>
+    <string name="generic_validButTooEarly">Too fast. Try again.</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
     <string name="master_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
@@ -487,7 +490,7 @@
     <string name="ba_roundCount">Not fighting yet!\nInitiative order as below.</string>
     <string name="ba_actorByPlayerSnack">Actor by player.</string>
     <string name="ba_TODO_NOTE">NOTE:</string>
-    <string name="ba_TODO_NOTE_deleteThoseFurtherInfosTheyreReallyBAD">For the time being hit point tracking is not there so you\'ll have to disable defeated mobs manually.</string>
+    <string name="ba_TODO_NOTE_deleteThoseFurtherInfosTheyreReallyBAD">Hit point tracking is TODO so you\'ll have to disable defeated mobs manually.</string>
 
     <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
     <string name="mara_endTurn">End your turn</string>
@@ -510,8 +513,6 @@
     <string name="mara_dlgRAP_apply">Apply</string>
 
     <string name="vhAA_preparedActionNoNoteGiven">Prepared action</string>
-    <string name="generic_fatalError">Fatal error</string>
-    <string name="generic_failedAdventuringServiceBind">Could not bind to internal \'adventuring\' structures. This is required to prevent data loss when you turn your phone (and other technicalities).\nThis should be a transient problem.</string>
     <string name="mma_actorDataGetFailed">Errors detected in getting data from master device. Giving up.</string>
     <string name="as_failedDataRequestSend">Failed sending data request.</string>
 

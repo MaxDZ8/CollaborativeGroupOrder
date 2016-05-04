@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -105,10 +106,36 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                 finish();
                 break;
             case R.id.mara_menu_shuffle: {
-                Network.ActorState[] order = new Network.ActorState[battle.ordered.length];
-                int cp = 0;
-                for (InitiativeScore el : battle.ordered) order[cp++] = server.sessionHelper.session.getActorById(el.actorID);
-                new InitiativeShuffleDialog(order, battle.currentActor)
+                final int myIndex;
+                final Network.ActorState[] order;
+                if(server == null && client == null) {
+                    Snackbar.make(findViewById(R.id.activityRoot), R.string.generic_validButTooEarly, Snackbar.LENGTH_SHORT).show();
+                    break; // possible, if user hits button before service connection estabilished. Not likely.
+                }
+                if(server != null) {
+                    BattleHelper battle  = server.sessionHelper.session.battleState;
+                    order = new Network.ActorState[battle.ordered.length];
+                    int cp = 0;
+                    for (InitiativeScore el : battle.ordered)
+                        order[cp++] = server.sessionHelper.session.getActorById(el.actorID);
+                    myIndex = battle.currentActor;
+                }
+                else if(client.currentActor.keyOrder == null) {
+                    Snackbar.make(findViewById(R.id.activityRoot), R.string.generic_validButTooEarly, Snackbar.LENGTH_SHORT).show();
+                    break; // impossible by construction if we're here, but maybe state is slightly inconsistent as just transitioned. Protect from future changes.
+                }
+                else {
+                    order = new Network.ActorState[client.currentActor.keyOrder.length];
+                    int dst = 0;
+                    for (int key : client.currentActor.keyOrder) order[dst++] = client.actors.get(key).actor;
+                    dst = 0;
+                    for (int key : client.currentActor.keyOrder) {
+                        if(key == client.currentActor.actor.peerKey) break;
+                        dst++;
+                    }
+                    myIndex = dst;
+                }
+                new InitiativeShuffleDialog(order, myIndex)
                         .show(MyActorRoundActivity.this, new InitiativeShuffleDialog.OnApplyCallback() {
                             @Override
                             public void newOrder(Network.ActorState[] target) {
@@ -147,12 +174,13 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
 
     /// Called from the 'wait' dialog to request to shuffle my actor somewhere else.
     private void requestNewOrder(Network.ActorState[] target) {
-        final InitiativeScore me = battle.ordered[battle.currentActor];
-        int newPos = 0;
-        while(newPos < target.length && target[newPos].peerKey != me.actorID) newPos++;
-        if(newPos == target.length) return; // wut? Impossible!
-        if(newPos == battle.currentActor) return; // he hit apply but really did nothing.
-        if(server != null) { // This is cool, we approve of ourselves :P
+        if(server != null) {
+            BattleHelper battle = server.sessionHelper.session.battleState;
+            final InitiativeScore me = battle.ordered[battle.currentActor];
+            int newPos = 0;
+            while (newPos < target.length && target[newPos].peerKey != me.actorID) newPos++;
+            if (newPos == target.length) return; // wut? Impossible!
+            if (newPos == battle.currentActor) return; // he hit apply but really did nothing.
             battle.shuffleCurrent(newPos);
             setResult(RESULT_OK);
             finish();
@@ -164,6 +192,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
 
     private void requestReadiedAction(String s) {
         if(server != null) {
+            BattleHelper battle  = server.sessionHelper.session.battleState;
             final InitiativeScore me = battle.ordered[battle.currentActor];
             server.sessionHelper.session.getActorById(me.actorID).prepareCondition = s;
             setResult(RESULT_OK);
@@ -176,7 +205,6 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     private boolean mustUnbind;
     private PartyJoinOrderService server;
     private AdventuringService client;
-    private BattleHelper battle;
     private MenuItem imDone;
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -187,7 +215,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         final int round;
         final String nextActor;
         if(server != null) {
-            battle = server.sessionHelper.session.battleState;
+            BattleHelper battle  = server.sessionHelper.session.battleState;
             int curid = battle.triggered == null? battle.ordered[battle.currentActor].actorID : battle.triggered.get(battle.triggered.size() - 1);
             actor = server.sessionHelper.session.getActorById(curid);
             round = battle.round;

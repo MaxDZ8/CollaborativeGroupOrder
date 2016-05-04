@@ -524,6 +524,10 @@ public abstract class PcAssignmentHelper {
         out.add(new SendRequest(dev, msgType, payload));
     }
 
+    public void sendToRemote(PlayingDevice dev, int msgType, MessageNano[] payload) {
+        out.add(new SendRequest(dev, msgType, payload));
+    }
+
 
     public interface AuthDeviceHolderFactoryBinder<VH extends RecyclerView.ViewHolder> {
         VH createUnbound(ViewGroup parent, int viewType);

@@ -157,16 +157,12 @@ public class PartyJoinOrderService extends PublishAcceptService {
     public int nextActorId = 0;
 
 
-    public boolean notifyBattleOrder() {
+    public boolean pushBattleOrder() {
         if(!sessionHelper.session.battleState.orderChanged) return false;
         final InitiativeScore[] order = sessionHelper.session.battleState.ordered;
         int[] sequence = new int[order.length];
         int cp = 0;
-        for (InitiativeScore score : order) {
-            final Network.ActorState actor = sessionHelper.session.getActorById(score.actorID);
-            sequence[cp] = actor.peerKey;
-            cp++;
-        }
+        for (InitiativeScore score : order) sequence[cp++] = score.actorID;
         int devIndex = -1;
         for (PcAssignmentHelper.PlayingDevice dev : assignmentHelper.peers) {
             devIndex++;
@@ -184,6 +180,18 @@ public class PartyJoinOrderService extends PublishAcceptService {
         }
         sessionHelper.session.battleState.orderChanged = false;
         return true;
+    }
+
+    public void pushKnownActorState(int id) {
+        if(id >= assignmentHelper.assignment.size()) return;
+        final Integer bound = assignmentHelper.assignment.get(id);
+        if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
+        final PcAssignmentHelper.PlayingDevice dev = assignmentHelper.peers.get(bound);
+        // For the time being, just send all actors, be coherent with pushBattleOrder
+        Network.ActorState[] current = new Network.ActorState[sessionHelper.session.battleState.ordered.length];
+        id = 0;
+        for (InitiativeScore el : sessionHelper.session.battleState.ordered) current[id++] = sessionHelper.session.getActorById(el.actorID);
+        assignmentHelper.sendToRemote(dev, ProtoBufferEnum.ACTOR_DATA_UPDATE, current);
     }
 
     private static Network.ActorState makeActorState(StartData.ActorDefinition el, int id, int type) {

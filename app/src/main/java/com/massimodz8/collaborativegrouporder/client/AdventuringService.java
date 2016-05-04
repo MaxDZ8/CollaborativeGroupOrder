@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 
+import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
@@ -30,8 +31,8 @@ import java.util.Map;
  */
 public class AdventuringService extends Service {
     public StartData.PartyClientData party;
-    int[] playedHere; // actors played here, added automatically to this.actors after flushed
-    HashMap<Integer, ActorWithKnownOrder> actors = new HashMap<>(); // ID -> struct, flushed every time a new battle starts
+    @ActorId  int[] playedHere; // actors played here, added automatically to this.actors after flushed
+    public HashMap<Integer, ActorWithKnownOrder> actors = new HashMap<>(); // ID -> struct, flushed every time a new battle starts
     public ArrayList<String> errors;
 
     public ArrayDeque<Runnable> onActorUpdated = new ArrayDeque<>();
@@ -44,7 +45,7 @@ public class AdventuringService extends Service {
 
     public static class ActorWithKnownOrder {
         public Network.ActorState actor; // 'owner'
-        public @Nullable  int[] keyOrder; // peerkeys of known actors.
+        public @Nullable @ActorId int[] keyOrder;
         public boolean updated;
     }
 
@@ -87,6 +88,15 @@ public class AdventuringService extends Service {
                 @Override
                 public boolean mangle(MessageChannel from, Network.BattleOrder msg) throws IOException {
                     handler.sendMessage(handler.obtainMessage(MSG_BATTLE_ORDER, msg));
+                    return false;
+                }
+            }).add(ProtoBufferEnum.TURN_CONTROL, new PumpTarget.Callbacks<Network.TurnControl>() {
+                @Override
+                public Network.TurnControl make() { return new Network.TurnControl(); }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.TurnControl msg) throws IOException {
+                    handler.sendMessage(handler.obtainMessage(MSG_TURN_CONTROL, msg));
                     return false;
                 }
             });

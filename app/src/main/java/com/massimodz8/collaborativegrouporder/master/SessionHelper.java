@@ -1,5 +1,6 @@
 package com.massimodz8.collaborativegrouporder.master;
 
+import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -95,7 +96,7 @@ public class SessionHelper {
             return pipe;
         }
 
-        public Network.ActorState getActorById(int id) {
+        public Network.ActorState getActorById(@ActorId  int id) {
             for (Network.ActorState el : session.existByDef) {
                 if(el.peerKey == id) return el;
             }

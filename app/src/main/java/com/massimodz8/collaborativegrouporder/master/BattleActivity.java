@@ -173,7 +173,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 battle.currentActor++;
             }
             battle.shuffleCurrent(interrupted - (interrupted != 0 ? 1 : 0));
-            game.notifyBattleOrder();
+            game.pushBattleOrder();
             battle.currentActor = 0;
             for (InitiativeScore el : battle.ordered) {
                 if (el == prev) break;

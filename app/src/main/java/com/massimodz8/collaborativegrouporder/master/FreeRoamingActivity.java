@@ -205,6 +205,8 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             }
         });
         session.battleState = new BattleHelper(order);
+        game.pushBattleOrder();
+        for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
         startActivity(new Intent(this, BattleActivity.class));
         return true;
     }
