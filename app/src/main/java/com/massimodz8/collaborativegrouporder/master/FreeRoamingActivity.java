@@ -25,6 +25,7 @@ import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
@@ -157,7 +158,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 rq.peerKey = loop;
                 rq.type = Network.Roll.T_BATTLE_START;
                 game.sessionHelper.initiatives.put(actor.peerKey, new SessionHelper.Initiative(rq));
-                game.assignmentHelper.sendToRemote(game.assignmentHelper.getDevice(pipe), ProtoBufferEnum.ROLL, rq);
+                game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ROLL, rq));
             } else {
                 game.sessionHelper.initiatives.put(actor.peerKey, new SessionHelper.Initiative(null));
                 local.add(actor);

@@ -7,9 +7,10 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
+import com.massimodz8.collaborativegrouporder.Mailman;
 import com.massimodz8.collaborativegrouporder.MainMenuActivity;
+import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -23,8 +24,6 @@ import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Massimo on 01/03/2016.
@@ -48,38 +47,6 @@ public abstract class PcAssignmentHelper {
         this.verifier = verifier;
         assignment = new ArrayList<>(party.party.length);
         for (StartData.ActorDefinition ignored : party.party) assignment.add(null);
-        Thread mailman = new Thread() {
-            @Override
-            public void run() {
-                while (!isInterrupted()) {
-                    final SendRequest req;
-                    try {
-                        req = out.take();
-                    } catch (InterruptedException e) {
-                        return;
-                    }
-                    if (req.destination == null) break;
-                    MessageChannel pipe = req.destination.pipe;
-                    if (pipe == null) continue; // impossible
-                    if (req.one != null) {
-                        try {
-                            pipe.write(req.type, req.one);
-                        } catch (IOException e) {
-                            req.destination.errors.add(e);
-                        }
-                    }
-                    if (req.many != null) {
-                        for (MessageNano msg : req.many) {
-                            try {
-                                pipe.write(req.type, msg);
-                            } catch (IOException e) {
-                                req.destination.errors.add(e);
-                            }
-                        }
-                    }
-                }
-            }
-        };
         mailman.start();
     }
 
@@ -134,7 +101,7 @@ public abstract class PcAssignmentHelper {
         rebound.ticket = nextValidRequest;
         rebound.character = match;
         for (PlayingDevice dst : peers) {
-            out.add(new SendRequest(dst, ProtoBufferEnum.CHARACTER_OWNERSHIP, rebound));
+            if(dst.pipe != null) mailman.out.add(new SendRequest(dst.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, rebound));
         }
         if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
         if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
@@ -152,7 +119,7 @@ public abstract class PcAssignmentHelper {
 
 
     public void shutdown() {
-        out.add(new SendRequest());
+        mailman.out.add(new SendRequest());
         final Pumper.MessagePumpingThread[] bye = netPump.move();
         if(bye == null || bye.length == 0) return;
         new Thread() {
@@ -245,7 +212,6 @@ public abstract class PcAssignmentHelper {
                 }
             });
     ArrayList<PlayingDevice> peers = new ArrayList<>();
-    private BlockingQueue<SendRequest> out = new ArrayBlockingQueue<>(USUAL_CLIENT_COUNT * USUAL_AVERAGE_MESSAGES_PENDING_COUNT);
 
     /// Not sure what should I put there, but it seems I might want to track state besides connection channel in the future.
     static class PlayingDevice {
@@ -267,35 +233,6 @@ public abstract class PcAssignmentHelper {
         private static final int ANON = -1;
     }
 
-
-    /// Replies to clients must be sent in order! There's a dedicated thread for sending.
-    private static class SendRequest {
-        final PlayingDevice destination;
-        final int type;
-        final MessageNano one;
-        final MessageNano[] many;
-
-        public SendRequest(PlayingDevice destination, int type, MessageNano payload) {
-            this.destination = destination;
-            this.type = type;
-            one = payload;
-            this.many = null;
-        }
-
-        public SendRequest(PlayingDevice destination, int type, MessageNano[] payload) {
-            this.destination = destination;
-            this.type = type;
-            one = null;
-            many = payload;
-        }
-
-        private SendRequest() { // causes the mailman to shut down gracefully
-            destination = null;
-            type = -1;
-            one = null;
-            many = null;
-        }
-    }
 
     private static class MyHandler extends Handler {
         final WeakReference<PcAssignmentHelper> self;
@@ -340,8 +277,6 @@ public abstract class PcAssignmentHelper {
 
     /// Caution. This currently must match PartyCreationService.closeGroup
     public static final int DOORMAT_BYTES = 32;
-    private static final int USUAL_CLIENT_COUNT = 20; // not really! Usually 5 or less but that's for safety!
-    private static final int USUAL_AVERAGE_MESSAGES_PENDING_COUNT = 10; // pretty a lot, those will be small!
     public static final int LOCAL_BINDING = -1;
 
     private synchronized byte[] random(int count) {
@@ -396,7 +331,7 @@ public abstract class PcAssignmentHelper {
         send.name = party.name;
         send.version = MainMenuActivity.NETWORK_VERSION;
         send.doormat = dev.doormat;
-        out.add(new SendRequest(dev, ProtoBufferEnum.GROUP_INFO, send));
+        mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.GROUP_INFO, send));
     }
 
     private void helloAuth(final @NonNull MessageChannel origin, @NonNull Network.Hello msg) {
@@ -436,7 +371,7 @@ public abstract class PcAssignmentHelper {
         for (int loop = 0; loop < party.party.length; loop++) {
             stream[loop] = simplify(party.party[loop], loop);
         }
-        out.add(new SendRequest(dev, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, stream));
+        if(dev.pipe != null) mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, stream));
         // Also send a notification for each character which is already assigned to someone else.
         final ArrayList<Integer> bound = new ArrayList<>(party.party.length);
         for(int loop = 0; loop < assignment.size(); loop++) {
@@ -448,7 +383,7 @@ public abstract class PcAssignmentHelper {
             initial[loop].ticket = nextValidRequest;
             initial[loop].type = Network.CharacterOwnership.BOUND;
         }
-        out.add(new SendRequest(dev, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial));
+        mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial));
     }
 
     private Network.PlayingCharacterDefinition simplify(StartData.ActorDefinition actor, int loop) {
@@ -470,18 +405,18 @@ public abstract class PcAssignmentHelper {
         payload.ticket = nextValidRequest;
         if(ticket != nextValidRequest) {
             payload.type = Network.CharacterOwnership.OBSOLETE;
-            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            if(requester.pipe != null)  mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             return;
         }
         if(payload.character >= party.party.length) { // requester asked chars before providing key.
             payload.type = Network.CharacterOwnership.REJECTED;
-            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             return;
         }
         Integer currKeyIndex = assignment.get(payload.character);
         if(currKeyIndex != null && currKeyIndex == LOCAL_BINDING) { // bound to me, silently rejected as mapping to me is a very strong action
             payload.type = Network.CharacterOwnership.REJECTED;
-            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             return;
         }
         // taking ownership from AVAIL is silently accepted as common.
@@ -492,7 +427,7 @@ public abstract class PcAssignmentHelper {
             assignment.set(payload.character, newMapping);
             payload.type = Network.CharacterOwnership.ACCEPTED;
             payload.ticket = ++nextValidRequest;
-            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             int type = newMapping == null? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
             sendAvailability(type, payload.character, origin, nextValidRequest);
             if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
@@ -505,7 +440,7 @@ public abstract class PcAssignmentHelper {
         // I don't want all the other requests to be somehow blocked or rejected in the meanwhile...
         // So reject this instead. Looks like this is the only viable option.
         payload.type = Network.CharacterOwnership.REJECTED;
-        out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+        if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
     }
 
     private void sendAvailability(int type, int charIndex, MessageChannel excluding, int request) {
@@ -516,16 +451,8 @@ public abstract class PcAssignmentHelper {
             notification.ticket = request;
             notification.character = charIndex;
             notification.type = type;
-            out.add(new SendRequest(peer, ProtoBufferEnum.CHARACTER_OWNERSHIP, notification));
+            if(peer.pipe != null) mailman.out.add(new SendRequest(peer.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, notification));
         }
-    }
-
-    public void sendToRemote(PlayingDevice dev, int msgType, MessageNano payload) {
-        out.add(new SendRequest(dev, msgType, payload));
-    }
-
-    public void sendToRemote(PlayingDevice dev, int msgType, MessageNano[] payload) {
-        out.add(new SendRequest(dev, msgType, payload));
     }
 
 
@@ -654,7 +581,9 @@ public abstract class PcAssignmentHelper {
         payload.peerKey = actorKey;
         payload.type = roundType;
         payload.round = roundCount;
-        out.add(new SendRequest(dev, ProtoBufferEnum.TURN_CONTROL, payload));
+        if(dev.pipe != null) mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, payload));
         if(roundType != Network.TurnControl.T_PREPARED_CANCELLED) dev.activeActor = actorKey;
     }
+
+    public final Mailman mailman = new Mailman();
 }

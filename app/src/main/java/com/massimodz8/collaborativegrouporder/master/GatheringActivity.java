@@ -29,6 +29,7 @@ import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PublishedService;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
@@ -183,7 +184,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                             count++;
                         }
                     }
-                    room.assignmentHelper.sendToRemote(known, ProtoBufferEnum.GROUP_READY, yours);
+                    room.assignmentHelper.mailman.out.add(new SendRequest(known.pipe, ProtoBufferEnum.GROUP_READY, yours));
                 }
                 // Send actor defs to clients.
                 int id = -1;
@@ -192,8 +193,9 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                     if(index == null) continue; // impossible, but let's try
                     if(index == PcAssignmentHelper.LOCAL_BINDING) continue;
                     PcAssignmentHelper.PlayingDevice dev = room.assignmentHelper.peers.get(index);
+                    if(dev.pipe == null) continue; // connection temporarily lost
                     final Network.ActorState actorData = room.sessionHelper.session.getActorById(id);
-                    room.assignmentHelper.sendToRemote(dev, ProtoBufferEnum.ACTOR_DATA_UPDATE, actorData);
+                    room.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actorData));
                 }
                 return null;
             }

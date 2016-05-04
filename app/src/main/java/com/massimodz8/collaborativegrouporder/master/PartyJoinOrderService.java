@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
+import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -175,7 +176,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 final Network.BattleOrder bo = new Network.BattleOrder();
                 bo.asKnownBy = actorKey;
                 bo.order = sequence;
-                assignmentHelper.sendToRemote(dev, ProtoBufferEnum.BATTLE_ORDER, bo);
+                assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.BATTLE_ORDER, bo));
             }
         }
         sessionHelper.session.battleState.orderChanged = false;
@@ -187,11 +188,12 @@ public class PartyJoinOrderService extends PublishAcceptService {
         final Integer bound = assignmentHelper.assignment.get(id);
         if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
         final PcAssignmentHelper.PlayingDevice dev = assignmentHelper.peers.get(bound);
+        if(dev.pipe == null) return;
         // For the time being, just send all actors, be coherent with pushBattleOrder
         Network.ActorState[] current = new Network.ActorState[sessionHelper.session.battleState.ordered.length];
         id = 0;
         for (InitiativeScore el : sessionHelper.session.battleState.ordered) current[id++] = sessionHelper.session.getActorById(el.actorID);
-        assignmentHelper.sendToRemote(dev, ProtoBufferEnum.ACTOR_DATA_UPDATE, current);
+        assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, current));
     }
 
     private static Network.ActorState makeActorState(StartData.ActorDefinition el, int id, int type) {
