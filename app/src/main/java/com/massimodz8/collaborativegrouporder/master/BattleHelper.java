@@ -6,8 +6,6 @@ import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 
 import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * Created by Massimo on 17/04/2016.
@@ -42,14 +40,31 @@ public class BattleHelper {
      */
     public @ActorId int actorCompleted(boolean really) {
         fromReadiedStack = false;
-        final int previd = shuffledPrevid < 0? currentActor : shuffledPrevid;
+        final int previd = currBeforeShuffle < 0? currentActor : currBeforeShuffle;
         if(triggered != null) {
             fromReadiedStack = really;
             currentActor = really? triggered.pop() : triggered.getLast();
             if(triggered.isEmpty()) triggered = null;
             return previd;
         }
-        if(really) shuffledPrevid = -1;
+        if(nextBeforeShuffle >= 0) {
+            currentActor = nextBeforeShuffle;
+            if(really) {
+                int curIndex = 0, prevIndex = 0;
+                for (InitiativeScore check : ordered) {
+                    if(check.actorID == nextBeforeShuffle) break;
+                    curIndex++;
+                }
+                for (InitiativeScore check : ordered) {
+                    if(check.actorID == previd) break;
+                    prevIndex++;
+                }
+                currBeforeShuffle = -1;
+                nextBeforeShuffle = -1;
+                if(curIndex <= prevIndex) round++;
+            }
+            return previd;
+        }
         int index = 0;
         for (InitiativeScore check : ordered) {
             if(check.actorID == currentActor) break;
@@ -59,19 +74,15 @@ public class BattleHelper {
         while (next < ordered.length && !ordered[next].enabled) next++;
         next %= ordered.length;
         while (next < index && !ordered[next].enabled) next++;
-        if (next <= index && really) {
-            if(noRoundIncrement) {
-                round--;
-                noRoundIncrement = false;
-            }
-            round++;
-        }
+        if (next <= index && really) round++;
         currentActor = ordered[next].actorID;
         return previd;
     }
 
     /**
      * You want currentActor to act immediately before actor at the given position index.
+     * Shuffling last to first is a bit odd as the same actor will act twice.
+     * It is assumed a actorCompleted will follow before another shuffle.
      * @param newPos Current actor will be placed here.
      */
     public boolean before(int newPos) {
@@ -82,7 +93,16 @@ public class BattleHelper {
         }
         if(curSlot == newPos) return false; // it happens with readied actions and I'm lazy
         if(curSlot + 1 == newPos) return false;
-        shuffledPrevid = currentActor;
+        currBeforeShuffle = currentActor;
+        if (newPos == 0 && curSlot == ordered.length - 1) { // important exception! Two acts in a row
+            nextBeforeShuffle = currentActor;
+        } else {
+            nextBeforeShuffle = curSlot + 1;
+            while (nextBeforeShuffle < ordered.length && !ordered[nextBeforeShuffle].enabled) nextBeforeShuffle++;
+            nextBeforeShuffle %= ordered.length;
+            while (nextBeforeShuffle < curSlot && !ordered[nextBeforeShuffle].enabled) nextBeforeShuffle++;
+            nextBeforeShuffle = ordered[nextBeforeShuffle].actorID;
+        }
         final InitiativeScore mover = ordered[curSlot];
         final int step = newPos < curSlot? -1 : 1;
         for(int index = curSlot; index != newPos; index += step) ordered[index] = ordered[index + step];
@@ -94,14 +114,11 @@ public class BattleHelper {
         }
         final int previ;
         if(newPos != 0) previ = newPos - 1;
-        else {
-            previ = ordered.length - 1;
-            noRoundIncrement = true;
-        }
+        else previ = ordered.length - 1;
         currentActor = ordered[previ].actorID;
         orderChanged = true;
         return true;
     }
-    boolean noRoundIncrement;
-    int shuffledPrevid = -1;
+    int nextBeforeShuffle = -1;
+    int currBeforeShuffle = -1;
 }
