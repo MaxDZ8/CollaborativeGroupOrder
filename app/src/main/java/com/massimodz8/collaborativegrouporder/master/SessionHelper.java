@@ -86,7 +86,7 @@ public class SessionHelper {
 
 
         public MessageChannel activateNewActor() {
-            final int active = battleState.triggered == null ? battleState.ordered[battleState.currentActor].actorID : battleState.triggered.get(battleState.triggered.size() - 1);
+            final int active = battleState.triggered == null ? battleState.currentActor : battleState.triggered.getLast();
             final MessageChannel pipe = assignment.getMessageChannelByPeerKey(active);
             if(pipe != null) {
                 int roundType = battleState.triggered == null ? Network.TurnControl.T_REGULAR : Network.TurnControl.T_PREPARED_TRIGGERED;
@@ -105,6 +105,8 @@ public class SessionHelper {
             }
             return null;
         }
+
+        abstract public void turnDone(MessageChannel from, int peerKey);
     }
 
     public PlayState session;

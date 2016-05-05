@@ -157,12 +157,12 @@ message BattleOrder {
 	// Client: a single value, new position in order.
 }
 
-// Server -> client
+// Server -> client (mostly)
 // Sent by the server to let an actor on a remote device play. Can also terminate its turn.
 // OFC it is specific to an actor on this device.
 message TurnControl {
 	enum Type {
-		T_FORCE_DONE = 0;
+		T_FORCE_DONE = 0; // this can be sent by client as well to indicate round is finished. The server can then ignore .peerKey and go with its own state. .round ignored.
 		T_REGULAR = 1;
 		T_PREPARED_TRIGGERED = 2;
 		T_OPPORTUNITY = 3;
@@ -177,12 +177,15 @@ message TurnControl {
 
 
 // Server -> Client; define/update actor.
+// Client -> Server only allowed with T_PARTIAL_PREPARE_CONDITION
 message ActorState {
 	enum Type {
 		T_UNDEFINED = 0; // can be used when storing, if type can be inferred from position.
 		T_PLAYING_CHARACTER = 1;
 		T_NPC = 2;
 		T_MOB = 3;
+		
+		T_PARTIAL_PREPARE_CONDITION = 16; // client can send those, only .prepareCondition and peerKey will be mangled. Server can also send those to cancel a trigger action.
 	}
 	Type type = 1;
 	uint32 peerKey = 2;

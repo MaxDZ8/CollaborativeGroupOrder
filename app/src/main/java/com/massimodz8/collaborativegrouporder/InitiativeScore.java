@@ -22,7 +22,7 @@ public class InitiativeScore {
     // We will try to keep those 'constant' and faithful to the original dice rolls BUT
     // this is just best effort. Better to never show those to the user as shuffle initiative
     // will change those values and will no more be coherent with actor bonus.
-    public final @ActorId  int actorID;
+    public final @ActorId int actorID;
 
     public boolean enabled = true; // if false, do not get round actions. Not sorted.
 

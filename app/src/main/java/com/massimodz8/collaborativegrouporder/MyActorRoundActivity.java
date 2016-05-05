@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.massimodz8.collaborativegrouporder.client.AdventuringService;
 import com.massimodz8.collaborativegrouporder.master.BattleHelper;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.util.Locale;
@@ -118,8 +119,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                 break;
             case R.id.mara_menu_doneConfirmed:
                 // That's quite small and remote, unlikely it gets hit by accident.
-                setResult(RESULT_OK);
-                finish();
+                turnDone();
                 break;
             case R.id.mara_menu_shuffle: {
                 final int myIndex;
@@ -132,9 +132,12 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                     BattleHelper battle  = server.sessionHelper.session.battleState;
                     order = new Network.ActorState[battle.ordered.length];
                     int cp = 0;
-                    for (InitiativeScore el : battle.ordered)
+                    int gotcha = 0;
+                    for (InitiativeScore el : battle.ordered) {
                         order[cp++] = server.sessionHelper.session.getActorById(el.actorID);
-                    myIndex = battle.currentActor;
+                        if(order[cp - 1].peerKey == battle.currentActor) gotcha = order[cp - 1].peerKey;
+                    }
+                    myIndex = gotcha;
                 }
                 else if(client.currentActor.keyOrder == null) {
                     Snackbar.make(findViewById(R.id.activityRoot), R.string.generic_validButTooEarly, Snackbar.LENGTH_SHORT).show();
@@ -188,34 +191,58 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         return super.onOptionsItemSelected(item);
     }
 
+    private void turnDone() {
+        if(client != null) {
+            Network.TurnControl done = new Network.TurnControl();
+            done.type = Network.TurnControl.T_FORCE_DONE;
+            client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, done));
+        }
+        setResult(RESULT_OK);
+        finish();
+    }
+
     /// Called from the 'wait' dialog to request to shuffle my actor somewhere else.
     private void requestNewOrder(Network.ActorState[] target) {
+        if(server == null && client == null) return; // impossible
         if(server != null) {
             BattleHelper battle = server.sessionHelper.session.battleState;
-            final InitiativeScore me = battle.ordered[battle.currentActor];
             int newPos = 0;
-            while (newPos < target.length && target[newPos].peerKey != me.actorID) newPos++;
+            while (newPos < target.length && target[newPos].peerKey != battle.currentActor) newPos++;
             if (newPos == target.length) return; // wut? Impossible!
-            if (newPos == battle.currentActor) return; // he hit apply but really did nothing.
-            battle.shuffleCurrent(newPos);
-            setResult(RESULT_OK);
-            finish();
+            final int next = newPos == target.length - 1? 0 : newPos + 1;
+            if (battle.before(next)) {
+                setResult(RESULT_OK);
+                finish();
+            }
             return;
         }
-        new AlertDialog.Builder(this).setMessage("TODO: ask permission to server").show();
+        // If request is valid then it will be accepted so no need to track this, it will be accepted.
+        final Network.BattleOrder send = new Network.BattleOrder();
+        send.asKnownBy = client.currentActor.actor.peerKey;
+        send.order = new int[target.length];
+        int dst = 0;
+        for (Network.ActorState src : target) send.order[dst++] = src.peerKey;
+        // Nope. We wait the server to update.
+        //client.currentActor.keyOrder = send.order;
+        client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.BATTLE_ORDER, send));
+
     }
 
 
     private void requestReadiedAction(String s) {
+        if(client == null && server == null) return; // unlikely
         if(server != null) {
             BattleHelper battle  = server.sessionHelper.session.battleState;
-            final InitiativeScore me = battle.ordered[battle.currentActor];
-            server.sessionHelper.session.getActorById(me.actorID).prepareCondition = s;
+            server.sessionHelper.session.getActorById(battle.currentActor).prepareCondition = s;
             setResult(RESULT_OK);
             finish();
             return;
         }
-        new AlertDialog.Builder(this).setMessage("TODO: send condition to server").show();
+        Network.ActorState send = new Network.ActorState();
+        send.type = Network.ActorState.T_PARTIAL_PREPARE_CONDITION;
+        send.peerKey = client.currentActor.actor.peerKey;
+        send.prepareCondition = s;
+        client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, send));
     }
 
     private boolean mustUnbind;
@@ -232,14 +259,12 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         final String nextActor;
         if(server != null) {
             BattleHelper battle  = server.sessionHelper.session.battleState;
-            int curid = battle.triggered == null? battle.ordered[battle.currentActor].actorID : battle.triggered.get(battle.triggered.size() - 1);
+            int curid = battle.triggered == null? battle.currentActor : battle.triggered.getLast();
             actor = server.sessionHelper.session.getActorById(curid);
             round = battle.round;
-            final int pactor = battle.currentActor;
-            battle.tickRound();
-            nextActor = server.sessionHelper.session.getActorById(battle.ordered[battle.currentActor].actorID).name;
-            battle.currentActor = pactor;
-            battle.round = round;
+            final int prevActor = battle.actorCompleted(false);
+            nextActor = server.sessionHelper.session.getActorById(battle.currentActor).name;
+            battle.currentActor = prevActor;
         }
         else if(service instanceof  AdventuringService.LocalBinder){
             client = ((AdventuringService.LocalBinder)service).getConcreteService();

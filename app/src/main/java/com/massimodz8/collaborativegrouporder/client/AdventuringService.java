@@ -9,6 +9,8 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 
 import com.massimodz8.collaborativegrouporder.ActorId;
+import com.massimodz8.collaborativegrouporder.Mailman;
+import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
@@ -42,6 +44,15 @@ public class AdventuringService extends Service {
     public ActorWithKnownOrder currentActor;
     ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
     public int round = -1; // -1 == not fighting, 0 = waiting other players roll 1+ fighting
+    public final Mailman mailman = new Mailman();
+    public MessageChannel pipe;
+
+    /**
+     * This shouldn't really be there but it is. The current idea is that every time we're done
+     * with an actor we increase this and if we have consumed enough ticks we show an interstitial.
+     * The idea is that you get an ad each round, you need as many ticks as actors on this device.
+     */
+    public int ticksSinceLastAd;
 
     public static class ActorWithKnownOrder {
         public Network.ActorState actor; // 'owner'
@@ -49,7 +60,17 @@ public class AdventuringService extends Service {
         public boolean updated;
     }
 
-    public AdventuringService() {
+    public AdventuringService() { }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        mailman.start();
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public void onDestroy() {
+        mailman.out.add(new SendRequest());
     }
 
     public class LocalBinder extends Binder {

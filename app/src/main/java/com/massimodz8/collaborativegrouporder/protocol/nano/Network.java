@@ -1506,6 +1506,7 @@ public interface Network {
     public static final int T_PLAYING_CHARACTER = 1;
     public static final int T_NPC = 2;
     public static final int T_MOB = 3;
+    public static final int T_PARTIAL_PREPARE_CONDITION = 16;
 
     private static volatile ActorState[] _emptyArray;
     public static ActorState[] emptyArray() {
@@ -1652,6 +1653,7 @@ public interface Network {
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_PLAYING_CHARACTER:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_NPC:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_MOB:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.T_PARTIAL_PREPARE_CONDITION:
                 this.type = value;
                 break;
             }

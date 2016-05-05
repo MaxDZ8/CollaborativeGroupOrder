@@ -8,6 +8,7 @@
     <string name="generic_initializing">Initializing…</string>
     <string name="generic_lostServiceConn">Lost connection to internal service. Not supposed to happen. Maybe clearing some memory will help.</string>
     <string name="generic_carefulDlgTitle">Careful!</string>
+    <string name="generic_nopeDlgTitle">No way out</string>
     <string name="generic_action_rename">Rename</string>
     <string name="generic_fatalError">Fatal error</string>
     <string name="generic_failedAdventuringServiceBind">Could not bind to internal \'adventuring\' structures. This is required to prevent data loss when you turn your phone (and other technicalities).\nThis should be a transient problem.</string>
@@ -511,6 +512,7 @@
     <string name="mara_dlgRAP_title">Ready Action</string>
     <string name="mara_dlgRAP_optionalMessageHint">Optional condition description.</string>
     <string name="mara_dlgRAP_apply">Apply</string>
+    <string name="mara_noBackDlgMessage">I cannot let you do that. You have been given a turn to play, you will act. You can get out only by passing turn.</string>
 
     <string name="vhAA_preparedActionNoNoteGiven">Prepared action</string>
     <string name="mma_actorDataGetFailed">Errors detected in getting data from master device. Giving up.</string>
@@ -530,5 +532,6 @@
     <string name="mara_dlgWS_title">Waiting sequence</string>
     <string name="aoa_waitingOtherPlayersRoll">Waiting other players to roll.</string>
     <string name="aoa_waitingMyTurn">Waiting turn.\nDevice will vibrate when your attention is required.</string>
+    <string name="aoa_confirmBackDlgMessage">One does not simply get outta there. You are connected to master device, if you go away stuff might go awry.</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.massimodz8.collaborativegrouporder.networkio;
 
+import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
@@ -129,6 +130,16 @@ public interface Events {
         public Roll(MessageChannel from, Network.Roll payload) {
             this.from = from;
             this.payload = payload;
+        }
+    }
+
+    class TurnDone {
+        public final MessageChannel from;
+        public final @ActorId int peerKey;
+
+        public TurnDone(MessageChannel from, @ActorId int peerKey) {
+            this.from = from;
+            this.peerKey = peerKey;
         }
     }
 }

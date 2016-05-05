@@ -27,7 +27,7 @@ import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Locale;
 
 public class BattleActivity extends AppCompatActivity implements ServiceConnection {
@@ -52,13 +52,15 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final BattleHelper battle = game.sessionHelper.session.battleState;
+                battle.round = 1;
+                battle.currentActor = battle.ordered[0].actorID;
+
                 fab.setVisibility(View.GONE);
                 MaxUtils.beginDelayedTransition(BattleActivity.this);
-                final BattleHelper battle = game.sessionHelper.session.battleState;
-                battle.tickRound();
                 final TextView status = (TextView) findViewById(R.id.ba_roundCount);
                 status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
-                lister.notifyItemChanged(battle.currentActor);
+                lister.notifyItemChanged(0);
                 activateNewActor();
             }
         });
@@ -89,13 +91,8 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                         return;
                     }
                     final BattleHelper state = game.sessionHelper.session.battleState;
-                    int myIndex = 0;
-                    for (InitiativeScore test : state.ordered) {
-                        if (test.actorID == actor.peerKey) break;
-                        myIndex++;
-                    }
-                    if (myIndex != state.currentActor && selected.isEnabled()) {
-                        selected.setChecked(!selected.isChecked()); // toggle 'will act next round'
+                    if (actor.peerKey != state.currentActor) {
+                        if(selected.isEnabled()) selected.setChecked(!selected.isChecked()); // toggle 'will act next round'
                     } else {
                         activateNewActor();
                     }
@@ -118,16 +115,11 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         protected boolean isCurrent(Network.ActorState actor) {
             if (game == null) return false;
             final BattleHelper battle = game.sessionHelper.session.battleState;
-            int matched = 0;
-            for (InitiativeScore check : battle.ordered) {
-                if (check.actorID == actor.peerKey) break;
-                matched++;
-            }
             if(battle.triggered != null) {
-                final Network.ActorState interruptor = game.sessionHelper.session.getActorById(battle.triggered.get(battle.triggered.size() - 1));
-                if(interruptor.preparedTriggered && actor == interruptor) return true;
+                final Network.ActorState interruptor = game.sessionHelper.session.getActorById(battle.triggered.getLast());
+                if(interruptor.preparedTriggered && actor.peerKey == interruptor.peerKey) return true;
             }
-            return matched == battle.currentActor;
+            return actor.peerKey == battle.currentActor;
         }
 
         @Override
@@ -161,30 +153,27 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             if (target.actor == null || target.actor.prepareCondition == null)
                 return; // impossible by context
             final BattleHelper battle = game.sessionHelper.session.battleState;
-            if (battle.triggered == null) battle.triggered = new ArrayList<>();
-            battle.triggered.add(target.actor.peerKey);
+            if (battle.triggered == null) battle.triggered = new ArrayDeque<>();
+            battle.triggered.push(target.actor.peerKey);
             target.actor.preparedTriggered = true;
-            final int interrupted = battle.currentActor;
-            final InitiativeScore prev = battle.ordered[interrupted];
-            battle.currentActor = 0;
+            int interrupted = battle.actorCompleted(false);
+            battle.currentActor = interrupted;
+            int slot = 0;
             for (InitiativeScore el : battle.ordered) {
-                final Network.ActorState cand = game.sessionHelper.session.getActorById(el.actorID);
-                if (cand.peerKey == target.actor.peerKey) break;
-                battle.currentActor++;
+                if(el.actorID == interrupted) break;
+                slot++;
             }
-            battle.shuffleCurrent(interrupted - (interrupted != 0 ? 1 : 0));
-            game.pushBattleOrder();
-            battle.currentActor = 0;
-            for (InitiativeScore el : battle.ordered) {
-                if (el == prev) break;
-                battle.currentActor++;
+            if(battle.before(slot == battle.ordered.length - 1? 0 : slot + 1)) {
+                game.pushBattleOrder();
+                battle.actorCompleted(true);
+                activateNewActor();
             }
-            activateNewActor();
         }
     }
 
     @Override
     protected void onDestroy() {
+        if(game != null) game.onRemoteTurnCompleted.pop();
         if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
@@ -205,48 +194,25 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
     private void actionCompleted() {
         final BattleHelper battle = game.sessionHelper.session.battleState;
-        final int prev, currently;
-        boolean fromReadiedStack = false;
-        if(battle.triggered == null) {
-            prev = battle.currentActor;
-            battle.tickRound();
-            currently = battle.currentActor;
+        final int previd = battle.actorCompleted(true);
+        final int currid = battle.currentActor;
+        int prevSlot = 0, currSlot = 0;
+        for(int loop = 0; loop < lister.getItemCount(); loop++) {
+            final Network.ActorState actor = lister.getActorByPos(loop);
+            if(actor.peerKey == previd) prevSlot = loop;
+            if(actor.peerKey == currid) currSlot = loop;
         }
-        else {
-            int match = 0;
-            int active = battle.triggered.size() - 1;
-            for (InitiativeScore test : battle.ordered) {
-                if(test.actorID == active) break;
-                match++;
-            }
-            prev = match;
-            final Network.ActorState actor = game.sessionHelper.session.getActorById(battle.ordered[match].actorID);
-            actor.prepareCondition = null;
-            actor.preparedTriggered = false;
-            battle.triggered.remove(active);
-            active--;
-            if(battle.triggered.isEmpty()) battle.triggered = null;
-            if(battle.triggered == null) currently = battle.currentActor;
-            else {
-                match = 0;
-                for (InitiativeScore test : battle.ordered) {
-                    if(test.actorID == active) break;
-                    match++;
-                }
-                currently = match;
-                fromReadiedStack = true;
-            }
-        }
-        lister.notifyItemChanged(prev);
-        lister.notifyItemChanged(currently);
+        lister.notifyItemChanged(prevSlot);
+        lister.notifyItemChanged(currSlot);
         MaxUtils.beginDelayedTransition(this);
         final TextView status = (TextView) findViewById(R.id.ba_roundCount);
         status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
-        final Network.ActorState actor = game.sessionHelper.session.getActorById(battle.ordered[currently].actorID);
-        if(actor.prepareCondition.isEmpty() || fromReadiedStack) {
+        final Network.ActorState actor = game.sessionHelper.session.getActorById(currid);
+        if(actor.prepareCondition.isEmpty() || battle.fromReadiedStack) {
             activateNewActor();
             return;
         }
+        final int currentSlot = currSlot;
         new AlertDialog.Builder(this)
                 .setMessage(String.format(getString(R.string.ba_dlg_gotPreparedAction), actor.name))
                 .setPositiveButton(R.string.ba_dlg_gotPreparedAction_renew, new DialogInterface.OnClickListener() {
@@ -263,7 +229,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 if(pipe == null) { // we mangle it there. That's nice.
                     actor.prepareCondition = null;
                     MaxUtils.beginDelayedTransition(BattleActivity.this);
-                    lister.notifyItemChanged(currently);
+                    lister.notifyItemChanged(currentSlot);
                     activateNewActor();
                     return;
                 }
@@ -310,6 +276,10 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             final TextView status = (TextView) findViewById(R.id.ba_roundCount);
             status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
         }
+        game.onRemoteTurnCompleted.push(new Runnable() {
+            @Override
+            public void run() { actionCompleted(); }
+        });
     }
 
     @Override

@@ -22,6 +22,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -62,6 +63,23 @@ public class PartyJoinOrderService extends PublishAcceptService {
                     matchRoll(got.from, got.payload);
                 }
             }
+
+            @Override
+            public void turnDone(MessageChannel from, int peerKey) {
+                if(peerKey >= assignmentHelper.assignment.size()) return; // Discard rubbish first.
+                int index = 0;
+                for (PcAssignmentHelper.PlayingDevice dev : assignmentHelper.peers) {
+                    if(dev.pipe == from) break;
+                    index++;
+                }
+                final Integer bound = assignmentHelper.assignment.get(peerKey);
+                if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
+                if(bound != index) return; // you cannot control this turn you cheater!
+                if(peerKey != battleState.currentActor) return; // that's not his turn anyway!
+                // Don't do that. Might involve popping readied actions. Furthermore, BattleActivity wants to keep track of both previous and current actor.
+                //battleState.tickRound();
+                if(!onRemoteTurnCompleted.isEmpty()) onRemoteTurnCompleted.getLast().run();
+            }
         };
         battleHandler = new MyBattleHandler(this);
         battlePumper = new Pumper(battleHandler, MyBattleHandler.MSG_DISCONNECTED, MyBattleHandler.MSG_DETACHED)
@@ -74,11 +92,23 @@ public class PartyJoinOrderService extends PublishAcceptService {
                         battleHandler.sendMessage(battleHandler.obtainMessage(MyBattleHandler.MSG_ROLL, new Events.Roll(from, msg)));
                         return false;
                     }
+                }).add(ProtoBufferEnum.TURN_CONTROL, new PumpTarget.Callbacks<Network.TurnControl>() {
+                    @Override
+                    public Network.TurnControl make() { return new Network.TurnControl(); }
+
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.TurnControl msg) throws IOException {
+                        if(msg.type == Network.TurnControl.T_FORCE_DONE) {
+                            battleHandler.sendMessage(battleHandler.obtainMessage(MyBattleHandler.MSG_TURN_DONE, new Events.TurnDone(from, msg.peerKey)));
+                        }
+                        return false;
+                    }
                 });
     }
 
     public void shutdownPartyManagement() {
         if(null != assignmentHelper) {
+            assignmentHelper.mailman.out.add(new SendRequest());
             assignmentHelper.shutdown();
             assignmentHelper = null;
         }
@@ -132,6 +162,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
      */
     int rollRequest;
     Runnable onRollReceived; // called when a roll has been matched to some updated state.
+    public ArrayDeque<Runnable> onRemoteTurnCompleted = new ArrayDeque<>();
 
 
     private void matchRoll(MessageChannel from, Network.Roll dice) {

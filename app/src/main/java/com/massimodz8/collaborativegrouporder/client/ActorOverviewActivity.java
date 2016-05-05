@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder.client;
 
 import android.app.Notification;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.BitmapFactory;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
 import com.massimodz8.collaborativegrouporder.AdventuringActorDataVH;
+import com.massimodz8.collaborativegrouporder.InterstitialAdPlaceholderActivity;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
@@ -102,6 +105,18 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             rollDialog.dlg.dismiss(); // I'm going to regenerate this next time anyway.
         }
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.generic_carefulDlgTitle)
+                .setMessage(R.string.aoa_confirmBackDlgMessage)
+                .setPositiveButton(R.string.mara_next_title, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { ActorOverviewActivity.super.onBackPressed(); }
+                })
+                .show();
     }
 
     boolean mustUnbind;
@@ -287,6 +302,7 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         if(serverWorker != null) { // Initialize service and start pumping.
             serverPipe = serverWorker.getSource();
             ticker.playedHere = actorKeys;
+            ticker.pipe = serverWorker.getSource();
             ticker.netPump.pump(serverWorker);
             serverWorker = null;
             actorKeys = null;
