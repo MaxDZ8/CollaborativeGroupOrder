@@ -19,6 +19,7 @@ public class MyBattleHandler extends Handler {
     public static final int MSG_DETACHED = 2;
     public static final int MSG_ROLL = 3;
     public static final int MSG_TURN_DONE = 4;
+    public static final int MSG_SHUFFLE_ME = 5;
 
     private final WeakReference<PartyJoinOrderService> target;
 
@@ -48,6 +49,11 @@ public class MyBattleHandler extends Handler {
             case MSG_TURN_DONE: {
                 final Events.TurnDone real = (Events.TurnDone)msg.obj;
                 session.turnDone(real.from, real.peerKey);
+                break;
+            }
+            case MSG_SHUFFLE_ME: {
+                final Events.ShuffleMe real = (Events.ShuffleMe)msg.obj;
+                session.shuffle(real.from, real.peerKey, real.newSlot);
                 break;
             }
             default: super.handleMessage(msg);

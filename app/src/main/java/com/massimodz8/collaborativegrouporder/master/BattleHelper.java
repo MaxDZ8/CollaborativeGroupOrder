@@ -40,29 +40,11 @@ public class BattleHelper {
      */
     public @ActorId int actorCompleted(boolean really) {
         fromReadiedStack = false;
-        final int previd = currBeforeShuffle < 0? currentActor : currBeforeShuffle;
+        final int previd = currentActor;
         if(triggered != null) {
             fromReadiedStack = really;
             currentActor = really? triggered.pop() : triggered.getLast();
             if(triggered.isEmpty()) triggered = null;
-            return previd;
-        }
-        if(nextBeforeShuffle >= 0) {
-            currentActor = nextBeforeShuffle;
-            if(really) {
-                int curIndex = 0, prevIndex = 0;
-                for (InitiativeScore check : ordered) {
-                    if(check.actorID == nextBeforeShuffle) break;
-                    curIndex++;
-                }
-                for (InitiativeScore check : ordered) {
-                    if(check.actorID == previd) break;
-                    prevIndex++;
-                }
-                currBeforeShuffle = -1;
-                nextBeforeShuffle = -1;
-                if(curIndex <= prevIndex) round++;
-            }
             return previd;
         }
         int index = 0;
@@ -79,46 +61,33 @@ public class BattleHelper {
         return previd;
     }
 
-    /**
-     * You want currentActor to act immediately before actor at the given position index.
-     * Shuffling last to first is a bit odd as the same actor will act twice.
-     * It is assumed a actorCompleted will follow before another shuffle.
-     * @param newPos Current actor will be placed here.
-     */
-    public boolean before(int newPos) {
-        int curSlot = 0;
+    // Must call an actionCompleted() after this.
+    public boolean moveCurrentToSlot(int newPos) {
+        if (newPos >= ordered.length) return false; // wut? Impossible!
+        int curPos = 0;
         for (InitiativeScore el : ordered) {
             if(el.actorID == currentActor) break;
-            curSlot++;
+            curPos++;
         }
-        if(curSlot == newPos) return false; // it happens with readied actions and I'm lazy
-        if(curSlot + 1 == newPos) return false;
-        currBeforeShuffle = currentActor;
-        if (newPos == 0 && curSlot == ordered.length - 1) { // important exception! Two acts in a row
-            nextBeforeShuffle = currentActor;
-        } else {
-            nextBeforeShuffle = curSlot + 1;
-            while (nextBeforeShuffle < ordered.length && !ordered[nextBeforeShuffle].enabled) nextBeforeShuffle++;
-            nextBeforeShuffle %= ordered.length;
-            while (nextBeforeShuffle < curSlot && !ordered[nextBeforeShuffle].enabled) nextBeforeShuffle++;
-            nextBeforeShuffle = ordered[nextBeforeShuffle].actorID;
+        if(newPos == curPos) return false; // NOP
+        final boolean forward = newPos > curPos;
+        final int mini = forward? curPos : newPos;
+        final int maxi = forward? newPos : curPos;
+        final InitiativeScore temp = ordered[curPos];
+        if(curPos == 0) { // head forward
+            if(newPos != ordered.length - 1) currentActor = ordered[ordered.length - 1].actorID; // so next tick will always activate new head.
+            round--;
+            System.arraycopy(ordered, 1, ordered, 0, newPos);
         }
-        final InitiativeScore mover = ordered[curSlot];
-        final int step = newPos < curSlot? -1 : 1;
-        for(int index = curSlot; index != newPos; index += step) ordered[index] = ordered[index + step];
-        ordered[newPos] = mover;
-        if(newPos != 0 && newPos > curSlot) {
-            InitiativeScore temp = ordered[newPos];
-            ordered[newPos] = ordered[newPos - 1];
-            ordered[newPos - 1] = temp;
+        else if(forward) {
+            currentActor = ordered[curPos - 1].actorID;
+            System.arraycopy(ordered, curPos + 1, ordered, curPos + 1 - 1, newPos - curPos);
         }
-        final int previ;
-        if(newPos != 0) previ = newPos - 1;
-        else previ = ordered.length - 1;
-        currentActor = ordered[previ].actorID;
-        orderChanged = true;
+        else {
+            currentActor = ordered[curPos - 1].actorID; // if curPos is zero cannot be moving backwards
+            for(int cp = maxi; cp != mini; cp--) ordered[cp] = ordered[cp - 1];
+        }
+        ordered[newPos] = temp;
         return true;
     }
-    int nextBeforeShuffle = -1;
-    int currBeforeShuffle = -1;
 }

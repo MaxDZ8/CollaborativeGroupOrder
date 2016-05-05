@@ -135,7 +135,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                     int gotcha = 0;
                     for (InitiativeScore el : battle.ordered) {
                         order[cp++] = server.sessionHelper.session.getActorById(el.actorID);
-                        if(order[cp - 1].peerKey == battle.currentActor) gotcha = order[cp - 1].peerKey;
+                        if(el.actorID == battle.currentActor) gotcha = cp - 1;
                     }
                     myIndex = gotcha;
                 }
@@ -157,8 +157,8 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                 new InitiativeShuffleDialog(order, myIndex)
                         .show(MyActorRoundActivity.this, new InitiativeShuffleDialog.OnApplyCallback() {
                             @Override
-                            public void newOrder(Network.ActorState[] target) {
-                                requestNewOrder(target);
+                            public void newOrder(int newPos) {
+                                requestNewOrder(newPos);
                             }
                         });
             } break;
@@ -202,30 +202,20 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     }
 
     /// Called from the 'wait' dialog to request to shuffle my actor somewhere else.
-    private void requestNewOrder(Network.ActorState[] target) {
+    private void requestNewOrder(int newPos) {
         if(server == null && client == null) return; // impossible
         if(server != null) {
-            BattleHelper battle = server.sessionHelper.session.battleState;
-            int newPos = 0;
-            while (newPos < target.length && target[newPos].peerKey != battle.currentActor) newPos++;
-            if (newPos == target.length) return; // wut? Impossible!
-            final int next = newPos == target.length - 1? 0 : newPos + 1;
-            if (battle.before(next)) {
-                setResult(RESULT_OK);
-                finish();
-            }
-            return;
+            if(!server.sessionHelper.session.battleState.moveCurrentToSlot(newPos)) return;
+            setResult(RESULT_OK);
+            finish();
         }
         // If request is valid then it will be accepted so no need to track this, it will be accepted.
         final Network.BattleOrder send = new Network.BattleOrder();
         send.asKnownBy = client.currentActor.actor.peerKey;
-        send.order = new int[target.length];
-        int dst = 0;
-        for (Network.ActorState src : target) send.order[dst++] = src.peerKey;
+        send.order = new int[] { newPos };
         // Nope. We wait the server to update.
         //client.currentActor.keyOrder = send.order;
         client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.BATTLE_ORDER, send));
-
     }
 
 

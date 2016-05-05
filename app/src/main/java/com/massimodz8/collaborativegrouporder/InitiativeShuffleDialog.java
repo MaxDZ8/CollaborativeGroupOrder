@@ -25,7 +25,7 @@ public class InitiativeShuffleDialog {
     private int actor;
 
     interface OnApplyCallback {
-        void newOrder(Network.ActorState[] target);
+        void newOrder(int newPos);
     }
 
     public InitiativeShuffleDialog(Network.ActorState[] order, int actor) {
@@ -37,7 +37,7 @@ public class InitiativeShuffleDialog {
                 .setPositiveButton(activity.getString(R.string.mara_dlgSIO_apply), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        confirmed.newOrder(order);
+                        confirmed.newOrder(actor);
                     }
                 })
                 .show();

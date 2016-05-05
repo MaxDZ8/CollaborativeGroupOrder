@@ -107,6 +107,8 @@ public class SessionHelper {
         }
 
         abstract public void turnDone(MessageChannel from, int peerKey);
+
+        public abstract void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot);
     }
 
     public PlayState session;

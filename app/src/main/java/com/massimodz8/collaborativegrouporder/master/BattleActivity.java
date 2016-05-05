@@ -158,12 +158,12 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             target.actor.preparedTriggered = true;
             int interrupted = battle.actorCompleted(false);
             battle.currentActor = interrupted;
-            int slot = 0;
+            int newPos = 0;
             for (InitiativeScore el : battle.ordered) {
                 if(el.actorID == interrupted) break;
-                slot++;
+                newPos++;
             }
-            if(battle.before(slot == battle.ordered.length - 1? 0 : slot + 1)) {
+            if(battle.moveCurrentToSlot(newPos)) {
                 game.pushBattleOrder();
                 battle.actorCompleted(true);
                 activateNewActor();
@@ -194,7 +194,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
     private void actionCompleted() {
         final BattleHelper battle = game.sessionHelper.session.battleState;
-        final int previd = battle.actorCompleted(true);
+        battle.actorCompleted(true);
         final int currid = battle.currentActor;
         int currSlot = 0;
         for(int loop = 0; loop < lister.getItemCount(); loop++) {
@@ -277,6 +277,12 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         game.onRemoteTurnCompleted.push(new Runnable() {
             @Override
             public void run() { actionCompleted(); }
+        });
+        game.onRemoteActorShuffled.push(new Runnable() {
+            @Override
+            public void run() {
+                actionCompleted();
+            }
         });
     }
 

@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 
+import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
@@ -80,6 +81,22 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 //battleState.tickRound();
                 if(!onRemoteTurnCompleted.isEmpty()) onRemoteTurnCompleted.getLast().run();
             }
+
+            @Override
+            public void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot) {
+                if(peerKey >= assignmentHelper.assignment.size()) return; // Discard rubbish first.
+                int index = 0;
+                for (PcAssignmentHelper.PlayingDevice dev : assignmentHelper.peers) {
+                    if(dev.pipe == from) break;
+                    index++;
+                }
+                final Integer bound = assignmentHelper.assignment.get(peerKey);
+                if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
+                if(bound != index) return; // you cannot control this turn you cheater!
+                if(peerKey != battleState.currentActor) return; // How did you manage to do that? Not currently allowed.
+                sessionHelper.session.battleState.moveCurrentToSlot(newSlot);
+                if(!onRemoteActorShuffled.isEmpty()) onRemoteActorShuffled.getLast().run();
+            }
         };
         battleHandler = new MyBattleHandler(this);
         battlePumper = new Pumper(battleHandler, MyBattleHandler.MSG_DISCONNECTED, MyBattleHandler.MSG_DETACHED)
@@ -100,6 +117,18 @@ public class PartyJoinOrderService extends PublishAcceptService {
                     public boolean mangle(MessageChannel from, Network.TurnControl msg) throws IOException {
                         if(msg.type == Network.TurnControl.T_FORCE_DONE) {
                             battleHandler.sendMessage(battleHandler.obtainMessage(MyBattleHandler.MSG_TURN_DONE, new Events.TurnDone(from, msg.peerKey)));
+                        }
+                        return false;
+                    }
+                }).add(ProtoBufferEnum.BATTLE_ORDER, new PumpTarget.Callbacks<Network.BattleOrder>() {
+                    @Override
+                    public Network.BattleOrder make() { return new Network.BattleOrder(); }
+
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.BattleOrder msg) throws IOException {
+                        if(msg.order.length == 1) { // otherwise discard ill formed
+                            final Events.ShuffleMe ev = new Events.ShuffleMe(from, msg.asKnownBy, msg.order[0]);
+                            battleHandler.sendMessage(battleHandler.obtainMessage(MyBattleHandler.MSG_SHUFFLE_ME, ev));
                         }
                         return false;
                     }
@@ -163,6 +192,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
     int rollRequest;
     Runnable onRollReceived; // called when a roll has been matched to some updated state.
     public ArrayDeque<Runnable> onRemoteTurnCompleted = new ArrayDeque<>();
+    public ArrayDeque<Runnable> onRemoteActorShuffled = new ArrayDeque<>();
 
 
     private void matchRoll(MessageChannel from, Network.Roll dice) {

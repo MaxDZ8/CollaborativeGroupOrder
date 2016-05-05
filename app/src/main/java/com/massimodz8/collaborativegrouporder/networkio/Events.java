@@ -113,16 +113,6 @@ public interface Events {
         }
     }
 
-    class ActorData {
-        public final MessageChannel origin;
-        public final StartData.ActorDefinition payload;
-
-        public ActorData(MessageChannel origin, StartData.ActorDefinition payload) {
-            this.origin = origin;
-            this.payload = payload;
-        }
-    }
-
     class Roll {
         public final MessageChannel from;
         public final Network.Roll payload;
@@ -140,6 +130,18 @@ public interface Events {
         public TurnDone(MessageChannel from, @ActorId int peerKey) {
             this.from = from;
             this.peerKey = peerKey;
+        }
+    }
+
+    class ShuffleMe {
+        public final MessageChannel from;
+        public final @ActorId int peerKey;
+        public final int newSlot;
+
+        public ShuffleMe(MessageChannel from, int peerKey, int newSlot) {
+            this.from = from;
+            this.peerKey = peerKey;
+            this.newSlot = newSlot;
         }
     }
 }
