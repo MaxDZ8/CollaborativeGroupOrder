@@ -87,6 +87,22 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     }
 
     @Override
+    public void onBackPressed() {
+        if(client == null) {
+            super.onBackPressed();
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.generic_nopeDlgTitle)
+                .setMessage(R.string.mara_noBackDlgMessage)
+                .setPositiveButton(R.string.mara_next_title, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { turnDone(); }
+                })
+                .show();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.my_actor_round_activity, menu);
         imDone = menu.findItem(R.id.mara_menu_doneConfirmed);

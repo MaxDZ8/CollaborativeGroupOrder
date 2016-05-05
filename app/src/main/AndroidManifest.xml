@@ -168,15 +168,16 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".client.ActorOverviewActivity"
+        <activity
+            android:name=".client.ActorOverviewActivity"
             android:label="@string/aoa_title"
             android:parentActivityName=".MainMenuActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainMenuActivity" />
-
         </activity>
+        <activity android:name=".InterstitialAdPlaceholderActivity"></activity>
     </application>
 
 </manifest>

@@ -182,6 +182,21 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         }
     }
 
+    private static final int REQUEST_TURN = 1;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(resultCode == RESULT_OK && requestCode == REQUEST_TURN) {
+            ticker.ticksSinceLastAd++;
+            boolean admobReady = true;
+            if(ticker.ticksSinceLastAd >= ticker.playedHere.length && admobReady) {
+                ticker.ticksSinceLastAd -= ticker.playedHere.length;
+                startActivity(new Intent(this, InterstitialAdPlaceholderActivity.class));
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -266,7 +281,7 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                 final Intent intent = new Intent(ActorOverviewActivity.this, MyActorRoundActivity.class)
                         .putExtra(MyActorRoundActivity.EXTRA_CLIENT_MODE, true)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_TURN);
             }
         });
         if(serverWorker != null) { // Initialize service and start pumping.
