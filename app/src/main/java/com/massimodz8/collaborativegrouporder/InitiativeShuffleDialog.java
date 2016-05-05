@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.massimodz8.collaborativegrouporder.master.AdventuringActorControlsVH;
+import com.massimodz8.collaborativegrouporder.master.AdventuringActorWithControlsAdapter;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 /**
@@ -40,26 +42,14 @@ public class InitiativeShuffleDialog {
                 })
                 .show();
         final RecyclerView list = (RecyclerView) dlg.findViewById(R.id.mara_dlgSIO_list);
-        final AdventuringActorAdapter<AdventuringActorDataVH> lister = new AdventuringActorAdapter<AdventuringActorDataVH>() {
+        final AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter() {
             @Override
-            public AdventuringActorDataVH onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
-                    @Override
-                    public void onClick(View v) {
-                        // nothing, this thing is not click enabled.
-                    }
-                };
-            }
-
-            @Override
-            public void onBindViewHolder(AdventuringActorDataVH holder, int position) {
-                holder.bindData(getActorByPos(position));
-                holder.avatar.setVisibility(View.GONE); // we need something denser here
-            }
-
-            @Override
-            public int getItemCount() {
-                return order.length;
+            public AdventuringActorControlsVH onCreateViewHolder(ViewGroup parent, int viewType) {
+                AdventuringActorControlsVH res = super.onCreateViewHolder(parent, viewType);
+                res.selected.setEnabled(false);
+                res.selected.setVisibility(View.GONE);
+                res.avatar.setVisibility(View.GONE);
+                return res;
             }
 
             @Override
@@ -68,14 +58,16 @@ public class InitiativeShuffleDialog {
             }
 
             @Override
-            public Network.ActorState getActorByPos(int position) {
-                return order[position];
-            }
+            protected LayoutInflater getLayoutInflater() { return activity.getLayoutInflater(); }
 
             @Override
-            protected LayoutInflater getLayoutInflater() {
-                return activity.getLayoutInflater();
-            }
+            public Network.ActorState getActorByPos(int position) { return order[position]; }
+
+            @Override
+            public int getItemCount() { return order.length; }
+
+            @Override
+            protected boolean isChecked(Network.ActorState actor) { return false; }
         };
         list.setAdapter(lister);
         list.addItemDecoration(new PreSeparatorDecorator(list, activity) {

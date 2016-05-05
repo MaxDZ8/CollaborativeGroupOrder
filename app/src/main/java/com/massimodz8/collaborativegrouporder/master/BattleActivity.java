@@ -196,14 +196,12 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         final BattleHelper battle = game.sessionHelper.session.battleState;
         final int previd = battle.actorCompleted(true);
         final int currid = battle.currentActor;
-        int prevSlot = 0, currSlot = 0;
+        int currSlot = 0;
         for(int loop = 0; loop < lister.getItemCount(); loop++) {
             final Network.ActorState actor = lister.getActorByPos(loop);
-            if(actor.peerKey == previd) prevSlot = loop;
             if(actor.peerKey == currid) currSlot = loop;
         }
-        lister.notifyItemChanged(prevSlot);
-        lister.notifyItemChanged(currSlot);
+        lister.notifyDataSetChanged(); // check everything, player might have healed or damaged others
         MaxUtils.beginDelayedTransition(this);
         final TextView status = (TextView) findViewById(R.id.ba_roundCount);
         status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
