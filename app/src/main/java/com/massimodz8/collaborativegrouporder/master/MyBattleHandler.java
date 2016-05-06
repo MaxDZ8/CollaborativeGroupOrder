@@ -2,11 +2,8 @@ package com.massimodz8.collaborativegrouporder.master;
 
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.util.Pair;
 
 import com.massimodz8.collaborativegrouporder.networkio.Events;
-import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
-import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.lang.ref.WeakReference;
 
@@ -20,6 +17,7 @@ public class MyBattleHandler extends Handler {
     public static final int MSG_ROLL = 3;
     public static final int MSG_TURN_DONE = 4;
     public static final int MSG_SHUFFLE_ME = 5;
+    public static final int MSG_READIED_ACTION_CONDITION = 6;
 
     private final WeakReference<PartyJoinOrderService> target;
 
@@ -54,6 +52,19 @@ public class MyBattleHandler extends Handler {
             case MSG_SHUFFLE_ME: {
                 final Events.ShuffleMe real = (Events.ShuffleMe)msg.obj;
                 session.shuffle(real.from, real.peerKey, real.newSlot);
+                break;
+            }
+            case MSG_READIED_ACTION_CONDITION: {
+                final Events.ReadiedActionCondition real = (Events.ReadiedActionCondition)msg.obj;
+                if(session.battleState.currentActor != real.peerKey) break; // you can only define in your turn, cheater!
+                if(real.peerKey >= target.assignmentHelper.assignment.size()) break; // not a valid key!
+                final Integer owner = target.assignmentHelper.assignment.get(real.peerKey);
+                if(owner == null || owner == PcAssignmentHelper.LOCAL_BINDING) break; // you're cheating big way and I should kick your ass but let's leave it for the good of the group.
+                final PcAssignmentHelper.PlayingDevice dev = target.assignmentHelper.peers.get(owner);
+                if(dev.pipe == null || dev.pipe == real.from) { // if you're the real owner or you were at a certain point and we are out of sync somehow...
+                    session.getActorById(session.battleState.currentActor).prepareCondition = real.desc;
+                    if(!target.onActorUpdatedRemote.isEmpty()) target.onActorUpdatedRemote.getLast().run();
+                }
                 break;
             }
             default: super.handleMessage(msg);

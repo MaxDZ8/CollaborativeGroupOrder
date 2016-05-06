@@ -136,6 +136,7 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         @Override
         public void onBindViewHolder(AdventuringActorDataVH holder, int position) {
             holder.bindData(ticker.actors.get(ticker.playedHere[position]).actor);
+            holder.prepared.setEnabled(false);
         }
 
         @Override
@@ -151,7 +152,7 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
 
         @Override
         protected boolean isCurrent(Network.ActorState actor) {
-            return ticker == null || ticker.currentActor.actor.peerKey == actor.peerKey;
+            return ticker == null || ticker.currentActor == actor.peerKey;
         }
 
         @Override
@@ -203,12 +204,18 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode == RESULT_OK && requestCode == REQUEST_TURN) {
-            ticker.ticksSinceLastAd++;
-            boolean admobReady = true;
-            if(ticker.ticksSinceLastAd >= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER && admobReady) {
-                ticker.ticksSinceLastAd -= ticker.playedHere.length;
-                startActivity(new Intent(this, InterstitialAdPlaceholderActivity.class));
+        if(requestCode == REQUEST_TURN) {
+            lister.notifyDataSetChanged();
+            if (resultCode == RESULT_OK) {
+                ticker.ticksSinceLastAd++;
+                boolean admobReady = true;
+                if (ticker.ticksSinceLastAd >= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER && admobReady) {
+                    ticker.ticksSinceLastAd -= ticker.playedHere.length;
+                    startActivity(new Intent(this, InterstitialAdPlaceholderActivity.class));
+                }
+            }
+            else { // we have somehow got out. MARA is protected against accidental exit so...
+                ticker.onCurrentActorChanged.getLast().run();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -286,12 +293,10 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                 final ActionBar sab = getSupportActionBar();
                 if(sab != null) sab.setTitle(ticker.round == -1? R.string.aoa_title : R.string.aoa_title_fighting);
                 boolean here = false;
-                if (ticker.currentActor != null) {
-                    for (int key : ticker.playedHere) {
-                        if (key == ticker.currentActor.actor.peerKey) {
-                            here = true;
-                            break;
-                        }
+                for (int key : ticker.playedHere) {
+                    if (key == ticker.currentActor) {
+                        here = true;
+                        break;
                     }
                 }
                 if (!here) return; // in the future maybe current actor will be signaled to other peers as well, not now!

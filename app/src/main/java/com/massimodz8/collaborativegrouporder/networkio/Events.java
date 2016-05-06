@@ -144,4 +144,16 @@ public interface Events {
             this.newSlot = newSlot;
         }
     }
+
+    class ReadiedActionCondition {
+        public final MessageChannel from;
+        public final @ActorId int peerKey;
+        public final String desc;
+
+        public ReadiedActionCondition(MessageChannel from, int peerKey, String desc) {
+            this.from = from;
+            this.peerKey = peerKey;
+            this.desc = desc;
+        }
+    }
 }

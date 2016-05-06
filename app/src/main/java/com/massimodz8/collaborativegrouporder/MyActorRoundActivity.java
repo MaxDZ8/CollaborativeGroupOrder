@@ -82,6 +82,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
 
     @Override
     protected void onDestroy() {
+        if(client != null) client.onCurrentActorChanged.pop();
         if(mustUnbind) unbindService(this);
         if(!isChangingConfigurations()) getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onDestroy();
@@ -153,17 +154,19 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                     }
                     myIndex = gotcha;
                 }
-                else if(client.currentActor.keyOrder == null) {
+                else if(client.currentActor == -1) {
                     Snackbar.make(findViewById(R.id.activityRoot), R.string.generic_validButTooEarly, Snackbar.LENGTH_SHORT).show();
                     break; // impossible by construction if we're here, but maybe state is slightly inconsistent as just transitioned. Protect from future changes.
                 }
                 else {
-                    order = new Network.ActorState[client.currentActor.keyOrder.length];
+                    AdventuringService.ActorWithKnownOrder current = client.actors.get(client.currentActor);
+                    if(current == null || current.keyOrder == null) break; // impossible if we are here!
+                    order = new Network.ActorState[current.keyOrder.length];
                     int dst = 0;
-                    for (int key : client.currentActor.keyOrder) order[dst++] = client.actors.get(key).actor;
+                    for (int key : current.keyOrder) order[dst++] = client.actors.get(key).actor;
                     dst = 0;
-                    for (int key : client.currentActor.keyOrder) {
-                        if(key == client.currentActor.actor.peerKey) break;
+                    for (int key : current.keyOrder) {
+                        if(key == current.actor.peerKey) break;
                         dst++;
                     }
                     myIndex = dst;
@@ -196,6 +199,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                             final String s = text.getText().toString();
                             if(!s.isEmpty()) requestReadiedAction(s);
                             else requestReadiedAction(getString(R.string.mara_dlg_readyAction_title));
+                            turnDone();
                         }
                     }
                 );
@@ -208,6 +212,8 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
 
     private void turnDone() {
         if(client != null) {
+            AdventuringService.ActorWithKnownOrder current = client.actors.get(client.currentActor);
+            if(current == null) return; // impossible
             Network.TurnControl done = new Network.TurnControl();
             done.type = Network.TurnControl.T_FORCE_DONE;
             client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, done));
@@ -229,7 +235,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         }
         // If request is valid then it will be accepted so no need to track this, it will be accepted.
         final Network.BattleOrder send = new Network.BattleOrder();
-        send.asKnownBy = client.currentActor.actor.peerKey;
+        send.asKnownBy = client.currentActor;
         send.order = new int[] { newPos };
         // Nope. We wait the server to update.
         //client.currentActor.keyOrder = send.order;
@@ -248,9 +254,12 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         }
         Network.ActorState send = new Network.ActorState();
         send.type = Network.ActorState.T_PARTIAL_PREPARE_CONDITION;
-        send.peerKey = client.currentActor.actor.peerKey;
+        send.peerKey = client.currentActor;
         send.prepareCondition = s;
         client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, send));
+        AdventuringService.ActorWithKnownOrder current = client.actors.get(client.currentActor);
+        if(current == null) return; // impossible
+        current.actor.prepareCondition = s;
     }
 
     private boolean mustUnbind;
@@ -276,7 +285,13 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         }
         else if(service instanceof  AdventuringService.LocalBinder){
             client = ((AdventuringService.LocalBinder)service).getConcreteService();
-            actor = client.currentActor.actor;
+            client.onCurrentActorChanged.push(new Runnable() {
+                @Override
+                public void run() {
+                    finish(); // do I have to do something more here? IDK.
+                }
+            });
+            actor = client.actors.get(client.currentActor).actor;
             round = client.round;
             nextActor = null;
         }
@@ -290,6 +305,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         MaxUtils.beginDelayedTransition(this);
         helper.bindData(actor);
         holder.setVisibility(View.VISIBLE);
+        helper.prepared.setEnabled(false);
         ((TextView) findViewById(R.id.mara_round)).setText(String.format(Locale.ROOT, getString(R.string.mara_round), round));
         MaxUtils.setTextUnlessNull((TextView) findViewById(R.id.mara_nextActorName), nextActor, View.GONE);
     }

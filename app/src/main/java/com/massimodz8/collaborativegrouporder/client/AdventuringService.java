@@ -41,7 +41,7 @@ public class AdventuringService extends Service {
     public ArrayDeque<Runnable> onRollRequestPushed = new ArrayDeque<>();
     public ArrayDeque<Runnable> onCurrentActorChanged = new ArrayDeque<>();
 
-    public ActorWithKnownOrder currentActor;
+    public @ActorId int currentActor = -1; // -1 = no current known actor
     ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
     public int round = -1; // -1 == not fighting, 0 = waiting other players roll 1+ fighting
     public final Mailman mailman = new Mailman();
@@ -149,8 +149,16 @@ public class AdventuringService extends Service {
                 case MSG_ACTOR_DATA: {
                     Network.ActorState real = (Network.ActorState)msg.obj;
                     ActorWithKnownOrder known = self.actors.get(real.peerKey);
-                    if(known != null)  known.actor = real;
+                    if(known != null) {
+                        if(real.type != Network.ActorState.T_PARTIAL_PREPARE_CONDITION) known.actor = real;
+                        else {
+                            known.actor.prepareCondition = "";
+                            known.actor.preparedTriggered = false;
+                        }
+                    }
                     else {
+                        // When this is a partial condition that's quite odd and might produce bad listings so I just discard them.
+                        if(real.type == Network.ActorState.T_PARTIAL_PREPARE_CONDITION) break;
                         known = new ActorWithKnownOrder();
                         known.actor = real;
                         self.actors.put(real.peerKey, known);
@@ -198,8 +206,8 @@ public class AdventuringService extends Service {
                     else self.round = real.round;
                     boolean here = false;
                     for (int check : self.playedHere) here |= check == real.peerKey;
-                    if(!here) self.currentActor = null;
-                    else self.currentActor = self.actors.get(real.peerKey);
+                    if(!here) self.currentActor = -1;
+                    else self.currentActor = real.peerKey;
                     if(self.onCurrentActorChanged.size() > 0) self.onCurrentActorChanged.getLast().run();
                 } break;
             }

@@ -1374,8 +1374,7 @@ public interface Network {
     public static final int T_REGULAR = 1;
     public static final int T_PREPARED_TRIGGERED = 2;
     public static final int T_OPPORTUNITY = 3;
-    public static final int T_PREPARED_CANCELLED = 32;
-    public static final int T_BATTLE_ENDED = 33;
+    public static final int T_BATTLE_ENDED = 32;
 
     private static volatile TurnControl[] _emptyArray;
     public static TurnControl[] emptyArray() {
@@ -1467,7 +1466,6 @@ public interface Network {
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_REGULAR:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_PREPARED_TRIGGERED:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_OPPORTUNITY:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_PREPARED_CANCELLED:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_BATTLE_ENDED:
                 this.type = value;
                 break;

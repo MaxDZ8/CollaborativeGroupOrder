@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.Mailman;
 import com.massimodz8.collaborativegrouporder.MainMenuActivity;
@@ -221,7 +222,7 @@ public abstract class PcAssignmentHelper {
         public int keyIndex = ANON; /// if isRemote, index of the matched device key --> bound to remote, otherwise check specials
         public Vector<Exception> errors = new Vector<>();
         public boolean movedToBattlePumper; // if this is set, device is already moved to battle pumper, somewhere else.
-        public int activeActor; // peerKey > 0 of active actor, otherwise -1
+        public @ActorId int activeActor; // peerKey > 0 of active actor, otherwise -1
 
         /// Using null will create this in 'disconnected' mode. Does not make sense to me but w/e.
         public PlayingDevice(@Nullable MessageChannel pipe) {
@@ -582,7 +583,7 @@ public abstract class PcAssignmentHelper {
         payload.type = roundType;
         payload.round = roundCount;
         if(dev.pipe != null) mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, payload));
-        if(roundType != Network.TurnControl.T_PREPARED_CANCELLED) dev.activeActor = actorKey;
+        dev.activeActor = actorKey;
     }
 
     public final Mailman mailman = new Mailman();

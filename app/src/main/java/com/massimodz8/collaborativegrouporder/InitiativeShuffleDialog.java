@@ -47,8 +47,7 @@ public class InitiativeShuffleDialog {
             public AdventuringActorControlsVH onCreateViewHolder(ViewGroup parent, int viewType) {
                 AdventuringActorControlsVH res = super.onCreateViewHolder(parent, viewType);
                 res.selected.setEnabled(false);
-                res.selected.setVisibility(View.GONE);
-                res.avatar.setVisibility(View.GONE);
+                MaxUtils.setVisibility(View.GONE, res.selected, res.avatar, res.prepared);
                 return res;
             }
 

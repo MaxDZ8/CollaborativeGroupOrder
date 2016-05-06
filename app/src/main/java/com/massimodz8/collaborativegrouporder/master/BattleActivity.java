@@ -24,7 +24,9 @@ import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.util.ArrayDeque;
@@ -173,7 +175,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
     @Override
     protected void onDestroy() {
-        if(game != null) game.onRemoteTurnCompleted.pop();
+        if(game != null) game.onTurnCompletedRemote.pop();
         if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
@@ -223,16 +225,20 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Getting the rid of an action is nontrivial, we might have to signal it. It's just a curtesy anyway.
+                actor.prepareCondition = "";
+                actor.preparedTriggered = false;
+                MaxUtils.beginDelayedTransition(BattleActivity.this);
                 MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
+                lister.notifyItemChanged(currentSlot);
                 if(pipe == null) { // we mangle it there. That's nice.
-                    actor.prepareCondition = null;
-                    MaxUtils.beginDelayedTransition(BattleActivity.this);
-                    lister.notifyItemChanged(currentSlot);
                     activateNewActor();
                     return;
                 }
                 final PcAssignmentHelper.PlayingDevice dev = game.assignmentHelper.getDevice(pipe);
-                game.assignmentHelper.activateRemote(dev, actor.peerKey, Network.TurnControl.T_PREPARED_CANCELLED, battle.round);
+                final Network.ActorState temp = new Network.ActorState();
+                temp.type = Network.ActorState.T_PARTIAL_PREPARE_CONDITION;
+                temp.peerKey = actor.peerKey;
+                game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, temp));
                 game.assignmentHelper.activateRemote(dev, actor.peerKey, Network.TurnControl.T_REGULAR, battle.round);
             }
         }).setCancelable(false)
@@ -274,14 +280,20 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             final TextView status = (TextView) findViewById(R.id.ba_roundCount);
             status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
         }
-        game.onRemoteTurnCompleted.push(new Runnable() {
+        game.onTurnCompletedRemote.push(new Runnable() {
             @Override
             public void run() { actionCompleted(); }
         });
-        game.onRemoteActorShuffled.push(new Runnable() {
+        game.onActorShuffledRemote.push(new Runnable() {
             @Override
             public void run() {
                 actionCompleted();
+            }
+        });
+        game.onActorUpdatedRemote.push(new Runnable() {
+            @Override
+            public void run() {
+                lister.notifyDataSetChanged();
             }
         });
     }

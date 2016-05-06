@@ -79,7 +79,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(peerKey != battleState.currentActor) return; // that's not his turn anyway!
                 // Don't do that. Might involve popping readied actions. Furthermore, BattleActivity wants to keep track of both previous and current actor.
                 //battleState.tickRound();
-                if(!onRemoteTurnCompleted.isEmpty()) onRemoteTurnCompleted.getLast().run();
+                if(!onTurnCompletedRemote.isEmpty()) onTurnCompletedRemote.getLast().run();
             }
 
             @Override
@@ -95,7 +95,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(bound != index) return; // you cannot control this turn you cheater!
                 if(peerKey != battleState.currentActor) return; // How did you manage to do that? Not currently allowed.
                 if(sessionHelper.session.battleState.moveCurrentToSlot(newSlot)) pushBattleOrder();
-                if(!onRemoteActorShuffled.isEmpty()) onRemoteActorShuffled.getLast().run();
+                if(!onActorShuffledRemote.isEmpty()) onActorShuffledRemote.getLast().run();
             }
         };
         battleHandler = new MyBattleHandler(this);
@@ -129,6 +129,18 @@ public class PartyJoinOrderService extends PublishAcceptService {
                         if(msg.order.length == 1) { // otherwise discard ill formed
                             final Events.ShuffleMe ev = new Events.ShuffleMe(from, msg.asKnownBy, msg.order[0]);
                             battleHandler.sendMessage(battleHandler.obtainMessage(MyBattleHandler.MSG_SHUFFLE_ME, ev));
+                        }
+                        return false;
+                    }
+                }).add(ProtoBufferEnum.ACTOR_DATA_UPDATE, new PumpTarget.Callbacks<Network.ActorState>() {
+                    @Override
+                    public Network.ActorState make() { return new Network.ActorState(); }
+
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.ActorState msg) throws IOException {
+                        if(msg.type == Network.ActorState.T_PARTIAL_PREPARE_CONDITION) { // only thing we care.
+                            final Events.ReadiedActionCondition ev = new Events.ReadiedActionCondition(from, msg.peerKey, msg.prepareCondition);
+                            battleHandler.sendMessage(battleHandler.obtainMessage(MyBattleHandler.MSG_READIED_ACTION_CONDITION, ev));
                         }
                         return false;
                     }
@@ -191,8 +203,9 @@ public class PartyJoinOrderService extends PublishAcceptService {
      */
     int rollRequest;
     Runnable onRollReceived; // called when a roll has been matched to some updated state.
-    public ArrayDeque<Runnable> onRemoteTurnCompleted = new ArrayDeque<>();
-    public ArrayDeque<Runnable> onRemoteActorShuffled = new ArrayDeque<>();
+    public ArrayDeque<Runnable> onTurnCompletedRemote = new ArrayDeque<>();
+    public ArrayDeque<Runnable> onActorShuffledRemote = new ArrayDeque<>();
+    public ArrayDeque<Runnable> onActorUpdatedRemote = new ArrayDeque<>();
 
 
     private void matchRoll(MessageChannel from, Network.Roll dice) {
