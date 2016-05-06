@@ -199,12 +199,14 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
 
     private static final int REQUEST_TURN = 1;
 
+    private static final int CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER = 2;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(resultCode == RESULT_OK && requestCode == REQUEST_TURN) {
             ticker.ticksSinceLastAd++;
             boolean admobReady = true;
-            if(ticker.ticksSinceLastAd >= ticker.playedHere.length && admobReady) {
+            if(ticker.ticksSinceLastAd >= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER && admobReady) {
                 ticker.ticksSinceLastAd -= ticker.playedHere.length;
                 startActivity(new Intent(this, InterstitialAdPlaceholderActivity.class));
             }

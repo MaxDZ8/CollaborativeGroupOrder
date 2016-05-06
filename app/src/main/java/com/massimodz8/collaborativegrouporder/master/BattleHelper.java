@@ -23,7 +23,6 @@ public class BattleHelper {
      * Do not mess with me. Go with IDs, they are truly persistent while objects might be not, much less order.
      */
     public ArrayDeque<Integer> triggered;
-    public boolean orderChanged = true;
 
     public BattleHelper(@NonNull InitiativeScore[] ordered) {
         this.ordered = ordered;

@@ -94,7 +94,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
                 if(bound != index) return; // you cannot control this turn you cheater!
                 if(peerKey != battleState.currentActor) return; // How did you manage to do that? Not currently allowed.
-                sessionHelper.session.battleState.moveCurrentToSlot(newSlot);
+                if(sessionHelper.session.battleState.moveCurrentToSlot(newSlot)) pushBattleOrder();
                 if(!onRemoteActorShuffled.isEmpty()) onRemoteActorShuffled.getLast().run();
             }
         };
@@ -220,7 +220,6 @@ public class PartyJoinOrderService extends PublishAcceptService {
 
 
     public boolean pushBattleOrder() {
-        if(!sessionHelper.session.battleState.orderChanged) return false;
         final InitiativeScore[] order = sessionHelper.session.battleState.ordered;
         int[] sequence = new int[order.length];
         int cp = 0;
@@ -240,7 +239,6 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.BATTLE_ORDER, bo));
             }
         }
-        sessionHelper.session.battleState.orderChanged = false;
         return true;
     }
 

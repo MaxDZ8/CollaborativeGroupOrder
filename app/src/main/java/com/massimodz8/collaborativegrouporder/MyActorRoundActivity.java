@@ -104,6 +104,20 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     }
 
     @Override
+    public boolean onSupportNavigateUp() {
+        if(client == null) return super.onSupportNavigateUp();
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.generic_nopeDlgTitle)
+                .setMessage(R.string.mara_noBackDlgMessage)
+                .setPositiveButton(R.string.mara_next_title, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { turnDone(); }
+                })
+                .show();
+        return false;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.my_actor_round_activity, menu);
         imDone = menu.findItem(R.id.mara_menu_doneConfirmed);
@@ -159,6 +173,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                             @Override
                             public void newOrder(int newPos) {
                                 requestNewOrder(newPos);
+                                turnDone();
                             }
                         });
             } break;
@@ -205,9 +220,12 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     private void requestNewOrder(int newPos) {
         if(server == null && client == null) return; // impossible
         if(server != null) {
-            if(!server.sessionHelper.session.battleState.moveCurrentToSlot(newPos)) return;
-            setResult(RESULT_OK);
-            finish();
+            if(server.sessionHelper.session.battleState.moveCurrentToSlot(newPos)) {
+                server.pushBattleOrder();
+                setResult(RESULT_OK);
+                finish();
+            }
+            return;
         }
         // If request is valid then it will be accepted so no need to track this, it will be accepted.
         final Network.BattleOrder send = new Network.BattleOrder();
