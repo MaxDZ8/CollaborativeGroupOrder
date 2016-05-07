@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Blue-ringed Octopus"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gargoyle Guardian"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 2
+    }
+}

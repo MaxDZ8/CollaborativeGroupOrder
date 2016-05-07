@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Volcano Giant"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "earth",
+            "fire",
+            "giant"
+        ]
+    }
+}

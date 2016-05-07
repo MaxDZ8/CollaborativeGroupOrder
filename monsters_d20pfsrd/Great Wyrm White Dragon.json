@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "White Dragon"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
+        ]
+    }
+}

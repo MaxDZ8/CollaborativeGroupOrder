@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Brine Zombie"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": -1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

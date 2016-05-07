@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Cythnigot"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar",
+            "qlippoth"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Qlippoth"
+            }
+        ]
+    }
+}

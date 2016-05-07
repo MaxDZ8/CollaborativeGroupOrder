@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bonestorm"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Diminutive",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

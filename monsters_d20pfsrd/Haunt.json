@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Haunt"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

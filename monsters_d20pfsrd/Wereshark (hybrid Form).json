@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Wereshark"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 1,
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "hybrid"
+            }
+        ]
+    }
+}

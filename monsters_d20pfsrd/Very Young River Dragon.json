@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "River Dragon"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 6,
+        "tags": [
+            "aquatic",
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very young"
+            }
+        ]
+    }
+}

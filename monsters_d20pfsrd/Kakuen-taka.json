@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Kakuen-taka"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar",
+            "swarm"
+        ]
+    }
+}

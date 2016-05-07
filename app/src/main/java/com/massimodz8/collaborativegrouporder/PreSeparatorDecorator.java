@@ -1,14 +1,13 @@
 package com.massimodz8.collaborativegrouporder;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-
-import java.util.ArrayList;
 
 /**
  * Created by Massimo on 12/02/2016.
@@ -28,54 +27,48 @@ import java.util.ArrayList;
  *
  */
 public abstract class PreSeparatorDecorator extends RecyclerView.ItemDecoration {
-    public PreSeparatorDecorator(RecyclerView container, AppCompatActivity ctx, int thickness) {
+    public PreSeparatorDecorator(RecyclerView container, Context ctx, int thickness) {
         this.container = container;
         int color = new ResourcesCompat().getColor(ctx.getResources(), R.color.listSeparator, ctx.getTheme());
         this.thickness = thickness;
         paint = new Paint();
         paint.setColor(color);
     }
-    public PreSeparatorDecorator(RecyclerView container, AppCompatActivity ctx) {
+    public PreSeparatorDecorator(RecyclerView container, Context ctx) {
         this(container, ctx, Math.round(ctx.getResources().getDimension(R.dimen.list_separator_thickness)));
     }
+
     protected abstract boolean isEligible(int position);
 
     final RecyclerView container;
     final Paint paint;
     final int thickness;
-    Rect rect = new Rect(), parentRect = new Rect();
-    ArrayList<View> targets = new ArrayList<>();
-    boolean drawn = true; // we lie
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        if(drawn) {
-            targets.clear();
-            drawn = false;
-        }
         final int pos = parent.getChildAdapterPosition(view);
         if(!isEligible(pos)) {
             outRect.setEmpty();
             return;
         }
-        targets.add(view);
         outRect.set(0, thickness, 0, 0);
     }
 
+    // from android support v7 demos DividerItemDecoration
     @Override
     //public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
-        parent.getGlobalVisibleRect(parentRect);
-        for(View v : targets) {
-            v.getGlobalVisibleRect(rect);
-            final int width = rect.right - rect.left;
-            rect.top -= parentRect.top;
-            rect.bottom = rect.top;
-            rect.top -= thickness;
-            rect.left -= parentRect.left;
-            rect.right = rect.left + width;
-            c.drawRect(rect, paint);
+        final int left = parent.getPaddingLeft();
+        final int right = parent.getWidth() - parent.getPaddingRight();
+        final int childCount = parent.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View v = parent.getChildAt(i);
+            if(isEligible(parent.getChildAdapterPosition(v))) {
+                final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) v.getLayoutParams();
+                final int bottom = v.getTop() - params.topMargin - Math.round(ViewCompat.getTranslationY(v));
+                final int top = bottom - thickness;
+                c.drawRect(left, top, right, bottom, paint);
+            }
         }
-        drawn = true;
     }
 }

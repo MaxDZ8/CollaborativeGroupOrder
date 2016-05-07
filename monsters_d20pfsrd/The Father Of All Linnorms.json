@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "The Father Of All Linnorms"
+        ],
+        "cr": "24",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 14
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Red Sun",
+            "Baba Yaga Horseman"
+        ],
+        "cr": "14",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "example": "Male human horseman fighter 12",
+        "tags": [
+            "native"
+        ]
+    }
+}

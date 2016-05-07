@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mythical Lion"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 9
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Combat Trained Wolliped"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 2
+    }
+}

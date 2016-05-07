@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Garipan"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "native"
+        ]
+    }
+}

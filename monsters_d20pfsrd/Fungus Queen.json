@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fungus Queen"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 7,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

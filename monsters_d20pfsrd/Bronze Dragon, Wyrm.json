@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Bronze Dragon"
+        ],
+        "cr": "19",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
+        ]
+    }
+}

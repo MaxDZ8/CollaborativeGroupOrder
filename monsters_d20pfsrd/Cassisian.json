@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Cassisian"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "angel",
+            "extraplanar",
+            "good"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Angel"
+            }
+        ]
+    }
+}

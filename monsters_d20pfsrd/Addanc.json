@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Addanc"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2
+    }
+}

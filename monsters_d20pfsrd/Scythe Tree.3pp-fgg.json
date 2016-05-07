@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Scythe Tree"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": -1,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

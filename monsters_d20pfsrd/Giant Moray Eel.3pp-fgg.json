@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Giant Moray Eel"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

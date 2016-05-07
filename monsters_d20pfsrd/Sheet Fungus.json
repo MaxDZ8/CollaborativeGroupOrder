@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Sheet Fungus"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 3,
+        "tags": [
+            "fungus"
+        ]
+    }
+}

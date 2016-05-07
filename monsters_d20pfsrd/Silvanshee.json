@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Silvanshee"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "agathion",
+            "extraplanar",
+            "good"
+        ]
+    }
+}

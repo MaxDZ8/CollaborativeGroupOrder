@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Giant Lake Octopus"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "animal",
+        "init": 6,
+        "example": "Advanced giant octopus",
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

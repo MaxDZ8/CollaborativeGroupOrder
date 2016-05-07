@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Gongorinan"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "chaotic",
+            "qlippoth",
+            "evil",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Qlippoth"
+            }
+        ]
+    }
+}

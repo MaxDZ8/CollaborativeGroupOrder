@@ -2,14 +2,14 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="android:colorBackground">@color/colorPrimaryDark</item>
+
         <!--
         <item name="isLightTheme">false</item>
-        <item name="android:windowBackground">@color/windowBackground</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
         <item name="colorButtonNormal">@color/colorButtonNormal</item>
-
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
         <item name="android:textColorSecondary">@color/textColorSecondary</item>
         <item name="android:textColorTertiary">@color/textColorTertiary</item>
@@ -18,9 +18,7 @@
     </style>
 
     <style name="CardTheme" parent="CardView.Dark">
-        <!--
         <item name="cardBackgroundColor">@color/cardBackgroundColor</item>
-        -->
     </style>
 
     <style name="AppTheme.NoActionBar">

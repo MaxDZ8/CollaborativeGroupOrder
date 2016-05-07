@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Black Dragon"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "Water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young adult"
+            }
+        ]
+    }
+}

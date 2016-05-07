@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ghorazagh"
+        ],
+        "cr": "13",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 3
+    }
+}

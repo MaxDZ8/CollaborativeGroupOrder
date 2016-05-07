@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Hellgrammite"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 0,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

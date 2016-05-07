@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Cat Lord"
+        ],
+        "cr": "15",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "native",
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "human"
+            }
+        ]
+    }
+}

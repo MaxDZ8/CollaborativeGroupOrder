@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Lucifer",
+			"Prince of Darkness"
+        ],
+        "cr": "39",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

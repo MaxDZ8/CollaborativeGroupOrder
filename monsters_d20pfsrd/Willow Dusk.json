@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Willow Dusk"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": -1
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Cave Giant"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "giant"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

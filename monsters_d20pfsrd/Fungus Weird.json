@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fungus Weird"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 7,
+        "tags": [
+            "fungus"
+        ]
+    }
+}

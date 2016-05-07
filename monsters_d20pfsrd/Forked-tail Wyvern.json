@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Forked-tail Wyvern"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Golden Skeleton"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 3,
+        "example": "Gold-clad human burning skeleton"
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Faceless Flesh Golem"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": -1
+    }
+}

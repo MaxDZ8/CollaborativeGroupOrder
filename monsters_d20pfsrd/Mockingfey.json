@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mockingfey"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 3
+    }
+}

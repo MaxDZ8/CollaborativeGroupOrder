@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Cave Moray"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 3
+    }
+}

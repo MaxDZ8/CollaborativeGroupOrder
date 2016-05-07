@@ -1,0 +1,22 @@
+{
+    "head": {
+        "name": [
+            "Water Yai"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "aquatic",
+            "giant",
+            "native",
+            "oni",
+            "shapechanger",
+            "water"
+        ]
+    }
+}

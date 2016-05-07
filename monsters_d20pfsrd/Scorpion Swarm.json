@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Scorpion Swarm"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "vermin",
+        "init": 3,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

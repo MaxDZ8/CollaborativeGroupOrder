@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Kamadan"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Stygian Leviathan"
+        ],
+        "cr": "21",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": 5,
+        "tags": [
+            "aquatic",
+            "extraplanar"
+        ]
+    }
+}

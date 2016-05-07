@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Witch Tree"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": 3
+    }
+}

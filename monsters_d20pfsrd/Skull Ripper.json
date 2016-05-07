@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Skull Ripper"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 3
+    }
+}

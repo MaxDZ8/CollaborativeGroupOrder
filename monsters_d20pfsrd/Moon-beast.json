@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Moon-beast"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 7
+    }
+}

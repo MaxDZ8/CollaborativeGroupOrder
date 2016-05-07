@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Glass Urchin"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "vermin",
+        "init": -4,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

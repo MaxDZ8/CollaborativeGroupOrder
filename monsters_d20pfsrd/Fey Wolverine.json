@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fey Wolverine"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 4,
+        "tags": [
+            "augmented animal"
+        ]
+    }
+}

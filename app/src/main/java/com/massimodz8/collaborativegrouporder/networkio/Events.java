@@ -1,8 +1,8 @@
 package com.massimodz8.collaborativegrouporder.networkio;
 
+import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-
-import java.net.Socket;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 /**
  * Created by Massimo on 13/01/2016.
@@ -110,6 +110,50 @@ public interface Events {
         public CharOwnership(MessageChannel origin, Network.CharacterOwnership payload) {
             this.origin = origin;
             this.payload = payload;
+        }
+    }
+
+    class Roll {
+        public final MessageChannel from;
+        public final Network.Roll payload;
+
+        public Roll(MessageChannel from, Network.Roll payload) {
+            this.from = from;
+            this.payload = payload;
+        }
+    }
+
+    class TurnDone {
+        public final MessageChannel from;
+        public final @ActorId int peerKey;
+
+        public TurnDone(MessageChannel from, @ActorId int peerKey) {
+            this.from = from;
+            this.peerKey = peerKey;
+        }
+    }
+
+    class ShuffleMe {
+        public final MessageChannel from;
+        public final @ActorId int peerKey;
+        public final int newSlot;
+
+        public ShuffleMe(MessageChannel from, int peerKey, int newSlot) {
+            this.from = from;
+            this.peerKey = peerKey;
+            this.newSlot = newSlot;
+        }
+    }
+
+    class ReadiedActionCondition {
+        public final MessageChannel from;
+        public final @ActorId int peerKey;
+        public final String desc;
+
+        public ReadiedActionCondition(MessageChannel from, int peerKey, String desc) {
+            this.from = from;
+            this.peerKey = peerKey;
+            this.desc = desc;
         }
     }
 }

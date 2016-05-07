@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Water Naga"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

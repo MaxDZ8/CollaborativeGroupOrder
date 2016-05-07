@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Galvo"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 4,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

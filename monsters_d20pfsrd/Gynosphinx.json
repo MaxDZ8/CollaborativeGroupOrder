@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gynosphinx"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 5
+    }
+}

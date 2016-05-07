@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Anguineum Caste"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 5,
+        "tags": [
+            "reptilian"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Ophiduan"
+            }
+        ]
+    }
+}

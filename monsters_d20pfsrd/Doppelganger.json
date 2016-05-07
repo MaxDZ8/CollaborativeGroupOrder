@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Doppelganger"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 1,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

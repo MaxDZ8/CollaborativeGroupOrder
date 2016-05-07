@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Hedgehog"
+        ],
+        "cr": "1/8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "animal",
+        "init": 3
+    }
+}

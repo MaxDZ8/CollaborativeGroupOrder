@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bleeding Horror Minotaur"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 0,
+        "tags": [
+            "augmented monstrous humanoid"
+        ]
+    }
+}

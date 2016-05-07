@@ -1,0 +1,29 @@
+{
+    "head": {
+        "name": [
+            "Cold Iron Elemental"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": -1,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "greater"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
+        ]
+    }
+}

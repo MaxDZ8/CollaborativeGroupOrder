@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Beetle"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "vermin",
+        "init": 6,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Chariot"
+            }
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Niln"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "air",
+            "extraplanar",
+            "water"
+        ]
+    }
+}

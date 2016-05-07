@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Lion Beast Of Chaos"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "augmented animal"
+        ]
+    }
+}

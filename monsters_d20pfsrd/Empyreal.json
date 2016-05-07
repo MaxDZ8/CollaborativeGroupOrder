@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Empyreal"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "angel",
+            "extraplanar",
+            "good",
+            "lawful"
+        ]
+    }
+}

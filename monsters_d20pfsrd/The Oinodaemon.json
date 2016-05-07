@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "The Oinodaemon"
+        ],
+        "cr": "37",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 16,
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

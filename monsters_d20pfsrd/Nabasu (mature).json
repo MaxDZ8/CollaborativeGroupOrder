@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Nabasu"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Mature"
+            }
+        ]
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Tojanida"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "extraplanar",
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "to"
+            }
+        ]
+    }
+}

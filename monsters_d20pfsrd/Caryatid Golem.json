@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Caryatid Golem"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": 0,
+        "example": "Modified stone golem"
+    }
+}

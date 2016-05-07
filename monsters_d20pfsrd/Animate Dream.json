@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Animate Dream"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "extraplanar",
+            "incorporeal"
+        ]
+    }
+}

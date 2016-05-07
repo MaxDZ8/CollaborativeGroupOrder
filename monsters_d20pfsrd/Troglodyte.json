@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Troglodyte"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": -1,
+        "tags": [
+            "reptilian"
+        ]
+    }
+}

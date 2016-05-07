@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Mudman"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

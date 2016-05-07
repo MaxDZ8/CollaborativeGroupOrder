@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Scylla"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

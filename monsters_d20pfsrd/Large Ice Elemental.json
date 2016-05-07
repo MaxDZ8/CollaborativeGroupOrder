@@ -1,0 +1,31 @@
+{
+    "head": {
+        "name": [
+            "Ice Elemental"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "air",
+            "cold",
+            "elemental",
+            "extraplanar",
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "large"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
+        ]
+    }
+}

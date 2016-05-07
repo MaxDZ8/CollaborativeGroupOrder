@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "The Mantis God"
+        ],
+        "cr": "30",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Colossal",
+        "type": "outsider",
+        "init": 21,
+        "tags": [
+            "lawful",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

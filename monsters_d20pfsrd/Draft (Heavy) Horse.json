@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Draft Horse"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "heavy"
+            }
+        ]
+    }
+}

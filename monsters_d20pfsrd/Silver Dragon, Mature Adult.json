@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Silver Dragon"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "mature adult"
+            }
+        ]
+    }
+}

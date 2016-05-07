@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/vhAC_name"
+        android:id="@+id/vhAA_name"
         android:layout_alignParentTop="false"
         android:layout_toRightOf="@+id/vhAC_image"
         android:layout_toEndOf="@+id/vhAC_image"
@@ -34,7 +34,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/vhAC_level"
         android:id="@+id/vhAC_level"
-        android:layout_below="@+id/vhAC_name"
+        android:layout_below="@+id/vhAA_name"
         android:layout_toRightOf="@+id/vhAC_image"
         android:layout_toEndOf="@+id/vhAC_image" />
 

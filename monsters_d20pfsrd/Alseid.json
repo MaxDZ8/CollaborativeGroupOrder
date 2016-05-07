@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Alseid"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 3,
+        "example": "Alseid ranger 1"
+    }
+}

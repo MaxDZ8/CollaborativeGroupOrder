@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Jyoti"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

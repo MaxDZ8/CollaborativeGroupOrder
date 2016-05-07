@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Thin Man"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 10,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "cgp"
+            }
+        ]
+    }
+}

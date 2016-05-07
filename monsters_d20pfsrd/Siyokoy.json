@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Siyokoy"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 5,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

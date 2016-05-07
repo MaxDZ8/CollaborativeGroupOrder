@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Cheitan Djinni"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "air",
+            "extraplanar"
+        ]
+    }
+}

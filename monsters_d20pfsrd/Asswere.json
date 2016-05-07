@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Asswere"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 1,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

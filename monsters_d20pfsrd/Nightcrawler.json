@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Nightcrawler"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "undead",
+        "init": 4,
+        "tags": [
+            "extraplanar",
+            "nightshade"
+        ]
+    }
+}

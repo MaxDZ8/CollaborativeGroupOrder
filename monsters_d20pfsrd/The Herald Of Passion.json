@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "The Herald Of Passion"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "herald",
+            "shapechanger"
+        ]
+    }
+}

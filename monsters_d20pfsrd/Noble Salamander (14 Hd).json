@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Noble Salamander"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "14 Hd"
+            }
+        ]
+    }
+}

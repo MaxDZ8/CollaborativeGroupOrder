@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Sprite"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Diminutive",
+        "type": "fey",
+        "init": 3
+    }
+}

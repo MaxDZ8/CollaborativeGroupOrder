@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Floating Eye"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

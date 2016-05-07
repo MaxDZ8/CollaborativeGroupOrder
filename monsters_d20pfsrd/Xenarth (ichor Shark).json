@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Xenarth",
+            "Ichor Shark"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "native"
+        ]
+    }
+}

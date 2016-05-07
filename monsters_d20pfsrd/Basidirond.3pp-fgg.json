@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Basidirond"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 1,
+        "tags": [
+            "fungus"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Incutilis"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Tiny",
+        "type": "aberration",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

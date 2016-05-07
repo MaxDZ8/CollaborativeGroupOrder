@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Baykok"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 10
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Copper Dragon"
+        ],
+        "cr": "20",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
+        ]
+    }
+}

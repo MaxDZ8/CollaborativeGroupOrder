@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Elemental Air Dragon"
+        ],
+        "cr": "18",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "air",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

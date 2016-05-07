@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Choleric Ooze Swarm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "ooze",
+        "init": -5,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

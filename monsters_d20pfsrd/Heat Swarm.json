@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Heat Swarm"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Diminutive",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "fire",
+            "swarm"
+        ]
+    }
+}

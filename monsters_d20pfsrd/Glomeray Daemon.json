@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Glomeray Daemon"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "example": "Male unique advanced glomeray",
+        "tags": [
+            "daemon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

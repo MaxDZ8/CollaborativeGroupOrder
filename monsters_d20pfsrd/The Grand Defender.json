@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "The Grand Defender"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Huge",
+        "type": "construct",
+        "init": 3,
+        "tags": [
+            "extraplanar",
+            "herald"
+        ]
+    }
+}

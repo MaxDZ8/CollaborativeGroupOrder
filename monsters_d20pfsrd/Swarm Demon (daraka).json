@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Swarm Demon",
+            "Daraka"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

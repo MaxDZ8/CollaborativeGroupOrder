@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Airfiend"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "air",
+            "chaotic",
+            "elemental",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

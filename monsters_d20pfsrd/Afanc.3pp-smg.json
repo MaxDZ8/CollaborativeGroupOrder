@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Afanc"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "smg"
+            }
+        ]
+    }
+}

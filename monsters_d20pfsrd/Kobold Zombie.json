@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Kobold Zombie"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 1,
+        "tags": [
+            "augmented humanoid"
+        ]
+    }
+}

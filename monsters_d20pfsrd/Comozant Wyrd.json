@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Comozant Wyrd"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "air",
+            "elemental",
+            "extraplanar",
+            "incorporeal"
+        ]
+    }
+}

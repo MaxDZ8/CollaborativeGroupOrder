@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Hell Moth"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 7,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

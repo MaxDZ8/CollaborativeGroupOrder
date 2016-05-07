@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Greater Boneneedle"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 3
+    }
+}

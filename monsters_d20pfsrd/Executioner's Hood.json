@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Lurking Ray"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "aberration",
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Executioner's Hood"
+            }
+        ]
+    }
+}

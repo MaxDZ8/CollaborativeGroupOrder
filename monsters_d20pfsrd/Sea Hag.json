@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Sea Hag"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

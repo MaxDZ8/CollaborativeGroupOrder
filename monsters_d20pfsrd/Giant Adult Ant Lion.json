@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Giant Ant Lion"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "vermin",
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "adult"
+            }
+        ]
+    }
+}

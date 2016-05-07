@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".master.FreeRoamingActivity"
+    tools:showIn="@layout/activity_free_roaming"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/fra_instructions"
+        android:id="@+id/fra_instructions"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fra_list"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:visibility="visible"
+        android:layout_height="fill_parent"
+        app:layoutManager="LinearLayoutManager"
+        tools:listitem="@layout/vh_adventuring_actor_controls" />
+
+</LinearLayout>

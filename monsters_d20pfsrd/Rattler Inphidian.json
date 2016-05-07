@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Rattler Inphidian"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 2,
+        "tags": [
+            "reptilian"
+        ]
+    }
+}

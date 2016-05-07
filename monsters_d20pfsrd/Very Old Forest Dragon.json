@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Forest Dragon"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very old"
+            }
+        ]
+    }
+}

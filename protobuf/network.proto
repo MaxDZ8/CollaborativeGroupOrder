@@ -71,7 +71,10 @@ message PlayingCharacterDefinition {
 // Server -> client
 message GroupReady {
     bool go_adventuring = 1; // if true then terminate "join group" activity and open "go adventuring" activity right away.
-    repeated PlayingCharacterDefinition yours = 2; // only considered when terminating the character ownership process below.
+	bool charAssignment = 2; // if true, then yours is specified even when empty.
+    repeated uint32 yours = 3;
+	// ^ Group ready as result of character ownership assignment, list of peerkeys.
+	// The client will then send LiveActorDataRequest objects to get the full info about the clients.
 }
 
 
@@ -122,74 +125,75 @@ message CharacterOwnership {
 }
 
 
-// Server -> client. Roll a dice and tell me the result, see RollResult
-message ManualRollRequest {
+// Server <-> Client.
+// When .range is != 0 then this is Server->Client, roll request.
+// If .range is 0 then this is client->server, due to modifiers this can be any value.
+// Multiple rolls can be in flight, they are matched by .unique.
+// Who must roll? If this is server->client then .peerKey is valid and specifies the actor to roll with.
+// So, a device with multiple actors gets multiple RollRequests. It will have to collect them somehow and reply to all
+// of them. It is not required to reply in order however.
+message Roll {
     string note = 1;   // master gives an hint to player
     uint32 unique = 2; // multiple rolls can be in flight at once
-    enum Dice {
-        FOUR = 0;
-        SIX = 1;
-        EIGHT = 2;
-        TEN = 3;
-        TWELVE = 4;
-        TWENTY = 5;
-        HUNDRED = 6;
-    }
-    Dice what = 3;
+    uint32 range = 3;
+	uint32 peerKey = 4;
+	int32 result = 5;
+	Type type = 6; // this is just an hint to other peer. In particular, replies get their true type from matching unique
+	
+	enum Type {
+		T_MISC = 0;
+		T_BATTLE_START = 1; // initiative roll which also begins a battle
+	}
+}
+
+// Server<->Client
+// When sent by server, this is the new order of battle. It is used for the 'shuffle order' dialog.
+// When sent by client it is a 'shuffle request'. They are ignored if invalid or applied with no confirmation.
+// In all cases, there's no reply (albeit shuffles generate a new order).
+message BattleOrder {
+	uint32 asKnownBy = 1; // each list is specific to a certain actor. Some actors might be unknown to others.
+	repeated uint32 order = 2;
+	// Server: current known order. Most likely including unknown actors.
+	// Client: a single value, new position in order.
+}
+
+// Server -> client (mostly)
+// Sent by the server to let an actor on a remote device play. Can also terminate its turn.
+// OFC it is specific to an actor on this device.
+message TurnControl {
+	enum Type {
+		T_FORCE_DONE = 0; // this can be sent by client as well to indicate round is finished. The server can then ignore .peerKey and go with its own state. .round ignored.
+		T_REGULAR = 1;
+		T_PREPARED_TRIGGERED = 2;
+		T_OPPORTUNITY = 3;
+		
+		T_BATTLE_ENDED = 32;
+	}
+	Type type = 1;
+	uint32 peerKey = 2;
+	uint32 round = 3; // while we're at it, we always push round so the client knows.
 }
 
 
-// client -> server
-message RollResult {
-    uint32 generator = 1;
-    sint32 result = 2;
-}
-
-
-// server -> client
-message NewOrder {
-    message Temporary {
-        string name = 1;
-        uint32 id = 2; // those are also unique across themselves and PC
-    }
-    repeated Temporary temporaries = 1;
-    repeated uint32 sequence = 2;
-}
-
-
-// server -> client
-message RoundProgress {
-    uint32 id = 1; // id of the active character
-}
-
-
-// usually server -> client
-// client -> server can be used for requests
-message ActiveStatus {
-    bool active = 1; // if true, can partecipate to actions, otherwise will do nothing
-    string reason = 2; // if something do not partecipate to battle anymore, perhaps it's good to give an explanation such as "dead"
-    bool waiting = 3; // if true will do nothing but can still act and maintained in this order, waiting for a condition to occur
-}
-
-
-// client -> server
-// Primary use is client signals end of its own turn in the round.
-// Server can also terminate a round for a character by sending a new RoundProgress message
-message EndTurn {
-    // Any interesting data here?
-}
-
-
-// client -> server
-// I want to be moved to act in a certain way. Nothing really to do.
-message Reorder {
-    enum When {
-        FIRST = 0;
-        LAST = 1;
-        BEFORE = 2;
-        CONDITIONAL = 3;
-    }
-    When newPos = 1;
-    string description = 2;
-    uint32 id = 3; // used for BEFORE, not needed for FIRST,LAST, not known for CONDITIONAL
+// Server -> Client; define/update actor.
+// Client -> Server only allowed with T_PARTIAL_PREPARE_CONDITION
+message ActorState {
+	enum Type {
+		T_UNDEFINED = 0; // can be used when storing, if type can be inferred from position.
+		T_PLAYING_CHARACTER = 1;
+		T_NPC = 2;
+		T_MOB = 3;
+		
+		T_PARTIAL_PREPARE_CONDITION = 16; // client can send those, only .prepareCondition and peerKey will be mangled. Server can also send those to cancel a trigger action.
+	}
+	Type type = 1;
+	uint32 peerKey = 2;
+	string name = 3;
+	int32 currentHP = 4;
+	uint32 maxHP = 5;
+	string prepareCondition = 6;
+	bool preparedTriggered = 7;
+	
+	// Those are not typically used across the wire but they are useful to have at runtime!
+	int32 initiativeBonus = 128;
 }

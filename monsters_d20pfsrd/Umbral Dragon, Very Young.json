@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Umbral Dragon"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very young"
+            }
+        ]
+    }
+}

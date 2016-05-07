@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Yeti"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "monstrous humanoid",
+        "init": 1,
+        "tags": [
+            "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

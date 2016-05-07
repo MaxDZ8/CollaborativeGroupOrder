@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Adamantine Wasp Swarm"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Fine",
+        "type": "construct",
+        "init": 6,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

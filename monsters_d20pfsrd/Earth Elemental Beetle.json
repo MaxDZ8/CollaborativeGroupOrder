@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Earth Elemental Beetle"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

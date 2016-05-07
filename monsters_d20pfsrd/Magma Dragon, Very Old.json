@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Magma Dragon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very old"
+            }
+        ]
+    }
+}

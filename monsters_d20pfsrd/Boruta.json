@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Boruta"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 6
+    }
+}

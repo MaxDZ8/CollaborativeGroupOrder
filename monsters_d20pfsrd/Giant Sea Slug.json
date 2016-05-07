@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Sea Slug"
+        ],
+        "cr": "12",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "vermin",
+        "init": 0,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

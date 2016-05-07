@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Rageborn Gnoll"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 2,
+        "race": "gnoll"
+    }
+}

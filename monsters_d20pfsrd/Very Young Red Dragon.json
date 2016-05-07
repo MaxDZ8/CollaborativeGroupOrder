@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Red Dragon"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very young"
+            }
+        ]
+    }
+}

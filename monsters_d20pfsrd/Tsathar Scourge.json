@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Tsathar Scourge"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

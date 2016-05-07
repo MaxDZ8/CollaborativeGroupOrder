@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "The Stabbing Beast"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 16,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "herald",
+            "shapechanger"
+        ]
+    }
+}

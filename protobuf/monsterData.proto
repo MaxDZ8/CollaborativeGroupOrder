@@ -1,0 +1,393 @@
+syntax = "proto3";
+option java_package = "com.massimodz8.collaborativegrouporder.protocol";
+option cc_enable_arenas = true;
+package collaborativeGroupOrder;
+import "google/protobuf/timestamp.proto";
+
+// A monster book holds templates for monsters.
+// Those monsters are never referenced unless on creation, their data is copied as required
+// so the book itself can change data or shuffle it and I have no issues. This increases network BW usage
+// but streamlines management as I have no problems with reference coherency.
+// A monster book is simply an array of monsters in some order.
+
+message MonsterBook {
+	google.protobuf.Timestamp created = 1;
+	repeated Entry entries = 2;
+	repeated string presentationGroup = 3; // monsters can be aggregated by group, those are the name of the groups.
+	
+	// What is an 'entry' in a monster list? It is a 'monster' and its 'similar' monsters, which are monsters with
+	// the same name but a different 'variation' list. The first monster is therefore special as it provides names
+	// common to all 'variated' monsters. Do not confuse this with 'group', which is basically viz aid.
+	message Entry {
+		Monster main = 1;
+		repeated Monster variations = 2;
+	}
+}
+
+
+message Monster {
+	Header header = 1;
+	
+	message Header {
+		repeated string name = 1; // if variation monster, additional names WRT basic, otherwise must count at least 1. Empty strings invalid.
+		ChallangeRatio cr = 2;
+		repeated Alignment alignment = 3; // at least 1, nonrepeated
+		MonsterSize size = 4;
+		MonsterType type = 5;
+		int32 initiative = 6;
+		
+		// Optional
+		string example = 7;
+		//Race race = NOPE; // That's a tag!
+		repeated Tag tags = 8;
+		//repeated ExtraTemplate templates = NOPE; // again, unified in tags
+	}
+	
+	message ChallangeRatio {
+		uint32 numerator = 1; // must be at least 1.
+		uint32 denominator = 2; // if numerator === 1 can be 8|6|4|3|2|1 else must be 1
+	}
+	
+	// There are two types of tags. "Real" tags are usually provided after the 'monster type' in manuals, usually between ().
+	// The former is provided by TagType.CANON, the latter is extra info I have extracted and added by other means.
+	enum TagType {
+		TT_INVALID = 0;
+		
+		TT_SUBTYPE = 1; // Standard stuff that really goes between (...) even in manuals
+		TT_AUGMENTING = 2; // this is a special CANON tag which also takes data
+		TT_RACE = 3;
+		TT_EXTRA_TEMPLATE = 4;
+		TT_CONDITIONAL_INITIATIVE = 5;
+		TT_EXTRA_METADATA = 6;
+	}
+	
+	message Tag {
+		TagType type = 1;
+		MonsterType subtype = 2; // type == CANON
+		MonsterType augmenting = 3; // type == AUGMENTING, can be INVALID_MONSTER_TYPE for 'unspecified' yes, it happens!
+		Race race = 4; // type == RACE
+		ExtraTemplate extraTemplate = 5; // type == EXTRA_TEMPLATE
+		ConditionalInitiative ctxInit = 6; // type == CONDITIONAL_INITIATIVE
+		MetaData note = 7; // type == TT_EXTRA_METADATA
+	}
+	
+	message ConditionalInitiative {
+		int32 init = 1;
+		Condition when = 2;
+		repeated ExprToken params = 3;
+		
+		enum Condition {
+			CONDITION_INVALID = 0;
+			
+			ACTION_CLIMB = 1;
+		}
+		enum ExprToken {
+			TOKEN_INVALID = 0;
+			
+			TREE = 1;
+		}
+	}
+	
+	message MetaData {
+		Type type = 1;
+		Maturity maturity = 2;
+		Publisher publisher = 3;
+		string selectionInfo = 4;
+		uint32 group = 5; // 0 = no group else group-1 index in the book to use
+		KnownTemplate appliedTemplate = 6;
+	
+		enum Type {
+			INVALID = 0;
+			
+			MATURITY = 1;
+			PUBLISHER = 2;
+			ADDITIONAL_SELECTION_INFO = 3;
+			PRESENTATION_GROUP = 4;
+			GENERIC_VARIANT = 5;		// stored as ADDITIONAL_SELECTION_INFO, same payload but slightly aumented semantics
+			VARIANT_MORPH_TARGET = 6;	// as GENERIC_VARIANT, variation due to creature shape-shifting abilities
+			VARIANT_SIZE = 7;			// this creature has somehow changed size so show new size in selection screen
+			APPLIED_TEMPLATE = 8;
+		}
+		
+		enum Maturity { // used for dragon age category and elemental growth stage
+			M_INVALID = 0;
+			
+			DA_WYRMLING = 1;
+			DA_VERY_YOUNG = 2;
+			DA_YOUNG = 3;
+			DA_JUVENILE = 4;
+			DA_YOUNG_ADULT = 5;
+			DA_ADULT = 6;
+			DA_MATURE_ADULT = 7;
+			DA_OLD = 8;
+			DA_VERY_OLD = 9;
+			DA_ANCIENT = 10;
+			DA_WYRM = 11;
+			DA_GREAT_WYRM = 12;
+			
+			EG_SMALL = 13;
+			EG_MEDIUM = 14;
+			EG_LARGE = 15;
+			EG_HUGE = 16;
+			EG_GREATER = 17;
+			EG_ELDER = 18;
+		}
+		
+		enum Publisher {
+			P_INVALID = 0;
+			
+			P_THIRD_PART_GENERIC = 1;
+			P_FGG = 2;
+			P_OD = 3;
+			P_TO = 4;
+			P_JBE = 5;
+			P_CGP = 6;
+			P_SMG = 7;
+			P_KP = 8;
+		}
+	}
+	
+	enum KnownTemplate {
+		KT_INVALID = 0;
+		
+		KT_DIRE = 1;
+		KT_GIANT = 2;
+		KT_PETITIONER = 3;
+	}
+}
+
+
+enum Race { // String to enum: make all caps, replace ' '->'_' and '-'->'--'
+	INVALID_RACE = 0;
+	// Core
+	DWARF = 1;
+	ELF = 2;
+	GNOME = 3;
+	HALF_ORC = 4;
+	HALFLING = 5;
+	HUMAN = 6;
+	// Featured
+	AASIMAR = 7;
+	CATFOLK = 8;
+	DHAMPIR = 9;
+	DROW = 10;
+	FETCHLING = 11;
+	GOBLIN = 12;
+	HOBGOBLIN = 13;
+	IFRIT = 14;
+	KOBOLD = 15;
+	ORC = 16;
+	OREAD = 17;
+	RATFOLK = 18;
+	SYLPH = 19;
+	TENGU = 20;
+	TIEFLING = 21;
+	UNDINE = 22;
+	// Standard
+	GNOLL = 23;
+	LIZARDFOLK = 24;
+	MONKEY_GOBLIN = 25;
+	SKINWALKER = 26;
+	TRIAXIAN = 27;
+	// Advanced 
+	ANDROID = 28;
+	GATHLAIN = 29;
+	GHORAN = 30;
+	KASATHA = 31;
+	LASHUNTA = 32;
+	SHABTI = 33;
+	SYRINX = 34;
+	WYRWOOD = 35;
+	WYVARAN = 36;
+	// Monstrous
+	CENTAUR = 37;
+	OGRE = 38;
+	SHOBHAD = 39;
+	TROX = 40;
+	// Very powerful
+	DRIDER = 41;
+	GARGOYLE = 42;
+	// uncommon
+	CHANGELING = 43;
+	DUERGAR = 44;
+	GILLMEN = 45;
+	GRIPPLI = 46;
+	KITSUNE = 47;
+	MERFOLK = 48;
+	NAGAJI = 49;
+	SAMSARAN = 50;
+	STRIX = 51;
+	SULI = 52;
+	SVIRFNEBLIN = 53;
+	VANARA = 54;
+	VISHKANYA = 55;
+	WAYANG = 56;
+	// unknown race points
+	AQUATIC_ELF = 57;
+	ASTMOI = 58;
+	CALIGNI = 59;
+	DEEP_ONE_HYBRID = 60;
+	GANZI = 61;
+	KURU = 62;
+	MANAVRI = 63;
+	ORANG__PENDAK = 64;
+	REPTOID = 65;
+}
+
+
+enum ExtraTemplate {
+	INVALID_TEMPLATE = 0;
+	
+	ADVANCED = 1;
+	GIANT = 2;
+	MIGHTY = 3;
+	SHRINE__BLESSED = 4;
+	NOCTURNAL = 5;
+};
+
+
+enum Alignment {
+	INVALID_ALIGNMENT = 0;
+	
+	LEGAL_GOOD = 1;
+	LEGAL_NEUTRAL = 2;
+	LEGAL_EVIL = 3;
+	NEUTRAL_GOOD = 4;
+	JUST_NEUTRAL = 5;
+	NEUTRAL_EVIL = 6;
+	CHAOTIC_GOOD = 7;
+	CHAOTIC_NEUTRAL = 8;
+	CHAOTIC_EVIL = 9;
+	
+	ALIGNMENT_RESTRICTED = 10;
+	ALIGNMENT_AS_CREATOR = 11;
+};
+
+enum MonsterSize {
+	INVALID_MONSTER_SIZE = 0;
+	
+	FINE = 1;
+	DIMINUTIVE = 2;
+	TINY = 3;
+	SMALL = 4;
+	MEDIUM = 5;
+	LARGE = 6;
+	HUGE = 7;
+	GARGANTUAN = 8;
+	COLOSSAL = 9;		
+}
+
+
+enum MonsterType {
+	INVALID_MONSTER_TYPE = 0;
+	
+	ABERRATION =  1;
+	ANIMAL     =  2;
+	CONSTRUCT  =  3;
+	DRAGON     =  4;
+	FEY        =  5;
+	HUMANOID   =  6;
+	MAGICAL_BEAST =  7;
+	MONSTROUS_HUMANOID = 8;
+	OOZE     =  9;
+	OUTSIDER = 10;
+	PLANT    = 11;
+	UNDEAD   = 12;
+	VERMIN   = 13;
+	
+	// I also put subtypes here for easiness.
+	SUB_ACID        =  64;
+	SUB_ADLET       =  65;
+	SUB_AEON        =  66;
+	SUB_AGATHION    =  67;
+	SUB_AIR         =  68;
+	SUB_AMPHIBIOUS  =  69;
+	SUB_ANGEL       =  70;
+	SUB_AQUATIC     =  71;
+	SUB_ARCHON      =  72;
+	SUB_ASURA       =  73;
+	// SUB_AUGMENTED --> special handling
+	SUB_AZATA       =  74;
+	SUB_BEHEMOTH    =  75;
+	SUB_BOGGARD     =  76;
+	SUB_CATFOLK     =  77;
+	SUB_CHAOTIC     =  78;
+	SUB_CHARAU__KA  =  79;
+	SUB_CLOCKWORK   =  80;
+	SUB_COLD        =  81;
+	SUB_COLOSSUS    =  82;
+	SUB_DAEMON      =  83;
+	SUB_DARK_FOLK   =  84;
+	SUB_DEEP_ONE    =  85;
+	SUB_DEMODAND    =  86;
+	SUB_DEMON       =  87;
+	SUB_DERRO       =  88;
+	SUB_DEVIL       =  89;
+	SUB_DIV         =  90;
+	SUB_DWARF       =  91;
+	SUB_EARTH       =  92;
+	SUB_ELECTRICITY =  93;
+	SUB_ELEMENTAL   =  94;
+	SUB_ELF         =  95;
+	SUB_EVIL        =  96;
+	SUB_EXTRAPLANAR =  97;
+	SUB_FEYBLOOD    =  98;
+	SUB_FIRE        =  99;
+	SUB_GIANT       = 100;
+	SUB_GNOLL       = 101;
+	SUB_GNOME       = 102;
+	SUB_GOBLIN      = 103;
+	SUB_GOBLINOID   = 104;
+	SUB_GODSPAWN    = 105;
+	SUB_GOOD        = 106;
+	SUB_GRAVITY     = 107;
+	SUB_GREAT_OLD_ONE = 108;
+	SUB_HALFLING    = 109;
+	SUB_HERALD      = 110;
+	SUB_HORDE       = 111;
+	SUB_HUMAN       = 112;
+	SUB_HUMANOID    = 113;
+	SUB_INCORPOREAL = 114;
+	SUB_INEVITABLE  = 115;
+	SUB_KAIJU       = 116;
+	SUB_KAMI        = 117;
+	SUB_KASATHA     = 118;
+	SUB_KITSUNE     = 119;
+	SUB_KUAH__LIJ   = 120;
+	SUB_KYTON       = 121;
+	SUB_LAWFUL      = 122;
+	SUB_LESHY       = 123;
+	SUB_MYTHIC      = 124;
+	SUB_NATIVE      = 125;
+	SUB_NIGHTSHADE  = 126;
+	SUB_OGREN       = 127;
+	SUB_OGRILLON    = 128;
+	SUB_ONI         = 129;
+	SUB_ORC         = 130;
+	SUB_PROTEAN     = 131;
+	SUB_PSYCHOPOMP  = 132;
+	SUB_QLIPPOTH    = 133;
+	SUB_RAKSHASA    = 134;
+	SUB_RATFOLK     = 135;
+	SUB_REPTILIAN   = 136;
+	SUB_ROBOT       = 137;
+	SUB_SAMSARAN    = 138;
+	SUB_SASQUATCH   = 139;
+	SUB_SHAPECHANGER = 140;
+	SUB_SKULK       = 141;
+	SUB_STORMWARDEN = 142;
+	SUB_SWARM       = 143;
+	SUB_TABAXI      = 144;
+	SUB_TENGU       = 145;
+	SUB_TIME        = 146;
+	SUB_TROOP       = 147;
+	SUB_UDAEUS      = 148;
+	SUB_UNBREATHING = 149;
+	SUB_VANARA      = 150;
+	SUB_VAPOR       = 151;
+	SUB_VISHKANYA   = 152;
+	SUB_WATER       = 153;
+	SUB_WAYANG      = 154;
+	SUB_FUNGUS      = 155;
+	SUB_PSIONIC     = 156;
+};

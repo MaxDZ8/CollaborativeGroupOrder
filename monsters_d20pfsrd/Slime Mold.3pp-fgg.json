@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Slime Mold"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -1,
+        "tags": [
+            "fungus"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Nilbog"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "goblinoid"
+        ]
+    }
+}

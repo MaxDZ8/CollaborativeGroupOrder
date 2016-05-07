@@ -15,4 +15,10 @@ public interface ProtoBufferEnum {
     int GROUP_READY = 7;
 
     int CHARACTER_OWNERSHIP = 8;
+
+    int ACTOR_DATA_UPDATE = 9;
+
+    int ROLL = 10;
+    int TURN_CONTROL = 11;
+    int BATTLE_ORDER = 12;
 }

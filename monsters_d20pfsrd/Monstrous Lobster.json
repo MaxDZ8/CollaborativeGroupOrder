@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Monstrous Lobster"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N",
+            "$restricted"
+        ],
+        "size": "Huge",
+        "type": "vermin",
+        "init": 0,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

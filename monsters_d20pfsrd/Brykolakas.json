@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Brykolakas"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

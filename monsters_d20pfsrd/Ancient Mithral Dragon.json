@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Mithral Dragon"
+        ],
+        "cr": "19",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "ancient"
+            }
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Hollow Serpent"
+        ],
+        "cr": "16",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 9
+    }
+}

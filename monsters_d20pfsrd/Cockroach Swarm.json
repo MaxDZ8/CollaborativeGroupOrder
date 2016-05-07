@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Cockroach Swarm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "vermin",
+        "init": 2,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

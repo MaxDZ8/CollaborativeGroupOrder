@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Emerald Ooze"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "ooze",
+        "init": 5
+    }
+}

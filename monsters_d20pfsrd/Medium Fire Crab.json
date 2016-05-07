@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Medium Fire Crab"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 1,
+        "tags": [
+            "fire"
+        ]
+    }
+}

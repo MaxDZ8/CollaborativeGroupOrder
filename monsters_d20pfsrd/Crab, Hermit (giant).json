@@ -1,0 +1,28 @@
+{
+    "head": {
+        "name": [
+            "Crab"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 0,
+        "example": "Advanced giant crab",
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "giant"
+            },
+            {
+                "type": "variation",
+                "value": "Hermit"
+            }
+        ]
+    }
+}

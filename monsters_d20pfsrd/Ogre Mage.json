@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Ogre Mage"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "giant",
+            "native",
+            "oni",
+            "shapechanger"
+        ]
+    }
+}

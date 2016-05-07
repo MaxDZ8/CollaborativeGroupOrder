@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gryph"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 2
+    }
+}

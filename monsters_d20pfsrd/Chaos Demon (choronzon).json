@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Chaos Demon",
+            "Choronzon"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

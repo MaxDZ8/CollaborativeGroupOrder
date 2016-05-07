@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Bebilith"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2E7D32</color> <!-- green 800 -->
+    <color name="colorPrimary">#1A237E</color>
+        <!-- Indigo 900
+        Also tried: blue 900
+            I like this one but it's too similar to full health bars, which are blue.
+        Also tried: blue 800 #1565c0
+            looks dark on PC but it's really bright on my phone.
+        -->
     <color name="colorPrimaryDark">#1B5E20</color> <!-- green 900 -->
-    <color name="colorAccent">#FFAB40</color> <!-- Orange A200 -->
-    <color name="windowBackground">#283593</color> <!-- indigo 800, also try indigo 900 #1A237E -->
+    <color name="colorAccent">#76ff03</color> <!-- Light Green A200 -->
+    <color name="windowBackground">#ff212121</color> <!-- material gray 900 -->
     <color name="textColorPrimary">#FAFAFA</color> <!-- grey 50 -->
     <color name="textColorSecondary">#E0FAFAFA</color> <!-- grey 50, very slight alpha -->
     <color name="textColorTertiary">#AAFAFAFA</color> <!-- grey 50, more alpha -->
     <color name="colorButtonNormal">#004D40</color> <!-- teal 900, also try green 900 #1B5E20, blue 700 #1976D2 -->
 
-    <color name="cardBackgroundColor">#1565C0</color>  <!-- blue 800 -->
+    <color name="cardBackgroundColor">#000000</color>  <!-- Black -->
 
     <color name="listSeparator">#c5cae9</color>
 

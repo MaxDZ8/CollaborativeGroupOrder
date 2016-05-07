@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Queen Thermite"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 2,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

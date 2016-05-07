@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Cryohydra"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 1,
+        "tags": [
+            "cold"
+        ]
+    }
+}

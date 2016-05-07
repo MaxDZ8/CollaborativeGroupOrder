@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Xill Matriarch"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dire Weasel"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "animal",
+        "init": 4
+    }
+}

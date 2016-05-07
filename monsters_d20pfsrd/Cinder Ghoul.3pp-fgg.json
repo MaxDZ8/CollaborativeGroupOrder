@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Cinder Ghoul"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 9,
+        "tags": [
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

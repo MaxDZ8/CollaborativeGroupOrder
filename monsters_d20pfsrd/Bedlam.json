@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bedlam"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 12,
+        "tags": [
+            "chaotic"
+        ]
+    }
+}

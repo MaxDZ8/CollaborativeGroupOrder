@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Medusa Head"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 1
+    }
+}

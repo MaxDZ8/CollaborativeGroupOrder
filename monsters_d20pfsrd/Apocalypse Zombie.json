@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Apocalypse Zombie"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "example": "Relentless brain-eating plague human zombie"
+    }
+}

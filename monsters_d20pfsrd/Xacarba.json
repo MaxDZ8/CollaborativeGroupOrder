@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Xacarba"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Giant Tiger Barb"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

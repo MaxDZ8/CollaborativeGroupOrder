@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Delver"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 7,
+        "tags": [
+            "earth"
+        ]
+    }
+}

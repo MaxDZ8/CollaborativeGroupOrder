@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Baku"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 9
+    }
+}

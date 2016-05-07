@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Frost Man"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "cold"
+        ]
+    }
+}

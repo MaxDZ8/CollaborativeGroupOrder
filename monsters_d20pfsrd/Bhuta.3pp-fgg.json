@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Bhuta"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

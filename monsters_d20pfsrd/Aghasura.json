@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Aghasura"
+        ],
+        "cr": "11",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "asura",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

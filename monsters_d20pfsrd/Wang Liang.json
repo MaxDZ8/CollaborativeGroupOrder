@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Wang Liang"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

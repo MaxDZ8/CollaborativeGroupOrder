@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Boalisk"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 7
+    }
+}

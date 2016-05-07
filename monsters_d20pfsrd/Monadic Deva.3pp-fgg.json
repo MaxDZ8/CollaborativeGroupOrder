@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Monadic Deva"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "angel",
+            "extraplanar",
+            "good"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

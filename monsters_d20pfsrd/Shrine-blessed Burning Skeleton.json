@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Shrine-blessed Burning Skeleton"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "templates": [
+            "shrine-blessed"
+        ]
+    }
+}

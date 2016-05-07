@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Noble Djinni",
+            "Vizier"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "air",
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Common Inphidian"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 7,
+        "tags": [
+            "reptilian"
+        ]
+    }
+}

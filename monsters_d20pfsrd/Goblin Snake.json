@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Goblin Snake"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 2
+    }
+}

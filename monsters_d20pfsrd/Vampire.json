@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Vampire"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8,
+        "example": "Female human vampire sorcerer 8",
+        "tags": [
+            "augmented humanoid"
+        ]
+    }
+}

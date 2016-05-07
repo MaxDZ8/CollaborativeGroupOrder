@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Glacier Toad"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 1,
+        "tags": [
+            "cold"
+        ]
+    }
+}

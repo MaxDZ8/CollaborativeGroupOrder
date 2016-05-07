@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Sea Spider"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

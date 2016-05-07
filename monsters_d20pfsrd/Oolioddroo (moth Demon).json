@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Oolioddroo",
+            "Moth Demon"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

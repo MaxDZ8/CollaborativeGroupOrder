@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Faceless Stalker",
+            "Ugothol"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 7,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

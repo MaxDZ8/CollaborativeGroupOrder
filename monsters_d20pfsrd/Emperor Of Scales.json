@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Emperor Of Scales"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "chaotic",
+            "evil",
+            "native"
+        ]
+    }
+}

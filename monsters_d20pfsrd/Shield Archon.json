@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Shield"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "archon",
+            "extraplanar",
+            "good",
+            "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Archon"
+            }
+        ]
+    }
+}

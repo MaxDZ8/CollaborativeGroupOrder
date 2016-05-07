@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Strangle Weed"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 0,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

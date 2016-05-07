@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Imp"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

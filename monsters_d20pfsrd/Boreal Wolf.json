@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Boreal Wolf"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "cold"
+        ]
+    }
+}

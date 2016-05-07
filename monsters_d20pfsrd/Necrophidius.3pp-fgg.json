@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Necrophidius"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

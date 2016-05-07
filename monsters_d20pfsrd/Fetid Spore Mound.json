@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Fetid Spore Mound"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 0,
+        "example": "Advanced variant shambling mound"
+    }
+}

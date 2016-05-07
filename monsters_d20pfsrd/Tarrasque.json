@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Tarrasque"
+        ],
+        "cr": "25",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "godspawn"
+        ]
+    }
+}

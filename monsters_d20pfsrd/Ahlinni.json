@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ahlinni"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 1
+    }
+}

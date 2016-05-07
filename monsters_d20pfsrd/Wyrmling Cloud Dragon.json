@@ -1,0 +1,27 @@
+{
+    "head": {
+        "name": [
+            "Cloud Dragon",
+			"Draco Nimbus Caelo"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 7,
+        "tags": [
+            "air"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            },
+			{
+				"type": "publisher"
+			}
+        ]
+    }
+}

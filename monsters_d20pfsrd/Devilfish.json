@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Devilfish"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

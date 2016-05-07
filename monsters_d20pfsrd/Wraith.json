@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Wraith"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Mist Dragon",
+			"Draco Nebulus Terra"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "air",
+            "fire",
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "adult"
+            }
+        ]
+    }
+}

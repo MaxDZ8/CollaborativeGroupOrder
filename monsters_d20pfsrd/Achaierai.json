@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Achaierai"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

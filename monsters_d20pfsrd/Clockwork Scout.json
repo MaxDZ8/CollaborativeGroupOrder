@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Scout"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 3
+    }
+}

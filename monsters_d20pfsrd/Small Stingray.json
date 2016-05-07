@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Small Stingray"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

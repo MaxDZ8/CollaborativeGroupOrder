@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Shrieking Medusa Head"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 3,
+        "example": "Advanced screaming medusa head"
+    }
+}

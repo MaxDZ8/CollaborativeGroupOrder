@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Abyssal Wolf"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

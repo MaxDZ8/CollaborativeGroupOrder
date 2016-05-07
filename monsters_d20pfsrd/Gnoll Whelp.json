@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Gnoll Whelp"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 6,
+        "race": "gnoll"
+    }
+}

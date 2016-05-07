@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mute Hag"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 5,
+        "tags": [
+            "cold"
+        ]
+    }
+}

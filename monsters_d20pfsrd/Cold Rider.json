@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Cold Rider"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 7,
+        "tags": [
+            "cold"
+        ]
+    }
+}

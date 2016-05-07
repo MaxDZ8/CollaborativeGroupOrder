@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Groaning Spirit"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

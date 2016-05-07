@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Maggot"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": -1
+    }
+}

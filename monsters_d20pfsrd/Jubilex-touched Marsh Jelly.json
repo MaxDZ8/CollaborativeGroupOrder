@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Jubilex-touched Marsh Jelly"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

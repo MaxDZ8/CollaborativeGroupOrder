@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Jupiter Bloodsucker"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": -3
+    }
+}

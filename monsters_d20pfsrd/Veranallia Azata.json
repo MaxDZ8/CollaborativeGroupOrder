@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Veranallia Azata"
+        ],
+        "cr": "20",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "azata",
+            "chaotic",
+            "extraplanar",
+            "good"
+        ]
+    }
+}

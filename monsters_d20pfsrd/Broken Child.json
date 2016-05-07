@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Broken Child"
+        ],
+        "cr": "4",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "undead",
+        "init": 5,
+        "example": "Wraith spawn",
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

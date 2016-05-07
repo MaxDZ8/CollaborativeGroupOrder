@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Sceaduinar"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

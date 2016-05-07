@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Wolfwere"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

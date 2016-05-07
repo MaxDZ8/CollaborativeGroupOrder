@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Ghost"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 5,
+        "example": "Human ghost aristocrat 7",
+        "tags": [
+            "augmented humanoid",
+            "incorporeal"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Fungal Lizardfolk"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": -1,
+        "tags": [
+            "augmented",
+            "humanoid",
+            "reptilian"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Pseudodragon"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 2
+    }
+}

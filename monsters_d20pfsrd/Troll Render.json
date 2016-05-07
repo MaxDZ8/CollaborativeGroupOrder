@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Troll Render"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 3,
+        "example": "Troll fighter 5",
+        "tags": [
+            "giant"
+        ]
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Bone Devil",
+            "Osyluth"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Ratfolk"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 2,
+        "example": "Ratfolk expert 1",
+        "race": "ratfolk"
+    }
+}

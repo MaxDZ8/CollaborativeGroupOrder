@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Brass Man"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 0,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Advanced Horse"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 4
+    }
+}

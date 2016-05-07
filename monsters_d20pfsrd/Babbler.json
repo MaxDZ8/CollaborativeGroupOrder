@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Babbler"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 5
+    }
+}

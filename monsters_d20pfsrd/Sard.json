@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Sard"
+        ],
+        "cr": "19",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "plant",
+        "init": 8
+    }
+}

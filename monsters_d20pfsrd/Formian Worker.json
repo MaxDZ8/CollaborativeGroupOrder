@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Formian Worker"
+        ],
+        "cr": "1",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

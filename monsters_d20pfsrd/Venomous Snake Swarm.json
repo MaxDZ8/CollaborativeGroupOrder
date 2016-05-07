@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Venomous Snake Swarm"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 7,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

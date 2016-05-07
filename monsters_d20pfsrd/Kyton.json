@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Kyton"
+        ],
+        "cr": "6",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "kyton",
+            "lawful"
+        ]
+    }
+}

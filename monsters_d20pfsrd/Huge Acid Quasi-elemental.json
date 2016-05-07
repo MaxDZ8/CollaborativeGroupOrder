@@ -1,0 +1,29 @@
+{
+    "head": {
+        "name": [
+            "Acid Quasi-elemental"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "acid",
+            "elemental",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "huge"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
+        ]
+    }
+}

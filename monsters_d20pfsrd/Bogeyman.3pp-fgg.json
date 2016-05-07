@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Bogeyman"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "incorporeal"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

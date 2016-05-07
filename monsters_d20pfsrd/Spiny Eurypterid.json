@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Spiny Eurypterid"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "vermin",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

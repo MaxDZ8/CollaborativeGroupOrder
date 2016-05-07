@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gnasher Lizard"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 7
+    }
+}

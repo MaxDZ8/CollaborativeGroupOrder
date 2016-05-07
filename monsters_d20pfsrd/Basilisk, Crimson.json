@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Basilisk"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 0,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Crimson"
+            }
+        ]
+    }
+}

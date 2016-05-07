@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mawler"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "aberration",
+        "init": 3,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Carrion Golem Mount"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 0
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gorgoni"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "native"
+        ]
+    }
+}

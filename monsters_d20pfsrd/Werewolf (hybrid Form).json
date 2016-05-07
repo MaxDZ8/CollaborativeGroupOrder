@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Werewolf"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 5,
+        "example": "Human natural werewolf fighter 2",
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "hybrid"
+            }
+        ]
+    }
+}

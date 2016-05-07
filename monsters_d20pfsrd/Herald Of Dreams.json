@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Herald Of Dreams"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "good",
+            "herald"
+        ]
+    }
+}

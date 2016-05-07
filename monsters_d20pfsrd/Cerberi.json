@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Cerberi"
+        ],
+        "cr": "6",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

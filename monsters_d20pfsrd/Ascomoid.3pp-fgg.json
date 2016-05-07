@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Ascomoid"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 1,
+        "tags": [
+            "fungus"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

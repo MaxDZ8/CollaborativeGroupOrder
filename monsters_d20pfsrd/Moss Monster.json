@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Moss Monster"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 6,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

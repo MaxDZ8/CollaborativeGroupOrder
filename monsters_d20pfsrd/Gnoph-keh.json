@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gnoph-keh"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 1,
+        "tags": [
+            "cold"
+        ]
+    }
+}

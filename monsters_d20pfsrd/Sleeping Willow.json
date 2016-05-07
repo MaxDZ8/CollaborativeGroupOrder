@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Sleeping Willow"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": 1
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Vulpinal"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "agathion",
+            "extraplanar",
+            "good"
+        ]
+    }
+}

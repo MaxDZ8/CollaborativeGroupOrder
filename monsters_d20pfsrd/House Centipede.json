@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "House Centipede"
+        ],
+        "cr": "1/8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "vermin",
+        "init": 3
+    }
+}

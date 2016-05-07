@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Elder Worg"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 3
+    }
+}

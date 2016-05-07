@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Living Rune"
+        ],
+        "cr": "13",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 15
+    }
+}

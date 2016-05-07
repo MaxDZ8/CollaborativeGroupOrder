@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Tarry Demodand"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "chaotic",
+            "demodand",
+            "evil",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

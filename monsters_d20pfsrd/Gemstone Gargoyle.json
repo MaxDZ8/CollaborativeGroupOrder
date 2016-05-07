@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Gemstone Gargoyle"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 8,
+        "tags": [
+            "earth"
+        ]
+    }
+}

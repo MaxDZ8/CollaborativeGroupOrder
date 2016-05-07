@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Dungeon Dragon",
+			"Draco Carcer Dominus"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young"
+            }
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Lillend"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "azata",
+            "chaotic",
+            "extraplanar",
+            "good"
+        ]
+    }
+}

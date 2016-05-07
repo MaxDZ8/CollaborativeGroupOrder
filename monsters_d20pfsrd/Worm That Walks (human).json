@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Worm That Walks"
+        ],
+        "cr": "14",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 8,
+        "example": "Human worm that walks conjurer 13",
+        "tags": [
+            "augmented human"
+        ],
+        "extraNotes": [
+            {
+                "type": "extraInfo",
+                "value": "human"
+            }
+        ]
+    }
+}

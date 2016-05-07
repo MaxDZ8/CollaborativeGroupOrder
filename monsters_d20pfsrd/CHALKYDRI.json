@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Chalkydri"
+        ],
+        "cr": "14",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "angel",
+            "extraplanar",
+            "good"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Apparition"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 6,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

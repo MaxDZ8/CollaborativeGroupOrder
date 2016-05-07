@@ -1,0 +1,27 @@
+{
+    "head": {
+        "name": [
+            "Dragonfly"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "giant"
+            },
+            {
+                "type": "variation",
+                "value": "Nymph"
+            }
+        ]
+    }
+}

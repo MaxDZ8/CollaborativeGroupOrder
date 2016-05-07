@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Elysian Titan"
+        ],
+        "cr": "21",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Colossal",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "good"
+        ]
+    }
+}

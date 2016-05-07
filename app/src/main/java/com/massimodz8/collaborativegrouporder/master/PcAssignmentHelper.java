@@ -7,24 +7,24 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.google.protobuf.nano.MessageNano;
+import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
+import com.massimodz8.collaborativegrouporder.Mailman;
 import com.massimodz8.collaborativegrouporder.MainMenuActivity;
+import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
-import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Massimo on 01/03/2016.
@@ -35,7 +35,7 @@ import java.util.concurrent.BlockingQueue;
  * internally and being this designed to work with PartyJoinOrderService, it accumulates changes
  * leaving Activity (not guaranteed to exist at the time it's generated) to probe for results.
  */
-public class PcAssignmentHelper {
+public abstract class PcAssignmentHelper {
     public final StartData.PartyOwnerData.Group party;
 
     public interface OnBoundPcCallback {
@@ -48,38 +48,6 @@ public class PcAssignmentHelper {
         this.verifier = verifier;
         assignment = new ArrayList<>(party.party.length);
         for (StartData.ActorDefinition ignored : party.party) assignment.add(null);
-        Thread mailman = new Thread() {
-            @Override
-            public void run() {
-                while (!isInterrupted()) {
-                    final SendRequest req;
-                    try {
-                        req = out.take();
-                    } catch (InterruptedException e) {
-                        return;
-                    }
-                    if (req.destination == null) break;
-                    MessageChannel pipe = req.destination.pipe;
-                    if (pipe == null) continue; // impossible
-                    if (req.one != null) {
-                        try {
-                            pipe.write(req.type, req.one);
-                        } catch (IOException e) {
-                            req.destination.errors.add(e);
-                        }
-                    }
-                    if (req.many != null) {
-                        for (MessageNano msg : req.many) {
-                            try {
-                                pipe.write(req.type, msg);
-                            } catch (IOException e) {
-                                req.destination.errors.add(e);
-                            }
-                        }
-                    }
-                }
-            }
-        };
         mailman.start();
     }
 
@@ -134,16 +102,25 @@ public class PcAssignmentHelper {
         rebound.ticket = nextValidRequest;
         rebound.character = match;
         for (PlayingDevice dst : peers) {
-            out.add(new SendRequest(dst, ProtoBufferEnum.CHARACTER_OWNERSHIP, rebound));
+            if(dst.pipe != null) mailman.out.add(new SendRequest(dst.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, rebound));
         }
         if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
         if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
         if(onBoundPc != null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
     }
 
+    public MessageChannel getMessageChannelByPeerKey(int id) {
+        if(id < assignment.size()) {
+            final Integer ownerIndex = assignment.get(id);
+            if(ownerIndex == null || ownerIndex == LOCAL_BINDING) return null;
+            return peers.get(ownerIndex).pipe;
+        }
+        return null;
+    }
+
 
     public void shutdown() {
-        out.add(new SendRequest());
+        mailman.out.add(new SendRequest());
         final Pumper.MessagePumpingThread[] bye = netPump.move();
         if(bye == null || bye.length == 0) return;
         new Thread() {
@@ -162,12 +139,51 @@ public class PcAssignmentHelper {
         }.start();
     }
 
+    /**
+     * This still keeps a reference to sockets and all mappings. The only data which is going
+     * away is those of devices which were not mapped to any characters. They are useless.
+     * @return Worker threads to be sent to the "adventuring" pumper.
+     */
+    public ArrayList<Pumper.MessagePumpingThread> getBoundKickOthers() {
+        final ArrayList<PlayingDevice> goners = new ArrayList<>();
+        final ArrayList<Pumper.MessagePumpingThread> players = new ArrayList<>();
+        for (PlayingDevice dev : peers) {
+            int count = 0;
+            if(dev.pipe != null) {
+                for (Integer check : assignment) {
+                    if(check != null && check >= 0 && check < peers.size()) {
+                        if(peers.get(check) == dev) count++;
+                    }
+                }
+            }
+            if(count == 0) goners.add(dev);
+            else players.add(netPump.move(dev.pipe));
+        }
+        peers.removeAll(goners);
+        final Pumper.MessagePumpingThread[] byebye = netPump.move();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Pumper.MessagePumpingThread worker : byebye) worker.interrupt();
+                for (Pumper.MessagePumpingThread worker : byebye) {
+                    MessageChannel pipe = worker.getSource();
+                    if(pipe != null) try {
+                        pipe.socket.close();
+                    } catch (IOException e) {
+                        // I don't care bro. You're nobody I care anymore.
+                    }
+                }
+            }
+        }).start();
+        return players;
+    }
+
     private final SecureRandom randomizer = new SecureRandom();
     private final JoinVerificator verifier;
-    private ArrayList<Integer> assignment;
+    ArrayList<Integer> assignment;
     private int nextValidRequest;
     private Handler handler = new MyHandler(this);
-    private Pumper netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
+    Pumper netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
             .add(ProtoBufferEnum.HELLO, new PumpTarget.Callbacks<Network.Hello>() {
                 @Override
                 public Network.Hello make() { return new Network.Hello(); }
@@ -196,16 +212,17 @@ public class PcAssignmentHelper {
                     return false;
                 }
             });
-    private ArrayList<PlayingDevice> peers = new ArrayList<>();
-    private BlockingQueue<SendRequest> out = new ArrayBlockingQueue<>(USUAL_CLIENT_COUNT * USUAL_AVERAGE_MESSAGES_PENDING_COUNT);
+    ArrayList<PlayingDevice> peers = new ArrayList<>();
 
     /// Not sure what should I put there, but it seems I might want to track state besides connection channel in the future.
-    private static class PlayingDevice {
+    static class PlayingDevice {
         public @Nullable MessageChannel pipe; /// This is usually not-null, but becomes null to signal disconnected. Keep those around anyway to allow players to reconnect with ease.
         public int clientVersion;
         public @Nullable byte[] doormat; /// next doormat to send or to consider for key verification.
         public int keyIndex = ANON; /// if isRemote, index of the matched device key --> bound to remote, otherwise check specials
         public Vector<Exception> errors = new Vector<>();
+        public boolean movedToBattlePumper; // if this is set, device is already moved to battle pumper, somewhere else.
+        public @ActorId int activeActor; // peerKey > 0 of active actor, otherwise -1
 
         /// Using null will create this in 'disconnected' mode. Does not make sense to me but w/e.
         public PlayingDevice(@Nullable MessageChannel pipe) {
@@ -217,35 +234,6 @@ public class PcAssignmentHelper {
         private static final int ANON = -1;
     }
 
-
-    /// Replies to clients must be sent in order! There's a dedicated thread for sending.
-    private static class SendRequest {
-        final PlayingDevice destination;
-        final int type;
-        final MessageNano one;
-        final MessageNano[] many;
-
-        public SendRequest(PlayingDevice destination, int type, MessageNano payload) {
-            this.destination = destination;
-            this.type = type;
-            one = payload;
-            this.many = null;
-        }
-
-        public SendRequest(PlayingDevice destination, int type, MessageNano[] payload) {
-            this.destination = destination;
-            this.type = type;
-            one = null;
-            many = payload;
-        }
-
-        private SendRequest() { // causes the mailman to shut down gracefully
-            destination = null;
-            type = -1;
-            one = null;
-            many = null;
-        }
-    }
 
     private static class MyHandler extends Handler {
         final WeakReference<PcAssignmentHelper> self;
@@ -263,7 +251,7 @@ public class PcAssignmentHelper {
                     break;
                 }
                 case MSG_DETACHED: {
-                    // Code incoherent, not currently thrown
+                    // Never happens now!
                     break;
                 }
                 case MSG_HELLO_ANON:
@@ -290,9 +278,7 @@ public class PcAssignmentHelper {
 
     /// Caution. This currently must match PartyCreationService.closeGroup
     public static final int DOORMAT_BYTES = 32;
-    private static final int USUAL_CLIENT_COUNT = 20; // not really! Usually 5 or less but that's for safety!
-    private static final int USUAL_AVERAGE_MESSAGES_PENDING_COUNT = 10; // pretty a lot, those will be small!
-    private static final int LOCAL_BINDING = -1;
+    public static final int LOCAL_BINDING = -1;
 
     private synchronized byte[] random(int count) {
         if(count < 0) count = -count;
@@ -301,7 +287,7 @@ public class PcAssignmentHelper {
         return blob;
     }
 
-    private PlayingDevice getDevice(MessageChannel pipe) {
+    public PlayingDevice getDevice(MessageChannel pipe) {
         for (PlayingDevice check : peers) {
             if(check.pipe == pipe) return check;
         }
@@ -314,6 +300,8 @@ public class PcAssignmentHelper {
         }
         return null;
     }
+
+    protected abstract StartData.ActorDefinition getActorData(int unique);
 
     private void disconnected(final MessageChannel goner) {
         PlayingDevice dev = getDevice(goner);
@@ -344,7 +332,7 @@ public class PcAssignmentHelper {
         send.name = party.name;
         send.version = MainMenuActivity.NETWORK_VERSION;
         send.doormat = dev.doormat;
-        out.add(new SendRequest(dev, ProtoBufferEnum.GROUP_INFO, send));
+        mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.GROUP_INFO, send));
     }
 
     private void helloAuth(final @NonNull MessageChannel origin, @NonNull Network.Hello msg) {
@@ -384,7 +372,7 @@ public class PcAssignmentHelper {
         for (int loop = 0; loop < party.party.length; loop++) {
             stream[loop] = simplify(party.party[loop], loop);
         }
-        out.add(new SendRequest(dev, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, stream));
+        if(dev.pipe != null) mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, stream));
         // Also send a notification for each character which is already assigned to someone else.
         final ArrayList<Integer> bound = new ArrayList<>(party.party.length);
         for(int loop = 0; loop < assignment.size(); loop++) {
@@ -396,7 +384,7 @@ public class PcAssignmentHelper {
             initial[loop].ticket = nextValidRequest;
             initial[loop].type = Network.CharacterOwnership.BOUND;
         }
-        out.add(new SendRequest(dev, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial));
+        mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial));
     }
 
     private Network.PlayingCharacterDefinition simplify(StartData.ActorDefinition actor, int loop) {
@@ -418,18 +406,18 @@ public class PcAssignmentHelper {
         payload.ticket = nextValidRequest;
         if(ticket != nextValidRequest) {
             payload.type = Network.CharacterOwnership.OBSOLETE;
-            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            if(requester.pipe != null)  mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             return;
         }
         if(payload.character >= party.party.length) { // requester asked chars before providing key.
             payload.type = Network.CharacterOwnership.REJECTED;
-            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             return;
         }
         Integer currKeyIndex = assignment.get(payload.character);
         if(currKeyIndex != null && currKeyIndex == LOCAL_BINDING) { // bound to me, silently rejected as mapping to me is a very strong action
             payload.type = Network.CharacterOwnership.REJECTED;
-            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             return;
         }
         // taking ownership from AVAIL is silently accepted as common.
@@ -440,7 +428,7 @@ public class PcAssignmentHelper {
             assignment.set(payload.character, newMapping);
             payload.type = Network.CharacterOwnership.ACCEPTED;
             payload.ticket = ++nextValidRequest;
-            out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
             int type = newMapping == null? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
             sendAvailability(type, payload.character, origin, nextValidRequest);
             if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
@@ -453,7 +441,7 @@ public class PcAssignmentHelper {
         // I don't want all the other requests to be somehow blocked or rejected in the meanwhile...
         // So reject this instead. Looks like this is the only viable option.
         payload.type = Network.CharacterOwnership.REJECTED;
-        out.add(new SendRequest(requester, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+        if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
     }
 
     private void sendAvailability(int type, int charIndex, MessageChannel excluding, int request) {
@@ -464,7 +452,7 @@ public class PcAssignmentHelper {
             notification.ticket = request;
             notification.character = charIndex;
             notification.type = type;
-            out.add(new SendRequest(peer, ProtoBufferEnum.CHARACTER_OWNERSHIP, notification));
+            if(peer.pipe != null) mailman.out.add(new SendRequest(peer.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, notification));
         }
     }
 
@@ -587,4 +575,5 @@ public class PcAssignmentHelper {
         }
     }
     public UnassignedPcsAdapter unboundPcAdapter;
+    public final Mailman mailman = new Mailman();
 }

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Vapor Dire Rat"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "augmented animal",
+            "vapor"
+        ]
+    }
+}

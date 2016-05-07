@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Vexgit"
+        ],
+        "cr": "1",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Gremlin"
+            }
+        ]
+    }
+}

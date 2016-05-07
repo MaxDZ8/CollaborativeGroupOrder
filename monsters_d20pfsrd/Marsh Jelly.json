@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Marsh Jelly"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 5
+    }
+}

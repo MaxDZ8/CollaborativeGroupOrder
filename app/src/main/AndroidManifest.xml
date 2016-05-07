@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.massimodz8.collaborativegrouporder">
 
+    <uses-permission
+        android:name="android.permission.VIBRATE"
+        android:required="true" />
+
     <!--
     <uses-permission
         android:required="true"
@@ -113,7 +117,67 @@
         <service
             android:name=".PartyPickingService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity
+            android:name=".master.FreeRoamingActivity"
+            android:label="@string/fra_title"
+            android:parentActivityName=".master.GatheringActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".master.GatheringActivity" />
+        </activity>
+        <activity
+            android:name=".master.SpawnMonsterActivity"
+            android:label="@string/sma_title"
+            android:parentActivityName=".master.FreeRoamingActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".master.FreeRoamingActivity" />
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".master.BattleActivity"
+            android:label="@string/ba_title"
+            android:parentActivityName=".master.FreeRoamingActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".master.FreeRoamingActivity" />
+        </activity>
+        <activity
+            android:name=".MyActorRoundActivity"
+            android:label="@string/mara_title"
+            android:parentActivityName=".master.BattleActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".master.BattleActivity" />
+        </activity>
+
+        <service
+            android:name=".client.AdventuringService"
+            android:enabled="true"
+            android:exported="false" />
+
+        <activity
+            android:name=".client.ActorOverviewActivity"
+            android:label="@string/aoa_title"
+            android:parentActivityName=".MainMenuActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainMenuActivity" />
+        </activity>
+        <activity android:name=".InterstitialAdPlaceholderActivity"></activity>
     </application>
 
 </manifest>

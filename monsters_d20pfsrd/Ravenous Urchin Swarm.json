@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Ravenous Urchin Swarm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "vermin",
+        "init": 1,
+        "tags": [
+            "aquatic",
+            "swarm"
+        ]
+    }
+}

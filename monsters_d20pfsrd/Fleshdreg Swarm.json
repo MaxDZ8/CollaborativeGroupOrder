@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fleshdreg Swarm"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "aberration",
+        "init": 5,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

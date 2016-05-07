@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Troll Warden"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 4,
+        "example": "Troll ranger 2",
+        "tags": [
+            "giant"
+        ]
+    }
+}

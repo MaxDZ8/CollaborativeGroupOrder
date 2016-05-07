@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Thulgant"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar",
+            "qlippoth"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Qlippoth"
+            }
+        ]
+    }
+}

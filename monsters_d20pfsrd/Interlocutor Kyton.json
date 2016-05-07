@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Interlocutor Kyton"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "kyton",
+            "lawful"
+        ]
+    }
+}

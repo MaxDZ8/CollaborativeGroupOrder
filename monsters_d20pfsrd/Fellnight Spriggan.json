@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Fellnight Spriggan"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 3,
+        "example": "Male bramble spriggan",
+        "tags": [
+            "augmented humanoid",
+            "gnome"
+        ]
+    }
+}

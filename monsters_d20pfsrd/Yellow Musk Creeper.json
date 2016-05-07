@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Yellow Musk Creeper"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 2
+    }
+}

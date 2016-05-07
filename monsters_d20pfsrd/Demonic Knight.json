@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Demonic Knight"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

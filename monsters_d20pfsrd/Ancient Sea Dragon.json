@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Sea Dragon"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "ancient"
+            }
+        ]
+    }
+}

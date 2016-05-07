@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Magmoid"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "earth",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

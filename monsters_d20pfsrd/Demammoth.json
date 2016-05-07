@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Demammoth"
+        ],
+        "cr": "20",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": 5,
+        "tags": [
+            "behemoth"
+        ]
+    }
+}

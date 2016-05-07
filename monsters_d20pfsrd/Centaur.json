@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Centaur"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "monstrous humanoid",
+        "init": 6
+    }
+}

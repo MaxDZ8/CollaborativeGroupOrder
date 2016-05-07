@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bloodhaze Mosquito Swarm"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Fine",
+        "type": "vermin",
+        "init": 2,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

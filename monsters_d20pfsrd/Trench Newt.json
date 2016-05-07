@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Trench Newt"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

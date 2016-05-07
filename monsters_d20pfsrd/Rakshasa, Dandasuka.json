@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Dandasuka"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "native",
+            "rakshasa",
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Rakshasa"
+            }
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Iku-turso"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 7,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

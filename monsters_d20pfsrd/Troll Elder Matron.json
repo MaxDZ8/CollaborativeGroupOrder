@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Troll Elder Matron"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 6,
+        "example": "Troll witch 10",
+        "tags": [
+            "giant"
+        ]
+    }
+}

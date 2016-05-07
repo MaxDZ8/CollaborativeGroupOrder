@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Screaming Skull"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": -5
+    }
+}

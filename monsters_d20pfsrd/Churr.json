@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Churr"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Large",
+        "type": "monstrous humanoid",
+        "init": 2
+    }
+}

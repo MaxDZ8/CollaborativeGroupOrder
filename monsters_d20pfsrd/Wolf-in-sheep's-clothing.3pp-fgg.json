@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Wolf-in-sheep's-clothing"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

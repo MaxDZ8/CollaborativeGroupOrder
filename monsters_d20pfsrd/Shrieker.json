@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Shrieker"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 0
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Roper"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Death Worm"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 5,
+        "tags": [
+            "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

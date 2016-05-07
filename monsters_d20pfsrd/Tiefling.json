@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Tiefling"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 3,
+        "example": "Tiefling rogue 1",
+        "tags": [
+            "native"
+        ]
+    }
+}

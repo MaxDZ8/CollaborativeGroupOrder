@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Lesser Necrophidius"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "construct",
+        "init": 5
+    }
+}

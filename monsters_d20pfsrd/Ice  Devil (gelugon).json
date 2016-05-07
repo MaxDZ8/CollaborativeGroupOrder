@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Ice  Devil",
+            "Gelugon"
+        ],
+        "cr": "13",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

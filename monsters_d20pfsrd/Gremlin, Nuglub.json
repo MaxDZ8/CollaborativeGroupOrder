@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Nuglub"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Gremlin"
+            }
+        ]
+    }
+}

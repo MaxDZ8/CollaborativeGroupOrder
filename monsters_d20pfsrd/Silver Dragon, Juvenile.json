@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Silver Dragon"
+        ],
+        "cr": "11",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "juvenile"
+            }
+        ]
+    }
+}

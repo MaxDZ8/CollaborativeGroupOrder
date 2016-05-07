@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Hangman Tree"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

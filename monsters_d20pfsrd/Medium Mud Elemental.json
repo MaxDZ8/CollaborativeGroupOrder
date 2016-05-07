@@ -1,0 +1,30 @@
+{
+    "head": {
+        "name": [
+            "Mud Elemental"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar",
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "medium"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
+        ]
+    }
+}

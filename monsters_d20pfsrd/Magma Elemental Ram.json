@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Magma Elemental Ram"
+        ],
+        "cr": "14",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

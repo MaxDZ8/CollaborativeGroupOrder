@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Albino Cave Solifugid"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 1
+    }
+}

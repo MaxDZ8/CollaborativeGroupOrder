@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Crocodile"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "animal",
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "appliedTemplate",
+                "value": "dire"
+            }
+        ]
+    }
+}

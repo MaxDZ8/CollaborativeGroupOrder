@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Draconal"
+        ],
+        "cr": "20",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "agathion",
+            "extraplanar",
+            "good"
+        ]
+    }
+}

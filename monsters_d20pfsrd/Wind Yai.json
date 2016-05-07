@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Wind Yai"
+        ],
+        "cr": "16",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "air",
+            "giant",
+            "native",
+            "oni",
+            "shapechanger"
+        ]
+    }
+}

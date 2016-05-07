@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Froghemoth"
+        ],
+        "cr": "13",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 5,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

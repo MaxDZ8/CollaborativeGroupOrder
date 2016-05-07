@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Formian Royal Guard"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

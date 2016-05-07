@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Centipede"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "vermin",
+        "init": 0,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Great Forest"
+            }
+        ]
+    }
+}

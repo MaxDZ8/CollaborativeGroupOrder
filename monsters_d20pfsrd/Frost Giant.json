@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Frost Giant"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": -1,
+        "tags": [
+            "cold",
+            "giant"
+        ]
+    }
+}

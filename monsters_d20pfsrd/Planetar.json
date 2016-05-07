@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Planetar"
+        ],
+        "cr": "16",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "angel",
+            "extraplanar",
+            "good"
+        ]
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Giant Snapping Turtle"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "animal",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Mummy Of The Deep"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 0,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

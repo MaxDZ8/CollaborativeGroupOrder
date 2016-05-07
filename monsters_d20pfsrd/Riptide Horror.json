@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Riptide Horror"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Qallupilluk"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

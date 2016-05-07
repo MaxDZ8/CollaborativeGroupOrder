@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Tsathar"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mindstab Fungus"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 0
+    }
+}

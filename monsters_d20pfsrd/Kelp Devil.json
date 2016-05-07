@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Kelp Devil"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "plant",
+        "init": 4
+    }
+}

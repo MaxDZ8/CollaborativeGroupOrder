@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Small Barracuda"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

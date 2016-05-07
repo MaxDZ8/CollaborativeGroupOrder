@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Xill"
+        ],
+        "cr": "6",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

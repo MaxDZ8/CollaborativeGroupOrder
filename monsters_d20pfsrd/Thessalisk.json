@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Thessalisk"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 0
+    }
+}

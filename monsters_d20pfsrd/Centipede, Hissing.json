@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Centipede"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Hissing"
+            }
+        ]
+    }
+}

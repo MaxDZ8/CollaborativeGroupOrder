@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Slorath"
+        ],
+        "cr": "18",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "cold"
+        ]
+    }
+}

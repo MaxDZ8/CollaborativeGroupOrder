@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Ant Drone"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "vermin",
+        "init": 2
+    }
+}

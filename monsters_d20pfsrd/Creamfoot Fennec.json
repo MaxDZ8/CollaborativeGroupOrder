@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Creamfoot Fennec"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": 3
+    }
+}

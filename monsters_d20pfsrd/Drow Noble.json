@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Drow Noble"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 3,
+        "example": "Female drow cleric 3",
+        "race": "elf"
+    }
+}

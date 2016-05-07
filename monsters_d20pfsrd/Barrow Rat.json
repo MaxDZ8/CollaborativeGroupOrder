@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Barrow Rat"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "magical beast",
+        "init": 2
+    }
+}

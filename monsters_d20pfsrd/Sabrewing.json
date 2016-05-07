@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Sabrewing"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

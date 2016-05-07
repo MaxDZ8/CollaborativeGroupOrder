@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Forge Spurned"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 4,
+        "tags": [
+            "fire"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Frost Mite Swarm"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Fine",
+        "type": "magical beast",
+        "init": 7,
+        "tags": [
+            "cold",
+            "swarm"
+        ]
+    }
+}

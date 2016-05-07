@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Unseelie Shadow Mastiff"
+        ],
+        "cr": "6",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "feyblood"
+        ]
+    }
+}

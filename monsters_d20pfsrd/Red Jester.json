@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Red Jester"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Brain Gear"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Small",
+        "type": "construct",
+        "init": 0
+    }
+}

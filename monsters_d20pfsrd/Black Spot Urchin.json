@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Black Spot Urchin"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "magical beast",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Spyglass Archon"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "archon",
+            "extraplanar",
+            "good",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Shira"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "div",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

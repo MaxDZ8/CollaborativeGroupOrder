@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Grimstalker"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 9,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

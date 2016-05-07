@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Lawgiver"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Gargantuan",
+        "type": "construct",
+        "init": 1,
+        "tags": [
+            "extraplanar",
+            "herald",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Crag Man"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 1,
+        "tags": [
+            "earth"
+        ]
+    }
+}

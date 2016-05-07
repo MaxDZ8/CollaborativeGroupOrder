@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Rope Golem"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": 0
+    }
+}

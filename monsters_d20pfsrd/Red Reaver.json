@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Red Reaver"
+        ],
+        "cr": "13",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": -2
+    }
+}

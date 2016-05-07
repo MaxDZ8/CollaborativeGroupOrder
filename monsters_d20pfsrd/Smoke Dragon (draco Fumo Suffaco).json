@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Smoke Dragon",
+            "Draco Fumo Suffaco"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 1,
+        "tags": [
+            "air"
+        ]
+    }
+}

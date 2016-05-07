@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Werecrocodile"
+        ],
+        "cr": "3",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 5,
+        "example": "Human natural werecrocodile fighter 3",
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "human"
+            }
+        ]
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "head": {
+        "name": [
+            "Negative Energy Elemental"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "elemental",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "large"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
+        ]
+    }
+}

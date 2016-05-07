@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "The Desire"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "medium",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "devil",
+            "evil",
+            "native"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Fungal Crawler"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 9
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Thrush"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "animal",
+        "init": 2
+    }
+}

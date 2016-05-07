@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Al-mi’raj"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 3
+    }
+}

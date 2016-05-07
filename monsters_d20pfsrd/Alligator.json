@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Alligator"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "animal",
+        "init": 1
+    }
+}

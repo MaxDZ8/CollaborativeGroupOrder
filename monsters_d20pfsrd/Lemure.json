@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Lemure"
+        ],
+        "cr": "1",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

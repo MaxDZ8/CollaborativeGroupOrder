@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Satyr"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 2
+    }
+}

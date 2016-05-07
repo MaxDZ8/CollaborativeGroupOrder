@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Lesser Host Devil",
+            "Gaav"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

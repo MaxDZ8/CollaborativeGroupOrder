@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Dragonnel"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 0
+    }
+}

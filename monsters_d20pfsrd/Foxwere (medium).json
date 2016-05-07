@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Foxwere"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.size",
+                "value": "medium"
+            }
+        ]
+    }
+}

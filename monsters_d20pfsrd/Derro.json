@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Derro"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 6,
+        "tags": [
+            "derro"
+        ]
+    }
+}

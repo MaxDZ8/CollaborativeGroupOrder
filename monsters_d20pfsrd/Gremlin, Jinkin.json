@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Jinkin"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Tiny",
+        "type": "fey",
+        "init": 4,
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Gremlin"
+            }
+        ]
+    }
+}

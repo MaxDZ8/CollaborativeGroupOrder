@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Plantoid Servitor"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 0
+    }
+}

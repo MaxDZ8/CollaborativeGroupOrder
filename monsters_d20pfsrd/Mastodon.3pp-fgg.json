@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Mastodon"
+        ],
+        "cr": "13",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "animal",
+        "init": 0,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

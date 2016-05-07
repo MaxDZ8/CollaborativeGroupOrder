@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bronze Giant"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "giant"
+        ]
+    }
+}

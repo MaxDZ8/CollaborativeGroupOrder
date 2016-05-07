@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Leprechaun"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 7,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

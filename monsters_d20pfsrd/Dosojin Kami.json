@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Dosojin Kami"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "kami",
+            "native"
+        ]
+    }
+}

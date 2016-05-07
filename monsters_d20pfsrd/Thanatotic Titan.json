@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Thanatotic Titan"
+        ],
+        "cr": "22",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

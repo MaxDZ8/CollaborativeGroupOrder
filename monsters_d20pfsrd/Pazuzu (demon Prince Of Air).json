@@ -1,0 +1,22 @@
+{
+    "head": {
+        "name": [
+            "Pazuzu",
+            "Demon Prince of Air"
+        ],
+        "cr": "28",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 14,
+        "tags": [
+            "air",
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

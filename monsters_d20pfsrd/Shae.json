@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Shae"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

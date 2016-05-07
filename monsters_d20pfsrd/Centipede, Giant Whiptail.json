@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Centipede"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "vermin",
+        "init": 0,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Giant Whiptail"
+            }
+        ]
+    }
+}

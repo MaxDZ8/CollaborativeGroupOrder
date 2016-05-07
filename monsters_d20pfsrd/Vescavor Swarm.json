@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Vescavor Swarm"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Diminutive",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar",
+            "swarm"
+        ]
+    }
+}

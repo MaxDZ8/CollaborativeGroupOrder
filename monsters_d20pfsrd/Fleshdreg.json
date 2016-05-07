@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Fleshdreg"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 1
+    }
+}

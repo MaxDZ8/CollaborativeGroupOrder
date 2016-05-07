@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Thriae Constructor"
+        ],
+        "cr": "14",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "monstrous humanoid",
+        "init": 0
+    }
+}

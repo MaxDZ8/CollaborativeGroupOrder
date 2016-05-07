@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Werebear"
+        ],
+        "cr": "4",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 2,
+        "example": "Human natural werebear ranger 4",
+        "race": "human",
+        "tags": [
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "hybrid"
+            }
+        ]
+    }
+}

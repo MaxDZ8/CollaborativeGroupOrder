@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Landwalker Shark"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 4,
+        "tags": [
+            "augmented animal"
+        ]
+    }
+}

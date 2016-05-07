@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Slinker"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 2
+    }
+}

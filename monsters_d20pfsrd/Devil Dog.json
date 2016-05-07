@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Devil Dog"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 6,
+        "tags": [
+            "cold"
+        ]
+    }
+}

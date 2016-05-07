@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Spirit Naga"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 5
+    }
+}

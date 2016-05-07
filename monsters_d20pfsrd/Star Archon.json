@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Star"
+        ],
+        "cr": "19",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "archon",
+            "extraplanar",
+            "good",
+            "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Archon"
+            }
+        ]
+    }
+}

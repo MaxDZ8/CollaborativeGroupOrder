@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Amber Ooze"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "ooze",
+        "init": 0
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Kelpie"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 7,
+        "tags": [
+            "aquatic",
+            "shapechanger"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Blood Wight"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 6
+    }
+}

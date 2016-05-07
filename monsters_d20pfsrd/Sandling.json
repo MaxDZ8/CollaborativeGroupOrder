@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Sandling"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 1,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "earth"
+        ]
+    }
+}

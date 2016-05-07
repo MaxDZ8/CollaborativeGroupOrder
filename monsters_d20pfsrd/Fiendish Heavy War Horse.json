@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Fiendish Heavy War Horse"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "animal",
+        "init": 4,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

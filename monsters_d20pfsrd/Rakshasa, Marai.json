@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Marai"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "native",
+            "rakshasa",
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Rakshasa"
+            }
+        ]
+    }
+}

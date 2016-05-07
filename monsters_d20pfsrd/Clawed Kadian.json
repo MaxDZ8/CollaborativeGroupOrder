@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Clawed Kadian"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 5,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

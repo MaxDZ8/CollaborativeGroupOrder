@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Mustard Jelly"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": 0
+    }
+}

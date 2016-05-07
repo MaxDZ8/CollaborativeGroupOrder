@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dread Corby"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 1
+    }
+}

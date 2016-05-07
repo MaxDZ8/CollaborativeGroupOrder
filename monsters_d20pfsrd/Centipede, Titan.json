@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Centipede"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Colossal",
+        "type": "vermin",
+        "init": 0,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Titan"
+            }
+        ]
+    }
+}

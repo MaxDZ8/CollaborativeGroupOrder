@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Phasma"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 9,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

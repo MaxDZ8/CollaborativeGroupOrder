@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Geon"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": -1,
+        "tags": [
+            "earth",
+            "elemental",
+            "extraplanar"
+        ]
+    }
+}

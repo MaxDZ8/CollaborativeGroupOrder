@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Rusalka"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 10,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

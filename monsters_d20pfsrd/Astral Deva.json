@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Astral Deva"
+        ],
+        "cr": "14",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "angel",
+            "extraplanar",
+            "good"
+        ]
+    }
+}

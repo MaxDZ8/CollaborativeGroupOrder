@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Avernal"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Ghoul"
+            }
+        ]
+    }
+}

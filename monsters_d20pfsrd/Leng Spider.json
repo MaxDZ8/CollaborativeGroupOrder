@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Leng Spider"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 13,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

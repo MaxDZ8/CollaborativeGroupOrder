@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Entropic Ooze"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -2,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

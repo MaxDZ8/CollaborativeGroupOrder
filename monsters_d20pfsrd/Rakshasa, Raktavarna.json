@@ -1,0 +1,25 @@
+{
+    "head": {
+        "name": [
+            "Raktavarna"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Tiny",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "native",
+            "rakshasa",
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Rakshasa"
+            }
+        ]
+    }
+}

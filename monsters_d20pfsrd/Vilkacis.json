@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Vilkacis"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 10,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

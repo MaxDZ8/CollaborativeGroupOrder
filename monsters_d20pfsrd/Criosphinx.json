@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Criosphinx"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 0
+    }
+}

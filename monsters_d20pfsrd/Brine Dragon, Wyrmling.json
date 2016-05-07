@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Brine Dragon"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 6,
+        "tags": [
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
+        ]
+    }
+}

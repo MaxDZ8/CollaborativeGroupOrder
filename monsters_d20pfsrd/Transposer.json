@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Transposer"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 1
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gorgimera"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 1
+    }
+}

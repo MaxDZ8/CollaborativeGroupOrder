@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Unhallowed Mummy"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 0,
+        "example": "Unhallowed mummy"
+    }
+}

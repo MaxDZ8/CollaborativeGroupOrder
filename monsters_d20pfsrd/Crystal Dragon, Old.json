@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Crystal Dragon"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 0,
+        "tags": [
+            "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "old"
+            }
+        ]
+    }
+}

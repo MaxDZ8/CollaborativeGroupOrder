@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Balisse Angel"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "angel",
+            "extraplanar",
+            "good"
+        ]
+    }
+}

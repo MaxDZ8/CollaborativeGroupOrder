@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Slime Mold"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -1
+    }
+}

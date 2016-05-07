@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Choker"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 6
+    }
+}

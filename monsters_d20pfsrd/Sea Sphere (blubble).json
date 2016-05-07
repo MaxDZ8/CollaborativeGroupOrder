@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Sea Sphere",
+            "Blubble"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 11,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

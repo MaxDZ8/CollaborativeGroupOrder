@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Fungus Man King"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 1,
+        "example": "Male giant fungus man"
+    }
+}

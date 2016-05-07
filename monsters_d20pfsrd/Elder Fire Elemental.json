@@ -1,0 +1,29 @@
+{
+    "head": {
+        "name": [
+            "Fire Elemental"
+        ],
+        "cr": "11",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 13,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "elder"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
+        ]
+    }
+}

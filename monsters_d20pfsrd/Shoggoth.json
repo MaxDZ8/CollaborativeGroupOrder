@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Shoggoth"
+        ],
+        "cr": "19",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Huge",
+        "type": "ooze",
+        "init": 11,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

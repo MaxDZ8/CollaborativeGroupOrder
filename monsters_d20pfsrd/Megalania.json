@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Megalania"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "animal",
+        "init": 1
+    }
+}

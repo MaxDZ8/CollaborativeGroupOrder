@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Skincrawler Dragon"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 4
+    }
+}

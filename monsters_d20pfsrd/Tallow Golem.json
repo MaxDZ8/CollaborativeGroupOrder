@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Tallow Golem"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "construct",
+        "init": -1
+    }
+}

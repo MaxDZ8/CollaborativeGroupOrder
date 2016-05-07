@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fye"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

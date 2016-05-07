@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Faerie Dragon"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 3
+    }
+}

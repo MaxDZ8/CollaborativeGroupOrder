@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Chupacabra"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 7,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "flying"
+            }
+		]
+    }
+}

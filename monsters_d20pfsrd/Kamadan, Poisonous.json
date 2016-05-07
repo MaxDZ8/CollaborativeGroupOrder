@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Kamadan"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2,
+        "extraNotes": [
+            {
+                "type": "variation",
+                "value": "Poisonous"
+            }
+        ]
+    }
+}

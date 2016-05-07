@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Storm Giant Zombie"
+        ],
+        "cr": "8",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "undead",
+        "init": 1,
+        "example": "Storm giant zombie"
+    }
+}

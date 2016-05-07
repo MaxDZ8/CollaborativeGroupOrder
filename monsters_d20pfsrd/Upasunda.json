@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Upasunda"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "asura",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

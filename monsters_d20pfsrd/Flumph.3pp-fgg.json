@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Flumph"
+        ],
+        "cr": "1",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

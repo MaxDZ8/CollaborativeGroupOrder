@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Hoar Fox"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "cold"
+        ]
+    }
+}

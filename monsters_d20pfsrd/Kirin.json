@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Kirin"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 6,
+        "tags": [
+            "air"
+        ]
+    }
+}

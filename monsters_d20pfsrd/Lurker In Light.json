@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Lurker In Light"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 8,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Foo Dog"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 6,
+        "tags": [
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

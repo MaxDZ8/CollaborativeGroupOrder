@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ferrous Giant"
+        ],
+        "cr": "17",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 0,
+        "tags": [
+            "giant"
+        ]
+    }
+}

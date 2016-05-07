@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Blast Shadow"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 8,
+        "tags": [
+            "fire"
+        ]
+    }
+}

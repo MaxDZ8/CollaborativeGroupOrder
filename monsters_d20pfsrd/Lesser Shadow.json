@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Lesser Shadow"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 2,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

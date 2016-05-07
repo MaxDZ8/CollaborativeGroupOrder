@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Draconid"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "aberration",
+        "init": 6
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Herald Of Hell"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 10,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "herald",
+            "lawful"
+        ]
+    }
+}

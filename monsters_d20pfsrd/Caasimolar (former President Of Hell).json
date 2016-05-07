@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Caasimolar",
+            "Former President of Hell"
+        ],
+        "cr": "23",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

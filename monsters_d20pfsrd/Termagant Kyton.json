@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Termagant Kyton"
+        ],
+        "cr": "17",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "kyton",
+            "lawful"
+        ]
+    }
+}

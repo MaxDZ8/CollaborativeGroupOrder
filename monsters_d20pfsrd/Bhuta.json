@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bhuta"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 7,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

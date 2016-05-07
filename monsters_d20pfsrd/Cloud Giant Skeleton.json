@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Cloud Giant Skeleton"
+        ],
+        "cr": "7",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "undead",
+        "init": 6
+    }
+}

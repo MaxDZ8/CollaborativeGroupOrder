@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Giant Boring Beetle"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "vermin",
+        "init": 0
+    }
+}

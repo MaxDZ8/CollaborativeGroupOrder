@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "The Horror Tree"
+        ],
+        "cr": "14",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Gargantuan",
+        "type": "undead",
+        "init": -1,
+        "example": "Unique undead advanced treant"
+    }
+}

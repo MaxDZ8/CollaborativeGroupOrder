@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dybbuk"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 15,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

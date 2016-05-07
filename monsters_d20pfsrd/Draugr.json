@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Draugr"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 0,
+        "tags": [
+            "water"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Blink Dog"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 2
+    }
+}

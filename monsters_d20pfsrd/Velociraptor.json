@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Velociraptor"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "animal",
+        "init": 7
+    }
+}

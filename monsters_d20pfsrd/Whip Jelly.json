@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Whip Jelly"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "ooze",
+        "init": 0
+    }
+}

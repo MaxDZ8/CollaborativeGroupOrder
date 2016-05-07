@@ -1,0 +1,16 @@
+{
+    "head": {
+        "name": [
+            "Strix"
+        ],
+        "cr": "1/3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 6,
+        "example": "Strix warrior 1",
+        "race": "strix"
+    }
+}

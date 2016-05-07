@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Turtle"
+        ],
+        "cr": "1/6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "animal",
+        "init": -2
+    }
+}

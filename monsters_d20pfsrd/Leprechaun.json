@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Leprechaun"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 7
+    }
+}

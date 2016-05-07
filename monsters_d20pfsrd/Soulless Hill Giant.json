@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Soulless Hill Giant"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": -1,
+        "tags": [
+            "giant"
+        ]
+    }
+}

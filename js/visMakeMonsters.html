@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+    <title>Show me monsters!</title>
+    <script src="visMakeMonsters.js" type='application/javascript;version=1.8'></script>
+    <style>
+    table {
+        border-collapse: collapse;
+        border: 2px solid;
+    }
+    th {
+        background: #F0F0F0;
+        border-left: 1px dotted;
+        border-right: 1px dotted;
+    }
+    td {
+        border-left: 1px dotted;
+        border-right: 1px dotted;
+        border-bottom: 1px solid;
+        border-top: 1px solid;
+        text-align: center;
+    }
+    </style>
+</head>
+<body>
+</body>
+    Monsters have been conditioned and we're ready to make the protobuf. Are they going to be drawn correctly? Just load them all up and let me show them to you.<br />
+    <input id="loader" type="file" accept="application/json" multiple />
+    <table id="structureVisualization">
+        <thead>
+            <tr>
+                <th>N</th>
+                <th>Name(s)</th>
+                <th>(Variation)</th>
+                <th>CR</th>
+                <th>Align</th>
+                <th>Size</th>
+                <th>Type</th>
+                <th>Tags</th>
+                <th>Init</th>
+            </tr>
+        </thead>
+    </table>
+    Is everything nice enough? If so and loading was completely successful there will be a data blob to save below there!<br>
+</html>

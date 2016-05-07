@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Wasp Swarm"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Diminutive",
+        "type": "vermin",
+        "init": 1,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

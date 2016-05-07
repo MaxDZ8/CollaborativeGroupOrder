@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Turtle-shark"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

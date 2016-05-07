@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Spectral Rock Troll"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 5,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

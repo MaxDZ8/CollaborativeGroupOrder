@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Kampfult"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 1
+    }
+}

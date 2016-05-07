@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Drelb"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "extraplanar",
+            "incorporeal",
+            "psionic"
+        ]
+    }
+}

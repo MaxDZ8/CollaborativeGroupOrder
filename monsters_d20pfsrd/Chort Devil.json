@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Chort Devil"
+        ],
+        "cr": "15",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

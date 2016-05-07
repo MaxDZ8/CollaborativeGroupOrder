@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Suijin Kami"
+        ],
+        "cr": "14",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "kami",
+            "native",
+            "water"
+        ]
+    }
+}

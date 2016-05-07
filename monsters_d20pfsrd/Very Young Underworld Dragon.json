@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Underworld Dragon"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Small",
+        "type": "dragon",
+        "init": 5,
+        "tags": [
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very young"
+            }
+        ]
+    }
+}

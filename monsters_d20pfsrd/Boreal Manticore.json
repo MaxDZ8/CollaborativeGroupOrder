@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Boreal Manticore"
+        ],
+        "cr": "6",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "cold"
+        ]
+    }
+}

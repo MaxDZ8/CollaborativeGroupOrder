@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Cloud Dragon"
+        ],
+        "cr": "9",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 0,
+        "tags": [
+            "air",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young"
+            }
+        ]
+    }
+}

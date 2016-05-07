@@ -1,0 +1,22 @@
+{
+    "head": {
+        "name": [
+            "Brijidine"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "azata",
+            "chaotic",
+            "earth",
+            "extraplanar",
+            "fire",
+            "good"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Unhallowed Greater Shadow"
+        ],
+        "cr": "8",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 5,
+        "example": "Unhallowed greater shadow",
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Barizou",
+            "Assassin Demon"
+        ],
+        "cr": "3",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

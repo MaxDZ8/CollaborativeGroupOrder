@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Juggernaut"
+        ],
+        "cr": "18",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "construct",
+        "init": 0
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dragonleaf Tree"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 4
+    }
+}

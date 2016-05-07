@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Army Ant Swarm"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Fine",
+        "type": "vermin",
+        "init": 2,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

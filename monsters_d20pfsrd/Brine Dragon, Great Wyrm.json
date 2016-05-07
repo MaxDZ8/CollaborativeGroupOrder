@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Brine Dragon"
+        ],
+        "cr": "19",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 2,
+        "tags": [
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
+        ]
+    }
+}

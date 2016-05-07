@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dragonkin"
+        ],
+        "cr": "9",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 2
+    }
+}

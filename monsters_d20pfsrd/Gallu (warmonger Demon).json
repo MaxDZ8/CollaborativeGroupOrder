@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Gallu",
+            "Warmonger Demon"
+        ],
+        "cr": "19",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

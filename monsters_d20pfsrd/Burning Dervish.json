@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Burning Dervish"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

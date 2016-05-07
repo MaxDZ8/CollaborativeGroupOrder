@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dark Matter Entropic Ooze"
+        ],
+        "cr": "14",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "ooze",
+        "init": -3,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

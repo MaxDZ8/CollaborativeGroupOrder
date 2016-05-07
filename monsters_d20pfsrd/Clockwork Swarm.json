@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Swarm"
+        ],
+        "cr": "4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 2,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

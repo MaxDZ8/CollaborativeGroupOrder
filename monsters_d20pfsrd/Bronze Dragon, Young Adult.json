@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Bronze Dragon"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 0,
+        "tags": [
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "young adult"
+            }
+        ]
+    }
+}

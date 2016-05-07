@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Greater Shedu"
+        ],
+        "cr": "10",
+        "alignment": [
+            "LG"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 5,
+        "tags": [
+            "good",
+            "lawful"
+        ],
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "to"
+            }
+        ]
+    }
+}

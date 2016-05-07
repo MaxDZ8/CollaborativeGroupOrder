@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Deep Singer Whale"
+        ],
+        "cr": "18",
+        "alignment": [
+            "LG",
+            "NG",
+            "CG",
+            "$restricted"
+        ],
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": -1
+    }
+}

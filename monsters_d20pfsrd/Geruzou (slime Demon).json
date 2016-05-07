@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Geruzou",
+            "Slime Demon"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 2,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

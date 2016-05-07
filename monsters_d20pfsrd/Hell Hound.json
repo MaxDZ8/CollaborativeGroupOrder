@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Hell Hound"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "evil",
+            "extraplanar",
+            "fire",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Darkmantle"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 6
+    }
+}

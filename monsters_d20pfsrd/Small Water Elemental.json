@@ -1,0 +1,29 @@
+{
+    "head": {
+        "name": [
+            "Water Elemental"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 0,
+        "tags": [
+            "elemental",
+            "extraplanar",
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "elemCategory",
+                "value": "small"
+            },
+            {
+                "type": "group",
+                "value": "elemental"
+            }
+        ]
+    }
+}

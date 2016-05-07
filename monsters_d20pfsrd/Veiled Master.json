@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Veiled Master"
+        ],
+        "cr": "14",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 10,
+        "tags": [
+            "aquatic",
+            "shapechanger"
+        ]
+    }
+}

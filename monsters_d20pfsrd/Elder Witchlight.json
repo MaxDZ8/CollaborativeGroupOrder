@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Elder Witchlight"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Fine",
+        "type": "fey",
+        "init": 4
+    }
+}

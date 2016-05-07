@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Wight Minotaur"
+        ],
+        "cr": "5",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "undead",
+        "init": 1,
+        "example": "Wight minotaur",
+        "tags": [
+            "augmented monstrous humanoid"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Nereid"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 9,
+        "tags": [
+            "water"
+        ]
+    }
+}

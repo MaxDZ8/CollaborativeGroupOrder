@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Tendrul"
+        ],
+        "cr": "7",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 2,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

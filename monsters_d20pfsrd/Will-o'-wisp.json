@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Will-o'-wisp"
+        ],
+        "cr": "6",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "aberration",
+        "init": 13,
+        "tags": [
+            "air"
+        ]
+    }
+}

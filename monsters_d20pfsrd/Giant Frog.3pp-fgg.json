@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Giant Frog"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "animal",
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

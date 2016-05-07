@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Bhole"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": 3
+    }
+}

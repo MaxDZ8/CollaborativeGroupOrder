@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Half-celestial Unicorn"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 4,
+        "tags": [
+            "native"
+        ]
+    }
+}

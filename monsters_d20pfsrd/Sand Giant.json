@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Sand Giant"
+        ],
+        "cr": "14",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "earth",
+            "giant"
+        ]
+    }
+}

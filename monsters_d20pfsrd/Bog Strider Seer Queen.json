@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Bog Strider Seer Queen"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 2
+    }
+}

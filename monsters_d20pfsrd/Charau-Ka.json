@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Charau-Ka"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "charau-ka"
+        ]
+    }
+}

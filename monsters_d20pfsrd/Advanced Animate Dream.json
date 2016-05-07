@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Advanced Animate Dream"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 6,
+        "example": "Advanced animate dream",
+        "tags": [
+            "extraplanar",
+            "incorporeal"
+        ]
+    }
+}

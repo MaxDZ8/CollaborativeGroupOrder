@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Soulbound Doll"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N",
+            "CN",
+            "LN",
+            "NE",
+            "NG",
+            "$restricted"
+        ],
+        "size": "Tiny",
+        "type": "construct",
+        "init": 6
+    }
+}

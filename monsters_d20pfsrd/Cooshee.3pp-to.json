@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Cooshee"
+        ],
+        "cr": "1",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "animal",
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "to"
+            }
+        ]
+    }
+}

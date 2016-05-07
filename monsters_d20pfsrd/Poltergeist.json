@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Poltergeist"
+        ],
+        "cr": "2",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 1,
+        "tags": [
+            "incorporeal"
+        ]
+    }
+}

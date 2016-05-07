@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Blue Dragon"
+        ],
+        "cr": "17",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "very old"
+            }
+        ]
+    }
+}

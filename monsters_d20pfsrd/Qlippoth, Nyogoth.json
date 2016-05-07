@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Nyogoth"
+        ],
+        "cr": "10",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "chaotic",
+            "evil",
+            "extraplanar",
+            "qlippoth"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Qlippoth"
+            }
+        ]
+    }
+}

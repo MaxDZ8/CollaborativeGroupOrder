@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Fire Yai"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "fire",
+            "giant",
+            "native",
+            "oni",
+            "shapechanger"
+        ]
+    }
+}

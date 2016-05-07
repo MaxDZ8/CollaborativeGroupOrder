@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Alraune"
+        ],
+        "cr": "13",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 5
+    }
+}

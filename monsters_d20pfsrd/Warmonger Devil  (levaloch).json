@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Warmonger Devil",
+            "Levaloch"
+        ],
+        "cr": "7",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Forest Giant"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CG",
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 2,
+        "tags": [
+            "giant"
+        ]
+    }
+}

@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Crystal Dragon"
+        ],
+        "cr": "16",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "earth"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrm"
+            }
+        ]
+    }
+}

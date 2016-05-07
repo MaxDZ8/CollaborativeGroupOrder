@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Morrigna"
+        ],
+        "cr": "13",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 8,
+        "tags": [
+            "extraplanar",
+            "psychopomp"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Psychopomp"
+            }
+        ]
+    }
+}

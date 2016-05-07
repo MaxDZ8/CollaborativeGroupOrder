@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "White Dragon"
+        ],
+        "cr": "2",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Tiny",
+        "type": "dragon",
+        "init": 7,
+        "tags": [
+            "cold"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "wyrmling"
+            }
+        ]
+    }
+}

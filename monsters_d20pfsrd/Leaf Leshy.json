@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Leaf Leshy"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "plant",
+        "init": 1,
+        "tags": [
+            "leshy",
+            "shapechanger"
+        ]
+    }
+}

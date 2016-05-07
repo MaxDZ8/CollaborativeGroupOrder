@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Jotund Troll"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "humanoid",
+        "init": 3,
+        "tags": [
+            "giant"
+        ]
+    }
+}

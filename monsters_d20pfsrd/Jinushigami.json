@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Jinushigami"
+        ],
+        "cr": "20",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "outsider",
+        "init": 11,
+        "tags": [
+            "earth",
+            "kami",
+            "native"
+        ]
+    }
+}

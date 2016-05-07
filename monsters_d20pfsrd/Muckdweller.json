@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Muckdweller"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "magical beast",
+        "init": 2,
+        "tags": [
+            "reptilian"
+        ]
+    }
+}

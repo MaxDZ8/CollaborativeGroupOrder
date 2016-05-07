@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Nue"
+        ],
+        "cr": "10",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 9
+    }
+}

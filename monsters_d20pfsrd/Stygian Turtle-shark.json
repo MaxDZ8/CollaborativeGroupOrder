@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Stygian Turtle-shark"
+        ],
+        "cr": "12",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": 3,
+        "tags": [
+            "aquatic",
+            "extraplanar"
+        ]
+    }
+}

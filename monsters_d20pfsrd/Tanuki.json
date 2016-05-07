@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Tanuki"
+        ],
+        "cr": "4",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 3,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Murder Crow"
+        ],
+        "cr": "5",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "undead",
+        "init": 9
+    }
+}

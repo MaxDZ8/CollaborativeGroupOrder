@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Geryon"
+        ],
+        "cr": "29",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Huge",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "devil",
+            "evil",
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

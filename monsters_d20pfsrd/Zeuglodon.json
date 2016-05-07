@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Zeuglodon"
+        ],
+        "cr": "9",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "animal",
+        "init": 8
+    }
+}

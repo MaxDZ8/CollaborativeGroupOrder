@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Lesser Gelid Beetle"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 0,
+        "tags": [
+            "cold"
+        ]
+    }
+}

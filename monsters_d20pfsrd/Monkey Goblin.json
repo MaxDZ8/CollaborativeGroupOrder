@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Monkey Goblin"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Small",
+        "type": "humanoid",
+        "init": 4,
+        "example": "Monkey goblin barbarian 1",
+        "tags": [
+            "goblinoid"
+        ]
+    }
+}

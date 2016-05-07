@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Aeetes' Dragon"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 6
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Lizard King"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": -1,
+        "tags": [
+            "reptilian"
+        ]
+    }
+}

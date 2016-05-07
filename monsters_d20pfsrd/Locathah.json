@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Locathah"
+        ],
+        "cr": "1/2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "humanoid",
+        "init": 1,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

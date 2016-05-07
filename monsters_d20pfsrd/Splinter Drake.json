@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Splinter Drake"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Large",
+        "type": "plant",
+        "init": 2
+    }
+}

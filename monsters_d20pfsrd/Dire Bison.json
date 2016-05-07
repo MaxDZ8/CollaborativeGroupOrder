@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Dire Bison"
+        ],
+        "cr": "6",
+        "alignment": [
+            "N"
+        ],
+        "size": "Huge",
+        "type": "animal",
+        "init": 1
+    }
+}

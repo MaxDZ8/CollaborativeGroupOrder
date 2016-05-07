@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Balor Lord"
+        ],
+        "cr": "25",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 10,
+        "example": "Male balor lord barbarian 5",
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

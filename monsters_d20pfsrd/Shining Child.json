@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Shining Child"
+        ],
+        "cr": "12",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

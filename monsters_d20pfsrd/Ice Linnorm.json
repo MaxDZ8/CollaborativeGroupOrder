@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Ice Linnorm"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Colossal",
+        "type": "dragon",
+        "init": 10
+    }
+}

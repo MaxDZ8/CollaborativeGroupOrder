@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Dwiergeth"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 11,
+        "tags": [
+            "extraplanar"
+        ]
+    }
+}

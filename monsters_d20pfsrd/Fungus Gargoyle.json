@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Fungus Gargoyle"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N",
+            "NE"
+        ],
+        "size": "Medium",
+        "type": "plant",
+        "init": 2,
+        "tags": [
+            "fungus"
+        ]
+    }
+}

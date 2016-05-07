@@ -1,0 +1,26 @@
+{
+    "head": {
+        "name": [
+            "Naunet"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "protean",
+            "shapechanger"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Protean"
+            }
+        ]
+    }
+}

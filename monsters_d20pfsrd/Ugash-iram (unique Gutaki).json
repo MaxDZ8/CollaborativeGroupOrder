@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Ugash-iram",
+            "Unique Gutaki"
+        ],
+        "cr": "15",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Colossal",
+        "type": "magical beast",
+        "init": 8,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

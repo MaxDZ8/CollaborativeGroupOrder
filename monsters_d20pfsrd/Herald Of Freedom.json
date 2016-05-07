@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Herald Of Freedom"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 12,
+        "tags": [
+            "chaotic",
+            "extraplanar",
+            "good",
+            "herald",
+            "shapechanger"
+        ]
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "head": {
+        "name": [
+            "Kere"
+        ],
+        "cr": "10",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "psychopomp",
+            "extraplanar"
+        ],
+        "extraNotes": [
+            {
+                "type": "group",
+                "value": "Psychopomp"
+            }
+        ]
+    }
+}

@@ -8,7 +8,11 @@
     <string name="generic_initializing">Initializing…</string>
     <string name="generic_lostServiceConn">Lost connection to internal service. Not supposed to happen. Maybe clearing some memory will help.</string>
     <string name="generic_carefulDlgTitle">Careful!</string>
+    <string name="generic_nopeDlgTitle">No way out</string>
     <string name="generic_action_rename">Rename</string>
+    <string name="generic_fatalError">Fatal error</string>
+    <string name="generic_failedAdventuringServiceBind">Could not bind to internal \'adventuring\' structures. This is required to prevent data loss when you turn your phone (and other technicalities).\nThis should be a transient problem.</string>
+    <string name="generic_validButTooEarly">Too fast. Try again.</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
     <string name="master_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
@@ -16,6 +20,7 @@
     <string name="master_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
     <string name="master_exitConfirmedDlgAction">Interrupt operations</string>
     <string name="master_cannotBindPartyService">Failed to get an handle to the party creation service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
+    <string name="master_cannotBindAdventuringService">Failed to get an handle to the party adventuring service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
 
     <string name="serviceRegFailed_msg">I cannot create the "heroes gather here" service. There\'s nothing I can do about it.\n(Error %1$s)</string>
     <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
@@ -146,15 +151,11 @@
     <string name="sfga_explicitConnectionInstructions">Cannot find your party? Try an explicit connection!</string>
     <string name="sfga_confirmInstructions">You will advance to next step automatically as soon as the party is formed.</string>
     <string name="selectFormingGroupActivity_startExplicitConnection">Explicit connection</string>
-    <string name="couldNotBindInternalService">Could not bind to the cross-activity data sharing service. This is required for everything else to work.</string>
     <string name="giveUpAndGoBack">Give up and go back</string>
     <string name="initializing">Initializing…</string>
     <string name="selectFormingGroup_networkDiscoveryFail">Network discovery failed to start. You can still join a group by attempting an explicit connection.</string>
     <string name="selectFormingGroupActivity_lostConnection">Lost connection to group \"%1$s\", reason given: %2$s.</string>
     <string name="lostCrossActivitySharingService">Lost handle over the cross-activity data sharing service. This is required to work.</string>
-    <string name="mainMenuActivity_couldNotBindInternalService">Could not bind to the cross-activity data sharing service. This is required for everything else to work so the app will now quit.</string>
-    <string name="mainMenuActivity_couldNotBindExit">Exit app</string>
-    <string name="mainMenuActivity_lostCrossActivitySharingService">Lost handle over the cross-activity data sharing service. Nothing else will work without it so the app will now close.</string>
     <string name="formingNewPartyActivity_partyName">Party name:</string>
 
     <string name="eca_title">Initiate explicit connection</string>
@@ -182,6 +183,9 @@
     <string name="mma_noDigestDlgMsg">Could not build digest to verify device identity. This was not supposed to happen and it\'s very serious. Try rebooting.</string>
     <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
     <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
+    <string name="mma_tooManyMonsters">Impossible, monster data exceeding maximum size.</string>
+    <string name="mma_failedAssetRead">Impossible, failed asset read.</string>
+    <string name="mma_loading">Loading data…</string>
 
     <string name="npdsa_badParty_title">Bad party name</string>
     <string name="npdsa_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
@@ -309,6 +313,8 @@
     <string name="ga_pleaseUpdateFriend">Please ask your friend to upgrade app.</string>
     <string name="ga_versionMismatchDialogMessage">Device \"%1$s\" connected running version %2$d.\nYou\'re running version %3$d.\nIt is strongly suggested all devices to run the same protocol version.\n%4$s</string>
     <string name="ga_noPcsOnDevice">No playing characters on this device.</string>
+    <string name="ga_dlg_errorWhileFormingGroup_title">Whoops!</string>
+    <string name="ga_dlg_errorWhileFormingGroup_msg">Something went wrong while giving out session data. This is very wrong and state is now likely inconsistent. Please report this issue.</string>
 
     <string name="dialog_explicitConnectionInfo_title">Connection informations</string>
     <string name="dlg_iec_port">Port: %1$s</string>
@@ -349,7 +355,7 @@
     <string name="csa_refusedPlural">%1$d character ownership requests have been refused.</string>
     <string name="csa_takenAwaySingular">A character previously assigned to you has been given to someone else.</string>
     <string name="csa_takenAwayPlural">%1$d characters assigned to you have been taken away.</string>
-	
+
     <string name="vhPHC_imageDesc">Character image</string>
     <string name="vhAC_imageDesc">Character image</string>
     <string name="vhAC_hpMax">HP max: %1$d</string>
@@ -397,4 +403,135 @@
     <string name="vhOP_charLevel_different">Levels %1$d - %2$d</string>
     <string name="pes_sessionNotFound">Missing session file.</string>
     <string name="pes_sessionTooBig">session file takes %1$d, maximum size allowed is %2$d</string>
+
+    <string name="vhAC_avatarDesc">Actor pic</string>
+
+    <string name="fra_title">Adventuring</string>
+    <string name="fra_instructions">Select everyone taking part in next battle.</string>
+    <string name="fra_actorType_playingCharacter">PC</string>
+    <string name="fra_actorType_monster">MOB</string>
+    <string name="fra_actorType_npc">NPC</string>
+    <string name="fra_actorType_unmatched">\???</string>
+    <string name="fra_dataLoadedFeedback">Started brand new session.</string>
+    <string name="fra_noBattle_zeroPcs">At least one playing character required.</string>
+    <string name="fra_searchLabel">Add mobs to battle</string>
+    <string name="fra_searchable_hint">Search mobs to battle</string>
+    <string name="fra_dlgActionIgnoreMissingCharacters">Ignore and start battle</string>
+    <string name="fra_dlgMsg_missingChars">Someone will not take part to battle. Is that what you intended?\nInitial surprise round can be managed later.</string>
+    <string name="fra_rollRequestInitiativeMsg">Initiative!</string>
+    <string name="fra_dlgWIR_title">Waiting initiative rolls</string>
+    <string name="fra_dlgWIR_info">I will switch to battle as soon as I can figure out an order of initiative.\nFor the time being, you must wait.</string>
+
+    <string name="sma_title">Spawn monsters</string>
+    <string name="sma_searchingMessage">Searching…</string>
+    <string name="sma_showMonsterInfo">Show monster book information</string>
+    <string name="sma_short_showMonsterInfo">Monster info</string>
+    <string name="sma_addMonsters">Add monsters to battle</string>
+    <string name="sma_short_addMonsters">Add monsters</string>
+    <string name="sma_status_matchedSingleMonster">Found a single monster.</string>
+    <string name="sma_status_matchedMultipleMonsters">Matched %1$d monsters.</string>
+    <string name="sma_monsterNameSpawnNote">%1$s (%2$d)</string>
+
+    <string name="sma_dlg_mbi_title">Monster book informations</string>
+    <string name="sma_dlg_mbi_created">Created:</string>
+    <string name="sma_dlg_mbi_entries">Entries:</string>
+    <string name="sma_dlg_mbi_monsterCount">Monsters total:</string>
+    <string name="sma_dlg_mbi_incoherentPublisherUnknown">!!! Unknown publisher !!!</string>
+    <string name="sma_dlg_mbi_incoherentPublisherInvalid">!!! Invalid publisher !!!</string>
+    <string name="sma_dlg_mbi_thirdPartyPublisher">(3rd party)</string>
+
+    <string name="vhMLE_challangeRatio_integral">"CR %1$d"</string>
+    <string name="vhMLE_challangeRatio_fraction">CR %1$d/%2$d</string>
+    <string name="vhMLE_initiative">Initiative:</string>
+    <string name="vhMLE_tappedFeedback">Tap to battle</string>
+    <string name="vhMLE_spawnCountFeedback">Spawncount to battle: %1$s</string>
+    <string name="vhMLE_badActionClimbToken">!! Unknown ACTION_CLIMB token !!</string>
+    <string name="vhMLE_badActionClimbParamArray">!! ACTION_CLIMB param array bad size !!</string>
+    <string name="vhMLE_actionClimb_tree">tree</string>
+    <string name="vhMLE_badConditionalInitiative">!! Unknown conditional initiative action !!</string>
+    <string name="vhMLE_actionClimbing">climbing</string>
+    <string name="vhMLE_actionClimbingMessage">%1$d if %2$s %3$s</string>
+    <string name="vhMLE_dragonMaturityNameExpansion">%1$s, %2$s</string>
+    <string name="vhMLE_elementalMaturityNameExpansion">%1$s, %2$s</string>
+
+    <string name="mobs_maturity_da_wyrmling">Wyrmling</string>
+    <string name="mobs_maturity_da_veryYoung">Very Young</string>
+    <string name="mobs_maturity_da_young">Young</string>
+    <string name="mobs_maturity_da_juvenile">Juvenile</string>
+    <string name="mobs_maturity_da_youngAdult">Young Adult</string>
+    <string name="mobs_maturity_da_adult">Adult</string>
+    <string name="mobs_maturity_da_matureAdult">Mature Adult</string>
+    <string name="mobs_maturity_da_old">Old</string>
+    <string name="mobs_maturity_da_veryOld">Very Old</string>
+    <string name="mobs_maturity_da_ancient">Ancient</string>
+    <string name="mobs_maturity_da_wyrm">Wyrm</string>
+    <string name="mobs_maturity_da_greatWyrm">Great Wyrm</string>
+    <string name="mobs_maturity_eg_small">Small</string>
+    <string name="mobs_maturity_maturity_eg_medium">Medium</string>
+    <string name="mobs_maturity_eg_large">Large</string>
+    <string name="mobs_maturity_eg_huge">Huge</string>
+    <string name="mobs_maturity_eg_greater">Greater</string>
+    <string name="mobs_maturity_eg_elder">Elder</string>
+    <string name="mobs_size_fine">fine</string>
+    <string name="mobs_size_diminutive">diminutive</string>
+    <string name="mobs_size_tiny">tiny</string>
+    <string name="mobs_size_small">small</string>
+    <string name="mobs_size_medium">medium</string>
+    <string name="mobs_size_large">large</string>
+    <string name="mobs_size_huge">huge</string>
+    <string name="mobs_size_gargantuan">gargantuan</string>
+    <string name="mobs_size_colossal">colossal</string>
+
+    <string name="ba_title">Fight!</string>
+    <string name="ba_initialInstructions">Actors with no check will skip round.\nUse this for surprise rounds!</string>
+    <string name="ba_roundNumber">Round %1$d</string>
+    <string name="ba_dlg_gotPreparedAction">%1$s has a readied action. You can renew the prepared action or discard it.</string>
+    <string name="ba_dlg_gotPreparedAction_renew">Renew prepared action and go next</string>
+    <string name="ba_dlg_gotPreparedAction_discard">Discard and act</string>
+    <string name="ba_roundCount">Not fighting yet!\nInitiative order as below.</string>
+    <string name="ba_actorByPlayerSnack">Actor by player.</string>
+    <string name="ba_TODO_NOTE">NOTE:</string>
+    <string name="ba_TODO_NOTE_deleteThoseFurtherInfosTheyreReallyBAD">Hit point tracking is TODO so you\'ll have to disable defeated mobs manually.</string>
+
+    <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
+    <string name="mara_endTurn">End your turn</string>
+    <string name="mara_title">Act now!</string>
+    <string name="mara_willActAfterYou">After you:</string>
+    <string name="mara_next_title">Pass round to next player</string>
+    <string name="mara_next_titleShort">Next</string>
+    <string name="mara_nextToAct">Next to act: %1$s</string>
+    <string name="mara_round">Round %1$d</string>
+    <string name="mara_dlg_shuffle_title">Delay action</string>
+    <string name="mara_dlg_readyAction_title">Ready action</string>
+
+    <string name="mara_dlg_readyActionButtonLabel">Delay</string>
+    <string name="mara_dlgSIO_title">Delay action</string>
+    <string name="mara_dlgSIO_moveBefore">Move up in order</string>
+    <string name="mara_dlgSIO_moveAfter">Move down in order</string>
+    <string name="mara_dlgSIO_apply">Apply</string>
+    <string name="mara_dlgRAP_title">Ready Action</string>
+    <string name="mara_dlgRAP_optionalMessageHint">Optional condition description.</string>
+    <string name="mara_dlgRAP_apply">Apply</string>
+    <string name="mara_noBackDlgMessage">I cannot let you do that. You have been given a turn to play, you will act. You can get out only by passing turn.</string>
+
+    <string name="vhAA_preparedActionNoNoteGiven">Prepared action</string>
+    <string name="mma_actorDataGetFailed">Errors detected in getting data from master device. Giving up.</string>
+    <string name="as_failedDataRequestSend">Failed sending data request.</string>
+
+    <string name="aoa_title">Hanging around…</string>
+    <string name="aoa_title_fighting">Fighting!</string>
+    <string name="aoa_startingStatus">Waiting master device.</string>
+    <string name="client_failedServiceBind">Failed to connect to adventuring service. This is required to prevent data loss.\nThis is hopefully a transient error. Try rebooting your device.</string>
+    <string name="aoa_notificationDesc">Adventuring</string>
+    <string name="aoa_fetchingData">Fetching data from master device…</string>
+    <string name="aoa_waitingForBattleStart">Waiting for battle start.</string>
+    <string name="aoa_dlgRI_done">Confirm</string>
+    <string name="aoa_dlgRI_title">Roll for Initiative!</string>
+    <string name="aoa_dlgRI_instructionsAndModifier">Just roll dice and enter result.\nModifier (%1$s) applied automatically.</string>
+    <string name="mara_dlgWS_instructions">Please wait while master gives battle order.\nI will go away ASAP.</string>
+    <string name="mara_dlgWS_title">Waiting sequence</string>
+    <string name="aoa_waitingOtherPlayersRoll">Waiting other players to roll.</string>
+    <string name="aoa_waitingMyTurn">Waiting turn.\nDevice will vibrate when your attention is required.</string>
+    <string name="aoa_confirmBackDlgMessage">One does not simply get outta there. You are connected to master device, if you go away stuff might go awry.</string>
+
 </resources>

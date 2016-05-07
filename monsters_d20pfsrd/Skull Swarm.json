@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Skull Swarm"
+        ],
+        "cr": "1",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Tiny",
+        "type": "undead",
+        "init": 2,
+        "tags": [
+            "swarm"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Tetrolimulus"
+        ],
+        "cr": "11",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "magical beast",
+        "init": 8,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

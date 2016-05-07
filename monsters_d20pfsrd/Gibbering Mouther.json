@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gibbering Mouther"
+        ],
+        "cr": "5",
+        "alignment": [
+            "N"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 3
+    }
+}

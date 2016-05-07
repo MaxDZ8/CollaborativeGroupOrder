@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "The Ravager"
+        ],
+        "cr": "30",
+        "alignment": [
+            "N"
+        ],
+        "size": "Gargantuan",
+        "type": "magical beast",
+        "init": 14,
+        "extraNotes": [
+            {
+                "type": "variant.morphTarget",
+                "value": "flier"
+            }
+        ]
+    }
+}

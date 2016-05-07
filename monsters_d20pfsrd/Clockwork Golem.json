@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Clockwork Golem"
+        ],
+        "cr": "12",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 1
+    }
+}

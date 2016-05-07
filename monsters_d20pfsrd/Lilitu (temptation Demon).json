@@ -1,0 +1,21 @@
+{
+    "head": {
+        "name": [
+            "Lilitu",
+            "Temptation Demon"
+        ],
+        "cr": "17",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 9,
+        "tags": [
+            "chaotic",
+            "demon",
+            "evil",
+            "extraplanar"
+        ]
+    }
+}

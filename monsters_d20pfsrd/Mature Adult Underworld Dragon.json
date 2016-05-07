@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Underworld Dragon"
+        ],
+        "cr": "12",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "dragon",
+        "init": 4,
+        "tags": [
+            "fire"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "mature adult"
+            }
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Stone Giant"
+        ],
+        "cr": "8",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": 2,
+        "tags": [
+            "giant"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Ved"
+        ],
+        "cr": "5",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "humanoid",
+        "init": -1,
+        "tags": [
+            "giant"
+        ]
+    }
+}

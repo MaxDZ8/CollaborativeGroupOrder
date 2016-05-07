@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Nymph"
+        ],
+        "cr": "7",
+        "alignment": [
+            "CG"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 5
+    }
+}

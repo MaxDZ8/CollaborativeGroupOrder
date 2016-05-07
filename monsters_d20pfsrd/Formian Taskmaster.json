@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Formian Taskmaster"
+        ],
+        "cr": "6",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Medium",
+        "type": "outsider",
+        "init": 3,
+        "tags": [
+            "extraplanar",
+            "lawful"
+        ]
+    }
+}

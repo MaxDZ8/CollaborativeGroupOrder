@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Cooshee"
+        ],
+        "cr": "2",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Medium",
+        "type": "magical beast",
+        "init": 3,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

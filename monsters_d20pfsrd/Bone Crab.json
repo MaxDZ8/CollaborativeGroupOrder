@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Bone Crab"
+        ],
+        "cr": "2",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "vermin",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

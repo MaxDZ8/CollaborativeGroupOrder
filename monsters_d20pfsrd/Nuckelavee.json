@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Nuckelavee"
+        ],
+        "cr": "9",
+        "alignment": [
+            "NE"
+        ],
+        "size": "Large",
+        "type": "fey",
+        "init": 7,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

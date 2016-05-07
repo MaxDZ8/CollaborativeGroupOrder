@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Reliquary Guardian"
+        ],
+        "cr": "13",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "construct",
+        "init": 1
+    }
+}

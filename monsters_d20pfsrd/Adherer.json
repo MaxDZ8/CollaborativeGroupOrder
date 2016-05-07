@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Adherer"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "monstrous humanoid",
+        "init": 3
+    }
+}

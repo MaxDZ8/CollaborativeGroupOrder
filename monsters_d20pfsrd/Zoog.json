@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Zoog"
+        ],
+        "cr": "1",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Tiny",
+        "type": "magical beast",
+        "init": 2
+    }
+}

@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Skull Spider"
+        ],
+        "cr": "1/4",
+        "alignment": [
+            "N"
+        ],
+        "size": "Tiny",
+        "type": "vermin",
+        "init": 5
+    }
+}

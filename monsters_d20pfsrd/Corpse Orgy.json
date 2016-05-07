@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Corpse Orgy"
+        ],
+        "cr": "13",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Large",
+        "type": "aberration",
+        "init": 4
+    }
+}

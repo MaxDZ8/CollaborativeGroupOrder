@@ -1,0 +1,19 @@
+{
+    "head": {
+        "name": [
+            "Pasha",
+            "Noble Shaitan"
+        ],
+        "cr": "13",
+        "alignment": [
+            "LN"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 5,
+        "tags": [
+            "earth",
+            "extraplanar"
+        ]
+    }
+}

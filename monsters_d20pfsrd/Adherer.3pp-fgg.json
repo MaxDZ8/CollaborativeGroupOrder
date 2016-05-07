@@ -1,0 +1,20 @@
+{
+    "head": {
+        "name": [
+            "Adherer"
+        ],
+        "cr": "3",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Medium",
+        "type": "aberration",
+        "init": 1,
+        "extraNotes": [
+            {
+                "type": "publisher",
+                "value": "fgg"
+            }
+        ]
+    }
+}

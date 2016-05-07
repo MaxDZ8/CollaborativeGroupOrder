@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Pixie"
+        ],
+        "cr": "4",
+        "alignment": [
+            "NG"
+        ],
+        "size": "Small",
+        "type": "fey",
+        "init": 5
+    }
+}

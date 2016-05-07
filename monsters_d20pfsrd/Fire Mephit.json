@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Fire Mephit"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Small",
+        "type": "outsider",
+        "init": 6,
+        "tags": [
+            "fire"
+        ]
+    }
+}

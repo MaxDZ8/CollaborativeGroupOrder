@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Brine Sea Serpent"
+        ],
+        "cr": "14",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 6,
+        "tags": [
+            "aquatic"
+        ]
+    }
+}

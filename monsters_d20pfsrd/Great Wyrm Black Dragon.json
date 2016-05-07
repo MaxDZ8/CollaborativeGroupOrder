@@ -1,0 +1,23 @@
+{
+    "head": {
+        "name": [
+            "Black Dragon"
+        ],
+        "cr": "19",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Gargantuan",
+        "type": "dragon",
+        "init": 3,
+        "tags": [
+            "water"
+        ],
+        "extraNotes": [
+            {
+                "type": "ageCategory",
+                "value": "great wyrm"
+            }
+        ]
+    }
+}

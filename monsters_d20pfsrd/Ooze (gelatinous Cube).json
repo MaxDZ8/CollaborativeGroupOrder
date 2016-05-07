@@ -1,0 +1,15 @@
+{
+    "head": {
+        "name": [
+            "Ooze",
+            "Gelatinous Cube"
+        ],
+        "cr": "3",
+        "alignment": [
+            "N"
+        ],
+        "size": "Large",
+        "type": "ooze",
+        "init": -5
+    }
+}

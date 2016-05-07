@@ -1,0 +1,14 @@
+{
+    "head": {
+        "name": [
+            "Gorynych"
+        ],
+        "cr": "15",
+        "alignment": [
+            "CE"
+        ],
+        "size": "Huge",
+        "type": "dragon",
+        "init": 2
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "head": {
+        "name": [
+            "Efreeti"
+        ],
+        "cr": "8",
+        "alignment": [
+            "LE"
+        ],
+        "size": "Large",
+        "type": "outsider",
+        "init": 7,
+        "tags": [
+            "extraplanar",
+            "fire"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+{
+    "head": {
+        "name": [
+            "Larabay"
+        ],
+        "cr": "11",
+        "alignment": [
+            "CN"
+        ],
+        "size": "Medium",
+        "type": "fey",
+        "init": 10,
+        "tags": [
+            "shapechanger"
+        ]
+    }
+}
