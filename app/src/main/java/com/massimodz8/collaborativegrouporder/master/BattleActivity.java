@@ -63,7 +63,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 final TextView status = (TextView) findViewById(R.id.ba_roundCount);
                 status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
                 lister.notifyItemChanged(0);
-                activateNewActor();
+                activateNewActorLocal();
             }
         });
     }
@@ -96,7 +96,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                     if (actor.peerKey != state.currentActor) {
                         if(selected.isEnabled()) selected.setChecked(!selected.isChecked()); // toggle 'will act next round'
                     } else {
-                        activateNewActor();
+                        activateNewActorLocal();
                     }
                 }
             };
@@ -117,10 +117,6 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         protected boolean isCurrent(Network.ActorState actor) {
             if (game == null) return false;
             final BattleHelper battle = game.sessionHelper.session.battleState;
-            if(battle.triggered != null) {
-                final Network.ActorState interruptor = game.sessionHelper.session.getActorById(battle.triggered.getLast());
-                if(interruptor.preparedTriggered && actor.peerKey == interruptor.peerKey) return true;
-            }
             return actor.peerKey == battle.currentActor;
         }
 
@@ -155,21 +151,31 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             if (target.actor == null || target.actor.prepareCondition == null)
                 return; // impossible by context
             final BattleHelper battle = game.sessionHelper.session.battleState;
-            if (battle.triggered == null) battle.triggered = new ArrayDeque<>();
-            battle.triggered.push(target.actor.peerKey);
+            if (battle.interrupted == null) battle.interrupted = new ArrayDeque<>();
+            battle.interrupted.push(battle.currentActor);
             target.actor.preparedTriggered = true;
-            int interrupted = battle.actorCompleted(false);
-            battle.currentActor = interrupted;
             int newPos = 0;
             for (InitiativeScore el : battle.ordered) {
-                if(el.actorID == interrupted) break;
+                if(el.actorID == battle.currentActor) break;
                 newPos++;
             }
-            if(battle.moveCurrentToSlot(newPos)) {
-                game.pushBattleOrder();
-                battle.actorCompleted(true);
-                activateNewActor();
+            battle.currentActor = target.actor.peerKey;
+            if(battle.moveCurrentToSlot(newPos, true)) game.pushBattleOrder();
+            // This is not necessary, we really go with the interruptor and start back from there.
+            //battle.actorCompleted(true);
+            if(target.actor.peerKey < game.assignmentHelper.assignment.size()) { // chance it could be remote
+                Integer index = game.assignmentHelper.assignment.get(target.actor.peerKey);
+                if(index != null && index != PcAssignmentHelper.LOCAL_BINDING) {
+                    final MessageChannel pipe = game.assignmentHelper.peers.get(index).pipe;
+                    Network.TurnControl activation = new Network.TurnControl();
+                    activation.type = Network.TurnControl.T_PREPARED_TRIGGERED;
+                    activation.peerKey = target.actor.peerKey;
+                    activation.round = battle.round;
+                    if(pipe != null) game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.TURN_CONTROL, activation));
+                }
             }
+            lister.notifyDataSetChanged();
+            activateNewActorLocal();
         }
     }
 
@@ -196,20 +202,32 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
     private void actionCompleted() {
         final BattleHelper battle = game.sessionHelper.session.battleState;
-        battle.actorCompleted(true);
-        final int currid = battle.currentActor;
+        int previous = battle.actorCompleted(true);
+        if(battle.prevWasReadied) {
+            Network.ActorState was = game.sessionHelper.session.getActorById(previous);
+            was.prepareCondition = "";
+            was.preparedTriggered = false;
+        }
         int currSlot = 0;
         for(int loop = 0; loop < lister.getItemCount(); loop++) {
             final Network.ActorState actor = lister.getActorByPos(loop);
-            if(actor.peerKey == currid) currSlot = loop;
+            if(actor.peerKey == battle.currentActor) currSlot = loop;
         }
         lister.notifyDataSetChanged(); // check everything, player might have healed or damaged others
         MaxUtils.beginDelayedTransition(this);
         final TextView status = (TextView) findViewById(R.id.ba_roundCount);
         status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
-        final Network.ActorState actor = game.sessionHelper.session.getActorById(currid);
-        if(actor.prepareCondition.isEmpty() || battle.fromReadiedStack) {
-            activateNewActor();
+        final Network.ActorState actor = game.sessionHelper.session.getActorById(battle.currentActor);
+        final MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
+        if(actor.prepareCondition.isEmpty()) {
+            if(pipe != null) {
+                Network.TurnControl payload = new Network.TurnControl();
+                payload.peerKey = actor.peerKey;
+                payload.type = Network.TurnControl.T_REGULAR;
+                payload.round = battle.round;
+                game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.TURN_CONTROL, payload));
+            }
+            activateNewActorLocal();
             return;
         }
         final int currentSlot = currSlot;
@@ -224,31 +242,37 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 }).setNegativeButton(getString(R.string.ba_dlg_gotPreparedAction_discard), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // Getting the rid of an action is nontrivial, we might have to signal it. It's just a curtesy anyway.
-                actor.prepareCondition = "";
-                actor.preparedTriggered = false;
-                MaxUtils.beginDelayedTransition(BattleActivity.this);
-                MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
-                lister.notifyItemChanged(currentSlot);
-                if(pipe == null) { // we mangle it there. That's nice.
-                    activateNewActor();
-                    return;
-                }
-                final PcAssignmentHelper.PlayingDevice dev = game.assignmentHelper.getDevice(pipe);
-                final Network.ActorState temp = new Network.ActorState();
-                temp.type = Network.ActorState.T_PARTIAL_PREPARE_CONDITION;
-                temp.peerKey = actor.peerKey;
-                game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, temp));
-                game.assignmentHelper.activateRemote(dev, actor.peerKey, Network.TurnControl.T_REGULAR, battle.round);
-            }
-        }).setCancelable(false)
+                        // Getting the rid of an action is nontrivial, we might have to signal it. It's just a curtesy anyway.
+                        actor.prepareCondition = "";
+                        actor.preparedTriggered = false;
+                        MaxUtils.beginDelayedTransition(BattleActivity.this);
+                        lister.notifyItemChanged(currentSlot);
+                        if(pipe != null) { // we mangle it there. That's nice.
+                            final PcAssignmentHelper.PlayingDevice dev = game.assignmentHelper.getDevice(pipe);
+                            final Network.ActorState temp = new Network.ActorState();
+                            temp.type = Network.ActorState.T_PARTIAL_PREPARE_CONDITION;
+                            temp.peerKey = actor.peerKey;
+                            game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, temp));
+                            Network.TurnControl payload = new Network.TurnControl();
+                            payload.peerKey = actor.peerKey;
+                            payload.type = Network.TurnControl.T_REGULAR;
+                            payload.round = battle.round;
+                            if(dev.pipe != null) game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, payload));
+                        }
+                        activateNewActorLocal();
+                    }
+                }).setCancelable(false)
                 .show();
     }
 
-    private void activateNewActor() {        // If played here open detail screen. Otherwise, send your-turn message.
-        if(game.sessionHelper.session.activateNewActor() != null) {
-            Snackbar.make(findViewById(R.id.activityRoot), R.string.ba_actorByPlayerSnack, Snackbar.LENGTH_SHORT).show();
-            return;
+    private void activateNewActorLocal() {        // If played here open detail screen. Otherwise, send your-turn message.
+        int active = game.sessionHelper.session.battleState.currentActor;
+        if(active < game.assignmentHelper.assignment.size()) {
+            Integer own = game.assignmentHelper.assignment.get(active);
+            if(own != null && own != PcAssignmentHelper.LOCAL_BINDING) {
+                Snackbar.make(findViewById(R.id.activityRoot), R.string.ba_actorByPlayerSnack, Snackbar.LENGTH_SHORT).show();
+                return;
+            }
         }
         final Intent intent = new Intent(this, MyActorRoundActivity.class)
                 .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true)

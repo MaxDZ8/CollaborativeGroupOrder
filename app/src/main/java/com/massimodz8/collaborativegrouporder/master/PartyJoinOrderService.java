@@ -94,7 +94,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
                 if(bound != index) return; // you cannot control this turn you cheater!
                 if(peerKey != battleState.currentActor) return; // How did you manage to do that? Not currently allowed.
-                if(sessionHelper.session.battleState.moveCurrentToSlot(newSlot)) pushBattleOrder();
+                if(sessionHelper.session.battleState.moveCurrentToSlot(newSlot, false)) pushBattleOrder();
                 if(!onActorShuffledRemote.isEmpty()) onActorShuffledRemote.getLast().run();
             }
         };

@@ -214,6 +214,10 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         if(client != null) {
             AdventuringService.ActorWithKnownOrder current = client.actors.get(client.currentActor);
             if(current == null) return; // impossible
+            if(current.actor.preparedTriggered) {
+                current.actor.prepareCondition = "";
+                current.actor.preparedTriggered = false;
+            }
             Network.TurnControl done = new Network.TurnControl();
             done.type = Network.TurnControl.T_FORCE_DONE;
             client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, done));
@@ -226,7 +230,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     private void requestNewOrder(int newPos) {
         if(server == null && client == null) return; // impossible
         if(server != null) {
-            if(server.sessionHelper.session.battleState.moveCurrentToSlot(newPos)) {
+            if(server.sessionHelper.session.battleState.moveCurrentToSlot(newPos, false)) {
                 server.pushBattleOrder();
                 setResult(RESULT_OK);
                 finish();
@@ -276,12 +280,11 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         final String nextActor;
         if(server != null) {
             BattleHelper battle  = server.sessionHelper.session.battleState;
-            int curid = battle.triggered == null? battle.currentActor : battle.triggered.getLast();
+            int curid = battle.actorCompleted(false);
             actor = server.sessionHelper.session.getActorById(curid);
             round = battle.round;
-            final int prevActor = battle.actorCompleted(false);
             nextActor = server.sessionHelper.session.getActorById(battle.currentActor).name;
-            battle.currentActor = prevActor;
+            battle.currentActor = curid;
         }
         else if(service instanceof  AdventuringService.LocalBinder){
             client = ((AdventuringService.LocalBinder)service).getConcreteService();

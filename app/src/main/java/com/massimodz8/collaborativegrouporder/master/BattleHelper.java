@@ -16,13 +16,15 @@ public class BattleHelper {
 
     public @ActorId int currentActor = -1;
     public int round = -1;
-    public boolean fromReadiedStack;
+    boolean prevWasReadied;
     /**
      * Stack of triggered actions, they temporarily suppress normal order.
      * It also always happen while some other actor is acting. This is either null or contains at least 1 element.
      * Do not mess with me. Go with IDs, they are truly persistent while objects might be not, much less order.
+     * The current actor is always this.currentActor.
+     * This contains the ids interrupted, which can be used to restore the 'previous' this.currentActor value.
      */
-    public ArrayDeque<Integer> triggered;
+    public @ActorId ArrayDeque<Integer> interrupted;
 
     public BattleHelper(@NonNull InitiativeScore[] ordered) {
         this.ordered = ordered;
@@ -38,12 +40,12 @@ public class BattleHelper {
      * @return ID of previous actor (this.currentActor immediately before call)
      */
     public @ActorId int actorCompleted(boolean really) {
-        fromReadiedStack = false;
+        prevWasReadied = false;
         final int previd = currentActor;
-        if(triggered != null) {
-            fromReadiedStack = really;
-            currentActor = really? triggered.pop() : triggered.getLast();
-            if(triggered.isEmpty()) triggered = null;
+        if(interrupted != null) {
+            currentActor = really? interrupted.pop() : interrupted.getLast();
+            if(interrupted.isEmpty()) interrupted = null;
+            prevWasReadied = true;
             return previd;
         }
         int index = 0;
@@ -60,8 +62,19 @@ public class BattleHelper {
         return previd;
     }
 
+    /**
+     * @param newPos this.currentActor and newPos define a (improper) sub-sequence in the
+     * @param keepCurrentActor Most of the time, you want to keep the next actor to the "current next",
+     *            shuffling would most likely change the 'next' as currentActor gets moved forward
+     *            or back so next tick would jump forward or backwards.
+     *            So, when this is false, this.currentActor is updated so a this.actorCompleted call
+     *            retrieves the 'next' actor at the time of the shuffle.
+     *            When you trigger readied actions instead you just want to keep this.currentActor
+     *            as you set for the shuffle. So you set this param to true.
+     * @return False if nothing moves.
+     */
     // Must call an actionCompleted() after this.
-    public boolean moveCurrentToSlot(int newPos) {
+    public boolean moveCurrentToSlot(int newPos, boolean keepCurrentActor) {
         if (newPos >= ordered.length) return false; // wut? Impossible!
         int curPos = 0;
         for (InitiativeScore el : ordered) {
@@ -74,16 +87,16 @@ public class BattleHelper {
         final int maxi = forward? newPos : curPos;
         final InitiativeScore temp = ordered[curPos];
         if(curPos == 0) { // head forward
-            if(newPos != ordered.length - 1) currentActor = ordered[ordered.length - 1].actorID; // so next tick will always activate new head.
+            if(newPos != ordered.length - 1 && !keepCurrentActor) currentActor = ordered[ordered.length - 1].actorID; // so next tick will always activate new head.
             round--;
             System.arraycopy(ordered, 1, ordered, 0, newPos);
         }
         else if(forward) {
-            currentActor = ordered[curPos - 1].actorID;
+            if(!keepCurrentActor) currentActor = ordered[curPos - 1].actorID;
             System.arraycopy(ordered, curPos + 1, ordered, curPos + 1 - 1, newPos - curPos);
         }
         else {
-            currentActor = ordered[curPos - 1].actorID; // if curPos is zero cannot be moving backwards
+            if(!keepCurrentActor) currentActor = ordered[curPos - 1].actorID; // if curPos is zero cannot be moving backwards
             for(int cp = maxi; cp != mini; cp--) ordered[cp] = ordered[cp - 1];
         }
         ordered[newPos] = temp;

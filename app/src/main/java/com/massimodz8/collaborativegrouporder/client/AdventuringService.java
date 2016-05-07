@@ -208,6 +208,9 @@ public class AdventuringService extends Service {
                     for (int check : self.playedHere) here |= check == real.peerKey;
                     if(!here) self.currentActor = -1;
                     else self.currentActor = real.peerKey;
+                    if(real.type == Network.TurnControl.T_PREPARED_TRIGGERED) {
+                        self.actors.get(real.peerKey).actor.preparedTriggered = true;
+                    }
                     if(self.onCurrentActorChanged.size() > 0) self.onCurrentActorChanged.getLast().run();
                 } break;
             }

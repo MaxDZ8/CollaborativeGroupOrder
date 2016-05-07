@@ -84,18 +84,6 @@ public class SessionHelper {
             return i < sz ? session.existByDef.get(i) : session.temporaries.get(i - sz);
         }
 
-
-        public MessageChannel activateNewActor() {
-            final int active = battleState.triggered == null ? battleState.currentActor : battleState.triggered.getLast();
-            final MessageChannel pipe = assignment.getMessageChannelByPeerKey(active);
-            if(pipe != null) {
-                int roundType = battleState.triggered == null ? Network.TurnControl.T_REGULAR : Network.TurnControl.T_PREPARED_TRIGGERED;
-                final PcAssignmentHelper.PlayingDevice dev = assignment.getDevice(pipe);
-                assignment.activateRemote(dev, active, roundType, battleState.round);
-            }
-            return pipe;
-        }
-
         public Network.ActorState getActorById(@ActorId  int id) {
             for (Network.ActorState el : session.existByDef) {
                 if(el.peerKey == id) return el;

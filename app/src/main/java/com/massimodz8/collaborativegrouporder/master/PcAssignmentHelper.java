@@ -575,16 +575,5 @@ public abstract class PcAssignmentHelper {
         }
     }
     public UnassignedPcsAdapter unboundPcAdapter;
-
-
-    public void activateRemote(@NonNull PlayingDevice dev, int actorKey, int roundType, int roundCount) {
-        Network.TurnControl payload = new Network.TurnControl();
-        payload.peerKey = actorKey;
-        payload.type = roundType;
-        payload.round = roundCount;
-        if(dev.pipe != null) mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, payload));
-        dev.activeActor = actorKey;
-    }
-
     public final Mailman mailman = new Mailman();
 }
