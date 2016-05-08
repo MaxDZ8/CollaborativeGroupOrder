@@ -492,6 +492,11 @@
     <string name="ba_actorByPlayerSnack">Actor by player.</string>
     <string name="ba_TODO_NOTE">NOTE:</string>
     <string name="ba_TODO_NOTE_deleteThoseFurtherInfosTheyreReallyBAD">Hit point tracking is TODO so you\'ll have to disable defeated mobs manually.</string>
+    <string name="ba_menu_endBattle_title">Finish battle and distribute XP</string>
+    <string name="ba_menu_endBattle_titleShort">End battle</string>
+    <string name="ba_endBattleDlg_title">Done?</string>
+    <string name="ba_endBattleDlg_msg">There's no going back! Battle order and monster status will be discarded.</string>
+    <string name="ba_endBattleDlg_positive">Distribute XP</string>
 
     <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
     <string name="mara_endTurn">End your turn</string>

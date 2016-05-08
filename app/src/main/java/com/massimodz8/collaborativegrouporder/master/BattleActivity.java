@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -199,6 +201,34 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         }
         actionCompleted();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.battle_activity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.ba_menu_endBattle: {
+                new AlertDialog.Builder(this)
+                        .setView(R.layout.dialog_end_battle)
+                        .setPositiveButton(R.string.ba_endBattleDlg_positive, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                setResult(RESULT_OK_AWARD);
+                                finish();
+                            }
+                        })
+                        .show();
+                break;
+            }
+        }
+        return false;
+    }
+
+    static final int RESULT_OK_AWARD = RESULT_FIRST_USER;
 
     private void actionCompleted() {
         final BattleHelper battle = game.sessionHelper.session.battleState;
