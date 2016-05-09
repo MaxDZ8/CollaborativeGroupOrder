@@ -79,7 +79,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(peerKey != battleState.currentActor) return; // that's not his turn anyway!
                 // Don't do that. Might involve popping readied actions. Furthermore, BattleActivity wants to keep track of both previous and current actor.
                 //battleState.tickRound();
-                if(!onTurnCompletedRemote.isEmpty()) onTurnCompletedRemote.getLast().run();
+                if(!onTurnCompletedRemote.isEmpty()) onTurnCompletedRemote.getFirst().run();
             }
 
             @Override
@@ -95,7 +95,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(bound != index) return; // you cannot control this turn you cheater!
                 if(peerKey != battleState.currentActor) return; // How did you manage to do that? Not currently allowed.
                 if(sessionHelper.session.battleState.moveCurrentToSlot(newSlot, false)) pushBattleOrder();
-                if(!onActorShuffledRemote.isEmpty()) onActorShuffledRemote.getLast().run();
+                if(!onActorShuffledRemote.isEmpty()) onActorShuffledRemote.getFirst().run();
             }
         };
         battleHandler = new MyBattleHandler(this);

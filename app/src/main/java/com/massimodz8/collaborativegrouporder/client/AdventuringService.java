@@ -43,9 +43,11 @@ public class AdventuringService extends Service {
 
     public @ActorId int currentActor = -1; // -1 = no current known actor
     ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
-    public int round = -1; // -1 == not fighting, 0 = waiting other players roll 1+ fighting
+    public int round = ROUND_NOT_FIGHTING; // 0 = waiting other players roll 1+ fighting
     public final Mailman mailman = new Mailman();
     public MessageChannel pipe;
+
+    public static final int ROUND_NOT_FIGHTING = -1;
 
     /**
      * This shouldn't really be there but it is. The current idea is that every time we're done
@@ -58,6 +60,10 @@ public class AdventuringService extends Service {
         public Network.ActorState actor; // 'owner'
         public @Nullable @ActorId int[] keyOrder;
         public boolean updated;
+
+        // This is either zero or some accumulating value. It is usually updated at battle end
+        // but not necessarily.
+        public int xpReceived;
     }
 
     public AdventuringService() { }
@@ -150,7 +156,10 @@ public class AdventuringService extends Service {
                     Network.ActorState real = (Network.ActorState)msg.obj;
                     ActorWithKnownOrder known = self.actors.get(real.peerKey);
                     if(known != null) {
-                        if(real.type != Network.ActorState.T_PARTIAL_PREPARE_CONDITION) known.actor = real;
+                        if(real.type != Network.ActorState.T_PARTIAL_PREPARE_CONDITION) {
+                            known.xpReceived += real.experience - known.actor.experience;
+                            known.actor = real;
+                        }
                         else {
                             known.actor.prepareCondition = "";
                             known.actor.preparedTriggered = false;
@@ -164,13 +173,13 @@ public class AdventuringService extends Service {
                         self.actors.put(real.peerKey, known);
                     }
                     known.updated = true;
-                    if(self.onActorUpdated.size() > 0) self.onActorUpdated.getLast().run();
+                    if(self.onActorUpdated.size() > 0) self.onActorUpdated.getFirst().run();
                 } break;
                 case MSG_ROLL: {
                     final Network.Roll real = (Network.Roll) msg.obj;
                     if(real.type == Network.Roll.T_BATTLE_START) self.round = 0;
                     self.rollRequests.push(real);
-                    if(self.onRollRequestPushed.size() > 0) self.onRollRequestPushed.getLast().run();
+                    if(self.onRollRequestPushed.size() > 0) self.onRollRequestPushed.getFirst().run();
                 } break;
                 case MSG_BATTLE_ORDER: {
                     final Network.BattleOrder real = (Network.BattleOrder)msg.obj;
@@ -183,12 +192,12 @@ public class AdventuringService extends Service {
                         if(el.getValue().keyOrder != null) knownOrder++;
                     }
                     if(self.round == 0 && knownOrder == self.actors.size()) self.round = 1;
-                    if(self.onActorUpdated.size() > 0) self.onActorUpdated.getLast().run();
+                    if(self.onActorUpdated.size() > 0) self.onActorUpdated.getFirst().run();
                 } break;
                 case MSG_TURN_CONTROL: {
                     final Network.TurnControl real = (Network.TurnControl) msg.obj;
                     if(real.type == Network.TurnControl.T_BATTLE_ENDED) { // clear list of actors, easier to just rebuild it.
-                        self.round = -1;
+                        self.round = ROUND_NOT_FIGHTING;
                         ArrayList<ActorWithKnownOrder> reuse = new ArrayList<>();
                         for (int key : self.playedHere) {
                             final ActorWithKnownOrder exist = self.actors.get(key);
@@ -201,9 +210,11 @@ public class AdventuringService extends Service {
                             el.updated = true;
                             self.actors.put(el.actor.peerKey, el);
                         }
-                        if(self.onActorUpdated.size() > 0) self.onActorUpdated.getLast().run();
+                        self.currentActor = -1;
+                        if(self.onCurrentActorChanged.size() > 0) self.onCurrentActorChanged.getFirst().run();
+                        return; // otherwise real.peerKey might be default --> mapping to zero
                     }
-                    else self.round = real.round;
+                    self.round = real.round;
                     boolean here = false;
                     for (int check : self.playedHere) here |= check == real.peerKey;
                     if(!here) self.currentActor = -1;
@@ -211,7 +222,7 @@ public class AdventuringService extends Service {
                     if(real.type == Network.TurnControl.T_PREPARED_TRIGGERED) {
                         self.actors.get(real.peerKey).actor.preparedTriggered = true;
                     }
-                    if(self.onCurrentActorChanged.size() > 0) self.onCurrentActorChanged.getLast().run();
+                    if(self.onCurrentActorChanged.size() > 0) self.onCurrentActorChanged.getFirst().run();
                 } break;
             }
             super.handleMessage(msg);

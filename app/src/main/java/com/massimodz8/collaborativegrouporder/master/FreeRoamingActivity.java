@@ -113,6 +113,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         if(now > numActors) lister.notifyItemRangeInserted(numActors, now - numActors);
         else if(now < numActors) lister.notifyDataSetChanged();
         numActors = now;
+        if(game.sessionHelper.session.battleState == null) findViewById(R.id.fab).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -186,6 +187,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             count++;
         }
         // Everyone got a number. We go.
+        if(waiting != null) {
+            waiting.dlg.dismiss();
+            waiting = null;
+        }
         InitiativeScore[] order = new InitiativeScore[count];
         count = 0;
         final SessionHelper.PlayState session = game.sessionHelper.session;

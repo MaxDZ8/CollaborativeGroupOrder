@@ -63,7 +63,7 @@ public class MyBattleHandler extends Handler {
                 final PcAssignmentHelper.PlayingDevice dev = target.assignmentHelper.peers.get(owner);
                 if(dev.pipe == null || dev.pipe == real.from) { // if you're the real owner or you were at a certain point and we are out of sync somehow...
                     session.getActorById(session.battleState.currentActor).prepareCondition = real.desc;
-                    if(!target.onActorUpdatedRemote.isEmpty()) target.onActorUpdatedRemote.getLast().run();
+                    if(!target.onActorUpdatedRemote.isEmpty()) target.onActorUpdatedRemote.getFirst().run();
                 }
                 break;
             }

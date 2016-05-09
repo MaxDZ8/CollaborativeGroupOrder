@@ -538,6 +538,7 @@
     <string name="aoa_waitingOtherPlayersRoll">Waiting other players to roll.</string>
     <string name="aoa_waitingMyTurn">Waiting turn.\nDevice will vibrate when your attention is required.</string>
     <string name="aoa_confirmBackDlgMessage">One does not simply get outta there. You are connected to master device, if you go away stuff might go awry.</string>
+    <string name="aoa_xpReward">%1$s received %2$d XPs\ncurrent XP %3$d</string>
 
     <string name="aea_title">Distribute XP</string>
     <string name="aea_mobListInfo">Select the monsters to compute their XP awards.</string>
