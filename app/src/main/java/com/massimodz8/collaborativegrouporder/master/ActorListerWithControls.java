@@ -30,7 +30,12 @@ public abstract class ActorListerWithControls<E> extends RecyclerView.Adapter<Ad
     }
 
 
-    protected abstract void setRepresentedProperty(E entry, boolean newValue);
+    /**
+     * @param entry Value to modify
+     * @param newValue When null, call behaves like a 'get' otherwise sets this value.
+     * @return New value contained, when newValue is provided call will basically be passthough.
+     */
+    protected abstract boolean representedProperty(E entry, Boolean newValue);
     protected abstract @ActorId int getPeerKey(E entry);
     protected abstract boolean match(E entry, @ActorId int id);
 
@@ -42,7 +47,7 @@ public abstract class ActorListerWithControls<E> extends RecyclerView.Adapter<Ad
                 if (actor == null) return;
                 for (E el : list) {
                     if(match(el, actor.peerKey)) {
-                        setRepresentedProperty(el, isChecked);
+                        representedProperty(el, isChecked);
                         return;
                     }
                 }
@@ -50,7 +55,8 @@ public abstract class ActorListerWithControls<E> extends RecyclerView.Adapter<Ad
 
             @Override
             public void onClick(View v) {
-                selected.setSelected(!selected.isSelected());
+                if(itemView != v) return;
+                selected.setChecked(!selected.isChecked());
             }
         };
         res.avatar.setVisibility(View.GONE);
@@ -59,7 +65,9 @@ public abstract class ActorListerWithControls<E> extends RecyclerView.Adapter<Ad
 
     @Override
     public void onBindViewHolder(AdventuringActorControlsVH holder, int position) {
+        holder.checked = representedProperty(list.get(position), null);
         holder.bindData(resolver.getActorById(getPeerKey(list.get(position))));
+        holder.hbar.setVisibility(View.GONE);
     }
 
     @Override

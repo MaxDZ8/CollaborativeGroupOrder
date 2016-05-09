@@ -9,7 +9,9 @@ import android.app.Activity;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,13 +24,15 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class AwardExperienceActivity extends Activity implements ServiceConnection {
+public class AwardExperienceActivity extends AppCompatActivity implements ServiceConnection {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_award_experience);
-        final ActionBar actionBar = getActionBar();
-        if(actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final android.support.v7.app.ActionBar sab = getSupportActionBar();
+        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
         if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
             MaxUtils.beginDelayedTransition(this);
@@ -120,9 +124,10 @@ public class AwardExperienceActivity extends Activity implements ServiceConnecti
         findViewById(R.id.fab).setVisibility(View.VISIBLE);
         mobLister = new ActorListerWithControls<SessionHelper.PlayState.DefeatedData>(session.defeated, getLayoutInflater(), session) {
             @Override
-            protected void setRepresentedProperty(SessionHelper.PlayState.DefeatedData entry, boolean newValue) {
-                entry.consume = newValue;
+            protected boolean representedProperty(SessionHelper.PlayState.DefeatedData entry, Boolean newValue) {
+                if(newValue != null) entry.consume = newValue;
                 update();
+                return entry.consume;
             }
 
             @Override
@@ -133,9 +138,10 @@ public class AwardExperienceActivity extends Activity implements ServiceConnecti
         };
         winnersLister = new ActorListerWithControls<SessionHelper.PlayState.WinnerData>(session.winners, getLayoutInflater(), session) {
             @Override
-            protected void setRepresentedProperty(SessionHelper.PlayState.WinnerData entry, boolean newValue) {
-                entry.award = newValue;
+            protected boolean representedProperty(SessionHelper.PlayState.WinnerData entry, Boolean newValue) {
+                if(newValue != null) entry.award = newValue;
                 update();
+                return entry.award;
             }
 
 
