@@ -111,6 +111,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         if(game == null) return; // no connection yet -> nothing really to do.
         int now = lister.getItemCount();
         if(now > numActors) lister.notifyItemRangeInserted(numActors, now - numActors);
+        else if(now < numActors) lister.notifyDataSetChanged();
         numActors = now;
     }
 

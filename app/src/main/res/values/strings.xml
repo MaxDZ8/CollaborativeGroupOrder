@@ -543,7 +543,8 @@
     <string name="aea_mobListInfo">Select the monsters to compute their XP awards.</string>
     <string name="aea_mobReport">Selected: %1$s, total XP: %2$d</string>
     <string name="aea_winnersListInfo">Now select the PCs receiving experience.</string>
-    <string name="aea_winnersListReport">Selected: %1$s\n%2$d XP each</string>
+    <string name="aea_winnersCount">Selected: %1$s</string>>
+    <string name="aea_winnersAward">%1$d XP each</string>
     <string name="aea_selectedAll">all</string>
 
 </resources>

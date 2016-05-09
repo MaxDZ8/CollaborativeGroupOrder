@@ -1646,6 +1646,9 @@ public interface Network {
     // optional .ActorState.ChallangeRatio cr = 129;
     public com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.ChallangeRatio cr;
 
+    // optional uint32 experience = 130;
+    public int experience;
+
     public ActorState() {
       clear();
     }
@@ -1660,6 +1663,7 @@ public interface Network {
       preparedTriggered = false;
       initiativeBonus = 0;
       cr = null;
+      experience = 0;
       cachedSize = -1;
       return this;
     }
@@ -1693,6 +1697,9 @@ public interface Network {
       }
       if (this.cr != null) {
         output.writeMessage(129, this.cr);
+      }
+      if (this.experience != 0) {
+        output.writeUInt32(130, this.experience);
       }
       super.writeTo(output);
     }
@@ -1735,6 +1742,10 @@ public interface Network {
       if (this.cr != null) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
           .computeMessageSize(129, this.cr);
+      }
+      if (this.experience != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(130, this.experience);
       }
       return size;
     }
@@ -1800,6 +1811,10 @@ public interface Network {
               this.cr = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.ChallangeRatio();
             }
             input.readMessage(this.cr);
+            break;
+          }
+          case 1040: {
+            this.experience = input.readUInt32();
             break;
           }
         }

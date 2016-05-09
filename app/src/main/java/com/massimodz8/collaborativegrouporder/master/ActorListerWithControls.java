@@ -68,6 +68,7 @@ public abstract class ActorListerWithControls<E> extends RecyclerView.Adapter<Ad
         holder.checked = representedProperty(list.get(position), null);
         holder.bindData(resolver.getActorById(getPeerKey(list.get(position))));
         holder.hbar.setVisibility(View.GONE);
+        holder.actorShortType.setVisibility(View.GONE);
     }
 
     @Override

@@ -1,14 +1,11 @@
 package com.massimodz8.collaborativegrouporder.master;
 
-import android.app.ActionBar;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.app.Activity;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +17,7 @@ import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -46,7 +44,43 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(findViewById(R.id.activityRoot), "TODO: distribute XP and update actors!", Snackbar.LENGTH_SHORT);
+                int xp = 0;
+                SessionHelper.PlayState session = game.sessionHelper.session;
+                for (int loop = 0; loop < session.defeated.size(); loop++) {
+                    final SessionHelper.PlayState.DefeatedData el = session.defeated.get(loop);
+                    if(el.consume) {
+                        xp += xpFrom(el.numerator, el.denominator);
+                        session.defeated.remove(loop);
+                        loop--;
+
+                        int match = -1;
+                        for (Network.ActorState test : game.sessionHelper.temporaries) {
+                            match++;
+                            if(el.id == test.peerKey) {
+                                game.sessionHelper.temporaries.remove(match);
+                                break;
+                            }
+                        }
+
+                    }
+                }
+                if(session.defeated.isEmpty()) session.defeated = null;
+                int count = 0;
+                for(SessionHelper.PlayState.WinnerData el : game.sessionHelper.session.winners) {
+                    if(el.award) count++;
+                }
+                StartData.ActorDefinition[] pcs = game.getPartyOwnerData().party;
+                for(SessionHelper.PlayState.WinnerData el : game.sessionHelper.session.winners) {
+                    if(el.award) {
+                        session.getActorById(el.id).experience += xp / count;
+                        if(el.id < pcs.length) pcs[el.id].experience += xp / count;
+                    }
+                }
+                if(session.defeated != null) {
+                    mobLister.notifyDataSetChanged();
+                    return;
+                }
+                finish();
             }
         });
     }
@@ -67,21 +101,22 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
         }
         String countString = count == game.sessionHelper.session.defeated.size()? getString(R.string.aea_selectedAll) : String.valueOf(count);
 
-        String text = getString(R.string.aea_mobReport);
-        text = String.format(Locale.ROOT, text, countString, xp);
+        String mob = getString(R.string.aea_mobReport);
+        mob = String.format(Locale.ROOT, mob, countString, xp);
         TextView report = (TextView) findViewById(R.id.aea_mobReport);
-        report.setText(text);
+        report.setText(mob);
 
         count = 0;
         for(SessionHelper.PlayState.WinnerData el : game.sessionHelper.session.winners) {
             if(el.award) count++;
-
         }
         countString = count == game.sessionHelper.session.winners.size()? getString(R.string.aea_selectedAll) : String.valueOf(count);
-        text = getString(R.string.aea_winnersListReport);
-        text = String.format(Locale.ROOT, text, countString, xp / count);
+        String win = getString(R.string.aea_winnersCount);
+        win = String.format(win, countString);
+        win += '\n' + (count == 0? "" : String.format(Locale.ROOT, getString(R.string.aea_winnersAward), xp / count));
         report = (TextView) findViewById(R.id.aea_winnersReport);
-        report.setText(text);
+        report.setText(win);
+        findViewById(R.id.fab).setVisibility(count == 0? View.GONE : View.VISIBLE);
     }
 
     public static int xpFrom(int numerator, int denominator) {

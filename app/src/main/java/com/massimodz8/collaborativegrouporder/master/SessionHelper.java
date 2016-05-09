@@ -127,6 +127,6 @@ public class SessionHelper {
     }
 
     public PlayState session;
-    private final ArrayList<Network.ActorState> temporaries = new ArrayList<>();
+    public final ArrayList<Network.ActorState> temporaries = new ArrayList<>();
     private final ArrayList<Integer> fighters = new ArrayList<>();
 }
