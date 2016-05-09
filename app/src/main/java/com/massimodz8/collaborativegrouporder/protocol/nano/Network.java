@@ -1506,6 +1506,105 @@ public interface Network {
     public static final int T_MOB = 3;
     public static final int T_PARTIAL_PREPARE_CONDITION = 16;
 
+    public static final class ChallangeRatio extends
+        com.google.protobuf.nano.MessageNano {
+
+      private static volatile ChallangeRatio[] _emptyArray;
+      public static ChallangeRatio[] emptyArray() {
+        // Lazily initializes the empty array
+        if (_emptyArray == null) {
+          synchronized (
+              com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
+            if (_emptyArray == null) {
+              _emptyArray = new ChallangeRatio[0];
+            }
+          }
+        }
+        return _emptyArray;
+      }
+
+      // optional uint32 numerator = 1;
+      public int numerator;
+
+      // optional uint32 denominator = 2;
+      public int denominator;
+
+      public ChallangeRatio() {
+        clear();
+      }
+
+      public ChallangeRatio clear() {
+        numerator = 0;
+        denominator = 0;
+        cachedSize = -1;
+        return this;
+      }
+
+      @Override
+      public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+          throws java.io.IOException {
+        if (this.numerator != 0) {
+          output.writeUInt32(1, this.numerator);
+        }
+        if (this.denominator != 0) {
+          output.writeUInt32(2, this.denominator);
+        }
+        super.writeTo(output);
+      }
+
+      @Override
+      protected int computeSerializedSize() {
+        int size = super.computeSerializedSize();
+        if (this.numerator != 0) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeUInt32Size(1, this.numerator);
+        }
+        if (this.denominator != 0) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeUInt32Size(2, this.denominator);
+        }
+        return size;
+      }
+
+      @Override
+      public ChallangeRatio mergeFrom(
+              com.google.protobuf.nano.CodedInputByteBufferNano input)
+          throws java.io.IOException {
+        while (true) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              return this;
+            default: {
+              if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
+                return this;
+              }
+              break;
+            }
+            case 8: {
+              this.numerator = input.readUInt32();
+              break;
+            }
+            case 16: {
+              this.denominator = input.readUInt32();
+              break;
+            }
+          }
+        }
+      }
+
+      public static ChallangeRatio parseFrom(byte[] data)
+          throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
+        return com.google.protobuf.nano.MessageNano.mergeFrom(new ChallangeRatio(), data);
+      }
+
+      public static ChallangeRatio parseFrom(
+              com.google.protobuf.nano.CodedInputByteBufferNano input)
+          throws java.io.IOException {
+        return new ChallangeRatio().mergeFrom(input);
+      }
+    }
+
     private static volatile ActorState[] _emptyArray;
     public static ActorState[] emptyArray() {
       // Lazily initializes the empty array
@@ -1544,6 +1643,9 @@ public interface Network {
     // optional int32 initiativeBonus = 128;
     public int initiativeBonus;
 
+    // optional .ActorState.ChallangeRatio cr = 129;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.ChallangeRatio cr;
+
     public ActorState() {
       clear();
     }
@@ -1557,6 +1659,7 @@ public interface Network {
       prepareCondition = "";
       preparedTriggered = false;
       initiativeBonus = 0;
+      cr = null;
       cachedSize = -1;
       return this;
     }
@@ -1587,6 +1690,9 @@ public interface Network {
       }
       if (this.initiativeBonus != 0) {
         output.writeInt32(128, this.initiativeBonus);
+      }
+      if (this.cr != null) {
+        output.writeMessage(129, this.cr);
       }
       super.writeTo(output);
     }
@@ -1625,6 +1731,10 @@ public interface Network {
       if (this.initiativeBonus != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeInt32Size(128, this.initiativeBonus);
+      }
+      if (this.cr != null) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeMessageSize(129, this.cr);
       }
       return size;
     }
@@ -1683,6 +1793,13 @@ public interface Network {
           }
           case 1024: {
             this.initiativeBonus = input.readInt32();
+            break;
+          }
+          case 1034: {
+            if (this.cr == null) {
+              this.cr = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.ChallangeRatio();
+            }
+            input.readMessage(this.cr);
             break;
           }
         }

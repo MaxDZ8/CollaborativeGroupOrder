@@ -495,7 +495,7 @@
     <string name="ba_menu_endBattle_title">Finish battle and distribute XP</string>
     <string name="ba_menu_endBattle_titleShort">End battle</string>
     <string name="ba_endBattleDlg_title">Done?</string>
-    <string name="ba_endBattleDlg_msg">There's no going back! Battle order and monster status will be discarded.</string>
+    <string name="ba_endBattleDlg_msg">There\'s no going back! Battle order and monster status will be discarded.</string>
     <string name="ba_endBattleDlg_positive">Distribute XP</string>
 
     <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
@@ -538,5 +538,12 @@
     <string name="aoa_waitingOtherPlayersRoll">Waiting other players to roll.</string>
     <string name="aoa_waitingMyTurn">Waiting turn.\nDevice will vibrate when your attention is required.</string>
     <string name="aoa_confirmBackDlgMessage">One does not simply get outta there. You are connected to master device, if you go away stuff might go awry.</string>
+
+    <string name="aea_title">Distribute XP</string>
+    <string name="aea_mobListInfo">Select the monsters to compute their XP awards.</string>
+    <string name="aea_mobReport">Selected: %1$s, total XP: %2$d</string>
+    <string name="aea_winnersListInfo">Now select the PCs receiving experience.</string>
+    <string name="aea_winnersListReport">Selected: %1$s\n%2$d XP each</string>
+    <string name="aea_selectedAll">all</string>
 
 </resources>

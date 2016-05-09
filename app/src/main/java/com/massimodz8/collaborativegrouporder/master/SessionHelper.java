@@ -58,16 +58,43 @@ public class SessionHelper {
     public static abstract class PlayState {
         public final MonsterData.MonsterBook monsters;
         private final SessionHelper session;
-        private final PcAssignmentHelper assignment;
         public BattleHelper battleState;
         public ArrayDeque<Events.Roll> rollResults = new ArrayDeque<>(); // this is to be used even before battle starts.
+        /**
+         * When a battle is terminated, stuff is moved there for XP awarding.
+         * When gone from there, delete it forever (from the pooled ids, usually from SessionHelper.temporaries)
+         */
+        public ArrayList<DefeatedData> defeated;
+        public @ActorId  ArrayList<WinnerData> winners;
+
+        static class DefeatedData {
+            final @ActorId int id;
+            final int numerator;
+            final int denominator;
+            boolean consume = true;
+
+            DefeatedData(@ActorId int id, int numerator, int denominator) {
+                this.id = id;
+                this.numerator = numerator;
+                this.denominator = denominator;
+            }
+        }
+
+        static class WinnerData {
+            final @ActorId int id;
+            int rewards; // we accumulate XPs got from battle, we'll apply them once we're done.
+            boolean award = true;
+
+            WinnerData(@ActorId int id) {
+                this.id = id;
+            }
+        }
 
         abstract void onRollReceived(); // called after rollRequest.push
 
-        public PlayState(SessionHelper session, MonsterData.MonsterBook monsters, PcAssignmentHelper assignment) {
+        public PlayState(SessionHelper session, MonsterData.MonsterBook monsters) {
             this.monsters = monsters;
             this.session = session;
-            this.assignment = assignment;
         }
 
         void add(Network.ActorState actor) { session.temporaries.add(actor); }

@@ -183,7 +183,11 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
 
     @Override
     protected void onDestroy() {
-        if(game != null) game.onTurnCompletedRemote.pop();
+        if(game != null) {
+            game.onTurnCompletedRemote.pop();
+            game.onActorShuffledRemote.pop();
+            game.onActorUpdatedRemote.pop();
+        }
         if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
@@ -213,7 +217,8 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
         switch(item.getItemId()) {
             case R.id.ba_menu_endBattle: {
                 new AlertDialog.Builder(this)
-                        .setView(R.layout.dialog_end_battle)
+                        .setTitle(R.string.ba_endBattleDlg_title)
+                        .setMessage(R.string.ba_endBattleDlg_msg)
                         .setPositiveButton(R.string.ba_endBattleDlg_positive, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

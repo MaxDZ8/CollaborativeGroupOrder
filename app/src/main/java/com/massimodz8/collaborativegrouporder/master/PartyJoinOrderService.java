@@ -56,7 +56,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
         for(StartData.ActorDefinition el : party.party) byDef.add(makeActorState(el, nextActorId++, Network.ActorState.T_PLAYING_CHARACTER));
         for(StartData.ActorDefinition el : party.npcs) byDef.add(makeActorState(el, nextActorId++, Network.ActorState.T_NPC));
         sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef);
-        sessionHelper.session = new SessionHelper.PlayState(sessionHelper, monsterBook, assignmentHelper) {
+        sessionHelper.session = new SessionHelper.PlayState(sessionHelper, monsterBook) {
             @Override
             void onRollReceived() {
                 while(!sessionHelper.session.rollResults.isEmpty()) {

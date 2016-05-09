@@ -76,6 +76,9 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                         build.name = display;
                         build.currentHP = build.maxHP = 666; // todo generate(mob.defense.hp)
                         build.initiativeBonus = mob.header.initiative;  // todo select conditional initiatives.
+                        build.cr = new Network.ActorState.ChallangeRatio();
+                        build.cr.numerator = mob.header.cr.numerator;
+                        build.cr.denominator = mob.header.cr.denominator;
                         session.add(build);
                         session.willFight(build, true);
                         nameColl.put(presentation, previously + 1);

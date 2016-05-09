@@ -196,4 +196,11 @@ message ActorState {
 	
 	// Those are not typically used across the wire but they are useful to have at runtime!
 	int32 initiativeBonus = 128;
+	
+	message ChallangeRatio {
+		uint32 numerator = 1; // must be at least 1.
+		uint32 denominator = 2; // if numerator === 1 can be 8|6|4|3|2|1 else must be 1
+	}
+	ChallangeRatio cr = 129; // used to track XP value of monsters at runtime, not sent across the wire. Initialized from monster data.
+	
 }
