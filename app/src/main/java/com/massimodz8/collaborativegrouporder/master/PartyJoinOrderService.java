@@ -275,6 +275,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
         res.name = el.name;
         res.maxHP = res.currentHP = el.stats[0].healthPoints;
         res.initiativeBonus = el.stats[0].initBonus;
+        res.experience = el.experience;
         return res;
     }
 

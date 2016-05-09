@@ -16,6 +16,9 @@ import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.SendRequest;
+import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
@@ -72,8 +75,13 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
                 StartData.ActorDefinition[] pcs = game.getPartyOwnerData().party;
                 for(SessionHelper.PlayState.WinnerData el : game.sessionHelper.session.winners) {
                     if(el.award) {
-                        session.getActorById(el.id).experience += xp / count;
+                        Network.ActorState actor = session.getActorById(el.id);
+                        actor.experience += xp / count;
                         if(el.id < pcs.length) pcs[el.id].experience += xp / count;
+
+                        MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
+                        if(pipe == null) continue;
+                        game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actor));
                     }
                 }
                 if(session.defeated != null) {

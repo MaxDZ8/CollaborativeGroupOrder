@@ -223,6 +223,12 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 setResult(RESULT_OK_AWARD);
+                                Network.TurnControl msg = new Network.TurnControl();
+                                msg.type = Network.TurnControl.T_BATTLE_ENDED;
+                                for (PcAssignmentHelper.PlayingDevice client : game.assignmentHelper.peers) {
+                                    if(client.pipe == null) continue;
+                                    game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg));
+                                }
                                 finish();
                             }
                         })
