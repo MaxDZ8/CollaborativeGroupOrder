@@ -1,11 +1,13 @@
 package com.massimodz8.collaborativegrouporder.master;
 
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -71,16 +73,20 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
                 for(SessionHelper.WinnerData el : game.session.winners) {
                     if(el.award) count++;
                 }
-                StartData.ActorDefinition[] pcs = game.getPartyOwnerData().party;
-                for(SessionHelper.WinnerData el : game.session.winners) {
-                    if(el.award) {
-                        Network.ActorState actor = game.session.getActorById(el.id);
-                        actor.experience += xp / count;
-                        if(el.id < pcs.length) pcs[el.id].experience += xp / count;
+                // == 0 can be used to throw away XPs. Bad idea in general but must be supported.
+                // E.G. we have discovered we put there the wrong monster and we're rolling back the whole battle
+                if(count != 0) {
+                    StartData.ActorDefinition[] pcs = game.getPartyOwnerData().party;
+                    for (SessionHelper.WinnerData el : game.session.winners) {
+                        if (el.award) {
+                            Network.ActorState actor = game.session.getActorById(el.id);
+                            actor.experience += xp / count;
+                            if (el.id < pcs.length) pcs[el.id].experience += xp / count;
 
-                        MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
-                        if(pipe == null) continue;
-                        game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actor));
+                            MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
+                            if (pipe == null) continue;
+                            game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actor));
+                        }
                     }
                 }
                 if(game.session.defeated != null) {
@@ -96,6 +102,31 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
     protected void onDestroy() {
         if(mustUnbind) unbindService(this);
         super.onDestroy();
+    }
+
+
+    @Override
+    public void onBackPressed() { confirmDiscardFinish(); }
+    @Override
+    public boolean onSupportNavigateUp() {
+        confirmDiscardFinish();
+        return false;
+    }
+
+    private void confirmDiscardFinish() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.generic_carefulDlgTitle)
+                .setMessage(R.string.aea_noBackDlgMessage)
+                .setPositiveButton(R.string.aea_confirmDlgPosButton, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        for (SessionHelper.DefeatedData el : game.session.defeated) el.consume = true;
+                        for (SessionHelper.WinnerData el : game.session.winners) el.award = false;
+                        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                        fab.performClick();
+                    }
+                })
+                .show();
     }
 
     private void update() {

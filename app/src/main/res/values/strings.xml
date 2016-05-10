@@ -547,5 +547,7 @@
     <string name="aea_winnersCount">Selected: %1$s</string>>
     <string name="aea_winnersAward">%1$d XP each</string>
     <string name="aea_selectedAll">all</string>
+    <string name="aea_noBackDlgMessage">If you go back, you will throw away XPs. The proper way to do that is to consume all monsters.</string>
+    <string name="aea_confirmDlgPosButton">Discard</string>
 
 </resources>
