@@ -142,6 +142,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
 
     private void sendInitiativeRollRequests() {
         for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+            if(dev.movedToBattlePumper) continue;
             game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
             dev.movedToBattlePumper = true;
         }
