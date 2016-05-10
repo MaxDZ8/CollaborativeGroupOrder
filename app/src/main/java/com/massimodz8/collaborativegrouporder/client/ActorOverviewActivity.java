@@ -110,11 +110,18 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() { confirmLeaveFinish(); }
+    @Override
+    public boolean onSupportNavigateUp() {
+        confirmLeaveFinish();
+        return false;
+    }
+
+    private void confirmLeaveFinish() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.aoa_confirmBackDlgMessage)
-                .setPositiveButton(R.string.mara_next_title, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.aoa_confirmBackDlgPositiveButton, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) { ActorOverviewActivity.super.onBackPressed(); }
                 })
@@ -213,7 +220,7 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                 ticker.ticksSinceLastAd++;
                 boolean admobReady = true;
                 if (ticker.ticksSinceLastAd >= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER && admobReady) {
-                    ticker.ticksSinceLastAd -= ticker.playedHere.length;
+                    ticker.ticksSinceLastAd -= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER;
                     startActivity(new Intent(this, InterstitialAdPlaceholderActivity.class));
                 }
             }
@@ -222,6 +229,15 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onResume() {
+        if(ticker != null) {
+            ticker.onCurrentActorChanged.getFirst().run(); // maybe not. But convenient to mangle round and update UI.
+            ticker.onActorUpdated.getFirst().run();
+        }
+        super.onResume();
     }
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
