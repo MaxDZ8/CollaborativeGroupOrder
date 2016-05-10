@@ -76,6 +76,9 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                         build.name = display;
                         build.currentHP = build.maxHP = 666; // todo generate(mob.defense.hp)
                         build.initiativeBonus = mob.header.initiative;  // todo select conditional initiatives.
+                        build.cr = new Network.ActorState.ChallangeRatio();
+                        build.cr.numerator = mob.header.cr.numerator;
+                        build.cr.denominator = mob.header.cr.denominator;
                         session.add(build);
                         session.willFight(build, true);
                         nameColl.put(presentation, previously + 1);
@@ -182,7 +185,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     private MenuItem showBookInfo;
     private MonsterData.MonsterBook monsters;
     private IdentityHashMap<MonsterData.Monster, Integer> spawnCounts = new IdentityHashMap<>();
-    private SessionHelper.PlayState session;
+    private SessionHelper session;
     private PartyJoinOrderService serv;
 
 
@@ -261,7 +264,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder) service;
         serv = real.getConcreteService();
-        session = serv.sessionHelper.session;
+        session = serv.session;
         monsters = session.monsters;
         showBookInfo.setVisible(true);
         unbindService(this);

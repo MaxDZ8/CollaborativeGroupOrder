@@ -129,13 +129,13 @@
     <string name="persistentStorage_groupWithNoActors">: empty list.</string>
     <string name="persistentStorage_actorMissingName">: missing name.</string>
     <string name="persistentStorage_badLevel">: level is 0.</string>
-    <string name="persistentStorage_preparedActionsForbidden">: prepared actions not allowed here.</string>
     <string name="persistentStorage_actorStatsEmpty">: empty.</string>
     <string name="persistentStorage_actorStatsPremise">" statistics"</string>
     <string name="persistentStorage_deviceBadSalt">, device[%1$s]: not enough salt.</string>
     <string name="persistentStorage_badCreationTimestamp">: invalid creation timestamp.</string>
     <string name="persistentStorage_badSessionFile">: no session file specified.</string>
-    <string name="persistentStorage_closeFailed">Could not close file input stream handle.</string>
+    <string name="persistentStorage_failedOldDelete">Cannot save new data. Old data refused to go away.</string>
+    <string name="persistentStorage_failedNewRenameOldGone">Oh no! New data was successfully produced and stored but couldn\'t be given its real name and old data is already gone!\nFile:\n  %1$s</string>
 
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
@@ -282,8 +282,6 @@
     <string name="ppa_title_details">Party details</string>
     <string name="ppa_deletedParty">Deleted \"%1$s\"</string>
     <string name="ppa_cannotLetYouGoWhileWriting">I am rewriting storage data so I cannot let you go away. By the time you have read this, I\'ve hopefully finished.</string>
-    <string name="ppa_failedOldDelete">Cannot save new data. Old data refused to go away.</string>
-    <string name="ppa_failedNewRenameOldGone">Oh no! New data was successfully produced and stored but couldn\'t be given its real name and old data is already gone!\nFile:\n  %1$s</string>
     <string name="ppa_partyRecovered">Recover successful</string>
     <string name="ppa_menu_restoreDeleted">Restore deleted</string>
     <string name="ppa_menu_restoreDeletedCondensed">Restore</string>
@@ -492,6 +490,11 @@
     <string name="ba_actorByPlayerSnack">Actor by player.</string>
     <string name="ba_TODO_NOTE">NOTE:</string>
     <string name="ba_TODO_NOTE_deleteThoseFurtherInfosTheyreReallyBAD">Hit point tracking is TODO so you\'ll have to disable defeated mobs manually.</string>
+    <string name="ba_menu_endBattle_title">Finish battle and distribute XP</string>
+    <string name="ba_menu_endBattle_titleShort">End battle</string>
+    <string name="ba_endBattleDlg_title">Done?</string>
+    <string name="ba_endBattleDlg_msg">There\'s no going back! Battle order and monster status will be discarded.</string>
+    <string name="ba_endBattleDlg_positive">Distribute XP</string>
 
     <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
     <string name="mara_endTurn">End your turn</string>
@@ -532,6 +535,18 @@
     <string name="mara_dlgWS_title">Waiting sequence</string>
     <string name="aoa_waitingOtherPlayersRoll">Waiting other players to roll.</string>
     <string name="aoa_waitingMyTurn">Waiting turn.\nDevice will vibrate when your attention is required.</string>
-    <string name="aoa_confirmBackDlgMessage">One does not simply get outta there. You are connected to master device, if you go away stuff might go awry.</string>
+    <string name="aoa_confirmBackDlgMessage">One does not simply get outta there. You are connected to master device, if you go away stuff might go awry for other players.</string>
+    <string name="aoa_confirmBackDlgPositiveButton">Quit game</string>
+    <string name="aoa_xpReward">%1$s received %2$d XPs\ncurrent XP %3$d</string>
+
+    <string name="aea_title">Distribute XP</string>
+    <string name="aea_mobListInfo">Select the monsters to compute their XP awards.</string>
+    <string name="aea_mobReport">Selected: %1$s, total XP: %2$d</string>
+    <string name="aea_winnersListInfo">Now select the PCs receiving experience.</string>
+    <string name="aea_winnersCount">Selected: %1$s</string>>
+    <string name="aea_winnersAward">%1$d XP each</string>
+    <string name="aea_selectedAll">all</string>
+    <string name="aea_noBackDlgMessage">If you go back, you will throw away XPs. The proper way to do that is to consume all monsters.</string>
+    <string name="aea_confirmDlgPosButton">Discard</string>
 
 </resources>

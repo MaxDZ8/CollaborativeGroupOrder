@@ -40,6 +40,13 @@ import java.util.Map;
  * long story short: I must keep track of those events and remember them. Meh!
  */
 public class PartyJoinOrderService extends PublishAcceptService {
+    /**
+     * For the time being, there is a single 'owned' file for all groups so I don't have to deal
+     * with collisions. This means that everytime I issue a save I need access to all groups.
+     * One of those groups is the group we will manage. Those objects are unique and persistent.
+     */
+    public ArrayList<StartData.PartyOwnerData.Group> allOwnedGroups;
+
     /* Section 3: identifying joining devices and binding characters. ------------------------------
                 This goes in parallel with landing socket and publish management so you're better set this up ASAP.
                 As usual, it can be initialized only once and then the service will have to be destroyed.
@@ -55,12 +62,11 @@ public class PartyJoinOrderService extends PublishAcceptService {
         ArrayList<Network.ActorState> byDef = new ArrayList<>();
         for(StartData.ActorDefinition el : party.party) byDef.add(makeActorState(el, nextActorId++, Network.ActorState.T_PLAYING_CHARACTER));
         for(StartData.ActorDefinition el : party.npcs) byDef.add(makeActorState(el, nextActorId++, Network.ActorState.T_NPC));
-        sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef);
-        sessionHelper.session = new SessionHelper.PlayState(sessionHelper, monsterBook, assignmentHelper) {
+        session = new SessionHelper(live, byDef, monsterBook) {
             @Override
             void onRollReceived() {
-                while(!sessionHelper.session.rollResults.isEmpty()) {
-                    final Events.Roll got = sessionHelper.session.rollResults.pop();
+                while(!session.rollResults.isEmpty()) {
+                    final Events.Roll got = session.rollResults.pop();
                     matchRoll(got.from, got.payload);
                 }
             }
@@ -79,7 +85,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(peerKey != battleState.currentActor) return; // that's not his turn anyway!
                 // Don't do that. Might involve popping readied actions. Furthermore, BattleActivity wants to keep track of both previous and current actor.
                 //battleState.tickRound();
-                if(!onTurnCompletedRemote.isEmpty()) onTurnCompletedRemote.getLast().run();
+                if(!onTurnCompletedRemote.isEmpty()) onTurnCompletedRemote.getFirst().run();
             }
 
             @Override
@@ -94,8 +100,8 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
                 if(bound != index) return; // you cannot control this turn you cheater!
                 if(peerKey != battleState.currentActor) return; // How did you manage to do that? Not currently allowed.
-                if(sessionHelper.session.battleState.moveCurrentToSlot(newSlot, false)) pushBattleOrder();
-                if(!onActorShuffledRemote.isEmpty()) onActorShuffledRemote.getLast().run();
+                if(session.battleState.moveCurrentToSlot(newSlot, false)) pushBattleOrder();
+                if(!onActorShuffledRemote.isEmpty()) onActorShuffledRemote.getFirst().run();
             }
         };
         battleHandler = new MyBattleHandler(this);
@@ -195,7 +201,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
     }
 
     PcAssignmentHelper assignmentHelper;
-    public SessionHelper sessionHelper;
+    public SessionHelper session;
     Pumper battlePumper;
     Handler battleHandler;
     /**
@@ -210,11 +216,11 @@ public class PartyJoinOrderService extends PublishAcceptService {
 
     private void matchRoll(MessageChannel from, Network.Roll dice) {
         // The first consumer of rolls is initiative building.
-        if(sessionHelper != null && sessionHelper.initiatives != null) {
-            for (Map.Entry<Integer, SessionHelper.Initiative> el : sessionHelper.initiatives.entrySet()) {
+        if(session != null && session.initiatives != null) {
+            for (Map.Entry<Integer, SessionHelper.Initiative> el : session.initiatives.entrySet()) {
                 final SessionHelper.Initiative val = el.getValue();
                 if(val.request != null && dice.unique == val.request.unique) {
-                    val.rolled = dice.result + sessionHelper.session.getActorById(el.getKey()).peerKey;
+                    val.rolled = dice.result + session.getActorById(el.getKey()).peerKey;
                     if(onRollReceived != null) onRollReceived.run();
                     return;
                 }
@@ -233,7 +239,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
 
 
     public boolean pushBattleOrder() {
-        final InitiativeScore[] order = sessionHelper.session.battleState.ordered;
+        final InitiativeScore[] order = session.battleState.ordered;
         int[] sequence = new int[order.length];
         int cp = 0;
         for (InitiativeScore score : order) sequence[cp++] = score.actorID;
@@ -262,9 +268,9 @@ public class PartyJoinOrderService extends PublishAcceptService {
         final PcAssignmentHelper.PlayingDevice dev = assignmentHelper.peers.get(bound);
         if(dev.pipe == null) return;
         // For the time being, just send all actors, be coherent with pushBattleOrder
-        Network.ActorState[] current = new Network.ActorState[sessionHelper.session.battleState.ordered.length];
+        Network.ActorState[] current = new Network.ActorState[session.battleState.ordered.length];
         id = 0;
-        for (InitiativeScore el : sessionHelper.session.battleState.ordered) current[id++] = sessionHelper.session.getActorById(el.actorID);
+        for (InitiativeScore el : session.battleState.ordered) current[id++] = session.getActorById(el.actorID);
         assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, current));
     }
 
@@ -275,6 +281,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
         res.name = el.name;
         res.maxHP = res.currentHP = el.stats[0].healthPoints;
         res.initiativeBonus = el.stats[0].initBonus;
+        res.experience = el.experience;
         return res;
     }
 

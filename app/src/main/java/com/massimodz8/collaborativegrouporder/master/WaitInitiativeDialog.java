@@ -50,8 +50,8 @@ public class WaitInitiativeDialog {
             public void onBindViewHolder(AdventuringActorControlsVH holder, int position) {
                 SessionHelper.Initiative initiative = null;
                 Network.ActorState match = null;
-                for(int loop = 0; loop < session.session.getNumActors(); loop++) {
-                    final Network.ActorState actor = session.session.getActor(loop);
+                for(int loop = 0; loop < session.getNumActors(); loop++) {
+                    final Network.ActorState actor = session.getActor(loop);
                     final SessionHelper.Initiative test = session.initiatives.get(actor.peerKey);
                     if(test.request != null) {
                         if(position == 0) {
@@ -72,8 +72,8 @@ public class WaitInitiativeDialog {
             @Override
             public int getItemCount() {
                 int count = 0;
-                for(int loop = 0; loop < session.session.getNumActors(); loop++) {
-                    final SessionHelper.Initiative initiative = session.initiatives.get(session.session.getActor(loop).peerKey);
+                for(int loop = 0; loop < session.getNumActors(); loop++) {
+                    final SessionHelper.Initiative initiative = session.initiatives.get(session.getActor(loop).peerKey);
                     if(initiative.request != null) count++;
                     // else rolled automatically, do not list.
                 }
@@ -83,8 +83,8 @@ public class WaitInitiativeDialog {
             @Override
             public long getItemId(int position) {
                 Network.ActorState match = null;
-                for(int loop = 0; loop < session.session.getNumActors(); loop++) {
-                    final Network.ActorState actor = session.session.getActor(loop);
+                for(int loop = 0; loop < session.getNumActors(); loop++) {
+                    final Network.ActorState actor = session.getActor(loop);
                     final SessionHelper.Initiative test = session.initiatives.get(actor.peerKey);
                     if(test.request != null) {
                         if(position == 0) return actor.peerKey;

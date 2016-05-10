@@ -23,6 +23,7 @@ public abstract class AdventuringActorControlsVH  extends AdventuringActorDataVH
         selected = (CheckBox) iv.findViewById(R.id.vhAAC_selected);
         selected.setOnCheckedChangeListener(this);
         hilite = iv.findViewById(R.id.vhAAC_currentPlayerHighlight);
+        iv.setOnClickListener(this);
     }
 
     boolean showHilight;

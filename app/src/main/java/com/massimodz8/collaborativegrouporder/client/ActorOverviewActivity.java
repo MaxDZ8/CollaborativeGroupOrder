@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Vibrator;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -36,6 +37,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
+import java.util.Locale;
 
 /**
  * Start this when assignment completed. It is signaled by a GroupReady message with a YOURS field.
@@ -108,11 +110,18 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() { confirmLeaveFinish(); }
+    @Override
+    public boolean onSupportNavigateUp() {
+        confirmLeaveFinish();
+        return false;
+    }
+
+    private void confirmLeaveFinish() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.aoa_confirmBackDlgMessage)
-                .setPositiveButton(R.string.mara_next_title, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.aoa_confirmBackDlgPositiveButton, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) { ActorOverviewActivity.super.onBackPressed(); }
                 })
@@ -194,7 +203,7 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             rollDialog.dlg.dismiss();
             rollDialog = null;
-            ticker.onRollRequestPushed.getLast().run(); // there might be more rolls pending.
+            ticker.onRollRequestPushed.getFirst().run(); // there might be more rolls pending.
         }
     }
 
@@ -206,19 +215,29 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_TURN) {
             lister.notifyDataSetChanged();
+            ticker.onCurrentActorChanged.getFirst().run(); // maybe not, but easy to check
             if (resultCode == RESULT_OK) {
                 ticker.ticksSinceLastAd++;
                 boolean admobReady = true;
                 if (ticker.ticksSinceLastAd >= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER && admobReady) {
-                    ticker.ticksSinceLastAd -= ticker.playedHere.length;
+                    ticker.ticksSinceLastAd -= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER;
                     startActivity(new Intent(this, InterstitialAdPlaceholderActivity.class));
                 }
             }
             else { // we have somehow got out. MARA is protected against accidental exit so...
-                ticker.onCurrentActorChanged.getLast().run();
+                ticker.onCurrentActorChanged.getFirst().run();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onResume() {
+        if(ticker != null) {
+            ticker.onCurrentActorChanged.getFirst().run(); // maybe not. But convenient to mangle round and update UI.
+            ticker.onActorUpdated.getFirst().run();
+        }
+        super.onResume();
     }
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -235,6 +254,13 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                     if (awo != null && awo.actor != null) {
                         known++;
                         if(awo.keyOrder != null) knownOrders++;
+                        if(awo.xpReceived != 0) {
+                            String text = getString(R.string.aoa_xpReward);
+                            text = String.format(Locale.getDefault(), text, awo.actor.name, awo.xpReceived, awo.actor.experience);
+                            Snackbar.make(findViewById(R.id.activityRoot), text, Snackbar.LENGTH_INDEFINITE).show();
+                            awo.xpReceived = 0;
+                            awo.updated = false;
+                        }
                     }
                 }
                 if (known == 0) return;
@@ -254,7 +280,11 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                 }
                 MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
                 final TextView status = (TextView) findViewById(R.id.aoa_status);
-                if(ticker.round == -1) status.setText(R.string.aoa_waitingForBattleStart);
+                if(ticker.round == AdventuringService.ROUND_NOT_FIGHTING) {
+                    status.setText(R.string.aoa_waitingForBattleStart);
+                    final ActionBar sab = getSupportActionBar();
+                    if(sab != null) sab.setTitle(R.string.aoa_title);
+                }
                 else if(ticker.round == 0) status.setText(R.string.aoa_waitingOtherPlayersRoll);
                 else status.setText(R.string.aoa_waitingMyTurn);
                 lister.notifyDataSetChanged();
@@ -291,7 +321,8 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             @Override
             public void run() {
                 final ActionBar sab = getSupportActionBar();
-                if(sab != null) sab.setTitle(ticker.round == -1? R.string.aoa_title : R.string.aoa_title_fighting);
+                if(sab != null) sab.setTitle(ticker.round == AdventuringService.ROUND_NOT_FIGHTING? R.string.aoa_title : R.string.aoa_title_fighting);
+                if(ticker.round == AdventuringService.ROUND_NOT_FIGHTING) return;
                 boolean here = false;
                 for (int key : ticker.playedHere) {
                     if (key == ticker.currentActor) {
@@ -326,9 +357,9 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             }
             ticker.startForeground(NOTIFICATION_ID, help.build());
         }
-        ticker.onActorUpdated.getLast().run();
-        ticker.onRollRequestPushed.getLast().run();
-        ticker.onCurrentActorChanged.getLast().run();
+        ticker.onActorUpdated.getFirst().run();
+        ticker.onRollRequestPushed.getFirst().run();
+        ticker.onCurrentActorChanged.getFirst().run();
     }
 
     @Override

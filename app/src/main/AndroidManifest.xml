@@ -177,7 +177,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainMenuActivity" />
         </activity>
-        <activity android:name=".InterstitialAdPlaceholderActivity"></activity>
+        <activity android:name=".InterstitialAdPlaceholderActivity" />
+        <activity
+            android:name=".master.AwardExperienceActivity"
+            android:label="@string/aea_title"
+            android:parentActivityName=".master.FreeRoamingActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.master.FreeRoamingActivity" />
+        </activity>
     </application>
 
 </manifest>

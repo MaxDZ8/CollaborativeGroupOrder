@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:icon="@drawable/ic_playlist_add_check_white_24dp"
+        android:id="@+id/ba_menu_endBattle"
+        android:title="@string/ba_menu_endBattle_title"
+        android:titleCondensed="@string/ba_menu_endBattle_titleShort"
+        app:showAsAction="always" />
+</menu>

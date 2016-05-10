@@ -372,6 +372,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if(service instanceof PartyJoinOrderService.LocalBinder) {
             PartyJoinOrderService.LocalBinder binder = (PartyJoinOrderService.LocalBinder)service;
             PartyJoinOrderService real =  binder.getConcreteService();
+            real.allOwnedGroups = groupDefs;
             StartData.PartyOwnerData.Group owned = (StartData.PartyOwnerData.Group) activeParty;
             JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
             real.initializePartyManagement(owned, activeStats, keyMaster, monsters);

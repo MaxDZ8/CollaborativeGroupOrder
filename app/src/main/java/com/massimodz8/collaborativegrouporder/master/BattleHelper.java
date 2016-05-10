@@ -43,7 +43,7 @@ public class BattleHelper {
         prevWasReadied = false;
         final int previd = currentActor;
         if(interrupted != null) {
-            currentActor = really? interrupted.pop() : interrupted.getLast();
+            currentActor = really? interrupted.pop() : interrupted.getFirst();
             if(interrupted.isEmpty()) interrupted = null;
             prevWasReadied = true;
             return previd;

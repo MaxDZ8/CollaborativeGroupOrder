@@ -13,7 +13,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
  * Lots of stuff in common by adapter based on battle state. Used by free roaming and battle mode.
  */
 public abstract class AdventuringActorWithControlsAdapter extends AdventuringActorAdapter<AdventuringActorControlsVH> {
-    SessionHelper.PlayState playState;
+    SessionHelper playState;
 
     @Override
     public Network.ActorState getActorByPos(int position) {

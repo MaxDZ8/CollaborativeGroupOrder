@@ -144,12 +144,12 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
                     break; // possible, if user hits button before service connection estabilished. Not likely.
                 }
                 if(server != null) {
-                    BattleHelper battle  = server.sessionHelper.session.battleState;
+                    BattleHelper battle  = server.session.battleState;
                     order = new Network.ActorState[battle.ordered.length];
                     int cp = 0;
                     int gotcha = 0;
                     for (InitiativeScore el : battle.ordered) {
-                        order[cp++] = server.sessionHelper.session.getActorById(el.actorID);
+                        order[cp++] = server.session.getActorById(el.actorID);
                         if(el.actorID == battle.currentActor) gotcha = cp - 1;
                     }
                     myIndex = gotcha;
@@ -230,7 +230,7 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     private void requestNewOrder(int newPos) {
         if(server == null && client == null) return; // impossible
         if(server != null) {
-            if(server.sessionHelper.session.battleState.moveCurrentToSlot(newPos, false)) {
+            if(server.session.battleState.moveCurrentToSlot(newPos, false)) {
                 server.pushBattleOrder();
                 setResult(RESULT_OK);
                 finish();
@@ -250,8 +250,8 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
     private void requestReadiedAction(String s) {
         if(client == null && server == null) return; // unlikely
         if(server != null) {
-            BattleHelper battle  = server.sessionHelper.session.battleState;
-            server.sessionHelper.session.getActorById(battle.currentActor).prepareCondition = s;
+            BattleHelper battle  = server.session.battleState;
+            server.session.getActorById(battle.currentActor).prepareCondition = s;
             setResult(RESULT_OK);
             finish();
             return;
@@ -279,11 +279,11 @@ public class MyActorRoundActivity extends AppCompatActivity implements ServiceCo
         final int round;
         final String nextActor;
         if(server != null) {
-            BattleHelper battle  = server.sessionHelper.session.battleState;
+            BattleHelper battle  = server.session.battleState;
             int curid = battle.actorCompleted(false);
-            actor = server.sessionHelper.session.getActorById(curid);
+            actor = server.session.getActorById(curid);
             round = battle.round;
-            nextActor = server.sessionHelper.session.getActorById(battle.currentActor).name;
+            nextActor = server.session.getActorById(battle.currentActor).name;
             battle.currentActor = curid;
         }
         else if(service instanceof  AdventuringService.LocalBinder){

@@ -16,8 +16,8 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
  */
 public abstract class AdventuringActorDataVH extends RecyclerView.ViewHolder implements View.OnClickListener {
     public final ImageView avatar;
-    final TextView actorShortType, name;
-    final HealthBar hbar;
+    public final TextView actorShortType, name;
+    public final HealthBar hbar;
     final public Button prepared;
     public Network.ActorState actor;
 

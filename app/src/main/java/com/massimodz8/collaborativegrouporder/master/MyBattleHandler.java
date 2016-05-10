@@ -28,7 +28,7 @@ public class MyBattleHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
         final PartyJoinOrderService target = this.target.get();
-        final SessionHelper.PlayState session = target.sessionHelper.session;
+        final SessionHelper session = target.session;
         switch(msg.what) {
             case MSG_DISCONNECTED: {
                 // TODO - network architecture is to be redesigned anyway
@@ -63,7 +63,7 @@ public class MyBattleHandler extends Handler {
                 final PcAssignmentHelper.PlayingDevice dev = target.assignmentHelper.peers.get(owner);
                 if(dev.pipe == null || dev.pipe == real.from) { // if you're the real owner or you were at a certain point and we are out of sync somehow...
                     session.getActorById(session.battleState.currentActor).prepareCondition = real.desc;
-                    if(!target.onActorUpdatedRemote.isEmpty()) target.onActorUpdatedRemote.getLast().run();
+                    if(!target.onActorUpdatedRemote.isEmpty()) target.onActorUpdatedRemote.getFirst().run();
                 }
                 break;
             }

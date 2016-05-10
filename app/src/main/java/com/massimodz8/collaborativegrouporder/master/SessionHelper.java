@@ -24,10 +24,23 @@ import java.util.Map;
  * At any point we must be able to go back, serialize changes to our session data and restore
  * state. Session data is a superset of StartData so we have to be careful!
  */
-public class SessionHelper {
-    public final StartData.PartyOwnerData.Group party;
+public abstract class SessionHelper {
+    abstract void onRollReceived(); // called after rollRequest.push
+    abstract public void turnDone(MessageChannel from, int peerKey);
+    public abstract void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot);
+
+
     public final PersistentDataUtils.SessionStructs stats;
     public final ArrayList<Network.ActorState> existByDef;
+    public final MonsterData.MonsterBook monsters;
+    public BattleHelper battleState;
+    public ArrayDeque<Events.Roll> rollResults = new ArrayDeque<>(); // this is to be used even before battle starts.
+    /**
+     * When a battle is terminated, stuff is moved there for XP awarding.
+     * When gone from there, delete it forever (from the pooled ids, usually from SessionHelper.temporaries)
+     */
+    public ArrayList<DefeatedData> defeated;
+    public @ActorId  ArrayList<WinnerData> winners;
 
     /**
      * If this is non-null then we're preparing to start a new battle.
@@ -48,58 +61,59 @@ public class SessionHelper {
     }
 
 
-    SessionHelper(StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs stats, ArrayList<Network.ActorState> existByDef) {
-        this.party = party;
+    SessionHelper(PersistentDataUtils.SessionStructs stats, ArrayList<Network.ActorState> existByDef, MonsterData.MonsterBook monsters) {
         this.stats = stats;
         this.existByDef = existByDef;
+        this.monsters = monsters;
     }
 
-    /// Activity interface so I can avoid dealing with the service and all.
-    public static abstract class PlayState {
-        public final MonsterData.MonsterBook monsters;
-        private final SessionHelper session;
-        private final PcAssignmentHelper assignment;
-        public BattleHelper battleState;
-        public ArrayDeque<Events.Roll> rollResults = new ArrayDeque<>(); // this is to be used even before battle starts.
+    static class DefeatedData {
+        final @ActorId int id;
+        final int numerator;
+        final int denominator;
+        boolean consume = true;
 
-        abstract void onRollReceived(); // called after rollRequest.push
-
-        public PlayState(SessionHelper session, MonsterData.MonsterBook monsters, PcAssignmentHelper assignment) {
-            this.monsters = monsters;
-            this.session = session;
-            this.assignment = assignment;
+        DefeatedData(@ActorId int id, int numerator, int denominator) {
+            this.id = id;
+            this.numerator = numerator;
+            this.denominator = denominator;
         }
-
-        void add(Network.ActorState actor) { session.temporaries.add(actor); }
-        boolean willFight(Network.ActorState actor, Boolean newFlag) {
-            boolean currently = session.fighters.contains(actor.peerKey);
-            if(newFlag == null) return currently;
-            if(newFlag) session.fighters.add(actor.peerKey);
-            else session.fighters.remove(session.fighters.indexOf(actor.peerKey));
-            return newFlag;
-        }
-        int getNumActors() { return session.existByDef.size() + session.temporaries.size(); }
-        Network.ActorState getActor(int i) {
-            int sz = session.existByDef.size();
-            return i < sz ? session.existByDef.get(i) : session.temporaries.get(i - sz);
-        }
-
-        public Network.ActorState getActorById(@ActorId  int id) {
-            for (Network.ActorState el : session.existByDef) {
-                if(el.peerKey == id) return el;
-            }
-            for (Network.ActorState el : session.temporaries) {
-                if(el.peerKey == id) return el;
-            }
-            return null;
-        }
-
-        abstract public void turnDone(MessageChannel from, int peerKey);
-
-        public abstract void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot);
     }
 
-    public PlayState session;
-    private final ArrayList<Network.ActorState> temporaries = new ArrayList<>();
+    static class WinnerData {
+        final @ActorId int id;
+        int rewards; // we accumulate XPs got from battle, we'll apply them once we're done.
+        boolean award = true;
+
+        WinnerData(@ActorId int id) {
+            this.id = id;
+        }
+    }
+
+    void add(Network.ActorState actor) { temporaries.add(actor); }
+    boolean willFight(Network.ActorState actor, Boolean newFlag) {
+        boolean currently = fighters.contains(actor.peerKey);
+        if(newFlag == null) return currently;
+        if(newFlag) fighters.add(actor.peerKey);
+        else fighters.remove(fighters.indexOf(actor.peerKey));
+        return newFlag;
+    }
+    int getNumActors() { return existByDef.size() + temporaries.size(); }
+    Network.ActorState getActor(int i) {
+        int sz = existByDef.size();
+        return i < sz ? existByDef.get(i) : temporaries.get(i - sz);
+    }
+
+    public Network.ActorState getActorById(@ActorId  int id) {
+        for (Network.ActorState el : existByDef) {
+            if(el.peerKey == id) return el;
+        }
+        for (Network.ActorState el : temporaries) {
+            if(el.peerKey == id) return el;
+        }
+        return null;
+    }
+
+    public final ArrayList<Network.ActorState> temporaries = new ArrayList<>();
     private final ArrayList<Integer> fighters = new ArrayList<>();
 }
