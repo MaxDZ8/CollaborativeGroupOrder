@@ -53,6 +53,22 @@ public abstract class PersistentDataUtils {
         return null;
     }
 
+    public static StartData.PartyOwnerData makePartyOwnerData(ArrayList<StartData.PartyOwnerData.Group> defs) {
+        StartData.PartyOwnerData all = new StartData.PartyOwnerData();
+        all.version = OWNER_DATA_VERSION;
+        all.everything = new StartData.PartyOwnerData.Group[defs.size()];
+        for(int cp = 0; cp < defs.size(); cp++) all.everything[cp] = defs.get(cp);
+        return all;
+    }
+
+    public static StartData.PartyClientData makePartyClientData(ArrayList<StartData.PartyClientData.Group> defs) {
+        StartData.PartyClientData all = new StartData.PartyClientData();
+        all.version = CLIENT_DATA_WRITE_VERSION;
+        all.everything = new StartData.PartyClientData.Group[defs.size()];
+        for(int cp = 0; cp < defs.size(); cp++) all.everything[cp] = defs.get(cp);
+        return all;
+    }
+
     protected abstract String getString(@StringRes int resource);
 
     public static final int OWNER_DATA_VERSION = 1;

@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 public class PartyCreationService extends PublishAcceptService {
     public static final String PARTY_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
@@ -137,7 +138,7 @@ public class PartyCreationService extends PublishAcceptService {
         final ArrayList<PartyDefinitionHelper.DeviceStatus> clients = getDevices(false);
         int keyCount = 0;
         for (PartyDefinitionHelper.DeviceStatus dev : clients) {
-            final String message = String.format("keyIndex=%1$d, name=\"%2$s\" created=%3$s", keyCount++, building, new Date().toString());
+            final String message = String.format(Locale.ENGLISH, "keyIndex=%1$d, name=\"%2$s\" created=%3$s", keyCount++, building, new Date().toString());
             MaxUtils.hasher.reset();
             dev.salt = MaxUtils.hasher.digest(message.getBytes());
         }

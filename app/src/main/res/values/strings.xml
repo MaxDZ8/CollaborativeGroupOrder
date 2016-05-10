@@ -129,13 +129,13 @@
     <string name="persistentStorage_groupWithNoActors">: empty list.</string>
     <string name="persistentStorage_actorMissingName">: missing name.</string>
     <string name="persistentStorage_badLevel">: level is 0.</string>
-    <string name="persistentStorage_preparedActionsForbidden">: prepared actions not allowed here.</string>
     <string name="persistentStorage_actorStatsEmpty">: empty.</string>
     <string name="persistentStorage_actorStatsPremise">" statistics"</string>
     <string name="persistentStorage_deviceBadSalt">, device[%1$s]: not enough salt.</string>
     <string name="persistentStorage_badCreationTimestamp">: invalid creation timestamp.</string>
     <string name="persistentStorage_badSessionFile">: no session file specified.</string>
-    <string name="persistentStorage_closeFailed">Could not close file input stream handle.</string>
+    <string name="persistentStorage_failedOldDelete">Cannot save new data. Old data refused to go away.</string>
+    <string name="persistentStorage_failedNewRenameOldGone">Oh no! New data was successfully produced and stored but couldn\'t be given its real name and old data is already gone!\nFile:\n  %1$s</string>
 
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
@@ -282,8 +282,6 @@
     <string name="ppa_title_details">Party details</string>
     <string name="ppa_deletedParty">Deleted \"%1$s\"</string>
     <string name="ppa_cannotLetYouGoWhileWriting">I am rewriting storage data so I cannot let you go away. By the time you have read this, I\'ve hopefully finished.</string>
-    <string name="ppa_failedOldDelete">Cannot save new data. Old data refused to go away.</string>
-    <string name="ppa_failedNewRenameOldGone">Oh no! New data was successfully produced and stored but couldn\'t be given its real name and old data is already gone!\nFile:\n  %1$s</string>
     <string name="ppa_partyRecovered">Recover successful</string>
     <string name="ppa_menu_restoreDeleted">Restore deleted</string>
     <string name="ppa_menu_restoreDeletedCondensed">Restore</string>
