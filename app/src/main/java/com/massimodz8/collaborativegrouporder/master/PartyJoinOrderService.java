@@ -40,6 +40,13 @@ import java.util.Map;
  * long story short: I must keep track of those events and remember them. Meh!
  */
 public class PartyJoinOrderService extends PublishAcceptService {
+    /**
+     * For the time being, there is a single 'owned' file for all groups so I don't have to deal
+     * with collisions. This means that everytime I issue a save I need access to all groups.
+     * One of those groups is the group we will manage. Those objects are unique and persistent.
+     */
+    public ArrayList<StartData.PartyOwnerData.Group> allOwnedGroups;
+
     /* Section 3: identifying joining devices and binding characters. ------------------------------
                 This goes in parallel with landing socket and publish management so you're better set this up ASAP.
                 As usual, it can be initialized only once and then the service will have to be destroyed.

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -21,14 +22,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -217,15 +221,37 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     }
 
     static final int REQUEST_BATTLE = 1;
+    static final int REQUEST_AWARD_EXPERIENCE = 2;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode != REQUEST_BATTLE) {
-            super.onActivityResult(requestCode, resultCode, data);
-            return;
-        }
-        if(resultCode == BattleActivity.RESULT_OK_AWARD) {
-            startActivity(new Intent(this, AwardExperienceActivity.class));
+        switch(requestCode) {
+            case REQUEST_BATTLE: {
+                if(resultCode == BattleActivity.RESULT_OK_AWARD) {
+                    startActivityForResult(new Intent(this, AwardExperienceActivity.class), REQUEST_AWARD_EXPERIENCE);
+                }
+                break;
+            }
+            case REQUEST_AWARD_EXPERIENCE: {
+                if(resultCode == RESULT_OK) { // ouch! We need to update defs with the new xp, and maybe else... Luckly everything is already in place!
+                    new AsyncRenamingStore<StartData.PartyOwnerData>(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(game.allOwnedGroups)) {
+                        @Override
+                        protected String getString(@StringRes int res) { return FreeRoamingActivity.this.getString(res); }
+
+                        @Override
+                        protected void onPostExecute(Exception e) {
+                            if(e == null) return; // that's not even worth noticing, user takes for granted.
+                            new AlertDialog.Builder(FreeRoamingActivity.this)
+                                    .setTitle(R.string.generic_IOError)
+                                    .setMessage(e.getLocalizedMessage())
+                                    .show();
+                        }
+                    };
+                }
+                break;
+            }
+            default:
+                super.onActivityResult(requestCode, resultCode, data);
         }
     }
 

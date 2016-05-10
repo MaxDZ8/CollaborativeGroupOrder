@@ -81,7 +81,10 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
                         if (el.award) {
                             Network.ActorState actor = game.session.getActorById(el.id);
                             actor.experience += xp / count;
-                            if (el.id < pcs.length) pcs[el.id].experience += xp / count;
+                            if (el.id < pcs.length) {
+                                pcs[el.id].experience += xp / count;
+                                awarded += xp / count;
+                            }
 
                             MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
                             if (pipe == null) continue;
@@ -93,6 +96,7 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
                     mobLister.notifyDataSetChanged();
                     return;
                 }
+                if(awarded != 0) setResult(RESULT_OK);
                 finish();
             }
         });
@@ -178,6 +182,7 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
     private boolean mustUnbind;
     private PartyJoinOrderService game;
     private RecyclerView.Adapter mobLister;
+    private int awarded;
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
