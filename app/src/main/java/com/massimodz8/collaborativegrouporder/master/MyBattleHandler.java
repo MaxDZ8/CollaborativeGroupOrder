@@ -28,7 +28,7 @@ public class MyBattleHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
         final PartyJoinOrderService target = this.target.get();
-        final SessionHelper.PlayState session = target.sessionHelper.session;
+        final SessionHelper session = target.session;
         switch(msg.what) {
             case MSG_DISCONNECTED: {
                 // TODO - network architecture is to be redesigned anyway

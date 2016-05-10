@@ -194,7 +194,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                     if(index == PcAssignmentHelper.LOCAL_BINDING) continue;
                     PcAssignmentHelper.PlayingDevice dev = room.assignmentHelper.peers.get(index);
                     if(dev.pipe == null) continue; // connection temporarily lost
-                    final Network.ActorState actorData = room.sessionHelper.session.getActorById(id);
+                    final Network.ActorState actorData = room.session.getActorById(id);
                     room.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actorData));
                 }
                 return null;

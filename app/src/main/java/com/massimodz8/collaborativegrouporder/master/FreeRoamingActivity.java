@@ -59,15 +59,14 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             public void onClick(View view) {
                 int count = 0;
                 int pgCount = 0;
-                final SessionHelper.PlayState session = game.sessionHelper.session;
-                for(int loop = 0; loop < session.getNumActors(); loop++) {
-                    Network.ActorState actor = session.getActor(loop);
-                    int add = session.willFight(actor, null)? 1 : 0;
+                for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+                    Network.ActorState actor = game.session.getActor(loop);
+                    int add = game.session.willFight(actor, null)? 1 : 0;
                     if(actor.type == Network.ActorState.T_PLAYING_CHARACTER) pgCount += add;
                     else count += add;
                 }
                 if(pgCount == 0) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_zeroPcs, Snackbar.LENGTH_LONG).show();
-                else if(count + pgCount != session.getNumActors()) {
+                else if(count + pgCount != game.session.getNumActors()) {
                     new AlertDialog.Builder(FreeRoamingActivity.this)
                             .setMessage(getString(R.string.fra_dlgMsg_missingChars))
                             .setPositiveButton(getString(R.string.fra_dlgActionIgnoreMissingCharacters), new DialogInterface.OnClickListener() {
@@ -113,7 +112,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         if(now > numActors) lister.notifyItemRangeInserted(numActors, now - numActors);
         else if(now < numActors) lister.notifyDataSetChanged();
         numActors = now;
-        if(game.sessionHelper.session.battleState == null) findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        if(game.session.battleState == null) findViewById(R.id.fab).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -146,12 +145,11 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
             dev.movedToBattlePumper = true;
         }
-        final SessionHelper.PlayState session = game.sessionHelper.session;
         final ArrayList<Network.ActorState> local = new ArrayList<>();
-        game.sessionHelper.initiatives = new IdentityHashMap<>();
-        for(int loop = 0; loop < session.getNumActors(); loop++) {
-            final Network.ActorState actor = session.getActor(loop);
-            if (!session.willFight(actor, null)) continue;
+        game.session.initiatives = new IdentityHashMap<>();
+        for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+            final Network.ActorState actor = game.session.getActor(loop);
+            if (!game.session.willFight(actor, null)) continue;
             final MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
             if (pipe != null) { // send a roll request.
                 final Network.Roll rq = new Network.Roll();
@@ -159,10 +157,10 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 rq.range = 20;
                 rq.peerKey = loop;
                 rq.type = Network.Roll.T_BATTLE_START;
-                game.sessionHelper.initiatives.put(actor.peerKey, new SessionHelper.Initiative(rq));
+                game.session.initiatives.put(actor.peerKey, new SessionHelper.Initiative(rq));
                 game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ROLL, rq));
             } else {
-                game.sessionHelper.initiatives.put(actor.peerKey, new SessionHelper.Initiative(null));
+                game.session.initiatives.put(actor.peerKey, new SessionHelper.Initiative(null));
                 local.add(actor);
             }
         }
@@ -170,19 +168,19 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         // For the time being, those are rolled automatically.
         final int range = 20;
         for (Network.ActorState actor : local) {
-            final SessionHelper.Initiative pair = game.sessionHelper.initiatives.get(actor.peerKey);
+            final SessionHelper.Initiative pair = game.session.initiatives.get(actor.peerKey);
             pair.rolled = randomizer.nextInt(range) + actor.initiativeBonus;
         }
         if(attemptBattleStart()) return;
-        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(game.sessionHelper).show(this);
+        if(game.session.initiatives != null) waiting = new WaitInitiativeDialog(game.session).show(this);
     }
 
     /// Called every time at least one initiative is written so we can try sorting & starting.
     boolean attemptBattleStart() {
-        if(game == null || game.sessionHelper.initiatives == null) return false;
+        if(game == null || game.session.initiatives == null) return false;
         int count = 0;
         if(waiting != null) waiting.lister.notifyDataSetChanged(); // maybe not but I take it easy.
-        for (Map.Entry<Integer, SessionHelper.Initiative> entry : game.sessionHelper.initiatives.entrySet()) {
+        for (Map.Entry<Integer, SessionHelper.Initiative> entry : game.session.initiatives.entrySet()) {
             if(entry.getValue().rolled == null) return false;
             count++;
         }
@@ -193,10 +191,9 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         }
         InitiativeScore[] order = new InitiativeScore[count];
         count = 0;
-        final SessionHelper.PlayState session = game.sessionHelper.session;
-        for (Map.Entry<Integer, SessionHelper.Initiative> entry : game.sessionHelper.initiatives.entrySet()) {
+        for (Map.Entry<Integer, SessionHelper.Initiative> entry : game.session.initiatives.entrySet()) {
             final Integer irl = entry.getValue().rolled;
-            final Network.ActorState actor = session.getActorById(entry.getKey());
+            final Network.ActorState actor = game.session.getActorById(entry.getKey());
             order[count++] = new InitiativeScore(irl, actor.initiativeBonus, randomizer.nextInt(1024), actor.peerKey);
         }
         Arrays.sort(order, new Comparator<InitiativeScore>() {
@@ -211,7 +208,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 return 0; // super unlikely!
             }
         });
-        session.battleState = new BattleHelper(order);
+        game.session.battleState = new BattleHelper(order);
         game.pushBattleOrder();
         for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
         startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
@@ -236,8 +233,8 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
-        lister.playState = game.sessionHelper.session;
-        if(game.sessionHelper.initiatives != null) waiting = new WaitInitiativeDialog(game.sessionHelper).show(this);
+        lister.playState = game.session;
+        if(game.session.initiatives != null) waiting = new WaitInitiativeDialog(game.session).show(this);
         game.onRollReceived = new Runnable() {
             @Override
             public void run() {

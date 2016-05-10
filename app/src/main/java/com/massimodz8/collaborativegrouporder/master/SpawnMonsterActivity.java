@@ -185,7 +185,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     private MenuItem showBookInfo;
     private MonsterData.MonsterBook monsters;
     private IdentityHashMap<MonsterData.Monster, Integer> spawnCounts = new IdentityHashMap<>();
-    private SessionHelper.PlayState session;
+    private SessionHelper session;
     private PartyJoinOrderService serv;
 
 
@@ -264,7 +264,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder) service;
         serv = real.getConcreteService();
-        session = serv.sessionHelper.session;
+        session = serv.session;
         monsters = session.monsters;
         showBookInfo.setVisible(true);
         unbindService(this);

@@ -48,34 +48,33 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
             @Override
             public void onClick(View view) {
                 int xp = 0;
-                SessionHelper.PlayState session = game.sessionHelper.session;
-                for (int loop = 0; loop < session.defeated.size(); loop++) {
-                    final SessionHelper.PlayState.DefeatedData el = session.defeated.get(loop);
+                for (int loop = 0; loop < game.session.defeated.size(); loop++) {
+                    final SessionHelper.DefeatedData el = game.session.defeated.get(loop);
                     if(el.consume) {
                         xp += xpFrom(el.numerator, el.denominator);
-                        session.defeated.remove(loop);
+                        game.session.defeated.remove(loop);
                         loop--;
 
                         int match = -1;
-                        for (Network.ActorState test : game.sessionHelper.temporaries) {
+                        for (Network.ActorState test : game.session.temporaries) {
                             match++;
                             if(el.id == test.peerKey) {
-                                game.sessionHelper.temporaries.remove(match);
+                                game.session.temporaries.remove(match);
                                 break;
                             }
                         }
 
                     }
                 }
-                if(session.defeated.isEmpty()) session.defeated = null;
+                if(game.session.defeated.isEmpty()) game.session.defeated = null;
                 int count = 0;
-                for(SessionHelper.PlayState.WinnerData el : game.sessionHelper.session.winners) {
+                for(SessionHelper.WinnerData el : game.session.winners) {
                     if(el.award) count++;
                 }
                 StartData.ActorDefinition[] pcs = game.getPartyOwnerData().party;
-                for(SessionHelper.PlayState.WinnerData el : game.sessionHelper.session.winners) {
+                for(SessionHelper.WinnerData el : game.session.winners) {
                     if(el.award) {
-                        Network.ActorState actor = session.getActorById(el.id);
+                        Network.ActorState actor = game.session.getActorById(el.id);
                         actor.experience += xp / count;
                         if(el.id < pcs.length) pcs[el.id].experience += xp / count;
 
@@ -84,7 +83,7 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
                         game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actor));
                     }
                 }
-                if(session.defeated != null) {
+                if(game.session.defeated != null) {
                     mobLister.notifyDataSetChanged();
                     return;
                 }
@@ -101,13 +100,13 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
 
     private void update() {
         int xp = 0, count = 0;
-        for (SessionHelper.PlayState.DefeatedData el : game.sessionHelper.session.defeated) {
+        for (SessionHelper.DefeatedData el : game.session.defeated) {
             if(el.consume) {
                 count++;
                 xp += xpFrom(el.numerator, el.denominator);
             }
         }
-        String countString = count == game.sessionHelper.session.defeated.size()? getString(R.string.aea_selectedAll) : String.valueOf(count);
+        String countString = count == game.session.defeated.size()? getString(R.string.aea_selectedAll) : String.valueOf(count);
 
         String mob = getString(R.string.aea_mobReport);
         mob = String.format(Locale.ROOT, mob, countString, xp);
@@ -115,10 +114,10 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
         report.setText(mob);
 
         count = 0;
-        for(SessionHelper.PlayState.WinnerData el : game.sessionHelper.session.winners) {
+        for(SessionHelper.WinnerData el : game.session.winners) {
             if(el.award) count++;
         }
-        countString = count == game.sessionHelper.session.winners.size()? getString(R.string.aea_selectedAll) : String.valueOf(count);
+        countString = count == game.session.winners.size()? getString(R.string.aea_selectedAll) : String.valueOf(count);
         String win = getString(R.string.aea_winnersCount);
         win = String.format(win, countString);
         win += '\n' + (count == 0? "" : String.format(Locale.ROOT, getString(R.string.aea_winnersAward), xp / count));
@@ -147,53 +146,57 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
 
     private boolean mustUnbind;
     private PartyJoinOrderService game;
-    private RecyclerView.Adapter mobLister, winnersLister;
+    private RecyclerView.Adapter mobLister;
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         game = ((PartyJoinOrderService.LocalBinder) service).getConcreteService();
-        SessionHelper.PlayState session = game.sessionHelper.session;
+        SessionHelper session = game.session;
         if(session.battleState != null) { // consume this and get it to 'to be awarded' data.
             session.defeated = new ArrayList<>();
             session.winners = new ArrayList<>();
             for (InitiativeScore el : session.battleState.ordered) {
                 Network.ActorState actor = session.getActorById(el.actorID);
-                if(actor.type == Network.ActorState.T_MOB && actor.cr != null) session.defeated.add(new SessionHelper.PlayState.DefeatedData(actor.peerKey, actor.cr.numerator, actor.cr.denominator));
-                else if(actor.type == Network.ActorState.T_PLAYING_CHARACTER || actor.type == Network.ActorState.T_NPC) session.winners.add(new SessionHelper.PlayState.WinnerData(actor.peerKey));
+                if(actor.type == Network.ActorState.T_MOB && actor.cr != null) session.defeated.add(new SessionHelper.DefeatedData(actor.peerKey, actor.cr.numerator, actor.cr.denominator));
+                else if(actor.type == Network.ActorState.T_PLAYING_CHARACTER || actor.type == Network.ActorState.T_NPC) session.winners.add(new SessionHelper.WinnerData(actor.peerKey));
             }
-            game.sessionHelper.session.battleState = null;
+            game.session.battleState = null;
         }
         findViewById(R.id.fab).setVisibility(View.VISIBLE);
-        mobLister = new ActorListerWithControls<SessionHelper.PlayState.DefeatedData>(session.defeated, getLayoutInflater(), session) {
+        mobLister = new ActorListerWithControls<SessionHelper.DefeatedData>(session.defeated, getLayoutInflater(), session) {
             @Override
-            protected boolean representedProperty(SessionHelper.PlayState.DefeatedData entry, Boolean newValue) {
+            protected boolean representedProperty(SessionHelper.DefeatedData entry, Boolean newValue) {
                 if(newValue != null) entry.consume = newValue;
                 update();
                 return entry.consume;
             }
 
             @Override
-            protected int getPeerKey(SessionHelper.PlayState.DefeatedData entry) { return entry.id; }
+            protected int getPeerKey(SessionHelper.DefeatedData entry) { return entry.id; }
 
             @Override
-            protected boolean match(SessionHelper.PlayState.DefeatedData entry, @ActorId int id) { return entry.id == id; }
+            protected boolean match(SessionHelper.DefeatedData entry, @ActorId int id) { return entry.id == id; }
         };
-        winnersLister = new ActorListerWithControls<SessionHelper.PlayState.WinnerData>(session.winners, getLayoutInflater(), session) {
+        RecyclerView.Adapter winnersLister = new ActorListerWithControls<SessionHelper.WinnerData>(session.winners, getLayoutInflater(), session) {
             @Override
-            protected boolean representedProperty(SessionHelper.PlayState.WinnerData entry, Boolean newValue) {
-                if(newValue != null) entry.award = newValue;
+            protected boolean representedProperty(SessionHelper.WinnerData entry, Boolean newValue) {
+                if (newValue != null) entry.award = newValue;
                 update();
                 return entry.award;
             }
 
 
             @Override
-            protected int getPeerKey(SessionHelper.PlayState.WinnerData entry) { return entry.id; }
+            protected int getPeerKey(SessionHelper.WinnerData entry) {
+                return entry.id;
+            }
 
 
             @Override
-            protected boolean match(SessionHelper.PlayState.WinnerData entry, @ActorId int id) { return entry.id == id; }
+            protected boolean match(SessionHelper.WinnerData entry, @ActorId int id) {
+                return entry.id == id;
+            }
         };
         MaxUtils.beginDelayedTransition(this);
         findViewById(R.id.aea_status).setVisibility(View.GONE);

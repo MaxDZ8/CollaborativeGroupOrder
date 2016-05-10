@@ -55,12 +55,11 @@ public class PartyJoinOrderService extends PublishAcceptService {
         ArrayList<Network.ActorState> byDef = new ArrayList<>();
         for(StartData.ActorDefinition el : party.party) byDef.add(makeActorState(el, nextActorId++, Network.ActorState.T_PLAYING_CHARACTER));
         for(StartData.ActorDefinition el : party.npcs) byDef.add(makeActorState(el, nextActorId++, Network.ActorState.T_NPC));
-        sessionHelper = new SessionHelper(assignmentHelper.party, live, byDef);
-        sessionHelper.session = new SessionHelper.PlayState(sessionHelper, monsterBook) {
+        session = new SessionHelper(live, byDef, monsterBook) {
             @Override
             void onRollReceived() {
-                while(!sessionHelper.session.rollResults.isEmpty()) {
-                    final Events.Roll got = sessionHelper.session.rollResults.pop();
+                while(!session.rollResults.isEmpty()) {
+                    final Events.Roll got = session.rollResults.pop();
                     matchRoll(got.from, got.payload);
                 }
             }
@@ -94,7 +93,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
                 if(bound != index) return; // you cannot control this turn you cheater!
                 if(peerKey != battleState.currentActor) return; // How did you manage to do that? Not currently allowed.
-                if(sessionHelper.session.battleState.moveCurrentToSlot(newSlot, false)) pushBattleOrder();
+                if(session.battleState.moveCurrentToSlot(newSlot, false)) pushBattleOrder();
                 if(!onActorShuffledRemote.isEmpty()) onActorShuffledRemote.getFirst().run();
             }
         };
@@ -195,7 +194,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
     }
 
     PcAssignmentHelper assignmentHelper;
-    public SessionHelper sessionHelper;
+    public SessionHelper session;
     Pumper battlePumper;
     Handler battleHandler;
     /**
@@ -210,11 +209,11 @@ public class PartyJoinOrderService extends PublishAcceptService {
 
     private void matchRoll(MessageChannel from, Network.Roll dice) {
         // The first consumer of rolls is initiative building.
-        if(sessionHelper != null && sessionHelper.initiatives != null) {
-            for (Map.Entry<Integer, SessionHelper.Initiative> el : sessionHelper.initiatives.entrySet()) {
+        if(session != null && session.initiatives != null) {
+            for (Map.Entry<Integer, SessionHelper.Initiative> el : session.initiatives.entrySet()) {
                 final SessionHelper.Initiative val = el.getValue();
                 if(val.request != null && dice.unique == val.request.unique) {
-                    val.rolled = dice.result + sessionHelper.session.getActorById(el.getKey()).peerKey;
+                    val.rolled = dice.result + session.getActorById(el.getKey()).peerKey;
                     if(onRollReceived != null) onRollReceived.run();
                     return;
                 }
@@ -233,7 +232,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
 
 
     public boolean pushBattleOrder() {
-        final InitiativeScore[] order = sessionHelper.session.battleState.ordered;
+        final InitiativeScore[] order = session.battleState.ordered;
         int[] sequence = new int[order.length];
         int cp = 0;
         for (InitiativeScore score : order) sequence[cp++] = score.actorID;
@@ -262,9 +261,9 @@ public class PartyJoinOrderService extends PublishAcceptService {
         final PcAssignmentHelper.PlayingDevice dev = assignmentHelper.peers.get(bound);
         if(dev.pipe == null) return;
         // For the time being, just send all actors, be coherent with pushBattleOrder
-        Network.ActorState[] current = new Network.ActorState[sessionHelper.session.battleState.ordered.length];
+        Network.ActorState[] current = new Network.ActorState[session.battleState.ordered.length];
         id = 0;
-        for (InitiativeScore el : sessionHelper.session.battleState.ordered) current[id++] = sessionHelper.session.getActorById(el.actorID);
+        for (InitiativeScore el : session.battleState.ordered) current[id++] = session.getActorById(el.actorID);
         assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, current));
     }
 

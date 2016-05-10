@@ -8,7 +8,6 @@ import android.widget.CompoundButton;
 
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.R;
-import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.util.ArrayList;
 
@@ -20,9 +19,9 @@ import java.util.ArrayList;
 public abstract class ActorListerWithControls<E> extends RecyclerView.Adapter<AdventuringActorControlsVH> {
     private final ArrayList<E> list;
     private final LayoutInflater inflater;
-    private final SessionHelper.PlayState resolver;
+    private final SessionHelper resolver;
 
-    public ActorListerWithControls(ArrayList<E> list, LayoutInflater inflater, SessionHelper.PlayState resolver) {
+    public ActorListerWithControls(ArrayList<E> list, LayoutInflater inflater, SessionHelper resolver) {
         this.list = list;
         this.inflater = inflater;
         this.resolver = resolver;
