@@ -57,15 +57,15 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             @Override
             public void onClick(View view) {
                 final BattleHelper battle = game.session.battleState;
-                battle.round = 1;
-                battle.currentActor = battle.ordered[0].actorID;
+                battle.round = 0;
+                battle.currentActor = battle.ordered[battle.ordered.length - 1].actorID;
 
                 fab.setVisibility(View.GONE);
                 MaxUtils.beginDelayedTransition(BattleActivity.this);
                 final TextView status = (TextView) findViewById(R.id.ba_roundCount);
                 status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
+                actionCompleted();
                 lister.notifyItemChanged(0);
-                activateNewActorLocal();
             }
         });
     }
