@@ -11,28 +11,40 @@ message RealWorldData {
     google.protobuf.Timestamp spent = 3; // .seconds spent playing so far.
     uint32 numSessions = 4;
     string note = 5;
-    State state = 6;
-    enum State {
-        KNOWN = 0;    // basically 'no session'. No other data will follow. Static information matches live.
-        ADVENTURING = 1; // last session ended while PGs had transient effects which cannot be encoded in definitions.
-            // Example: improved DEX -> initiative, health points not full. A LiveData message will follow.
-        FIGHTING = 2; // extra transient effects and initiative rolled so LiveData and BattleData will follow.
+    // Each extra is an additional manipulation to session starting state. If none is provided we are starting a new session.
+    // Otherwise there can be many 'overrides'. Those messages are not necessarily defined here but follow the main 'header' message.
+    enum Extra {
+	    // Updating an actor, usually involves changing its hit points and sustained damage, perhaps other modifiers.
+		// This likely corresponds to network.proto.ActorState
+		E_ACTOR_STATE = 0;
+		
+		// When actors are restored from session, they are by default 'candidate for battle' (besides we're battling or not).
+		// Each of this can set to false the 'will fight' flag of certain actors, where unknown actors are ignored so they must follow actor state definition.
+		// You will get a NotFighting message, defined below.
+		E_NOT_FIGHTING = 1;
+		
+		// The first extra encounterd of this type implies we're in a battle. Others are ignored.
+		// You will get a BattleState message. It has special requirements.
+		// If no objects of this kind are found, we are in 'free roaming' mode, otherwise in battle mode.
+		E_BATTLE_STATE = 2;
     }
+	repeated Extra types = 6;
 }
 
-
-// Take the static definitions (defs.bin, keys.bin, "canonical party") and 'evolve' them according to the data here.
-// The most common example here is adjusting current health points (defs only know about full health) and other temporary effects.
-// Can also include new npcs...
-message LiveData {
+message NotFighting {
+	repeated uint32 peerKey = 1 [packed=true];
 }
 
-
-// Most important thing here is for sure the initiative order. Again, new npcs can join this specific battle.
-message BattleData {
+// Transitioning to battle at runtime takes some time: various throw dice requests must be sent and we must wait for result.
+// BattleActivity is started on the server only when we have all initiatives: only then the battleState can be created.
+message BattleState {
+	uint32 round = 1;
+	uint32 currentActor = 2;
+	bool prevWasReadied = 3; // see BattleHelper.java
+	repeated uint32 interrupted = 4 [packed=true];
+	
+	// Must all count an element each actor in the battle and the elements must be in the same order across arrays.
+	repeated int32 initiative = 5 [packed=true]; // each 'element' here is a triplet: dice rolled, bonus and rand to restore InitiativeScore values
+	repeated uint32 id = 6 [packed=true];
+	repeated bool enabled = 7 [packed=true];
 }
-
-
-// You're not really concerned about stuff down there.
-// They're structures internal to LiveData/BattleData, specific to none and they are here to flatten the namespace
-// avoiding long typenames that look just silly.

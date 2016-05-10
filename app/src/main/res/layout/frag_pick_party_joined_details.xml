@@ -90,7 +90,6 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/ppa_joinedDetails_goAdventuring"
         android:id="@+id/fragPPAJD_goAdventuring"
         android:layout_row="7"
         android:layout_column="0"

@@ -6,6 +6,7 @@ import android.support.annotation.WorkerThread;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 
 /**
@@ -45,7 +47,7 @@ public abstract class PersistentDataUtils {
         if(session != null) return name;
         Calendar local = Calendar.getInstance();
         local.setTime(when);
-        String timestamp = String.format("%1$tY%1$tm%1$td_%1$tH%1$tM%1$tS", local);
+        String timestamp = String.format(Locale.ENGLISH, "%1$tY%1$tm%1$td_%1$tH%1$tM%1$tS", local);
         session = createSessionFile(filesDir, timestamp + name);
         if(session != null) return timestamp + name;
         session = createSessionFile(filesDir, timestamp);
@@ -212,7 +214,7 @@ public abstract class PersistentDataUtils {
             }
             for(int i = 0; i < list.length; i++) {
                 final StartData.ActorDefinition actor = list[i];
-                String head = String.format("%1$s[%2$d]", premise, i);
+                String head = String.format(Locale.getDefault(), "%1$s[%2$d]", premise, i);
                 if(actor.name.isEmpty()) errors.add(head + getString(R.string.persistentStorage_actorMissingName));
                 head = String.format("%1$s(%2$s)", head, actor.name);
                 if(actor.level == 0) errors.add(head + getString(R.string.persistentStorage_badLevel));
@@ -256,8 +258,9 @@ public abstract class PersistentDataUtils {
 
     public static class SessionStructs {
         Session.RealWorldData irl;
-        Session.LiveData adventure;
-        Session.BattleData battle;
+        Network.ActorState[] liveActors;
+        boolean[] roamingSelected; // roamingSelected[i] corresponds to liveActors[i].
+        Session.BattleState fighting;
     }
 
     public String load(SessionStructs fetch, FileInputStream source, int size) {
@@ -269,16 +272,89 @@ public abstract class PersistentDataUtils {
             return getString(R.string.persistentStorage_failedRead);
         }
         CodedInputByteBufferNano input = CodedInputByteBufferNano.newInstance(everything);
+        fetch.irl = new Session.RealWorldData();
         String bad = loadCatchClose(fetch.irl, input, source);
-        if(bad != null && fetch.irl.state != Session.RealWorldData.KNOWN) {
-            fetch.adventure = new Session.LiveData();
-            bad = loadCatchClose(fetch.adventure, input, source);
-            if(bad == null && fetch.irl.state != Session.RealWorldData.ADVENTURING) {
-                fetch.battle = new Session.BattleData();
-                bad = loadCatchClose(fetch.battle, input, source);
-            }
+        if(bad != null) return bad;
+        int count = 0;
+        for (int entryType : fetch.irl.types) {
+            if(entryType == Session.RealWorldData.E_ACTOR_STATE) count++;
         }
-        return bad;
+        if(count == 0) return null; // basic case: no permanent state to save besides what we can save in the party definition.
+        fetch.liveActors = new Network.ActorState[count];
+        fetch.roamingSelected = new boolean[count];
+        Arrays.fill(fetch.roamingSelected, true);
+        count = 0;
+        for (int type : fetch.irl.types) {
+            switch(type) {
+                case Session.RealWorldData.E_ACTOR_STATE: {
+                    fetch.liveActors[count] = new Network.ActorState();
+                    bad = loadCatchClose(fetch.liveActors[count], input, source);
+                    count++;
+                    break;
+                }
+                case Session.RealWorldData.E_NOT_FIGHTING: {
+                    Session.NotFighting need = new Session.NotFighting();
+                    bad = loadCatchClose(need, input, source);
+                    for (int disable : need.peerKey) {
+                        for(int index = 0; index < fetch.liveActors.length; index++) {
+                            if(disable == fetch.liveActors[index].peerKey) {
+                                fetch.roamingSelected[index] = false;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+                case Session.RealWorldData.E_BATTLE_STATE: {
+                    Session.BattleState need = new Session.BattleState();
+                    bad = loadCatchClose(need, input, source);
+                    if(fetch.fighting == null) fetch.fighting = null;
+                    break;
+                }
+                default: throw new RuntimeException("Code incoherent");
+            }
+            if(bad != null) return bad;
+        }
+        fetch.irl.types = null; // they have been loaded anyway
+        // Coherence check: actor ids must be unique.
+        // Also: the number of fighting actors must be the same as initiative entries.
+        count = 0;
+        for(int loop = 0; loop < fetch.liveActors.length; loop++) {
+            int use = fetch.liveActors[loop].peerKey;
+            for(int search = loop + 1; search < fetch.liveActors.length; search++) {
+                if(fetch.liveActors[search].peerKey == use) {
+                    return getString(R.string.persistentStorage_duplicatedActorKey);
+                }
+            }
+            if(fetch.roamingSelected[loop]) count++;
+        }
+        if(fetch.fighting == null) return null; // we're in free roaming mode and we're fine with it.
+        if(fetch.fighting.enabled.length != count) {
+            bad = getString(R.string.persistentStorage_initiativeMismatch);
+            return String.format(Locale.getDefault(), bad, count, fetch.fighting.enabled.length);
+        }
+        if(fetch.fighting.id.length != count || fetch.fighting.initiative.length != count * 3) {
+            return getString(R.string.persistentStorage_incoherentInitiativeLists);
+        }
+        // And now, since initiatives have their own id we get to check'em again bruh
+        for(int loop = 0; loop < fetch.fighting.id.length; loop++) {
+            int good = fetch.fighting.id[loop];
+            for(int search = loop + 1; search < fetch.fighting.id.length; search++) {
+                if(good == fetch.fighting.id[search]) {
+                    return getString(R.string.persistentStorage_duplicatedActorInitiative);
+                }
+            }
+            // And while we're at it, each entry here must be known and 'selected to fight' !
+            int search;
+            for(search = 0; search < fetch.liveActors.length; search++) {
+                if(fetch.liveActors[search].peerKey == good) {
+                    if(!fetch.roamingSelected[search]) return getString(R.string.persistentStorage_actorShouldNotBeFighting);
+                    break;
+                }
+            }
+            if(search == fetch.liveActors.length) return getString(R.string.persistentStorage_unknownFighter);
+        }
+        return null;
     }
 
     private String loadCatchClose(MessageNano data, CodedInputByteBufferNano input, FileInputStream file) {

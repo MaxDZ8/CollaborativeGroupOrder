@@ -136,6 +136,12 @@
     <string name="persistentStorage_badSessionFile">: no session file specified.</string>
     <string name="persistentStorage_failedOldDelete">Cannot save new data. Old data refused to go away.</string>
     <string name="persistentStorage_failedNewRenameOldGone">Oh no! New data was successfully produced and stored but couldn\'t be given its real name and old data is already gone!\nFile:\n  %1$s</string>
+    <string name="persistentStorage_duplicatedActorKey">Found two actors with the same ID.</string>
+    <string name="persistentStorage_initiativeMismatch">Inconsistent initiative order: expected %1$d, available %2$d</string>
+    <string name="persistentStorage_incoherentInitiativeLists">Inconsistent initiative arrays, mismatched sizes.</string>
+    <string name="persistentStorage_duplicatedActorInitiative">Actor at least twice in a round.</string>
+    <string name="persistentStorage_actorShouldNotBeFighting">Actor got an initiative but it should not be fighting!</string>
+    <string name="persistentStorage_unknownFighter">Unknown fighing actor!</string>
 
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
@@ -270,13 +276,14 @@
     <string name="ppa_ownedDetails_lastPlayLabel">Last played:</string>
     <string name="ppa_ownedDetails_currentStateLabel">Status:</string>
     <string name="ppa_ownedDetails_newSession">New session</string>
+    <string name="ppa_ownedDetails_continueSession">Continue last session</string>
     <string name="ppa_ownedDetails_continueBattle">Continue battle</string>
     <string name="ppa_ownedDetails_npcList">Assisting %1$s</string>
     <string name="ppa_joinedDetails_lastPlayLabel">Last played:</string>
     <string name="ppa_joinedDetails_createdLabel">Key received:</string>
-    <string name="ppa_joinedDetails_continueBattle">Keep fighting</string>
     <string name="ppa_joinedDetails_newSession">Go adventuring</string>
-    <string name="ppa_joinedDetails_goAdventuring">Go adventuring</string>
+    <string name="ppa_joinedDetails_continueSession">Keep adventuring</string>
+    <string name="ppa_joinedDetails_continueBattle">Keep fighting</string>
     <string name="ppa_joinedDetails_lastPlayedPcs">Played: %1$s</string>
     <string name="ppa_title">Pick a party</string>
     <string name="ppa_title_details">Party details</string>
@@ -290,7 +297,7 @@
     <string name="ppa_noInputStream">Failed to get input stream.</string>
     <string name="ppa_neverPlayed">never</string>
     <string name="ppa_status_battle">fighting</string>
-    <string name="ppa_status_adventure">somewhat in trouble</string>
+    <string name="ppa_status_adventure">adventuring</string>
     <string name="ppa_status_asDefined">nothing going on</string>
     <string name="ppa_lastSavedInconsistent">Inconsistent data!</string>
 
