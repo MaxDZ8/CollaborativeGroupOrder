@@ -22,6 +22,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.CodedOutputByteBufferNano;
+import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
@@ -32,8 +34,10 @@ import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
+import java.io.IOException;
 import java.security.SecureRandom;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -305,25 +309,36 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 attemptBattleStart();
             }
         };
-        PersistentDataUtils.SessionStructs stats = game.session.stats;
-        if(stats.liveActors != null) { // restore state from previous session!
+        Session.Suspended stats = game.session.stats;
+        if(stats.live.length > 0) { // restore state from previous session!
             HashMap<Integer, Integer> remember = new HashMap<>(); // peerkey remapping is only useful for 'temporary' actors but it makes code more streamlined
-            for(int loop = 0; loop < stats.liveActors.length; loop++) { // First we take care of 'byDef' characters, they're easier.
-                Network.ActorState live = stats.liveActors[loop];
+            for(int loop = 0; loop < stats.live.length; loop++) { // First we take care of 'byDef' characters, they're easier.
+                Network.ActorState live = stats.live[loop];
                 if(live.peerKey >= game.session.existByDef.size()) continue;
-                game.session.willFight(live.peerKey, stats.roamingSelected[loop]);
+                int found = 0;
+                for (int el : stats.notFighting) {
+                    if(el == live.peerKey) break;
+                    found++;
+                }
+                game.session.willFight(live.peerKey, found == stats.notFighting.length || stats.notFighting.length == 0);
                 game.session.existByDef.set(live.peerKey, live);
                 remember.put(live.peerKey, live.peerKey);
             }
             // All other actors are added. That takes some care as I need to remap peerkeys.
             // This is a simplified version of SpawnMonster spawning, complicated by peerkey remapping.
-            for(int loop = 0; loop < stats.liveActors.length; loop++) {
-                Network.ActorState live = stats.liveActors[loop];
+            for(int loop = 0; loop < stats.live.length; loop++) {
+                Network.ActorState live = stats.live[loop];
                 if(live.peerKey < game.session.existByDef.size()) continue;
-                remember.put(live.peerKey, game.nextActorId);
+                int ori = live.peerKey;
+                remember.put(ori, game.nextActorId);
                 live.peerKey = game.nextActorId++;
                 game.session.add(live);
-                game.session.willFight(live.peerKey, stats.roamingSelected[loop]);
+                int found = 0;
+                for (int el : stats.notFighting) {
+                    if(el == ori) break;
+                    found++;
+                }
+                game.session.willFight(live.peerKey, found == stats.notFighting.length || stats.notFighting.length == 0);
             }
             if(stats.fighting != null) { // a bit ugh
                 InitiativeScore[] order = new InitiativeScore[stats.fighting.id.length];
@@ -345,12 +360,12 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
             }
             else {
-                String date = DateFormat.getDateInstance().format(new Date(stats.irl.lastSaved.seconds * 1000));
+                String date = DateFormat.getDateInstance().format(new Date(stats.lastSaved.seconds * 1000));
                 String snackMsg = String.format(getString(R.string.fra_restoredSession), date);
                 Snackbar.make(findViewById(R.id.activityRoot), snackMsg, Snackbar.LENGTH_SHORT).show();
             }
-            stats.liveActors = null;  // put everything back to runtime, no need to keep. Avoid logical leak.
-            stats.roamingSelected = null;
+            stats.live = null;  // put everything back to runtime, no need to keep. Avoid logical leak.
+            stats.notFighting = null;
             stats.fighting = null;
             lister.notifyDataSetChanged();
             numActors = lister.getItemCount();

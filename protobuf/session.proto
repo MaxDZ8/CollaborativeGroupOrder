@@ -1,50 +1,34 @@
 syntax = "proto3";
 option java_package = "com.massimodz8.collaborativegrouporder.protocol";
 import "google/protobuf/timestamp.proto";
-//import "startData.proto";
+import "network.proto";
 
 // Each session file starts with an object of this type. It is the same for client and server and keeps track of various
 // real-world related statistics.
-message RealWorldData {
+message Suspended {
     google.protobuf.Timestamp lastBegin = 1; // time started of last session.
     google.protobuf.Timestamp lastSaved = 2; // aka 'end', for what we are concerned. Real world hours.
     google.protobuf.Timestamp spent = 3; // .seconds spent playing so far.
     uint32 numSessions = 4;
     string note = 5;
-    // Each extra is an additional manipulation to session starting state. If none is provided we are starting a new session.
-    // Otherwise there can be many 'overrides'. Those messages are not necessarily defined here but follow the main 'header' message.
-    enum Extra {
-	    // Updating an actor, usually involves changing its hit points and sustained damage, perhaps other modifiers.
-		// This likely corresponds to network.proto.ActorState
-		E_ACTOR_STATE = 0;
-		
-		// When actors are restored from session, they are by default 'candidate for battle' (besides we're battling or not).
-		// Each of this can set to false the 'will fight' flag of certain actors, where unknown actors are ignored so they must follow actor state definition.
-		// You will get a NotFighting message, defined below.
-		E_NOT_FIGHTING = 1;
-		
-		// The first extra encounterd of this type implies we're in a battle. Others are ignored.
-		// You will get a BattleState message. It has special requirements.
-		// If no objects of this kind are found, we are in 'free roaming' mode, otherwise in battle mode.
-		E_BATTLE_STATE = 2;
-    }
-	repeated Extra types = 6;
+    repeated uint32 notFighting = 6 [packed=true]; // by default, all actors are supposed to be in fight.
+        // When a peer key is specified there, then the corresponding actor was NOT selected in FreeRoamingActivity listing
+        // and so it isn't in battle.
+    repeated ActorState live = 7;
+    BattleState fighting = 8;
 }
 
-message NotFighting {
-	repeated uint32 peerKey = 1 [packed=true];
-}
 
 // Transitioning to battle at runtime takes some time: various throw dice requests must be sent and we must wait for result.
 // BattleActivity is started on the server only when we have all initiatives: only then the battleState can be created.
 message BattleState {
-	uint32 round = 1;
-	uint32 currentActor = 2;
-	bool prevWasReadied = 3; // see BattleHelper.java
-	repeated uint32 interrupted = 4 [packed=true];
-	
-	// Must all count an element each actor in the battle and the elements must be in the same order across arrays.
-	repeated int32 initiative = 5 [packed=true]; // each 'element' here is a triplet: dice rolled, bonus and rand to restore InitiativeScore values
-	repeated uint32 id = 6 [packed=true];
-	repeated bool enabled = 7 [packed=true];
+    uint32 round = 1;
+    uint32 currentActor = 2;
+    bool prevWasReadied = 3; // see BattleHelper.java
+    repeated uint32 interrupted = 4 [packed=true];
+    
+    // Must all count an element each actor in the battle and the elements must be in the same order across arrays.
+    repeated int32 initiative = 5 [packed=true]; // each 'element' here is a triplet: dice rolled, bonus and rand to restore InitiativeScore values
+    repeated uint32 id = 6 [packed=true];
+    repeated bool enabled = 7 [packed=true];
 }

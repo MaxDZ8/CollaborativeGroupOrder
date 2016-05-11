@@ -29,6 +29,7 @@ import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.File;
@@ -362,7 +363,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     // Those must be fields to ensure a communication channel to the asynchronous onServiceConnected callbacks.
     private MessageNano activeParty; // StartData.PartyOwnerData.Group or StartData.PartyClientData.Group
-    private PersistentDataUtils.SessionStructs activeStats;
+    private Session.Suspended activeStats;
     private ServerSocket activeLanding;
     private Pumper.MessagePumpingThread[] activeConnections; // Client: a single connection to a server or Owner: list of connections to client
 

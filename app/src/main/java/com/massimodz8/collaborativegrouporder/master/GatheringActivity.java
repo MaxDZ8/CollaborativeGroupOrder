@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PublishedService;
@@ -36,6 +37,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 /** The server is 'gathering' player devices so they can join a new session.
  * This is important and we must be able to navigate back there every time needed in case
@@ -205,6 +207,9 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                 if(errorCount == 0) {
                     // Ideally do nothing. We wait until the various devices give us back the ACTOR_DATA_REQUEST.
                     // However, if no devices are there nothing will ever detach so... have an extra check
+                    room.session.stats.lastBegin = new Timestamp();
+                    room.session.stats.lastBegin.seconds = new Date().getTime() / 1000;
+                    room.session.stats.numSessions++;
                     startActivity(new Intent(GatheringActivity.this, FreeRoamingActivity.class));
                     return;
                 }

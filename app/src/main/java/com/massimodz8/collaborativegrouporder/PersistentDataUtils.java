@@ -256,14 +256,7 @@ public abstract class PersistentDataUtils {
         return session;
     }
 
-    public static class SessionStructs {
-        public Session.RealWorldData irl;
-        public Network.ActorState[] liveActors;
-        public boolean[] roamingSelected; // roamingSelected[i] corresponds to liveActors[i].
-        public Session.BattleState fighting;
-    }
-
-    public String load(SessionStructs fetch, FileInputStream source, int size) {
+    public String load(Session.Suspended fetch, FileInputStream source, int size) {
         byte[] everything = new byte[size];
         try {
             final int count = source.read(everything);
@@ -272,68 +265,35 @@ public abstract class PersistentDataUtils {
             return getString(R.string.persistentStorage_failedRead);
         }
         CodedInputByteBufferNano input = CodedInputByteBufferNano.newInstance(everything);
-        fetch.irl = new Session.RealWorldData();
-        String bad = loadCatchClose(fetch.irl, input, source);
+        String bad = loadCatchClose(fetch, input, source);
         if(bad != null) return bad;
-        int count = 0;
-        for (int entryType : fetch.irl.types) {
-            if(entryType == Session.RealWorldData.E_ACTOR_STATE) count++;
-        }
-        if(count == 0) return null; // basic case: no permanent state to save besides what we can save in the party definition.
-        fetch.liveActors = new Network.ActorState[count];
-        fetch.roamingSelected = new boolean[count];
-        Arrays.fill(fetch.roamingSelected, true);
-        count = 0;
-        for (int type : fetch.irl.types) {
-            switch(type) {
-                case Session.RealWorldData.E_ACTOR_STATE: {
-                    fetch.liveActors[count] = new Network.ActorState();
-                    bad = loadCatchClose(fetch.liveActors[count], input, source);
-                    count++;
-                    break;
-                }
-                case Session.RealWorldData.E_NOT_FIGHTING: {
-                    Session.NotFighting need = new Session.NotFighting();
-                    bad = loadCatchClose(need, input, source);
-                    for (int disable : need.peerKey) {
-                        for(int index = 0; index < fetch.liveActors.length; index++) {
-                            if(disable == fetch.liveActors[index].peerKey) {
-                                fetch.roamingSelected[index] = false;
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }
-                case Session.RealWorldData.E_BATTLE_STATE: {
-                    Session.BattleState need = new Session.BattleState();
-                    bad = loadCatchClose(need, input, source);
-                    if(fetch.fighting == null) fetch.fighting = null;
-                    break;
-                }
-                default: throw new RuntimeException("Code incoherent");
-            }
-            if(bad != null) return bad;
-        }
-        fetch.irl.types = null; // they have been loaded anyway
         // Coherence check: actor ids must be unique.
-        // Also: the number of fighting actors must be the same as initiative entries.
-        count = 0;
-        for(int loop = 0; loop < fetch.liveActors.length; loop++) {
-            int use = fetch.liveActors[loop].peerKey;
-            for(int search = loop + 1; search < fetch.liveActors.length; search++) {
-                if(fetch.liveActors[search].peerKey == use) {
+        for(int loop = 0; loop < fetch.live.length; loop++) {
+            int use = fetch.live[loop].peerKey;
+            for(int search = loop + 1; search < fetch.live.length; search++) {
+                if(fetch.live[search].peerKey == use) {
                     return getString(R.string.persistentStorage_duplicatedActorKey);
                 }
             }
-            if(fetch.roamingSelected[loop]) count++;
         }
+        // the .notFighting flag is not a problem, unknowns are just ignored.
         if(fetch.fighting == null) return null; // we're in free roaming mode and we're fine with it.
-        if(fetch.fighting.enabled.length != count) {
-            bad = getString(R.string.persistentStorage_initiativeMismatch);
-            return String.format(Locale.getDefault(), bad, count, fetch.fighting.enabled.length);
+        // Battle order validation requires some more care. As a start, count the number of fighters.
+        int numFighters = 0;
+        for(int loop = 0; loop < fetch.live.length; loop++) {
+            int use = fetch.live[loop].peerKey;
+            int search = 0;
+            for (int el : fetch.notFighting) {
+                if(el == use) break;
+                search++;
+            }
+            if(search == fetch.notFighting.length) numFighters++;
         }
-        if(fetch.fighting.id.length != count || fetch.fighting.initiative.length != count * 3) {
+        if(fetch.fighting.enabled.length != numFighters) {
+            bad = getString(R.string.persistentStorage_initiativeMismatch);
+            return String.format(Locale.getDefault(), bad, numFighters, fetch.fighting.enabled.length);
+        }
+        if(fetch.fighting.id.length != numFighters || fetch.fighting.initiative.length != numFighters * 3) {
             return getString(R.string.persistentStorage_incoherentInitiativeLists);
         }
         // And now, since initiatives have their own id we get to check'em again bruh
@@ -345,14 +305,18 @@ public abstract class PersistentDataUtils {
                 }
             }
             // And while we're at it, each entry here must be known and 'selected to fight' !
-            int search;
-            for(search = 0; search < fetch.liveActors.length; search++) {
-                if(fetch.liveActors[search].peerKey == good) {
-                    if(!fetch.roamingSelected[search]) return getString(R.string.persistentStorage_actorShouldNotBeFighting);
-                    break;
-                }
+            int search = 0;
+            for (Network.ActorState el : fetch.live) {
+                if(el.peerKey == good) break;
+                search++;
             }
-            if(search == fetch.liveActors.length) return getString(R.string.persistentStorage_unknownFighter);
+            if(search == fetch.live.length) return getString(R.string.persistentStorage_unknownFighter);
+            search = 0;
+            for (int el : fetch.notFighting) {
+                if(el == good) break;
+                search++;
+            }
+            if(search != fetch.notFighting.length) return getString(R.string.persistentStorage_actorShouldNotBeFighting);
         }
         return null;
     }

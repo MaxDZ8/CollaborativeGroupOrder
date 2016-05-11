@@ -30,7 +30,7 @@ public abstract class SessionHelper {
     public abstract void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot);
 
 
-    public final PersistentDataUtils.SessionStructs stats;
+    public final Session.Suspended stats;
     public final ArrayList<Network.ActorState> existByDef;
     public final MonsterData.MonsterBook monsters;
     public BattleHelper battleState;
@@ -61,17 +61,10 @@ public abstract class SessionHelper {
     }
 
 
-    SessionHelper(PersistentDataUtils.SessionStructs stats, ArrayList<Network.ActorState> existByDef, MonsterData.MonsterBook monsters) {
+    SessionHelper(Session.Suspended stats, ArrayList<Network.ActorState> existByDef, MonsterData.MonsterBook monsters) {
         this.stats = stats;
         this.existByDef = existByDef;
         this.monsters = monsters;
-        if(stats.irl == null) stats.irl = new Session.RealWorldData();
-        ////// Updated when session really starts (1st service connection of FreeRoamingActivity)
-        ////irl.lastBegin = new Timestamp();
-        ////irl.lastBegin.seconds = new Date().getTime() / 1000;
-        ////irl.numSessions++;
-        // irl.lastSaved, irl.spent updated at save
-        // irl.types should be null there, mapped to other structures, we consume them later.
     }
 
     static class DefeatedData {

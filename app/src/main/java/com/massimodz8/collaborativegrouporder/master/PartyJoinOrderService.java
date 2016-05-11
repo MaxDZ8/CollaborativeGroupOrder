@@ -20,6 +20,7 @@ import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 This goes in parallel with landing socket and publish management so you're better set this up ASAP.
                 As usual, it can be initialized only once and then the service will have to be destroyed.
                 */
-    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook) {
+    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster) {
             @Override
             protected StartData.ActorDefinition getActorData(int unique) {

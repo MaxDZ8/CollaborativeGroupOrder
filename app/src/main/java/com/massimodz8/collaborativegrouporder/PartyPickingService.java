@@ -9,6 +9,7 @@ import android.support.annotation.StringRes;
 
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.File;
@@ -23,7 +24,7 @@ import java.util.IdentityHashMap;
  */
 public class PartyPickingService extends Service {
     public MessageNano sessionParty; // when party picking goes adventuring the party to use is put there.
-    public IdentityHashMap<MessageNano, PersistentDataUtils.SessionStructs> sessionData;
+    public IdentityHashMap<MessageNano, Session.Suspended> sessionData;
     public IdentityHashMap<MessageNano, String> sessionErrors;
     public Runnable onSessionDataLoaded;
 
@@ -54,7 +55,7 @@ public class PartyPickingService extends Service {
         };
         final ArrayList<StartData.PartyOwnerData.Group> threadDefs = new ArrayList<>();
         final ArrayList<StartData.PartyClientData.Group> threadKeys = new ArrayList<>();
-        final IdentityHashMap<MessageNano, PersistentDataUtils.SessionStructs> result = new IdentityHashMap<>();
+        final IdentityHashMap<MessageNano, Session.Suspended> result = new IdentityHashMap<>();
         final IdentityHashMap<MessageNano, String> errors = new IdentityHashMap<>();
         threadDefs.addAll(defs);
         threadKeys.addAll(keys);
@@ -80,7 +81,7 @@ public class PartyPickingService extends Service {
                     errors.put(party, getString(R.string.pes_sessionNotFound));
                     return 1;
                 }
-                PersistentDataUtils.SessionStructs loaded = new PersistentDataUtils.SessionStructs();
+                Session.Suspended loaded = new Session.Suspended();
                 if(data.length() == 0) {
                     result.put(party, loaded);
                     return 0;
