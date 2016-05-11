@@ -122,6 +122,7 @@
     <string name="persistentStorage_missingKey">: missing key.</string>
     <string name="persistentStorage_missingPartyDefinition">: missing party definition data.</string>
     <string name="persistentStorage_failedRead">File cannot be read.</string>
+    <string name="persistentStorage_failedParse">Looks like file does not contain valid data.</string>
     <string name="persistentStorage_readSizeMismatch">read size mismatched.</string>
     <string name="persistentStorage_partyDefValidationPremise">party definition data</string>
     <string name="persistentStorage_playingCharacters">playing characters</string>

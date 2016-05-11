@@ -265,8 +265,11 @@ public abstract class PersistentDataUtils {
             return getString(R.string.persistentStorage_failedRead);
         }
         CodedInputByteBufferNano input = CodedInputByteBufferNano.newInstance(everything);
-        String bad = loadCatchClose(fetch, input, source);
-        if(bad != null) return bad;
+        try {
+            fetch.mergeFrom(input);
+        } catch (IOException e) {
+            return getString(R.string.persistentStorage_failedRead);
+        }
         // Coherence check: actor ids must be unique.
         for(int loop = 0; loop < fetch.live.length; loop++) {
             int use = fetch.live[loop].peerKey;
@@ -290,7 +293,7 @@ public abstract class PersistentDataUtils {
             if(search == fetch.notFighting.length) numFighters++;
         }
         if(fetch.fighting.enabled.length != numFighters) {
-            bad = getString(R.string.persistentStorage_initiativeMismatch);
+            String bad = getString(R.string.persistentStorage_initiativeMismatch);
             return String.format(Locale.getDefault(), bad, numFighters, fetch.fighting.enabled.length);
         }
         if(fetch.fighting.id.length != numFighters || fetch.fighting.initiative.length != numFighters * 3) {

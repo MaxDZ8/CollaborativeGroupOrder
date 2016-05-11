@@ -52,6 +52,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     }
 
     private void backDialog() {
+        final SessionHelper session = game.session;
         new AlertDialog.Builder(this)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.ba_backDlgMessage)
@@ -66,6 +67,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 .setNegativeButton(R.string.ba_backDlgNegative, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        session.battleState = null;
                         finish();
                     }
                 })

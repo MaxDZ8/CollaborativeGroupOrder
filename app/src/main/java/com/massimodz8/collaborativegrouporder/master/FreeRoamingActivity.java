@@ -296,23 +296,25 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         save.lastSaved.seconds = new Date().getTime() / 1000;
         if(save.spent == null) save.spent = new Timestamp();
         save.spent.seconds += save.lastSaved.seconds - save.lastBegin.seconds;
-        int takes = 0;
+        int idle = 0;
         for(int loop = 0; loop < game.session.getNumActors(); loop++) {
             Network.ActorState actor = game.session.getActor(loop);
-            if(!game.session.willFight(actor.peerKey, null)) takes++;
+            if(!game.session.willFight(actor.peerKey, null)) idle++;
         }
-        if(takes != 0) {
-            save.notFighting = new int[takes];
-            save.live = new Network.ActorState[game.session.getNumActors()];
-            takes = 0;
+        if(idle != 0) {
+            save.notFighting = new int[idle];
+            idle = 0;
             for(int loop = 0; loop < game.session.getNumActors(); loop++) {
                 Network.ActorState actor = game.session.getActor(loop);
-                if(!game.session.willFight(actor.peerKey, null)) save.notFighting[takes++] = actor.peerKey;
-                save.live[loop] = actor;
+                if(!game.session.willFight(actor.peerKey, null)) save.notFighting[idle++] = actor.peerKey;
             }
         }
+        save.live = new Network.ActorState[game.session.getNumActors()];
+        for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+            save.live[loop] = game.session.getActor(loop);
+        }
         if(game.session.battleState != null) save.fighting = game.session.battleState.asProtoBuf();
-        takes = save.getSerializedSize();
+        int takes = save.getSerializedSize();
         for(int loop = 0; loop < game.session.getNumActors(); loop++) takes += game.session.getActor(loop).getSerializedSize();
         byte[] blob = new byte[takes];
         CodedOutputByteBufferNano out = CodedOutputByteBufferNano.newInstance(blob);
