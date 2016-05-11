@@ -418,7 +418,8 @@
     <string name="fra_actorType_monster">MOB</string>
     <string name="fra_actorType_npc">NPC</string>
     <string name="fra_actorType_unmatched">\???</string>
-    <string name="fra_dataLoadedFeedback">Started brand new session.</string>
+    <string name="fra_startBrandNewSession">Started brand new session.</string>
+    <string name="fra_restoredSession">Restored from %1$s.</string>
     <string name="fra_noBattle_zeroPcs">At least one playing character required.</string>
     <string name="fra_searchLabel">Add mobs to battle</string>
     <string name="fra_searchable_hint">Search mobs to battle</string>
@@ -503,6 +504,9 @@
     <string name="ba_endBattleDlg_title">Done?</string>
     <string name="ba_endBattleDlg_msg">There\'s no going back! Battle order and monster status will be discarded.</string>
     <string name="ba_endBattleDlg_positive">Distribute XP</string>
+    <string name="ba_backDlgMessage">You can suspend battle or simply discard. If you discard you won\'t distribute XPs. Neither case rolls back battle effects.</string>
+    <string name="ba_backDlgNegative">Discard</string>
+    <string name="ba_backDlgPositive">Suspend for later</string>
 
     <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
     <string name="mara_endTurn">End your turn</string>

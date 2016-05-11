@@ -257,10 +257,10 @@ public abstract class PersistentDataUtils {
     }
 
     public static class SessionStructs {
-        Session.RealWorldData irl;
-        Network.ActorState[] liveActors;
-        boolean[] roamingSelected; // roamingSelected[i] corresponds to liveActors[i].
-        Session.BattleState fighting;
+        public Session.RealWorldData irl;
+        public Network.ActorState[] liveActors;
+        public boolean[] roamingSelected; // roamingSelected[i] corresponds to liveActors[i].
+        public Session.BattleState fighting;
     }
 
     public String load(SessionStructs fetch, FileInputStream source, int size) {

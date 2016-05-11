@@ -6,7 +6,7 @@ import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -65,6 +65,13 @@ public abstract class SessionHelper {
         this.stats = stats;
         this.existByDef = existByDef;
         this.monsters = monsters;
+        if(stats.irl == null) stats.irl = new Session.RealWorldData();
+        ////// Updated when session really starts (1st service connection of FreeRoamingActivity)
+        ////irl.lastBegin = new Timestamp();
+        ////irl.lastBegin.seconds = new Date().getTime() / 1000;
+        ////irl.numSessions++;
+        // irl.lastSaved, irl.spent updated at save
+        // irl.types should be null there, mapped to other structures, we consume them later.
     }
 
     static class DefeatedData {

@@ -36,6 +36,43 @@ import java.util.Locale;
 
 public class BattleActivity extends AppCompatActivity implements ServiceConnection {
     @Override
+    public void onBackPressed() {
+        if(game == null) {
+            super.onBackPressed();
+            return;
+        }
+        backDialog();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if(game == null) return super.onSupportNavigateUp();
+        backDialog();
+        return false;
+    }
+
+    private void backDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.generic_carefulDlgTitle)
+                .setMessage(R.string.ba_backDlgMessage)
+                .setPositiveButton(R.string.ba_backDlgPositive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // We don't really do it there. The parent activity does.
+                        setResult(RESULT_OK_SUSPEND);
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.ba_backDlgNegative, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .show();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_battle);
@@ -64,7 +101,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 MaxUtils.beginDelayedTransition(BattleActivity.this);
                 final TextView status = (TextView) findViewById(R.id.ba_roundCount);
                 status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
-                actionCompleted();
+                actionCompleted(true);
                 lister.notifyItemChanged(0);
             }
         });
@@ -203,7 +240,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             lister.notifyDataSetChanged();
             return;
         }
-        actionCompleted();
+        actionCompleted(true);
     }
 
     @Override
@@ -240,10 +277,11 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
     }
 
     static final int RESULT_OK_AWARD = RESULT_FIRST_USER;
+    static final int RESULT_OK_SUSPEND = RESULT_OK_AWARD + 1;
 
-    private void actionCompleted() {
+    private void actionCompleted(boolean advance) {
         final BattleHelper battle = game.session.battleState;
-        int previous = battle.actorCompleted(true);
+        int previous = advance? battle.actorCompleted(true) : battle.currentActor;
         if(battle.prevWasReadied) {
             Network.ActorState was = game.session.getActorById(previous);
             was.prepareCondition = "";
@@ -278,7 +316,7 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Renewing is super cool - the dude will just not act and we're nice with it.
-                        actionCompleted();
+                        actionCompleted(true);
                     }
                 }).setNegativeButton(getString(R.string.ba_dlg_gotPreparedAction_discard), new DialogInterface.OnClickListener() {
             @Override
@@ -340,19 +378,14 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
             }
         });
         rv.setVisibility(View.VISIBLE);
-        if(battle.round > 0) { // battle already started...
-            findViewById(R.id.fab).setVisibility(View.GONE);
-            final TextView status = (TextView) findViewById(R.id.ba_roundCount);
-            status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
-        }
         game.onTurnCompletedRemote.push(new Runnable() {
             @Override
-            public void run() { actionCompleted(); }
+            public void run() { actionCompleted(true); }
         });
         game.onActorShuffledRemote.push(new Runnable() {
             @Override
             public void run() {
-                actionCompleted();
+                actionCompleted(true);
             }
         });
         game.onActorUpdatedRemote.push(new Runnable() {
@@ -361,6 +394,12 @@ public class BattleActivity extends AppCompatActivity implements ServiceConnecti
                 lister.notifyDataSetChanged();
             }
         });
+        if(battle.round > 0) { // battle already started...
+            findViewById(R.id.fab).setVisibility(View.GONE);
+            final TextView status = (TextView) findViewById(R.id.ba_roundCount);
+            status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
+            actionCompleted(false);
+        }
     }
 
     @Override
