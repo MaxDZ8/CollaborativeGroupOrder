@@ -55,7 +55,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             new AlertDialog.Builder(this)
                     .setCancelable(false)
                     .setMessage(R.string.mma_failedToInitHasher)
-                    .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.mma_quit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();

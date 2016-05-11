@@ -65,7 +65,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 int pgCount = 0;
                 for(int loop = 0; loop < game.session.getNumActors(); loop++) {
                     Network.ActorState actor = game.session.getActor(loop);
-                    int add = game.session.willFight(actor, null)? 1 : 0;
+                    int add = game.session.willFight(actor.peerKey, null)? 1 : 0;
                     if(actor.type == Network.ActorState.T_PLAYING_CHARACTER) pgCount += add;
                     else count += add;
                 }
@@ -154,7 +154,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         game.session.initiatives = new IdentityHashMap<>();
         for(int loop = 0; loop < game.session.getNumActors(); loop++) {
             final Network.ActorState actor = game.session.getActor(loop);
-            if (!game.session.willFight(actor, null)) continue;
+            if (!game.session.willFight(actor.peerKey, null)) continue;
             final MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
             if (pipe != null) { // send a roll request.
                 final Network.Roll rq = new Network.Roll();

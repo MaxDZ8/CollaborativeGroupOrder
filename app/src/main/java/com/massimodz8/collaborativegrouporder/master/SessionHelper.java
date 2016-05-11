@@ -82,7 +82,6 @@ public abstract class SessionHelper {
 
     static class WinnerData {
         final @ActorId int id;
-        int rewards; // we accumulate XPs got from battle, we'll apply them once we're done.
         boolean award = true;
 
         WinnerData(@ActorId int id) {
@@ -91,11 +90,11 @@ public abstract class SessionHelper {
     }
 
     void add(Network.ActorState actor) { temporaries.add(actor); }
-    boolean willFight(Network.ActorState actor, Boolean newFlag) {
-        boolean currently = fighters.contains(actor.peerKey);
+    boolean willFight(@ActorId int id, Boolean newFlag) {
+        boolean currently = fighters.contains(id);
         if(newFlag == null) return currently;
-        if(newFlag) fighters.add(actor.peerKey);
-        else fighters.remove(fighters.indexOf(actor.peerKey));
+        if(newFlag) fighters.add(id);
+        else fighters.remove(fighters.indexOf(id));
         return newFlag;
     }
     int getNumActors() { return existByDef.size() + temporaries.size(); }
