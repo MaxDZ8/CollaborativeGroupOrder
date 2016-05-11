@@ -287,14 +287,62 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         }
     }
 
+    private boolean saving;
     private void saveSessionStateAndFinish() {
-        new AlertDialog.Builder(this).setMessage("TODO: save session data, possibly with battle state or not.\n\nTODO!")
-                .setCancelable(false).setPositiveButton("close FRA", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
+        if(saving) return;
+        saving = true; // no need to set it to false, we terminate activity
+        Session.Suspended save = game.session.stats;
+        save.lastSaved = new Timestamp();
+        save.lastSaved.seconds = new Date().getTime() / 1000;
+        if(save.spent == null) save.spent = new Timestamp();
+        save.spent.seconds += save.lastSaved.seconds - save.lastBegin.seconds;
+        int takes = 0;
+        for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+            Network.ActorState actor = game.session.getActor(loop);
+            if(!game.session.willFight(actor.peerKey, null)) takes++;
+        }
+        if(takes != 0) {
+            save.notFighting = new int[takes];
+            save.live = new Network.ActorState[game.session.getNumActors()];
+            takes = 0;
+            for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+                Network.ActorState actor = game.session.getActor(loop);
+                if(!game.session.willFight(actor.peerKey, null)) save.notFighting[takes++] = actor.peerKey;
+                save.live[loop] = actor;
             }
-        }).show();
+        }
+        if(game.session.battleState != null) save.fighting = game.session.battleState.asProtoBuf();
+        takes = save.getSerializedSize();
+        for(int loop = 0; loop < game.session.getNumActors(); loop++) takes += game.session.getActor(loop).getSerializedSize();
+        byte[] blob = new byte[takes];
+        CodedOutputByteBufferNano out = CodedOutputByteBufferNano.newInstance(blob);
+        try {
+            save.writeTo(out);
+            for(int loop = 0; loop < game.session.getNumActors(); loop++) game.session.getActor(loop).writeTo(out);
+        } catch (IOException e) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.generic_IOError)
+                    .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
+                    .show();
+        }
+        new AsyncRenamingStore<Session.Suspended>(getFilesDir(), game.getPartyOwnerData().sessionFile, save) {
+            @Override
+            protected String getString(@StringRes int res) {
+                return FreeRoamingActivity.this.getString(res);
+            }
+
+            @Override
+            protected void onPostExecute(Exception e) {
+                if(e == null) {
+                    finish();
+                    return;
+                }
+                new AlertDialog.Builder(FreeRoamingActivity.this)
+                        .setTitle(R.string.generic_IOError)
+                        .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
+                        .show();
+            }
+        };
     }
 
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
