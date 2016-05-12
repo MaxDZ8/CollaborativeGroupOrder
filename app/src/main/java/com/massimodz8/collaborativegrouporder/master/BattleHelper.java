@@ -15,8 +15,8 @@ import java.util.ArrayDeque;
 public class BattleHelper {
     public final InitiativeScore[] ordered;
 
-    public @ActorId int currentActor = -1;
-    public int round = -1;
+    public @ActorId int currentActor = -1; // only relevant if this.round != 0
+    public int round = 0;
     boolean prevWasReadied;
     /**
      * Stack of triggered actions, they temporarily suppress normal order.
@@ -107,14 +107,16 @@ public class BattleHelper {
     Session.BattleState asProtoBuf() {
         Session.BattleState res = new Session.BattleState();
         res.round = round;
-        res.currentActor = currentActor;
+        if(res.round != 0) res.currentActor = currentActor;
         res.prevWasReadied = prevWasReadied;
-        res.interrupted = new int[interrupted.size()];
-        for(int cp = 0; cp < res.interrupted.length; cp++) {
-            int dst = res.interrupted.length - 1 - cp;
-            res.interrupted[dst] = interrupted.pop();
+        if(interrupted != null) {
+            res.interrupted = new int[interrupted.size()];
+            for (int cp = 0; cp < res.interrupted.length; cp++) {
+                int dst = res.interrupted.length - 1 - cp;
+                res.interrupted[dst] = interrupted.pop();
+            }
+            for (int el : res.interrupted) interrupted.push(el);
         }
-        for (int el : res.interrupted) interrupted.push(el);
         res.initiative = new int[ordered.length * 3];
         res.id = new int[ordered.length];
         res.enabled = new boolean[ordered.length];

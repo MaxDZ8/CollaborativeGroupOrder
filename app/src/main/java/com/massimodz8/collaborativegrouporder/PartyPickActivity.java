@@ -587,9 +587,11 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             String got = null;
             if(target.helper != null && target.helper.sessionData != null) {
                 Session.Suspended structs = target.helper.sessionData.get(party);
-                if(structs.fighting != null) got = target.getString(R.string.ppa_status_battle);
-                else if(structs.live != null) got = target.getString(R.string.ppa_status_adventure);
-                else got = target.getString(R.string.ppa_status_asDefined);
+                if(structs != null) {
+                    if (structs.fighting != null) got = target.getString(R.string.ppa_status_battle);
+                    else if (structs.live != null) got = target.getString(R.string.ppa_status_adventure);
+                    else got = target.getString(R.string.ppa_status_asDefined);
+                }
             }
             MaxUtils.setTextUnlessNull((TextView) container.findViewById(view), got, View.GONE);
         }
@@ -598,9 +600,11 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             String got = null;
             if(target.helper != null && target.helper.sessionData != null) {
                 Session.Suspended structs = target.helper.sessionData.get(party);
-                if(structs.lastBegin == null) got = getString(R.string.ppa_neverPlayed);
-                else if(structs.lastSaved == null) got = getString(R.string.ppa_lastSavedInconsistent);
-                else got = target.getNiceDate(structs.lastSaved);
+                if(structs != null) {
+                    if (structs.lastBegin == null) got = getString(R.string.ppa_neverPlayed);
+                    else if (structs.lastSaved == null) got = getString(R.string.ppa_lastSavedInconsistent);
+                    else got = target.getNiceDate(structs.lastSaved);
+                }
             }
             MaxUtils.setTextUnlessNull(view, got, View.GONE);
             return got;

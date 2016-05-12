@@ -414,12 +414,13 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                     order[slow] = new InitiativeScore(stats.fighting.initiative[fast++], stats.fighting.initiative[fast++], stats.fighting.initiative[fast++], remapped);
                     order[slow++].enabled = state;
                 }
-                game.session.battleState = new BattleHelper(order);
-                game.session.battleState.round = stats.fighting.round;
-                game.session.battleState.currentActor = remember.get(stats.fighting.currentActor);
-                game.session.battleState.prevWasReadied = stats.fighting.prevWasReadied;
+                final BattleHelper battle = new BattleHelper(order);
+                game.session.battleState = battle;
+                battle.round = stats.fighting.round;
+                if(battle.round != 0) battle.currentActor = remember.get(stats.fighting.currentActor);
+                battle.prevWasReadied = stats.fighting.prevWasReadied;
                 for (int orig : stats.fighting.interrupted) {
-                    game.session.battleState.interrupted.push(remember.get(orig));
+                    battle.interrupted.push(remember.get(orig));
                 }
                 game.pushBattleOrder();
                 for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);

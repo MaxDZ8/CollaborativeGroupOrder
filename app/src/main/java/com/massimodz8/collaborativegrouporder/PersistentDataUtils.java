@@ -321,6 +321,17 @@ public abstract class PersistentDataUtils {
             }
             if(search != fetch.notFighting.length) return getString(R.string.persistentStorage_actorShouldNotBeFighting);
         }
+        if(fetch.fighting.round != 0) { // then actorID must be one in list
+            boolean found = false;
+            for (int id : fetch.fighting.id) {
+                if(id == fetch.fighting.currentActor) {
+                    found = true;
+                    break;
+
+                }
+            }
+            if(!found) return getString(R.string.persistentStorage_invalidCurrentActor);
+        }
         return null;
     }
 
