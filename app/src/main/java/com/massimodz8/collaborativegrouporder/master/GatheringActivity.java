@@ -105,21 +105,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
     }
 
     @Override
-    public boolean onSupportNavigateUp() {
-        if(room != null && room.getPartyOwnerData() != null && room.getNumIdentifiedClients() != 0) {
-            MaxUtils.askExitConfirmation(this);
-            return true;
-        }
-        return super.onSupportNavigateUp();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if(room != null && room.getPartyOwnerData() != null && room.getNumIdentifiedClients() != 0) MaxUtils.askExitConfirmation(this);
-        else super.onBackPressed();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.gathering_activity, menu);
         return super.onCreateOptionsMenu(menu);
@@ -210,7 +195,8 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                     room.session.stats.lastBegin = new Timestamp();
                     room.session.stats.lastBegin.seconds = new Date().getTime() / 1000;
                     room.session.stats.numSessions++;
-                    startActivity(new Intent(GatheringActivity.this, FreeRoamingActivity.class));
+                    setResult(RESULT_OK);
+                    finish();
                     return;
                 }
                 new AlertDialog.Builder(GatheringActivity.this)

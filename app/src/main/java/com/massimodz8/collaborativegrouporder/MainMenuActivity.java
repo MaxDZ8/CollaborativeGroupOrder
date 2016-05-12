@@ -21,6 +21,7 @@ import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.ActorOverviewActivity;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
+import com.massimodz8.collaborativegrouporder.master.FreeRoamingActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
 import com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity;
 import com.massimodz8.collaborativegrouporder.master.NewPartyDeviceSelectionActivity;
@@ -262,16 +263,16 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) { // stuff to shut down no matter what
-            case REQUEST_NEW_SESSION:
-                // Does not produce output.
-                stopService(new Intent(this, PartyJoinOrderService.class));
-                break;
             case REQUEST_PICK_PARTY: { // sync our data with what was produced/modified
                 groupDefs.clear();
                 groupKeys.clear();
                 pickServ.getDense(groupDefs, groupKeys, false);
                 dataRefreshed();
                 break;
+            }
+            case REQUEST_PLAY: {
+                stopService(new Intent(this, PartyJoinOrderService.class));
+                return;
             }
         }
         if(RESULT_OK != resultCode) {
@@ -288,6 +289,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     stopService(new Intent(this, PartyPickingService.class));
                     break;
                 }
+                case REQUEST_GATHER_DEVICES:
+                    stopService(new Intent(this, PartyJoinOrderService.class));
+                    break;
             }
             return;
         }
@@ -350,6 +354,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                         CharSelectionActivity.moveServerWorker());
                 startActivity(new Intent(this, ActorOverviewActivity.class));
             } break;
+            case REQUEST_GATHER_DEVICES: {
+                startActivityForResult(new Intent(this, FreeRoamingActivity.class), REQUEST_PLAY);
+                break;
+            }
         }
     }
 
@@ -359,7 +367,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     static final int REQUEST_PICK_PARTY = 5;
     static final int REQUEST_PULL_CHAR_LIST = 6;
     static final int REQUEST_BIND_CHARACTERS = 7;
-    static final int REQUEST_NEW_SESSION = 8;
+    static final int REQUEST_GATHER_DEVICES = 8;
+    static final int REQUEST_PLAY = 9;
 
     // Those must be fields to ensure a communication channel to the asynchronous onServiceConnected callbacks.
     private MessageNano activeParty; // StartData.PartyOwnerData.Group or StartData.PartyClientData.Group
@@ -397,7 +406,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             activeConnections = null;
             activeParty = null;
             activeStats = null;
-            startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_NEW_SESSION);
+            startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_GATHER_DEVICES);
             unbindService(this);
         }
         if(service instanceof PartyCreationService.LocalBinder) {
