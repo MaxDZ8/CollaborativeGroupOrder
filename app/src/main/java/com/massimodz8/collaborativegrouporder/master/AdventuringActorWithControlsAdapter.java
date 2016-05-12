@@ -27,7 +27,7 @@ public abstract class AdventuringActorWithControlsAdapter extends AdventuringAct
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(actor == null) return;
-                playState.willFight(actor, isChecked);
+                playState.willFight(actor.peerKey, isChecked);
             }
 
             @Override
@@ -46,7 +46,7 @@ public abstract class AdventuringActorWithControlsAdapter extends AdventuringAct
     }
 
     protected boolean isChecked(Network.ActorState actor) {
-        return playState.willFight(actor, null);
+        return playState.willFight(actor.peerKey, null);
     }
 
     @Override

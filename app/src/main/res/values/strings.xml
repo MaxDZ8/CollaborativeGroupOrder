@@ -122,6 +122,7 @@
     <string name="persistentStorage_missingKey">: missing key.</string>
     <string name="persistentStorage_missingPartyDefinition">: missing party definition data.</string>
     <string name="persistentStorage_failedRead">File cannot be read.</string>
+    <string name="persistentStorage_failedParse">Looks like file does not contain valid data.</string>
     <string name="persistentStorage_readSizeMismatch">read size mismatched.</string>
     <string name="persistentStorage_partyDefValidationPremise">party definition data</string>
     <string name="persistentStorage_playingCharacters">playing characters</string>
@@ -136,6 +137,13 @@
     <string name="persistentStorage_badSessionFile">: no session file specified.</string>
     <string name="persistentStorage_failedOldDelete">Cannot save new data. Old data refused to go away.</string>
     <string name="persistentStorage_failedNewRenameOldGone">Oh no! New data was successfully produced and stored but couldn\'t be given its real name and old data is already gone!\nFile:\n  %1$s</string>
+    <string name="persistentStorage_duplicatedActorKey">Found two actors with the same ID.</string>
+    <string name="persistentStorage_initiativeMismatch">Inconsistent initiative order: expected %1$d, available %2$d</string>
+    <string name="persistentStorage_incoherentInitiativeLists">Inconsistent initiative arrays, mismatched sizes.</string>
+    <string name="persistentStorage_duplicatedActorInitiative">Actor at least twice in a round.</string>
+    <string name="persistentStorage_actorShouldNotBeFighting">Actor got an initiative but it should not be fighting!</string>
+    <string name="persistentStorage_unknownFighter">Unknown fighing actor!</string>
+    <string name="persistentStorage_invalidCurrentActor">Invalid current actor.</string>
 
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
@@ -186,6 +194,7 @@
     <string name="mma_tooManyMonsters">Impossible, monster data exceeding maximum size.</string>
     <string name="mma_failedAssetRead">Impossible, failed asset read.</string>
     <string name="mma_loading">Loading data…</string>
+    <string name="mma_quit">Quit</string>
 
     <string name="npdsa_badParty_title">Bad party name</string>
     <string name="npdsa_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
@@ -270,13 +279,14 @@
     <string name="ppa_ownedDetails_lastPlayLabel">Last played:</string>
     <string name="ppa_ownedDetails_currentStateLabel">Status:</string>
     <string name="ppa_ownedDetails_newSession">New session</string>
+    <string name="ppa_ownedDetails_continueSession">Continue last session</string>
     <string name="ppa_ownedDetails_continueBattle">Continue battle</string>
     <string name="ppa_ownedDetails_npcList">Assisting %1$s</string>
     <string name="ppa_joinedDetails_lastPlayLabel">Last played:</string>
     <string name="ppa_joinedDetails_createdLabel">Key received:</string>
-    <string name="ppa_joinedDetails_continueBattle">Keep fighting</string>
     <string name="ppa_joinedDetails_newSession">Go adventuring</string>
-    <string name="ppa_joinedDetails_goAdventuring">Go adventuring</string>
+    <string name="ppa_joinedDetails_continueSession">Keep adventuring</string>
+    <string name="ppa_joinedDetails_continueBattle">Keep fighting</string>
     <string name="ppa_joinedDetails_lastPlayedPcs">Played: %1$s</string>
     <string name="ppa_title">Pick a party</string>
     <string name="ppa_title_details">Party details</string>
@@ -290,7 +300,7 @@
     <string name="ppa_noInputStream">Failed to get input stream.</string>
     <string name="ppa_neverPlayed">never</string>
     <string name="ppa_status_battle">fighting</string>
-    <string name="ppa_status_adventure">somewhat in trouble</string>
+    <string name="ppa_status_adventure">adventuring</string>
     <string name="ppa_status_asDefined">nothing going on</string>
     <string name="ppa_lastSavedInconsistent">Inconsistent data!</string>
 
@@ -410,8 +420,10 @@
     <string name="fra_actorType_monster">MOB</string>
     <string name="fra_actorType_npc">NPC</string>
     <string name="fra_actorType_unmatched">\???</string>
-    <string name="fra_dataLoadedFeedback">Started brand new session.</string>
+    <string name="fra_startBrandNewSession">Started brand new session.</string>
+    <string name="fra_restoredSession">Restored from %1$s.</string>
     <string name="fra_noBattle_zeroPcs">At least one playing character required.</string>
+    <string name="fra_noBattle_oneActor">You need at least two actors to fight.</string>
     <string name="fra_searchLabel">Add mobs to battle</string>
     <string name="fra_searchable_hint">Search mobs to battle</string>
     <string name="fra_dlgActionIgnoreMissingCharacters">Ignore and start battle</string>
@@ -419,6 +431,9 @@
     <string name="fra_rollRequestInitiativeMsg">Initiative!</string>
     <string name="fra_dlgWIR_title">Waiting initiative rolls</string>
     <string name="fra_dlgWIR_info">I will switch to battle as soon as I can figure out an order of initiative.\nFor the time being, you must wait.</string>
+    <string name="fra_dlgIOErrorSerializingSession_impossible">Could not save session data.\nDetails: %1$s</string>
+    <string name="fra_exitDlgMsg">Session data will be saved for later. However, players will have to reconnect and you will have to assign characters again.</string>
+    <string name="fra_exitButtonConfirm">Get me out</string>
 
     <string name="sma_title">Spawn monsters</string>
     <string name="sma_searchingMessage">Searching…</string>
@@ -495,6 +510,9 @@
     <string name="ba_endBattleDlg_title">Done?</string>
     <string name="ba_endBattleDlg_msg">There\'s no going back! Battle order and monster status will be discarded.</string>
     <string name="ba_endBattleDlg_positive">Distribute XP</string>
+    <string name="ba_backDlgMessage">You can suspend battle or simply discard. If you discard you won\'t distribute XPs. Neither case rolls back battle effects.</string>
+    <string name="ba_backDlgNegative">Discard</string>
+    <string name="ba_backDlgPositive">Suspend for later</string>
 
     <string name="mara_placeholder">Not much you can do here for the time being, maybe something more interesting in the future.\nJust do what you want, roll what you want and then pass turn to next.</string>
     <string name="mara_endTurn">End your turn</string>

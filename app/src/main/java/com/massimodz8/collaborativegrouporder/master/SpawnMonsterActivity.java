@@ -80,7 +80,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                         build.cr.numerator = mob.header.cr.numerator;
                         build.cr.denominator = mob.header.cr.denominator;
                         session.add(build);
-                        session.willFight(build, true);
+                        session.willFight(build.peerKey, true);
                         nameColl.put(presentation, previously + 1);
                     }
                 }

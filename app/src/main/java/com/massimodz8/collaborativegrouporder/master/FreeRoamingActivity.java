@@ -22,6 +22,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.CodedOutputByteBufferNano;
+import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
@@ -32,12 +34,17 @@ import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
+import java.io.IOException;
 import java.security.SecureRandom;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -65,11 +72,12 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 int pgCount = 0;
                 for(int loop = 0; loop < game.session.getNumActors(); loop++) {
                     Network.ActorState actor = game.session.getActor(loop);
-                    int add = game.session.willFight(actor, null)? 1 : 0;
+                    int add = game.session.willFight(actor.peerKey, null)? 1 : 0;
                     if(actor.type == Network.ActorState.T_PLAYING_CHARACTER) pgCount += add;
                     else count += add;
                 }
                 if(pgCount == 0) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_zeroPcs, Snackbar.LENGTH_LONG).show();
+                else if(count == 1) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_oneActor, Snackbar.LENGTH_LONG).show();
                 else if(count + pgCount != game.session.getNumActors()) {
                     new AlertDialog.Builder(FreeRoamingActivity.this)
                             .setMessage(getString(R.string.fra_dlgMsg_missingChars))
@@ -129,6 +137,23 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         super.onDestroy();
     }
 
+
+    @Override
+    public void onBackPressed() {
+        if(game == null) {
+            super.onBackPressed();
+            return;
+        }
+        saveSessionStateAndFinish(false);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if(game == null) return super.onSupportNavigateUp();
+        saveSessionStateAndFinish(false);
+        return false;
+    }
+
     private boolean mustUnbind;
     private PartyJoinOrderService game;
     private int numActors;
@@ -154,14 +179,14 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         game.session.initiatives = new IdentityHashMap<>();
         for(int loop = 0; loop < game.session.getNumActors(); loop++) {
             final Network.ActorState actor = game.session.getActor(loop);
-            if (!game.session.willFight(actor, null)) continue;
+            if (!game.session.willFight(actor.peerKey, null)) continue;
             final MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
             if (pipe != null) { // send a roll request.
                 final Network.Roll rq = new Network.Roll();
                 rq.unique = ++game.rollRequest;
                 rq.range = 20;
                 rq.peerKey = loop;
-                rq.type = Network.Roll.T_BATTLE_START;
+                rq.type = Network.Roll.T_INITIATIVE;
                 game.session.initiatives.put(actor.peerKey, new SessionHelper.Initiative(rq));
                 game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ROLL, rq));
             } else {
@@ -217,6 +242,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         game.pushBattleOrder();
         for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
         startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
+        findViewById(R.id.fab).setVisibility(View.VISIBLE);
         return true;
     }
 
@@ -227,8 +253,15 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
             case REQUEST_BATTLE: {
-                if(resultCode == BattleActivity.RESULT_OK_AWARD) {
-                    startActivityForResult(new Intent(this, AwardExperienceActivity.class), REQUEST_AWARD_EXPERIENCE);
+                switch(resultCode) {
+                    case BattleActivity.RESULT_OK_AWARD: {
+                        startActivityForResult(new Intent(this, AwardExperienceActivity.class), REQUEST_AWARD_EXPERIENCE);
+                        break;
+                    }
+                    case BattleActivity.RESULT_OK_SUSPEND: {
+                        saveSessionStateAndFinish(true);
+                        break;
+                    }
                 }
                 break;
             }
@@ -255,22 +288,172 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         }
     }
 
+    private boolean saving;
+    private void saveSessionStateAndFinish(boolean confirmed) {
+        if(!confirmed) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.generic_carefulDlgTitle)
+                    .setMessage(R.string.fra_exitDlgMsg)
+                    .setPositiveButton(R.string.fra_exitButtonConfirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveSessionStateAndFinish(true);
+                        }
+                    })
+                    .show();
+            return;
+        }
+        if(saving) return;
+        saving = true; // no need to set it to false, we terminate activity
+        Session.Suspended save = game.session.stats;
+        save.lastSaved = new Timestamp();
+        save.lastSaved.seconds = new Date().getTime() / 1000;
+        if(save.spent == null) save.spent = new Timestamp();
+        save.spent.seconds += save.lastSaved.seconds - save.lastBegin.seconds;
+        int idle = 0;
+        for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+            Network.ActorState actor = game.session.getActor(loop);
+            if(!game.session.willFight(actor.peerKey, null)) idle++;
+        }
+        if(idle != 0) {
+            save.notFighting = new int[idle];
+            idle = 0;
+            for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+                Network.ActorState actor = game.session.getActor(loop);
+                if(!game.session.willFight(actor.peerKey, null)) save.notFighting[idle++] = actor.peerKey;
+            }
+        }
+        save.live = new Network.ActorState[game.session.getNumActors()];
+        for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+            save.live[loop] = game.session.getActor(loop);
+            // TODO if my serialization == serialization from byDef canonical object then don't serialize me
+            // TODO so we can start the new session instead of restoring one... but that's the case only if we have no mobs nor other state to restore!
+        }
+        if(game.session.battleState != null) save.fighting = game.session.battleState.asProtoBuf();
+        int takes = save.getSerializedSize();
+        for(int loop = 0; loop < game.session.getNumActors(); loop++) takes += game.session.getActor(loop).getSerializedSize();
+        byte[] blob = new byte[takes];
+        CodedOutputByteBufferNano out = CodedOutputByteBufferNano.newInstance(blob);
+        try {
+            save.writeTo(out);
+            for(int loop = 0; loop < game.session.getNumActors(); loop++) game.session.getActor(loop).writeTo(out);
+        } catch (IOException e) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.generic_IOError)
+                    .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
+                    .show();
+        }
+        new AsyncRenamingStore<Session.Suspended>(getFilesDir(), game.getPartyOwnerData().sessionFile, save) {
+            @Override
+            protected String getString(@StringRes int res) {
+                return FreeRoamingActivity.this.getString(res);
+            }
+
+            @Override
+            protected void onPostExecute(Exception e) {
+                if(e == null) {
+                    finish();
+                    return;
+                }
+                new AlertDialog.Builder(FreeRoamingActivity.this)
+                        .setTitle(R.string.generic_IOError)
+                        .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
+                        .show();
+            }
+        };
+    }
+
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
         PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder)service;
         game = real.getConcreteService();
         lister.playState = game.session;
-        if(game.session.initiatives != null) waiting = new WaitInitiativeDialog(game.session).show(this);
         game.onRollReceived = new Runnable() {
             @Override
             public void run() {
                 attemptBattleStart();
             }
         };
+        Session.Suspended stats = game.session.stats;
+        if(stats.live.length > 0) { // restore state from previous session!
+            HashMap<Integer, Integer> remember = new HashMap<>(); // peerkey remapping is only useful for 'temporary' actors but it makes code more streamlined
+            for(int loop = 0; loop < stats.live.length; loop++) { // First we take care of 'byDef' characters, they're easier.
+                Network.ActorState live = stats.live[loop];
+                if(live.peerKey >= game.session.existByDef.size()) continue;
+                int found = 0;
+                for (int el : stats.notFighting) {
+                    if(el == live.peerKey) break;
+                    found++;
+                }
+                if(found == stats.notFighting.length || stats.notFighting.length == 0) game.session.willFight(live.peerKey, true); // playing characters start deselected
+                game.session.existByDef.set(live.peerKey, live);
+                remember.put(live.peerKey, live.peerKey);
+            }
+            // All other actors are added. That takes some care as I need to remap peerkeys.
+            // This is a simplified version of SpawnMonster spawning, complicated by peerkey remapping.
+            for(int loop = 0; loop < stats.live.length; loop++) {
+                Network.ActorState live = stats.live[loop];
+                if(live.peerKey < game.session.existByDef.size()) continue;
+                int ori = live.peerKey;
+                remember.put(ori, game.nextActorId);
+                live.peerKey = game.nextActorId++;
+                game.session.add(live);
+                int found = 0;
+                for (int el : stats.notFighting) {
+                    if(el == ori) break;
+                    found++;
+                }
+                if(found == stats.notFighting.length || stats.notFighting.length == 0) game.session.willFight(live.peerKey, true);
+            }
+            if(stats.fighting != null) { // a bit ugh
+                InitiativeScore[] order = new InitiativeScore[stats.fighting.id.length];
+                int slow = 0, fast = 0;
+                for (boolean state : stats.fighting.enabled) {
+                    final int remapped = remember.get(stats.fighting.id[slow]);
+                    order[slow] = new InitiativeScore(stats.fighting.initiative[fast++], stats.fighting.initiative[fast++], stats.fighting.initiative[fast++], remapped);
+                    order[slow++].enabled = state;
+                }
+                final BattleHelper battle = new BattleHelper(order);
+                game.session.battleState = battle;
+                battle.round = stats.fighting.round;
+                if(battle.round != 0) battle.currentActor = remember.get(stats.fighting.currentActor);
+                battle.prevWasReadied = stats.fighting.prevWasReadied;
+                for (int orig : stats.fighting.interrupted) {
+                    battle.interrupted.push(remember.get(orig));
+                }
+                game.pushBattleOrder();
+                for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
+                // Note: this is an extra. We cannot use INITIATIVE roll to signal battle start so...
+                Network.TurnControl notifyRound = new Network.TurnControl();
+                notifyRound.type = Network.TurnControl.T_BATTLE_ROUND;
+                notifyRound.round = battle.round;
+                for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+                    if(dev.pipe == null) continue;
+                    game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, notifyRound));
+
+                    if(dev.movedToBattlePumper) continue;
+                    game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
+                    dev.movedToBattlePumper = true;
+                }
+                startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
+            }
+            else {
+                String date = DateFormat.getDateInstance().format(new Date(stats.lastSaved.seconds * 1000));
+                String snackMsg = String.format(getString(R.string.fra_restoredSession), date);
+                Snackbar.make(findViewById(R.id.activityRoot), snackMsg, Snackbar.LENGTH_SHORT).show();
+            }
+            stats.live = null;  // put everything back to runtime, no need to keep. Avoid logical leak.
+            stats.notFighting = null;
+            stats.fighting = null;
+            lister.notifyDataSetChanged();
+            numActors = lister.getItemCount();
+            return;
+        }
+        if(game.session.initiatives != null) waiting = new WaitInitiativeDialog(game.session).show(this);
         attemptBattleStart();
         lister.notifyDataSetChanged();
-        Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_dataLoadedFeedback, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(findViewById(R.id.activityRoot), getString(R.string.fra_startBrandNewSession), Snackbar.LENGTH_SHORT).show();
         numActors = lister.getItemCount();
     }
 

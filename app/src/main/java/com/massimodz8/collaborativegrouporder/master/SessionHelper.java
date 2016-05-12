@@ -1,16 +1,20 @@
 package com.massimodz8.collaborativegrouporder.master;
 
+import android.util.ArraySet;
+
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Massimo on 14/03/2016.
@@ -30,7 +34,7 @@ public abstract class SessionHelper {
     public abstract void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot);
 
 
-    public final PersistentDataUtils.SessionStructs stats;
+    public final Session.Suspended stats;
     public final ArrayList<Network.ActorState> existByDef;
     public final MonsterData.MonsterBook monsters;
     public BattleHelper battleState;
@@ -61,7 +65,7 @@ public abstract class SessionHelper {
     }
 
 
-    SessionHelper(PersistentDataUtils.SessionStructs stats, ArrayList<Network.ActorState> existByDef, MonsterData.MonsterBook monsters) {
+    SessionHelper(Session.Suspended stats, ArrayList<Network.ActorState> existByDef, MonsterData.MonsterBook monsters) {
         this.stats = stats;
         this.existByDef = existByDef;
         this.monsters = monsters;
@@ -82,7 +86,6 @@ public abstract class SessionHelper {
 
     static class WinnerData {
         final @ActorId int id;
-        int rewards; // we accumulate XPs got from battle, we'll apply them once we're done.
         boolean award = true;
 
         WinnerData(@ActorId int id) {
@@ -91,11 +94,11 @@ public abstract class SessionHelper {
     }
 
     void add(Network.ActorState actor) { temporaries.add(actor); }
-    boolean willFight(Network.ActorState actor, Boolean newFlag) {
-        boolean currently = fighters.contains(actor.peerKey);
+    boolean willFight(@ActorId int id, Boolean newFlag) {
+        boolean currently = fighters.contains(id);
         if(newFlag == null) return currently;
-        if(newFlag) fighters.add(actor.peerKey);
-        else fighters.remove(fighters.indexOf(actor.peerKey));
+        if(newFlag) fighters.add(id);
+        else fighters.remove(id);
         return newFlag;
     }
     int getNumActors() { return existByDef.size() + temporaries.size(); }
@@ -115,5 +118,5 @@ public abstract class SessionHelper {
     }
 
     public final ArrayList<Network.ActorState> temporaries = new ArrayList<>();
-    private final ArrayList<Integer> fighters = new ArrayList<>();
+    private final Set<Integer> fighters = new HashSet<>();
 }

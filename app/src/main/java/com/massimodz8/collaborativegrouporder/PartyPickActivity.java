@@ -37,6 +37,7 @@ import android.widget.TextView;
 
 import com.google.protobuf.nano.MessageNano;
 import com.google.protobuf.nano.Timestamp;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.File;
@@ -456,11 +457,11 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             level.setText(str);
             if(helper == null || helper.sessionData == null) lastPlay.setVisibility(View.GONE);
             else {
-                PersistentDataUtils.SessionStructs structs = helper.sessionData.get(group);
-                if(structs == null || structs.irl == null || structs.irl.lastSaved == null) lastPlay.setVisibility(View.GONE);
+                Session.Suspended structs = helper.sessionData.get(group);
+                if(structs == null || structs.lastSaved == null) lastPlay.setVisibility(View.GONE);
                 else {
                     lastPlay.setVisibility(View.VISIBLE);
-                    lastPlay.setText(getNiceDate(structs.irl.lastSaved));
+                    lastPlay.setText(getNiceDate(structs.lastSaved));
                 }
             }
         }
@@ -498,11 +499,11 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             name.setText(group.name);
             if(helper == null || helper.sessionData == null) date.setVisibility(View.GONE);
             else {
-                PersistentDataUtils.SessionStructs structs = helper.sessionData.get(group);
-                if(structs == null || structs.irl == null || structs.irl.lastSaved == null) date.setVisibility(View.GONE);
+                Session.Suspended structs = helper.sessionData.get(group);
+                if(structs == null || structs.lastSaved == null) date.setVisibility(View.GONE);
                 else {
                     date.setVisibility(View.VISIBLE);
-                    date.setText(getNiceDate(structs.irl.lastSaved));
+                    date.setText(getNiceDate(structs.lastSaved));
                 }
             }
         }
@@ -562,17 +563,22 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             return this;
         }
 
-        boolean isFighting(MessageNano party) {
-            if(target.helper == null || target.helper.sessionData == null) return false;
-            PersistentDataUtils.SessionStructs structs = target.helper.sessionData.get(party);
-            return structs != null && structs.battle != null;
+        @StringRes int sessionButton(MessageNano party, boolean owned) {
+            if(target.helper == null || target.helper.sessionData == null)
+                return owned? R.string.ppa_ownedDetails_newSession : R.string.ppa_joinedDetails_newSession;
+            Session.Suspended structs = target.helper.sessionData.get(party);
+            if(structs == null || structs.live.length == 0)
+                return owned? R.string.ppa_ownedDetails_newSession : R.string.ppa_joinedDetails_newSession;
+            if(structs.fighting == null)
+                return owned? R.string.ppa_ownedDetails_continueSession : R.string.ppa_joinedDetails_continueSession;
+            return owned? R.string.ppa_ownedDetails_continueBattle : R.string.ppa_joinedDetails_continueBattle;
         }
 
         protected void note(MessageNano party, @IdRes int view, View container) {
             String got = null;
             if(target.helper != null && target.helper.sessionData != null) {
-                PersistentDataUtils.SessionStructs structs = target.helper.sessionData.get(party);
-                if (structs != null && structs.irl != null && !structs.irl.note.isEmpty()) got = structs.irl.note;
+                Session.Suspended structs = target.helper.sessionData.get(party);
+                if (structs != null && !structs.note.isEmpty()) got = structs.note;
             }
             MaxUtils.setTextUnlessNull((TextView) container.findViewById(view), got, View.GONE);
         }
@@ -580,10 +586,12 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
         protected void state(MessageNano party, @IdRes int view, View container) {
             String got = null;
             if(target.helper != null && target.helper.sessionData != null) {
-                PersistentDataUtils.SessionStructs structs = target.helper.sessionData.get(party);
-                if(structs.battle != null) got = target.getString(R.string.ppa_status_battle);
-                else if(structs.adventure != null) got = target.getString(R.string.ppa_status_adventure);
-                else got = target.getString(R.string.ppa_status_asDefined);
+                Session.Suspended structs = target.helper.sessionData.get(party);
+                if(structs != null) {
+                    if (structs.fighting != null) got = target.getString(R.string.ppa_status_battle);
+                    else if (structs.live != null) got = target.getString(R.string.ppa_status_adventure);
+                    else got = target.getString(R.string.ppa_status_asDefined);
+                }
             }
             MaxUtils.setTextUnlessNull((TextView) container.findViewById(view), got, View.GONE);
         }
@@ -591,10 +599,12 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
         protected String lastPlayed(MessageNano party, TextView view) {
             String got = null;
             if(target.helper != null && target.helper.sessionData != null) {
-                PersistentDataUtils.SessionStructs structs = target.helper.sessionData.get(party);
-                if(structs.irl == null) got = getString(R.string.ppa_neverPlayed);
-                else if(structs.irl.lastSaved == null) got = getString(R.string.ppa_lastSavedInconsistent);
-                else got = target.getNiceDate(structs.irl.lastSaved);
+                Session.Suspended structs = target.helper.sessionData.get(party);
+                if(structs != null) {
+                    if (structs.lastBegin == null) got = getString(R.string.ppa_neverPlayed);
+                    else if (structs.lastSaved == null) got = getString(R.string.ppa_lastSavedInconsistent);
+                    else got = target.getNiceDate(structs.lastSaved);
+                }
             }
             MaxUtils.setTextUnlessNull(view, got, View.GONE);
             return got;
@@ -619,7 +629,7 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
                 npcList.setText(String.format(res, target.list(party.npcs)));
             }
             final Button go = (Button)layout.findViewById(R.id.fragPPAOD_goAdventuring);
-            go.setText(isFighting(party) ? R.string.ppa_ownedDetails_continueBattle : R.string.ppa_ownedDetails_newSession);
+            go.setText(sessionButton(party, true));
             ((TextView)layout.findViewById(R.id.fragPPAOD_created)).setText(target.getNiceDate(party.created));
             lastPlayed(party, (TextView) layout.findViewById(R.id.fragPPAOD_lastPlayed));
             note(party, R.id.fragPPAOD_note, layout);
@@ -640,7 +650,7 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             ((TextView)layout.findViewById(R.id.fragPPAJD_partyName)).setText(party.name);
             MaxUtils.setTextUnlessNull((TextView) layout.findViewById(R.id.fragPPAJD_lastPlayedPcs), target.listLastPlayedPcs(party), View.GONE);
             final Button go = (Button)layout.findViewById(R.id.fragPPAJD_goAdventuring);
-            go.setText(isFighting(party) ? R.string.ppa_joinedDetails_continueBattle : R.string.ppa_joinedDetails_newSession);
+            go.setText(sessionButton(party, false));
             ((TextView)layout.findViewById(R.id.fragPPAJD_created)).setText(target.getNiceDate(party.received));
             lastPlayed(party, (TextView) layout.findViewById(R.id.fragPPAJD_lastPlayed));
             note(party, R.id.fragPPAJD_note, layout);

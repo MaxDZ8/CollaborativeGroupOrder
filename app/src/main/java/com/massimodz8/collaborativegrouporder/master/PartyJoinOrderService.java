@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
-import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
+import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -20,6 +20,7 @@ import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 This goes in parallel with landing socket and publish management so you're better set this up ASAP.
                 As usual, it can be initialized only once and then the service will have to be destroyed.
                 */
-    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, PersistentDataUtils.SessionStructs live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook) {
+    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster) {
             @Override
             protected StartData.ActorDefinition getActorData(int unique) {
@@ -60,8 +61,8 @@ public class PartyJoinOrderService extends PublishAcceptService {
             }
         };
         ArrayList<Network.ActorState> byDef = new ArrayList<>();
-        for(StartData.ActorDefinition el : party.party) byDef.add(makeActorState(el, nextActorId++, Network.ActorState.T_PLAYING_CHARACTER));
-        for(StartData.ActorDefinition el : party.npcs) byDef.add(makeActorState(el, nextActorId++, Network.ActorState.T_NPC));
+        for(StartData.ActorDefinition el : party.party) byDef.add(MaxUtils.makeActorState(el, nextActorId++, Network.ActorState.T_PLAYING_CHARACTER));
+        for(StartData.ActorDefinition el : party.npcs) byDef.add(MaxUtils.makeActorState(el, nextActorId++, Network.ActorState.T_NPC));
         session = new SessionHelper(live, byDef, monsterBook) {
             @Override
             void onRollReceived() {
@@ -272,17 +273,6 @@ public class PartyJoinOrderService extends PublishAcceptService {
         id = 0;
         for (InitiativeScore el : session.battleState.ordered) current[id++] = session.getActorById(el.actorID);
         assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, current));
-    }
-
-    private static Network.ActorState makeActorState(StartData.ActorDefinition el, int id, int type) {
-        final Network.ActorState res = new Network.ActorState();
-        res.peerKey = id;
-        res.type = type;
-        res.name = el.name;
-        res.maxHP = res.currentHP = el.stats[0].healthPoints;
-        res.initiativeBonus = el.stats[0].initBonus;
-        res.experience = el.experience;
-        return res;
     }
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

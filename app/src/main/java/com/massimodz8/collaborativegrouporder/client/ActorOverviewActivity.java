@@ -303,12 +303,12 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                     vibro.vibrate(intervals, -1);
                 }
                 getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                if(request.type == Network.Roll.T_BATTLE_START) {
+                if(request.type == Network.Roll.T_INITIATIVE) {
                     final ActionBar sab = getSupportActionBar();
                     if(sab != null) sab.setTitle(R.string.aoa_title_fighting);
                     // todo: update round count into title bar!
                 }
-                if(request.type == Network.Roll.T_BATTLE_START) {
+                if(request.type == Network.Roll.T_INITIATIVE) {
                     final TextView status = (TextView) findViewById(R.id.aoa_status);
                     status.setText(R.string.aoa_waitingOtherPlayersRoll);
                 }
@@ -320,6 +320,15 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         ticker.onCurrentActorChanged.push(new Runnable() {
             @Override
             public void run() {
+                final TextView status = (TextView) findViewById(R.id.aoa_status);
+                if(ticker.round == AdventuringService.ROUND_NOT_FIGHTING) {
+                    status.setText(R.string.aoa_waitingForBattleStart);
+                    final ActionBar sab = getSupportActionBar();
+                    if(sab != null) sab.setTitle(R.string.aoa_title);
+                }
+                else if(ticker.round == 0) status.setText(R.string.aoa_waitingOtherPlayersRoll);
+                else status.setText(R.string.aoa_waitingMyTurn);
+
                 final ActionBar sab = getSupportActionBar();
                 if(sab != null) sab.setTitle(ticker.round == AdventuringService.ROUND_NOT_FIGHTING? R.string.aoa_title : R.string.aoa_title_fighting);
                 if(ticker.round == AdventuringService.ROUND_NOT_FIGHTING) return;

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 
 import java.util.ArrayDeque;
 
@@ -14,8 +15,8 @@ import java.util.ArrayDeque;
 public class BattleHelper {
     public final InitiativeScore[] ordered;
 
-    public @ActorId int currentActor = -1;
-    public int round = -1;
+    public @ActorId int currentActor = -1; // only relevant if this.round != 0
+    public int round = 0;
     boolean prevWasReadied;
     /**
      * Stack of triggered actions, they temporarily suppress normal order.
@@ -101,5 +102,32 @@ public class BattleHelper {
         }
         ordered[newPos] = temp;
         return true;
+    }
+
+    Session.BattleState asProtoBuf() {
+        Session.BattleState res = new Session.BattleState();
+        res.round = round;
+        if(res.round != 0) res.currentActor = currentActor;
+        res.prevWasReadied = prevWasReadied;
+        if(interrupted != null) {
+            res.interrupted = new int[interrupted.size()];
+            for (int cp = 0; cp < res.interrupted.length; cp++) {
+                int dst = res.interrupted.length - 1 - cp;
+                res.interrupted[dst] = interrupted.pop();
+            }
+            for (int el : res.interrupted) interrupted.push(el);
+        }
+        res.initiative = new int[ordered.length * 3];
+        res.id = new int[ordered.length];
+        res.enabled = new boolean[ordered.length];
+        int slow = 0, fast = 0;
+        for (InitiativeScore el : ordered) {
+            res.id[slow] = el.actorID;
+            res.enabled[slow++] = el.enabled;
+            res.initiative[fast++] = el.initRoll;
+            res.initiative[fast++] = el.bonus;
+            res.initiative[fast++] = el.rand;
+        }
+        return res;
     }
 }

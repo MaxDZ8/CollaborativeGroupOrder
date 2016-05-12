@@ -142,7 +142,7 @@ message Roll {
 	
 	enum Type {
 		T_MISC = 0;
-		T_BATTLE_START = 1; // initiative roll which also begins a battle
+		T_INITIATIVE = 1; // when asking an initiative roll, clients will likely go battle mode
 	}
 }
 
@@ -168,6 +168,7 @@ message TurnControl {
 		T_OPPORTUNITY = 3;
 		
 		T_BATTLE_ENDED = 32;
+		T_BATTLE_ROUND = 33; // used when server restored state, notifies battle start and sets current round, other fields are ignored
 	}
 	Type type = 1;
 	uint32 peerKey = 2;

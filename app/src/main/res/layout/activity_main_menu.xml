@@ -21,7 +21,8 @@
         android:enabled="false"
         android:layout_marginTop="8sp"
         android:layout_marginBottom="8sp"
-        android:onClick="pickParty_callback" />
+        android:onClick="pickParty_callback"
+        android:drawableTop="@drawable/ic_start_battle_white_48dp" />
 
     <Button
         android:layout_width="wrap_content"

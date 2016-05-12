@@ -1059,7 +1059,7 @@ public interface Network {
 
     // enum Type
     public static final int T_MISC = 0;
-    public static final int T_BATTLE_START = 1;
+    public static final int T_INITIATIVE = 1;
 
     private static volatile Roll[] _emptyArray;
     public static Roll[] emptyArray() {
@@ -1201,7 +1201,7 @@ public interface Network {
             int value = input.readInt32();
             switch (value) {
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.Roll.T_MISC:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.Roll.T_BATTLE_START:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.Roll.T_INITIATIVE:
                 this.type = value;
                 break;
             }
@@ -1375,6 +1375,7 @@ public interface Network {
     public static final int T_PREPARED_TRIGGERED = 2;
     public static final int T_OPPORTUNITY = 3;
     public static final int T_BATTLE_ENDED = 32;
+    public static final int T_BATTLE_ROUND = 33;
 
     private static volatile TurnControl[] _emptyArray;
     public static TurnControl[] emptyArray() {
@@ -1467,6 +1468,7 @@ public interface Network {
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_PREPARED_TRIGGERED:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_OPPORTUNITY:
               case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_BATTLE_ENDED:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.TurnControl.T_BATTLE_ROUND:
                 this.type = value;
                 break;
             }

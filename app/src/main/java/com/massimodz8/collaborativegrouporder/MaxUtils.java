@@ -15,6 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
@@ -97,6 +100,17 @@ public abstract class MaxUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             TransitionManager.beginDelayedTransition((ViewGroup) ctx.findViewById(R.id.activityRoot));
         }
+    }
+
+    public static Network.ActorState makeActorState(StartData.ActorDefinition el, @ActorId int id, int type) {
+        final Network.ActorState res = new Network.ActorState();
+        res.peerKey = id;
+        res.type = type;
+        res.name = el.name;
+        res.maxHP = res.currentHP = el.stats[0].healthPoints;
+        res.initiativeBonus = el.stats[0].initBonus;
+        res.experience = el.experience;
+        return res;
     }
 
     public static class TotalLoader {

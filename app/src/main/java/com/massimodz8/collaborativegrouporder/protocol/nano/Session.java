@@ -5,22 +5,17 @@ package com.massimodz8.collaborativegrouporder.protocol.nano;
 @SuppressWarnings("hiding")
 public interface Session {
 
-  public static final class RealWorldData extends
+  public static final class Suspended extends
       com.google.protobuf.nano.MessageNano {
 
-    // enum State
-    public static final int KNOWN = 0;
-    public static final int ADVENTURING = 1;
-    public static final int FIGHTING = 2;
-
-    private static volatile RealWorldData[] _emptyArray;
-    public static RealWorldData[] emptyArray() {
+    private static volatile Suspended[] _emptyArray;
+    public static Suspended[] emptyArray() {
       // Lazily initializes the empty array
       if (_emptyArray == null) {
         synchronized (
             com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
           if (_emptyArray == null) {
-            _emptyArray = new RealWorldData[0];
+            _emptyArray = new Suspended[0];
           }
         }
       }
@@ -42,20 +37,28 @@ public interface Session {
     // optional string note = 5;
     public java.lang.String note;
 
-    // optional .RealWorldData.State state = 6;
-    public int state;
+    // repeated uint32 notFighting = 6 [packed = true];
+    public int[] notFighting;
 
-    public RealWorldData() {
+    // repeated .ActorState live = 7;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState[] live;
+
+    // optional .BattleState fighting = 8;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.Session.BattleState fighting;
+
+    public Suspended() {
       clear();
     }
 
-    public RealWorldData clear() {
+    public Suspended clear() {
       lastBegin = null;
       lastSaved = null;
       spent = null;
       numSessions = 0;
       note = "";
-      state = com.massimodz8.collaborativegrouporder.protocol.nano.Session.RealWorldData.KNOWN;
+      notFighting = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
+      live = com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState.emptyArray();
+      fighting = null;
       cachedSize = -1;
       return this;
     }
@@ -78,8 +81,29 @@ public interface Session {
       if (!this.note.equals("")) {
         output.writeString(5, this.note);
       }
-      if (this.state != com.massimodz8.collaborativegrouporder.protocol.nano.Session.RealWorldData.KNOWN) {
-        output.writeInt32(6, this.state);
+      if (this.notFighting != null && this.notFighting.length > 0) {
+        int dataSize = 0;
+        for (int i = 0; i < this.notFighting.length; i++) {
+          int element = this.notFighting[i];
+          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeUInt32SizeNoTag(element);
+        }
+        output.writeRawVarint32(50);
+        output.writeRawVarint32(dataSize);
+        for (int i = 0; i < this.notFighting.length; i++) {
+          output.writeUInt32NoTag(this.notFighting[i]);
+        }
+      }
+      if (this.live != null && this.live.length > 0) {
+        for (int i = 0; i < this.live.length; i++) {
+          com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState element = this.live[i];
+          if (element != null) {
+            output.writeMessage(7, element);
+          }
+        }
+      }
+      if (this.fighting != null) {
+        output.writeMessage(8, this.fighting);
       }
       super.writeTo(output);
     }
@@ -107,15 +131,36 @@ public interface Session {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeStringSize(5, this.note);
       }
-      if (this.state != com.massimodz8.collaborativegrouporder.protocol.nano.Session.RealWorldData.KNOWN) {
+      if (this.notFighting != null && this.notFighting.length > 0) {
+        int dataSize = 0;
+        for (int i = 0; i < this.notFighting.length; i++) {
+          int element = this.notFighting[i];
+          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeUInt32SizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1;
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-          .computeInt32Size(6, this.state);
+            .computeRawVarint32Size(dataSize);
+      }
+      if (this.live != null && this.live.length > 0) {
+        for (int i = 0; i < this.live.length; i++) {
+          com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState element = this.live[i];
+          if (element != null) {
+            size += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeMessageSize(7, element);
+          }
+        }
+      }
+      if (this.fighting != null) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeMessageSize(8, this.fighting);
       }
       return size;
     }
 
     @Override
-    public RealWorldData mergeFrom(
+    public Suspended mergeFrom(
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
       while (true) {
@@ -159,60 +204,267 @@ public interface Session {
             break;
           }
           case 48: {
-            int value = input.readInt32();
-            switch (value) {
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Session.RealWorldData.KNOWN:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Session.RealWorldData.ADVENTURING:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.Session.RealWorldData.FIGHTING:
-                this.state = value;
-                break;
+            int arrayLength = com.google.protobuf.nano.WireFormatNano
+                .getRepeatedFieldArrayLength(input, 48);
+            int i = this.notFighting == null ? 0 : this.notFighting.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.notFighting, 0, newArray, 0, i);
             }
+            for (; i < newArray.length - 1; i++) {
+              newArray[i] = input.readUInt32();
+              input.readTag();
+            }
+            // Last one without readTag.
+            newArray[i] = input.readUInt32();
+            this.notFighting = newArray;
+            break;
+          }
+          case 50: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            // First pass to compute array length.
+            int arrayLength = 0;
+            int startPos = input.getPosition();
+            while (input.getBytesUntilLimit() > 0) {
+              input.readUInt32();
+              arrayLength++;
+            }
+            input.rewindToPosition(startPos);
+            int i = this.notFighting == null ? 0 : this.notFighting.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.notFighting, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length; i++) {
+              newArray[i] = input.readUInt32();
+            }
+            this.notFighting = newArray;
+            input.popLimit(limit);
+            break;
+          }
+          case 58: {
+            int arrayLength = com.google.protobuf.nano.WireFormatNano
+                .getRepeatedFieldArrayLength(input, 58);
+            int i = this.live == null ? 0 : this.live.length;
+            com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState[] newArray =
+                new com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.live, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length - 1; i++) {
+              newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState();
+              input.readMessage(newArray[i]);
+              input.readTag();
+            }
+            // Last one without readTag.
+            newArray[i] = new com.massimodz8.collaborativegrouporder.protocol.nano.Network.ActorState();
+            input.readMessage(newArray[i]);
+            this.live = newArray;
+            break;
+          }
+          case 66: {
+            if (this.fighting == null) {
+              this.fighting = new com.massimodz8.collaborativegrouporder.protocol.nano.Session.BattleState();
+            }
+            input.readMessage(this.fighting);
             break;
           }
         }
       }
     }
 
-    public static RealWorldData parseFrom(byte[] data)
+    public static Suspended parseFrom(byte[] data)
         throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new RealWorldData(), data);
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new Suspended(), data);
     }
 
-    public static RealWorldData parseFrom(
+    public static Suspended parseFrom(
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
-      return new RealWorldData().mergeFrom(input);
+      return new Suspended().mergeFrom(input);
     }
   }
 
-  public static final class LiveData extends
+  public static final class BattleState extends
       com.google.protobuf.nano.MessageNano {
 
-    private static volatile LiveData[] _emptyArray;
-    public static LiveData[] emptyArray() {
+    private static volatile BattleState[] _emptyArray;
+    public static BattleState[] emptyArray() {
       // Lazily initializes the empty array
       if (_emptyArray == null) {
         synchronized (
             com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
           if (_emptyArray == null) {
-            _emptyArray = new LiveData[0];
+            _emptyArray = new BattleState[0];
           }
         }
       }
       return _emptyArray;
     }
 
-    public LiveData() {
+    // optional uint32 round = 1;
+    public int round;
+
+    // optional uint32 currentActor = 2;
+    public int currentActor;
+
+    // optional bool prevWasReadied = 3;
+    public boolean prevWasReadied;
+
+    // repeated uint32 interrupted = 4 [packed = true];
+    public int[] interrupted;
+
+    // repeated int32 initiative = 5 [packed = true];
+    public int[] initiative;
+
+    // repeated uint32 id = 6 [packed = true];
+    public int[] id;
+
+    // repeated bool enabled = 7 [packed = true];
+    public boolean[] enabled;
+
+    public BattleState() {
       clear();
     }
 
-    public LiveData clear() {
+    public BattleState clear() {
+      round = 0;
+      currentActor = 0;
+      prevWasReadied = false;
+      interrupted = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
+      initiative = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
+      id = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
+      enabled = com.google.protobuf.nano.WireFormatNano.EMPTY_BOOLEAN_ARRAY;
       cachedSize = -1;
       return this;
     }
 
     @Override
-    public LiveData mergeFrom(
+    public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
+        throws java.io.IOException {
+      if (this.round != 0) {
+        output.writeUInt32(1, this.round);
+      }
+      if (this.currentActor != 0) {
+        output.writeUInt32(2, this.currentActor);
+      }
+      if (this.prevWasReadied != false) {
+        output.writeBool(3, this.prevWasReadied);
+      }
+      if (this.interrupted != null && this.interrupted.length > 0) {
+        int dataSize = 0;
+        for (int i = 0; i < this.interrupted.length; i++) {
+          int element = this.interrupted[i];
+          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeUInt32SizeNoTag(element);
+        }
+        output.writeRawVarint32(34);
+        output.writeRawVarint32(dataSize);
+        for (int i = 0; i < this.interrupted.length; i++) {
+          output.writeUInt32NoTag(this.interrupted[i]);
+        }
+      }
+      if (this.initiative != null && this.initiative.length > 0) {
+        int dataSize = 0;
+        for (int i = 0; i < this.initiative.length; i++) {
+          int element = this.initiative[i];
+          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeInt32SizeNoTag(element);
+        }
+        output.writeRawVarint32(42);
+        output.writeRawVarint32(dataSize);
+        for (int i = 0; i < this.initiative.length; i++) {
+          output.writeInt32NoTag(this.initiative[i]);
+        }
+      }
+      if (this.id != null && this.id.length > 0) {
+        int dataSize = 0;
+        for (int i = 0; i < this.id.length; i++) {
+          int element = this.id[i];
+          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeUInt32SizeNoTag(element);
+        }
+        output.writeRawVarint32(50);
+        output.writeRawVarint32(dataSize);
+        for (int i = 0; i < this.id.length; i++) {
+          output.writeUInt32NoTag(this.id[i]);
+        }
+      }
+      if (this.enabled != null && this.enabled.length > 0) {
+        int dataSize = 1 * this.enabled.length;
+        output.writeRawVarint32(58);
+        output.writeRawVarint32(dataSize);
+        for (int i = 0; i < this.enabled.length; i++) {
+          output.writeBoolNoTag(this.enabled[i]);
+        }
+      }
+      super.writeTo(output);
+    }
+
+    @Override
+    protected int computeSerializedSize() {
+      int size = super.computeSerializedSize();
+      if (this.round != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(1, this.round);
+      }
+      if (this.currentActor != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(2, this.currentActor);
+      }
+      if (this.prevWasReadied != false) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeBoolSize(3, this.prevWasReadied);
+      }
+      if (this.interrupted != null && this.interrupted.length > 0) {
+        int dataSize = 0;
+        for (int i = 0; i < this.interrupted.length; i++) {
+          int element = this.interrupted[i];
+          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeUInt32SizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1;
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeRawVarint32Size(dataSize);
+      }
+      if (this.initiative != null && this.initiative.length > 0) {
+        int dataSize = 0;
+        for (int i = 0; i < this.initiative.length; i++) {
+          int element = this.initiative[i];
+          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeInt32SizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1;
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeRawVarint32Size(dataSize);
+      }
+      if (this.id != null && this.id.length > 0) {
+        int dataSize = 0;
+        for (int i = 0; i < this.id.length; i++) {
+          int element = this.id[i];
+          dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+              .computeUInt32SizeNoTag(element);
+        }
+        size += dataSize;
+        size += 1;
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeRawVarint32Size(dataSize);
+      }
+      if (this.enabled != null && this.enabled.length > 0) {
+        int dataSize = 1 * this.enabled.length;
+        size += dataSize;
+        size += 1;
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeRawVarint32Size(dataSize);
+      }
+      return size;
+    }
+
+    @Override
+    public BattleState mergeFrom(
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
       while (true) {
@@ -226,76 +478,191 @@ public interface Session {
             }
             break;
           }
-        }
-      }
-    }
-
-    public static LiveData parseFrom(byte[] data)
-        throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new LiveData(), data);
-    }
-
-    public static LiveData parseFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      return new LiveData().mergeFrom(input);
-    }
-  }
-
-  public static final class BattleData extends
-      com.google.protobuf.nano.MessageNano {
-
-    private static volatile BattleData[] _emptyArray;
-    public static BattleData[] emptyArray() {
-      // Lazily initializes the empty array
-      if (_emptyArray == null) {
-        synchronized (
-            com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-          if (_emptyArray == null) {
-            _emptyArray = new BattleData[0];
+          case 8: {
+            this.round = input.readUInt32();
+            break;
           }
-        }
-      }
-      return _emptyArray;
-    }
-
-    public BattleData() {
-      clear();
-    }
-
-    public BattleData clear() {
-      cachedSize = -1;
-      return this;
-    }
-
-    @Override
-    public BattleData mergeFrom(
-            com.google.protobuf.nano.CodedInputByteBufferNano input)
-        throws java.io.IOException {
-      while (true) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            return this;
-          default: {
-            if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-              return this;
+          case 16: {
+            this.currentActor = input.readUInt32();
+            break;
+          }
+          case 24: {
+            this.prevWasReadied = input.readBool();
+            break;
+          }
+          case 32: {
+            int arrayLength = com.google.protobuf.nano.WireFormatNano
+                .getRepeatedFieldArrayLength(input, 32);
+            int i = this.interrupted == null ? 0 : this.interrupted.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.interrupted, 0, newArray, 0, i);
             }
+            for (; i < newArray.length - 1; i++) {
+              newArray[i] = input.readUInt32();
+              input.readTag();
+            }
+            // Last one without readTag.
+            newArray[i] = input.readUInt32();
+            this.interrupted = newArray;
+            break;
+          }
+          case 34: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            // First pass to compute array length.
+            int arrayLength = 0;
+            int startPos = input.getPosition();
+            while (input.getBytesUntilLimit() > 0) {
+              input.readUInt32();
+              arrayLength++;
+            }
+            input.rewindToPosition(startPos);
+            int i = this.interrupted == null ? 0 : this.interrupted.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.interrupted, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length; i++) {
+              newArray[i] = input.readUInt32();
+            }
+            this.interrupted = newArray;
+            input.popLimit(limit);
+            break;
+          }
+          case 40: {
+            int arrayLength = com.google.protobuf.nano.WireFormatNano
+                .getRepeatedFieldArrayLength(input, 40);
+            int i = this.initiative == null ? 0 : this.initiative.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.initiative, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length - 1; i++) {
+              newArray[i] = input.readInt32();
+              input.readTag();
+            }
+            // Last one without readTag.
+            newArray[i] = input.readInt32();
+            this.initiative = newArray;
+            break;
+          }
+          case 42: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            // First pass to compute array length.
+            int arrayLength = 0;
+            int startPos = input.getPosition();
+            while (input.getBytesUntilLimit() > 0) {
+              input.readInt32();
+              arrayLength++;
+            }
+            input.rewindToPosition(startPos);
+            int i = this.initiative == null ? 0 : this.initiative.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.initiative, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length; i++) {
+              newArray[i] = input.readInt32();
+            }
+            this.initiative = newArray;
+            input.popLimit(limit);
+            break;
+          }
+          case 48: {
+            int arrayLength = com.google.protobuf.nano.WireFormatNano
+                .getRepeatedFieldArrayLength(input, 48);
+            int i = this.id == null ? 0 : this.id.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.id, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length - 1; i++) {
+              newArray[i] = input.readUInt32();
+              input.readTag();
+            }
+            // Last one without readTag.
+            newArray[i] = input.readUInt32();
+            this.id = newArray;
+            break;
+          }
+          case 50: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            // First pass to compute array length.
+            int arrayLength = 0;
+            int startPos = input.getPosition();
+            while (input.getBytesUntilLimit() > 0) {
+              input.readUInt32();
+              arrayLength++;
+            }
+            input.rewindToPosition(startPos);
+            int i = this.id == null ? 0 : this.id.length;
+            int[] newArray = new int[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.id, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length; i++) {
+              newArray[i] = input.readUInt32();
+            }
+            this.id = newArray;
+            input.popLimit(limit);
+            break;
+          }
+          case 56: {
+            int arrayLength = com.google.protobuf.nano.WireFormatNano
+                .getRepeatedFieldArrayLength(input, 56);
+            int i = this.enabled == null ? 0 : this.enabled.length;
+            boolean[] newArray = new boolean[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.enabled, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length - 1; i++) {
+              newArray[i] = input.readBool();
+              input.readTag();
+            }
+            // Last one without readTag.
+            newArray[i] = input.readBool();
+            this.enabled = newArray;
+            break;
+          }
+          case 58: {
+            int length = input.readRawVarint32();
+            int limit = input.pushLimit(length);
+            // First pass to compute array length.
+            int arrayLength = 0;
+            int startPos = input.getPosition();
+            while (input.getBytesUntilLimit() > 0) {
+              input.readBool();
+              arrayLength++;
+            }
+            input.rewindToPosition(startPos);
+            int i = this.enabled == null ? 0 : this.enabled.length;
+            boolean[] newArray = new boolean[i + arrayLength];
+            if (i != 0) {
+              java.lang.System.arraycopy(this.enabled, 0, newArray, 0, i);
+            }
+            for (; i < newArray.length; i++) {
+              newArray[i] = input.readBool();
+            }
+            this.enabled = newArray;
+            input.popLimit(limit);
             break;
           }
         }
       }
     }
 
-    public static BattleData parseFrom(byte[] data)
+    public static BattleState parseFrom(byte[] data)
         throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new BattleData(), data);
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new BattleState(), data);
     }
 
-    public static BattleData parseFrom(
+    public static BattleState parseFrom(
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
-      return new BattleData().mergeFrom(input);
+      return new BattleState().mergeFrom(input);
     }
   }
 }

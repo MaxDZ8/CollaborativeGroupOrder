@@ -29,6 +29,7 @@ import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.File;
@@ -55,7 +56,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             new AlertDialog.Builder(this)
                     .setCancelable(false)
                     .setMessage(R.string.mma_failedToInitHasher)
-                    .setPositiveButton("Quit", new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.mma_quit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();
@@ -362,7 +363,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     // Those must be fields to ensure a communication channel to the asynchronous onServiceConnected callbacks.
     private MessageNano activeParty; // StartData.PartyOwnerData.Group or StartData.PartyClientData.Group
-    private PersistentDataUtils.SessionStructs activeStats;
+    private Session.Suspended activeStats;
     private ServerSocket activeLanding;
     private Pumper.MessagePumpingThread[] activeConnections; // Client: a single connection to a server or Owner: list of connections to client
 
