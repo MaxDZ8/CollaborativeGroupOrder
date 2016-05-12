@@ -1,5 +1,7 @@
 package com.massimodz8.collaborativegrouporder.master;
 
+import android.util.ArraySet;
+
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
@@ -10,7 +12,9 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Massimo on 14/03/2016.
@@ -94,7 +98,7 @@ public abstract class SessionHelper {
         boolean currently = fighters.contains(id);
         if(newFlag == null) return currently;
         if(newFlag) fighters.add(id);
-        else fighters.remove(fighters.indexOf(id));
+        else fighters.remove(id);
         return newFlag;
     }
     int getNumActors() { return existByDef.size() + temporaries.size(); }
@@ -114,5 +118,5 @@ public abstract class SessionHelper {
     }
 
     public final ArrayList<Network.ActorState> temporaries = new ArrayList<>();
-    private final ArrayList<Integer> fighters = new ArrayList<>();
+    private final Set<Integer> fighters = new HashSet<>();
 }

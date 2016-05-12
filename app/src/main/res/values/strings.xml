@@ -422,6 +422,7 @@
     <string name="fra_startBrandNewSession">Started brand new session.</string>
     <string name="fra_restoredSession">Restored from %1$s.</string>
     <string name="fra_noBattle_zeroPcs">At least one playing character required.</string>
+    <string name="fra_noBattle_oneActor">You need at least two actors to fight.</string>
     <string name="fra_searchLabel">Add mobs to battle</string>
     <string name="fra_searchable_hint">Search mobs to battle</string>
     <string name="fra_dlgActionIgnoreMissingCharacters">Ignore and start battle</string>
@@ -430,6 +431,8 @@
     <string name="fra_dlgWIR_title">Waiting initiative rolls</string>
     <string name="fra_dlgWIR_info">I will switch to battle as soon as I can figure out an order of initiative.\nFor the time being, you must wait.</string>
     <string name="fra_dlgIOErrorSerializingSession_impossible">Could not save session data.\nDetails: %1$s</string>
+    <string name="fra_exitDlgMsg">Session data will be saved for later. However, players will have to reconnect and you will have to assign characters again.</string>
+    <string name="fra_exitButtonConfirm">Get me out</string>
 
     <string name="sma_title">Spawn monsters</string>
     <string name="sma_searchingMessage">Searching…</string>

@@ -77,6 +77,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                     else count += add;
                 }
                 if(pgCount == 0) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_zeroPcs, Snackbar.LENGTH_LONG).show();
+                else if(count == 1) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_oneActor, Snackbar.LENGTH_LONG).show();
                 else if(count + pgCount != game.session.getNumActors()) {
                     new AlertDialog.Builder(FreeRoamingActivity.this)
                             .setMessage(getString(R.string.fra_dlgMsg_missingChars))
@@ -325,6 +326,8 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         save.live = new Network.ActorState[game.session.getNumActors()];
         for(int loop = 0; loop < game.session.getNumActors(); loop++) {
             save.live[loop] = game.session.getActor(loop);
+            // TODO if my serialization == serialization from byDef canonical object then don't serialize me
+            // TODO so we can start the new session instead of restoring one... but that's the case only if we have no mobs nor other state to restore!
         }
         if(game.session.battleState != null) save.fighting = game.session.battleState.asProtoBuf();
         int takes = save.getSerializedSize();
@@ -383,7 +386,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                     if(el == live.peerKey) break;
                     found++;
                 }
-                game.session.willFight(live.peerKey, found == stats.notFighting.length || stats.notFighting.length == 0);
+                if(found == stats.notFighting.length || stats.notFighting.length == 0) game.session.willFight(live.peerKey, true); // playing characters start deselected
                 game.session.existByDef.set(live.peerKey, live);
                 remember.put(live.peerKey, live.peerKey);
             }
@@ -401,7 +404,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                     if(el == ori) break;
                     found++;
                 }
-                game.session.willFight(live.peerKey, found == stats.notFighting.length || stats.notFighting.length == 0);
+                if(found == stats.notFighting.length || stats.notFighting.length == 0) game.session.willFight(live.peerKey, true);
             }
             if(stats.fighting != null) { // a bit ugh
                 InitiativeScore[] order = new InitiativeScore[stats.fighting.id.length];
