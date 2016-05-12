@@ -187,6 +187,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.master.FreeRoamingActivity" />
         </activity>
+        <activity
+            android:name=".OpenGameLicenseActivity"
+            android:label="@string/ogla_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
     </application>
 
 </manifest>

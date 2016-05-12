@@ -15,6 +15,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.google.protobuf.nano.CodedInputByteBufferNano;
@@ -106,6 +108,23 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         activeConnections = null;
         activeLanding = null;
         activeParty = null;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu_activity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.mma_ogl: {
+                startActivity(new Intent(this, OpenGameLicenseActivity.class));
+                break;
+            }
+        }
+        return false;
     }
 
     /// Called when party owner data loaded version != from current.

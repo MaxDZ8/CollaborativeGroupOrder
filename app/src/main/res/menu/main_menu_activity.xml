@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/mma_ogl"
+        android:title="@string/mma_menu_ogl"
+        android:titleCondensed="@string/mma_menu_oglShort"
+        app:showAsAction="never" />
+</menu>
