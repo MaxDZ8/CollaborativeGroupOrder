@@ -177,7 +177,7 @@ public class AdventuringService extends Service {
                 } break;
                 case MSG_ROLL: {
                     final Network.Roll real = (Network.Roll) msg.obj;
-                    if(real.type == Network.Roll.T_BATTLE_START) self.round = 0;
+                    if(real.type == Network.Roll.T_INITIATIVE) self.round = 0;
                     self.rollRequests.push(real);
                     if(self.onRollRequestPushed.size() > 0) self.onRollRequestPushed.getFirst().run();
                 } break;
@@ -215,13 +215,15 @@ public class AdventuringService extends Service {
                         return; // otherwise real.peerKey might be default --> mapping to zero
                     }
                     self.round = real.round;
-                    boolean here = false;
-                    for (int check : self.playedHere) here |= check == real.peerKey;
-                    if(!here) self.currentActor = -1;
-                    else self.currentActor = real.peerKey;
-                    if(real.type == Network.TurnControl.T_PREPARED_TRIGGERED) {
-                        self.actors.get(real.peerKey).actor.preparedTriggered = true;
-                    }
+                    if(real.type != Network.TurnControl.T_BATTLE_ROUND) {
+                        boolean here = false;
+                        for (int check : self.playedHere) here |= check == real.peerKey;
+                        if (!here) self.currentActor = -1;
+                        else self.currentActor = real.peerKey;
+                        if (real.type == Network.TurnControl.T_PREPARED_TRIGGERED) {
+                            self.actors.get(real.peerKey).actor.preparedTriggered = true;
+                        }
+                    } // trigger actor changed anyway so we can update round count
                     if(self.onCurrentActorChanged.size() > 0) self.onCurrentActorChanged.getFirst().run();
                 } break;
             }

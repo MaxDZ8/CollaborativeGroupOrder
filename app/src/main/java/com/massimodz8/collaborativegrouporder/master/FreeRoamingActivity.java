@@ -186,7 +186,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 rq.unique = ++game.rollRequest;
                 rq.range = 20;
                 rq.peerKey = loop;
-                rq.type = Network.Roll.T_BATTLE_START;
+                rq.type = Network.Roll.T_INITIATIVE;
                 game.session.initiatives.put(actor.peerKey, new SessionHelper.Initiative(rq));
                 game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ROLL, rq));
             } else {
@@ -424,6 +424,18 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                 }
                 game.pushBattleOrder();
                 for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
+                // Note: this is an extra. We cannot use INITIATIVE roll to signal battle start so...
+                Network.TurnControl notifyRound = new Network.TurnControl();
+                notifyRound.type = Network.TurnControl.T_BATTLE_ROUND;
+                notifyRound.round = battle.round;
+                for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+                    if(dev.pipe == null) continue;
+                    game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, notifyRound));
+
+                    if(dev.movedToBattlePumper) continue;
+                    game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
+                    dev.movedToBattlePumper = true;
+                }
                 startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
             }
             else {
