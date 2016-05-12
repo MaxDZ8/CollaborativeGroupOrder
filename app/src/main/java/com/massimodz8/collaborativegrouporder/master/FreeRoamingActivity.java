@@ -143,13 +143,13 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             super.onBackPressed();
             return;
         }
-        saveSessionStateAndFinish();
+        saveSessionStateAndFinish(false);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         if(game == null) return super.onSupportNavigateUp();
-        saveSessionStateAndFinish();
+        saveSessionStateAndFinish(false);
         return false;
     }
 
@@ -258,7 +258,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                         break;
                     }
                     case BattleActivity.RESULT_OK_SUSPEND: {
-                        saveSessionStateAndFinish();
+                        saveSessionStateAndFinish(true);
                         break;
                     }
                 }
@@ -288,7 +288,20 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     }
 
     private boolean saving;
-    private void saveSessionStateAndFinish() {
+    private void saveSessionStateAndFinish(boolean confirmed) {
+        if(!confirmed) {
+            new AlertDialog.Builder(this)
+                    .setTitle(R.string.generic_carefulDlgTitle)
+                    .setMessage(R.string.fra_exitDlgMsg)
+                    .setPositiveButton(R.string.fra_exitButtonConfirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            saveSessionStateAndFinish(true);
+                        }
+                    })
+                    .show();
+            return;
+        }
         if(saving) return;
         saving = true; // no need to set it to false, we terminate activity
         Session.Suspended save = game.session.stats;
