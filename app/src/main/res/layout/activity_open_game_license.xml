@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OpenGameLicenseActivity">
+    tools:context=".OpenGameLicenseActivity"
+    android:id="@+id/activityRoot">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -30,13 +31,73 @@
             android:text="@string/ogla_1_definitions"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_1_definitions" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_1_body"
-            android:layout_marginLeft="8sp" />
+            android:text="@string/ogla_1_body_a"
+            android:layout_marginLeft="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_1_body_a" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_1_body_b"
+            android:layout_marginLeft="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_1_body_b" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_1_body_c"
+            android:layout_marginLeft="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_1_body_c" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_1_body_d"
+            android:layout_marginLeft="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_1_body_d" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_1_body_e"
+            android:layout_marginLeft="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_1_body_e" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_1_body_f"
+            android:layout_marginLeft="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_1_body_f" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_1_body_g"
+            android:layout_marginLeft="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_1_body_g" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_1_body_h"
+            android:layout_marginLeft="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_1_body_h" />
 
         <TextView
             android:layout_width="match_parent"
@@ -44,12 +105,16 @@
             android:text="@string/ogla_2_the_license"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_2_the_license" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_2_body" />
+            android:text="@string/ogla_2_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_2_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -57,12 +122,16 @@
             android:text="@string/ogla_3_offer_and_acceptance"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_3_offer_and_acceptance" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_3_body" />
+            android:text="@string/ogla_3_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_3_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -70,12 +139,16 @@
             android:text="@string/ogla_4_grant_and_consideration"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_4_grant_and_consideration" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_4_body" />
+            android:text="@string/ogla_4_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_4_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -83,12 +156,16 @@
             android:text="@string/ogla_5_representation_of_authority_to_contribute"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_5_representation_of_autorithy_to_contribute" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_5_body" />
+            android:text="@string/ogla_5_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_5_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -96,12 +173,16 @@
             android:text="@string/ogla_6_notice_of_license_copyright"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_6_notice_of_license_copyright" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_6_body" />
+            android:text="@string/ogla_6_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_6_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -109,12 +190,16 @@
             android:text="@string/ogla_7_use_of_product_identity"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_7_use_of_product_identity" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_7_body" />
+            android:text="@string/ogla_7_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_7_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -122,12 +207,16 @@
             android:text="@string/ogla_8_identification"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_8_identification" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_8_body" />
+            android:text="@string/ogla_8_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_8_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -135,12 +224,16 @@
             android:text="@string/ogla_9_updating_the_license"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_9_updating_the_license" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_9_body" />
+            android:text="@string/ogla_9_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_9_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -148,12 +241,16 @@
             android:text="@string/ogla_10_copy_of_this_license"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_10_copy_of_this_license" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_10_body" />
+            android:text="@string/ogla_10_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_10_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -161,12 +258,16 @@
             android:text="@string/ogla_11_use_of_contributor_credits"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_11_use_of_contributor_credits" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_11_body" />
+            android:text="@string/ogla_11_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_11_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -174,12 +275,16 @@
             android:text="@string/ogla_12_inability_to_comply"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_12_inability_to_comply" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_12_body" />
+            android:text="@string/ogla_12_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_12_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -187,12 +292,16 @@
             android:text="@string/ogla_13_termination"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_13_termination" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_13_body" />
+            android:text="@string/ogla_13_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_13_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -200,12 +309,16 @@
             android:text="@string/ogla_14_reformation"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_14_reformation" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_14_body" />
+            android:text="@string/ogla_14_body"
+            android:visibility="gone"
+            android:id="@+id/ogla_14_body" />
 
         <TextView
             android:layout_width="match_parent"
@@ -213,136 +326,345 @@
             android:text="@string/ogla_15_copyright_notice"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textStyle="bold"
-            android:layout_marginTop="8sp" />
+            android:layout_marginTop="8sp"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_copyright_notice" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_misc" />
+            android:text="@string/ogla_15_misc"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_misc" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_a" />
+            android:text="@string/ogla_15_a1"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_a1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_b" />
+            android:text="@string/ogla_15_a2"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_a2" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_c" />
+            android:text="@string/ogla_15_b1"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_b1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_d" />
+            android:text="@string/ogla_15_b2"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_b2" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_e" />
+            android:text="@string/ogla_15_c1"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_c1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_f" />
+            android:text="@string/ogla_15_c2"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_c2" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_g" />
+            android:text="@string/ogla_15_d1"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_d1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_h" />
+            android:text="@string/ogla_15_d2"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_d2" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_i" />
+            android:text="@string/ogla_15_d3"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_d3" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_j" />
+            android:text="@string/ogla_15_e"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_e" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_k" />
+            android:text="@string/ogla_15_f"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_f" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_l" />
+            android:text="@string/ogla_15_g"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_g" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_m" />
+            android:text="@string/ogla_15_h"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_h" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_n" />
+            android:text="@string/ogla_15_i"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_i" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_o" />
+            android:text="@string/ogla_15_j"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_j" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_p" />
+            android:text="@string/ogla_15_k1"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_k1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_o" />
+            android:text="@string/ogla_15_k2"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_k2" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_q" />
+            android:text="@string/ogla_15_l"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_l" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_r" />
+            android:text="@string/ogla_15_m1"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_m1" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_s" />
+            android:text="@string/ogla_15_m2"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_m2" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_t" />
+            android:text="@string/ogla_15_n"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_n" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_u" />
+            android:text="@string/ogla_15_o"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_o" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_v" />
+            android:text="@string/ogla_15_p1"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_p1" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_w" />
+            android:text="@string/ogla_15_p2"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_p2" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_y" />
+            android:text="@string/ogla_15_p3"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_p3" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/ogla_15_z" />
+            android:text="@string/ogla_15_p4"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_p4" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_p5"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_p5" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_p6"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_p6" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_p7"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_p7" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_p8"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_p8" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_p9"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_p9" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_q"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_q" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_r"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_r" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_s1"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_s1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_s2"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_s2" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_t1"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_t1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_t2"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_t2" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_t3"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_t3" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_t4"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_t4" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_t5"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_t5" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_t6"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_t6" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_u"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_u" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_v"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_v" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_w1"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_w1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_w2"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_w2" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_y"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_y" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/ogla_15_z"
+            android:visibility="gone"
+            android:id="@+id/ogla_15_z" />
 
     </LinearLayout>
 

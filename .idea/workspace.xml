@@ -199,15 +199,15 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/Massimo.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/symbols/debug/R.txt" afterPath="$PROJECT_DIR$/app/build/intermediates/symbols/debug/R.txt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CreatePartyActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CreatePartyActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/generated/source/r/debug/com/massimodz8/collaborativegrouporder/R.java" afterPath="$PROJECT_DIR$/app/build/generated/source/r/debug/com/massimodz8/collaborativegrouporder/R.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/symbols/debug/R.txt" afterPath="$PROJECT_DIR$/app/build/intermediates/symbols/debug/R.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CreatePartyActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CreatePartyActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/generated/source/r/debug/android/support/v7/appcompat/R.java" afterPath="$PROJECT_DIR$/app/build/generated/source/r/debug/android/support/v7/appcompat/R.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="CollaborativeGroupOrder.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -239,73 +239,7 @@
     <favorites_list name="CollaborativeGroupOrder" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MainMenuActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MainMenuActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="122" column="79" selection-start-line="122" selection-start-column="79" selection-end-line="122" selection-end-column="79" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="activity_open_game_license.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_open_game_license.xml">
-          <provider editor-type-id="android-designer">
-            <state />
-          </provider>
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.3090909">
-              <caret line="300" column="43" selection-start-line="300" selection-start-column="43" selection-end-line="300" selection-end-column="43" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="65.3375">
-              <caret line="601" column="188" selection-start-line="601" selection-start-column="188" selection-end-line="601" selection-end-column="188" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="OpenGameLicenseActivity.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/OpenGameLicenseActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2670157">
-              <caret line="11" column="58" selection-start-line="11" selection-start-column="58" selection-end-line="11" selection-end-column="58" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main_menu_activity.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/main_menu_activity.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="6" column="47" selection-start-line="6" selection-start-column="47" selection-end-line="6" selection-end-column="47" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GatheringActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/GatheringActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="122" column="5" selection-start-line="104" selection-start-column="5" selection-end-line="122" selection-end-column="5" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -1922,7 +1856,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/test/java/com/massimodz8/collaborativegrouporder/master/BattleHelperSimpleSequencing.java" />
         <option value="$PROJECT_DIR$/app/src/test/java/com/massimodz8/collaborativegrouporder/master/BattleHelperTestShuffle.java" />
         <option value="$PROJECT_DIR$/app/src/test/java/com/massimodz8/collaborativegrouporder/master/BattleHelperTest.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/InitiativeShuffleDialog.java" />
@@ -1972,6 +1905,7 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ScrollingActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_scrolling.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_open_game_license.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/OpenGameLicenseActivity.java" />
       </list>
     </option>
@@ -2100,6 +2034,8 @@
     </navigator>
     <panes>
       <pane id="AndroidView" />
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -2567,8 +2503,6 @@
         </subPane>
       </pane>
       <pane id="Scratches" />
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -3139,7 +3073,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32796317" sideWeight="0.49266502" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32373273" sideWeight="0.5103912" order="13" side_tool="false" content_ui="tabs" />
@@ -3351,7 +3285,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="2375" />
+      <option name="time" value="2379" />
     </breakpoint-manager>
     <watches-manager>
       <configuration name="app">
@@ -3375,17 +3309,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/card_owned_parties_separator.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/java/util/Locale.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334">
@@ -3559,7 +3482,7 @@
         <state vertical-scroll-proportion="0.94577354">
           <caret line="53" column="1" selection-start-line="17" selection-start-column="71" selection-end-line="53" selection-end-column="1" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -3603,14 +3526,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MaxUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.523126">
-          <caret line="111" column="39" selection-start-line="111" selection-start-column="39" selection-end-line="111" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/java/util/HashSet.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.65259117">
@@ -3645,7 +3560,7 @@
         <state vertical-scroll-proportion="0.4894434">
           <caret line="332" column="0" selection-start-line="332" selection-start-column="0" selection-end-line="332" selection-end-column="0" />
           <folding>
-            <element signature="e#15834#15891#0" expanded="true" />
+            <element signature="e#15834#15891#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -3673,7 +3588,7 @@
         <state vertical-scroll-proportion="0.11900192">
           <caret line="101" column="0" selection-start-line="101" selection-start-column="0" selection-end-line="101" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -3733,27 +3648,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/GatheringActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
+        <state vertical-scroll-proportion="3.6195462">
           <caret line="122" column="5" selection-start-line="104" selection-start-column="5" selection-end-line="122" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/main_menu_activity.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="47" selection-start-line="6" selection-start-column="47" selection-end-line="6" selection-end-column="47" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MainMenuActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="122" column="79" selection-start-line="122" selection-start-column="79" selection-end-line="122" selection-end-column="79" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3772,10 +3671,42 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MainMenuActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="122" column="79" selection-start-line="122" selection-start-column="79" selection-end-line="122" selection-end-column="79" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/main_menu_activity.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.18647167">
+          <caret line="6" column="47" selection-start-line="6" selection-start-column="47" selection-end-line="6" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/os/Handler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33205375">
+          <caret line="86" column="16" selection-start-line="86" selection-start-column="16" selection-end-line="86" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MaxUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.39731285">
+          <caret line="100" column="99" selection-start-line="100" selection-start-column="87" selection-end-line="100" selection-end-column="99" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="65.3375">
-          <caret line="601" column="188" selection-start-line="601" selection-start-column="188" selection-end-line="601" selection-end-column="188" />
+        <state vertical-scroll-proportion="-5.962264">
+          <caret line="582" column="33" selection-start-line="582" selection-start-column="33" selection-end-line="582" selection-end-column="33" />
           <folding />
         </state>
       </provider>
@@ -3785,17 +3716,109 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.3090909">
-          <caret line="300" column="43" selection-start-line="300" selection-start-column="43" selection-end-line="300" selection-end-column="43" />
-          <folding />
+        <state vertical-scroll-proportion="-8.545455">
+          <caret line="99" column="42" selection-start-line="99" selection-start-column="42" selection-end-line="99" selection-end-column="42" />
+          <folding>
+            <element signature="e#644#665#0" expanded="true" />
+            <element signature="e#1021#1052#0" expanded="true" />
+            <element signature="e#1197#1225#0" expanded="true" />
+            <element signature="e#1609#1632#0" expanded="true" />
+            <element signature="e#1903#1926#0" expanded="true" />
+            <element signature="e#2197#2220#0" expanded="true" />
+            <element signature="e#2491#2514#0" expanded="true" />
+            <element signature="e#2785#2808#0" expanded="true" />
+            <element signature="e#3079#3102#0" expanded="true" />
+            <element signature="e#3373#3396#0" expanded="true" />
+            <element signature="e#3667#3690#0" expanded="true" />
+            <element signature="e#3961#3989#0" expanded="true" />
+            <element signature="e#4373#4394#0" expanded="true" />
+            <element signature="e#4619#4656#0" expanded="true" />
+            <element signature="e#5049#5070#0" expanded="true" />
+            <element signature="e#5295#5335#0" expanded="true" />
+            <element signature="e#5731#5752#0" expanded="true" />
+            <element signature="e#5977#6035#0" expanded="true" />
+            <element signature="e#6449#6470#0" expanded="true" />
+            <element signature="e#6695#6739#0" expanded="true" />
+            <element signature="e#7139#7160#0" expanded="true" />
+            <element signature="e#7385#7425#0" expanded="true" />
+            <element signature="e#7821#7842#0" expanded="true" />
+            <element signature="e#8067#8098#0" expanded="true" />
+            <element signature="e#8485#8506#0" expanded="true" />
+            <element signature="e#8731#8768#0" expanded="true" />
+            <element signature="e#9161#9182#0" expanded="true" />
+            <element signature="e#9407#9445#0" expanded="true" />
+            <element signature="e#9839#9861#0" expanded="true" />
+            <element signature="e#10087#10131#0" expanded="true" />
+            <element signature="e#10531#10553#0" expanded="true" />
+            <element signature="e#10779#10816#0" expanded="true" />
+            <element signature="e#11209#11231#0" expanded="true" />
+            <element signature="e#11457#11486#0" expanded="true" />
+            <element signature="e#11871#11893#0" expanded="true" />
+            <element signature="e#12119#12148#0" expanded="true" />
+            <element signature="e#12533#12555#0" expanded="true" />
+            <element signature="e#12781#12815#0" expanded="true" />
+            <element signature="e#13205#13227#0" expanded="true" />
+            <element signature="e#13453#13473#0" expanded="true" />
+            <element signature="e#13697#13717#0" expanded="true" />
+            <element signature="e#13941#13961#0" expanded="true" />
+            <element signature="e#14185#14205#0" expanded="true" />
+            <element signature="e#14429#14449#0" expanded="true" />
+            <element signature="e#14673#14693#0" expanded="true" />
+            <element signature="e#14917#14937#0" expanded="true" />
+            <element signature="e#15161#15181#0" expanded="true" />
+            <element signature="e#15405#15425#0" expanded="true" />
+            <element signature="e#15649#15668#0" expanded="true" />
+            <element signature="e#15891#15910#0" expanded="true" />
+            <element signature="e#16133#16152#0" expanded="true" />
+            <element signature="e#16375#16394#0" expanded="true" />
+            <element signature="e#16617#16636#0" expanded="true" />
+            <element signature="e#16859#16878#0" expanded="true" />
+            <element signature="e#17101#17121#0" expanded="true" />
+            <element signature="e#17345#17365#0" expanded="true" />
+            <element signature="e#17589#17608#0" expanded="true" />
+            <element signature="e#17831#17851#0" expanded="true" />
+            <element signature="e#18075#18095#0" expanded="true" />
+            <element signature="e#18319#18338#0" expanded="true" />
+            <element signature="e#18561#18580#0" expanded="true" />
+            <element signature="e#18803#18823#0" expanded="true" />
+            <element signature="e#19047#19067#0" expanded="true" />
+            <element signature="e#19291#19311#0" expanded="true" />
+            <element signature="e#19535#19555#0" expanded="true" />
+            <element signature="e#19779#19799#0" expanded="true" />
+            <element signature="e#20023#20043#0" expanded="true" />
+            <element signature="e#20267#20287#0" expanded="true" />
+            <element signature="e#20511#20531#0" expanded="true" />
+            <element signature="e#20755#20775#0" expanded="true" />
+            <element signature="e#20999#21018#0" expanded="true" />
+            <element signature="e#21241#21260#0" expanded="true" />
+            <element signature="e#21483#21503#0" expanded="true" />
+            <element signature="e#21727#21747#0" expanded="true" />
+            <element signature="e#21971#21991#0" expanded="true" />
+            <element signature="e#22215#22235#0" expanded="true" />
+            <element signature="e#22459#22479#0" expanded="true" />
+            <element signature="e#22703#22723#0" expanded="true" />
+            <element signature="e#22947#22967#0" expanded="true" />
+            <element signature="e#23191#23211#0" expanded="true" />
+            <element signature="e#23435#23454#0" expanded="true" />
+            <element signature="e#23677#23696#0" expanded="true" />
+            <element signature="e#23919#23939#0" expanded="true" />
+            <element signature="e#24163#24183#0" expanded="true" />
+            <element signature="e#24407#24426#0" expanded="true" />
+            <element signature="e#24649#24668#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/OpenGameLicenseActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2670157">
-          <caret line="11" column="58" selection-start-line="11" selection-start-column="58" selection-end-line="11" selection-end-column="58" />
-          <folding />
+        <state vertical-scroll-proportion="0.6439791">
+          <caret line="92" column="39" selection-start-line="92" selection-start-column="39" selection-end-line="92" selection-end-column="39" />
+          <folding>
+            <element signature="e#802#927#0" expanded="true" />
+            <element signature="e#926#927#0" expanded="true" />
+            <element signature="e#3616#3617#0" expanded="true" />
+            <element signature="e#3681#3682#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
