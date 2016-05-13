@@ -26,6 +26,7 @@ import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.util.ArrayList;
@@ -126,6 +127,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity implements 
         @Override
         public void onCompletedSuccessfully() {
             room.defs.add(room.generatedParty);
+            room.generatedStat = new Session.Suspended();
             saving = null;
             new AlertDialog.Builder(NewCharactersApprovalActivity.this)
                     .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)

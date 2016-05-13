@@ -402,6 +402,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     activeParty = pcServ.generatedParty;
                     activeLanding = pcServ.getLanding(true);
                     activeConnections = pcServ.moveClients();
+                    activeStats = pcServ.generatedStat;
                 }
                 pcServ = null;
                 unbindService(this);
