@@ -168,6 +168,19 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         }
     }
 
+    public void custom_callback(View btn) {
+        switch(btn.getId()) {
+            case R.id.mma_customMonsters: {
+                startActivity(new Intent(this, CustomMonstersActivity.class));
+                break;
+            }
+            case R.id.mma_preparedBattles: {
+                startActivity(new Intent(this, PreparedBattlesActivity.class));
+                break;
+            }
+        }
+    }
+
 
     private void startNewSessionActivity() {
         final Intent servName = new Intent(this, PartyJoinOrderService.class);

@@ -197,6 +197,8 @@
     <string name="mma_quit">Quit</string>
     <string name="mma_menu_ogl">Open Game License</string>
     <string name="mma_menu_oglShort">OGL</string>
+    <string name="mma_customMonstersButton">Custom monsters…</string>
+    <string name="mma_preparedBattlesButton">Prepared battles…</string>
 
     <string name="npdsa_badParty_title">Bad party name</string>
     <string name="npdsa_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
@@ -657,4 +659,9 @@
     <string name="ogla_15_y">Yellow Musk Creeper from the Tome of Horrors Complete © 2011, Necromancer Games, Inc., published and distributed by Frog God Games; Author: Scott Greene, based on original material by Albie Fiore.\nYellow Musk Creeper from the Tome of Horrors Complete © 2011, Necromancer Games, Inc., published and distributed by Frog God Games; Author: Scott Greene, based on original material by Albie Fiore. \nYellow Musk Creeper from the Tome of Horrors, © 2002, Necromancer Games, Inc.; Author: Scott Greene, based on original material by Albie Fiore.\nYellow Musk Zombie from the Tome of Horrors Complete © 2011, Necromancer Games, Inc., published and distributed by Frog God Games; Author: Scott Greene, based on original material by Albie Fiore.\nYellow Musk Zombie from the Tome of Horrors Complete © 2011, Necromancer Games, Inc., published and distributed by Frog God Games; Author: Scott Greene, based on original material by Albie Fiore. \nYellow Musk Zombie from the Tome of Horrors, © 2002, Necromancer Games, Inc.; Author: Scott Greene, based on original material by Albie Fiore.\nYeti from the Tome of Horrors Complete © 2011, Necromancer Games, Inc., published and distributed by Frog God Games; Author: Scott Greene, based on original material by Gary Gygax.\nYeti from the Tome of Horrors Complete © 2011, Necromancer Games, Inc., published and distributed by Frog God Games; Author: Scott Greene, based on original material by Gary Gygax.\nYeti from the Tome of Horrors, © 2002, Necromancer Games, Inc.; Author: Scott Greene, based on original material by Gary Gygax.</string>
     <string name="ogla_15_z"><![CDATA[Zeitgeist Players’ Guide. Copyright 2011, EN Publishing; Author: Ryan Nock.\nZobeck Gazatteer, © 2012, Open Design LLC; Authors: Wolfgang Baur &amp; Christina Stiles.\nZobeck Gazetteer Volume 2: Dwarves of the Ironcrags Copyright 2009, Open Design LLC., www. koboldquarterly.com. All rights reserved.\nZobeck Gazetteer Volume 2: Dwarves of the Ironcrags, Copyright 2009, Open Design LLC., www.koboldquarterly.com. All rights reserved.\nZobeck Gazetteer for the Pathfinder RPG, Copyright 2012, Open Design LLC. Authors: Wolfgang Baur and Christina Stiles. www.koboldquarterly.com\nZobeck Gazetteer, Copyright 2008, Open Design LLC; Author: Wolfgang Baur\nZombie, Juju from the Tome of Horrors Complete © 2011, Necromancer Games, Inc., published and distributed by Frog God Games; Author: Scott Greene, based on original material by Gary Gygax.\nZombie, Juju from the Tome of Horrors Complete © 2011, Necromancer Games, Inc., published and distributed by Frog God Games; Author: Scott Greene, based on original material by Gary Gygax.\nZombie, Juju from the Tome of Horrors, Revised. © 2002, Necromancer Games, Inc.; Author: Scott Greene, based on original material by Gary Gygax.]]></string>
 
+    <string name="cma_title">Custom Monsters</string>
+    <string name="cma_initialStatus">Loading. Please wait a second.</string>
+
+    <string name="pba_title">Prepared Battles</string>
+    <string name="pba_initialStatus">Loading. Please wait a second.</string>
 </resources>
