@@ -37,8 +37,8 @@ public abstract class AsyncActivityLoadUpdateTask<Container extends MessageNano>
                     .show();
         }
     }
-    public AsyncActivityLoadUpdateTask(String fileName, String targetFilePrefix, final Activity source, Callbacks callbacks) {
-        super(source.getFilesDir(), fileName, new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
+    public AsyncActivityLoadUpdateTask(String subdir, String fileName, String targetFilePrefix, final Activity source, Callbacks callbacks) {
+        super(source.getFilesDir(), subdir, fileName, new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
             protected String getString(int resource) {
                 return source.getString(resource);

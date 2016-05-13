@@ -212,7 +212,7 @@ public class PartyCreationService extends PublishAcceptService {
     }
 
     public AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> saveParty(final @NonNull Activity activity, @NonNull AsyncLoadUpdateTask.Callbacks cb) {
-        return new AsyncActivityLoadUpdateTask<StartData.PartyOwnerData>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", activity, cb) {
+        return new AsyncActivityLoadUpdateTask<StartData.PartyOwnerData>(PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", activity, cb) {
             @Override
             protected void appendNewEntry(StartData.PartyOwnerData loaded) {
                 StartData.PartyOwnerData.Group[] longer = new StartData.PartyOwnerData.Group[loaded.everything.length + 1];

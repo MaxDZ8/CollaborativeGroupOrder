@@ -34,6 +34,17 @@ public abstract class PersistentDataUtils {
         this.minimumSaltBytes = minimumSaltBytes;
     }
 
+    public static final String MAIN_DATA_SUBDIR = "main";
+    public static final String DEFAULT_GROUP_DATA_FILE_NAME = "groupDefs";
+    public static final String DEFAULT_KEY_FILE_NAME = "keys";
+
+    public static final String SESSION_DATA_SUBDIR = "session";
+
+    public static final String USER_CUSTOM_DATA_SUBDIR = "custom"; // monsters, prepared encounters etc
+    public static final String CUSTOM_MOBS_FILE_NAME = "userMonsters";
+    public static final String CUSTOM_ENCOUNTERS_FILE_NAME = "userEncounters";
+
+
     /**
      * Ok, we want to save a party, whatever it is owned or joined we need to create a "session file" which will be initially empty.
      * This function takes care of creating that empty file for you and returns its name.
@@ -239,11 +250,8 @@ public abstract class PersistentDataUtils {
         if(result.version == 0) result.version = 1; // free upgrade :P
     }
 
-    public static final String DEFAULT_GROUP_DATA_FILE_NAME = "groupDefs.bin";
-    public static final String DEFAULT_KEY_FILE_NAME = "keys.bin";
-
     private static File createSessionFile(File filesDir, String name) {
-        File session = new File(filesDir, name);
+        File session = new File(new File(filesDir, SESSION_DATA_SUBDIR), name);
         try {
             if(!session.createNewFile()) session = null;
             else if(!session.canWrite()) {

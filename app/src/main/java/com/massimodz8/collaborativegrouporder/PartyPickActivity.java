@@ -371,12 +371,12 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
                     boolean owned = party instanceof StartData.PartyOwnerData.Group;
                     if(null != pending) pending.cancel(true);
                     if(owned) {
-                        pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
+                        pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
                                                              PersistentDataUtils.makePartyOwnerData(denseDefs),
                                                              null, null);
                     }
                     else {
-                        pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.DEFAULT_KEY_FILE_NAME,
+                        pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME,
                                 PersistentDataUtils.makePartyClientData(denseKeys),
                                 null, null);
                     }
@@ -404,12 +404,12 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
                         }
                     });
             if(viewHolder instanceof OwnedPartyHolder) {
-                pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
+                pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
                                                      PersistentDataUtils.makePartyOwnerData(denseDefs),
                                                      sb, undo);
             }
             else {
-                pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.DEFAULT_KEY_FILE_NAME,
+                pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME,
                         PersistentDataUtils.makePartyClientData(denseKeys),
                         sb, undo);
             }
@@ -719,8 +719,8 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
         final Runnable undo;
         final Container container;
 
-        public MyAsyncRenamingStore(@NonNull File filesDir, @NonNull String fileName, @NonNull Container container, Snackbar showOnSuccess, Runnable undo) {
-            super(filesDir, fileName, container);
+        public MyAsyncRenamingStore(@NonNull File filesDir, @NonNull String subdir, @NonNull String fileName, @NonNull Container container, Snackbar showOnSuccess, Runnable undo) {
+            super(filesDir, subdir, fileName, container);
             this.target = fileName;
             this.showOnSuccess = showOnSuccess;
             this.undo = undo;
@@ -766,10 +766,10 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
                     }
                 });
         if(match instanceof StartData.PartyOwnerData.Group) {
-            pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(denseDefs), sb, null);
+            pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(denseDefs), sb, null);
         }
         else {
-            pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.DEFAULT_KEY_FILE_NAME, PersistentDataUtils.makePartyClientData(denseKeys), sb, null);
+            pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME, PersistentDataUtils.makePartyClientData(denseKeys), sb, null);
         }
     }
 

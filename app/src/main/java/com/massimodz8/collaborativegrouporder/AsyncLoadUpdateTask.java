@@ -23,8 +23,9 @@ public abstract class AsyncLoadUpdateTask<Container extends MessageNano> extends
         void onFailedSave(@NonNull Exception wrong);
         void onCompletedSuccessfully();
     }
-    protected AsyncLoadUpdateTask(File filesDir, String fileName, PersistentDataUtils helper, String targetFilePrefix, @NonNull Callbacks callbacks) {
+    protected AsyncLoadUpdateTask(File filesDir, String subdir, String fileName, PersistentDataUtils helper, String targetFilePrefix, @NonNull Callbacks callbacks) {
         this.dir = filesDir;
+        this.subdir = subdir;
         this.fileName = fileName;
         this.helper = helper;
         this.targetFilePrefix = targetFilePrefix;
@@ -32,7 +33,7 @@ public abstract class AsyncLoadUpdateTask<Container extends MessageNano> extends
     }
 
     final File dir;
-    final String fileName;
+    final String fileName, subdir;
     final PersistentDataUtils helper;
     final String targetFilePrefix;
     final Callbacks callbacks;
@@ -48,7 +49,7 @@ public abstract class AsyncLoadUpdateTask<Container extends MessageNano> extends
     @Override
     protected ArrayList<String> doInBackground(Void... params) {
         Container result = allocate();
-        previously = new File(dir, fileName);
+        previously = new File(new File(dir, subdir), fileName);
         if(previously.exists()) {
             ArrayList<String> error = new ArrayList<>();
             if(!previously.canRead()) {
@@ -84,7 +85,7 @@ public abstract class AsyncLoadUpdateTask<Container extends MessageNano> extends
         protected Exception doInBackground(Void... params) {
             File store;
             try {
-                store = File.createTempFile(targetFilePrefix, ".new", dir);
+                store = File.createTempFile(targetFilePrefix, ".new", new File(dir, subdir));
             } catch (IOException e) {
                 return e;
             }

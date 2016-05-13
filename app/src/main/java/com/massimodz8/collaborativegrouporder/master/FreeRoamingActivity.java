@@ -267,7 +267,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             }
             case REQUEST_AWARD_EXPERIENCE: {
                 if(resultCode == RESULT_OK) { // ouch! We need to update defs with the new xp, and maybe else... Luckly everything is already in place!
-                    new AsyncRenamingStore<StartData.PartyOwnerData>(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(game.allOwnedGroups)) {
+                    new AsyncRenamingStore<StartData.PartyOwnerData>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(game.allOwnedGroups)) {
                         @Override
                         protected String getString(@StringRes int res) { return FreeRoamingActivity.this.getString(res); }
 
@@ -343,7 +343,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                     .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
                     .show();
         }
-        new AsyncRenamingStore<Session.Suspended>(getFilesDir(), game.getPartyOwnerData().sessionFile, save) {
+        new AsyncRenamingStore<Session.Suspended>(getFilesDir(), PersistentDataUtils.SESSION_DATA_SUBDIR, game.getPartyOwnerData().sessionFile, save) {
             @Override
             protected String getString(@StringRes int res) {
                 return FreeRoamingActivity.this.getString(res);
