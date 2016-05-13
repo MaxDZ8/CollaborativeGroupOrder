@@ -13,6 +13,7 @@
     <string name="generic_fatalError">Fatal error</string>
     <string name="generic_failedAdventuringServiceBind">Could not bind to internal \'adventuring\' structures. This is required to prevent data loss when you turn your phone (and other technicalities).\nThis should be a transient problem.</string>
     <string name="generic_validButTooEarly">Too fast. Try again.</string>
+    <string name="generic_quit">Quit</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
     <string name="master_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
@@ -199,6 +200,9 @@
     <string name="mma_menu_oglShort">OGL</string>
     <string name="mma_customMonstersButton">Custom monsters…</string>
     <string name="mma_preparedBattlesButton">Prepared battles…</string>
+    <string name="mma_dirStructDlgInitError_title">Initialization error</string>
+    <string name="mma_dirStructDlgInitError_message">Program directory structure is incoherent. It is suggested you get support for manual repair. If you continue the program will likely not work and further damage your data.</string>
+    <string name="mma_dirStructDlgNegContinue">Proceed at your risk</string>
 
     <string name="npdsa_badParty_title">Bad party name</string>
     <string name="npdsa_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>

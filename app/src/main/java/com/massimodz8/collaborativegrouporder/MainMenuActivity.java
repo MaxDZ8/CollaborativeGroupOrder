@@ -113,7 +113,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 }
                 new AsyncLoadAll().execute();
             }
-        };
+        }.execute();
     }
 
     private void dataRefreshed() {
@@ -349,7 +349,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             MaxUtils.beginDelayedTransition(MainMenuActivity.this);
             MaxUtils.setEnabled(MainMenuActivity.this, true,
                     R.id.mma_newParty,
-                    R.id.mma_joinParty);
+                    R.id.mma_joinParty,
+                    R.id.mma_customMonsters,
+                    R.id.mma_preparedBattles);
             findViewById(R.id.mma_goAdventuring).setEnabled(groupDefs.size() + groupKeys.size() > 0);
             MaxUtils.setVisibility(MainMenuActivity.this, View.GONE, R.id.mma_progress, R.id.mma_waitMessage);
             onSuccessfullyRefreshed();
