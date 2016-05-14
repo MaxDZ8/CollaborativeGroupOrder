@@ -46,72 +46,82 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Spinner
-                android:layout_width="wrap_content"
+            <Button
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/ncma_crBtn_notSet"
                 android:id="@+id/ncma_cr"
-                android:layout_below="@+id/ncma_tilName" />
+                android:layout_below="@+id/ncma_tilName"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:onClick="setCr_callback" />
 
-            <Spinner
-                android:layout_width="wrap_content"
+            <Button
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/ncma_sizeBtn_notSet"
                 android:id="@+id/ncma_size"
-                android:layout_below="@+id/ncma_cr" />
+                android:layout_below="@+id/ncma_cr"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:onClick="setSize_callback" />
 
-            <Spinner
-                android:layout_width="wrap_content"
+            <Button
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/ncma_typeBtn_notSet"
                 android:id="@+id/ncma_type"
                 android:layout_below="@+id/ncma_size"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:onClick="setType_callback" />
 
-            <LinearLayout
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ncma_type"
-                android:id="@+id/ncma_group1">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@string/ncma_initLabel"
-                    android:id="@+id/ncma_initiativeLabel"
-                    android:layout_gravity="center_vertical" />
+                android:id="@+id/ncma_tilInit"
+                android:hint="@string/ncma_initiativeTilHint"
+                android:layout_below="@id/ncma_type">
 
-                <NumberPicker
-                    android:layout_width="wrap_content"
+                <EditText
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ncma_initPicker" />
-            </LinearLayout>
+                    android:gravity="center_horizontal"
+                    android:id="@+id/ncma_init"
+                    android:inputType="numberSigned" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ncma_group1"
-                android:id="@+id/ncma_group2">
-                <Button
-                    style="?android:attr/buttonStyleSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ncma_addTagButton"
-                    android:id="@+id/ncma_addTagButton"
-                    android:layout_gravity="center_vertical" />
+            </android.support.design.widget.TextInputLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:id="@+id/ncma_tags"
-                    android:layout_marginLeft="8sp"
-                    android:layout_gravity="center_vertical" />
-            </LinearLayout>
-
-            <Spinner
+            <Button
+                style="?android:attr/buttonStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="@string/ncma_race_notSet"
                 android:id="@+id/ncma_race"
-                android:layout_below="@+id/ncma_group2" />
+                android:layout_below="@+id/ncma_tilInit"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:onClick="setRace_callback" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/ncma_addTag"
+                android:id="@+id/ncma_addTag"
+                android:layout_alignTop="@+id/ncma_race"
+                android:layout_alignRight="@+id/ncma_tilInit"
+                android:layout_alignEnd="@+id/ncma_tilInit" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/ncma_tags"
+                android:layout_below="@+id/ncma_addTag"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="left" />
 
         </RelativeLayout>
 
