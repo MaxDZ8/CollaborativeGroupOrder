@@ -166,10 +166,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         switch(item.getItemId()) {
             case R.id.mma_ogl: {
                 startActivity(new Intent(this, OpenGameLicenseActivity.class));
-                break;
+                return true;
             }
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     /// Called when party owner data loaded version != from current.

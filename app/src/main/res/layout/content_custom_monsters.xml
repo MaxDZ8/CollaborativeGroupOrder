@@ -34,7 +34,6 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/vh_adventuring_actor_data"
         android:visibility="gone" />
 
 </LinearLayout>

@@ -213,6 +213,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
+        <activity
+            android:name=".NewCustomMonsterActivity"
+            android:label="@string/ncma_title"
+            android:parentActivityName=".CustomMonstersActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CustomMonstersActivity" />
+        </activity>
     </application>
 
 </manifest>
