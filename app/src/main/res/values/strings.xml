@@ -504,7 +504,8 @@
     <string name="mobs_size_huge">huge</string>
     <string name="mobs_size_gargantuan">gargantuan</string>
     <string name="mobs_size_colossal">colossal</string>
-    <string name="mobs_type_invalid">!!INVALID MONSTER TYPE!!</string>
+    <string name="mobs_type_invalidType">!!INVALID MONSTER TYPE!!</string>
+    <string name="mobs_type_invalidTag">!!INVALID MONSTER TAG!!</string>
     <string name="mobs_type_aberration">aberration</string>
     <string name="mobs_type_animal">animal</string>
     <string name="mobs_type_construct">construct</string>
@@ -677,6 +678,17 @@
     <string name="mobs_race_manavri">manavri</string>
     <string name="mobs_race_orangPendak">orang-pendak</string>
     <string name="mobs_race_reptoid">reptoid</string>
+    <string name="mobs_align_lg">legal good</string>
+    <string name="mobs_align_ln">legal neutral</string>
+    <string name="mobs_align_le">legal evil</string>
+    <string name="mobs_align_ng">neutral good</string>
+    <string name="mobs_align_nn">neutral</string>
+    <string name="mobs_align_ne">neutral evil</string>
+    <string name="mobs_align_cg">chaotic good</string>
+    <string name="mobs_align_cn">chaotic neutral</string>
+    <string name="mobs_align_ce">chaotic evil</string>
+    <string name="mobs_align_restricted">always</string>
+    <string name="mobs_align_asCreator">as creator</string>
 
     <string name="ba_title">Fight!</string>
     <string name="ba_initialInstructions">Actors with no check will skip round.\nUse this for surprise rounds!</string>
@@ -850,15 +862,18 @@
     <string name="ncma_save">Validate and save</string>
     <string name="ncma_actionShort">Save</string>
     <string name="ncma_initLabel">Initiative modifier:</string>
-    <string name="ncma_addTagButton">Add tag</string>
+    <string name="ncma_tagBtn_notSet">Set tags</string>
     <string name="ncma_crBtn_notSet">Set Challenge Ratio</string>
     <string name="ncma_sizeBtn_notSet">Set size</string>
     <string name="ncma_typeBtn_notSet">Set type</string>
     <string name="ncma_initiativeTilHint">Initiative modifier</string>
     <string name="ncma_race_notSet">Set optional race</string>
-    <string name="ncma_addTag">Add tag</string>
+    <string name="ncma_addTag">Tags</string>
     <string name="ncma_crDlg_title">Set Challenge Ratio</string>
     <string name="ncma_sizeDlg_title">Set size</string>
     <string name="ncma_crBtnSet">CR: %1$s</string>
+    <string name="ncma_alignBtn_notSet">Set alignment</string>
+    <string name="ncma_alignDlg_title">Set alignment</string>
+    <string name="ncma_tagDlg_title">Set tags</string>
 
 </resources>

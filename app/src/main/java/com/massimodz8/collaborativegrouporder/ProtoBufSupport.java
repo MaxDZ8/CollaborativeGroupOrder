@@ -10,7 +10,7 @@ import java.util.HashMap;
  * Created by Massimo on 14/05/2016.
  * Because mapping protobuf enums to strings needs singletons for good!
  */
-public abstract class ProtoBufSupport {
+public abstract class ProtobufSupport {
     public static String monsterRaceToString(int protbufEnum, Context ctx) {
         if(monRace == null) {
             monRace = new HashMap<>();
@@ -104,10 +104,9 @@ public abstract class ProtoBufSupport {
         return match == null? monSize.get(MonsterData.INVALID_MONSTER_SIZE) : match;
     }
 
-    public static String monsterTypeToString(int protobufEnum, Context ctx) {
+    public static String monsterTypeToString(int protobufEnum, boolean trueIfTypeOtherwiseTags, Context ctx) {
         if(monType == null) {
             monType = new HashMap<>();
-            monType.put(MonsterData.INVALID_MONSTER_TYPE, ctx.getString(R.string.mobs_type_invalid));
             monType.put(MonsterData.ABERRATION, ctx.getString(R.string.mobs_type_aberration));
             monType.put(MonsterData.ANIMAL, ctx.getString(R.string.mobs_type_animal));
             monType.put(MonsterData.CONSTRUCT, ctx.getString(R.string.mobs_type_construct));
@@ -216,9 +215,46 @@ public abstract class ProtoBufSupport {
             monType.put(MonsterData.SUB_PSIONIC, ctx.getString(R.string.mobs_subType_psionic));
         }
         final String match = monType.get(protobufEnum);
-        return match == null? monType.get(MonsterData.INVALID_MONSTER_TYPE) : match;
+        if(match != null) return match;
+        return ctx.getString(trueIfTypeOtherwiseTags? R.string.mobs_type_invalidType : R.string.mobs_type_invalidTag);
     }
-    
-    
+
+    public static String monsterAlignmentToString(int protobufEnum, boolean compact, Context ctx) {
+        if(align == null) {
+            align = new HashMap<>();
+            align.put(MonsterData.LEGAL_GOOD, ctx.getString(R.string.mobs_align_lg));
+            align.put(MonsterData.LEGAL_NEUTRAL, ctx.getString(R.string.mobs_align_ln));
+            align.put(MonsterData.LEGAL_EVIL, ctx.getString(R.string.mobs_align_le));
+            align.put(MonsterData.NEUTRAL_GOOD, ctx.getString(R.string.mobs_align_ng));
+            align.put(MonsterData.JUST_NEUTRAL, ctx.getString(R.string.mobs_align_nn));
+            align.put(MonsterData.NEUTRAL_EVIL, ctx.getString(R.string.mobs_align_ne));
+            align.put(MonsterData.CHAOTIC_GOOD, ctx.getString(R.string.mobs_align_cg));
+            align.put(MonsterData.CHAOTIC_NEUTRAL, ctx.getString(R.string.mobs_align_cn));
+            align.put(MonsterData.CHAOTIC_EVIL, ctx.getString(R.string.mobs_align_ce));
+            align.put(MonsterData.ALIGNMENT_RESTRICTED, ctx.getString(R.string.mobs_align_restricted));
+            align.put(MonsterData.ALIGNMENT_AS_CREATOR, ctx.getString(R.string.mobs_align_asCreator));
+        }
+        String match = align.get(protobufEnum);
+        if(match == null) match = align.get(MonsterData.INVALID_ALIGNMENT);
+        if(compact) {
+            switch(protobufEnum) {
+                case MonsterData.LEGAL_GOOD:
+                case MonsterData.LEGAL_NEUTRAL:
+                case MonsterData.LEGAL_EVIL:
+                case MonsterData.NEUTRAL_GOOD:
+                case MonsterData.JUST_NEUTRAL:
+                case MonsterData.NEUTRAL_EVIL:
+                case MonsterData.CHAOTIC_GOOD:
+                case MonsterData.CHAOTIC_NEUTRAL:
+                case MonsterData.CHAOTIC_EVIL:
+                    String[] words = match.split(" ");
+                    match = "";
+                    for(String part : words) match += part.toUpperCase().charAt(0);
+            }
+        }
+        return match;
+    }
+
     private static HashMap<Integer, String> monRace, monSize, monType;
+    private static HashMap<Integer, String> align;
 }

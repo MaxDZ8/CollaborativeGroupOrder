@@ -14,10 +14,8 @@ import android.widget.Button;
 import com.massimodz8.collaborativegrouporder.master.AwardExperienceActivity;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
-
-import javax.crypto.spec.PBEKeySpec;
 
 public class NewCustomMonsterActivity extends AppCompatActivity {
 
@@ -39,7 +37,8 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
             size = null;
             type = null;
             race = null;
-            tags = null;
+            if(alignFlags != null) Arrays.fill(alignFlags, false);
+            if(tagFlags != null) Arrays.fill(tagFlags, false);
         }
         super.onDestroy();
     }
@@ -62,238 +61,118 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
     }
 
     public void setCr_callback(View v) {
+        xpAward = null;
+        refresh();
         new AlertDialog.Builder(NewCustomMonsterActivity.this)
                 .setTitle(R.string.ncma_crDlg_title)
-                .setItems(crStrings(20), new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(crStrings(20), -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         xpAward = crByIndex(which);
+                        dialog.dismiss();
                         refresh();
                     }
                 }).show();
     }
 
     public void setSize_callback(View v) {
+        final CharSequence[] ss = new CharSequence[sizeEnum.length];
+        int init = 0;
+        for(int el : sizeEnum) ss[init++] = ProtobufSupport.monsterSizeToString(el, this);
+        size = null;
+        refresh();
         new AlertDialog.Builder(NewCustomMonsterActivity.this)
             .setTitle(R.string.ncma_sizeDlg_title)
-            .setItems(new String[]{
-                    getString(R.string.mobs_size_fine),
-                    getString(R.string.mobs_size_diminutive),
-                    getString(R.string.mobs_size_tiny),
-                    getString(R.string.mobs_size_small),
-                    getString(R.string.mobs_size_medium),
-                    getString(R.string.mobs_size_large),
-                    getString(R.string.mobs_size_huge),
-                    getString(R.string.mobs_size_gargantuan),
-                    getString(R.string.mobs_size_colossal)}, new DialogInterface.OnClickListener() {
+            .setSingleChoiceItems(ss, -1, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    final int[] known = {
-                            MonsterData.FINE,
-                            MonsterData.DIMINUTIVE,
-                            MonsterData.TINY,
-                            MonsterData.SMALL,
-                            MonsterData.MEDIUM,
-                            MonsterData.LARGE,
-                            MonsterData.HUGE,
-                            MonsterData.GARGANTUAN,
-                            MonsterData.COLOSSAL
-                    };
-                    size = known[which];
+                    size = sizeEnum[which];
+                    dialog.dismiss();
                     refresh();
                 }
             }).show();
     }
 
     public void setType_callback(View v) {
+        final CharSequence[] ts = new CharSequence[typeEnum.length];
+        int init = 0;
+        for(int el : typeEnum) ts[init++] = ProtobufSupport.monsterTypeToString(el, true, this);
+        type = null;
+        refresh();
         new AlertDialog.Builder(NewCustomMonsterActivity.this)
                 .setTitle(R.string.ncma_sizeDlg_title)
-                .setItems(new String[]{
-                        getString(R.string.mobs_type_aberration),
-                        getString(R.string.mobs_type_animal),
-                        getString(R.string.mobs_type_construct),
-                        getString(R.string.mobs_type_dragon),
-                        getString(R.string.mobs_type_fey),
-                        getString(R.string.mobs_type_humanoid),
-                        getString(R.string.mobs_type_magicalBeast),
-                        getString(R.string.mobs_type_monstrousHumanoid),
-                        getString(R.string.mobs_type_ooze),
-                        getString(R.string.mobs_type_outsider),
-                        getString(R.string.mobs_type_plant),
-                        getString(R.string.mobs_type_undead),
-                        getString(R.string.mobs_type_vermin)}, new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(ts, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final int[] known = {
-                                MonsterData.ABERRATION,
-                                MonsterData.ANIMAL,
-                                MonsterData.CONSTRUCT,
-                                MonsterData.DRAGON,
-                                MonsterData.FEY,
-                                MonsterData.HUMANOID,
-                                MonsterData.MAGICAL_BEAST,
-                                MonsterData.MONSTROUS_HUMANOID,
-                                MonsterData.OOZE,
-                                MonsterData.OUTSIDER,
-                                MonsterData.PLANT,
-                                MonsterData.UNDEAD,
-                                MonsterData.VERMIN
-                        };
-                        type = known[which];
+                        type = typeEnum[which];
+                        dialog.dismiss();
                         refresh();
                     }
                 }).show();
     }
 
     public void setRace_callback(View v) {
+        final CharSequence[] rs = new CharSequence[raceEnum.length];
+        int init = 0;
+        for (int el : raceEnum) rs[init++] = ProtobufSupport.monsterRaceToString(el, this);
+        race = null;
+        refresh();
         new AlertDialog.Builder(NewCustomMonsterActivity.this)
                 .setTitle(R.string.ncma_sizeDlg_title)
-                .setItems(new String[]{
-                        getString(R.string.mobs_race_dwarf),
-                        getString(R.string.mobs_race_elf),
-                        getString(R.string.mobs_race_gnome),
-                        getString(R.string.mobs_race_halfOrc),
-                        getString(R.string.mobs_race_halfling),
-                        getString(R.string.mobs_race_human),
-                        getString(R.string.mobs_race_aasimar),
-                        getString(R.string.mobs_race_catfolk),
-                        getString(R.string.mobs_race_dhampir),
-                        getString(R.string.mobs_race_drow),
-                        getString(R.string.mobs_race_fetchling),
-                        getString(R.string.mobs_race_goblin),
-                        getString(R.string.mobs_race_hobgoblin),
-                        getString(R.string.mobs_race_ifrit),
-                        getString(R.string.mobs_race_kobold),
-                        getString(R.string.mobs_race_orc),
-                        getString(R.string.mobs_race_oread),
-                        getString(R.string.mobs_race_ratfolk),
-                        getString(R.string.mobs_race_sylph),
-                        getString(R.string.mobs_race_tengu),
-                        getString(R.string.mobs_race_tiefling),
-                        getString(R.string.mobs_race_undine),
-                        getString(R.string.mobs_race_gnoll),
-                        getString(R.string.mobs_race_lizardfolk),
-                        getString(R.string.mobs_race_monkeyGoblin),
-                        getString(R.string.mobs_race_skinWalker),
-                        getString(R.string.mobs_race_triaxian),
-                        getString(R.string.mobs_race_android),
-                        getString(R.string.mobs_race_gathlain),
-                        getString(R.string.mobs_race_ghoran),
-                        getString(R.string.mobs_race_kasatha),
-                        getString(R.string.mobs_race_lashunta),
-                        getString(R.string.mobs_race_shabti),
-                        getString(R.string.mobs_race_syrinx),
-                        getString(R.string.mobs_race_wyrwood),
-                        getString(R.string.mobs_race_wyvaran),
-                        getString(R.string.mobs_race_centaur),
-                        getString(R.string.mobs_race_ogre),
-                        getString(R.string.mobs_race_shobhad),
-                        getString(R.string.mobs_race_trox),
-                        getString(R.string.mobs_race_drider),
-                        getString(R.string.mobs_race_gargoyle),
-                        getString(R.string.mobs_race_changeling),
-                        getString(R.string.mobs_race_duergar),
-                        getString(R.string.mobs_race_gillmen),
-                        getString(R.string.mobs_race_grippli),
-                        getString(R.string.mobs_race_kitsune),
-                        getString(R.string.mobs_race_merfolk),
-                        getString(R.string.mobs_race_nagaji),
-                        getString(R.string.mobs_race_samsaran),
-                        getString(R.string.mobs_race_strix),
-                        getString(R.string.mobs_race_suli),
-                        getString(R.string.mobs_race_svirfneblin),
-                        getString(R.string.mobs_race_vanara),
-                        getString(R.string.mobs_race_vishkanya),
-                        getString(R.string.mobs_race_wayang),
-                        getString(R.string.mobs_race_aquaticElf),
-                        getString(R.string.mobs_race_astmoi),
-                        getString(R.string.mobs_race_caligni),
-                        getString(R.string.mobs_race_deepOneHybrid),
-                        getString(R.string.mobs_race_ganzi),
-                        getString(R.string.mobs_race_kuru),
-                        getString(R.string.mobs_race_manavri),
-                        getString(R.string.mobs_race_orangPendak),
-                        getString(R.string.mobs_race_reptoid)}, new DialogInterface.OnClickListener() {
+                .setSingleChoiceItems(rs, -1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        final int[] known = {
-                                MonsterData.DWARF,
-                                MonsterData.ELF,
-                                MonsterData.GNOME,
-                                MonsterData.HALF_ORC,
-                                MonsterData.HALFLING,
-                                MonsterData.HUMAN,
-                                // Featured
-                                MonsterData.AASIMAR,
-                                MonsterData.CATFOLK,
-                                MonsterData.DHAMPIR,
-                                MonsterData.DROW,
-                                MonsterData.FETCHLING,
-                                MonsterData.GOBLIN,
-                                MonsterData.HOBGOBLIN,
-                                MonsterData.IFRIT,
-                                MonsterData.KOBOLD,
-                                MonsterData.ORC,
-                                MonsterData.OREAD,
-                                MonsterData.RATFOLK,
-                                MonsterData.SYLPH,
-                                MonsterData.TENGU,
-                                MonsterData.TIEFLING,
-                                MonsterData.UNDINE,
-                                // Standard
-                                MonsterData.GNOLL,
-                                MonsterData.LIZARDFOLK,
-                                MonsterData.MONKEY_GOBLIN,
-                                MonsterData.SKINWALKER,
-                                MonsterData.TRIAXIAN,
-                                // Advanced
-                                MonsterData.ANDROID,
-                                MonsterData.GATHLAIN,
-                                MonsterData.GHORAN,
-                                MonsterData.KASATHA,
-                                MonsterData.LASHUNTA,
-                                MonsterData.SHABTI,
-                                MonsterData.SYRINX,
-                                MonsterData.WYRWOOD,
-                                MonsterData.WYVARAN,
-                                // Monstrous
-                                MonsterData.CENTAUR,
-                                MonsterData.OGRE,
-                                MonsterData.SHOBHAD,
-                                MonsterData.TROX,
-                                // Very powerful
-                                MonsterData.DRIDER,
-                                MonsterData.GARGOYLE,
-                                // uncommon
-                                MonsterData.CHANGELING,
-                                MonsterData.DUERGAR,
-                                MonsterData.GILLMEN,
-                                MonsterData.GRIPPLI,
-                                MonsterData.KITSUNE,
-                                MonsterData.MERFOLK,
-                                MonsterData.NAGAJI,
-                                MonsterData.SAMSARAN,
-                                MonsterData.STRIX,
-                                MonsterData.SULI,
-                                MonsterData.SVIRFNEBLIN,
-                                MonsterData.VANARA,
-                                MonsterData.VISHKANYA,
-                                MonsterData.WAYANG,
-                                // unknown race points
-                                MonsterData.AQUATIC_ELF,
-                                MonsterData.ASTMOI,
-                                MonsterData.CALIGNI,
-                                MonsterData.DEEP_ONE_HYBRID,
-                                MonsterData.GANZI,
-                                MonsterData.KURU,
-                                MonsterData.MANAVRI,
-                                MonsterData.ORANG__PENDAK,
-                                MonsterData.REPTOID
-                        };
-                        race = known[which];
+                        race = raceEnum[which];
+                        dialog.dismiss();
                         refresh();
                     }
                 }).show();
+    }
+
+    public void setAlignment_callback(View v) {
+        if(alignFlags == null) {
+            alignFlags = new boolean[alignEnum.length];
+        }
+        final CharSequence[] alignStrings = new CharSequence[alignEnum.length];
+        int init = 0;
+        for (int el : alignEnum) alignStrings[init++] = ProtobufSupport.monsterAlignmentToString(el, false, this);
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.ncma_alignDlg_title)
+                .setMultiChoiceItems(alignStrings, alignFlags, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        alignFlags[which] = isChecked;
+                    }
+                    }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            refresh();
+                        }
+                    }).show();
+    }
+
+    public void setAdditionalFlags_callback(View v) {
+        if(tagFlags == null) {
+            tagFlags = new boolean[tagEnum.length];
+        }
+        final CharSequence[] tagStrings = new CharSequence[tagEnum.length];
+        int init = 0;
+        for(int el : tagEnum) tagStrings[init++] = ProtobufSupport.monsterTypeToString(el, false, this);
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.ncma_tagDlg_title)
+                .setMultiChoiceItems(tagStrings, tagFlags, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                        tagFlags[which] = isChecked;
+                    }
+                }).setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                refresh();
+            }
+        }).show();
+
+
     }
 
     private static String[] crStrings(int lastCR) {
@@ -335,16 +214,228 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
         else btn.setText(String.format(getString(R.string.ncma_crBtnSet), crString(xpAward.numerator, xpAward.denominator)));
         btn = (Button) findViewById(R.id.ncma_size);
         if(size == null) btn.setText(R.string.ncma_sizeBtn_notSet);
-        else btn.setText(ProtoBufSupport.monsterSizeToString(size, this));
+        else btn.setText(ProtobufSupport.monsterSizeToString(size, this));
         btn = (Button) findViewById(R.id.ncma_type);
         if(type == null) btn.setText(R.string.ncma_typeBtn_notSet);
-        else btn.setText(ProtoBufSupport.monsterTypeToString(type, this));
+        else btn.setText(ProtobufSupport.monsterTypeToString(type, true, this));
         btn = (Button) findViewById(R.id.ncma_race);
         if(race == null) btn.setText(R.string.ncma_race_notSet);
-        else btn.setText(ProtoBufSupport.monsterRaceToString(race, this));
+        else btn.setText(ProtobufSupport.monsterRaceToString(race, this));
+
+        btn = (Button) findViewById(R.id.ncma_alignment);
+        int count = 0;
+        if(alignFlags != null) {
+            for (boolean el : alignFlags) count += el? 1 : 0;
+        }
+        if(count == 0) btn.setText(R.string.ncma_alignBtn_notSet);
+        else {
+            int restrict = 0;
+            for (int v : alignEnum) {
+                if(v == MonsterData.ALIGNMENT_RESTRICTED) break;
+                restrict++;
+            }
+            String build = "";
+            String interleave = "";
+            if(alignFlags[restrict]) {
+                build = ProtobufSupport.monsterAlignmentToString(MonsterData.ALIGNMENT_RESTRICTED, false, this);
+                interleave = " ";
+            }
+            for(int check = 0; check < alignFlags.length; check++) {
+                if(alignEnum[check] == MonsterData.ALIGNMENT_RESTRICTED) continue;
+                if(alignFlags[check]) {
+                    build += interleave;
+                    build += ProtobufSupport.monsterAlignmentToString(alignEnum[check], true, this);
+                    interleave = ", ";
+                }
+            }
+            btn.setText(build);
+        }
+
+        btn = (Button) findViewById(R.id.ncma_addTagButton);
+        count = 0;
+        if(tagFlags != null) {
+            for (boolean el : tagFlags) count += el? 1 : 0;
+        }
+        if(count == 0) btn.setText(R.string.ncma_tagBtn_notSet);
+        else {
+            String build = "";
+            String interleave = "";
+            for(int check = 0; check < tagFlags.length; check++) {
+                if(tagFlags[check]) {
+                    build += interleave;
+                    build += ProtobufSupport.monsterTypeToString(tagEnum[check], false, this);
+                    interleave = ", ";
+                }
+            }
+            btn.setText(build);
+        }
     }
 
     private static MonsterData.Monster.ChallangeRatio xpAward;
     private static Integer size, type, race;
-    private static ArrayList<Integer> tags;
+
+    private final static int[] alignEnum = {
+            MonsterData.LEGAL_GOOD,
+            MonsterData.LEGAL_NEUTRAL,
+            MonsterData.LEGAL_EVIL,
+            MonsterData.NEUTRAL_GOOD,
+            MonsterData.JUST_NEUTRAL,
+            MonsterData.NEUTRAL_EVIL,
+            MonsterData.CHAOTIC_GOOD,
+            MonsterData.CHAOTIC_NEUTRAL,
+            MonsterData.CHAOTIC_EVIL,
+            MonsterData.ALIGNMENT_RESTRICTED,
+            MonsterData.ALIGNMENT_AS_CREATOR
+    };
+    private static boolean[] alignFlags, tagFlags;
+
+    private final static int[] raceEnum = {
+            MonsterData.DWARF,
+            MonsterData.ELF,
+            MonsterData.GNOME,
+            MonsterData.HALF_ORC,
+            MonsterData.HALFLING,
+            MonsterData.HUMAN,
+            // Featured
+            MonsterData.AASIMAR,
+            MonsterData.CATFOLK,
+            MonsterData.DHAMPIR,
+            MonsterData.DROW,
+            MonsterData.FETCHLING,
+            MonsterData.GOBLIN,
+            MonsterData.HOBGOBLIN,
+            MonsterData.IFRIT,
+            MonsterData.KOBOLD,
+            MonsterData.ORC,
+            MonsterData.OREAD,
+            MonsterData.RATFOLK,
+            MonsterData.SYLPH,
+            MonsterData.TENGU,
+            MonsterData.TIEFLING,
+            MonsterData.UNDINE,
+            // Standard
+            MonsterData.GNOLL,
+            MonsterData.LIZARDFOLK,
+            MonsterData.MONKEY_GOBLIN,
+            MonsterData.SKINWALKER,
+            MonsterData.TRIAXIAN,
+            // Advanced
+            MonsterData.ANDROID,
+            MonsterData.GATHLAIN,
+            MonsterData.GHORAN,
+            MonsterData.KASATHA,
+            MonsterData.LASHUNTA,
+            MonsterData.SHABTI,
+            MonsterData.SYRINX,
+            MonsterData.WYRWOOD,
+            MonsterData.WYVARAN,
+            // Monstrous
+            MonsterData.CENTAUR,
+            MonsterData.OGRE,
+            MonsterData.SHOBHAD,
+            MonsterData.TROX,
+            // Very powerful
+            MonsterData.DRIDER,
+            MonsterData.GARGOYLE,
+            // uncommon
+            MonsterData.CHANGELING,
+            MonsterData.DUERGAR,
+            MonsterData.GILLMEN,
+            MonsterData.GRIPPLI,
+            MonsterData.KITSUNE,
+            MonsterData.MERFOLK,
+            MonsterData.NAGAJI,
+            MonsterData.SAMSARAN,
+            MonsterData.STRIX,
+            MonsterData.SULI,
+            MonsterData.SVIRFNEBLIN,
+            MonsterData.VANARA,
+            MonsterData.VISHKANYA,
+            MonsterData.WAYANG,
+            // unknown race points
+            MonsterData.AQUATIC_ELF,
+            MonsterData.ASTMOI,
+            MonsterData.CALIGNI,
+            MonsterData.DEEP_ONE_HYBRID,
+            MonsterData.GANZI,
+            MonsterData.KURU,
+            MonsterData.MANAVRI,
+            MonsterData.ORANG__PENDAK,
+            MonsterData.REPTOID
+    };
+    private static final int[] sizeEnum = {
+            MonsterData.FINE,
+            MonsterData.DIMINUTIVE,
+            MonsterData.TINY,
+            MonsterData.SMALL,
+            MonsterData.MEDIUM,
+            MonsterData.LARGE,
+            MonsterData.HUGE,
+            MonsterData.GARGANTUAN,
+            MonsterData.COLOSSAL
+    };
+    private static final int[] typeEnum = {
+            MonsterData.ABERRATION,
+            MonsterData.ANIMAL,
+            MonsterData.CONSTRUCT,
+            MonsterData.DRAGON,
+            MonsterData.FEY,
+            MonsterData.HUMANOID,
+            MonsterData.MAGICAL_BEAST,
+            MonsterData.MONSTROUS_HUMANOID,
+            MonsterData.OOZE,
+            MonsterData.OUTSIDER,
+            MonsterData.PLANT,
+            MonsterData.UNDEAD,
+            MonsterData.VERMIN
+    };
+    private static final int[] tagEnum = {
+            MonsterData.SUB_ACID,             MonsterData.SUB_ADLET,
+            MonsterData.SUB_AEON,             MonsterData.SUB_AGATHION,
+            MonsterData.SUB_AIR,              MonsterData.SUB_AMPHIBIOUS,
+            MonsterData.SUB_ANGEL,            MonsterData.SUB_AQUATIC,
+            MonsterData.SUB_ARCHON,           MonsterData.SUB_ASURA,
+            MonsterData.SUB_AZATA,            MonsterData.SUB_BEHEMOTH,
+            MonsterData.SUB_BOGGARD,          MonsterData.SUB_CATFOLK,
+            MonsterData.SUB_CHAOTIC,          MonsterData.SUB_CHARAU__KA,
+            MonsterData.SUB_CLOCKWORK,        MonsterData.SUB_COLD,
+            MonsterData.SUB_COLOSSUS,         MonsterData.SUB_DAEMON,
+            MonsterData.SUB_DARK_FOLK,        MonsterData.SUB_DEEP_ONE,
+            MonsterData.SUB_DEMODAND,         MonsterData.SUB_DEMON,
+            MonsterData.SUB_DERRO,            MonsterData.SUB_DEVIL,
+            MonsterData.SUB_DIV,              MonsterData.SUB_DWARF,
+            MonsterData.SUB_EARTH,            MonsterData.SUB_ELECTRICITY,
+            MonsterData.SUB_ELEMENTAL,        MonsterData.SUB_ELF,
+            MonsterData.SUB_EVIL,             MonsterData.SUB_EXTRAPLANAR,
+            MonsterData.SUB_FEYBLOOD,         MonsterData.SUB_FIRE,
+            MonsterData.SUB_GIANT,            MonsterData.SUB_GNOLL,
+            MonsterData.SUB_GNOME,            MonsterData.SUB_GOBLIN,
+            MonsterData.SUB_GOBLINOID,        MonsterData.SUB_GODSPAWN,
+            MonsterData.SUB_GOOD,             MonsterData.SUB_GRAVITY,
+            MonsterData.SUB_GREAT_OLD_ONE,    MonsterData.SUB_HALFLING,
+            MonsterData.SUB_HERALD,           MonsterData.SUB_HORDE,
+            MonsterData.SUB_HUMAN,            MonsterData.SUB_HUMANOID,
+            MonsterData.SUB_INCORPOREAL,      MonsterData.SUB_INEVITABLE,
+            MonsterData.SUB_KAIJU,            MonsterData.SUB_KAMI,
+            MonsterData.SUB_KASATHA,          MonsterData.SUB_KITSUNE,
+            MonsterData.SUB_KUAH__LIJ,        MonsterData.SUB_KYTON,
+            MonsterData.SUB_LAWFUL,           MonsterData.SUB_LESHY,
+            MonsterData.SUB_MYTHIC,           MonsterData.SUB_NATIVE,
+            MonsterData.SUB_NIGHTSHADE,       MonsterData.SUB_OGREN,
+            MonsterData.SUB_OGRILLON,         MonsterData.SUB_ONI,
+            MonsterData.SUB_ORC,              MonsterData.SUB_PROTEAN,
+            MonsterData.SUB_PSYCHOPOMP,       MonsterData.SUB_QLIPPOTH,
+            MonsterData.SUB_RAKSHASA,         MonsterData.SUB_RATFOLK,
+            MonsterData.SUB_REPTILIAN,        MonsterData.SUB_ROBOT,
+            MonsterData.SUB_SAMSARAN,         MonsterData.SUB_SASQUATCH,
+            MonsterData.SUB_SHAPECHANGER,     MonsterData.SUB_SKULK,
+            MonsterData.SUB_STORMWARDEN,      MonsterData.SUB_SWARM,
+            MonsterData.SUB_TABAXI,           MonsterData.SUB_TENGU,
+            MonsterData.SUB_TIME,             MonsterData.SUB_TROOP,
+            MonsterData.SUB_UDAEUS,           MonsterData.SUB_UNBREATHING,
+            MonsterData.SUB_VANARA,           MonsterData.SUB_VAPOR,
+            MonsterData.SUB_VISHKANYA,        MonsterData.SUB_WATER,
+            MonsterData.SUB_WAYANG,           MonsterData.SUB_FUNGUS,
+            MonsterData.SUB_PSIONIC
+    };
 }
