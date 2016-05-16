@@ -485,7 +485,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             real.allOwnedGroups = groupDefs;
             StartData.PartyOwnerData.Group owned = (StartData.PartyOwnerData.Group) activeParty;
             JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
-            real.initializePartyManagement(owned, activeStats, keyMaster, monsters);
+            real.initializePartyManagement(owned, activeStats, keyMaster, monsters, customMonsters);
             real.pumpClients(activeConnections);
             // TODO: reuse landing if there!
             if(activeLanding != null) {

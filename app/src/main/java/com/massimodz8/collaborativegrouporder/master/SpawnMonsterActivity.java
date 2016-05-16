@@ -183,7 +183,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
 
     private String query;
     private MenuItem showBookInfo;
-    private MonsterData.MonsterBook monsters;
+    private MonsterData.MonsterBook monsters, custom;
     private IdentityHashMap<MonsterData.Monster, Integer> spawnCounts = new IdentityHashMap<>();
     private SessionHelper session;
     private PartyJoinOrderService serv;
@@ -259,6 +259,16 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         return "!! Not found !!"; // impossible
     }
 
+    private static void lowerify(IdentityHashMap<String, String> result, MonsterData.MonsterBook book) {
+        for (MonsterData.MonsterBook.Entry entry : book.entries) {
+            for (String s : entry.main.header.name) result.put(s, s.toLowerCase());
+            for (MonsterData.Monster variation : entry.variations) {
+                for (String s : variation.header.name) result.put(s, s.toLowerCase());
+            }
+        }
+
+    }
+
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -266,6 +276,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         serv = real.getConcreteService();
         session = serv.session;
         monsters = session.monsters;
+        custom = session.customMobs;
         showBookInfo.setVisible(true);
         unbindService(this);
 
@@ -278,14 +289,17 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
             @Override
             protected Void doInBackground(Void... params) {
                 final IdentityHashMap<String, String> tolower = new IdentityHashMap<>();
-                for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
-                    for (String s : entry.main.header.name) tolower.put(s, s.toLowerCase());
-                    for (MonsterData.Monster variation : entry.variations) {
-                        for (String s : variation.header.name) tolower.put(s, s.toLowerCase());
-                    }
-                }
+                lowerify(tolower, monsters);
+                lowerify(tolower, custom);
+                matchStarting(tolower, custom);
+                matchStarting(tolower, monsters);
+                matchContaining(tolower, custom);
+                matchContaining(tolower, monsters);
+                return null;
+            }
 
-                for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+            private void matchStarting(IdentityHashMap<String, String> tolower, MonsterData.MonsterBook book) {
+                for (MonsterData.MonsterBook.Entry entry : book.entries) {
                     boolean matched = false;
                     if(anyStarts(entry.main.header.name, lcq, tolower)) {
                         mobs.add(entry.main);
@@ -299,7 +313,10 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                         }
                     }
                 }
-                for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+            }
+
+            private void matchContaining(IdentityHashMap<String, String> tolower, MonsterData.MonsterBook book) {
+                for (MonsterData.MonsterBook.Entry entry : book.entries) {
                     boolean matched = false;
                     if(anyContains(entry.main.header.name, lcq, 1, tolower)) {
                         mobs.add(entry.main);
@@ -313,7 +330,6 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                         }
                     }
                 }
-                return null;
             }
 
             @Override

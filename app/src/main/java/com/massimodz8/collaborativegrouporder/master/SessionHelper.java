@@ -36,7 +36,7 @@ public abstract class SessionHelper {
 
     public final Session.Suspended stats;
     public final ArrayList<Network.ActorState> existByDef;
-    public final MonsterData.MonsterBook monsters;
+    public final MonsterData.MonsterBook monsters, customMobs;
     public BattleHelper battleState;
     public ArrayDeque<Events.Roll> rollResults = new ArrayDeque<>(); // this is to be used even before battle starts.
     /**
@@ -65,10 +65,11 @@ public abstract class SessionHelper {
     }
 
 
-    SessionHelper(Session.Suspended stats, ArrayList<Network.ActorState> existByDef, MonsterData.MonsterBook monsters) {
+    SessionHelper(Session.Suspended stats, ArrayList<Network.ActorState> existByDef, MonsterData.MonsterBook monsters, MonsterData.MonsterBook customMobs) {
         this.stats = stats;
         this.existByDef = existByDef;
         this.monsters = monsters;
+        this.customMobs = customMobs;
     }
 
     static class DefeatedData {

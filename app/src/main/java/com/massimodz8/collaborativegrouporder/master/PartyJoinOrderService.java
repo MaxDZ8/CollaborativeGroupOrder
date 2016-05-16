@@ -52,7 +52,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 This goes in parallel with landing socket and publish management so you're better set this up ASAP.
                 As usual, it can be initialized only once and then the service will have to be destroyed.
                 */
-    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook) {
+    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook, MonsterData.MonsterBook customMobs) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster) {
             @Override
             protected StartData.ActorDefinition getActorData(int unique) {
@@ -63,7 +63,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
         ArrayList<Network.ActorState> byDef = new ArrayList<>();
         for(StartData.ActorDefinition el : party.party) byDef.add(MaxUtils.makeActorState(el, nextActorId++, Network.ActorState.T_PLAYING_CHARACTER));
         for(StartData.ActorDefinition el : party.npcs) byDef.add(MaxUtils.makeActorState(el, nextActorId++, Network.ActorState.T_NPC));
-        session = new SessionHelper(live, byDef, monsterBook) {
+        session = new SessionHelper(live, byDef, monsterBook, customMobs) {
             @Override
             void onRollReceived() {
                 while(!session.rollResults.isEmpty()) {
