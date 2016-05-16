@@ -30,8 +30,10 @@ import com.massimodz8.collaborativegrouporder.master.NewPartyDeviceSelectionActi
 import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
+import com.massimodz8.collaborativegrouporder.master.SpawnMonsterActivity;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
@@ -221,6 +223,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 break;
             }
             case R.id.mma_preparedBattles: {
+                PreparedBattlesActivity.custom = customBattles;
                 startActivity(new Intent(this, PreparedBattlesActivity.class));
                 break;
             }
@@ -260,6 +263,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         StartData.PartyClientData joined;
         MonsterData.MonsterBook monsterBook;
         MonsterData.MonsterBook customMobs;
+        PreparedEncounters.Collection custBattles;
 
         final PersistentDataUtils loader = new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
@@ -308,10 +312,24 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 return e;
             }
 
+            File cbattles = new File(customDataDir, PersistentDataUtils.CUSTOM_ENCOUNTERS_FILE_NAME);
+            PreparedEncounters.Collection allBattles = new PreparedEncounters.Collection();
+            try {
+                final FileInputStream fis = new FileInputStream(cbattles);
+                final MaxUtils.TotalLoader loaded = new MaxUtils.TotalLoader(fis, loadBuff);
+                fis.close();
+                allBattles.mergeFrom(CodedInputByteBufferNano.newInstance(loaded.fullData, 0, loaded.validBytes));
+            } catch (FileNotFoundException e) {
+                // No problem really. Go ahead.
+            } catch (IOException e) {
+                return e;
+            }
+
             owned = pullo;
             joined = pullk;
             monsterBook = pullMon;
             customMobs = custBook;
+            custBattles = allBattles;
 
             return null;
         }
@@ -342,8 +360,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                         .show();
                 return;
             }
-            monsters = monsterBook;
-            customMonsters = customMobs;
+            monsters = SpawnMonsterActivity.monsters = monsterBook;
+            customMonsters = SpawnMonsterActivity.custom = customMobs;
+            customBattles = SpawnMonsterActivity.preppedBattles = custBattles;
             Collections.addAll(groupDefs, owned.everything);
             Collections.addAll(groupKeys, joined.everything);
             MaxUtils.beginDelayedTransition(MainMenuActivity.this);
@@ -485,7 +504,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             real.allOwnedGroups = groupDefs;
             StartData.PartyOwnerData.Group owned = (StartData.PartyOwnerData.Group) activeParty;
             JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
-            real.initializePartyManagement(owned, activeStats, keyMaster, monsters, customMonsters);
+            real.initializePartyManagement(owned, activeStats, keyMaster, monsters, customMonsters, customBattles);
             real.pumpClients(activeConnections);
             // TODO: reuse landing if there!
             if(activeLanding != null) {
@@ -545,6 +564,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     private ArrayList<StartData.PartyOwnerData.Group> groupDefs = new ArrayList<>();
     private ArrayList<StartData.PartyClientData.Group> groupKeys = new ArrayList<>();
     private MonsterData.MonsterBook monsters, customMonsters;
+    private PreparedEncounters.Collection customBattles;
 
     interface ErrorFeedbackFunc {
         void feedback(int errors);

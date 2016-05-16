@@ -1,12 +1,9 @@
 package com.massimodz8.collaborativegrouporder.master;
 
 import android.app.SearchManager;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
@@ -25,6 +22,7 @@ import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -34,7 +32,11 @@ import java.util.IdentityHashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class SpawnMonsterActivity extends AppCompatActivity implements ServiceConnection {
+public class SpawnMonsterActivity extends AppCompatActivity {
+    public static boolean includePreparedBattles = true;
+    public static ArrayList<Network.ActorState> found;
+    public static MonsterData.MonsterBook monsters, custom;
+    public static PreparedEncounters.Collection preppedBattles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +50,63 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
         if(!Intent.ACTION_SEARCH.equals(intent.getAction())) return;
-        query = intent.getStringExtra(SearchManager.QUERY);
+        final String query = intent.getStringExtra(SearchManager.QUERY);
 
-        // Stop there. We must also create the action bar first.
+        new AsyncTask<Void, Void, Void>() {
+            final ArrayList<MonsterData.Monster> mobs = new ArrayList<>();
+            final ArrayList<String[]> names = new ArrayList<>();
+            final String lcq = query.toLowerCase();
+
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                final IdentityHashMap<String, String> tolower = new IdentityHashMap<>();
+                lowerify(tolower, monsters);
+                lowerify(tolower, custom);
+                matchStarting(tolower, custom);
+                matchStarting(tolower, monsters);
+                matchContaining(tolower, custom);
+                matchContaining(tolower, monsters);
+                return null;
+            }
+
+            private void matchStarting(IdentityHashMap<String, String> tolower, MonsterData.MonsterBook book) {
+                for (MonsterData.MonsterBook.Entry entry : book.entries) {
+                    boolean matched = false;
+                    if(anyStarts(entry.main.header.name, lcq, tolower)) {
+                        mobs.add(entry.main);
+                        names.add(entry.main.header.name);
+                        matched = true;
+                    }
+                    for (MonsterData.Monster variation : entry.variations) {
+                        if(matched || anyStarts(variation.header.name, lcq, tolower)) {
+                            mobs.add(variation);
+                            names.add(completeVariationNames(entry.main.header.name, variation.header.name));
+                        }
+                    }
+                }
+            }
+
+            private void matchContaining(IdentityHashMap<String, String> tolower, MonsterData.MonsterBook book) {
+                for (MonsterData.MonsterBook.Entry entry : book.entries) {
+                    boolean matched = false;
+                    if(anyContains(entry.main.header.name, lcq, 1, tolower)) {
+                        mobs.add(entry.main);
+                        names.add(entry.main.header.name);
+                        matched = true;
+                    }
+                    for (MonsterData.Monster variation : entry.variations) {
+                        if(matched || anyContains(variation.header.name, lcq, 1, tolower)) {
+                            mobs.add(variation);
+                            names.add(completeVariationNames(entry.main.header.name, variation.header.name));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) { showSearchResults(mobs, names); }
+        }.execute();
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
@@ -59,6 +115,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
             @Override
             public void onClick(View view) {
                 HashMap<String, Integer> nameColl = new HashMap<>();
+                if(found == null) found = new ArrayList<>();
                 for (Map.Entry<MonsterData.Monster, Integer> entry : spawnCounts.entrySet()) {
                     final Integer count = entry.getValue();
                     if(count == null) continue; // impossible
@@ -72,15 +129,14 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                         else display = String.format(Locale.getDefault(), getString(R.string.sma_monsterNameSpawnNote), display, previously);
                         Network.ActorState build = new Network.ActorState();
                         build.type = Network.ActorState.T_MOB;
-                        build.peerKey = serv.nextActorId++;
+                        build.peerKey = -1; // <-- watch out for the peerkey!
                         build.name = display;
                         build.currentHP = build.maxHP = 666; // todo generate(mob.defense.hp)
                         build.initiativeBonus = mob.header.initiative;  // todo select conditional initiatives.
                         build.cr = new Network.ActorState.ChallangeRatio();
                         build.cr.numerator = mob.header.cr.numerator;
                         build.cr.denominator = mob.header.cr.denominator;
-                        session.add(build);
-                        session.willFight(build.peerKey, true);
+                        found.add(build);
                         nameColl.put(presentation, previously + 1);
                     }
                 }
@@ -93,15 +149,6 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.spawn_monster_activity, menu);
-        showBookInfo = menu.findItem(R.id.sma_menu_showMonsterBookInfo);
-
-        if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
-            MaxUtils.beginDelayedTransition(this);
-            findViewById(R.id.sma_progress).setVisibility(View.GONE);
-            TextView ohno = (TextView) findViewById(R.id.sma_status);
-            ohno.setText(R.string.master_cannotBindAdventuringService);
-        }
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -181,12 +228,7 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
     }
 
 
-    private String query;
-    private MenuItem showBookInfo;
-    private MonsterData.MonsterBook monsters, custom;
     private IdentityHashMap<MonsterData.Monster, Integer> spawnCounts = new IdentityHashMap<>();
-    private SessionHelper session;
-    private PartyJoinOrderService serv;
 
 
     private static boolean anyStarts(String[] arr, String prefix, IdentityHashMap<String, String> tolower) {
@@ -274,77 +316,4 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
         }
 
     }
-
-    // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        PartyJoinOrderService.LocalBinder real = (PartyJoinOrderService.LocalBinder) service;
-        serv = real.getConcreteService();
-        session = serv.session;
-        monsters = session.monsters;
-        custom = session.customMobs;
-        showBookInfo.setVisible(true);
-        unbindService(this);
-
-        new AsyncTask<Void, Void, Void>() {
-            final ArrayList<MonsterData.Monster> mobs = new ArrayList<>();
-            final ArrayList<String[]> names = new ArrayList<>();
-            final String lcq = query.toLowerCase();
-
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                final IdentityHashMap<String, String> tolower = new IdentityHashMap<>();
-                lowerify(tolower, monsters);
-                lowerify(tolower, custom);
-                matchStarting(tolower, custom);
-                matchStarting(tolower, monsters);
-                matchContaining(tolower, custom);
-                matchContaining(tolower, monsters);
-                return null;
-            }
-
-            private void matchStarting(IdentityHashMap<String, String> tolower, MonsterData.MonsterBook book) {
-                for (MonsterData.MonsterBook.Entry entry : book.entries) {
-                    boolean matched = false;
-                    if(anyStarts(entry.main.header.name, lcq, tolower)) {
-                        mobs.add(entry.main);
-                        names.add(entry.main.header.name);
-                        matched = true;
-                    }
-                    for (MonsterData.Monster variation : entry.variations) {
-                        if(matched || anyStarts(variation.header.name, lcq, tolower)) {
-                            mobs.add(variation);
-                            names.add(completeVariationNames(entry.main.header.name, variation.header.name));
-                        }
-                    }
-                }
-            }
-
-            private void matchContaining(IdentityHashMap<String, String> tolower, MonsterData.MonsterBook book) {
-                for (MonsterData.MonsterBook.Entry entry : book.entries) {
-                    boolean matched = false;
-                    if(anyContains(entry.main.header.name, lcq, 1, tolower)) {
-                        mobs.add(entry.main);
-                        names.add(entry.main.header.name);
-                        matched = true;
-                    }
-                    for (MonsterData.Monster variation : entry.variations) {
-                        if(matched || anyContains(variation.header.name, lcq, 1, tolower)) {
-                            mobs.add(variation);
-                            names.add(completeVariationNames(entry.main.header.name, variation.header.name));
-                        }
-                    }
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) { showSearchResults(mobs, names); }
-        }.execute();
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-    }
-    // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }
