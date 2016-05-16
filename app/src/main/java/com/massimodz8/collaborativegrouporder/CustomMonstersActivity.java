@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -38,7 +39,51 @@ public class CustomMonstersActivity extends AppCompatActivity {
         new HoriSwipeOnlyTouchCallback(rv) {
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                Snackbar.make(findViewById(R.id.activityRoot), "TODO", Snackbar.LENGTH_LONG);
+                if(viewHolder instanceof MonsterVH) {
+                    final MonsterData.Monster goner = ((MonsterVH) viewHolder).currentBinding;
+                    final int itsPrevId = ids.get(goner);
+                    if(goner == null) return;
+                    final boolean[] restore = { true };
+                    final MonsterData.MonsterBook.Entry[] shorter = new MonsterData.MonsterBook.Entry[custom.entries.length - 1];
+                    int dst = 0;
+                    for (MonsterData.MonsterBook.Entry entry : custom.entries) {
+                        if(entry.main != goner) shorter[dst++] = entry;
+                    }
+                    final MonsterData.MonsterBook.Entry[] previously = custom.entries;
+                    custom.entries = shorter;
+                    ids.remove(goner);
+                    rv.getAdapter().notifyDataSetChanged();
+                    Snackbar.make(findViewById(R.id.activityRoot), R.string.cma_confirmDelete, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.generic_actionDelete, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    // For the time being there are no variations here so I keep it easy.
+                                    restore[0] = false;
+                                }
+                            })
+                            .setCallback(new Snackbar.Callback() {
+                                @Override
+                                public void onDismissed(Snackbar snackbar, int event) {
+                                   if(restore[0]) {
+                                       custom.entries = previously;
+                                       ids.put(goner, itsPrevId);
+                                       rv.getAdapter().notifyDataSetChanged();
+                                   }
+                                   else saving = new AsyncRenamingStore<MonsterData.MonsterBook>(getFilesDir(), PersistentDataUtils.USER_CUSTOM_DATA_SUBDIR, PersistentDataUtils.CUSTOM_MOBS_FILE_NAME, custom) {
+                                       @Override
+                                       protected String getString(@StringRes int res) {
+                                           return CustomMonstersActivity.this.getString(res);
+                                       }
+
+                                       @Override
+                                       protected void onPostExecute(Exception e) {
+                                           saving = null;
+                                       }
+                                   };
+                                }
+                            })
+                            .show();
+                }
             }
 
             @Override
@@ -72,6 +117,16 @@ public class CustomMonstersActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        if(saving == null) super.onBackPressed();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() { // takes a second anyway.
+        return saving == null && super.onSupportNavigateUp();
+    }
+
     public static final int REQUEST_NEW_MONSTER = 1;
 
     @Override
@@ -91,7 +146,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
 
         @Override
         public MonsterVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            final MonsterVH res = new MonsterVH(getLayoutInflater(), parent, CustomMonstersActivity.this, ids);
+            final MonsterVH res = new MonsterVH(getLayoutInflater(), parent, CustomMonstersActivity.this, null);
             res.visMode = MonsterVH.MODE_STANDARD;
             return res;
         }
@@ -118,7 +173,6 @@ public class CustomMonstersActivity extends AppCompatActivity {
             }
             if(data == null) return; // impossible by construction
             holder.bindData(name, data);
-            holder.inBattle.setVisibility(View.GONE);
         }
 
         @Override
@@ -147,4 +201,5 @@ public class CustomMonstersActivity extends AppCompatActivity {
 
     private final IdentityHashMap<MonsterData.Monster, Integer> ids = new IdentityHashMap<>();
     private int nextId = 0;
+    private AsyncRenamingStore<MonsterData.MonsterBook> saving;
 }

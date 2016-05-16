@@ -15,6 +15,7 @@
     <string name="generic_validButTooEarly">Too fast. Try again.</string>
     <string name="generic_quit">Quit</string>
     <string name="generic_symbol_bidiArrow">↔</string>
+    <string name="generic_actionDelete">Delete</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
     <string name="master_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
@@ -853,6 +854,7 @@
     <string name="cma_title">Custom Monsters</string>
     <string name="cma_initialStatus">Loading. Please wait a second.</string>
     <string name="cma_status_empty">No monsters created yet.</string>
+    <string name="cma_confirmDelete">Confirm delete?</string>
 
     <string name="pba_title">Prepared Battles</string>
     <string name="pba_initialStatus">Loading. Please wait a second.</string>
