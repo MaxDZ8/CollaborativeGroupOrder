@@ -1,0 +1,15 @@
+syntax = "proto3";
+option java_package = "com.massimodz8.collaborativegrouporder.protocol";
+import "google/protobuf/timestamp.proto";
+import "network.proto";
+
+// I save a single file with everything inside as usual so I can just get along with the proven to work machinery.
+message Collection {
+    repeated Battle battles = 1;
+}
+
+
+message Battle {
+    google.protobuf.Timestamp created = 1;
+    repeated ActorState actors = 2;	
+}

@@ -857,7 +857,6 @@
     <string name="cma_confirmDelete">Confirm delete?</string>
 
     <string name="pba_title">Prepared Battles</string>
-    <string name="pba_initialStatus">Loading. Please wait a second.</string>
 
     <string name="ncma_title">New Monster</string>
     <string name="ncma_nameTilHint">Name</string>
@@ -881,5 +880,15 @@
     <string name="ncma_emptyInitiative">Missing initiative modifier!</string>
     <string name="ncma_badInitiative">Invalid initiative modifier!</string>
     <string name="ncma_badAlignment">Invalid alignment!</string>
+
+    <string name="pba_battleCreatedFormat">Created %1$s</string>
+    <string name="pba_nothingFound">No prepared battles found.</string>
+
+    <string name="npba_searchHint">Search mobs to add</string>
+    <string name="npba_title">Prepare battle</string>
+    <string name="npba_descTilHint">Describe battle</string>
+    <string name="npba_actionShort">save</string>
+    <string name="npba_save">Validate and save</string>
+    <string name="npba_emptyDesc">You must provide a description.</string>
 
 </resources>

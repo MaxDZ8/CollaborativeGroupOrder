@@ -222,6 +222,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".CustomMonstersActivity" />
         </activity>
+        <activity
+            android:name=".NewPreparedBattleActivity"
+            android:label="@string/npba_title"
+            android:parentActivityName=".PreparedBattlesActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.PreparedBattlesActivity" />
+        </activity>
     </application>
 
 </manifest>
