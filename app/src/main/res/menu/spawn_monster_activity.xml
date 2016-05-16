@@ -6,6 +6,5 @@
         android:id="@+id/sma_menu_showMonsterBookInfo"
         android:titleCondensed="@string/sma_short_showMonsterInfo"
         app:showAsAction="ifRoom|withText"
-        android:visible="false"
         android:icon="@mipmap/ic_info_white_24dp" />
 </menu>

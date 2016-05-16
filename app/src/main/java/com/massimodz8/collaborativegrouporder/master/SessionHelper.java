@@ -8,6 +8,7 @@ import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 
 import java.util.ArrayDeque;
@@ -29,6 +30,7 @@ import java.util.Set;
  * state. Session data is a superset of StartData so we have to be careful!
  */
 public abstract class SessionHelper {
+
     abstract void onRollReceived(); // called after rollRequest.push
     abstract public void turnDone(MessageChannel from, int peerKey);
     public abstract void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot);
@@ -37,6 +39,7 @@ public abstract class SessionHelper {
     public final Session.Suspended stats;
     public final ArrayList<Network.ActorState> existByDef;
     public final MonsterData.MonsterBook monsters, customMobs;
+    public final PreparedEncounters.Collection customBattles;
     public BattleHelper battleState;
     public ArrayDeque<Events.Roll> rollResults = new ArrayDeque<>(); // this is to be used even before battle starts.
     /**
@@ -65,11 +68,12 @@ public abstract class SessionHelper {
     }
 
 
-    SessionHelper(Session.Suspended stats, ArrayList<Network.ActorState> existByDef, MonsterData.MonsterBook monsters, MonsterData.MonsterBook customMobs) {
+    SessionHelper(Session.Suspended stats, ArrayList<Network.ActorState> existByDef, MonsterData.MonsterBook monsters, MonsterData.MonsterBook customMobs, PreparedEncounters.Collection customBattles) {
         this.stats = stats;
         this.existByDef = existByDef;
         this.monsters = monsters;
         this.customMobs = customMobs;
+        this.customBattles = customBattles;
     }
 
     static class DefeatedData {
