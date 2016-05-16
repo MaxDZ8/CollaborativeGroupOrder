@@ -256,6 +256,12 @@ public class SpawnMonsterActivity extends AppCompatActivity implements ServiceCo
                 if(mob == inner) return entry.main.header.name[0];
             }
         }
+        for (MonsterData.MonsterBook.Entry entry : custom.entries) {
+            if(mob == entry.main) return entry.main.header.name[0];
+            for (MonsterData.Monster inner : entry.variations) {
+                if(mob == inner) return entry.main.header.name[0];
+            }
+        }
         return "!! Not found !!"; // impossible
     }
 
