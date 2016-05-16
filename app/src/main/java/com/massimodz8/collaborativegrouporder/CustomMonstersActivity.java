@@ -57,7 +57,10 @@ public class CustomMonstersActivity extends AppCompatActivity {
         MaxUtils.beginDelayedTransition(this);
         final TextView tv = (TextView) findViewById(R.id.cma_status);
         if(rv.getAdapter().getItemCount() == 0) tv.setText(R.string.cma_status_empty);
-        else tv.setVisibility(View.GONE);
+        else {
+            tv.setVisibility(View.GONE);
+            rv.setVisibility(View.VISIBLE);
+        }
         findViewById(R.id.cma_progress).setVisibility(View.GONE);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -78,6 +81,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
         ids.put(custom.entries[custom.entries.length - 1].main, nextId++);
         final RecyclerView rv = (RecyclerView) findViewById(R.id.cma_list);
         rv.getAdapter().notifyItemInserted(custom.entries.length - 1);
+        rv.setVisibility(View.VISIBLE);
     }
 
     class MyAdapter extends RecyclerView.Adapter<MonsterVH> {
@@ -114,7 +118,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
             }
             if(data == null) return; // impossible by construction
             holder.bindData(name, data);
-
+            holder.inBattle.setVisibility(View.GONE);
         }
 
         @Override

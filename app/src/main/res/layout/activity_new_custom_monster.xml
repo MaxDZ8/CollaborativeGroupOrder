@@ -41,6 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/ncma_tilName"
+                    app:errorEnabled="true"
                     android:hint="@string/ncma_nameTilHint">
 
                     <EditText
@@ -77,6 +78,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:id="@+id/ncma_tilInit"
+                    app:errorEnabled="true"
                     android:hint="@string/ncma_initiativeTilHint">
 
                     <EditText
@@ -84,7 +86,8 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
                         android:id="@+id/ncma_init"
-                        android:inputType="numberSigned" />
+                        android:inputType="numberSigned"
+                        android:selectAllOnFocus="true" />
 
                 </android.support.design.widget.TextInputLayout>
 

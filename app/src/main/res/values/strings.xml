@@ -868,12 +868,16 @@
     <string name="ncma_typeBtn_notSet">Set type</string>
     <string name="ncma_initiativeTilHint">Initiative modifier</string>
     <string name="ncma_race_notSet">Set optional race</string>
-    <string name="ncma_addTag">Tags</string>
+    <string name="ncma_addTag">Add optional tags</string>
     <string name="ncma_crDlg_title">Set Challenge Ratio</string>
     <string name="ncma_sizeDlg_title">Set size</string>
     <string name="ncma_crBtnSet">CR: %1$s</string>
     <string name="ncma_alignBtn_notSet">Set alignment</string>
     <string name="ncma_alignDlg_title">Set alignment</string>
     <string name="ncma_tagDlg_title">Set tags</string>
+    <string name="ncma_emptyName">Missing name!</string>
+    <string name="ncma_emptyInitiative">Missing initiative modifier!</string>
+    <string name="ncma_badInitiative">Invalid initiative modifier!</string>
+    <string name="ncma_badAlignment">Invalid alignment!</string>
 
 </resources>

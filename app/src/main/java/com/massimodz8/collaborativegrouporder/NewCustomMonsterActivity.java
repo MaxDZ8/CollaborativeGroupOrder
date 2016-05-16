@@ -2,7 +2,9 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -10,10 +12,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.massimodz8.collaborativegrouporder.master.AwardExperienceActivity;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -44,8 +48,19 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        if(saving == null) super.onBackPressed();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() { // takes a second anyway.
+        return saving == null && super.onSupportNavigateUp();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.new_custom_monster_activity, menu);
+        saveAction = menu.findItem(R.id.ncma_save);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -53,7 +68,120 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.ncma_save: {
-                Snackbar.make(findViewById(R.id.activityRoot), "TODO: validate & save", Snackbar.LENGTH_SHORT).show();
+                // First I validate the data.
+                final View root = findViewById(R.id.activityRoot);
+                TextInputLayout til = (TextInputLayout)findViewById(R.id.ncma_tilName);
+                View view = findViewById(R.id.ncma_name);
+                final String name = ((EditText) view).getText().toString();
+                if(name.length() == 0) {
+                    til.setError(getString(R.string.ncma_emptyName));
+                    view.requestFocus();
+                    return true;
+                }
+                til.setError(null);
+                if(xpAward == null) {
+                    findViewById(R.id.ncma_cr).performClick();
+                    return true;
+                }
+                if(size == null) {
+                    findViewById(R.id.ncma_size).performClick();
+                    return true;
+                }
+                if(type == null) {
+                    findViewById(R.id.ncma_type).performClick();
+                    return true;
+                }
+                til = (TextInputLayout)findViewById(R.id.ncma_tilInit);
+                view = findViewById(R.id.ncma_init);
+                final String init = ((EditText) view).getText().toString();
+                if(init.length() == 0) {
+                    til.setError(getString(R.string.ncma_emptyInitiative));
+                    view.requestFocus();
+                    return true;
+                }
+                int modifier;
+                try {
+                    modifier = Integer.parseInt(init);
+                } catch(NumberFormatException e) { // input method prevents this but w/e
+                    til.setError(getString(R.string.ncma_badInitiative));
+                    view.requestFocus();
+                    return true;
+                }
+                til.setError(null);
+                // Alignment... uff. This is a bit harder.
+                boolean valid = false;
+                int alignCount = 0;
+                int scan = 0;
+                if(alignFlags != null) {
+                    for (boolean yes : alignFlags) {
+                        if (yes) {
+                            if (alignEnum[scan] != MonsterData.ALIGNMENT_RESTRICTED) valid = true;
+                            alignCount++;
+                        }
+                        scan++;
+                    }
+                }
+                if(!valid) {
+                    Snackbar.make(root, R.string.ncma_badAlignment, Snackbar.LENGTH_LONG).show();
+                    return true;
+                }
+                // Race and tags are optional so we don't really care about them. Starting to build
+                // the new monster...
+                final MonsterData.Monster mob = new MonsterData.Monster();
+                mob.header = new MonsterData.Monster.Header();
+                mob.header.name = new String[] { name };
+                mob.header.cr = xpAward;
+                mob.header.alignment = new int[alignCount];
+                scan = alignCount = 0;
+                for (boolean yes : alignFlags) {
+                    if(yes) {
+                        mob.header.alignment[alignCount++] = alignEnum[scan];
+                    }
+                    scan++;
+                }
+                mob.header.size = size;
+                mob.header.type = type;
+                mob.header.initiative = modifier;
+                ArrayList<MonsterData.Monster.Tag> easy = new ArrayList<>();
+                if(race != null) {
+                    MonsterData.Monster.Tag tag = new MonsterData.Monster.Tag();
+                    tag.type = MonsterData.Monster.TT_RACE;
+                    tag.race = race;
+                    easy.add(tag);
+                }
+                if(tagFlags != null) {
+                    scan = -1;
+                    for (int value : tagEnum) {
+                        scan++;
+                        if(!tagFlags[scan]) continue;
+                        MonsterData.Monster.Tag tag = new MonsterData.Monster.Tag();
+                        tag.type = MonsterData.Monster.TT_SUBTYPE;
+                        tag.subtype = value;
+                        easy.add(tag);
+                    }
+                }
+                mob.header.tags = new MonsterData.Monster.Tag[easy.size()];
+                scan = 0;
+                for (MonsterData.Monster.Tag tag :easy) mob.header.tags[scan++] = tag;
+                // Our new mob is ready. Kinda. Now let's add it to the book and start a save!
+                MonsterData.MonsterBook.Entry parent = new MonsterData.MonsterBook.Entry();
+                parent.main = mob;
+                final MonsterData.MonsterBook.Entry[] longer = Arrays.copyOf(CustomMonstersActivity.custom.entries, CustomMonstersActivity.custom.entries.length + 1);
+                longer[CustomMonstersActivity.custom.entries.length] = parent;
+                CustomMonstersActivity.custom.entries = longer;
+                saveAction.setEnabled(false);
+                saving = new AsyncRenamingStore<MonsterData.MonsterBook>(getFilesDir(), PersistentDataUtils.USER_CUSTOM_DATA_SUBDIR, PersistentDataUtils.CUSTOM_MOBS_FILE_NAME, CustomMonstersActivity.custom) {
+                    @Override
+                    protected String getString(@StringRes int res) {
+                        return NewCustomMonsterActivity.this.getString(res);
+                    }
+
+                    @Override
+                    protected void onPostExecute(Exception e) {
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                };
                 return true;
             }
         }
@@ -438,4 +566,6 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
             MonsterData.SUB_WAYANG,           MonsterData.SUB_FUNGUS,
             MonsterData.SUB_PSIONIC
     };
+    private AsyncRenamingStore<MonsterData.MonsterBook> saving;
+    private MenuItem saveAction;
 }
