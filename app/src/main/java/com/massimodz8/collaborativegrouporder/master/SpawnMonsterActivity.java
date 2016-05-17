@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.CodedInputByteBufferNano;
+import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MonsterVH;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
@@ -24,8 +26,10 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -50,12 +54,13 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
         if(!Intent.ACTION_SEARCH.equals(intent.getAction())) return;
-        final String query = intent.getStringExtra(SearchManager.QUERY);
+        final String query = intent.getStringExtra(SearchManager.QUERY).trim();
 
         new AsyncTask<Void, Void, Void>() {
-            final ArrayList<MonsterData.Monster> mobs = new ArrayList<>();
+            final ArrayList<Network.ActorState> mobs = new ArrayList<>();
             final ArrayList<String[]> names = new ArrayList<>();
             final String lcq = query.toLowerCase();
+            final IdentityHashMap<Network.ActorState, MonsterData.Monster> definitions = new IdentityHashMap<>();
 
 
             @Override
@@ -74,14 +79,18 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 for (MonsterData.MonsterBook.Entry entry : book.entries) {
                     boolean matched = false;
                     if(anyStarts(entry.main.header.name, lcq, tolower)) {
-                        mobs.add(entry.main);
+                        Network.ActorState built = actorState(entry.main, entry.main.header.name[0]);
+                        mobs.add(built);
                         names.add(entry.main.header.name);
+                        definitions.put(built, entry.main);
                         matched = true;
                     }
                     for (MonsterData.Monster variation : entry.variations) {
                         if(matched || anyStarts(variation.header.name, lcq, tolower)) {
-                            mobs.add(variation);
+                            Network.ActorState built = actorState(variation, entry.main.header.name[0]);
+                            mobs.add(built);
                             names.add(completeVariationNames(entry.main.header.name, variation.header.name));
+                            definitions.put(built, variation);
                         }
                     }
                 }
@@ -91,21 +100,47 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 for (MonsterData.MonsterBook.Entry entry : book.entries) {
                     boolean matched = false;
                     if(anyContains(entry.main.header.name, lcq, 1, tolower)) {
-                        mobs.add(entry.main);
+                        Network.ActorState built = actorState(entry.main, entry.main.header.name[0]);
+                        mobs.add(built);
                         names.add(entry.main.header.name);
+                        definitions.put(built, entry.main);
                         matched = true;
                     }
                     for (MonsterData.Monster variation : entry.variations) {
                         if(matched || anyContains(variation.header.name, lcq, 1, tolower)) {
-                            mobs.add(variation);
+                            Network.ActorState built = actorState(variation, entry.main.header.name[0]);
+                            mobs.add(built);
                             names.add(completeVariationNames(entry.main.header.name, variation.header.name));
+                            definitions.put(built, variation);
                         }
                     }
                 }
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) { showSearchResults(mobs, names); }
+            protected void onPostExecute(Void aVoid) {
+                SpawnMonsterActivity.this.ids = new IdentityHashMap<>();
+                int matched = 0;
+                for (Network.ActorState as : mobs) ids.put(as, matched++);
+                SpawnMonsterActivity.this.mobs = this.mobs;
+                SpawnMonsterActivity.this.definitions = definitions;
+                MaxUtils.beginDelayedTransition(SpawnMonsterActivity.this);
+                final RecyclerView list = (RecyclerView) findViewById(R.id.sma_matchedList);
+                SpawnableAdventuringActorVH.countFormat = getString(R.string.vhMLE_spawnCountFeedback);
+                SpawnableAdventuringActorVH.intCrFormat = getString(R.string.vhMLE_challangeRatio_integral);
+                SpawnableAdventuringActorVH.ratioCrFormat = getString(R.string.vhMLE_challangeRatio_fraction);
+                final RecyclerView.Adapter<SpawnableAdventuringActorVH> adapter = new MyMobLister(list);
+                list.addItemDecoration(new PreSeparatorDecorator(list, SpawnMonsterActivity.this) {
+                    @Override
+                    protected boolean isEligible(int position) { return position != 0; }
+                });
+                list.setAdapter(adapter);
+                list.setVisibility(View.VISIBLE);
+                MaxUtils.setVisibility(SpawnMonsterActivity.this, View.GONE, R.id.sma_progress);
+                final TextView status = (TextView) findViewById(R.id.sma_status);
+                if(this.mobs.size() == 1) status.setText(R.string.sma_status_matchedSingleMonster);
+                else status.setText(String.format(getString(R.string.sma_status_matchedMultipleMonsters), this.mobs.size()));
+            }
         }.execute();
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -116,27 +151,37 @@ public class SpawnMonsterActivity extends AppCompatActivity {
             public void onClick(View view) {
                 HashMap<String, Integer> nameColl = new HashMap<>();
                 if(found == null) found = new ArrayList<>();
-                for (Map.Entry<MonsterData.Monster, Integer> entry : spawnCounts.entrySet()) {
+                for (Map.Entry<Network.ActorState, Integer> entry : spawnCounts.entrySet()) {
                     final Integer count = entry.getValue();
                     if(count == null) continue; // impossible
                     if(count < 1) continue;
-                    final MonsterData.Monster mob = entry.getKey();
-                    final String presentation = getPreferredName(mob);
+                    Network.ActorState as = entry.getKey();
+                    final MonsterData.Monster def = definitions.get(as);
+                    final String presentation = def != null? getPreferredName(def) : as.name;
+                    byte[] ugly = new byte[as.getSerializedSize()];
+                    CodedOutputByteBufferNano out = CodedOutputByteBufferNano.newInstance(ugly);
+                    try {
+                        as.writeTo(out);
+                    } catch (IOException e) {
+                        // Can this happen? I don't think so!
+                        continue;
+                    }
+                    CodedInputByteBufferNano original = CodedInputByteBufferNano.newInstance(ugly);
                     for(int spawn = 0; spawn < count; spawn++) {
+                        Network.ActorState copy = new Network.ActorState();
+                        try {
+                            copy.mergeFrom(original);
+                        } catch (IOException e) {
+                            // Can this happen? I don't think so!
+                            continue;
+                        }
+                        original.resetSizeCounter();
                         String display = presentation;
                         Integer previously = nameColl.get(presentation);
                         if(previously == null) previously = 0;
                         else display = String.format(Locale.getDefault(), getString(R.string.sma_monsterNameSpawnNote), display, previously);
-                        Network.ActorState build = new Network.ActorState();
-                        build.type = Network.ActorState.T_MOB;
-                        build.peerKey = -1; // <-- watch out for the peerkey!
-                        build.name = display;
-                        build.currentHP = build.maxHP = 666; // todo generate(mob.defense.hp)
-                        build.initiativeBonus = mob.header.initiative;  // todo select conditional initiatives.
-                        build.cr = new Network.ActorState.ChallangeRatio();
-                        build.cr.numerator = mob.header.cr.numerator;
-                        build.cr.denominator = mob.header.cr.denominator;
-                        found.add(build);
+                        copy.name = display;
+                        found.add(copy);
                         nameColl.put(presentation, previously + 1);
                     }
                 }
@@ -228,7 +273,8 @@ public class SpawnMonsterActivity extends AppCompatActivity {
     }
 
 
-    private IdentityHashMap<MonsterData.Monster, Integer> spawnCounts = new IdentityHashMap<>();
+    private IdentityHashMap<Network.ActorState, Integer> spawnCounts = new IdentityHashMap<>();
+    private IdentityHashMap<Network.ActorState, MonsterData.Monster> definitions = new IdentityHashMap<>();
 
 
     private static boolean anyStarts(String[] arr, String prefix, IdentityHashMap<String, String> tolower) {
@@ -251,38 +297,6 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         System.arraycopy(main, 0, all, 0, main.length);
         System.arraycopy(modi, 0, all, main.length, modi.length);
         return all;
-    }
-
-    private void showSearchResults(ArrayList<MonsterData.Monster> mobs, ArrayList<String[]> names) {
-        MaxUtils.beginDelayedTransition(this);
-        final RecyclerView list = (RecyclerView) findViewById(R.id.sma_matchedList);
-        final CompleteListAdapter adapter = new CompleteListAdapter(mobs, names, list, MonsterVH.MODE_STANDARD, spawnCounts);
-        adapter.onSpawnableChanged = new Runnable() {
-            @Override
-            public void run() {
-                int count = 0;
-                for (Map.Entry<MonsterData.Monster, Integer> sc : spawnCounts.entrySet()) {
-                    if (sc.getValue() == null || sc.getValue() < 1) continue;
-                    count += sc.getValue();
-                }
-                final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-                MaxUtils.beginDelayedTransition(SpawnMonsterActivity.this);
-                fab.setEnabled(count != 0);
-                fab.setVisibility(count != 0? View.VISIBLE : View.INVISIBLE);
-            }
-        };
-        list.setAdapter(adapter);
-        list.addItemDecoration(new PreSeparatorDecorator(list, this) {
-            @Override
-            protected boolean isEligible(int position) {
-                return position != 0;
-            }
-        });
-        list.setVisibility(View.VISIBLE);
-        MaxUtils.setVisibility(this, View.GONE, R.id.sma_progress);
-        final TextView status = (TextView) findViewById(R.id.sma_status);
-        if(mobs.size() == 1) status.setText(R.string.sma_status_matchedSingleMonster);
-        else status.setText(String.format(getString(R.string.sma_status_matchedMultipleMonsters), mobs.size()));
     }
 
     /**
@@ -314,6 +328,75 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 for (String s : variation.header.name) result.put(s, s.toLowerCase());
             }
         }
-
     }
+
+    private static Network.ActorState actorState(MonsterData.Monster def, String name) {
+        Network.ActorState build = new Network.ActorState();
+        build.type = Network.ActorState.T_MOB;
+        build.peerKey = -1; // <-- watch out for the peerkey!
+        build.name = name;
+        build.currentHP = build.maxHP = 666; // todo generate(mob.defense.hp)
+        build.initiativeBonus = def.header.initiative;  // todo select conditional initiatives.
+        build.cr = new Network.ActorState.ChallangeRatio();
+        build.cr.numerator = def.header.cr.numerator;
+        build.cr.denominator = def.header.cr.denominator;
+        return build;
+    }
+
+    class MyMobLister extends RecyclerView.Adapter<SpawnableAdventuringActorVH> {
+        public MyMobLister(RecyclerView list) {
+            setHasStableIds(true);
+            this.list = list;
+}
+
+        @Override
+        public SpawnableAdventuringActorVH onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new SpawnableAdventuringActorVH(getLayoutInflater(), parent, spawnCounts) {
+                @Override
+                public void onClick(View v) {
+                    if(actor == null) return; // impossible by context
+                    Integer myCount = spawnCounts.get(actor);
+                    int count = 0;
+                    if(myCount == null) {
+                        myCount = count = 1;
+                        spawnCounts.put(actor, myCount);
+                    }
+                    else if(myCount < 1) { // re-enabling
+                        count = -myCount;
+                        spawnCounts.put(actor, -myCount);
+                    }
+                    else { // taking it down
+                        spawnCounts.put(actor, -myCount);
+                        for (Map.Entry<Network.ActorState, Integer> sc : spawnCounts.entrySet()) {
+                            if (sc.getValue() == null || sc.getValue() < 1) continue;
+                            count += sc.getValue();
+                        }
+                    }
+                    final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+                    MaxUtils.beginDelayedTransition(SpawnMonsterActivity.this);
+                    fab.setEnabled(count != 0);
+                    fab.setVisibility(count != 0? View.VISIBLE : View.INVISIBLE);
+                    list.getAdapter().notifyItemChanged(list.getChildAdapterPosition(this.itemView));
+                }
+            };
+        }
+
+        @Override
+        public void onBindViewHolder(SpawnableAdventuringActorVH holder, int position) {
+            holder.bindData(mobs.get(position));
+        }
+
+        @Override
+        public int getItemCount() { return mobs.size(); }
+
+        @Override
+        public long getItemId(int position) {
+            Integer id = ids.get(mobs.get(position));
+            return id == null? RecyclerView.NO_ID : id;
+        }
+        private final RecyclerView list;
+    }
+
+    private ArrayList<Network.ActorState> mobs;
+    private IdentityHashMap<Network.ActorState, Integer> ids;
 }
