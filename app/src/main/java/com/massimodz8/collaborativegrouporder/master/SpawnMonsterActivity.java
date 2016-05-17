@@ -371,7 +371,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         return build;
     }
 
-    private void countFightersAndToggleFab(View changed) {
+    private void countFightersAndToggleFab(int positionChanged) {
         int count = 0;
         for (Map.Entry<Network.ActorState, Integer> el : mobCount.entrySet()) {
             final Integer v = el.getValue();
@@ -385,7 +385,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         MaxUtils.beginDelayedTransition(SpawnMonsterActivity.this);
         fab.setEnabled(count != 0);
         fab.setVisibility(count != 0 ? View.VISIBLE : View.INVISIBLE);
-        list.getAdapter().notifyItemChanged(list.getChildAdapterPosition(changed));
+        list.getAdapter().notifyItemChanged(positionChanged);
     }
 
     class MyMatchLister extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -408,7 +408,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                         Integer myCount = mobCount.get(actor);
                         if (myCount != null) mobCount.put(actor, -myCount);
                         else mobCount.put(actor, 1);
-                        countFightersAndToggleFab(v);
+                        countFightersAndToggleFab(list.getChildAdapterPosition(itemView));
                     }
 
                     @Override
@@ -427,7 +427,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                     Integer myCount = battleCount.get(battle);
                     if (myCount != null) battleCount.put(battle, -myCount);
                     else battleCount.put(battle, 1);
-                    countFightersAndToggleFab(v);
+                    countFightersAndToggleFab(list.getChildAdapterPosition(itemView));
                 }
 
                 @Override

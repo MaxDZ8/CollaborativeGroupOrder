@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.MaxUtils;
@@ -12,6 +13,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.IdentityHashMap;
 
@@ -28,8 +30,7 @@ public abstract class PreparedBattleVH extends RecyclerView.ViewHolder implement
         willBattle = (TextView) itemView.findViewById(R.id.vhPB_spawnCount);
         desc = (TextView) itemView.findViewById(R.id.vhPB_desc);
         created = (TextView) itemView.findViewById(R.id.vhPB_creationDate);
-        list = (RecyclerView) itemView.findViewById(R.id.vhPB_list);
-        list.setAdapter(new BattleLister());
+        container = (LinearLayout) itemView.findViewById(R.id.vhPB_innerLinearLayout);
         itemView.setOnClickListener(this);
     }
 
@@ -40,34 +41,30 @@ public abstract class PreparedBattleVH extends RecyclerView.ViewHolder implement
         MaxUtils.setTextUnlessNull(willBattle, selectedText(), View.GONE);
         desc.setText(battle.desc);
         created.setText(DateFormat.getInstance().format(new Date(battle.created.seconds * 1000)));
-    }
-
-    private final TextView willBattle, desc, created;
-    private final IdentityHashMap<Network.ActorState, Integer> localIds = new IdentityHashMap<>();
-    private final RecyclerView list;
-    protected PreparedEncounters.Battle battle;
-    private final LayoutInflater inflater;
-
-    private class BattleLister extends RecyclerView.Adapter<SpawnableAdventuringActorVH> {
-        @Override
-        public SpawnableAdventuringActorVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new SpawnableAdventuringActorVH(inflater, parent) {
+        for (SpawnableAdventuringActorVH goner : actors) container.removeView(goner.itemView);
+        actors.clear();
+        for (Network.ActorState actor : battle.actors) {
+            final SpawnableAdventuringActorVH built = new SpawnableAdventuringActorVH(inflater, container) {
                 @Override
-                protected String selectedText() { return null;}
+                protected String selectedText() {
+                    return null;
+                }
 
                 @Override
                 public void onClick(View v) {
                     PreparedBattleVH.this.onClick(v);
                 }
             };
+            built.bindData(actor);
+            actors.add(built);
+            container.addView(built.itemView);
         }
-
-        @Override
-        public void onBindViewHolder(SpawnableAdventuringActorVH holder, int position) {
-            holder.bindData(battle.actors[position]);
-        }
-
-        @Override
-        public int getItemCount() { return battle.actors.length; }
     }
+
+    private final TextView willBattle, desc, created;
+    private final IdentityHashMap<Network.ActorState, Integer> localIds = new IdentityHashMap<>();
+    private final LinearLayout container;
+    protected PreparedEncounters.Battle battle;
+    private final LayoutInflater inflater;
+    private final ArrayList<SpawnableAdventuringActorVH> actors = new ArrayList<>();
 }
