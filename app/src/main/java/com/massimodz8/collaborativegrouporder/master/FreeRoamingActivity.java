@@ -61,6 +61,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
         swidget.setQueryHint(getString(R.string.fra_searchable_hint));
 
         final SearchManager sm = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SpawnMonsterActivity.includePreparedBattles = true;
         final ComponentName compName = new ComponentName(this, SpawnMonsterActivity.class);
         swidget.setSearchableInfo(sm.getSearchableInfo(compName));
 
@@ -119,12 +120,17 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
     @Override
     protected void onResume() { // maybe we got there after a monster has been added.
         super.onResume();
-        if(game == null) return; // no connection yet -> nothing really to do.
-        int now = lister.getItemCount();
-        if(now > numActors) lister.notifyItemRangeInserted(numActors, now - numActors);
-        else if(now < numActors) lister.notifyDataSetChanged();
-        numActors = now;
-        if(game.session.battleState == null) findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        if(game != null && SpawnMonsterActivity.found != null && SpawnMonsterActivity.found.size() > 0) {
+            for (Network.ActorState got : SpawnMonsterActivity.found) {
+                got.peerKey = game.nextActorId++;
+                game.session.add(got);
+                game.session.willFight(got.peerKey, true);
+            }
+            lister.notifyItemRangeInserted(numActors, SpawnMonsterActivity.found.size());
+            numActors += SpawnMonsterActivity.found.size();
+            SpawnMonsterActivity.found = null;
+            if(game.session.battleState == null) findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -267,7 +273,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
             }
             case REQUEST_AWARD_EXPERIENCE: {
                 if(resultCode == RESULT_OK) { // ouch! We need to update defs with the new xp, and maybe else... Luckly everything is already in place!
-                    new AsyncRenamingStore<StartData.PartyOwnerData>(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(game.allOwnedGroups)) {
+                    new AsyncRenamingStore<StartData.PartyOwnerData>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(game.allOwnedGroups)) {
                         @Override
                         protected String getString(@StringRes int res) { return FreeRoamingActivity.this.getString(res); }
 
@@ -343,7 +349,7 @@ public class FreeRoamingActivity extends AppCompatActivity implements ServiceCon
                     .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
                     .show();
         }
-        new AsyncRenamingStore<Session.Suspended>(getFilesDir(), game.getPartyOwnerData().sessionFile, save) {
+        new AsyncRenamingStore<Session.Suspended>(getFilesDir(), PersistentDataUtils.SESSION_DATA_SUBDIR, game.getPartyOwnerData().sessionFile, save) {
             @Override
             protected String getString(@StringRes int res) {
                 return FreeRoamingActivity.this.getString(res);

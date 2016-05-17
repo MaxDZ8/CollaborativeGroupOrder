@@ -16,20 +16,21 @@ import java.io.IOException;
  * won't destroy existing data.
  */
 public abstract class AsyncRenamingStore<Container extends MessageNano> extends AsyncTask<Void, Void, Exception> {
-    final String target;
+    final String target, subdir;
     final File dir;
     final Container container;
 
-    public AsyncRenamingStore(@NonNull File filesDir, @NonNull String fileName, @NonNull Container container) {
+    public AsyncRenamingStore(@NonNull File filesDir, @NonNull String subdir, @NonNull String fileName, @NonNull Container container) {
         target = fileName;
         dir = filesDir;
+        this.subdir = subdir;
         this.container = container;
         super.execute();
     }
 
     @Override
     protected Exception doInBackground(Void... params) {
-        File previously = new File(dir, target);
+        File previously = new File(new File(dir, this.subdir), target);
         File store;
         try {
             store = File.createTempFile(target, ".new", dir);

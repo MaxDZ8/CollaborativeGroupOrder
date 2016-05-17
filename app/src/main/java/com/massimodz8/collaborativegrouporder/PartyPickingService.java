@@ -76,7 +76,8 @@ public class PartyPickingService extends Service {
             }
 
             private int loadSession(MessageNano party, String sessionFile) {
-                File data = new File(getFilesDir(), sessionFile);
+                File subdir = new File(getFilesDir(), PersistentDataUtils.SESSION_DATA_SUBDIR);
+                File data = new File(subdir, sessionFile);
                 if(!data.exists()) {
                     errors.put(party, getString(R.string.pes_sessionNotFound));
                     return 1;

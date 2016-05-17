@@ -161,7 +161,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
 
     private void saveData(final boolean goAdventuring) {
         final NewCharactersProposalActivity self = this;
-        new AsyncActivityLoadUpdateTask<StartData.PartyClientData>(PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self, new AsyncActivityLoadUpdateTask.ActivityCallbacks(this) {
+        new AsyncActivityLoadUpdateTask<StartData.PartyClientData>(PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self, new AsyncActivityLoadUpdateTask.ActivityCallbacks(this) {
             @Override
             public void onCompletedSuccessfully() {
                 String extra = ' ' + getString(R.string.ncpa_goingAdventuring);

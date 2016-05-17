@@ -30,12 +30,16 @@ import com.massimodz8.collaborativegrouporder.master.NewPartyDeviceSelectionActi
 import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
+import com.massimodz8.collaborativegrouporder.master.SpawnMonsterActivity;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
@@ -68,7 +72,50 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     .show();
             return;
         }
-        new AsyncLoadAll().execute();
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                String[] need = {
+                        PersistentDataUtils.MAIN_DATA_SUBDIR,
+                        PersistentDataUtils.SESSION_DATA_SUBDIR,
+                        PersistentDataUtils.USER_CUSTOM_DATA_SUBDIR
+                };
+                for (String sub : need) {
+                    File dir = new File(getFilesDir(), sub);
+                    if(dir.exists()) {
+                        if(dir.isDirectory()) continue; // :-)
+                        return false;
+                    }
+                    if(!dir.mkdir()) return false;
+                }
+                return true;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                if(!success) {
+                    new AlertDialog.Builder(MainMenuActivity.this)
+                            .setTitle(R.string.mma_dirStructDlgInitError_title)
+                            .setMessage(R.string.mma_dirStructDlgInitError_message)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.generic_quit, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton(R.string.mma_dirStructDlgNegContinue, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    new AsyncLoadAll().execute();
+                                }
+                            })
+                            .show();
+                    return;
+                }
+                new AsyncLoadAll().execute();
+            }
+        }.execute();
     }
 
     private void dataRefreshed() {
@@ -121,10 +168,14 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         switch(item.getItemId()) {
             case R.id.mma_ogl: {
                 startActivity(new Intent(this, OpenGameLicenseActivity.class));
-                break;
+                return true;
+            }
+            case R.id.mma_about: {
+                startActivity(new Intent(this, AboutActivity.class));
+                return true;
             }
         }
-        return false;
+        return super.onOptionsItemSelected(item);
     }
 
     /// Called when party owner data loaded version != from current.
@@ -168,6 +219,21 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         }
     }
 
+    public void custom_callback(View btn) {
+        switch(btn.getId()) {
+            case R.id.mma_customMonsters: {
+                CustomMonstersActivity.custom = customMonsters;
+                startActivity(new Intent(this, CustomMonstersActivity.class));
+                break;
+            }
+            case R.id.mma_preparedBattles: {
+                PreparedBattlesActivity.custom = customBattles;
+                startActivity(new Intent(this, PreparedBattlesActivity.class));
+                break;
+            }
+        }
+    }
+
 
     private void startNewSessionActivity() {
         final Intent servName = new Intent(this, PartyJoinOrderService.class);
@@ -200,6 +266,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         StartData.PartyOwnerData owned;
         StartData.PartyClientData joined;
         MonsterData.MonsterBook monsterBook;
+        MonsterData.MonsterBook customMobs;
+        PreparedEncounters.Collection custBattles;
 
         final PersistentDataUtils loader = new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
@@ -212,19 +280,21 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         @Override
         protected Exception doInBackground(Void... params) {
             StartData.PartyOwnerData pullo = new StartData.PartyOwnerData();
-            File srco = new File(getFilesDir(), PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME);
+            final File mainDataDir = new File(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR);
+            File srco = new File(mainDataDir, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME);
             if(srco.exists()) loader.mergeExistingGroupData(pullo, srco);
             else pullo.version = PersistentDataUtils.OWNER_DATA_VERSION;
 
             StartData.PartyClientData pullk = new StartData.PartyClientData();
-            File srck = new File(getFilesDir(), PersistentDataUtils.DEFAULT_KEY_FILE_NAME);
+            File srck = new File(mainDataDir, PersistentDataUtils.DEFAULT_KEY_FILE_NAME);
             if(srck.exists()) loader.mergeExistingGroupData(pullk, srck);
             else pullk.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
 
             MonsterData.MonsterBook pullMon = new MonsterData.MonsterBook();
+            final byte[] loadBuff = new byte[128 * 1024];
             try {
                 final InputStream srcMon = rawRes.open("monsterData.bin");
-                final MaxUtils.TotalLoader loaded = new MaxUtils.TotalLoader(srcMon, new byte[128 * 1024]);
+                final MaxUtils.TotalLoader loaded = new MaxUtils.TotalLoader(srcMon, loadBuff);
                 srcMon.close();
                 pullMon.mergeFrom(CodedInputByteBufferNano.newInstance(loaded.fullData, 0, loaded.validBytes));
             } catch (IOException e) {
@@ -232,9 +302,38 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 return e;
             }
 
+            final File customDataDir = new File(getFilesDir(), PersistentDataUtils.USER_CUSTOM_DATA_SUBDIR);
+            File cmobs = new File(customDataDir, PersistentDataUtils.CUSTOM_MOBS_FILE_NAME);
+            MonsterData.MonsterBook custBook = new MonsterData.MonsterBook();
+            try {
+                final FileInputStream fis = new FileInputStream(cmobs);
+                final MaxUtils.TotalLoader loaded = new MaxUtils.TotalLoader(fis, loadBuff);
+                fis.close();
+                custBook.mergeFrom(CodedInputByteBufferNano.newInstance(loaded.fullData, 0, loaded.validBytes));
+            } catch (FileNotFoundException e) {
+                // No problem really. Go ahead.
+            } catch (IOException e) {
+                return e;
+            }
+
+            File cbattles = new File(customDataDir, PersistentDataUtils.CUSTOM_ENCOUNTERS_FILE_NAME);
+            PreparedEncounters.Collection allBattles = new PreparedEncounters.Collection();
+            try {
+                final FileInputStream fis = new FileInputStream(cbattles);
+                final MaxUtils.TotalLoader loaded = new MaxUtils.TotalLoader(fis, loadBuff);
+                fis.close();
+                allBattles.mergeFrom(CodedInputByteBufferNano.newInstance(loaded.fullData, 0, loaded.validBytes));
+            } catch (FileNotFoundException e) {
+                // No problem really. Go ahead.
+            } catch (IOException e) {
+                return e;
+            }
+
             owned = pullo;
             joined = pullk;
             monsterBook = pullMon;
+            customMobs = custBook;
+            custBattles = allBattles;
 
             return null;
         }
@@ -265,13 +364,17 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                         .show();
                 return;
             }
-            monsters = monsterBook;
+            monsters = SpawnMonsterActivity.monsters = monsterBook;
+            customMonsters = SpawnMonsterActivity.custom = customMobs;
+            customBattles = SpawnMonsterActivity.preppedBattles = custBattles;
             Collections.addAll(groupDefs, owned.everything);
             Collections.addAll(groupKeys, joined.everything);
             MaxUtils.beginDelayedTransition(MainMenuActivity.this);
             MaxUtils.setEnabled(MainMenuActivity.this, true,
                     R.id.mma_newParty,
-                    R.id.mma_joinParty);
+                    R.id.mma_joinParty,
+                    R.id.mma_customMonsters,
+                    R.id.mma_preparedBattles);
             findViewById(R.id.mma_goAdventuring).setEnabled(groupDefs.size() + groupKeys.size() > 0);
             MaxUtils.setVisibility(MainMenuActivity.this, View.GONE, R.id.mma_progress, R.id.mma_waitMessage);
             onSuccessfullyRefreshed();
@@ -322,6 +425,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     activeParty = pcServ.generatedParty;
                     activeLanding = pcServ.getLanding(true);
                     activeConnections = pcServ.moveClients();
+                    activeStats = pcServ.generatedStat;
                 }
                 pcServ = null;
                 unbindService(this);
@@ -404,7 +508,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             real.allOwnedGroups = groupDefs;
             StartData.PartyOwnerData.Group owned = (StartData.PartyOwnerData.Group) activeParty;
             JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
-            real.initializePartyManagement(owned, activeStats, keyMaster, monsters);
+            real.initializePartyManagement(owned, activeStats, keyMaster, monsters, customMonsters, customBattles);
             real.pumpClients(activeConnections);
             // TODO: reuse landing if there!
             if(activeLanding != null) {
@@ -463,7 +567,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     // some things easier as we can compare by reference.
     private ArrayList<StartData.PartyOwnerData.Group> groupDefs = new ArrayList<>();
     private ArrayList<StartData.PartyClientData.Group> groupKeys = new ArrayList<>();
-    private MonsterData.MonsterBook monsters;
+    private MonsterData.MonsterBook monsters, customMonsters;
+    private PreparedEncounters.Collection customBattles;
 
     interface ErrorFeedbackFunc {
         void feedback(int errors);

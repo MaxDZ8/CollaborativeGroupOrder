@@ -42,6 +42,24 @@
         android:enabled="false"
         android:drawableLeft="@mipmap/ic_joined_party"/>
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mma_customMonstersButton"
+        android:id="@+id/mma_customMonsters"
+        android:layout_gravity="center_horizontal"
+        android:onClick="custom_callback"
+        android:enabled="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/mma_preparedBattlesButton"
+        android:id="@+id/mma_preparedBattles"
+        android:layout_gravity="center_horizontal"
+        android:onClick="custom_callback"
+        android:enabled="false" />
+
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="fill_parent"

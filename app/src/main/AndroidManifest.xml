@@ -195,6 +195,45 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
+        <activity
+            android:name=".CustomMonstersActivity"
+            android:label="@string/cma_title"
+            android:parentActivityName=".MainMenuActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".PreparedBattlesActivity"
+            android:label="@string/pba_title"
+            android:parentActivityName=".MainMenuActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".NewCustomMonsterActivity"
+            android:label="@string/ncma_title"
+            android:parentActivityName=".CustomMonstersActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".CustomMonstersActivity" />
+        </activity>
+        <activity
+            android:name=".NewPreparedBattleActivity"
+            android:label="@string/npba_title"
+            android:parentActivityName=".PreparedBattlesActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.massimodz8.collaborativegrouporder.PreparedBattlesActivity" />
+        </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/aa_title"></activity>
     </application>
 
 </manifest>

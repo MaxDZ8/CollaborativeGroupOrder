@@ -240,7 +240,7 @@ public class MonsterVH extends RecyclerView.ViewHolder {
         if(onSpawnableChanged != null) onSpawnableChanged.run();
     }
 
-    private MonsterData.Monster currentBinding;
+    public MonsterData.Monster currentBinding;
     private static IdentityHashMap<Integer, String> publisherStrings, maturityStrings, sizeStrings;
     private final Context ctx;
 }

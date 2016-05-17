@@ -18,6 +18,7 @@ import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
@@ -38,6 +39,7 @@ public class PartyCreationService extends PublishAcceptService {
     already there, in which case it will use the existing group.
     */
     public StartData.PartyOwnerData.Group generatedParty;
+    public Session.Suspended generatedStat;
 
     public interface OnTalkingDeviceCountListener {
         void currentlyTalking(int count);
@@ -212,7 +214,7 @@ public class PartyCreationService extends PublishAcceptService {
     }
 
     public AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> saveParty(final @NonNull Activity activity, @NonNull AsyncLoadUpdateTask.Callbacks cb) {
-        return new AsyncActivityLoadUpdateTask<StartData.PartyOwnerData>(PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", activity, cb) {
+        return new AsyncActivityLoadUpdateTask<StartData.PartyOwnerData>(PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", activity, cb) {
             @Override
             protected void appendNewEntry(StartData.PartyOwnerData loaded) {
                 StartData.PartyOwnerData.Group[] longer = new StartData.PartyOwnerData.Group[loaded.everything.length + 1];
