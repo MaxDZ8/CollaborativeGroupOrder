@@ -63,7 +63,7 @@ public class PreparedBattlesActivity extends AppCompatActivity {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            if(viewType == BATTLE) return new PreparedBattleHeaderVH(getLayoutInflater().inflate(R.layout.vh_prepared_battle_header, parent, false));
+            if(viewType == BATTLE) return new PreparedBattleHeaderVH(getLayoutInflater().inflate(R.layout.vh_prepared_battle, parent, false));
             return new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
                 @Override
                 public void onClick(View v) { }

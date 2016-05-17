@@ -21,8 +21,8 @@ public class PreparedBattleHeaderVH extends RecyclerView.ViewHolder {
 
     public PreparedBattleHeaderVH(View iv) {
         super(iv);
-        name = (TextView) iv.findViewById(R.id.vhPBH_desc);
-        create = (TextView) iv.findViewById(R.id.vhPBH_creationDate);
+        name = (TextView) iv.findViewById(R.id.vhPB_desc);
+        create = (TextView) iv.findViewById(R.id.vhPB_creationDate);
     }
 
     public void bindData(@NonNull PreparedEncounters.Battle data) {
