@@ -6,4 +6,9 @@
         android:title="@string/mma_menu_ogl"
         android:titleCondensed="@string/mma_menu_oglShort"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/mma_about"
+        android:title="@string/mma_menu_aboutShort"
+        android:titleCondensed="@string/mma_menu_aboutShort"
+        app:showAsAction="never" />
 </menu>

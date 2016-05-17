@@ -231,6 +231,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.massimodz8.collaborativegrouporder.PreparedBattlesActivity" />
         </activity>
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/aa_title"></activity>
     </application>
 
 </manifest>

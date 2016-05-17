@@ -892,4 +892,18 @@
     <string name="npba_save">Validate and save</string>
     <string name="npba_emptyDesc">You must provide a description.</string>
 
+    <string name="aa_title">About</string>
+    <string name="aa_akaAlternateName">aka Collaborative Group Order</string>
+    <string name="aa_akaCodename">aka Project CGO</string>
+    <string name="aa_desc">An RPG initiative tracker with a twist to roll more, sort less and optimize spare time with friends for both fun and profit.</string>
+    <string name="aa_copyright">©2015–2016 Massimo Del Zotto, all rights reserved.</string>
+    <string name="aa_thankyouGoogleForIcons">Makes use of some icons from the material design google group.\nhttps://design.google.com/icons/</string>
+    <string name="aa_ogl">This app is meant to be compliant to Open Game License.</string>
+    <string name="aa_contact">For question, suggestions, venting and bugreports see you on the official subreddit:\nhttps://www.reddit.com/r/app_cgo</string>
+    <string name="aa_versionFormat">Version: %1$s</string>
+    <string name="aa_commitFormat">Patchlevel: %1$s</string>
+    <string name="aa_lastUpdated">Last updated: %1$s</string>
+    <string name="mma_menu_aboutShort">About</string>
+    <string name="aa_dataDir">Data store: %1$s</string>
+
 </resources>

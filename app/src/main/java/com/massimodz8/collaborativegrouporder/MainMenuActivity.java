@@ -170,6 +170,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 startActivity(new Intent(this, OpenGameLicenseActivity.class));
                 return true;
             }
+            case R.id.mma_about: {
+                startActivity(new Intent(this, AboutActivity.class));
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
