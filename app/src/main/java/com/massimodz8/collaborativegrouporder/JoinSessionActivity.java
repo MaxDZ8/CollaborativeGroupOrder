@@ -217,9 +217,6 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         /// Start an handshaking process which will produce this.party with the info we care.
         public void connect() {
             if(null != source) {
-                // TODO: Cannot I just use the NsdServiceInfo ???
-                //final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
-                //nsd.resolveService(source, this);
                 new AsyncTask<Void, Void, Void>() {
                     @Override
                     protected Void doInBackground(Void... params) {

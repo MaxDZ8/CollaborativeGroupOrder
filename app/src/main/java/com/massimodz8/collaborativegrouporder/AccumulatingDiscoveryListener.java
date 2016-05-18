@@ -59,9 +59,19 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
 
     @Override
     public void onServiceFound(NsdServiceInfo serviceInfo) {
-        synchronized (foundServices) {
-            foundServices.add(new FoundService(serviceInfo));
-        }
+        nsd.resolveService(serviceInfo, new NsdManager.ResolveListener() {
+            @Override
+            public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
+                // If we cannot resolve it we cannot connect to it so we're not interested.
+            }
+
+            @Override
+            public void onServiceResolved(NsdServiceInfo serviceInfo) {
+                synchronized (foundServices) {
+                    foundServices.add(new FoundService(serviceInfo));
+                }
+            }
+        });
     }
 
     @Override
@@ -72,7 +82,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
                 if (foundServices.elementAt(match).info.equals(serviceInfo)) break;
             }
             if (match < foundServices.size())
-                foundServices.remove(match); // impossible to NOT happen
+                foundServices.remove(match); // might happen if we failed to resolve. Unlikely.
         }
     }
 
@@ -87,7 +97,6 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
      */
     void beginDiscovery(String serviceType, NsdManager nsd, OnTick onTick) {
         this.nsd = nsd;
-        this.serviceType = serviceType;
         status = STARTING;
         callback = onTick;
         checker = new Timer("network publisher status check");
@@ -104,7 +113,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
         }, DISCOVERY_PROBE_DELAY, DISCOVERY_PROBE_INTERVAL);
         nsd.discoverServices(serviceType, NsdManager.PROTOCOL_DNS_SD, this);
     }
-    String startAttempted() { return serviceType; }
+
     public void setCallback(OnTick newTarget) { callback = newTarget; }
     public void unregisterCallback() { callback = null; }
     void stopDiscovery() {
@@ -112,14 +121,12 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
             unregisterCallback();
             nsd.stopServiceDiscovery(this);
             nsd = null;
-            serviceType = null;
             status = STOPPING;
         }
     }
     int getDiscoveryStatus() { return status; }
 
     private NsdManager nsd;
-    private String serviceType;
     Timer checker;
     volatile OnTick callback;
 
