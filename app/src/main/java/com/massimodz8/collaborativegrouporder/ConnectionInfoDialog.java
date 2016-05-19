@@ -11,6 +11,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 /**
@@ -53,6 +54,7 @@ public class ConnectionInfoDialog {
         }
         String hostInfo = "";
         if (nics != null) {
+            ArrayList<String> unique = new ArrayList<>();
             while (nics.hasMoreElements()) {
                 NetworkInterface n = nics.nextElement();
                 Enumeration<InetAddress> addrs = n.getInetAddresses();
@@ -65,11 +67,22 @@ public class ConnectionInfoDialog {
                     if (ipFour == null && a instanceof Inet4Address) ipFour = (Inet4Address) a;
                     if (ipSix == null && a instanceof Inet6Address) ipSix = (Inet6Address) a;
                 }
-                if (ipFour != null)
-                    hostInfo += String.format(ctx.getString(R.string.explicit_address), stripUselessChars(ipFour.toString()));
-                if (ipSix != null)
-                    hostInfo += String.format(ctx.getString(R.string.explicit_address), stripUselessChars(ipSix.toString()));
+                String addr;
+                if(ipFour != null) addr = ipFour.toString();
+                else if(ipSix != null) addr = ipSix.toString();
+                else continue;
+                addr = stripUselessChars(addr);
+                boolean found = false;
+                for (String already : unique) {
+                    if(already.equals(addr)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if(found) continue;
+                unique.add(addr);
             }
+            for (String str : unique) hostInfo += str;
         }
         return hostInfo.substring(0, hostInfo.length() - 1);
     }
