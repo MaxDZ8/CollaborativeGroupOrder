@@ -459,11 +459,10 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode != REQUEST_EXPLICIT_CONNECTION) return;
         if(resultCode != RESULT_OK) return;
-        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        final Pumper.MessagePumpingThread worker = state.pumpers[0];
-        final Network.GroupInfo ginfo = state.probed;
-        state.pumpers = null;
-        state.probed = null;
+        final Pumper.MessagePumpingThread worker = ExplicitConnectionActivity.masterDevice;
+        final Network.GroupInfo ginfo = ExplicitConnectionActivity.probedParty;
+        ExplicitConnectionActivity.masterDevice = null;
+        ExplicitConnectionActivity.probedParty = null;
         if(ginfo.forming) {
             new AlertDialog.Builder(this)
                     .setMessage(R.string.jsa_connectedToForming)

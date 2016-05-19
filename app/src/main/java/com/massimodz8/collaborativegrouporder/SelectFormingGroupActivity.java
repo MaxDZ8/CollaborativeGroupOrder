@@ -507,11 +507,10 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode != EXPLICIT_CONNECTION_REQUEST) return;
         if(resultCode != RESULT_OK) return;
-        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        Pumper.MessagePumpingThread pumper = state.pumpers[0];
-        state.pumpers = null;
-        Network.GroupInfo probed = state.probed;
-        state.probed = null;
+        Pumper.MessagePumpingThread pumper = ExplicitConnectionActivity.masterDevice;
+        Network.GroupInfo probed = ExplicitConnectionActivity.probedParty;
+        ExplicitConnectionActivity.masterDevice = null;
+        ExplicitConnectionActivity.probedParty = null;
         if(!probed.forming) {
             pumper.interrupt();
             new AlertDialog.Builder(this)

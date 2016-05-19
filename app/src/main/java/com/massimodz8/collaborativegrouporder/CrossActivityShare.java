@@ -24,10 +24,6 @@ public class CrossActivityShare extends Application {
     Vector<GroupState> candidates;
     //----------------------------------------------------------------------------------------------
 
-    // ExplicitConnectionActivity result -----------------------------------------------------------
-    public Network.GroupInfo probed;
-    //----------------------------------------------------------------------------------------------
-
     // NewCharacterProposalActivity result ---------------------------------------------------------
     //public boolean goAdventuring; // does not exist, use the pumpers instead
     public StartData.PartyClientData.Group newKey;

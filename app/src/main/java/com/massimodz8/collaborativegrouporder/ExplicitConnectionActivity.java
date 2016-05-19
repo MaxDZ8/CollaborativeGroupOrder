@@ -24,6 +24,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ExplicitConnectionActivity extends AppCompatActivity {
+    public static Pumper.MessagePumpingThread masterDevice;
+    public static Network.GroupInfo probedParty;
+
     Pumper netPump;
     MessageChannel attempting;
     boolean handShaking;
@@ -174,13 +177,11 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     }
 
     private void replied(Events.GroupInfo result) { // oh yeah I like this
-        Intent send = new Intent(RESULT_ACTION);
-        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
-        state.probed = result.payload;
+        masterDevice = netPump.move(attempting);
+        probedParty = result.payload;
         handShaking = false;
         attempting = null;
-        setResult(RESULT_OK, send);
+        setResult(RESULT_OK);
         finish();
     }
 
