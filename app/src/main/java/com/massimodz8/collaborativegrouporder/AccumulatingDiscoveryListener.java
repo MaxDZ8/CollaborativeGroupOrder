@@ -3,6 +3,7 @@ package com.massimodz8.collaborativegrouporder;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -68,7 +69,14 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
             @Override
             public void onServiceResolved(NsdServiceInfo serviceInfo) {
                 synchronized (foundServices) {
-                    foundServices.add(new FoundService(serviceInfo));
+                    final FoundService newly = new FoundService(serviceInfo);
+                    try {
+                        newly.socket = new Socket(serviceInfo.getHost(), serviceInfo.getPort());
+                    } catch (IOException e) {
+                        // error connecting? Just drop it!
+                        return;
+                    }
+                    foundServices.add(newly);
                 }
             }
         });
