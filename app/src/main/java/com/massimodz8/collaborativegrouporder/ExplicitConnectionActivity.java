@@ -1,6 +1,5 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -125,8 +124,6 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         connecting = new AsyncConnectTask(addr, port);
         connecting.execute();
     }
-
-    public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.result";
 
     static class Error {
         String title;

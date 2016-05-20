@@ -4,6 +4,7 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -67,11 +68,13 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
             }
 
             @Override
-            public void onServiceResolved(NsdServiceInfo serviceInfo) {
+            public void onServiceResolved(NsdServiceInfo res) {
                 synchronized (foundServices) {
-                    final FoundService newly = new FoundService(serviceInfo);
+                    final FoundService newly = new FoundService(res);
+                    final InetAddress host = res.getHost();
+                    final int port = res.getPort();
                     try {
-                        newly.socket = new Socket(serviceInfo.getHost(), serviceInfo.getPort());
+                        newly.socket = new Socket(host, port);
                     } catch (IOException e) {
                         // error connecting? Just drop it!
                         return;

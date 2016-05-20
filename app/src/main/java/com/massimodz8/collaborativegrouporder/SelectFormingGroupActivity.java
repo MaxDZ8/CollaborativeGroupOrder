@@ -44,6 +44,11 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(listAdapter);
 
+        if(sender == null) {
+            sender = new Mailman();
+            sender.start();
+        }
+
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(null != state.explorer) {
             explorer = state.explorer;
@@ -107,6 +112,10 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
     protected void onDestroy() {
         if(explorer != null) explorer.stopDiscovery();
         if(netPump != null) netPump.shutdown();
+        if(sender != null) {
+            sender.out.add(new SendRequest()); // this one should be sufficient really
+            sender.interrupt();
+        }
         super.onDestroy();
     }
 
@@ -152,6 +161,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
     GroupListAdapter listAdapter;
     Handler guiHandler = new MyHandler(this);
     Pumper netPump;
+    private Mailman sender;
 
 
     private class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.GroupViewHolder> {
@@ -414,31 +424,37 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
 
         int diffs = prevDiscoveryStatus != status? 1 : 0;
         prevDiscoveryStatus = status;
-        if(explorer.foundServices.size() == 0 && candidates.size() == 0) return diffs != 0;
-        for(AccumulatingDiscoveryListener.FoundService el : explorer.foundServices) {
-            int match = el.socket == null? candidates.size() : 0;
-            for(; match < candidates.size(); match++) {
-                if(candidates.elementAt(match).channel.socket == el.socket) break;
-            }
-            if(match == candidates.size()) {
-                candidates.add(new GroupState(new MessageChannel(el.socket)));
-                netPump.pump(candidates.lastElement().channel);
-                diffs++;
-            }
-        }
-        for(int loop = 0; loop < candidates.size(); loop++) {
-            final GroupState gs = candidates.elementAt(loop);
-            if(!gs.discovered) continue;
-            AccumulatingDiscoveryListener.FoundService match = null;
-            for(AccumulatingDiscoveryListener.FoundService el : explorer.foundServices) {
-                if(el.socket == gs.channel.socket) {
-                    match = el;
-                    break;
+        synchronized (explorer.foundServices) {
+            if (explorer.foundServices.size() == 0 && candidates.size() == 0) return diffs != 0;
+            for (AccumulatingDiscoveryListener.FoundService el : explorer.foundServices) {
+                int match = el.socket == null ? candidates.size() : 0;
+                for (; match < candidates.size(); match++) {
+                    if (candidates.elementAt(match).channel.socket == el.socket) break;
+                }
+                if (match == candidates.size()) {
+                    final GroupState ngs = new GroupState(new MessageChannel(el.socket));
+                    candidates.add(ngs);
+                    netPump.pump(ngs.channel);
+                    Network.Hello payload = new Network.Hello();
+                    payload.version = MainMenuActivity.NETWORK_VERSION;
+                    sender.out.add(new SendRequest(ngs.channel, ProtoBufferEnum.HELLO, payload));
+                    diffs++;
                 }
             }
-            if(match == null) {
-                candidates.remove(loop--);
-                diffs++;
+            for (int loop = 0; loop < candidates.size(); loop++) {
+                final GroupState gs = candidates.elementAt(loop);
+                if (!gs.discovered) continue;
+                AccumulatingDiscoveryListener.FoundService match = null;
+                for (AccumulatingDiscoveryListener.FoundService el : explorer.foundServices) {
+                    if (el.socket == gs.channel.socket) {
+                        match = el;
+                        break;
+                    }
+                }
+                if (match == null) {
+                    candidates.remove(loop--);
+                    diffs++;
+                }
             }
         }
         return diffs != 0;
