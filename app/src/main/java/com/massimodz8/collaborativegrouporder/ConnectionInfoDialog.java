@@ -82,9 +82,12 @@ public class ConnectionInfoDialog {
                 if(found) continue;
                 unique.add(addr);
             }
-            for (String str : unique) hostInfo += str;
+            for (String str : unique) {
+                if(hostInfo.length() > 0) hostInfo += '\n';
+                hostInfo += str;
+            }
         }
-        return hostInfo.substring(0, hostInfo.length() - 1);
+        return hostInfo;
     }
 
     private static String stripUselessChars(String s) {
