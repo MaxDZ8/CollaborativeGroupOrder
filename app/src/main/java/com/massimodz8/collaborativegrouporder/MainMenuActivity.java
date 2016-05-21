@@ -382,11 +382,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final RunningServiceHandles handles = RunningServiceHandles.getInstance();
         switch(requestCode) { // stuff to shut down no matter what
             case REQUEST_PICK_PARTY: { // sync our data with what was produced/modified
                 groupDefs.clear();
                 groupKeys.clear();
-                pickServ.getDense(groupDefs, groupKeys, false); // sync our data with what was produced/modified
+                handles.pick.getDense(groupDefs, groupKeys, false); // sync our data with what was produced/modified
                 dataRefreshed();
                 break;
             }
@@ -398,14 +399,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if(RESULT_OK != resultCode) {
             switch(requestCode) { // stuff would be used on success... but was not successful so goodbye
                 case REQUEST_NEW_PARTY:
-                    pcServ = null;
-                    unbindService(this);
+                    handles.create = null;
                     stopService(new Intent(this, PartyCreationService.class));
                     break;
                 case REQUEST_PICK_PARTY: {
-                    pickServ.stopForeground(true);
-                    pickServ = null;
-                    unbindService(this);
+                    handles.pick.stopForeground(true);
+                    handles.pick = null;
                     stopService(new Intent(this, PartyPickingService.class));
                     break;
                 }
@@ -418,15 +417,14 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         switch(requestCode) {
             case REQUEST_NEW_PARTY: {
                 boolean goAdventuringWithCreated = data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
-                groupDefs = pcServ.defs;
+                groupDefs = handles.create.defs;
                 if(goAdventuringWithCreated) {
-                    activeParty = pcServ.generatedParty;
-                    activeLanding = pcServ.getLanding(true);
-                    activeConnections = pcServ.moveClients();
-                    activeStats = pcServ.generatedStat;
+                    activeParty = handles.create.generatedParty;
+                    activeLanding = handles.create.getLanding(true);
+                    activeConnections = handles.create.moveClients();
+                    activeStats = handles.create.generatedStat;
                 }
-                pcServ = null;
-                unbindService(this);
+                handles.create = null;
                 stopService(new Intent(this, PartyCreationService.class));
                 dataRefreshed();
                 break;
@@ -447,11 +445,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 dataRefreshed();
             } break;
             case REQUEST_PICK_PARTY: {
-                activeParty = pickServ.sessionParty;
-                activeStats = pickServ.sessionData.get(activeParty);
-                pickServ.stopForeground(true);
-                pickServ = null;
-                unbindService(this);
+                activeParty = handles.pick.sessionParty;
+                activeStats = handles.pick.sessionData.get(activeParty);
+                handles.pick.stopForeground(true);
+                handles.pick = null;
                 stopService(new Intent(this, PartyPickingService.class));
 
                 activeConnections = null;
@@ -500,9 +497,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     // ServiceConnection ___________________________________________________________________________
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
+        final RunningServiceHandles handles = RunningServiceHandles.getInstance();
         if(service instanceof PartyJoinOrderService.LocalBinder) {
-            PartyJoinOrderService.LocalBinder binder = (PartyJoinOrderService.LocalBinder)service;
-            PartyJoinOrderService real =  binder.getConcreteService();
+            PartyJoinOrderService real = ((PartyJoinOrderService.LocalBinder)service).getConcreteService();
             real.allOwnedGroups = groupDefs;
             StartData.PartyOwnerData.Group owned = (StartData.PartyOwnerData.Group) activeParty;
             JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
@@ -527,20 +524,20 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             activeConnections = null;
             activeParty = null;
             activeStats = null;
-            startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_GATHER_DEVICES);
             unbindService(this);
+            handles.play = real;
+            startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_GATHER_DEVICES);
         }
         if(service instanceof PartyCreationService.LocalBinder) {
-            PartyCreationService.LocalBinder binder = (PartyCreationService.LocalBinder) service;
-            pcServ = binder.getConcreteService();
-            pcServ.defs = groupDefs;
+            handles.create = ((PartyCreationService.LocalBinder) service).getConcreteService();
+            handles.create.defs = groupDefs;
+            unbindService(this);
             final Intent intent = new Intent(this, NewPartyDeviceSelectionActivity.class);
             startActivityForResult(intent, REQUEST_NEW_PARTY);
         }
         if(service instanceof PartyPickingService.LocalBinder) {
-            final PartyPickingService.LocalBinder binder = (PartyPickingService.LocalBinder) service;
-            pickServ = binder.getConcreteService();
-            pickServ.setKnownParties(groupDefs, groupKeys);
+            handles.pick = ((PartyPickingService.LocalBinder) service).getConcreteService();
+            handles.pick.setKnownParties(groupDefs, groupKeys);
             startActivityForResult(new Intent(this, PartyPickActivity.class), REQUEST_PICK_PARTY);
             // The pick party server is different, looks like I can just pull it up now.
             final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
@@ -552,7 +549,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 help.setCategory(Notification.CATEGORY_SERVICE);
             }
-            pickServ.startForeground(NOTIFICATION_ID, help.build());
+            unbindService(this);
+            handles.pick.startForeground(NOTIFICATION_ID, help.build());
         }
     }
 
@@ -604,6 +602,4 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             }
         }.execute();
     }
-    private PartyCreationService pcServ;
-    private PartyPickingService pickServ;
 }
