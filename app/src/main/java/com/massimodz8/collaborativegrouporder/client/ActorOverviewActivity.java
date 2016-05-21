@@ -50,11 +50,9 @@ public class ActorOverviewActivity extends AppCompatActivity {
     // Those will be cleared as soon as the activity goes onCreate and then never reused again.
     // onCreate assumes those non-null. Just call prepare(...)
     private static Pumper.MessagePumpingThread serverWorker; // in
-    private static StartData.PartyClientData.Group connectedParty; // in
     private static int[] actorKeys; // in, server ids of actors to manage here
 
     public static void prepare(StartData.PartyClientData.Group group, int[] actorKeys_, Pumper.MessagePumpingThread serverWorker_) {
-        connectedParty = group;
         actorKeys = actorKeys_;
         serverWorker = serverWorker_;
     }
@@ -70,7 +68,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
         final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
-        ticker.onActorUpdated.push(new Runnable() {
+        updateCall = ticker.onActorUpdated.put(new Runnable() {
             boolean first = true;
             @Override
             public void run() {
@@ -117,7 +115,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 if(knownOrders == ticker.playedHere.length) rollDialog = null;
             }
         });
-        ticker.onRollRequestPushed.push(new Runnable() {
+        rollRequestCall = ticker.onRollRequestPushed.put(new Runnable() {
             @Override
             public void run() {
                 if (rollDialog != null) return;
@@ -143,7 +141,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 rollDialog = new RollInitiativeDialog(actor, request, new SendRollCallback(), ActorOverviewActivity.this);
             }
         });
-        ticker.onCurrentActorChanged.push(new Runnable() {
+        actorChangedCall = ticker.onCurrentActorChanged.put(new Runnable() {
             @Override
             public void run() {
                 final TextView status = (TextView) findViewById(R.id.aoa_status);
@@ -180,9 +178,9 @@ public class ActorOverviewActivity extends AppCompatActivity {
             serverWorker = null;
             actorKeys = null;
         }
-        ticker.onActorUpdated.getFirst().run();
-        ticker.onRollRequestPushed.getFirst().run();
-        ticker.onCurrentActorChanged.getFirst().run();
+        ticker.onActorUpdated.get().run();
+        ticker.onRollRequestPushed.get().run();
+        ticker.onCurrentActorChanged.get().run();
     }
 
     @Override
@@ -190,9 +188,9 @@ public class ActorOverviewActivity extends AppCompatActivity {
         super.onDestroy();
         final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
         if(ticker != null) {
-            ticker.onActorUpdated.pop();
-            ticker.onCurrentActorChanged.pop();
-            ticker.onRollRequestPushed.pop();
+            ticker.onActorUpdated.remove(updateCall);
+            ticker.onCurrentActorChanged.remove(actorChangedCall);
+            ticker.onRollRequestPushed.remove(rollRequestCall);
         }
         if(rollDialog != null) {
             rollDialog.dlg.dismiss(); // I'm going to regenerate this next time anyway.
@@ -293,7 +291,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             rollDialog.dlg.dismiss();
             rollDialog = null;
-            ticker.onRollRequestPushed.getFirst().run(); // there might be more rolls pending.
+            ticker.onRollRequestPushed.get().run(); // there might be more rolls pending.
         }
     }
 
@@ -301,12 +299,14 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     private static final int CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER = 2;
 
+    private int updateCall, rollRequestCall, actorChangedCall;;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_TURN) {
             final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
             lister.notifyDataSetChanged();
-            ticker.onCurrentActorChanged.getFirst().run(); // maybe not, but easy to check
+            ticker.onCurrentActorChanged.get().run(); // maybe not, but easy to check
             if (resultCode == RESULT_OK) {
                 ticker.ticksSinceLastAd++;
                 boolean admobReady = true;
@@ -316,7 +316,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 }
             }
             else { // we have somehow got out. MARA is protected against accidental exit so...
-                ticker.onCurrentActorChanged.getFirst().run();
+                ticker.onCurrentActorChanged.get().run();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -325,8 +325,8 @@ public class ActorOverviewActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
-        ticker.onCurrentActorChanged.getFirst().run(); // maybe not. But convenient to mangle round and update UI.
-        ticker.onActorUpdated.getFirst().run();
+        ticker.onCurrentActorChanged.get().run(); // maybe not. But convenient to mangle round and update UI.
+        ticker.onActorUpdated.get().run();
         super.onResume();
     }
 }

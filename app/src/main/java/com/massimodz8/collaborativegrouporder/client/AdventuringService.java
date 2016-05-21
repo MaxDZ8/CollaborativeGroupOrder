@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.Mailman;
+import com.massimodz8.collaborativegrouporder.PseudoStack;
 import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -37,9 +38,9 @@ public class AdventuringService extends Service {
     public HashMap<Integer, ActorWithKnownOrder> actors = new HashMap<>(); // ID -> struct, flushed every time a new battle starts
     public ArrayList<String> errors;
 
-    public ArrayDeque<Runnable> onActorUpdated = new ArrayDeque<>();
-    public ArrayDeque<Runnable> onRollRequestPushed = new ArrayDeque<>();
-    public ArrayDeque<Runnable> onCurrentActorChanged = new ArrayDeque<>();
+    public PseudoStack<Runnable> onActorUpdated = new PseudoStack<>();
+    public PseudoStack<Runnable> onRollRequestPushed = new PseudoStack<>();
+    public PseudoStack<Runnable> onCurrentActorChanged = new PseudoStack<>();
 
     public @ActorId int currentActor = -1; // -1 = no current known actor
     ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
@@ -173,13 +174,15 @@ public class AdventuringService extends Service {
                         self.actors.put(real.peerKey, known);
                     }
                     known.updated = true;
-                    if(self.onActorUpdated.size() > 0) self.onActorUpdated.getFirst().run();
+                    final Runnable runnable = self.onActorUpdated.get();
+                    if(runnable != null) runnable.run();
                 } break;
                 case MSG_ROLL: {
                     final Network.Roll real = (Network.Roll) msg.obj;
                     if(real.type == Network.Roll.T_INITIATIVE) self.round = 0;
                     self.rollRequests.push(real);
-                    if(self.onRollRequestPushed.size() > 0) self.onRollRequestPushed.getFirst().run();
+                    final Runnable runnable = self.onRollRequestPushed.get();
+                    if(runnable != null) runnable.run();
                 } break;
                 case MSG_BATTLE_ORDER: {
                     final Network.BattleOrder real = (Network.BattleOrder)msg.obj;
@@ -192,7 +195,8 @@ public class AdventuringService extends Service {
                         if(el.getValue().keyOrder != null) knownOrder++;
                     }
                     if(self.round == 0 && knownOrder == self.actors.size()) self.round = 1;
-                    if(self.onActorUpdated.size() > 0) self.onActorUpdated.getFirst().run();
+                    final Runnable runnable = self.onActorUpdated.get();
+                    if(runnable != null) runnable.run();
                 } break;
                 case MSG_TURN_CONTROL: {
                     final Network.TurnControl real = (Network.TurnControl) msg.obj;
@@ -211,7 +215,8 @@ public class AdventuringService extends Service {
                             self.actors.put(el.actor.peerKey, el);
                         }
                         self.currentActor = -1;
-                        if(self.onCurrentActorChanged.size() > 0) self.onCurrentActorChanged.getFirst().run();
+                        final Runnable runnable = self.onCurrentActorChanged.get();
+                        if(runnable != null) runnable.run();
                         return; // otherwise real.peerKey might be default --> mapping to zero
                     }
                     self.round = real.round;
@@ -224,7 +229,8 @@ public class AdventuringService extends Service {
                             self.actors.get(real.peerKey).actor.preparedTriggered = true;
                         }
                     } // trigger actor changed anyway so we can update round count
-                    if(self.onCurrentActorChanged.size() > 0) self.onCurrentActorChanged.getFirst().run();
+                    final Runnable runnable = self.onCurrentActorChanged.get();
+                    if(runnable != null) runnable.run();
                 } break;
             }
             super.handleMessage(msg);
