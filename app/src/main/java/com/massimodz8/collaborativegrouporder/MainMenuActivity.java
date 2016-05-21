@@ -210,14 +210,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         final Intent servName = new Intent(this, PartyPickingService.class);
         startService(servName);
         if(!bindService(servName, this, 0)) {
-            if (!bindService(servName, this, 0)) {
                 stopService(servName);
                 new AlertDialog.Builder(this)
                         .setMessage(R.string.mma_failedNewSessionServiceBind)
                         .show();
             }
         }
-    }
 
     public void custom_callback(View btn) {
         switch(btn.getId()) {
@@ -388,7 +386,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             case REQUEST_PICK_PARTY: { // sync our data with what was produced/modified
                 groupDefs.clear();
                 groupKeys.clear();
-                pickServ.getDense(groupDefs, groupKeys, false);
+                pickServ.getDense(groupDefs, groupKeys, false); // sync our data with what was produced/modified
                 dataRefreshed();
                 break;
             }
@@ -404,7 +402,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     unbindService(this);
                     stopService(new Intent(this, PartyCreationService.class));
                     break;
-                case REQUEST_PICK_PARTY: { // sync our data with what was produced/modified
+                case REQUEST_PICK_PARTY: {
                     pickServ.stopForeground(true);
                     pickServ = null;
                     unbindService(this);
