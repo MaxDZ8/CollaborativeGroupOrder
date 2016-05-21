@@ -1,5 +1,6 @@
 package com.massimodz8.collaborativegrouporder;
 
+import com.massimodz8.collaborativegrouporder.client.AdventuringService;
 import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
 
@@ -22,6 +23,7 @@ public class RunningServiceHandles {
     public PartyPickingService pick;
     public PartyJoinOrderService play;
     public PartyCreationService create;
+    public AdventuringService clientPlay;
 
 
     public static RunningServiceHandles getInstance() {

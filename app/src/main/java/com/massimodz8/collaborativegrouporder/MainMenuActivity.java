@@ -22,6 +22,7 @@ import android.view.View;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.ActorOverviewActivity;
+import com.massimodz8.collaborativegrouporder.client.AdventuringService;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
 import com.massimodz8.collaborativegrouporder.master.FreeRoamingActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
@@ -392,7 +393,13 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 break;
             }
             case REQUEST_PLAY: {
+                handles.play = null;
                 stopService(new Intent(this, PartyJoinOrderService.class));
+                return;
+            }
+            case REQUEST_CLIENT_PLAY: {
+                handles.clientPlay = null;
+                stopService(new Intent(this, AdventuringService.class));
                 return;
             }
         }
@@ -467,10 +474,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                ActorOverviewActivity.prepare(CharSelectionActivity.movePlayingParty(),
-                        CharSelectionActivity.movePlayChars(),
-                        CharSelectionActivity.moveServerWorker());
-                startActivity(new Intent(this, ActorOverviewActivity.class));
+                final Intent intent = new Intent(this, AdventuringService.class);
+                startService(intent);
+                bindService(intent, this, 0);
             } break;
             case REQUEST_GATHER_DEVICES: {
                 startActivityForResult(new Intent(this, FreeRoamingActivity.class), REQUEST_PLAY);
@@ -487,6 +493,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     static final int REQUEST_BIND_CHARACTERS = 7;
     static final int REQUEST_GATHER_DEVICES = 8;
     static final int REQUEST_PLAY = 9;
+    static final int REQUEST_CLIENT_PLAY = 10;
 
     // Those must be fields to ensure a communication channel to the asynchronous onServiceConnected callbacks.
     private MessageNano activeParty; // StartData.PartyOwnerData.Group or StartData.PartyClientData.Group
@@ -551,6 +558,27 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             }
             unbindService(this);
             handles.pick.startForeground(NOTIFICATION_ID, help.build());
+        }
+        if(service instanceof AdventuringService.LocalBinder) {
+            handles.clientPlay = ((AdventuringService.LocalBinder) service).getConcreteService();
+            unbindService(this);
+            final StartData.PartyClientData.Group temp = CharSelectionActivity.movePlayingParty();
+            ActorOverviewActivity.prepare(temp,
+                    CharSelectionActivity.movePlayChars(),
+                    CharSelectionActivity.moveServerWorker());
+            startActivityForResult(new Intent(this, ActorOverviewActivity.class), REQUEST_CLIENT_PLAY);
+            final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
+                    .setOngoing(true)
+                    .setWhen(System.currentTimeMillis())
+                    .setShowWhen(true)
+                    .setContentTitle(temp.name)
+                    .setContentText(getString(R.string.aoa_notificationDesc))
+                    .setSmallIcon(R.drawable.ic_notify_icon)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                help.setCategory(Notification.CATEGORY_SERVICE);
+            }
+            handles.clientPlay.startForeground(NOTIFICATION_ID, help.build());
         }
     }
 
