@@ -12,6 +12,7 @@ import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.JoinVerificator;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.PseudoStack;
 import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -87,7 +88,8 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(peerKey != battleState.currentActor) return; // that's not his turn anyway!
                 // Don't do that. Might involve popping readied actions. Furthermore, BattleActivity wants to keep track of both previous and current actor.
                 //battleState.tickRound();
-                if(!onTurnCompletedRemote.isEmpty()) onTurnCompletedRemote.getFirst().run();
+                final Runnable runnable = onTurnCompletedRemote.get();
+                if(runnable != null) runnable.run();
             }
 
             @Override
@@ -103,7 +105,8 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 if(bound != index) return; // you cannot control this turn you cheater!
                 if(peerKey != battleState.currentActor) return; // How did you manage to do that? Not currently allowed.
                 if(session.battleState.moveCurrentToSlot(newSlot, false)) pushBattleOrder();
-                if(!onActorShuffledRemote.isEmpty()) onActorShuffledRemote.getFirst().run();
+                final Runnable runnable = onActorShuffledRemote.get();
+                if(runnable != null) runnable.run();
             }
         };
         battleHandler = new MyBattleHandler(this);
@@ -211,9 +214,9 @@ public class PartyJoinOrderService extends PublishAcceptService {
      */
     int rollRequest;
     Runnable onRollReceived; // called when a roll has been matched to some updated state.
-    public ArrayDeque<Runnable> onTurnCompletedRemote = new ArrayDeque<>();
-    public ArrayDeque<Runnable> onActorShuffledRemote = new ArrayDeque<>();
-    public ArrayDeque<Runnable> onActorUpdatedRemote = new ArrayDeque<>();
+    public PseudoStack<Runnable> onTurnCompletedRemote = new PseudoStack<>();
+    public PseudoStack<Runnable> onActorShuffledRemote = new PseudoStack<>();
+    public PseudoStack<Runnable> onActorUpdatedRemote = new PseudoStack<>();
 
 
     private void matchRoll(MessageChannel from, Network.Roll dice) {

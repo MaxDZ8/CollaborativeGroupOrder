@@ -18,6 +18,7 @@ import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -27,7 +28,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class AwardExperienceActivity extends AppCompatActivity implements ServiceConnection {
+public class AwardExperienceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,13 +38,63 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
         final android.support.v7.app.ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
-        if(!bindService(new Intent(this, PartyJoinOrderService.class), this, 0)) {
-            MaxUtils.beginDelayedTransition(this);
-            TextView ohno = (TextView) findViewById(R.id.aea_status);
-            ohno.setText(R.string.master_cannotBindAdventuringService);
-            return;
+        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        SessionHelper session = game.session;
+        if(session.battleState != null) { // consume this and get it to 'to be awarded' data.
+            session.defeated = new ArrayList<>();
+            session.winners = new ArrayList<>();
+            for (InitiativeScore el : session.battleState.ordered) {
+                Network.ActorState actor = session.getActorById(el.actorID);
+                if(actor.type == Network.ActorState.T_MOB && actor.cr != null) session.defeated.add(new SessionHelper.DefeatedData(actor.peerKey, actor.cr.numerator, actor.cr.denominator));
+                else if(actor.type == Network.ActorState.T_PLAYING_CHARACTER || actor.type == Network.ActorState.T_NPC) session.winners.add(new SessionHelper.WinnerData(actor.peerKey));
+            }
+            game.session.battleState = null;
         }
-        mustUnbind = true;
+        findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        mobLister = new ActorListerWithControls<SessionHelper.DefeatedData>(session.defeated, getLayoutInflater(), session) {
+            @Override
+            protected boolean representedProperty(SessionHelper.DefeatedData entry, Boolean newValue) {
+                if(newValue != null) entry.consume = newValue;
+                update();
+                return entry.consume;
+            }
+
+            @Override
+            protected int getPeerKey(SessionHelper.DefeatedData entry) { return entry.id; }
+
+            @Override
+            protected boolean match(SessionHelper.DefeatedData entry, @ActorId int id) { return entry.id == id; }
+        };
+        RecyclerView.Adapter winnersLister = new ActorListerWithControls<SessionHelper.WinnerData>(session.winners, getLayoutInflater(), session) {
+            @Override
+            protected boolean representedProperty(SessionHelper.WinnerData entry, Boolean newValue) {
+                if (newValue != null) entry.award = newValue;
+                update();
+                return entry.award;
+            }
+
+
+            @Override
+            protected int getPeerKey(SessionHelper.WinnerData entry) {
+                return entry.id;
+            }
+
+
+            @Override
+            protected boolean match(SessionHelper.WinnerData entry, @ActorId int id) {
+                return entry.id == id;
+            }
+        };
+        MaxUtils.beginDelayedTransition(this);
+        findViewById(R.id.aea_status).setVisibility(View.GONE);
+        MaxUtils.setVisibility(this, View.VISIBLE,
+                R.id.aea_mobListInfo, R.id.aea_mobList, R.id.aea_mobReport,
+                R.id.aea_winnersListInfo, R.id.aea_winnersList, R.id.aea_winnersReport);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.aea_mobList);
+        rv.setAdapter(mobLister);
+        rv = (RecyclerView) findViewById(R.id.aea_winnersList);
+        rv.setAdapter(winnersLister);
+        update();
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -102,12 +153,6 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
         });
     }
 
-    @Override
-    protected void onDestroy() {
-        if(mustUnbind) unbindService(this);
-        super.onDestroy();
-    }
-
 
     @Override
     public void onBackPressed() { confirmDiscardFinish(); }
@@ -118,6 +163,7 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
     }
 
     private void confirmDiscardFinish() {
+        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
         new AlertDialog.Builder(this)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.aea_noBackDlgMessage)
@@ -135,6 +181,7 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
 
     private void update() {
         int xp = 0, count = 0;
+        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
         for (SessionHelper.DefeatedData el : game.session.defeated) {
             if(el.consume) {
                 count++;
@@ -179,75 +226,6 @@ public class AwardExperienceActivity extends AppCompatActivity implements Servic
         return 2 * xpFrom(numerator - 2, 1);
     }
 
-    private boolean mustUnbind;
-    private PartyJoinOrderService game;
     private RecyclerView.Adapter mobLister;
     private int awarded;
-
-    // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        game = ((PartyJoinOrderService.LocalBinder) service).getConcreteService();
-        SessionHelper session = game.session;
-        if(session.battleState != null) { // consume this and get it to 'to be awarded' data.
-            session.defeated = new ArrayList<>();
-            session.winners = new ArrayList<>();
-            for (InitiativeScore el : session.battleState.ordered) {
-                Network.ActorState actor = session.getActorById(el.actorID);
-                if(actor.type == Network.ActorState.T_MOB && actor.cr != null) session.defeated.add(new SessionHelper.DefeatedData(actor.peerKey, actor.cr.numerator, actor.cr.denominator));
-                else if(actor.type == Network.ActorState.T_PLAYING_CHARACTER || actor.type == Network.ActorState.T_NPC) session.winners.add(new SessionHelper.WinnerData(actor.peerKey));
-            }
-            game.session.battleState = null;
-        }
-        findViewById(R.id.fab).setVisibility(View.VISIBLE);
-        mobLister = new ActorListerWithControls<SessionHelper.DefeatedData>(session.defeated, getLayoutInflater(), session) {
-            @Override
-            protected boolean representedProperty(SessionHelper.DefeatedData entry, Boolean newValue) {
-                if(newValue != null) entry.consume = newValue;
-                update();
-                return entry.consume;
-            }
-
-            @Override
-            protected int getPeerKey(SessionHelper.DefeatedData entry) { return entry.id; }
-
-            @Override
-            protected boolean match(SessionHelper.DefeatedData entry, @ActorId int id) { return entry.id == id; }
-        };
-        RecyclerView.Adapter winnersLister = new ActorListerWithControls<SessionHelper.WinnerData>(session.winners, getLayoutInflater(), session) {
-            @Override
-            protected boolean representedProperty(SessionHelper.WinnerData entry, Boolean newValue) {
-                if (newValue != null) entry.award = newValue;
-                update();
-                return entry.award;
-            }
-
-
-            @Override
-            protected int getPeerKey(SessionHelper.WinnerData entry) {
-                return entry.id;
-            }
-
-
-            @Override
-            protected boolean match(SessionHelper.WinnerData entry, @ActorId int id) {
-                return entry.id == id;
-            }
-        };
-        MaxUtils.beginDelayedTransition(this);
-        findViewById(R.id.aea_status).setVisibility(View.GONE);
-        MaxUtils.setVisibility(this, View.VISIBLE,
-                R.id.aea_mobListInfo, R.id.aea_mobList, R.id.aea_mobReport,
-                R.id.aea_winnersListInfo, R.id.aea_winnersList, R.id.aea_winnersReport);
-        RecyclerView rv = (RecyclerView) findViewById(R.id.aea_mobList);
-        rv.setAdapter(mobLister);
-        rv = (RecyclerView) findViewById(R.id.aea_winnersList);
-        rv.setAdapter(winnersLister);
-        update();
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-    }
-    // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }

@@ -47,7 +47,7 @@ public class PseudoStack<E> {
     public E get() { return all.isEmpty()? null : all.get(all.size() - 1).object; }
 
 
-    private ArrayList<Identified<E>> all;
+    private ArrayList<Identified<E>> all = new ArrayList<>();
 
     private static class Identified<T> {
         final public T object;

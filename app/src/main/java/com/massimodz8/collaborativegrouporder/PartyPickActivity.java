@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
-public class PartyPickActivity extends AppCompatActivity implements ServiceConnection {
+public class PartyPickActivity extends AppCompatActivity {
     private ViewPager pager;
     private RecyclerView partyList;
     private RecyclerView.Adapter listAll = new MyPartyListAdapter();
@@ -54,8 +54,6 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
     private CoordinatorLayout guiRoot;
     private MenuItem restoreDeleted;
     private AsyncRenamingStore pending; // only one undergoing, ignore back, up and delete group while notnull
-    private PartyPickingService helper;
-    private boolean mustUnbind;
     private AsyncTask loading;
 
     // List of all visible (non-deleted) parties, kept in sync with the service state.
@@ -87,23 +85,41 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
         partyList.addItemDecoration(swiper);
         swiper.attachToRecyclerView(partyList);
 
-        if(!bindService(new Intent(this, PartyPickingService.class), this, 0)) {
-            MaxUtils.beginDelayedTransition(this);
-            final TextView status = (TextView) findViewById(R.id.ga_state);
-            status.setText(R.string.ga_cannotBindPartyService);
-            MaxUtils.setVisibility(this, View.GONE,
-                    R.id.ga_progressBar,
-                    R.id.ga_identifiedDevices,
-                    R.id.ga_deviceList,
-                    R.id.ga_pcUnassignedListDesc,
-                    R.id.ga_pcUnassignedList);
+        final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+        helper.getDense(denseDefs, denseKeys, false);
+
+        helper.onSessionDataLoaded = new Runnable() {
+            @Override
+            public void run() {
+                loading = null;
+                listAll.notifyDataSetChanged();
+                pager.setAdapter(new MyFragmentPagerAdapter());
+
+                if(!helper.sessionErrors.isEmpty()) {
+                    new AlertDialog.Builder(PartyPickActivity.this)
+                            .setMessage(R.string.ppa_inconsistentSessionDataDlgMsg)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.ppa_backMainMenuDlgPosBtn, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            })
+                            .show();
+                }
+            }
+        };
+        final AsyncTask<Void, Void, Integer> go = helper.makeSessionLoadingTask();
+        if(go != null) {
+            loading = go;
+            go.execute();
         }
     }
 
     @Override
     protected void onDestroy() {
+        final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
         if(helper != null) helper.onSessionDataLoaded = null;
-        if(mustUnbind) unbindService(this);
         super.onDestroy();
     }
 
@@ -120,6 +136,7 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             case R.id.ppa_menu_restoreDeleted: {
                 final ArrayList<StartData.PartyOwnerData.Group> hiddenDefs = new ArrayList<>();
                 final ArrayList<StartData.PartyClientData.Group> hiddenKeys = new ArrayList<>();
+                final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
                 helper.getDense(hiddenDefs, hiddenKeys, true);
                 ListAdapter la = new ListAdapter() {
                     @Override
@@ -238,6 +255,7 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
 
         @Override
         public long getItemId(int position) {
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
             if(denseDefs.size() > 0) {
                 if(0 == position) return 0;
                 position--;
@@ -342,6 +360,7 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             final MessageNano party;
             final String name;
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
             if (viewHolder instanceof OwnedPartyHolder) {
                 OwnedPartyHolder real = (OwnedPartyHolder) viewHolder;
                 party = real.group;
@@ -455,6 +474,7 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             if(min == max) str = String.format(getString(R.string.vhOP_charLevel_same), min);
             else str = String.format(getString(R.string.vhOP_charLevel_different), max, min);
             level.setText(str);
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
             if(helper == null || helper.sessionData == null) lastPlay.setVisibility(View.GONE);
             else {
                 Session.Suspended structs = helper.sessionData.get(group);
@@ -497,6 +517,7 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             group = denseKeys.get(position);
             if(group == null) return; // impossible by construction
             name.setText(group.name);
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
             if(helper == null || helper.sessionData == null) date.setVisibility(View.GONE);
             else {
                 Session.Suspended structs = helper.sessionData.get(group);
@@ -564,9 +585,10 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
         }
 
         @StringRes int sessionButton(MessageNano party, boolean owned) {
-            if(target.helper == null || target.helper.sessionData == null)
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            if(helper == null || helper.sessionData == null)
                 return owned? R.string.ppa_ownedDetails_newSession : R.string.ppa_joinedDetails_newSession;
-            Session.Suspended structs = target.helper.sessionData.get(party);
+            Session.Suspended structs = helper.sessionData.get(party);
             if(structs == null || structs.live.length == 0)
                 return owned? R.string.ppa_ownedDetails_newSession : R.string.ppa_joinedDetails_newSession;
             if(structs.fighting == null)
@@ -576,8 +598,9 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
 
         protected void note(MessageNano party, @IdRes int view, View container) {
             String got = null;
-            if(target.helper != null && target.helper.sessionData != null) {
-                Session.Suspended structs = target.helper.sessionData.get(party);
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            if(helper != null && helper.sessionData != null) {
+                Session.Suspended structs = helper.sessionData.get(party);
                 if (structs != null && !structs.note.isEmpty()) got = structs.note;
             }
             MaxUtils.setTextUnlessNull((TextView) container.findViewById(view), got, View.GONE);
@@ -585,8 +608,9 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
 
         protected void state(MessageNano party, @IdRes int view, View container) {
             String got = null;
-            if(target.helper != null && target.helper.sessionData != null) {
-                Session.Suspended structs = target.helper.sessionData.get(party);
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            if(helper != null && helper.sessionData != null) {
+                Session.Suspended structs = helper.sessionData.get(party);
                 if(structs != null) {
                     if (structs.fighting != null) got = target.getString(R.string.ppa_status_battle);
                     else if (structs.live != null) got = target.getString(R.string.ppa_status_adventure);
@@ -598,8 +622,9 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
 
         protected String lastPlayed(MessageNano party, TextView view) {
             String got = null;
-            if(target.helper != null && target.helper.sessionData != null) {
-                Session.Suspended structs = target.helper.sessionData.get(party);
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            if(helper != null && helper.sessionData != null) {
+                Session.Suspended structs = helper.sessionData.get(party);
                 if(structs != null) {
                     if (structs.lastBegin == null) got = getString(R.string.ppa_neverPlayed);
                     else if (structs.lastSaved == null) got = getString(R.string.ppa_lastSavedInconsistent);
@@ -618,7 +643,8 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             View layout = inflater.inflate(R.layout.frag_pick_party_owned_details, container, false);
             if(getIndex() < 0 || getIndex() >= target.denseDefs.size()) return layout;
 
-            final StartData.PartyOwnerData.Group party = target.helper.getOwned(getIndex());
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            final StartData.PartyOwnerData.Group party = helper.getOwned(getIndex());
             ((TextView)layout.findViewById(R.id.fragPPAOD_partyName)).setText(party.name);
             ((TextView)layout.findViewById(R.id.fragPPAOD_pcList)).setText(target.list(party.party));
             TextView npcList = (TextView) layout.findViewById(R.id.fragPPAOD_accompanyingNpcList);
@@ -646,7 +672,8 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
             View layout = inflater.inflate(R.layout.frag_pick_party_joined_details, container, false);
             if(getIndex() < 0 || getIndex() >= target.denseKeys.size()) return layout;
 
-            final StartData.PartyClientData.Group party = target.helper.getJoined(getIndex());
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            final StartData.PartyClientData.Group party = helper.getJoined(getIndex());
             ((TextView)layout.findViewById(R.id.fragPPAJD_partyName)).setText(party.name);
             MaxUtils.setTextUnlessNull((TextView) layout.findViewById(R.id.fragPPAJD_lastPlayedPcs), target.listLastPlayedPcs(party), View.GONE);
             final Button go = (Button)layout.findViewById(R.id.fragPPAJD_goAdventuring);
@@ -688,8 +715,9 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
 
         @Override
         public void onClick(View v) {
-            if(owned != null) target.helper.sessionParty = owned;
-            else target.helper.sessionParty = joined;
+            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            if(owned != null) helper.sessionParty = owned;
+            else helper.sessionParty = joined;
             target.setResult(RESULT_OK);
             target.finish();
         }
@@ -747,6 +775,7 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
     private void restoreDeleted(int hiddenPos) {
         ArrayList<StartData.PartyOwnerData.Group> owned = new ArrayList<>();
         ArrayList<StartData.PartyClientData.Group> joined = new ArrayList<>();
+        final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
         helper.getDense(owned, joined, true);
         MessageNano match;
         if(hiddenPos < owned.size()) match = owned.get(hiddenPos);
@@ -778,46 +807,4 @@ public class PartyPickActivity extends AppCompatActivity implements ServiceConne
     private String getNiceDate(Timestamp ts) {
         return local.format(new Date(ts.seconds * 1000));
     }
-
-    // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        PartyPickingService.LocalBinder binder = (PartyPickingService.LocalBinder) service;
-        helper = binder.getConcreteService();
-        mustUnbind = true;
-        helper.getDense(denseDefs, denseKeys, false);
-
-        helper.onSessionDataLoaded = new Runnable() {
-            @Override
-            public void run() {
-                loading = null;
-                listAll.notifyDataSetChanged();
-                pager.setAdapter(new MyFragmentPagerAdapter());
-
-                if(!helper.sessionErrors.isEmpty()) {
-                    new AlertDialog.Builder(PartyPickActivity.this)
-                            .setMessage(R.string.ppa_inconsistentSessionDataDlgMsg)
-                            .setCancelable(false)
-                            .setPositiveButton(R.string.ppa_backMainMenuDlgPosBtn, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    finish();
-                                }
-                            })
-                            .show();
-                }
-            }
-        };
-        final AsyncTask<Void, Void, Integer> go = helper.makeSessionLoadingTask();
-        if(go != null) {
-            loading = go;
-            go.execute();
-        }
-    }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-
-    }
-    // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }
