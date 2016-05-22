@@ -1,21 +1,14 @@
 package com.massimodz8.collaborativegrouporder.master;
 
-import android.app.Notification;
-import android.content.ComponentName;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.BitmapFactory;
 import android.net.nsd.NsdManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.view.ActionMode;
@@ -78,21 +71,6 @@ public class GatheringActivity extends AppCompatActivity {
 
             }
         };
-        if(room.getPublishStatus() == PartyJoinOrderService.PUBLISHER_IDLE) {
-            // first time activity is launched. Data has been pushed to the service by previous activity and I just need to elevate priority.
-            final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
-                    .setOngoing(true)
-                    .setWhen(System.currentTimeMillis())
-                    .setShowWhen(true)
-                    .setContentTitle(room.getPartyOwnerData().name)
-                    .setContentText(getString(R.string.ga_notificationDesc))
-                    .setSmallIcon(R.drawable.ic_notify_icon)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                help.setCategory(Notification.CATEGORY_SERVICE);
-            }
-            room.startForeground(NOTIFICATION_ID, help.build());
-        }
         room.setUnassignedPcsCountListener(new PcAssignmentHelper.OnBoundPcCallback() {
             @Override
             public void onUnboundCountChanged(int stillToBind) {
@@ -162,22 +140,18 @@ public class GatheringActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
-        if(!isChangingConfigurations()) { // being destroyed for real.
-            // no need to shut down the session, done so in the activity.
-            // no need to shut down anything at all, unbind will do!
-            // The documentation seems to be clear bound service destruction is deterministic.
-            room.stopForeground(true);
+        if(room != null) {
+            room.setNewAuthDevicesAdapter(null);
+            room.setNewUnassignedPcsAdapter(null);
+            room.onNewPublishStatus = null;
         }
-        room.setNewAuthDevicesAdapter(null);
-        room.setNewUnassignedPcsAdapter(null);
-        room.onNewPublishStatus = null;
         super.onDestroy();
     }
 
     @Override
     protected void onStop() {
         final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
-        room.stopListening(false);
+        if(room != null) room.stopListening(false); // in case this is called before .onDestroy
         super.onStop();
     }
 
@@ -298,9 +272,6 @@ public class GatheringActivity extends AppCompatActivity {
             TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ga_activityRoot));
         }
     }
-
-    private static final int NOTIFICATION_ID = 1;
-
 
     private static class AuthDeviceViewHolder extends RecyclerView.ViewHolder {
         TextView name;

@@ -420,15 +420,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         }
     }
 
-    private void failedServiceBind() {
-        beginDelayedTransition();
-        final TextView status = (TextView) findViewById(R.id.ga_state);
-        status.setText(R.string.master_cannotBindPartyService);
-        MaxUtils.setVisibility(this, View.GONE,
-                R.id.npdsa_partyName,
-                R.id.npdsa_activate);
-    }
-
     // TextWatcher vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) { }

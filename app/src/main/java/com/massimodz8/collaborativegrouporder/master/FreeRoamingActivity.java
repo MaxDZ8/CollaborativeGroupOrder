@@ -215,7 +215,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
-        game.onRollReceived = null;
+        if(game != null) game.onRollReceived = null;
         if(waiting != null) waiting.dlg.dismiss();
         super.onDestroy();
     }

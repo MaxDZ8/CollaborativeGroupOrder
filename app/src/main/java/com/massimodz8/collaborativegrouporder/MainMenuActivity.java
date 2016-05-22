@@ -51,7 +51,7 @@ import java.util.Collections;
 
 public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final int NETWORK_VERSION = 1;
-    private static final int NOTIFICATION_ID = 1234;
+    private static final int PJOS_NOTIFICATION_ID = 123, PPS_NOTIFICATION_ID = 456, AS_NOTIFICATION_ID = 789;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -416,6 +416,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     break;
                 }
                 case REQUEST_GATHER_DEVICES:
+                    handles.play = null;
                     stopService(new Intent(this, PartyJoinOrderService.class));
                     break;
             }
@@ -533,6 +534,21 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             activeStats = null;
             unbindService(this);
             handles.play = real;
+
+            // first time activity is launched. Data has been pushed to the service by previous activity and I just need to elevate priority.
+            final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
+                    .setOngoing(true)
+                    .setWhen(System.currentTimeMillis())
+                    .setShowWhen(true)
+                    .setContentTitle(real.getPartyOwnerData().name)
+                    .setContentText(getString(R.string.ga_notificationDesc))
+                    .setSmallIcon(R.drawable.ic_notify_icon)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                help.setCategory(Notification.CATEGORY_SERVICE);
+            }
+            real.startForeground(PJOS_NOTIFICATION_ID, help.build());
+
             startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_GATHER_DEVICES);
         }
         if(service instanceof PartyCreationService.LocalBinder) {
@@ -557,7 +573,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 help.setCategory(Notification.CATEGORY_SERVICE);
             }
             unbindService(this);
-            handles.pick.startForeground(NOTIFICATION_ID, help.build());
+            handles.pick.startForeground(PPS_NOTIFICATION_ID, help.build());
         }
         if(service instanceof AdventuringService.LocalBinder) {
             handles.clientPlay = ((AdventuringService.LocalBinder) service).getConcreteService();
@@ -578,7 +594,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 help.setCategory(Notification.CATEGORY_SERVICE);
             }
-            handles.clientPlay.startForeground(NOTIFICATION_ID, help.build());
+            handles.clientPlay.startForeground(AS_NOTIFICATION_ID, help.build());
         }
     }
 
