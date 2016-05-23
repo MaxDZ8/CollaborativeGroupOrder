@@ -118,23 +118,27 @@ public class GatheringActivity extends AppCompatActivity {
             }
         }));
         MaxUtils.setVisibility(View.VISIBLE, devList, unboundPcList, findViewById(R.id.ga_startSession));
+    }
 
-        if(room.getPublishStatus() == PartyJoinOrderService.PUBLISHER_IDLE) {
-            try {
-                room.startListening();
-            } catch (IOException e) {
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.badServerSocket)
-                        .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        }).show();
-                return;
-            }
-            room.beginPublishing((NsdManager) getSystemService(NSD_SERVICE), room.getPartyOwnerData().name, PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+        try {
+            room.startListening();
+        } catch (IOException e) {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.badServerSocket)
+                    .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    }).show();
+            return;
         }
+        final NsdManager sys = (NsdManager) getSystemService(NSD_SERVICE);
+        room.beginPublishing(sys, room.getPartyOwnerData().name, PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
     }
 
     @Override

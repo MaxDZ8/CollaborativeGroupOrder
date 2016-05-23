@@ -139,45 +139,6 @@ public abstract class PcAssignmentHelper {
         }.start();
     }
 
-    /**
-     * This still keeps a reference to sockets and all mappings. The only data which is going
-     * away is those of devices which were not mapped to any characters. They are useless.
-     * @return Worker threads to be sent to the "adventuring" pumper.
-     */
-    public ArrayList<Pumper.MessagePumpingThread> getBoundKickOthers() {
-        final ArrayList<PlayingDevice> goners = new ArrayList<>();
-        final ArrayList<Pumper.MessagePumpingThread> players = new ArrayList<>();
-        for (PlayingDevice dev : peers) {
-            int count = 0;
-            if(dev.pipe != null) {
-                for (Integer check : assignment) {
-                    if(check != null && check >= 0 && check < peers.size()) {
-                        if(peers.get(check) == dev) count++;
-                    }
-                }
-            }
-            if(count == 0) goners.add(dev);
-            else players.add(netPump.move(dev.pipe));
-        }
-        peers.removeAll(goners);
-        final Pumper.MessagePumpingThread[] byebye = netPump.move();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (Pumper.MessagePumpingThread worker : byebye) worker.interrupt();
-                for (Pumper.MessagePumpingThread worker : byebye) {
-                    MessageChannel pipe = worker.getSource();
-                    if(pipe != null) try {
-                        pipe.socket.close();
-                    } catch (IOException e) {
-                        // I don't care bro. You're nobody I care anymore.
-                    }
-                }
-            }
-        }).start();
-        return players;
-    }
-
     private final SecureRandom randomizer = new SecureRandom();
     private final JoinVerificator verifier;
     ArrayList<Integer> assignment;

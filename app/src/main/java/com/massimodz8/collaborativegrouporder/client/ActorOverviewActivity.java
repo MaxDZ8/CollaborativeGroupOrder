@@ -24,13 +24,13 @@ import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
+import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
-import java.io.IOException;
 import java.util.Locale;
 
 /**
@@ -278,16 +278,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             reply.result = ready.result;
             reply.unique = ready.unique;
             reply.peerKey = ready.peerKey;
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        serverPipe.writeSync(ProtoBufferEnum.ROLL, reply);
-                    } catch (IOException e) {
-                        // todo: collect those in the service mailman maybe and have better error support.
-                    }
-                }
-            }.start();
+            ticker.mailman.out.add(new SendRequest(serverPipe, ProtoBufferEnum.ROLL, reply));
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             rollDialog.dlg.dismiss();
             rollDialog = null;
@@ -299,7 +290,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     private static final int CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER = 2;
 
-    private int updateCall, rollRequestCall, actorChangedCall;;
+    private int updateCall, rollRequestCall, actorChangedCall;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
