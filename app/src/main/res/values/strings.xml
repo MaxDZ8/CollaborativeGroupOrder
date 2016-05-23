@@ -777,5 +777,6 @@
     <string name="aa_lastUpdated">Last updated: %1$s</string>
     <string name="mma_menu_aboutShort">About</string>
     <string name="aa_dataDir">Data store: %1$s</string>
+    <string name="aa_thankYouD20PFSRD">Special thanks to John Reyst for his work on Open Game Content websites. Without his job, this app would have taken a few more months. Please check out his patreon at:\nhttps://www.patreon.com/d20pfsrd</string>
 
 </resources>
