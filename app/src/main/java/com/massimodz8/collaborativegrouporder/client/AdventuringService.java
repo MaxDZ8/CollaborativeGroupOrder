@@ -180,7 +180,7 @@ public class AdventuringService extends Service {
                 case MSG_ROLL: {
                     final Network.Roll real = (Network.Roll) msg.obj;
                     if(real.type == Network.Roll.T_INITIATIVE) self.round = 0;
-                    self.rollRequests.push(real);
+                    self.rollRequests.addLast(real);
                     final Runnable runnable = self.onRollRequestPushed.get();
                     if(runnable != null) runnable.run();
                 } break;

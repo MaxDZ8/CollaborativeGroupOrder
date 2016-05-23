@@ -76,7 +76,6 @@ public class BattleActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
-        super.onCreate(savedInstanceState);
 
         final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
         lister.playState = game.session;

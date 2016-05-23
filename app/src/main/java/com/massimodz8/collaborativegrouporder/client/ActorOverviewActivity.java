@@ -273,7 +273,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
         @Override
         public void run() {
             final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
-            final Network.Roll ready = ticker.rollRequests.pop();
+            final Network.Roll ready = ticker.rollRequests.removeFirst();
             final Network.Roll reply = new Network.Roll();
             reply.result = ready.result;
             reply.unique = ready.unique;
