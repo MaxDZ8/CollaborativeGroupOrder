@@ -386,6 +386,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                         }
                     };
                 }
+                lister.notifyDataSetChanged();
                 break;
             }
             default:
