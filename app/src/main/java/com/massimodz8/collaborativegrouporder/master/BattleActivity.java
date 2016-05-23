@@ -246,9 +246,11 @@ public class BattleActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
-        game.onTurnCompletedRemote.remove(turnCallback);
-        game.onActorShuffledRemote.remove(shuffleCallback);
-        game.onActorUpdatedRemote.remove(updatedCallback);
+        if(game != null) {
+            game.onTurnCompletedRemote.remove(turnCallback);
+            game.onActorShuffledRemote.remove(shuffleCallback);
+            game.onActorUpdatedRemote.remove(updatedCallback);
+        }
         super.onDestroy();
     }
 
