@@ -31,6 +31,7 @@ import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
+import java.text.DecimalFormat;
 import java.util.Locale;
 
 /**
@@ -80,7 +81,10 @@ public class ActorOverviewActivity extends AppCompatActivity {
                         if(awo.keyOrder != null) knownOrders++;
                         if(awo.xpReceived != 0) {
                             String text = getString(R.string.aoa_xpReward);
-                            text = String.format(Locale.getDefault(), text, awo.actor.name, awo.xpReceived, awo.actor.experience);
+                            DecimalFormat thousands = new DecimalFormat("###,###,###,###");
+                            String from = thousands.format(awo.actor.experience);
+                            String award = thousands.format(awo.xpReceived);
+                            text = String.format(Locale.getDefault(), text, awo.actor.name, award, from);
                             Snackbar.make(findViewById(R.id.activityRoot), text, Snackbar.LENGTH_INDEFINITE).show();
                             awo.xpReceived = 0;
                             awo.updated = false;
