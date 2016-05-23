@@ -543,7 +543,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     .setContentTitle(real.getPartyOwnerData().name)
                     .setContentText(getString(R.string.ga_notificationDesc))
                     .setSmallIcon(R.drawable.ic_notify_icon)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 help.setCategory(Notification.CATEGORY_SERVICE);
             }
@@ -568,7 +568,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     .setWhen(System.currentTimeMillis())
                     .setContentTitle(getString(R.string.mma_partyManagerNotificationTitle))
                     .setSmallIcon(R.drawable.ic_notify_icon)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 help.setCategory(Notification.CATEGORY_SERVICE);
             }
@@ -590,7 +590,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     .setContentTitle(temp.name)
                     .setContentText(getString(R.string.aoa_notificationDesc))
                     .setSmallIcon(R.drawable.ic_notify_icon)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 help.setCategory(Notification.CATEGORY_SERVICE);
             }
