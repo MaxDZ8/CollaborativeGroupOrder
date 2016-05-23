@@ -108,6 +108,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
                         for (Network.ActorState test : game.session.temporaries) {
                             match++;
                             if(el.id == test.peerKey) {
+                                game.session.willFight(el.id, false);
                                 game.session.temporaries.remove(match);
                                 break;
                             }
