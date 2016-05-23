@@ -22,6 +22,7 @@ import android.view.View;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
+import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
@@ -164,7 +165,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                     else count += add;
                 }
                 if(pgCount == 0) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_zeroPcs, Snackbar.LENGTH_LONG).show();
-                else if(count == 1) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_oneActor, Snackbar.LENGTH_LONG).show();
+                else if(count + pgCount == 1) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_oneActor, Snackbar.LENGTH_LONG).show();
                 else if(count + pgCount != game.session.getNumActors()) {
                     new AlertDialog.Builder(FreeRoamingActivity.this)
                             .setMessage(getString(R.string.fra_dlgMsg_missingChars))
@@ -193,6 +194,31 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 return position != 0;
             }
         });
+        new HoriSwipeOnlyTouchCallback(rv) {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if(viewHolder instanceof AdventuringActorControlsVH) {
+                    final AdventuringActorControlsVH real = (AdventuringActorControlsVH) viewHolder;
+                    if(real.actor == null) return;
+                    final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+                    game.session.willFight(real.actor.peerKey, false);
+                    game.session.temporaries.remove(real.actor);
+                    lister.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            protected boolean disable() { return false; }
+
+            @Override
+            protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) {
+                if(vh instanceof AdventuringActorControlsVH) {
+                    final AdventuringActorControlsVH real = (AdventuringActorControlsVH) vh;
+                    return real.actor != null && real.actor.type == Network.ActorState.T_MOB;
+                }
+                return false;
+            }
+        };
     }
 
     @Override
