@@ -212,7 +212,8 @@ public class GatheringActivity extends AppCompatActivity {
 
             @Override
             protected Void doInBackground(Void... params) {
-                Network.GroupReady yours = new Network.GroupReady();
+                Network.PhaseControl yours = new Network.PhaseControl();
+                yours.type = Network.PhaseControl.T_DEFINITIVE_CHAR_ASSIGNMENT;
                 final StartData.ActorDefinition[] playingChars = room.assignmentHelper.party.party;
                 int devIndex = -1;
                 for (PcAssignmentHelper.PlayingDevice known : room.assignmentHelper.peers) {
@@ -224,14 +225,13 @@ public class GatheringActivity extends AppCompatActivity {
                         if(which == null) continue;
                         if(which == devIndex) count++;
                     }
-                    yours.charAssignment = true;
-                    yours.yours = new int[count];
+                    yours.yourChars = new int[count];
                     count = 0;
                     for(int index = 0; index < playingChars.length; index++) {
                         final Integer which = room.assignmentHelper.assignment.get(index);
                         if(which == null) continue;
                         if(which == devIndex) {
-                            yours.yours[count] = index;
+                            yours.yourChars[count] = index;
                             count++;
                         }
                     }

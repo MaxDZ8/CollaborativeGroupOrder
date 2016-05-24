@@ -42,13 +42,14 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                     else handler.sendMessage(handler.obtainMessage(MSG_PC_APPROVAL, new Events.CharacterAcceptStatus(from, msg.peerKey, msg.accepted)));
                     return false;
                 }
-            }).add(ProtoBufferEnum.GROUP_READY, new PumpTarget.Callbacks<Network.GroupReady>() {
+            }).add(ProtoBufferEnum.GROUP_READY, new PumpTarget.Callbacks<Network.PhaseControl>() {
                 @Override
-                public Network.GroupReady make() { return new Network.GroupReady(); }
+                public Network.PhaseControl make() { return new Network.PhaseControl(); }
 
                 @Override
-                public boolean mangle(MessageChannel from, Network.GroupReady msg) throws IOException {
-                    handler.sendMessage(handler.obtainMessage(MSG_DONE, msg.goAdventuring));
+                public boolean mangle(MessageChannel from, Network.PhaseControl msg) throws IOException {
+                    if(msg.type != Network.PhaseControl.T_NO_MORE_DEFINITIONS) return false; // error?
+                    handler.sendMessage(handler.obtainMessage(MSG_DONE, !msg.terminated));
                     return true;
                 }
             });

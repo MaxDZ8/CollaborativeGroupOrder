@@ -264,8 +264,9 @@ public class PartyCreationService extends PublishAcceptService {
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    Network.GroupReady byebye = new Network.GroupReady();
-                    byebye.goAdventuring = goAdventuring;
+                    Network.PhaseControl byebye = new Network.PhaseControl();
+                    byebye.type = Network.PhaseControl.T_NO_MORE_DEFINITIONS;
+                    byebye.terminated = !goAdventuring;
                     for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
                         try {
                             dev.source.writeSync(ProtoBufferEnum.GROUP_READY, byebye);

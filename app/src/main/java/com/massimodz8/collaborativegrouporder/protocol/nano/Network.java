@@ -762,40 +762,46 @@ public interface Network {
     }
   }
 
-  public static final class GroupReady extends
+  public static final class PhaseControl extends
       com.google.protobuf.nano.MessageNano {
 
-    private static volatile GroupReady[] _emptyArray;
-    public static GroupReady[] emptyArray() {
+    // enum Type
+    public static final int T_INVALID = 0;
+    public static final int T_NO_MORE_DEFINITIONS = 1;
+    public static final int T_DEFINITIVE_CHAR_ASSIGNMENT = 2;
+    public static final int T_SESSION_ENDED = 3;
+
+    private static volatile PhaseControl[] _emptyArray;
+    public static PhaseControl[] emptyArray() {
       // Lazily initializes the empty array
       if (_emptyArray == null) {
         synchronized (
             com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
           if (_emptyArray == null) {
-            _emptyArray = new GroupReady[0];
+            _emptyArray = new PhaseControl[0];
           }
         }
       }
       return _emptyArray;
     }
 
-    // optional bool go_adventuring = 1;
-    public boolean goAdventuring;
+    // optional .PhaseControl.Type type = 1;
+    public int type;
 
-    // optional bool charAssignment = 2;
-    public boolean charAssignment;
+    // optional bool terminated = 2;
+    public boolean terminated;
 
-    // repeated uint32 yours = 3;
-    public int[] yours;
+    // repeated uint32 yourChars = 3;
+    public int[] yourChars;
 
-    public GroupReady() {
+    public PhaseControl() {
       clear();
     }
 
-    public GroupReady clear() {
-      goAdventuring = false;
-      charAssignment = false;
-      yours = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
+    public PhaseControl clear() {
+      type = com.massimodz8.collaborativegrouporder.protocol.nano.Network.PhaseControl.T_INVALID;
+      terminated = false;
+      yourChars = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
       cachedSize = -1;
       return this;
     }
@@ -803,15 +809,15 @@ public interface Network {
     @Override
     public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
         throws java.io.IOException {
-      if (this.goAdventuring != false) {
-        output.writeBool(1, this.goAdventuring);
+      if (this.type != com.massimodz8.collaborativegrouporder.protocol.nano.Network.PhaseControl.T_INVALID) {
+        output.writeInt32(1, this.type);
       }
-      if (this.charAssignment != false) {
-        output.writeBool(2, this.charAssignment);
+      if (this.terminated != false) {
+        output.writeBool(2, this.terminated);
       }
-      if (this.yours != null && this.yours.length > 0) {
-        for (int i = 0; i < this.yours.length; i++) {
-          output.writeUInt32(3, this.yours[i]);
+      if (this.yourChars != null && this.yourChars.length > 0) {
+        for (int i = 0; i < this.yourChars.length; i++) {
+          output.writeUInt32(3, this.yourChars[i]);
         }
       }
       super.writeTo(output);
@@ -820,29 +826,29 @@ public interface Network {
     @Override
     protected int computeSerializedSize() {
       int size = super.computeSerializedSize();
-      if (this.goAdventuring != false) {
+      if (this.type != com.massimodz8.collaborativegrouporder.protocol.nano.Network.PhaseControl.T_INVALID) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeBoolSize(1, this.goAdventuring);
+          .computeInt32Size(1, this.type);
       }
-      if (this.charAssignment != false) {
+      if (this.terminated != false) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeBoolSize(2, this.charAssignment);
+            .computeBoolSize(2, this.terminated);
       }
-      if (this.yours != null && this.yours.length > 0) {
+      if (this.yourChars != null && this.yourChars.length > 0) {
         int dataSize = 0;
-        for (int i = 0; i < this.yours.length; i++) {
-          int element = this.yours[i];
+        for (int i = 0; i < this.yourChars.length; i++) {
+          int element = this.yourChars[i];
           dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeUInt32SizeNoTag(element);
         }
         size += dataSize;
-        size += 1 * this.yours.length;
+        size += 1 * this.yourChars.length;
       }
       return size;
     }
 
     @Override
-    public GroupReady mergeFrom(
+    public PhaseControl mergeFrom(
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
       while (true) {
@@ -857,20 +863,28 @@ public interface Network {
             break;
           }
           case 8: {
-            this.goAdventuring = input.readBool();
+            int value = input.readInt32();
+            switch (value) {
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.PhaseControl.T_INVALID:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.PhaseControl.T_NO_MORE_DEFINITIONS:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.PhaseControl.T_DEFINITIVE_CHAR_ASSIGNMENT:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.Network.PhaseControl.T_SESSION_ENDED:
+                this.type = value;
+                break;
+            }
             break;
           }
           case 16: {
-            this.charAssignment = input.readBool();
+            this.terminated = input.readBool();
             break;
           }
           case 24: {
             int arrayLength = com.google.protobuf.nano.WireFormatNano
                 .getRepeatedFieldArrayLength(input, 24);
-            int i = this.yours == null ? 0 : this.yours.length;
+            int i = this.yourChars == null ? 0 : this.yourChars.length;
             int[] newArray = new int[i + arrayLength];
             if (i != 0) {
-              java.lang.System.arraycopy(this.yours, 0, newArray, 0, i);
+              java.lang.System.arraycopy(this.yourChars, 0, newArray, 0, i);
             }
             for (; i < newArray.length - 1; i++) {
               newArray[i] = input.readUInt32();
@@ -878,7 +892,7 @@ public interface Network {
             }
             // Last one without readTag.
             newArray[i] = input.readUInt32();
-            this.yours = newArray;
+            this.yourChars = newArray;
             break;
           }
           case 26: {
@@ -892,15 +906,15 @@ public interface Network {
               arrayLength++;
             }
             input.rewindToPosition(startPos);
-            int i = this.yours == null ? 0 : this.yours.length;
+            int i = this.yourChars == null ? 0 : this.yourChars.length;
             int[] newArray = new int[i + arrayLength];
             if (i != 0) {
-              java.lang.System.arraycopy(this.yours, 0, newArray, 0, i);
+              java.lang.System.arraycopy(this.yourChars, 0, newArray, 0, i);
             }
             for (; i < newArray.length; i++) {
               newArray[i] = input.readUInt32();
             }
-            this.yours = newArray;
+            this.yourChars = newArray;
             input.popLimit(limit);
             break;
           }
@@ -908,15 +922,15 @@ public interface Network {
       }
     }
 
-    public static GroupReady parseFrom(byte[] data)
+    public static PhaseControl parseFrom(byte[] data)
         throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-      return com.google.protobuf.nano.MessageNano.mergeFrom(new GroupReady(), data);
+      return com.google.protobuf.nano.MessageNano.mergeFrom(new PhaseControl(), data);
     }
 
-    public static GroupReady parseFrom(
+    public static PhaseControl parseFrom(
             com.google.protobuf.nano.CodedInputByteBufferNano input)
         throws java.io.IOException {
-      return new GroupReady().mergeFrom(input);
+      return new PhaseControl().mergeFrom(input);
     }
   }
 
