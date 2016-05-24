@@ -69,6 +69,8 @@ public class BattleActivity extends AppCompatActivity {
                 .setNegativeButton(R.string.ba_backDlgNegative, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        for (Network.ActorState goner : session.temporaries) session.willFight(goner.peerKey, false);
+                        session.temporaries.clear();
                         session.battleState = null;
                         for (PcAssignmentHelper.PlayingDevice client : game.assignmentHelper.peers) {
                             if(client.pipe == null) continue;

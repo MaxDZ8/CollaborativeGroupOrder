@@ -150,6 +150,15 @@ public class AwardExperienceActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        // No matter what, when we're outta there we get the rid of all battle data, including those
+        // transient lists.
+        final SessionHelper session = RunningServiceHandles.getInstance().play.session;
+        session.winners = null;
+        session.defeated = null;
+        super.onDestroy();
+    }
 
     @Override
     public void onBackPressed() { confirmDiscardFinish(); }
