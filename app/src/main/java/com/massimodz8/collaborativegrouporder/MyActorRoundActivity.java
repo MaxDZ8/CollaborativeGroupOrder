@@ -251,6 +251,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
             }
             Network.TurnControl done = new Network.TurnControl();
             done.type = Network.TurnControl.T_FORCE_DONE;
+            done.peerKey = client.currentActor;
             client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, done, null));
         }
         setResult(RESULT_OK);
