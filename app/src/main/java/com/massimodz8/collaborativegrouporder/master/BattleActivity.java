@@ -47,6 +47,8 @@ public class BattleActivity extends AppCompatActivity {
     private void backDialog() {
         final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
         final SessionHelper session = game.session;
+        final Network.TurnControl msg = new Network.TurnControl();
+        msg.type = Network.TurnControl.T_BATTLE_ENDED;
         new AlertDialog.Builder(this)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.ba_backDlgMessage)
@@ -55,6 +57,12 @@ public class BattleActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // We don't really do it there. The parent activity does.
                         setResult(RESULT_OK_SUSPEND);
+                        for (PcAssignmentHelper.PlayingDevice client : game.assignmentHelper.peers) {
+                            if(client.pipe == null) continue;
+                            game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg));
+                        }
+                        // This could also send session terminate directly but I don't.
+                        // It's easier for everyone if I send 'close session' only when not fighting.
                         finish();
                     }
                 })
@@ -62,6 +70,10 @@ public class BattleActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         session.battleState = null;
+                        for (PcAssignmentHelper.PlayingDevice client : game.assignmentHelper.peers) {
+                            if(client.pipe == null) continue;
+                            game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg));
+                        }
                         finish();
                     }
                 })
