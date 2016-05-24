@@ -59,7 +59,7 @@ public class BattleActivity extends AppCompatActivity {
                         setResult(RESULT_OK_SUSPEND);
                         for (PcAssignmentHelper.PlayingDevice client : game.assignmentHelper.peers) {
                             if(client.pipe == null) continue;
-                            game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg));
+                            game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg, null));
                         }
                         // This could also send session terminate directly but I don't.
                         // It's easier for everyone if I send 'close session' only when not fighting.
@@ -72,7 +72,7 @@ public class BattleActivity extends AppCompatActivity {
                         session.battleState = null;
                         for (PcAssignmentHelper.PlayingDevice client : game.assignmentHelper.peers) {
                             if(client.pipe == null) continue;
-                            game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg));
+                            game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg, null));
                         }
                         finish();
                     }
@@ -247,7 +247,7 @@ public class BattleActivity extends AppCompatActivity {
                     activation.type = Network.TurnControl.T_PREPARED_TRIGGERED;
                     activation.peerKey = target.actor.peerKey;
                     activation.round = battle.round;
-                    if(pipe != null) game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.TURN_CONTROL, activation));
+                    if(pipe != null) game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.TURN_CONTROL, activation, null));
                 }
             }
             lister.notifyDataSetChanged();
@@ -302,7 +302,7 @@ public class BattleActivity extends AppCompatActivity {
                                 final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
                                 for (PcAssignmentHelper.PlayingDevice client : game.assignmentHelper.peers) {
                                     if(client.pipe == null) continue;
-                                    game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg));
+                                    game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg, null));
                                 }
                                 finish();
                             }
@@ -343,7 +343,7 @@ public class BattleActivity extends AppCompatActivity {
                 payload.peerKey = actor.peerKey;
                 payload.type = Network.TurnControl.T_REGULAR;
                 payload.round = battle.round;
-                game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.TURN_CONTROL, payload));
+                game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.TURN_CONTROL, payload, null));
             }
             activateNewActorLocal();
             return;
@@ -370,12 +370,12 @@ public class BattleActivity extends AppCompatActivity {
                             final Network.ActorState temp = new Network.ActorState();
                             temp.type = Network.ActorState.T_PARTIAL_PREPARE_CONDITION;
                             temp.peerKey = actor.peerKey;
-                            game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, temp));
+                            game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, temp, null));
                             Network.TurnControl payload = new Network.TurnControl();
                             payload.peerKey = actor.peerKey;
                             payload.type = Network.TurnControl.T_REGULAR;
                             payload.round = battle.round;
-                            if(dev.pipe != null) game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, payload));
+                            if(dev.pipe != null) game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, payload, null));
                         }
                         activateNewActorLocal();
                     }

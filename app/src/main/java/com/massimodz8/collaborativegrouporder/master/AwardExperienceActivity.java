@@ -136,7 +136,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
 
                             MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
                             if (pipe == null) continue;
-                            game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actor));
+                            game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actor, null));
                         }
                     }
                 }

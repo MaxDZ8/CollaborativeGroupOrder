@@ -126,7 +126,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 notifyRound.round = battle.round;
                 for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
                     if(dev.pipe == null) continue;
-                    game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, notifyRound));
+                    game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, notifyRound, null));
 
                     if(dev.movedToBattlePumper) continue;
                     game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
@@ -291,7 +291,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 rq.peerKey = loop;
                 rq.type = Network.Roll.T_INITIATIVE;
                 game.session.initiatives.put(actor.peerKey, new SessionHelper.Initiative(rq));
-                game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ROLL, rq));
+                game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ROLL, rq, null));
             } else {
                 game.session.initiatives.put(actor.peerKey, new SessionHelper.Initiative(null));
                 local.add(actor);

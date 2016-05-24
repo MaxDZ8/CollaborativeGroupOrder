@@ -282,7 +282,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             reply.result = ready.result;
             reply.unique = ready.unique;
             reply.peerKey = ready.peerKey;
-            ticker.mailman.out.add(new SendRequest(serverPipe, ProtoBufferEnum.ROLL, reply));
+            ticker.mailman.out.add(new SendRequest(serverPipe, ProtoBufferEnum.ROLL, reply, null));
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             rollDialog.dlg.dismiss();
             rollDialog = null;

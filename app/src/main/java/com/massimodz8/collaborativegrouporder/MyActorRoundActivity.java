@@ -240,7 +240,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
             }
             Network.TurnControl done = new Network.TurnControl();
             done.type = Network.TurnControl.T_FORCE_DONE;
-            client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, done));
+            client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, done, null));
         }
         setResult(RESULT_OK);
         finish();
@@ -265,7 +265,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
         send.order = new int[] { newPos };
         // Nope. We wait the server to update.
         //client.currentActor.keyOrder = send.order;
-        client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.BATTLE_ORDER, send));
+        client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.BATTLE_ORDER, send, null));
     }
 
 
@@ -284,7 +284,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
         send.type = Network.ActorState.T_PARTIAL_PREPARE_CONDITION;
         send.peerKey = client.currentActor;
         send.prepareCondition = s;
-        client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, send));
+        client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, send, null));
         AdventuringService.ActorWithKnownOrder current = client.actors.get(client.currentActor);
         if(current == null) return; // impossible
         current.actor.prepareCondition = s;

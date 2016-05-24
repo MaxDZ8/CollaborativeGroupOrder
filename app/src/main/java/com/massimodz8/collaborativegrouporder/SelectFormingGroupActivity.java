@@ -437,7 +437,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
                     netPump.pump(ngs.channel);
                     Network.Hello payload = new Network.Hello();
                     payload.version = MainMenuActivity.NETWORK_VERSION;
-                    sender.out.add(new SendRequest(ngs.channel, ProtoBufferEnum.HELLO, payload));
+                    sender.out.add(new SendRequest(ngs.channel, ProtoBufferEnum.HELLO, payload, null));
                     diffs++;
                 }
             }

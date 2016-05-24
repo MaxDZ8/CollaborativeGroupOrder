@@ -26,7 +26,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -260,7 +259,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 final Network.BattleOrder bo = new Network.BattleOrder();
                 bo.asKnownBy = actorKey;
                 bo.order = sequence;
-                assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.BATTLE_ORDER, bo));
+                assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.BATTLE_ORDER, bo, null));
             }
         }
         return true;
@@ -276,7 +275,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
         Network.ActorState[] current = new Network.ActorState[session.battleState.ordered.length];
         id = 0;
         for (InitiativeScore el : session.battleState.ordered) current[id++] = session.getActorById(el.actorID);
-        assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, current));
+        assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, current, null));
     }
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
