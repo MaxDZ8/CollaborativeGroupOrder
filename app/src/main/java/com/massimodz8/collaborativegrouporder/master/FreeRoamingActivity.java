@@ -54,6 +54,8 @@ public class FreeRoamingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_free_roaming);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        final ActionBar sab = getSupportActionBar();
+        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
         SearchView swidget = (SearchView)findViewById(R.id.fra_searchMobs);
         swidget.setIconifiedByDefault(false);
         swidget.setQueryHint(getString(R.string.fra_searchable_hint));
@@ -64,6 +66,72 @@ public class FreeRoamingActivity extends AppCompatActivity {
         swidget.setSearchableInfo(sm.getSearchableInfo(compName));
 
         final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int count = 0;
+                int pgCount = 0;
+                for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+                    Network.ActorState actor = game.session.getActor(loop);
+                    int add = game.session.willFight(actor.peerKey, null)? 1 : 0;
+                    if(actor.type == Network.ActorState.T_PLAYING_CHARACTER) pgCount += add;
+                    else count += add;
+                }
+                if(pgCount == 0) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_zeroPcs, Snackbar.LENGTH_LONG).show();
+                else if(count + pgCount == 1) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_oneActor, Snackbar.LENGTH_LONG).show();
+                else if(count + pgCount != game.session.getNumActors()) {
+                    new AlertDialog.Builder(FreeRoamingActivity.this)
+                            .setMessage(getString(R.string.fra_dlgMsg_missingChars))
+                            .setPositiveButton(getString(R.string.fra_dlgActionIgnoreMissingCharacters), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    sendInitiativeRollRequests();
+                                }
+                            }).show();
+                }
+                else {
+                    fab.setVisibility(View.GONE);
+                    sendInitiativeRollRequests();
+                }
+            }
+        });
+
+        RecyclerView rv = (RecyclerView) findViewById(R.id.fra_list);
+        rv.setAdapter(lister);
+        rv.addItemDecoration(new PreSeparatorDecorator(rv, this) {
+            @Override
+            protected boolean isEligible(int position) {
+                return position != 0;
+            }
+        });
+        new HoriSwipeOnlyTouchCallback(rv) {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if(viewHolder instanceof AdventuringActorControlsVH) {
+                    final AdventuringActorControlsVH real = (AdventuringActorControlsVH) viewHolder;
+                    if(real.actor == null) return;
+                    final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+                    game.session.willFight(real.actor.peerKey, false);
+                    game.session.temporaries.remove(real.actor);
+                    lister.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            protected boolean disable() { return false; }
+
+            @Override
+            protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) {
+                if(vh instanceof AdventuringActorControlsVH) {
+                    final AdventuringActorControlsVH real = (AdventuringActorControlsVH) vh;
+                    return real.actor != null && real.actor.type == Network.ActorState.T_MOB;
+                }
+                return false;
+            }
+        };
+
         lister.playState = game.session;
         game.onRollReceived = new Runnable() {
             @Override
@@ -151,74 +219,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
         lister.notifyDataSetChanged();
         Snackbar.make(findViewById(R.id.activityRoot), getString(R.string.fra_startBrandNewSession), Snackbar.LENGTH_SHORT).show();
         numActors = lister.getItemCount();
-
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int count = 0;
-                int pgCount = 0;
-                for(int loop = 0; loop < game.session.getNumActors(); loop++) {
-                    Network.ActorState actor = game.session.getActor(loop);
-                    int add = game.session.willFight(actor.peerKey, null)? 1 : 0;
-                    if(actor.type == Network.ActorState.T_PLAYING_CHARACTER) pgCount += add;
-                    else count += add;
-                }
-                if(pgCount == 0) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_zeroPcs, Snackbar.LENGTH_LONG).show();
-                else if(count + pgCount == 1) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_oneActor, Snackbar.LENGTH_LONG).show();
-                else if(count + pgCount != game.session.getNumActors()) {
-                    new AlertDialog.Builder(FreeRoamingActivity.this)
-                            .setMessage(getString(R.string.fra_dlgMsg_missingChars))
-                            .setPositiveButton(getString(R.string.fra_dlgActionIgnoreMissingCharacters), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    sendInitiativeRollRequests();
-                                }
-                            }).show();
-                }
-                else {
-                    fab.setVisibility(View.GONE);
-                    sendInitiativeRollRequests();
-                }
-            }
-        });
-        final ActionBar sab = getSupportActionBar();
-        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
-
-        RecyclerView rv = (RecyclerView) findViewById(R.id.fra_list);
-        rv.setAdapter(lister);
-        rv.addItemDecoration(new PreSeparatorDecorator(rv, this) {
-            @Override
-            protected boolean isEligible(int position) {
-                return position != 0;
-            }
-        });
-        new HoriSwipeOnlyTouchCallback(rv) {
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                if(viewHolder instanceof AdventuringActorControlsVH) {
-                    final AdventuringActorControlsVH real = (AdventuringActorControlsVH) viewHolder;
-                    if(real.actor == null) return;
-                    final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
-                    game.session.willFight(real.actor.peerKey, false);
-                    game.session.temporaries.remove(real.actor);
-                    lister.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            protected boolean disable() { return false; }
-
-            @Override
-            protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) {
-                if(vh instanceof AdventuringActorControlsVH) {
-                    final AdventuringActorControlsVH real = (AdventuringActorControlsVH) vh;
-                    return real.actor != null && real.actor.type == Network.ActorState.T_MOB;
-                }
-                return false;
-            }
-        };
     }
 
     @Override
@@ -259,7 +259,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
     }
 
     private int numActors;
-    private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter() {
+    private final AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter() {
         @Override
         protected boolean isCurrent(Network.ActorState actor) { return false; }
 
