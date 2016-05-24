@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -400,6 +401,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             case REQUEST_CLIENT_PLAY: {
                 handles.clientPlay = null;
                 stopService(new Intent(this, AdventuringService.class));
+                if(resultCode == ActorOverviewActivity.RESULT_GOODBYE) {
+                    Snackbar.make(findViewById(R.id.activityRoot), R.string.mma_endedSessionByebye, Snackbar.LENGTH_LONG).show();
+                }
                 return;
             }
         }

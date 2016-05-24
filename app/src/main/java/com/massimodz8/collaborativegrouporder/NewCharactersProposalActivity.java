@@ -42,7 +42,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                     else handler.sendMessage(handler.obtainMessage(MSG_PC_APPROVAL, new Events.CharacterAcceptStatus(from, msg.peerKey, msg.accepted)));
                     return false;
                 }
-            }).add(ProtoBufferEnum.GROUP_READY, new PumpTarget.Callbacks<Network.PhaseControl>() {
+            }).add(ProtoBufferEnum.PHASE_CONTROL, new PumpTarget.Callbacks<Network.PhaseControl>() {
                 @Override
                 public Network.PhaseControl make() { return new Network.PhaseControl(); }
 

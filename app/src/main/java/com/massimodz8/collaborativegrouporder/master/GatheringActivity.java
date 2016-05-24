@@ -235,7 +235,7 @@ public class GatheringActivity extends AppCompatActivity {
                             count++;
                         }
                     }
-                    room.assignmentHelper.mailman.out.add(new SendRequest(known.pipe, ProtoBufferEnum.GROUP_READY, yours));
+                    room.assignmentHelper.mailman.out.add(new SendRequest(known.pipe, ProtoBufferEnum.PHASE_CONTROL, yours, null));
                 }
                 // Send actor defs to clients.
                 int id = -1;

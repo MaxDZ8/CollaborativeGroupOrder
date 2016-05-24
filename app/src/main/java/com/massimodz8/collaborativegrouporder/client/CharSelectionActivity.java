@@ -88,7 +88,7 @@ public class CharSelectionActivity extends AppCompatActivity {
                         handler.sendMessage(handler.obtainMessage(MSG_CHARACTER_OWNERSHIP, msg));
                         return false;
                     }
-                }).add(ProtoBufferEnum.GROUP_READY, new PumpTarget.Callbacks<Network.PhaseControl>() {
+                }).add(ProtoBufferEnum.PHASE_CONTROL, new PumpTarget.Callbacks<Network.PhaseControl>() {
                     @Override
                     public Network.PhaseControl make() { return new Network.PhaseControl(); }
 

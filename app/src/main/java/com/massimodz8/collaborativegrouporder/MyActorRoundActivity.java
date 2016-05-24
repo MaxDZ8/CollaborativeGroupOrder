@@ -49,6 +49,14 @@ public class MyActorRoundActivity extends AppCompatActivity {
                     finish(); // do I have to do something more here? IDK.
                 }
             });
+            final Runnable parent = client.onSessionEnded.get();
+            endedCall = client.onSessionEnded.put(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                    if(parent != null) parent.run();
+                }
+            });
             actor = client.actors.get(client.currentActor).actor;
             round = client.round;
             nextActor = null;
@@ -98,7 +106,10 @@ public class MyActorRoundActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
-        if(client != null) client.onCurrentActorChanged.remove(actorChangedCall);
+        if(client != null) {
+            client.onCurrentActorChanged.remove(actorChangedCall);
+            client.onSessionEnded.remove(endedCall);
+        }
         if(!isChangingConfigurations()) getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onDestroy();
     }
@@ -291,5 +302,5 @@ public class MyActorRoundActivity extends AppCompatActivity {
     }
 
     private MenuItem imDone;
-    private int actorChangedCall;
+    private int actorChangedCall, endedCall;
 }

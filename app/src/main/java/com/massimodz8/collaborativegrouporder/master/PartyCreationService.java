@@ -269,7 +269,7 @@ public class PartyCreationService extends PublishAcceptService {
                     byebye.terminated = !goAdventuring;
                     for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
                         try {
-                            dev.source.writeSync(ProtoBufferEnum.GROUP_READY, byebye);
+                            dev.source.writeSync(ProtoBufferEnum.PHASE_CONTROL, byebye);
                             dev.source.socket.getOutputStream().flush();
                         } catch (IOException e) {
                             // we try.

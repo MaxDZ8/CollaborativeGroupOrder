@@ -12,7 +12,7 @@ public interface ProtoBufferEnum {
     int CHAR_BUDGET = 4;
     int GROUP_FORMED = 5;
     int PLAYING_CHARACTER_DEFINITION = 6;
-    int GROUP_READY = 7;
+    int PHASE_CONTROL = 7;
 
     int CHARACTER_OWNERSHIP = 8;
 

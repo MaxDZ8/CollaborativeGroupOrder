@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -412,7 +415,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         if(saving) return;
         saving = true; // no need to set it to false, we terminate activity
         final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
-        Session.Suspended save = game.session.stats;
+        final Session.Suspended save = game.session.stats;
         save.lastSaved = new Timestamp();
         save.lastSaved.seconds = new Date().getTime() / 1000;
         if(save.spent == null) save.spent = new Timestamp();
@@ -450,23 +453,88 @@ public class FreeRoamingActivity extends AppCompatActivity {
                     .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
                     .show();
         }
-        new AsyncRenamingStore<Session.Suspended>(getFilesDir(), PersistentDataUtils.SESSION_DATA_SUBDIR, game.getPartyOwnerData().sessionFile, save) {
+        Network.PhaseControl end = new Network.PhaseControl();
+        end.type = Network.PhaseControl.T_SESSION_ENDED;
+        int count = 0;
+        for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+            if(dev.pipe != null) count++;
+        }
+        final LatchingHandler lh = new LatchingHandler(count, new Runnable() {
             @Override
-            protected String getString(@StringRes int res) {
-                return FreeRoamingActivity.this.getString(res);
+            public void run() {
+                new MyRefreshStore(game, save);
             }
+        });
+        for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+            if(dev.pipe != null) {
+                final SendRequest send = new SendRequest(dev.pipe, ProtoBufferEnum.PHASE_CONTROL, end, lh.ticker);
+                game.assignmentHelper.mailman.out.add(send);
+            }
+        }
+    }
 
-            @Override
-            protected void onPostExecute(Exception e) {
-                if(e == null) {
-                    finish();
-                    return;
+    private static class LatchingHandler extends Handler {
+        final Runnable ticker;
+
+        LatchingHandler(int expect, @NonNull Runnable latched) {
+            this.expect = expect;
+            this.latched = latched;
+            ticker = new Runnable() {
+                @Override
+                public void run() {
+                    LatchingHandler.this.sendEmptyMessage(LatchingHandler.MSG_INCREMENT);
                 }
-                new AlertDialog.Builder(FreeRoamingActivity.this)
-                        .setTitle(R.string.generic_IOError)
-                        .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
-                        .show();
+            };
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if(msg.what != MSG_INCREMENT) return;
+            count++;
+            if(count == expect) {
+                final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+                for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+                    if (dev.pipe != null) try {
+                        dev.pipe.socket.getOutputStream().flush();
+                    } catch (IOException e) {
+                        // just ignore, it was simply convenience
+                    }
+                }
+                try {
+                    Thread.sleep(125); // be reasonably sure we give time to go client as well, stall the mailman for a while
+                } catch (InterruptedException e) {
+                    // again, just convenience
+                }
+                latched.run();
             }
-        };
+        }
+
+        private int count;
+        private final int expect;
+        private final Runnable latched;
+        private static final int MSG_INCREMENT = 1;
+    }
+
+    private class MyRefreshStore extends AsyncRenamingStore<Session.Suspended> {
+        public MyRefreshStore(@NonNull PartyJoinOrderService game, @NonNull Session.Suspended suspended) {
+            super(getFilesDir(), PersistentDataUtils.SESSION_DATA_SUBDIR, game.getPartyOwnerData().sessionFile, suspended);
+        }
+
+        @Override
+        protected String getString(@StringRes int res) {
+            return FreeRoamingActivity.this.getString(res);
+        }
+
+        @Override
+        protected void onPostExecute(Exception e) {
+            if(e == null) {
+                finish();
+                return;
+            }
+            new AlertDialog.Builder(FreeRoamingActivity.this)
+                    .setTitle(R.string.generic_IOError)
+                    .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
+                    .show();
+        }
     }
 }

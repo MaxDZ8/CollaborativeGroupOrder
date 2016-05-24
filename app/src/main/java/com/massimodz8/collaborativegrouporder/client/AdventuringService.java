@@ -41,14 +41,17 @@ public class AdventuringService extends Service {
     public PseudoStack<Runnable> onActorUpdated = new PseudoStack<>();
     public PseudoStack<Runnable> onRollRequestPushed = new PseudoStack<>();
     public PseudoStack<Runnable> onCurrentActorChanged = new PseudoStack<>();
+    public PseudoStack<Runnable> onSessionEnded = new PseudoStack<>();
 
     public @ActorId int currentActor = -1; // -1 = no current known actor
     ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
     public int round = ROUND_NOT_FIGHTING; // 0 = waiting other players roll 1+ fighting
     public final Mailman mailman = new Mailman();
     public MessageChannel pipe;
+    int ended = S_PLAYING; // set by wire using Network.PhaseControl with .type = T_SESSION_ENDED
 
     public static final int ROUND_NOT_FIGHTING = -1;
+    public static final int S_PLAYING = 0, S_END_REQUEST_RECEIVED = 1;
 
     /**
      * This shouldn't really be there but it is. The current idea is that every time we're done
@@ -127,6 +130,16 @@ public class AdventuringService extends Service {
                     handler.sendMessage(handler.obtainMessage(MSG_TURN_CONTROL, msg));
                     return false;
                 }
+            }).add(ProtoBufferEnum.PHASE_CONTROL, new PumpTarget.Callbacks<Network.PhaseControl>() {
+                @Override
+                public Network.PhaseControl make() { return new Network.PhaseControl(); }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.PhaseControl msg) throws IOException {
+                    if(msg.type != Network.PhaseControl.T_SESSION_ENDED) return false; // ignore... or error?
+                    handler.sendEmptyMessage(MSG_SESSION_ENDED);
+                    return true;
+                }
             });
     private static final int MSG_DISCONNECT = 0;
     private static final int MSG_DETACH = 1;
@@ -134,6 +147,7 @@ public class AdventuringService extends Service {
     private static final int MSG_ROLL = 3;
     private static final int MSG_BATTLE_ORDER = 4;
     private static final int MSG_TURN_CONTROL = 5;
+    private static final int MSG_SESSION_ENDED = 6;
 
     private static class MyHandler extends Handler {
         final WeakReference<AdventuringService> self;
@@ -232,6 +246,11 @@ public class AdventuringService extends Service {
                     final Runnable runnable = self.onCurrentActorChanged.get();
                     if(runnable != null) runnable.run();
                 } break;
+                case MSG_SESSION_ENDED:
+                    self.ended = S_END_REQUEST_RECEIVED;
+                    final Runnable runnable = self.onSessionEnded.get();
+                    if(runnable != null) runnable.run();
+                    break;
             }
             super.handleMessage(msg);
         }

@@ -174,6 +174,13 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_TURN);
             }
         });
+        endedCall = ticker.onSessionEnded.put(new Runnable() {
+            @Override
+            public void run() {
+                setResult(RESULT_GOODBYE);
+                finish();
+            }
+        });
         if(serverWorker != null) { // Initialize service and start pumping.
             serverPipe = serverWorker.getSource();
             ticker.playedHere = actorKeys;
@@ -195,6 +202,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             ticker.onActorUpdated.remove(updateCall);
             ticker.onCurrentActorChanged.remove(actorChangedCall);
             ticker.onRollRequestPushed.remove(rollRequestCall);
+            ticker.onSessionEnded.remove(endedCall);
         }
         if(rollDialog != null) {
             rollDialog.dlg.dismiss(); // I'm going to regenerate this next time anyway.
@@ -294,7 +302,9 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     private static final int CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER = 2;
 
-    private int updateCall, rollRequestCall, actorChangedCall;
+    public static final int RESULT_GOODBYE = RESULT_FIRST_USER;
+
+    private int updateCall, rollRequestCall, actorChangedCall, endedCall;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
