@@ -12,14 +12,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.transition.TransitionManager;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -58,6 +59,13 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_party_device_selection);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        final ActionBar sab = getSupportActionBar();
+        if(null != sab) {
+            sab.setDisplayHomeAsUpEnabled(true);
+            sab.setTitle(R.string.npdsa_title);
+        }
 
         action = (Button) findViewById(R.id.npdsa_activate);
         final TextInputLayout namein = (TextInputLayout) findViewById(R.id.npdsa_partyName);
@@ -71,12 +79,12 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             public void onNewPublishStatus(int now) {
                 switch(now) {
                     case PublishAcceptService.PUBLISHER_PUBLISHING: {
-                        beginDelayedTransition();
+                        MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
                         status.setText(R.string.master_publishing);
                         findViewById(R.id.npdsa_partyName).setEnabled(true);
                     } break;
                     case PublishAcceptService.PUBLISHER_START_FAILED: {
-                        beginDelayedTransition();
+                        MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
                         status.setText(R.string.master_failedPublish);
                         findViewById(R.id.npdsa_partyName).setEnabled(true);
                     } break;
@@ -85,7 +93,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             }
         };
 
-        beginDelayedTransition();
+        MaxUtils.beginDelayedTransition(this);
         devList = (RecyclerView) findViewById(R.id.npdsa_deviceList);
         devList.setLayoutManager(new LinearLayoutManager(this));
         devList.setAdapter(room.setNewClientDevicesAdapter(new PartyCreationService.ClientDeviceHolderFactoryBinder<DeviceViewHolder>() {
@@ -113,7 +121,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 room.kick(real.key, true);
                 hiddenManagement.setEnabled(true);
                 String msg = String.format(getString(R.string.npdsa_deviceHidden), room.getDeviceNameByKey(real.key));
-                Snackbar.make(findViewById(R.id.npdsa_activityRoot), msg, Snackbar.LENGTH_LONG)
+                Snackbar.make(findViewById(R.id.activityRoot), msg, Snackbar.LENGTH_LONG)
                         .setAction(R.string.generic_action_undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -146,7 +154,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 if(room.getMemberCount() != 0) return; // already transitioned to another state
                 if(previously.value == count) return; // nothing to do
                 previously.value = count;
-                beginDelayedTransition();
+                MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
                 action.setText(count == 0? R.string.npdsa_waitingToTalk : R.string.npdsa_goDefinePC);
             }
         };
@@ -315,7 +323,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     public void action_callback(View btn) {
         final PartyCreationService room = RunningServiceHandles.getInstance().create;
         if (room.getPublishStatus() == PartyCreationService.PUBLISHER_IDLE) {
-            beginDelayedTransition();
+            MaxUtils.beginDelayedTransition(this);
             publishGroup();
             btn.setEnabled(false);
             return;
@@ -404,7 +412,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             return;
         }
         room.beginPublishing(nsd, groupName, PartyCreationService.PARTY_FORMING_SERVICE_TYPE);
-        beginDelayedTransition();
+        MaxUtils.beginDelayedTransition(this);
         view.setEnabled(false);
         elevateServicePriority();
         MaxUtils.setVisibility(this, View.VISIBLE,
@@ -412,12 +420,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 R.id.npdsa_publishing);
         action.setText(R.string.npdsa_waitingToTalk);
         findViewById(R.id.npdsa_deviceList).setVisibility(View.VISIBLE);
-    }
-
-    private void beginDelayedTransition() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.npdsa_activityRoot));
-        }
     }
 
     // TextWatcher vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -428,7 +430,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     @Override
     public void afterTextChanged(Editable s) {
         boolean enable = s.toString().trim().length() > 0;
-        if(action.isEnabled() != enable) beginDelayedTransition();
+        if(action.isEnabled() != enable) MaxUtils.beginDelayedTransition(this);
         action.setEnabled(enable);
     }
     // TextWatcher ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
