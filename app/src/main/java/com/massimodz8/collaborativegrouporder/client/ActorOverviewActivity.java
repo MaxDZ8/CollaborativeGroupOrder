@@ -4,20 +4,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
+import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.AdventuringActorDataVH;
+import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.InterstitialAdPlaceholderActivity;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
@@ -32,7 +31,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.text.DecimalFormat;
-import java.util.Locale;
 
 /**
  * Start this when assignment completed. It is signaled by a GroupReady message with a YOURS field.
@@ -69,6 +67,33 @@ public class ActorOverviewActivity extends AppCompatActivity {
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
         final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
+        final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);
+        rv.setAdapter(lister);
+        rv.addItemDecoration(new PreSeparatorDecorator(rv, ActorOverviewActivity.this) {
+            @Override
+            protected boolean isEligible(int position) {
+                final int type = rv.getAdapter().getItemViewType(position);
+                return position != 0 && type != MyActorAdapter.T_AWARD;
+            }
+        });
+        new HoriSwipeOnlyTouchCallback(rv) {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if(!(viewHolder instanceof ExperienceAwardVH)) return; // impossible!
+                ExperienceAwardVH real = (ExperienceAwardVH)viewHolder;
+                final AdventuringService.ActorWithKnownOrder actor = ticker.actors.get(real.peerKey);
+                if(actor == null) return; // very unlikely
+                actor.xpReceived = 0;
+                rv.getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            protected boolean disable() { return false; }
+
+            @Override
+            protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) { return vh instanceof ExperienceAwardVH; }
+        };
+
         updateCall = ticker.onActorUpdated.put(new Runnable() {
             boolean first = true;
             @Override
@@ -80,13 +105,8 @@ public class ActorOverviewActivity extends AppCompatActivity {
                         known++;
                         if(awo.keyOrder != null) knownOrders++;
                         if(awo.xpReceived != 0) {
-                            String text = getString(R.string.aoa_xpReward);
-                            DecimalFormat thousands = new DecimalFormat("###,###,###,###");
-                            String from = thousands.format(awo.actor.experience);
-                            String award = thousands.format(awo.xpReceived);
-                            text = String.format(Locale.getDefault(), text, awo.actor.name, award, from);
-                            Snackbar.make(findViewById(R.id.activityRoot), text, Snackbar.LENGTH_INDEFINITE).show();
-                            awo.xpReceived = 0;
+                            lister.notifyDataSetChanged();
+                            // awo.xpReceived = 0; // no more here, keep displaying until swiped away
                             awo.updated = false;
                         }
                     }
@@ -95,14 +115,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 if (first) {
                     first = false;
                     MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
-                    final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);
-                    rv.setAdapter(lister);
-                    rv.addItemDecoration(new PreSeparatorDecorator(rv, ActorOverviewActivity.this) {
-                        @Override
-                        protected boolean isEligible(int position) {
-                            return position != 0;
-                        }
-                    });
                     rv.setVisibility(View.VISIBLE);
                     if(ticker.playedHere.length > 1) return;
                 }
@@ -231,20 +243,63 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     private RollInitiativeDialog rollDialog;
     private MessageChannel serverPipe;
-    private AdventuringActorAdapter<AdventuringActorDataVH> lister = new AdventuringActorAdapter<AdventuringActorDataVH>() {
+    private RecyclerView.Adapter lister = new MyActorAdapter();
+
+    private class MyActorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
-        @Override
-        public AdventuringActorDataVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
-                @Override
-                public void onClick(View v) { }
-            };
+
+        public MyActorAdapter() {
+            setHasStableIds(true);
         }
 
         @Override
-        public void onBindViewHolder(AdventuringActorDataVH holder, int position) {
-            holder.bindData(ticker.actors.get(ticker.playedHere[position]).actor);
-            holder.prepared.setEnabled(false);
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            switch (viewType) {
+                case T_ACTOR: return new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
+                    @Override
+                    public void onClick(View v) { }
+                };
+                case T_AWARD: return new ExperienceAwardVH(getLayoutInflater().inflate(R.layout.vh_xp_awarded, parent, false));
+            }
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            Network.ActorState as = null;
+            int xp = 0;
+            for (int key : ticker.playedHere) {
+                final AdventuringService.ActorWithKnownOrder known = ticker.actors.get(key);
+                if(known != null && known.actor != null) {
+                    if(position == 0) {
+                        as = known.actor;
+                        break;
+                    }
+                    position--;
+                    if(known.xpReceived != 0) {
+                        if(position == 0) {
+                            as = known.actor;
+                            xp = known.xpReceived;
+                            break;
+                        }
+                        position--;
+                    }
+                }
+            }
+            if(as == null) return; // impossible
+            if(holder instanceof AdventuringActorDataVH) {
+                AdventuringActorDataVH real = (AdventuringActorDataVH)holder;
+                real.bindData(as);
+            }
+            if(holder instanceof ExperienceAwardVH) {
+                ExperienceAwardVH real = (ExperienceAwardVH)holder;
+                real.peerKey = as.peerKey;
+                DecimalFormat thousands = new DecimalFormat("###,###,###,###");
+                String value = thousands.format(xp);
+                real.awarded.setText(String.format(getString(R.string.aoa_xpIncrement), value));
+                value = thousands.format(as.experience);
+                real.total.setText(String.format(getString(R.string.aoa_xpTotal), value));
+            }
         }
 
         @Override
@@ -253,33 +308,65 @@ public class ActorOverviewActivity extends AppCompatActivity {
             int count = 0;
             for (int key : ticker.playedHere) {
                 final AdventuringService.ActorWithKnownOrder known = ticker.actors.get(key);
-                if(known != null && known.actor != null) count++;
+                if(known != null && known.actor != null) {
+                    count++;
+                    if (known.xpReceived != 0) count++;
+                }
             }
             return count;
         }
 
         @Override
-        protected boolean isCurrent(Network.ActorState actor) {
-            return ticker == null || ticker.currentActor == actor.peerKey;
-        }
-
-        @Override
-        public Network.ActorState getActorByPos(int position) {
+        public long getItemId(int position) {
+            if(ticker == null || ticker.playedHere == null) return RecyclerView.NO_ID;
             for (int key : ticker.playedHere) {
                 final AdventuringService.ActorWithKnownOrder known = ticker.actors.get(key);
                 if(known != null && known.actor != null) {
-                    if(position == 0) return known.actor;
+                    if (position == 0) return known.actor.peerKey * OPTIONAL_HOLDERS_COUNT;
+                    position--;
+                    if (known.xpReceived != 0) {
+                        if(position == 0) return known.actor.peerKey * OPTIONAL_HOLDERS_COUNT + XP_AWARD_OFFSET;
+                        position--;
+                    }
                 }
-                position--;
             }
-            return null;
+            return RecyclerView.NO_ID;
         }
 
         @Override
-        protected LayoutInflater getLayoutInflater() {
-            return ActorOverviewActivity.this.getLayoutInflater();
+        public int getItemViewType(int position) {
+            if(ticker == null || ticker.playedHere == null) return 0; // impossible
+            for (int key : ticker.playedHere) {
+                final AdventuringService.ActorWithKnownOrder known = ticker.actors.get(key);
+                if(known != null && known.actor != null) {
+                    if(position == 0) return T_ACTOR;
+                    position--;
+                    if(known.xpReceived != 0) {
+                        if(position == 0) return T_AWARD;
+                        position--;
+                    }
+                }
+            }
+            return 0; // impossible
         }
-    };
+
+        static final int T_ACTOR = 1, T_AWARD = 2;
+        static final int OPTIONAL_HOLDERS_COUNT = 2;
+        static final int XP_AWARD_OFFSET = 1;
+    }
+
+    private static class ExperienceAwardVH  extends RecyclerView.ViewHolder {
+        public static final int UNBOUND = -1;
+        public @ActorId int peerKey = UNBOUND;
+
+        public ExperienceAwardVH(View iv) {
+            super(iv);
+            awarded = (TextView)iv.findViewById(R.id.vhXA_awarded);
+            total = (TextView)iv.findViewById(R.id.vhXA_total);
+        }
+
+        final TextView awarded, total;
+    }
 
     private class SendRollCallback implements Runnable {
         @Override
