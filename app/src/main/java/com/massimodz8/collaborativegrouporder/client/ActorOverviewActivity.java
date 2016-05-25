@@ -222,6 +222,8 @@ public class ActorOverviewActivity extends AppCompatActivity {
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
+
+
     @Override
     public void onBackPressed() { confirmLeaveFinish(); }
     @Override
@@ -395,22 +397,20 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
         if(requestCode == REQUEST_TURN) {
-            final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
             lister.notifyDataSetChanged();
-            ticker.onCurrentActorChanged.get().run(); // maybe not, but easy to check
             if (resultCode == RESULT_OK) {
                 ticker.ticksSinceLastAd++;
                 boolean admobReady = true;
                 if (ticker.ticksSinceLastAd >= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER && admobReady) {
                     ticker.ticksSinceLastAd -= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER;
                     startActivity(new Intent(this, InterstitialAdPlaceholderActivity.class));
+                    return;
                 }
             }
-            else { // we have somehow got out. MARA is protected against accidental exit so...
-                ticker.onCurrentActorChanged.get().run();
-            }
         }
+        ticker.onCurrentActorChanged.get().run();
         super.onActivityResult(requestCode, resultCode, data);
     }
 

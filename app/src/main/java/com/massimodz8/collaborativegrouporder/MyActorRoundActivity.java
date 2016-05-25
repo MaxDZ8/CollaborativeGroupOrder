@@ -46,15 +46,20 @@ public class MyActorRoundActivity extends AppCompatActivity {
             actorChangedCall = client.onCurrentActorChanged.put(new Runnable() {
                 @Override
                 public void run() {
+                    // Cannot wait .onDestroy for this one, double-deregistering is fine.
+                    // Get the rid of callbacks right away so AOA can pull its own.
+                    client.onCurrentActorChanged.remove(actorChangedCall);
+                    client.onSessionEnded.remove(endedCall);
+                    setResult(RESULT_OK);
                     finish(); // do I have to do something more here? IDK.
                 }
             });
-            final Runnable parent = client.onSessionEnded.get();
+            final Runnable prevEnd = client.onSessionEnded.get();
             endedCall = client.onSessionEnded.put(new Runnable() {
                 @Override
                 public void run() {
                     finish();
-                    if(parent != null) parent.run();
+                    if(prevEnd != null) prevEnd.run();
                 }
             });
             actor = client.actors.get(client.currentActor).actor;
@@ -253,6 +258,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
             done.type = Network.TurnControl.T_FORCE_DONE;
             done.peerKey = client.currentActor;
             client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, done, null));
+            client.currentActor = -1;
         }
         setResult(RESULT_OK);
         finish();
