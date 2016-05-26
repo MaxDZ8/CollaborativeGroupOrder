@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.PCViewHolder;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
@@ -55,6 +57,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 vh.xp.setText(String.valueOf(proposal.experience));
                 vh.level.setText(String.valueOf(proposal.level));
                 vh.unique = proposal.unique;
+                vh.accepted.setVisibility(proposal.status == BuildingPlayingCharacter.STATUS_ACCEPTED? View.VISIBLE : View.GONE);
             }
         }));
         groupList.addItemDecoration(new PreSeparatorDecorator(groupList, this) {
@@ -136,6 +139,29 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                                 saving = temp;
                             }
                         }).show();
+                break;
+            }
+            case R.id.ncaa_menu_genChar: {
+                final AlertDialog dlg = new AlertDialog.Builder(this)
+                        .setTitle(R.string.ncaa_genCharTitle)
+                        .setView(R.layout.vh_playing_character_definition_input)
+                        .show();
+                final BuildingPlayingCharacter pc = new BuildingPlayingCharacter();
+                final PCViewHolder helper = new PCViewHolder(dlg.findViewById(R.id.vhRoot)) {
+                    @Override
+                    protected String getString(@StringRes int resid) {
+                        return NewCharactersApprovalActivity.this.getString(resid);
+                    }
+
+                    @Override
+                    protected void action() {
+                        dlg.dismiss();
+                        pc.status = BuildingPlayingCharacter.STATUS_ACCEPTED;
+                        final PartyCreationService create = RunningServiceHandles.getInstance().create;
+                        create.building.defineLocalCharacter(pc);
+                    }
+                };
+                helper.bind(pc);
                 break;
             }
         }

@@ -32,6 +32,7 @@ public abstract class PartyDefinitionHelper {
     final public String name;
     public ArrayList<DeviceStatus> clients = new ArrayList<>();
     public Pumper netPump;
+    public ArrayList<BuildingPlayingCharacter> localChars = new ArrayList<>();
 
     public PartyDefinitionHelper(String name) {
         this.name = name;
@@ -120,6 +121,12 @@ public abstract class PartyDefinitionHelper {
         final BuildingPlayingCharacter pc = new BuildingPlayingCharacter(ev.character);
         owner.chars.add(pc);
         if (charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
+    }
+
+    void defineLocalCharacter(BuildingPlayingCharacter add) {
+        localChars.add(add);
+        approve(add.unique);
+        if(charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
     }
 
     void setMessage(Events.PeerMessage ev) {
@@ -386,6 +393,7 @@ public abstract class PartyDefinitionHelper {
                     position--;
                 }
             }
+            if(position < localChars.size()) return localChars.get(position);
             return null;
         }
 
@@ -398,7 +406,7 @@ public abstract class PartyDefinitionHelper {
                     if(pc.status != BuildingPlayingCharacter.STATUS_REJECTED) count++;
                 }
             }
-            return count;
+            return count + localChars.size();
         }
     }
     private CharsApprovalAdapter charsApprovalAdapter;

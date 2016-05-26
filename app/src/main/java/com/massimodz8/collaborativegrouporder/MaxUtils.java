@@ -58,6 +58,11 @@ public abstract class MaxUtils {
             if (v != null) v.setEnabled(enabled);
         }
     }
+    public static void setEnabled(boolean status, View... targets) {
+        for (View v : targets) {
+            if (v != null) v.setEnabled(status);
+        }
+    }
 
     public static String NsdManagerErrorToString(int err, Context ctx) {
         switch(err) {

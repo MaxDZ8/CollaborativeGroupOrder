@@ -34,12 +34,10 @@
     <string name="saySomethingToServer_emptyForbidden">Empty messages are forbidden.</string>
     <string name="saySomethingToServer_tooLong">Message too long. It might be displayed partially or not at all. Go back and fit the given budget.</string>
     <string name="card_joinableGroup_lengthMaxDivisor"> / </string>
-    <string name="card_character_nameHint">Character name</string>
     <string name="card_joiningCharacter_healthPoints">Health points</string>
     <string name="card_joiningCharacter_initBonus">Initiative bonus</string>
     <string name="card_joiningCharacter_sendButton">Send</string>
     <string name="card_joiningCharacter_experience">Experience</string>
-    <string name="card_joiningCharacter_accepted">Accepted!</string>
     <string name="card_joiningCharacter_refuseButton">Refuse</string>
     <string name="card_joiningCharacter_acceptButton">Accept</string>
     <string name="vhCA_acceptedCharacter">Character accepted.</string>
@@ -51,8 +49,6 @@
     <string name="charInputValidation_initMustBeNumber">Initiative must be a number.\n</string>
     <string name="charInputValidation_xpMustBePositive">Experience must be at least 0.\n</string>
     <string name="charInputValidation_xpMustBeNumeric">Experience points must be a number.\n</string>
-    <string name="charInputValidation_badCharacter_title">Not a valid character</string>
-    <string name="charInputValidation_badCharacter_msgHint">Go back and try again.</string>
     <string name="ncpa_failedSend">Failed to send character data to party owner, detailed error follows:\n</string>
     <string name="card_joiningCharacter_sentFeedback">Sent. Waiting reply.</string>
     <string name="persistentStorage_cannotReadGroupList">File exists but cannot be read. This is unlikely to happen by accident so you\'re better check your system is fine.</string>
@@ -166,15 +162,19 @@
     <string name="npdsa_longTapHint">Long tap device for options</string>
 
     <string name="ncaa_definingPCs">Players are defining characters.</string>
-    <string name="ncaa_action">Save party</string>
+    <string name="ncaa_menu_save">Save party</string>
+    <string name="ncaa_menu_genChar">New playing character</string>
     <string name="ncaa_save_title">Save party to storage</string>
     <string name="ncaa_save_msg">We\'re almost done. Check all the playing characters are defined and accepted.</string>
     <string name="ncaa_done">Save party data</string>
     <string name="ncaa_savingPleaseWait">Saving party…</string>
     <string name="ncaa_newDataSaved_done">Yes</string>
-    <string name="ncaa_actionShort">Save</string>
+    <string name="ncaa_menu_saveShort">Save</string>
+    <string name="ncaa_menu_genCharShort">New PC</string>
     <string name="ncaa_exitConfirmMsg">Undergoing I/O. Try again later.</string>
     <string name="ncaa_title">Approve PCs</string>
+    <string name="ncaa_genCharTitle">New playing character</string>
+    <string name="ncaa_genCharAction">Add character</string>
 
     <string name="ncpa_title">Propose PCs</string>
     <string name="ncpa_instructions">Define as many characters as you want. The process will complete when party owner decides so.</string>
@@ -783,5 +783,13 @@
     <string name="aa_thankYouD20PFSRD">Special thanks to John Reyst for his work on Open Game Content websites. Without his job, this app would have taken a few more months. Please check out his patreon at:\nhttps://www.patreon.com/d20pfsrd</string>
 
     <string name="vhXA_swipeHint">You can swipe away this note.</string>
+
+    <string name="vhPCDI_nameHint">Character name</string>
+    <string name="vhPCDI_levelHint">Level</string>
+    <string name="vhPCDI_maxHealthHint">Max HP</string>
+    <string name="vhPCDI_initiativeHint">Initiative modifier</string>
+    <string name="vhPCDI_experienceHint">Current XP</string>
+    <string name="vhPCDI_add">Make Character</string>
+    <string name="vhPCDI_accepted">Accepted!</string>
 
 </resources>
