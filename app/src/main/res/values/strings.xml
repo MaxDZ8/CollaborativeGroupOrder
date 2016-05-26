@@ -14,7 +14,7 @@
     <string name="generic_actionDelete">Delete</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
-    <string name="master_failedPublish">Could not publish the group to wi-fi. Your friends can still connect but only using explicit connections.</string>
+    <string name="master_failedPublish">Could not publish party to wi-fi. Your friends can still connect but only using explicit connections.</string>
     <string name="master_menu_showConnectionInfos">Show connection infos</string>
     <string name="master_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
     <string name="master_exitConfirmedDlgAction">Interrupt operations</string>
@@ -57,13 +57,13 @@
     <string name="card_joiningCharacter_sentFeedback">Sent. Waiting reply.</string>
     <string name="persistentStorage_cannotReadGroupList">File exists but cannot be read. This is unlikely to happen by accident so you\'re better check your system is fine.</string>
     <string name="persistentStorage_archiveTooBig">Data archive exceeds maximum size.</string>
-    <string name="persistentStorage_groupDataVersionZero">group version 0 should have never been saved.</string>
-    <string name="persistentStorage_groupNameClash">Group %1$d clashes with %2$d, both are named \"%3$s\".</string>
-    <string name="persistentStorage_groupKeyNameClash">Group key %1$d clashes with %2$d, both are named \"%3$s\" and have the same key!</string>
+    <string name="persistentStorage_groupDataVersionZero">party version 0 should have never been saved.</string>
+    <string name="persistentStorage_groupNameClash">party %1$d clashes with %2$d, both are named \"%3$s\".</string>
+    <string name="persistentStorage_groupKeyNameClash">party key %1$d clashes with %2$d, both are named \"%3$s\" and have the same key!</string>
     <string name="persistentStorage_failedSerialization">failed to output data serialization, that was not supposed to happen and needs further investigation.</string>
-    <string name="persistentStorage_failedOutputStreamCreation">could not get an output stream to save new group definitions. This was not supposed to happen.</string>
-    <string name="persistentStorage_failedWrite">Failed to write new group definitions. Maybe you are just low on storage?</string>
-    <string name="persistentStorage_errorReport_premise">Group [%1$d]%2$s</string>
+    <string name="persistentStorage_failedOutputStreamCreation">could not get an output stream to save new party definitions. This was not supposed to happen.</string>
+    <string name="persistentStorage_failedWrite">Failed to write new party definitions. Maybe you are just low on storage?</string>
+    <string name="persistentStorage_errorReport_premise">party [%1$d]%2$s</string>
     <string name="persistentStorage_missingName">: missing name.</string>
     <string name="persistentStorage_missingKey">: missing key.</string>
     <string name="persistentStorage_failedRead">File cannot be read.</string>
@@ -93,7 +93,7 @@
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
     <string name="dataLoadUpdate_newGroupSaved_msg">Data successfully saved to internal storage. Do you want to go adventuring right away?</string>
     <string name="dataLoadUpdate_finished_newDataSaved_mainMenu">Main menu</string>
-    <string name="dataLoadUpdate_couldNotStoreNewData">Could not store new group data. Error: %1$s</string>
+    <string name="dataLoadUpdate_couldNotStoreNewData">Could not store new party data. Error: %1$s</string>
     <string name="dataLoadUpdate_failedPreviousDataDelete">failed to delete previous contents, new data will be discarded to maintain the old.</string>
     <string name="dataLoadUpdate_failedNewDataRenamePreviousDestroyed">Failed to rename new data to override old. Old data storage has been destroyed but data itself is preserved.</string>
     <string name="card_joining_character_client_input_level">Level</string>
@@ -104,7 +104,7 @@
     <string name="selectFormingGroupActivity_startExplicitConnection">Explicit connection</string>
     <string name="giveUpAndGoBack">Give up and go back</string>
     <string name="initializing">Initializing…</string>
-    <string name="selectFormingGroupActivity_lostConnection">Lost connection to group \"%1$s\", reason given: %2$s.</string>
+    <string name="selectFormingGroupActivity_lostConnection">Lost connection to party \"%1$s\", reason given: %2$s.</string>
 
     <string name="eca_title">Initiate explicit connection</string>
     <string name="eca_disconnected">Could not connect to specified device. Check your input is correct and the device is reachable: it must be on the same Wi-Fi network! Not sure? Try using \"tethering\".</string>
@@ -147,7 +147,7 @@
     <string name="npdsa_badParty_retry">Modify party name</string>
     <string name="npdsa_title">Device selection</string>
     <string name="npdsa_groupNameHint">Party name</string>
-    <string name="npdsa_sealing_title">Sealing a group</string>
+    <string name="npdsa_sealing_title">Sealing a party</string>
     <string name="npdsa_emptyParty">You are creating an empty party.</string>
     <string name="npdsa_singleDeviceParty">Party counts a single device.</string>
     <string name="npdsa_closing_pluralDevices">Forming a party with client %1$d devices.</string>
@@ -254,7 +254,7 @@
     <string name="jsa_initializing">Initializing…</string>
     <string name="jsa_lookingForParty">Looking for party</string>
     <string name="jsa_autoAdvanceInfo">You will advance to character selection as soon as I can connect to the master device.</string>
-    <string name="jsa_errorWhileJoining">Error while joining group %1$s: %2$s</string>
+    <string name="jsa_errorWhileJoining">Error while joining party %1$s: %2$s</string>
     <string name="jsa_pullingFromExistingConnection">Pulling character data from known server…</string>
     <string name="jsa_failedNetworkExploreStart">Cannot explore network. You must use an explicit connection.</string>
     <string name="jsa_searching">Exploring Wi-Fi…</string>
@@ -290,7 +290,7 @@
     <string name="ga_unboundCharsDlgMsg">%1$s\nTo continue, all characters must be played by someone.\n\nGo back and long press an unassigned character for some options.</string>
     <string name="ga_ctx_unassigned_pc_playHere">Play on this device</string>
 
-    <string name="card_joiningDevice_groupMember">Group member</string>
+    <string name="card_joiningDevice_groupMember">Party member</string>
     <string name="npdsa_notifyContent">Forming new party.</string>
     <string name="pjos_label">RPG order management</string>
     <string name="pcs_label">RPG party creation</string>
