@@ -651,7 +651,7 @@ public class PartyPickActivity extends AppCompatActivity {
             state(party, R.id.fragPPAOD_currentState, layout);
             go.setOnClickListener(new SelectionListener(target, party));
 
-            final OwnedActorsLister lister = new OwnedActorsLister(party, target.getLayoutInflater());
+            final OwnedActorsAndDevicesLister lister = new OwnedActorsAndDevicesLister(party, target.getLayoutInflater());
             final RecyclerView rv = (RecyclerView)layout.findViewById(R.id.fragPPAOD_actorList);
             rv.setAdapter(lister);
             new HoriSwipeOnlyTouchCallback(rv) {

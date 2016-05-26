@@ -792,5 +792,9 @@
     <string name="vhPCDI_experienceHint">Current XP</string>
     <string name="vhPCDI_add">Make Character</string>
     <string name="vhPCDI_accepted">Accepted!</string>
+	
+    <string name="cardPDS_title">Member devices</string>
+    <string name="cardPDS_moreInfo">Those devices have a key to join game.\nNeed to add a device? Hit the menu ︙</string>
+    <string name="vhPMD_iconDesc">Device icon</string>
 
 </resources>
