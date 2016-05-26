@@ -1,15 +1,11 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -54,6 +50,7 @@ public class PartyPickActivity extends AppCompatActivity {
     private CoordinatorLayout guiRoot;
     private MenuItem restoreDeleted;
     private AsyncRenamingStore pending; // only one undergoing, ignore back, up and delete group while notnull
+    private boolean modPending; // true if something will eventually, maybe spawn a AsyncRenamingStore
     private AsyncTask loading;
 
     // List of all visible (non-deleted) parties, kept in sync with the service state.
@@ -390,12 +387,12 @@ public class PartyPickActivity extends AppCompatActivity {
                     boolean owned = party instanceof StartData.PartyOwnerData.Group;
                     if(null != pending) pending.cancel(true);
                     if(owned) {
-                        pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
+                        pending = new MyAsyncRenamingStore<>(PartyPickActivity.this, getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
                                                              PersistentDataUtils.makePartyOwnerData(denseDefs),
                                                              null, null);
                     }
                     else {
-                        pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME,
+                        pending = new MyAsyncRenamingStore<>(PartyPickActivity.this, getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME,
                                 PersistentDataUtils.makePartyClientData(denseKeys),
                                 null, null);
                     }
@@ -423,12 +420,12 @@ public class PartyPickActivity extends AppCompatActivity {
                         }
                     });
             if(viewHolder instanceof OwnedPartyHolder) {
-                pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
+                pending = new MyAsyncRenamingStore<>(PartyPickActivity.this, getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
                                                      PersistentDataUtils.makePartyOwnerData(denseDefs),
                                                      sb, undo);
             }
             else {
-                pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME,
+                pending = new MyAsyncRenamingStore<>(PartyPickActivity.this, getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME,
                         PersistentDataUtils.makePartyClientData(denseKeys),
                         sb, undo);
             }
@@ -646,14 +643,6 @@ public class PartyPickActivity extends AppCompatActivity {
             final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
             final StartData.PartyOwnerData.Group party = helper.getOwned(getIndex());
             ((TextView)layout.findViewById(R.id.fragPPAOD_partyName)).setText(party.name);
-            ((TextView)layout.findViewById(R.id.fragPPAOD_pcList)).setText(target.list(party.party));
-            TextView npcList = (TextView) layout.findViewById(R.id.fragPPAOD_accompanyingNpcList);
-            if (0 == party.npcs.length) {
-                npcList.setVisibility(View.GONE);
-            } else {
-                final String res = target.getString(R.string.ppa_ownedDetails_npcList);
-                npcList.setText(String.format(res, target.list(party.npcs)));
-            }
             final Button go = (Button)layout.findViewById(R.id.fragPPAOD_goAdventuring);
             go.setText(sessionButton(party, true));
             ((TextView)layout.findViewById(R.id.fragPPAOD_created)).setText(target.getNiceDate(party.created));
@@ -661,6 +650,61 @@ public class PartyPickActivity extends AppCompatActivity {
             note(party, R.id.fragPPAOD_note, layout);
             state(party, R.id.fragPPAOD_currentState, layout);
             go.setOnClickListener(new SelectionListener(target, party));
+
+            final OwnedActorsLister lister = new OwnedActorsLister(party, target.getLayoutInflater());
+            final RecyclerView rv = (RecyclerView)layout.findViewById(R.id.fragPPAOD_actorList);
+            rv.setAdapter(lister);
+            new HoriSwipeOnlyTouchCallback(rv) {
+                @Override
+                public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                    if(viewHolder instanceof AdventuringActorDataVH) {
+                        AdventuringActorDataVH real = (AdventuringActorDataVH) viewHolder;
+                        StartData.ActorDefinition goner = lister.getOriginalDefinition(real.actor);
+                        final StartData.ActorDefinition[] oriArr = lister.getContainerArray(goner);
+                        if(oriArr == null) return; // wut? Impossible
+                        final boolean[] pc = new boolean[] { oriArr == party.party };
+                        target.modPending = true;
+                        final String text = String.format(target.getString(R.string.ppa_actorDeleted), real.actor.name);
+                        final boolean[] rollback = new boolean[] { false };
+                        Snackbar.make(target.findViewById(R.id.activityRoot), text, Snackbar.LENGTH_SHORT)
+                                .setAction(R.string.generic_action_undo, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) { rollback[0] = true; }
+                                }).setCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                if(rollback[0]) {
+                                    if(pc[0]) party.party = oriArr;
+                                    else party.npcs = oriArr;
+                                    rv.getAdapter().notifyDataSetChanged();
+                                    target.modPending = false;
+                                }
+                                else {
+                                    ArrayList<StartData.PartyOwnerData.Group> owned = new ArrayList<>();
+                                    ArrayList<StartData.PartyClientData.Group> joined = new ArrayList<>();
+                                    RunningServiceHandles.getInstance().pick.getDense(owned, joined, false);
+                                    target.pending = new MyAsyncRenamingStore<>(target, target.getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
+                                            PersistentDataUtils.makePartyOwnerData(owned), null, null);
+                                }
+                            }
+                        }).show();
+                        StartData.ActorDefinition[] shorter = new StartData.ActorDefinition[oriArr.length - 1];
+                        int dst = 0;
+                        for (StartData.ActorDefinition el : oriArr) {
+                            if(el == goner) continue;
+                            shorter[dst++] = el;
+                        }
+                        if(pc[0]) party.party = shorter;
+                        else party.npcs = shorter;
+                        lister.notifyDataSetChanged();
+                    }
+                }
+                @Override
+                protected boolean disable() { return target.modPending || target.pending != null; }
+                @Override
+                protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) { return vh instanceof AdventuringActorDataVH; }
+            };
+
             return layout;
         }
     }
@@ -741,25 +785,28 @@ public class PartyPickActivity extends AppCompatActivity {
 
 
     /// If anything fails, trigger a runnable, otherwise a snackbar.
-    public class MyAsyncRenamingStore<Container extends MessageNano> extends AsyncRenamingStore<Container> {
+    private static class MyAsyncRenamingStore<Container extends MessageNano> extends AsyncRenamingStore<Container> {
         final String target;
         final Snackbar showOnSuccess;
         final Runnable undo;
         final Container container;
+        final PartyPickActivity parent;
 
-        public MyAsyncRenamingStore(@NonNull File filesDir, @NonNull String subdir, @NonNull String fileName, @NonNull Container container, Snackbar showOnSuccess, Runnable undo) {
+        public MyAsyncRenamingStore(@NonNull PartyPickActivity parent, @NonNull File filesDir, @NonNull String subdir, @NonNull String fileName, @NonNull Container container, Snackbar showOnSuccess, Runnable undo) {
             super(filesDir, subdir, fileName, container);
             this.target = fileName;
             this.showOnSuccess = showOnSuccess;
             this.undo = undo;
             this.container = container;
+            this.parent = parent;
         }
 
         @Override
         protected void onPostExecute(Exception e) {
-            pending = null;
+            parent.pending = null;
+            parent.modPending = false;
             if(null != e) {
-                new AlertDialog.Builder(PartyPickActivity.this)
+                new AlertDialog.Builder(parent)
                         .setMessage(e.getLocalizedMessage())
                         .show();
                 if(null != undo) undo.run();
@@ -769,7 +816,7 @@ public class PartyPickActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String getString(@StringRes int res) { return PartyPickActivity.this.getString(res); }
+        protected String getString(@StringRes int res) { return parent.getString(res); }
     }
 
     private void restoreDeleted(int hiddenPos) {
@@ -795,10 +842,10 @@ public class PartyPickActivity extends AppCompatActivity {
                     }
                 });
         if(match instanceof StartData.PartyOwnerData.Group) {
-            pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(denseDefs), sb, null);
+            pending = new MyAsyncRenamingStore<>(this, getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(denseDefs), sb, null);
         }
         else {
-            pending = new MyAsyncRenamingStore<>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME, PersistentDataUtils.makePartyClientData(denseKeys), sb, null);
+            pending = new MyAsyncRenamingStore<>(this, getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME, PersistentDataUtils.makePartyClientData(denseKeys), sb, null);
         }
     }
 

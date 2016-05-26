@@ -225,6 +225,7 @@
     <string name="ppa_status_adventure">adventuring</string>
     <string name="ppa_status_asDefined">nothing going on</string>
     <string name="ppa_lastSavedInconsistent">Inconsistent data!</string>
+    <string name="ppa_actorDeleted">\"%1$s\" deleted.</string>
 
     <string name="ga_title">Gathering heroes</string>
     <string name="ga_identifiedDevices">Identified devices</string>
