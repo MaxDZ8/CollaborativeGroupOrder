@@ -302,26 +302,6 @@ public class PartyCreationService extends PublishAcceptService {
         return result;
     }
 
-    public void shutdown() {
-        stopListening(true);
-        stopPublishing();
-        if(building == null) return;
-        final Pumper.MessagePumpingThread[] away = building.netPump.move();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (Pumper.MessagePumpingThread worker : away) {
-                    worker.interrupt();
-                    try {
-                        worker.getSource().socket.close();
-                    } catch (IOException e) {
-                        // suppress
-                    }
-                }
-            }
-        });
-    }
-
 
     public class LocalBinder extends Binder {
         public PartyCreationService getConcreteService() {
@@ -459,6 +439,29 @@ public class PartyCreationService extends PublishAcceptService {
     @Override
     public IBinder onBind(Intent intent) {
         return new LocalBinder();
+    }
+
+    @Override
+    public void onDestroy() {
+        stopListening(true);
+        stopPublishing();
+        if(building != null) {
+            final Pumper.MessagePumpingThread[] away = building.netPump.move();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (Pumper.MessagePumpingThread worker : away) {
+                        worker.interrupt();
+                        try {
+                            worker.getSource().socket.close();
+                        } catch (IOException e) {
+                            // suppress
+                        }
+                    }
+                }
+            });
+        }
+        super.onDestroy();
     }
     // Service ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }
