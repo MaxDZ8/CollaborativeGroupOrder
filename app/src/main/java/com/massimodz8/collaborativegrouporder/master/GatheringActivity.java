@@ -128,7 +128,7 @@ public class GatheringActivity extends AppCompatActivity {
             room.startListening();
         } catch (IOException e) {
             new AlertDialog.Builder(this)
-                    .setMessage(R.string.badServerSocket)
+                    .setMessage(R.string.master_badServerSocket)
                     .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

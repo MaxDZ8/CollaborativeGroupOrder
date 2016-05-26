@@ -10,6 +10,7 @@ import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -19,14 +20,12 @@ import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.ActionMode;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -41,8 +40,9 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextWatcher {
+public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextView.OnEditorActionListener {
     @Override
     protected void onDestroy() {
         final PartyCreationService room = RunningServiceHandles.getInstance().create;
@@ -67,12 +67,34 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             sab.setTitle(R.string.npdsa_title);
         }
 
-        action = (Button) findViewById(R.id.npdsa_activate);
         final TextInputLayout namein = (TextInputLayout) findViewById(R.id.npdsa_partyName);
         EditText sure = namein.getEditText();
-        if(null != sure) sure.addTextChangedListener(this);
+        if(null != sure) {
+            sure.setOnEditorActionListener(this);
+        }
 
         final PartyCreationService room = RunningServiceHandles.getInstance().create;
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final int devCount = room.getMemberCount();
+                String use;
+                switch(devCount) {
+                    case 0: use = getString(R.string.npdsa_emptyParty); break;
+                    case 1: use = getString(R.string.npdsa_singleDeviceParty); break;
+                    default:
+                        use = getString(R.string.npdsa_closing_pluralDevices);
+                        use = String.format(Locale.getDefault(), use, devCount);
+                }
+                if(devCount != 1) use = String.format(use, devCount);
+                new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
+                        .setTitle(R.string.npdsa_sealing_title)
+                        .setMessage(use)
+                        .setPositiveButton(R.string.npdsa_goDefinePC, new PartySealer())
+                        .show();
+            }
+        });
         final TextView status = (TextView) findViewById(R.id.npdsa_status);
         room.onNewPublishStatus = new PublishAcceptService.NewPublishStatusCallback() {
             @Override
@@ -144,18 +166,25 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         else {
             status.setText(R.string.npdsa_waitingPartyName);
         }
-        class Dummy {
-            int value;
-        }
-        final Dummy previously = new Dummy();
+        final int[] previously = new int[] { 0, 0 };
         room.onTalkingDeviceCountChanged = new PartyCreationService.OnTalkingDeviceCountListener() {
             @Override
             public void currentlyTalking(int count) {
                 if(room.getMemberCount() != 0) return; // already transitioned to another state
-                if(previously.value == count) return; // nothing to do
-                previously.value = count;
-                MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
-                action.setText(count == 0? R.string.npdsa_waitingToTalk : R.string.npdsa_goDefinePC);
+                if(previously[0] == count) return; // nothing to do
+                previously[0] = count;
+                if(previously[1] == 0) {
+                    final View root = findViewById(R.id.activityRoot);
+                    Snackbar.make(root, R.string.npdsa_tapHint, Snackbar.LENGTH_SHORT)
+                            .setCallback(new Snackbar.Callback() {
+                                @Override
+                                public void onDismissed(Snackbar snackbar, int event) {
+                                    Snackbar.make(root, R.string.npdsa_longTapHint, Snackbar.LENGTH_SHORT).show();
+                                }
+                            })
+                            .show();
+                    previously[1] = 1;
+                }
             }
         };
     }
@@ -257,8 +286,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
         @Override
         public void onClick(View v) {
-            final PartyCreationService room = RunningServiceHandles.getInstance().create;
-            room.toggleMembership(key);
+            RunningServiceHandles.getInstance().create.toggleMembership(key);
         }
 
         public void bind(PartyDefinitionHelper.DeviceStatus dev) {
@@ -268,8 +296,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             MaxUtils.setVisibility(dev.groupMember ? View.VISIBLE : View.GONE, memberIcon, memberMsg);
             msg.setTypeface(original, weight);
             name.setText(dev.name);
-            final PartyCreationService room = RunningServiceHandles.getInstance().create;
-            findViewById(R.id.npdsa_activate).setEnabled(room.getMemberCount() > 0);
         }
 
         @Override
@@ -320,24 +346,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         }
     }
 
-    public void action_callback(View btn) {
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
-        if (room.getPublishStatus() == PartyCreationService.PUBLISHER_IDLE) {
-            MaxUtils.beginDelayedTransition(this);
-            publishGroup();
-            btn.setEnabled(false);
-            return;
-        }
-        final int devCount = room.getDeviceCount(false);
-        String use = getString(devCount == 1? R.string.npdsa_closing_oneDevice : R.string.npdsa_closing_pluralDevices);
-        if(devCount != 1) use = String.format(use, devCount);
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.npdsa_sealing_title)
-                .setMessage(String.format(getString(R.string.npdsa_sealing_msg), use))
-                .setPositiveButton(R.string.npdsa_goDefinePC, new PartySealer())
-                .show();
-    }
-
     private class PartySealer implements AlertDialog.OnClickListener {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -369,11 +377,12 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     }
 
     private void publishGroup() {
+        final PartyCreationService room = RunningServiceHandles.getInstance().create;
+        if(room.getPublishStatus() != PartyCreationService.PUBLISHER_IDLE) return; // unlikely, as I disable trigger
         final TextInputLayout til = (TextInputLayout) findViewById(R.id.npdsa_partyName);
         final EditText view = til.getEditText();
         if(view == null) return; // impossible
         final String groupName = view.getText().toString().trim();
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
         ArrayList<StartData.PartyOwnerData.Group> collisions = room.beginBuilding(groupName, getString(R.string.npdsa_unknownDeviceName));
         if (groupName.isEmpty() || null != collisions) {
             int msg = groupName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
@@ -401,7 +410,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             room.startListening();
         } catch (IOException e) {
             new AlertDialog.Builder(this)
-                    .setMessage(R.string.badServerSocket)
+                    .setMessage(R.string.master_badServerSocket)
                     .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -417,23 +426,20 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         elevateServicePriority();
         MaxUtils.setVisibility(this, View.VISIBLE,
                 R.id.npdsa_deviceList,
-                R.id.npdsa_publishing);
-        action.setText(R.string.npdsa_waitingToTalk);
+                R.id.npdsa_publishing,
+                R.id.fab);
         findViewById(R.id.npdsa_deviceList).setVisibility(View.VISIBLE);
+        Snackbar.make(findViewById(R.id.activityRoot), R.string.npdsa_waitingToTalk, Snackbar.LENGTH_SHORT).show();
+        view.setEnabled(false);
     }
 
-    // TextWatcher vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    // TextView.OnEditorActionListener vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) { }
-    @Override
-    public void afterTextChanged(Editable s) {
-        boolean enable = s.toString().trim().length() > 0;
-        if(action.isEnabled() != enable) MaxUtils.beginDelayedTransition(this);
-        action.setEnabled(enable);
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        publishGroup();
+        return true;
     }
-    // TextWatcher ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    // TextView.OnEditorActionListener ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     private void elevateServicePriority() {
         final PartyCreationService room = RunningServiceHandles.getInstance().create;
         final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
@@ -450,7 +456,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     private static final int NOTIFICATION_ID = 1;
     private RecyclerView devList;
-    private Button action;
     private ActionMode actionMode;
     private MenuItem hiddenManagement;
     private static final int REQUEST_APPROVE_PLAYING_CHARACTERS = 1;

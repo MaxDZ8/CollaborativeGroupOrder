@@ -37,14 +37,6 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/npdsa_publish"
-        android:id="@+id/npdsa_activate"
-        android:enabled="false"
-        android:onClick="action_callback" />
-
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
