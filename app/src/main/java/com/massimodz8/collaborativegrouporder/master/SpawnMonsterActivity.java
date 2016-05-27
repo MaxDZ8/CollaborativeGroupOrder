@@ -239,7 +239,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                         names.add(completeVariationNames(main.header.name, modi.header.name));
                     }
                 }
-                final android.support.v7.app.AlertDialog dlg = new android.support.v7.app.AlertDialog.Builder(this)
+                final android.support.v7.app.AlertDialog dlg = new android.support.v7.app.AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setView(R.layout.dialog_monster_book_info)
                         .show();
                 final RecyclerView rv = (RecyclerView) dlg.findViewById(R.id.sma_dlg_smbi_list);

@@ -1,21 +1,14 @@
 package com.massimodz8.collaborativegrouporder.master;
 
-import android.app.Notification;
-import android.content.ComponentName;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.BitmapFactory;
 import android.net.nsd.NsdManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.view.ActionMode;
@@ -30,6 +23,7 @@ import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PublishedService;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
@@ -43,174 +37,13 @@ import java.util.Date;
  * This is important and we must be able to navigate back there every time needed in case
  * players get disconnected.
  */
-public class GatheringActivity extends AppCompatActivity implements ServiceConnection {
-    private PartyJoinOrderService room;
-
+public class GatheringActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gathering);
 
-        // Now let's get to the real deal: create or start the state-maintaining service.
-        Intent temp = new Intent(this, PartyJoinOrderService.class);
-        if(!bindService(temp, this, 0)) {
-            failedServiceBind();
-        }
-        else mustUnbind = true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        if(mustUnbind) unbindService(this);
-        if(null != room) {
-            if(!isChangingConfigurations()) { // being destroyed for real.
-                // no need to shut down the session, done so in the activity.
-                // no need to shut down anything at all, unbind will do!
-                // The documentation seems to be clear bound service destruction is deterministic.
-                room.stopForeground(true);
-            }
-            room.setNewAuthDevicesAdapter(null);
-            room.setNewUnassignedPcsAdapter(null);
-            room.onNewPublishStatus = null;
-        }
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onStop() {
-        if(room != null) {
-            room.stopListening(false);
-        }
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart() {
-        if(room != null) {
-            room.accept();
-        }
-        super.onStart();
-    }
-
-    private void failedServiceBind() {
-        beginDelayedTransition();
-        final TextView status = (TextView) findViewById(R.id.ga_state);
-        status.setText(R.string.ga_cannotBindPartyService);
-        MaxUtils.setVisibility(this, View.GONE,
-                R.id.ga_progressBar,
-                R.id.ga_identifiedDevices,
-                R.id.ga_deviceList,
-                R.id.ga_pcUnassignedListDesc,
-                R.id.ga_pcUnassignedList);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.gathering_activity, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.ga_menu_explicitConnInfo: {
-                int serverPort = room == null? 0 : room.getServerPort();
-                new ConnectionInfoDialog(this, serverPort).show();
-                break;
-            }
-        }
-        return false;
-    }
-
-    private void availablePcs(int itemCount) {
-        beginDelayedTransition();
-        findViewById(R.id.ga_pcUnassignedList).setVisibility(itemCount > 0 ? View.VISIBLE : View.GONE);
-        final TextView label = (TextView) findViewById(R.id.ga_pcUnassignedListDesc);
-        label.setText(itemCount > 0 ? R.string.ga_playingCharactersAssignment : R.string.ga_allAssigned);
-    }
-
-    public void startSession_callback(View btn) {
-        final ArrayList<StartData.ActorDefinition> free = room.getUnboundedPcs();
-        if(!free.isEmpty()) {
-            String firstLine = free.size() == 1? getString(R.string.ga_oneCharNotBound)
-                    : String.format(getString(R.string.ga_someCharsNotBound), free.size());
-            String message = getString(R.string.ga_unboundCharsDlgMsg);
-            new AlertDialog.Builder(this)
-                    .setMessage(String.format(message, firstLine))
-                    .show();
-            return;
-        }
-        room.stopPublishing();
-        room.stopListening(false);
-        findViewById(R.id.ga_startSession).setEnabled(false);
-        new AsyncTask<Void, Void, Void>() {
-            int errorCount;
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                Network.GroupReady yours = new Network.GroupReady();
-                final StartData.ActorDefinition[] playingChars = room.assignmentHelper.party.party;
-                int devIndex = -1;
-                for (PcAssignmentHelper.PlayingDevice known : room.assignmentHelper.peers) {
-                    devIndex++;
-                    if(known.pipe == null) continue; // not very likely but possible if connection has just gone down!
-                    int count = 0;
-                    for(int index = 0; index < playingChars.length; index++) {
-                        final Integer which = room.assignmentHelper.assignment.get(index);
-                        if(which == null) continue;
-                        if(which == devIndex) count++;
-                    }
-                    yours.charAssignment = true;
-                    yours.yours = new int[count];
-                    count = 0;
-                    for(int index = 0; index < playingChars.length; index++) {
-                        final Integer which = room.assignmentHelper.assignment.get(index);
-                        if(which == null) continue;
-                        if(which == devIndex) {
-                            yours.yours[count] = index;
-                            count++;
-                        }
-                    }
-                    room.assignmentHelper.mailman.out.add(new SendRequest(known.pipe, ProtoBufferEnum.GROUP_READY, yours));
-                }
-                // Send actor defs to clients.
-                int id = -1;
-                for (Integer index : room.assignmentHelper.assignment) {
-                    id++;
-                    if(index == null) continue; // impossible, but let's try
-                    if(index == PcAssignmentHelper.LOCAL_BINDING) continue;
-                    PcAssignmentHelper.PlayingDevice dev = room.assignmentHelper.peers.get(index);
-                    if(dev.pipe == null) continue; // connection temporarily lost
-                    final Network.ActorState actorData = room.session.getActorById(id);
-                    room.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actorData));
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                if(errorCount == 0) {
-                    // Ideally do nothing. We wait until the various devices give us back the ACTOR_DATA_REQUEST.
-                    // However, if no devices are there nothing will ever detach so... have an extra check
-                    room.session.stats.lastBegin = new Timestamp();
-                    room.session.stats.lastBegin.seconds = new Date().getTime() / 1000;
-                    room.session.stats.numSessions++;
-                    setResult(RESULT_OK);
-                    finish();
-                    return;
-                }
-                new AlertDialog.Builder(GatheringActivity.this)
-                        .setTitle(R.string.ga_dlg_errorWhileFormingGroup_title)
-                        .setMessage(R.string.ga_dlg_errorWhileFormingGroup_msg)
-                        .show();
-            }
-        }.execute();
-    }
-
-    // ServiceConnection ___________________________________________________________________________
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        room = ((PartyJoinOrderService.LocalBinder) service).getConcreteService();
+        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
         room.onNewPublishStatus = new PublishAcceptService.NewPublishStatusCallback() {
             @Override
             public void onNewPublishStatus(int state) {
@@ -221,7 +54,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
                     case PublishedService.STATUS_START_FAILED: {
                         int err = room.getPublishError();
                         dst.setText(R.string.ga_publisherFailedStart);
-                        new AlertDialog.Builder(GatheringActivity.this)
+                        new AlertDialog.Builder(GatheringActivity.this, R.style.AppDialogStyle)
                                 .setMessage(String.format(getString(R.string.ga_failedServiceRegistration), MaxUtils.NsdManagerErrorToString(err, GatheringActivity.this)))
                                 .show();
                         break;
@@ -238,21 +71,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
 
             }
         };
-        if(room.getPublishStatus() == PartyJoinOrderService.PUBLISHER_IDLE) {
-            // first time activity is launched. Data has been pushed to the service by previous activity and I just need to elevate priority.
-            final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
-                    .setOngoing(true)
-                    .setWhen(System.currentTimeMillis())
-                    .setShowWhen(true)
-                    .setContentTitle(room.getPartyOwnerData().name)
-                    .setContentText(getString(R.string.ga_notificationDesc))
-                    .setSmallIcon(R.drawable.ic_notify_icon)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                help.setCategory(Notification.CATEGORY_SERVICE);
-            }
-            room.startForeground(NOTIFICATION_ID, help.build());
-        }
         room.setUnassignedPcsCountListener(new PcAssignmentHelper.OnBoundPcCallback() {
             @Override
             public void onUnboundCountChanged(int stillToBind) {
@@ -300,23 +118,157 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             }
         }));
         MaxUtils.setVisibility(View.VISIBLE, devList, unboundPcList, findViewById(R.id.ga_startSession));
+    }
 
-        if(room.getPublishStatus() == PartyJoinOrderService.PUBLISHER_IDLE) {
-            try {
-                room.startListening();
-            } catch (IOException e) {
-                new AlertDialog.Builder(this)
-                        .setMessage(R.string.badServerSocket)
-                        .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                finish();
-                            }
-                        }).show();
-                return;
-            }
-            room.beginPublishing((NsdManager) getSystemService(NSD_SERVICE), room.getPartyOwnerData().name, PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+        try {
+            room.startListening();
+        } catch (IOException e) {
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setMessage(R.string.master_badServerSocket)
+                    .setPositiveButton(R.string.master_giveUpAndGoBack, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    }).show();
+            return;
         }
+        final NsdManager sys = (NsdManager) getSystemService(NSD_SERVICE);
+        room.beginPublishing(sys, room.getPartyOwnerData().name, PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+        if(room != null) {
+            room.setNewAuthDevicesAdapter(null);
+            room.setNewUnassignedPcsAdapter(null);
+            room.onNewPublishStatus = null;
+        }
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+        if(room != null) room.stopListening(false); // in case this is called before .onDestroy
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+        room.accept();
+        super.onStart();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.gathering_activity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+        switch(item.getItemId()) {
+            case R.id.ga_menu_explicitConnInfo: {
+                int serverPort = room == null? 0 : room.getServerPort();
+                new ConnectionInfoDialog(this, serverPort).show();
+                break;
+            }
+        }
+        return false;
+    }
+
+    private void availablePcs(int itemCount) {
+        beginDelayedTransition();
+        findViewById(R.id.ga_pcUnassignedList).setVisibility(itemCount > 0 ? View.VISIBLE : View.GONE);
+        final TextView label = (TextView) findViewById(R.id.ga_pcUnassignedListDesc);
+        label.setText(itemCount > 0 ? R.string.ga_playingCharactersAssignment : R.string.ga_allAssigned);
+    }
+
+    public void startSession_callback(View btn) {
+        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+        final ArrayList<StartData.ActorDefinition> free = room.getUnboundedPcs();
+        if(!free.isEmpty()) {
+            String firstLine = free.size() == 1? getString(R.string.ga_oneCharNotBound)
+                    : String.format(getString(R.string.ga_someCharsNotBound), free.size());
+            String message = getString(R.string.ga_unboundCharsDlgMsg);
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setMessage(String.format(message, firstLine))
+                    .show();
+            return;
+        }
+        room.stopPublishing();
+        room.stopListening(false);
+        findViewById(R.id.ga_startSession).setEnabled(false);
+        new AsyncTask<Void, Void, Void>() {
+            int errorCount;
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                Network.PhaseControl yours = new Network.PhaseControl();
+                yours.type = Network.PhaseControl.T_DEFINITIVE_CHAR_ASSIGNMENT;
+                final StartData.ActorDefinition[] playingChars = room.assignmentHelper.party.party;
+                int devIndex = -1;
+                for (PcAssignmentHelper.PlayingDevice known : room.assignmentHelper.peers) {
+                    devIndex++;
+                    if(known.pipe == null) continue; // not very likely but possible if connection has just gone down!
+                    int count = 0;
+                    for(int index = 0; index < playingChars.length; index++) {
+                        final Integer which = room.assignmentHelper.assignment.get(index);
+                        if(which == null) continue;
+                        if(which == devIndex) count++;
+                    }
+                    yours.yourChars = new int[count];
+                    count = 0;
+                    for(int index = 0; index < playingChars.length; index++) {
+                        final Integer which = room.assignmentHelper.assignment.get(index);
+                        if(which == null) continue;
+                        if(which == devIndex) {
+                            yours.yourChars[count] = index;
+                            count++;
+                        }
+                    }
+                    room.assignmentHelper.mailman.out.add(new SendRequest(known.pipe, ProtoBufferEnum.PHASE_CONTROL, yours, null));
+                }
+                // Send actor defs to clients.
+                int id = -1;
+                for (Integer index : room.assignmentHelper.assignment) {
+                    id++;
+                    if(index == null) continue; // impossible, but let's try
+                    if(index == PcAssignmentHelper.LOCAL_BINDING) continue;
+                    PcAssignmentHelper.PlayingDevice dev = room.assignmentHelper.peers.get(index);
+                    if(dev.pipe == null) continue; // connection temporarily lost
+                    final Network.ActorState actorData = room.session.getActorById(id);
+                    room.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actorData, null));
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if(errorCount == 0) {
+                    // Ideally do nothing. We wait until the various devices give us back the ACTOR_DATA_REQUEST.
+                    // However, if no devices are there nothing will ever detach so... have an extra check
+                    room.session.stats.lastBegin = new Timestamp();
+                    room.session.stats.lastBegin.seconds = new Date().getTime() / 1000;
+                    room.session.stats.numSessions++;
+                    setResult(RESULT_OK);
+                    finish();
+                    return;
+                }
+                new AlertDialog.Builder(GatheringActivity.this, R.style.AppDialogStyle)
+                        .setTitle(R.string.ga_dlg_errorWhileFormingGroup_title)
+                        .setMessage(R.string.ga_dlg_errorWhileFormingGroup_msg)
+                        .show();
+            }
+        }.execute();
     }
 
     private void beginDelayedTransition() {
@@ -324,17 +276,6 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ga_activityRoot));
         }
     }
-
-    @Override
-    public void onServiceDisconnected(ComponentName name) {
-        room = null;
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.ga_lostServiceConnection)
-                .show();
-    }
-
-    private static final int NOTIFICATION_ID = 1;
-
 
     private static class AuthDeviceViewHolder extends RecyclerView.ViewHolder {
         TextView name;
@@ -383,6 +324,7 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
             switch(item.getItemId()) {
                 case R.id.ga_ctx_unassigned_pc_playHere: {
                     StartData.ActorDefinition was = (StartData.ActorDefinition) mode.getTag();
+                    final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
                     if(null != room && null != was) room.local(was);
                     mode.finish();
                     return true;
@@ -394,5 +336,4 @@ public class GatheringActivity extends AppCompatActivity implements ServiceConne
         @Override
         public void onDestroyActionMode(ActionMode mode) { }
     }
-    private boolean mustUnbind;
 }

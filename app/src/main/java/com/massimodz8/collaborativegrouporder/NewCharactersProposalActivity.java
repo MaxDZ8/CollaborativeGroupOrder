@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -26,10 +27,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Vector;
 
-public class NewCharactersProposalActivity extends AppCompatActivity implements PlayingCharacterListAdapter.DataPuller {
+public class NewCharactersProposalActivity extends AppCompatActivity {
     GroupState party;
-    Vector<BuildingPlayingCharacter> characters = new Vector<>();
-    RecyclerView.Adapter list = new PlayingCharacterListAdapter(this, PlayingCharacterListAdapter.MODE_CLIENT_INPUT);
+    final ArrayList<BuildingPlayingCharacter> characters = new ArrayList<>();
+    final MyLister list = new MyLister();
     Handler handler = new MyHandler(this);
     Pumper netWorker = new Pumper(handler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED)
             .add(ProtoBufferEnum.GROUP_FORMED, new PumpTarget.Callbacks<Network.GroupFormed>() {
@@ -42,13 +43,14 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                     else handler.sendMessage(handler.obtainMessage(MSG_PC_APPROVAL, new Events.CharacterAcceptStatus(from, msg.peerKey, msg.accepted)));
                     return false;
                 }
-            }).add(ProtoBufferEnum.GROUP_READY, new PumpTarget.Callbacks<Network.GroupReady>() {
+            }).add(ProtoBufferEnum.PHASE_CONTROL, new PumpTarget.Callbacks<Network.PhaseControl>() {
                 @Override
-                public Network.GroupReady make() { return new Network.GroupReady(); }
+                public Network.PhaseControl make() { return new Network.PhaseControl(); }
 
                 @Override
-                public boolean mangle(MessageChannel from, Network.GroupReady msg) throws IOException {
-                    handler.sendMessage(handler.obtainMessage(MSG_DONE, msg.goAdventuring));
+                public boolean mangle(MessageChannel from, Network.PhaseControl msg) throws IOException {
+                    if(msg.type != Network.PhaseControl.T_NO_MORE_DEFINITIONS) return false; // error?
+                    handler.sendMessage(handler.obtainMessage(MSG_DONE, !msg.terminated));
                     return true;
                 }
             });
@@ -124,11 +126,14 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
             final NewCharactersProposalActivity target = this.target.get();
             switch(msg.what) {
                 case MSG_SOCKET_DISCONNECTED: {
-                    target.makeDialog().setMessage(R.string.ncpa_lostConnection)
+                    new AlertDialog.Builder(target, R.style.AppDialogStyle)
+                            .setMessage(R.string.ncpa_lostConnection)
                             .setPositiveButton(R.string.ncpa_lostConnection_backToMain, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) { target.finish(); }
-                            }).setCancelable(false).show();
+                            })
+                            .setCancelable(false)
+                            .show();
                 } break;
                 case MSG_PUMPER_DETACHED: break; // impossible, cannot happen
                 case MSG_NEW_KEY: {
@@ -152,7 +157,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
         if(null == match) return;
         match.status = obj.accepted? BuildingPlayingCharacter.STATUS_ACCEPTED : BuildingPlayingCharacter.STATUS_BUILDING;
         if(!obj.accepted) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(String.format(getString(R.string.ncpa_characterRejectedRetryMessage), match.name))
                     .show();
         }
@@ -167,7 +172,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
                 String extra = ' ' + getString(R.string.ncpa_goingAdventuring);
                 String msg = String.format(getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");
                 int label = goAdventuring? R.string.ncpa_goAdventuring : R.string.ncpa_newDataSaved_done;
-                new AlertDialog.Builder(self)
+                new AlertDialog.Builder(self, R.style.AppDialogStyle)
                         .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
                         .setMessage(msg)
                         .setCancelable(false)
@@ -223,54 +228,58 @@ public class NewCharactersProposalActivity extends AppCompatActivity implements 
         refreshGUI();
     }
 
-    // PlayingCharacterListAdapter.DataPuller vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    @Override
-    public int getVisibleCount() { return characters.size(); }
+    private class MyLister extends RecyclerView.Adapter<PCViewHolder> {
+        public MyLister() { setHasStableIds(true); }
 
-    @Override
-    public void action(final BuildingPlayingCharacter who, int what) {
-        // PlayingCharacterListAdapter.SEND: {
-        final MessageChannel channel = party.channel;
-        new AsyncTask<Void, Void, Exception>() {
-            @Override
-            protected Exception doInBackground(Void... params) {
-                Network.PlayingCharacterDefinition wire = new Network.PlayingCharacterDefinition();
-                wire.name = who.name;
-                wire.initiativeBonus = who.initiativeBonus;
-                wire.healthPoints = who.fullHealth;
-                wire.experience = who.experience;
-                wire.peerKey = who.unique;
-                wire.level = who.level;
-                try {
-                    channel.writeSync(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, wire);
-                } catch (IOException e) {
-                    return e;
-                }
-                return null;
-            }
+        @Override
+        public long getItemId(int position) { return characters.get(position).unique; }
 
-            @Override
-            protected void onPostExecute(Exception e) {
-                if(e != null) {
-                    makeDialog().setMessage(getString(R.string.ncpa_failedSend) + e.getLocalizedMessage());
-                    return;
+        @Override
+        public PCViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new PCViewHolder(getLayoutInflater().inflate(R.layout.vh_playing_character_definition_input, parent, false)) {
+                @Override
+                protected String getString(@StringRes int resid) { return NewCharactersProposalActivity.this.getString(resid); }
+                @Override
+                public void action() {
+                    // PlayingCharacterListAdapter.SEND: {
+                    final MessageChannel channel = party.channel;
+                    new AsyncTask<Void, Void, Exception>() {
+                        @Override
+                        protected Exception doInBackground(Void... params) {
+                            Network.PlayingCharacterDefinition wire = new Network.PlayingCharacterDefinition();
+                            wire.name = who.name;
+                            wire.initiativeBonus = who.initiativeBonus;
+                            wire.healthPoints = who.fullHealth;
+                            wire.experience = who.experience;
+                            wire.peerKey = who.unique;
+                            wire.level = who.level;
+                            try {
+                                channel.writeSync(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, wire);
+                            } catch (IOException e) {
+                                return e;
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(Exception e) {
+                            if(e != null) {
+                                new AlertDialog.Builder(NewCharactersProposalActivity.this, R.style.AppDialogStyle)
+                                        .setMessage(getString(R.string.ncpa_failedSend) + e.getLocalizedMessage());
+                                return;
+                            }
+                            who.status = BuildingPlayingCharacter.STATUS_SENT;
+                            refreshGUI();
+                        }
+                    }.execute();
                 }
-                who.status = BuildingPlayingCharacter.STATUS_SENT;
-                refreshGUI();
-            }
-        }.execute();
+            };
+        }
+
+        @Override
+        public void onBindViewHolder(PCViewHolder holder, int position) { holder.bind(characters.get(position)); }
+
+        @Override
+        public int getItemCount() { return characters.size(); }
     }
-
-    @Override
-    public AlertDialog.Builder makeDialog() { return new AlertDialog.Builder(this); }
-
-    @Override
-    public View inflate(int resource, ViewGroup root, boolean attachToRoot) { return getLayoutInflater().inflate(resource, root, attachToRoot); }
-
-    @Override
-    public BuildingPlayingCharacter get(int position) { return characters.elementAt(position); }
-
-    @Override
-    public long getStableId(int position) { return get(position).unique; }
-    // PlayingCharacterListAdapter.DataPuller ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }

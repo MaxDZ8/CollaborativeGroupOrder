@@ -58,8 +58,8 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         else {
             final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
             if (nsd == null) {
-                new AlertDialog.Builder(SelectFormingGroupActivity.this)
-                        .setMessage(R.string.newPartyDeviceSelectionActivity_noDiscoveryManager)
+                new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
+                        .setMessage(R.string.both_noDiscoveryManager)
                         .show();
                 return;
             }
@@ -209,13 +209,13 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
                     final CharSequence msg = message.getText();
                     if(msg.length() == 0) {
-                        new AlertDialog.Builder(SelectFormingGroupActivity.this)
+                        new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
                                 .setMessage(R.string.saySomethingToServer_emptyForbidden)
                                 .show();
                         return false;
                     }
                     if(msg.length() > source.charBudget) {
-                        new AlertDialog.Builder(SelectFormingGroupActivity.this)
+                        new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
                                 .setMessage(R.string.saySomethingToServer_tooLong)
                                 .show();
                         return false;
@@ -407,7 +407,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
             @Override
             protected void onPostExecute(Exception error) {
                 if(error != null) {
-                    new AlertDialog.Builder(SelectFormingGroupActivity.this)
+                    new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
                             .setMessage(getString(R.string.sendMessageErrorDesc) + error.getLocalizedMessage())
                             .show();
                     return;
@@ -437,7 +437,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
                     netPump.pump(ngs.channel);
                     Network.Hello payload = new Network.Hello();
                     payload.version = MainMenuActivity.NETWORK_VERSION;
-                    sender.out.add(new SendRequest(ngs.channel, ProtoBufferEnum.HELLO, payload));
+                    sender.out.add(new SendRequest(ngs.channel, ProtoBufferEnum.HELLO, payload, null));
                     diffs++;
                 }
             }
@@ -488,8 +488,8 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         GroupState gs = getParty(which);
         if(gs == null) return; // already erased
         if(gs.group != null) {
-            new AlertDialog.Builder(this)
-                    .setMessage(String.format(getString(R.string.selectFormingGroupActivity_lostConnection), gs.group.name, reason.getLocalizedMessage()))
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setMessage(String.format(getString(R.string.sfga_lostConnection), gs.group.name, reason.getLocalizedMessage()))
                     .show();
         }
         gs.group = null; // I keep the socket around for later matching
@@ -529,14 +529,14 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         ExplicitConnectionActivity.probedParty = null;
         if(!probed.forming) {
             pumper.interrupt();
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.sfga_connectedNotForming)
                     .show();
             return;
         }
         if(probed.doormat.length != 0) {
             pumper.interrupt();
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(getString(R.string.sfga_connectedGotDoormat))
                     .show();
             return;

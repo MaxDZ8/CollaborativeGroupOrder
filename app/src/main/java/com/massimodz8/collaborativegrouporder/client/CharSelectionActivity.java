@@ -88,12 +88,13 @@ public class CharSelectionActivity extends AppCompatActivity {
                         handler.sendMessage(handler.obtainMessage(MSG_CHARACTER_OWNERSHIP, msg));
                         return false;
                     }
-                }).add(ProtoBufferEnum.GROUP_READY, new PumpTarget.Callbacks<Network.GroupReady>() {
+                }).add(ProtoBufferEnum.PHASE_CONTROL, new PumpTarget.Callbacks<Network.PhaseControl>() {
                     @Override
-                    public Network.GroupReady make() { return new Network.GroupReady(); }
+                    public Network.PhaseControl make() { return new Network.PhaseControl(); }
 
                     @Override
-                    public boolean mangle(MessageChannel from, Network.GroupReady msg) throws IOException {
+                    public boolean mangle(MessageChannel from, Network.PhaseControl msg) throws IOException {
+                        if(msg.type != Network.PhaseControl.T_DEFINITIVE_CHAR_ASSIGNMENT) return false; // Error?
                         handler.sendMessage(handler.obtainMessage(MSG_PARTY_READY, msg));
                         return true;
                     }
@@ -196,9 +197,9 @@ public class CharSelectionActivity extends AppCompatActivity {
                     self.ownership(real);
                 } break;
                 case MSG_PARTY_READY: { // detach will follow soon, just reset all my characters
-                    Network.GroupReady real = (Network.GroupReady)msg.obj;
-                    if(real.yours.length == 0) {
-                        new AlertDialog.Builder(self)
+                    Network.PhaseControl real = (Network.PhaseControl)msg.obj;
+                    if(real.yourChars.length == 0) {
+                        new AlertDialog.Builder(self, R.style.AppDialogStyle)
                                 .setMessage(self.getString(R.string.csa_noDefinitiveCharactersHere))
                                 .setCancelable(false)
                                 .setPositiveButton(self.getString(R.string.csa_noDefinitiveCharactersHereDlgDone), new DialogInterface.OnClickListener() {
@@ -210,7 +211,7 @@ public class CharSelectionActivity extends AppCompatActivity {
                                 .show();
                         return;
                     }
-                    playChars = real.yours;
+                    playChars = real.yourChars;
                 } break;
             }
         }

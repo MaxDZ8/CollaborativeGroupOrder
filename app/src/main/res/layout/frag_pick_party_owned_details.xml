@@ -1,109 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?android:attr/selectableItemBackground">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent" android:layout_width="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <GridLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/fragPPAOD_partyName"
-        android:layout_columnSpan="3"
-        android:layout_column="0"
-        android:layout_row="0" />
+        android:background="?android:attr/selectableItemBackground"
+        android:id="@+id/fragPPAOD_headerGridLayout">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/fragPPAOD_pcList"
-        android:layout_row="1"
-        android:layout_column="0"
-        android:layout_columnSpan="3" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:id="@+id/fragPPAOD_partyName"
+            android:layout_columnSpan="3"
+            android:layout_column="0"
+            android:layout_row="0" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:id="@+id/fragPPAOD_accompanyingNpcList"
-        android:layout_row="2"
-        android:layout_column="0" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/ppa_ownedDetails_createdLabel"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_marginRight="8sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/ppa_ownedDetails_createdLabel"
-        android:layout_row="3"
-        android:layout_column="0"
-        android:layout_marginRight="8sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/fragPPAOD_created"
+            android:layout_row="1"
+            android:layout_column="1" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/fragPPAOD_created"
-        android:layout_row="3"
-        android:layout_column="1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/ppa_ownedDetails_lastPlayLabel"
+            android:layout_row="2"
+            android:layout_column="0"
+            android:layout_marginRight="8sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/ppa_ownedDetails_lastPlayLabel"
-        android:layout_row="4"
-        android:layout_column="0"
-        android:layout_marginRight="8sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/fragPPAOD_lastPlayed"
+            android:layout_row="2"
+            android:layout_column="1" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/fragPPAOD_lastPlayed"
-        android:layout_row="4"
-        android:layout_column="1" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/ppa_ownedDetails_currentStateLabel"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_marginRight="8sp" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/ppa_ownedDetails_currentStateLabel"
-        android:layout_row="5"
-        android:layout_column="0"
-        android:layout_marginRight="8sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/fragPPAOD_currentState"
+            android:layout_row="3"
+            android:layout_column="1" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/fragPPAOD_currentState"
-        android:layout_row="5"
-        android:layout_column="1" />
-
-    <Space
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_row="6"
-        android:layout_column="0" />
+    </GridLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:id="@+id/fragPPAOD_note"
-        android:layout_row="7"
-        android:layout_column="0"
-        android:layout_columnSpan="3" />
+        android:layout_below="@+id/fragPPAOD_headerGridLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="4sp"
+        android:layout_marginBottom="4sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/fragPPAOD_actorList"
+        app:layoutManager="LinearLayoutManager"
+        android:layout_below="@+id/fragPPAOD_note"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/fragPPAOD_goAdventuring" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/ppa_ownedDetails_newSession"
         android:id="@+id/fragPPAOD_goAdventuring"
-        android:layout_row="8"
-        android:layout_column="0"
-        android:layout_columnSpan="2"
-        android:layout_gravity="left" />
-
-</GridLayout>
+        android:layout_gravity="left"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+</RelativeLayout>

@@ -37,7 +37,7 @@
         </activity>
         <activity
             android:name=".SelectFormingGroupActivity"
-            android:label="@string/selectFormingGroupActivity_title"
+            android:label="@string/sfga_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -49,6 +49,7 @@
         <activity
             android:name=".master.NewPartyDeviceSelectionActivity"
             android:label="@string/npdsa_title"
+            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

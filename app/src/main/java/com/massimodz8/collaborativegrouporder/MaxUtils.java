@@ -58,6 +58,11 @@ public abstract class MaxUtils {
             if (v != null) v.setEnabled(enabled);
         }
     }
+    public static void setEnabled(boolean status, View... targets) {
+        for (View v : targets) {
+            if (v != null) v.setEnabled(status);
+        }
+    }
 
     public static String NsdManagerErrorToString(int err, Context ctx) {
         switch(err) {
@@ -73,7 +78,7 @@ public abstract class MaxUtils {
     }
 
     public static void askExitConfirmation(final AppCompatActivity goner, @StringRes int msg) {
-        new AlertDialog.Builder(goner)
+        new AlertDialog.Builder(goner, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(msg)
                 .setPositiveButton(R.string.master_exitConfirmedDlgAction, new DialogInterface.OnClickListener() {

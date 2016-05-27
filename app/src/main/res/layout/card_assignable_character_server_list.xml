@@ -7,7 +7,7 @@
     <TextView
         android:id="@+id/cardACSL_name"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:hint="@string/card_character_nameHint"
+        android:hint="@string/vhPCDI_nameHint"
         android:layout_width="wrap_content"
         android:visibility="visible"
         android:textStyle="bold"

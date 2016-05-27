@@ -24,7 +24,7 @@ public class ConnectionInfoDialog {
     AppCompatActivity activity;
     int serverPort;
     public ConnectionInfoDialog(AppCompatActivity activity, int serverPort) {
-        diag = new AlertDialog.Builder(activity).create();
+        diag = new AlertDialog.Builder(activity, R.style.AppDialogStyle).create();
         this.activity = activity;
         this.serverPort = serverPort;
     }

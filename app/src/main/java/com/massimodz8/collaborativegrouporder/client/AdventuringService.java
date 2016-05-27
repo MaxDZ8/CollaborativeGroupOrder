@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.Mailman;
+import com.massimodz8.collaborativegrouporder.PseudoStack;
 import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -37,17 +38,20 @@ public class AdventuringService extends Service {
     public HashMap<Integer, ActorWithKnownOrder> actors = new HashMap<>(); // ID -> struct, flushed every time a new battle starts
     public ArrayList<String> errors;
 
-    public ArrayDeque<Runnable> onActorUpdated = new ArrayDeque<>();
-    public ArrayDeque<Runnable> onRollRequestPushed = new ArrayDeque<>();
-    public ArrayDeque<Runnable> onCurrentActorChanged = new ArrayDeque<>();
+    public PseudoStack<Runnable> onActorUpdated = new PseudoStack<>();
+    public PseudoStack<Runnable> onRollRequestPushed = new PseudoStack<>();
+    public PseudoStack<Runnable> onCurrentActorChanged = new PseudoStack<>();
+    public PseudoStack<Runnable> onSessionEnded = new PseudoStack<>();
 
     public @ActorId int currentActor = -1; // -1 = no current known actor
     ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
     public int round = ROUND_NOT_FIGHTING; // 0 = waiting other players roll 1+ fighting
     public final Mailman mailman = new Mailman();
     public MessageChannel pipe;
+    int ended = S_PLAYING; // set by wire using Network.PhaseControl with .type = T_SESSION_ENDED
 
     public static final int ROUND_NOT_FIGHTING = -1;
+    public static final int S_PLAYING = 0, S_END_REQUEST_RECEIVED = 1;
 
     /**
      * This shouldn't really be there but it is. The current idea is that every time we're done
@@ -126,6 +130,16 @@ public class AdventuringService extends Service {
                     handler.sendMessage(handler.obtainMessage(MSG_TURN_CONTROL, msg));
                     return false;
                 }
+            }).add(ProtoBufferEnum.PHASE_CONTROL, new PumpTarget.Callbacks<Network.PhaseControl>() {
+                @Override
+                public Network.PhaseControl make() { return new Network.PhaseControl(); }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.PhaseControl msg) throws IOException {
+                    if(msg.type != Network.PhaseControl.T_SESSION_ENDED) return false; // ignore... or error?
+                    handler.sendEmptyMessage(MSG_SESSION_ENDED);
+                    return true;
+                }
             });
     private static final int MSG_DISCONNECT = 0;
     private static final int MSG_DETACH = 1;
@@ -133,6 +147,7 @@ public class AdventuringService extends Service {
     private static final int MSG_ROLL = 3;
     private static final int MSG_BATTLE_ORDER = 4;
     private static final int MSG_TURN_CONTROL = 5;
+    private static final int MSG_SESSION_ENDED = 6;
 
     private static class MyHandler extends Handler {
         final WeakReference<AdventuringService> self;
@@ -173,13 +188,15 @@ public class AdventuringService extends Service {
                         self.actors.put(real.peerKey, known);
                     }
                     known.updated = true;
-                    if(self.onActorUpdated.size() > 0) self.onActorUpdated.getFirst().run();
+                    final Runnable runnable = self.onActorUpdated.get();
+                    if(runnable != null) runnable.run();
                 } break;
                 case MSG_ROLL: {
                     final Network.Roll real = (Network.Roll) msg.obj;
                     if(real.type == Network.Roll.T_INITIATIVE) self.round = 0;
-                    self.rollRequests.push(real);
-                    if(self.onRollRequestPushed.size() > 0) self.onRollRequestPushed.getFirst().run();
+                    self.rollRequests.addLast(real);
+                    final Runnable runnable = self.onRollRequestPushed.get();
+                    if(runnable != null) runnable.run();
                 } break;
                 case MSG_BATTLE_ORDER: {
                     final Network.BattleOrder real = (Network.BattleOrder)msg.obj;
@@ -192,7 +209,8 @@ public class AdventuringService extends Service {
                         if(el.getValue().keyOrder != null) knownOrder++;
                     }
                     if(self.round == 0 && knownOrder == self.actors.size()) self.round = 1;
-                    if(self.onActorUpdated.size() > 0) self.onActorUpdated.getFirst().run();
+                    final Runnable runnable = self.onActorUpdated.get();
+                    if(runnable != null) runnable.run();
                 } break;
                 case MSG_TURN_CONTROL: {
                     final Network.TurnControl real = (Network.TurnControl) msg.obj;
@@ -211,7 +229,8 @@ public class AdventuringService extends Service {
                             self.actors.put(el.actor.peerKey, el);
                         }
                         self.currentActor = -1;
-                        if(self.onCurrentActorChanged.size() > 0) self.onCurrentActorChanged.getFirst().run();
+                        final Runnable runnable = self.onCurrentActorChanged.get();
+                        if(runnable != null) runnable.run();
                         return; // otherwise real.peerKey might be default --> mapping to zero
                     }
                     self.round = real.round;
@@ -224,8 +243,14 @@ public class AdventuringService extends Service {
                             self.actors.get(real.peerKey).actor.preparedTriggered = true;
                         }
                     } // trigger actor changed anyway so we can update round count
-                    if(self.onCurrentActorChanged.size() > 0) self.onCurrentActorChanged.getFirst().run();
+                    final Runnable runnable = self.onCurrentActorChanged.get();
+                    if(runnable != null) runnable.run();
                 } break;
+                case MSG_SESSION_ENDED:
+                    self.ended = S_END_REQUEST_RECEIVED;
+                    final Runnable runnable = self.onSessionEnded.get();
+                    if(runnable != null) runnable.run();
+                    break;
             }
             super.handleMessage(msg);
         }

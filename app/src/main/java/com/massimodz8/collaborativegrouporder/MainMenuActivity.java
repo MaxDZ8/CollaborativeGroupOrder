@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.NotificationCompat;
@@ -22,6 +23,7 @@ import android.view.View;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.ActorOverviewActivity;
+import com.massimodz8.collaborativegrouporder.client.AdventuringService;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
 import com.massimodz8.collaborativegrouporder.master.FreeRoamingActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
@@ -50,7 +52,7 @@ import java.util.Collections;
 
 public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final int NETWORK_VERSION = 1;
-    private static final int NOTIFICATION_ID = 1234;
+    private static final int PJOS_NOTIFICATION_ID = 123, PPS_NOTIFICATION_ID = 456, AS_NOTIFICATION_ID = 789;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         try {
             MaxUtils.hasher = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setCancelable(false)
                     .setMessage(R.string.mma_failedToInitHasher)
                     .setPositiveButton(getString(R.string.mma_quit), new DialogInterface.OnClickListener() {
@@ -94,7 +96,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             @Override
             protected void onPostExecute(Boolean success) {
                 if(!success) {
-                    new AlertDialog.Builder(MainMenuActivity.this)
+                    new AlertDialog.Builder(MainMenuActivity.this, R.style.AppDialogStyle)
                             .setTitle(R.string.mma_dirStructDlgInitError_title)
                             .setMessage(R.string.mma_dirStructDlgInitError_message)
                             .setCancelable(false)
@@ -140,7 +142,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 String ohno = "";
                 if (0 != errors)
                     ohno = ' ' + String.format(getString(R.string.mma_failedMatchErroReport), errors);
-                new AlertDialog.Builder(MainMenuActivity.this)
+                new AlertDialog.Builder(MainMenuActivity.this, R.style.AppDialogStyle)
                         .setTitle(R.string.mma_impossible)
                         .setMessage(String.format(getString(R.string.mma_failedMatch), ohno))
                         .setCancelable(false)
@@ -180,13 +182,13 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     /// Called when party owner data loaded version != from current.
     private void upgrade(StartData.PartyOwnerData loaded) {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setMessage(String.format(getString(R.string.mma_noOwnerDataUpgradeAvailable), loaded.version, PersistentDataUtils.OWNER_DATA_VERSION))
                 .show();
     }
 
     private void upgrade(StartData.PartyClientData loaded) {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setMessage(String.format(getString(R.string.mma_noClientDataUpgradeAvailable), loaded.version, PersistentDataUtils.OWNER_DATA_VERSION))
                 .show();
     }
@@ -196,7 +198,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         startService(servName); // this service spans device selection and character approval activities.
         if(!bindService(servName, this, 0)) {
             stopService(servName);
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.mma_failedNewSessionServiceBind)
                     .show();
         }
@@ -210,14 +212,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         final Intent servName = new Intent(this, PartyPickingService.class);
         startService(servName);
         if(!bindService(servName, this, 0)) {
-            if (!bindService(servName, this, 0)) {
                 stopService(servName);
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setMessage(R.string.mma_failedNewSessionServiceBind)
                         .show();
             }
         }
-    }
 
     public void custom_callback(View btn) {
         switch(btn.getId()) {
@@ -240,7 +240,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         startService(servName);
         if(!bindService(servName, this, 0)) {
             stopService(servName);
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.mma_failedNewSessionServiceBind)
                     .show();
             activeParty = null;
@@ -342,7 +342,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         protected void onPostExecute(Exception e) {
             if(null != e) {
                 // TODO: if the activity has been rotated in the meanwhile, this will have issues. Usual problem with AsyncTask reporting.
-                new AlertDialog.Builder(MainMenuActivity.this)
+                new AlertDialog.Builder(MainMenuActivity.this, R.style.AppDialogStyle)
                         .setMessage(R.string.mma_failedOwnedPartyLoad)
                         .setPositiveButton(R.string.mma_exitApp, new DialogInterface.OnClickListener() {
                             @Override
@@ -359,7 +359,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             if(null != errors) {
                 StringBuilder sb = new StringBuilder();
                 for(String str : errors) sb.append("\n").append(str);
-                new AlertDialog.Builder(MainMenuActivity.this)
+                new AlertDialog.Builder(MainMenuActivity.this, R.style.AppDialogStyle)
                         .setMessage(String.format(getString(R.string.mma_invalidPartyOwnerLoadedData), sb.toString()))
                         .show();
                 return;
@@ -384,34 +384,43 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final RunningServiceHandles handles = RunningServiceHandles.getInstance();
         switch(requestCode) { // stuff to shut down no matter what
             case REQUEST_PICK_PARTY: { // sync our data with what was produced/modified
                 groupDefs.clear();
                 groupKeys.clear();
-                pickServ.getDense(groupDefs, groupKeys, false);
+                handles.pick.getDense(groupDefs, groupKeys, false); // sync our data with what was produced/modified
                 dataRefreshed();
                 break;
             }
             case REQUEST_PLAY: {
+                handles.play = null;
                 stopService(new Intent(this, PartyJoinOrderService.class));
+                return;
+            }
+            case REQUEST_CLIENT_PLAY: {
+                handles.clientPlay = null;
+                stopService(new Intent(this, AdventuringService.class));
+                if(resultCode == ActorOverviewActivity.RESULT_GOODBYE) {
+                    Snackbar.make(findViewById(R.id.activityRoot), R.string.mma_endedSessionByebye, Snackbar.LENGTH_LONG).show();
+                }
                 return;
             }
         }
         if(RESULT_OK != resultCode) {
             switch(requestCode) { // stuff would be used on success... but was not successful so goodbye
                 case REQUEST_NEW_PARTY:
-                    pcServ = null;
-                    unbindService(this);
+                    handles.create = null;
                     stopService(new Intent(this, PartyCreationService.class));
                     break;
-                case REQUEST_PICK_PARTY: { // sync our data with what was produced/modified
-                    pickServ.stopForeground(true);
-                    pickServ = null;
-                    unbindService(this);
+                case REQUEST_PICK_PARTY: {
+                    handles.pick.stopForeground(true);
+                    handles.pick = null;
                     stopService(new Intent(this, PartyPickingService.class));
                     break;
                 }
                 case REQUEST_GATHER_DEVICES:
+                    handles.play = null;
                     stopService(new Intent(this, PartyJoinOrderService.class));
                     break;
             }
@@ -420,15 +429,14 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         switch(requestCode) {
             case REQUEST_NEW_PARTY: {
                 boolean goAdventuringWithCreated = data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
-                groupDefs = pcServ.defs;
+                groupDefs = handles.create.defs;
                 if(goAdventuringWithCreated) {
-                    activeParty = pcServ.generatedParty;
-                    activeLanding = pcServ.getLanding(true);
-                    activeConnections = pcServ.moveClients();
-                    activeStats = pcServ.generatedStat;
+                    activeParty = handles.create.generatedParty;
+                    activeLanding = handles.create.getLanding(true);
+                    activeConnections = handles.create.moveClients();
+                    activeStats = handles.create.generatedStat;
                 }
-                pcServ = null;
-                unbindService(this);
+                handles.create = null;
                 stopService(new Intent(this, PartyCreationService.class));
                 dataRefreshed();
                 break;
@@ -449,11 +457,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 dataRefreshed();
             } break;
             case REQUEST_PICK_PARTY: {
-                activeParty = pickServ.sessionParty;
-                activeStats = pickServ.sessionData.get(activeParty);
-                pickServ.stopForeground(true);
-                pickServ = null;
-                unbindService(this);
+                activeParty = handles.pick.sessionParty;
+                activeStats = handles.pick.sessionData.get(activeParty);
+                handles.pick.stopForeground(true);
+                handles.pick = null;
                 stopService(new Intent(this, PartyPickingService.class));
 
                 activeConnections = null;
@@ -472,10 +479,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                ActorOverviewActivity.prepare(CharSelectionActivity.movePlayingParty(),
-                        CharSelectionActivity.movePlayChars(),
-                        CharSelectionActivity.moveServerWorker());
-                startActivity(new Intent(this, ActorOverviewActivity.class));
+                final Intent intent = new Intent(this, AdventuringService.class);
+                startService(intent);
+                bindService(intent, this, 0);
             } break;
             case REQUEST_GATHER_DEVICES: {
                 startActivityForResult(new Intent(this, FreeRoamingActivity.class), REQUEST_PLAY);
@@ -492,6 +498,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     static final int REQUEST_BIND_CHARACTERS = 7;
     static final int REQUEST_GATHER_DEVICES = 8;
     static final int REQUEST_PLAY = 9;
+    static final int REQUEST_CLIENT_PLAY = 10;
 
     // Those must be fields to ensure a communication channel to the asynchronous onServiceConnected callbacks.
     private MessageNano activeParty; // StartData.PartyOwnerData.Group or StartData.PartyClientData.Group
@@ -502,9 +509,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     // ServiceConnection ___________________________________________________________________________
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
+        final RunningServiceHandles handles = RunningServiceHandles.getInstance();
         if(service instanceof PartyJoinOrderService.LocalBinder) {
-            PartyJoinOrderService.LocalBinder binder = (PartyJoinOrderService.LocalBinder)service;
-            PartyJoinOrderService real =  binder.getConcreteService();
+            PartyJoinOrderService real = ((PartyJoinOrderService.LocalBinder)service).getConcreteService();
             real.allOwnedGroups = groupDefs;
             StartData.PartyOwnerData.Group owned = (StartData.PartyOwnerData.Group) activeParty;
             JoinVerificator keyMaster = new JoinVerificator(owned.devices, MaxUtils.hasher);
@@ -529,20 +536,35 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             activeConnections = null;
             activeParty = null;
             activeStats = null;
-            startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_GATHER_DEVICES);
             unbindService(this);
+            handles.play = real;
+
+            // first time activity is launched. Data has been pushed to the service by previous activity and I just need to elevate priority.
+            final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
+                    .setOngoing(true)
+                    .setWhen(System.currentTimeMillis())
+                    .setShowWhen(true)
+                    .setContentTitle(real.getPartyOwnerData().name)
+                    .setContentText(getString(R.string.ga_notificationDesc))
+                    .setSmallIcon(R.drawable.ic_notify_icon)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                help.setCategory(Notification.CATEGORY_SERVICE);
+            }
+            real.startForeground(PJOS_NOTIFICATION_ID, help.build());
+
+            startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_GATHER_DEVICES);
         }
         if(service instanceof PartyCreationService.LocalBinder) {
-            PartyCreationService.LocalBinder binder = (PartyCreationService.LocalBinder) service;
-            pcServ = binder.getConcreteService();
-            pcServ.defs = groupDefs;
+            handles.create = ((PartyCreationService.LocalBinder) service).getConcreteService();
+            handles.create.defs = groupDefs;
+            unbindService(this);
             final Intent intent = new Intent(this, NewPartyDeviceSelectionActivity.class);
             startActivityForResult(intent, REQUEST_NEW_PARTY);
         }
         if(service instanceof PartyPickingService.LocalBinder) {
-            final PartyPickingService.LocalBinder binder = (PartyPickingService.LocalBinder) service;
-            pickServ = binder.getConcreteService();
-            pickServ.setKnownParties(groupDefs, groupKeys);
+            handles.pick = ((PartyPickingService.LocalBinder) service).getConcreteService();
+            handles.pick.setKnownParties(groupDefs, groupKeys);
             startActivityForResult(new Intent(this, PartyPickActivity.class), REQUEST_PICK_PARTY);
             // The pick party server is different, looks like I can just pull it up now.
             final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
@@ -550,11 +572,33 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     .setWhen(System.currentTimeMillis())
                     .setContentTitle(getString(R.string.mma_partyManagerNotificationTitle))
                     .setSmallIcon(R.drawable.ic_notify_icon)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 help.setCategory(Notification.CATEGORY_SERVICE);
             }
-            pickServ.startForeground(NOTIFICATION_ID, help.build());
+            unbindService(this);
+            handles.pick.startForeground(PPS_NOTIFICATION_ID, help.build());
+        }
+        if(service instanceof AdventuringService.LocalBinder) {
+            handles.clientPlay = ((AdventuringService.LocalBinder) service).getConcreteService();
+            unbindService(this);
+            final StartData.PartyClientData.Group temp = CharSelectionActivity.movePlayingParty();
+            ActorOverviewActivity.prepare(temp,
+                    CharSelectionActivity.movePlayChars(),
+                    CharSelectionActivity.moveServerWorker());
+            startActivityForResult(new Intent(this, ActorOverviewActivity.class), REQUEST_CLIENT_PLAY);
+            final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
+                    .setOngoing(true)
+                    .setWhen(System.currentTimeMillis())
+                    .setShowWhen(true)
+                    .setContentTitle(temp.name)
+                    .setContentText(getString(R.string.aoa_notificationDesc))
+                    .setSmallIcon(R.drawable.ic_notify_icon)
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                help.setCategory(Notification.CATEGORY_SERVICE);
+            }
+            handles.clientPlay.startForeground(AS_NOTIFICATION_ID, help.build());
         }
     }
 
@@ -606,6 +650,4 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             }
         }.execute();
     }
-    private PartyCreationService pcServ;
-    private PartyPickingService pickServ;
 }
