@@ -15,6 +15,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 public class PartyMemberDeviceVH extends RecyclerView.ViewHolder {
     public final TextView name;
     public final ImageView icon;
+    public StartData.PartyOwnerData.DeviceInfo dev;
 
     public PartyMemberDeviceVH(LayoutInflater li, ViewGroup parent) {
         super(li.inflate(R.layout.vh_party_member_device, parent, false));
@@ -23,6 +24,7 @@ public class PartyMemberDeviceVH extends RecyclerView.ViewHolder {
     }
 
     public void bindData(StartData.PartyOwnerData.DeviceInfo dev) {
+        this.dev = dev;
         name.setText(dev.name);
     }
 }

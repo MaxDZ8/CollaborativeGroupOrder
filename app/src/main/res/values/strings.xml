@@ -215,8 +215,9 @@
     <string name="ppa_deletedParty">Deleted \"%1$s\"</string>
     <string name="ppa_cannotLetYouGoWhileWriting">I am rewriting storage data so I cannot let you go away. By the time you have read this, I\'ve hopefully finished.</string>
     <string name="ppa_partyRecovered">Recover successful</string>
-    <string name="ppa_menu_restoreDeleted">Restore deleted</string>
-    <string name="ppa_menu_restoreDeletedCondensed">Restore</string>
+    <string name="ppa_menu_restoreDeleted">Restore party</string>
+    <string name="ppa_menu_addCharacter">Add character</string>
+    <string name="ppa_menu_addDevice">Add device to party</string>
     <string name="ppa_inconsistentSessionDataDlgMsg">Errors detected in session data. In the future I might be able to fix this but for the time being there\'s nothing I can do. To protect the data, I will now take you back to main menu.</string>
     <string name="ppa_backMainMenuDlgPosBtn">Give up and go main menu</string>
     <string name="ppa_noInputStream">Failed to get input stream.</string>
@@ -226,6 +227,7 @@
     <string name="ppa_status_asDefined">nothing going on</string>
     <string name="ppa_lastSavedInconsistent">Inconsistent data!</string>
     <string name="ppa_actorDeleted">\"%1$s\" deleted.</string>
+    <string name="ppa_deviceDeleted">\"%1$s\" removed.</string>
 
     <string name="ga_title">Gathering heroes</string>
     <string name="ga_identifiedDevices">Identified devices</string>

@@ -330,15 +330,6 @@ public class PartyPickActivity extends AppCompatActivity {
         }
     }
 
-    String list(StartData.ActorDefinition[] party) {
-        StringBuilder result = new StringBuilder();
-        for(StartData.ActorDefinition actor : party) {
-            if(result.length() > 0) result.append(getString(R.string.ppa_playingCharacterNameSeparator));
-            result.append(actor.name);
-        }
-        return result.toString();
-    }
-
     class MyItemTouchCallback extends ItemTouchHelper.SimpleCallback {
         static final int DRAG_FORBIDDEN = 0;
         static final int SWIPE_HORIZONTAL = ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT;
@@ -664,7 +655,7 @@ public class PartyPickActivity extends AppCompatActivity {
                         if(oriArr == null) return; // wut? Impossible
                         final boolean[] pc = new boolean[] { oriArr == party.party };
                         target.modPending = true;
-                        final String text = String.format(target.getString(R.string.ppa_actorDeleted), real.actor.name);
+                        final String text = String.format(target.getString(R.string.ppa_actorDeleted), goner.name);
                         final boolean[] rollback = new boolean[] { false };
                         Snackbar.make(target.findViewById(R.id.activityRoot), text, Snackbar.LENGTH_SHORT)
                                 .setAction(R.string.generic_action_undo, new View.OnClickListener() {
@@ -696,13 +687,52 @@ public class PartyPickActivity extends AppCompatActivity {
                         }
                         if(pc[0]) party.party = shorter;
                         else party.npcs = shorter;
-                        lister.notifyDataSetChanged();
                     }
+                    if(viewHolder instanceof PartyMemberDeviceVH) {
+                        PartyMemberDeviceVH real = (PartyMemberDeviceVH)viewHolder;
+                        final StartData.PartyOwnerData.DeviceInfo goner = real.dev;
+                        final StartData.PartyOwnerData.DeviceInfo[] original = party.devices;
+                        target.modPending = true;
+                        final String text = String.format(target.getString(R.string.ppa_deviceDeleted), goner.name);
+                        final boolean[] rollback = new boolean[] { false };
+                        Snackbar.make(target.findViewById(R.id.activityRoot), text, Snackbar.LENGTH_SHORT)
+                                .setAction(R.string.generic_action_undo, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) { rollback[0] = true; }
+                                })
+                                .setCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                        if(rollback[0]) {
+                                            party.devices = original;
+                                            rv.getAdapter().notifyDataSetChanged();
+                                            target.modPending = false;
+                                        }
+                                        else {
+                                            ArrayList<StartData.PartyOwnerData.Group> owned = new ArrayList<>();
+                                            ArrayList<StartData.PartyClientData.Group> joined = new ArrayList<>();
+                                            RunningServiceHandles.getInstance().pick.getDense(owned, joined, false);
+                                            target.pending = new MyAsyncRenamingStore<>(target, target.getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
+                                                    PersistentDataUtils.makePartyOwnerData(owned), null, null);
+                                        }
+                                    }
+                                }).show();
+                        StartData.PartyOwnerData.DeviceInfo[] shorter = new StartData.PartyOwnerData.DeviceInfo[original.length - 1];
+                        int dst = 0;
+                        for (StartData.PartyOwnerData.DeviceInfo el : original) {
+                            if(el == goner) continue;
+                            shorter[dst++] = el;
+                        }
+                        party.devices = shorter;
+                    }
+                    lister.notifyDataSetChanged();
                 }
                 @Override
                 protected boolean disable() { return target.modPending || target.pending != null; }
                 @Override
-                protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) { return vh instanceof AdventuringActorDataVH; }
+                protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) {
+                    return vh instanceof AdventuringActorDataVH || vh instanceof PartyMemberDeviceVH;
+                }
             };
 
             return layout;

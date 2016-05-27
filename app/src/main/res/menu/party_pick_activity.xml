@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/ppa_menu_restoreDeleted"
         android:title="@string/ppa_menu_restoreDeleted"
-        android:titleCondensed="@string/ppa_menu_restoreDeletedCondensed"
         android:menuCategory="secondary"
         android:orderInCategory="1"
         android:enabled="false" />
-    <!-- app:showAsAction="ifRoom" Would show titleCondensed in the app bar-->
-        <!-- android:icon="@[package:]drawable/drawable_resource_name" -->
-        <!-- android:alphabeticShortcut="string"
-        android:numericShortcut="string"
-        android:checkable=["true" | "false"]
-        android:visible=["true" | "false"] -->
+    <item android:id="@+id/ppa_menu_addPlayingCharacter"
+        android:title="@string/ppa_menu_addCharacter"
+        android:menuCategory="secondary"
+        android:orderInCategory="2"
+        android:enabled="false" />
+    <item android:id="@+id/ppa_menu_addDevice"
+        android:title="@string/ppa_menu_addDevice"
+        android:menuCategory="secondary"
+        android:orderInCategory="3"
+        android:enabled="false" />
 </menu>
