@@ -408,20 +408,24 @@ public class PartyCreationService extends PublishAcceptService {
             if(dev.kicked || !dev.groupMember) continue;
             for(BuildingPlayingCharacter pc : dev.chars) {
                 if(BuildingPlayingCharacter.STATUS_ACCEPTED == pc.status) {
-                    StartData.ActorDefinition built = new StartData.ActorDefinition();
-                    built.name = pc.name;
-                    built.level = pc.level;
-                    built.experience = pc.experience;
-                    built.stats =  new StartData.ActorStatistics[] {
-                            new StartData.ActorStatistics()
-                    };
-                    built.stats[0].initBonus = pc.initiativeBonus;
-                    built.stats[0].healthPoints = pc.fullHealth;
-                    ret.party[count++] = built;
+                    ret.party[count++] = from(pc);
                 }
             }
         }
         return ret;
+    }
+
+    public static StartData.ActorDefinition from(BuildingPlayingCharacter pc) {
+        StartData.ActorDefinition built = new StartData.ActorDefinition();
+        built.name = pc.name;
+        built.level = pc.level;
+        built.experience = pc.experience;
+        built.stats =  new StartData.ActorStatistics[] {
+                new StartData.ActorStatistics()
+        };
+        built.stats[0].initBonus = pc.initiativeBonus;
+        built.stats[0].healthPoints = pc.fullHealth;
+        return built;
     }
 
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv

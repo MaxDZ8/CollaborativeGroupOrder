@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +19,7 @@ import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
-import com.massimodz8.collaborativegrouporder.PCViewHolder;
+import com.massimodz8.collaborativegrouporder.MyDialogsFactory;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
@@ -142,26 +141,13 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 break;
             }
             case R.id.ncaa_menu_genChar: {
-                final AlertDialog dlg = new AlertDialog.Builder(this, R.style.AppDialogStyle)
-                        .setTitle(R.string.ncaa_genCharTitle)
-                        .setView(R.layout.vh_playing_character_definition_input)
-                        .show();
-                final BuildingPlayingCharacter pc = new BuildingPlayingCharacter();
-                final PCViewHolder helper = new PCViewHolder(dlg.findViewById(R.id.vhRoot)) {
+                MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
                     @Override
-                    protected String getString(@StringRes int resid) {
-                        return NewCharactersApprovalActivity.this.getString(resid);
-                    }
-
-                    @Override
-                    protected void action() {
-                        dlg.dismiss();
-                        pc.status = BuildingPlayingCharacter.STATUS_ACCEPTED;
+                    public void onInputCompleted(BuildingPlayingCharacter pc) {
                         final PartyCreationService create = RunningServiceHandles.getInstance().create;
                         create.building.defineLocalCharacter(pc);
                     }
-                };
-                helper.bind(pc);
+                });
                 break;
             }
         }
