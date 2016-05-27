@@ -197,7 +197,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
             if (nsd == null) {
                 new AlertDialog.Builder(this, R.style.AppDialogStyle)
-                        .setMessage(R.string.newPartyDeviceSelectionActivity_noDiscoveryManager)
+                        .setMessage(R.string.both_noDiscoveryManager)
                         .show();
                 return;
             }
@@ -402,7 +402,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
         if (nsd == null) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
-                    .setMessage(R.string.newPartyDeviceSelectionActivity_noDiscoveryManager)
+                    .setMessage(R.string.both_noDiscoveryManager)
                     .show();
             return;
         }
@@ -411,7 +411,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         } catch (IOException e) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.master_badServerSocket)
-                    .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.master_giveUpAndGoBack, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();

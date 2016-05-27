@@ -129,7 +129,7 @@ public class GatheringActivity extends AppCompatActivity {
         } catch (IOException e) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.master_badServerSocket)
-                    .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(R.string.master_giveUpAndGoBack, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();

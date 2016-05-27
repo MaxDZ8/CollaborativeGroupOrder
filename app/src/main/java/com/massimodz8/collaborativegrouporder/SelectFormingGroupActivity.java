@@ -59,7 +59,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
             final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
             if (nsd == null) {
                 new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
-                        .setMessage(R.string.newPartyDeviceSelectionActivity_noDiscoveryManager)
+                        .setMessage(R.string.both_noDiscoveryManager)
                         .show();
                 return;
             }
@@ -489,7 +489,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         if(gs == null) return; // already erased
         if(gs.group != null) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
-                    .setMessage(String.format(getString(R.string.selectFormingGroupActivity_lostConnection), gs.group.name, reason.getLocalizedMessage()))
+                    .setMessage(String.format(getString(R.string.sfga_lostConnection), gs.group.name, reason.getLocalizedMessage()))
                     .show();
         }
         gs.group = null; // I keep the socket around for later matching

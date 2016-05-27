@@ -24,8 +24,10 @@
     <string name="master_cannotBindPartyService">Failed to get an handle to the party creation service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
     <string name="master_cannotBindAdventuringService">Failed to get an handle to the party adventuring service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
     <string name="master_badServerSocket">Cannot open communication so your friend\'s devices can connect. This is very serious and prevents anything from working.</string>
+    <string name="master_giveUpAndGoBack">Give up and go back</string>
 
-    <string name="newPartyDeviceSelectionActivity_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
+    <string name="both_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
+
     <string name="btn_txt_attemptConnection">Connect</string>
     <string name="badPort_msg">This does not look like a valid port number. Ports are usually between 1024 and 65535. Try again.</string>
     <string name="badHost_msg">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
@@ -88,15 +90,16 @@
     <string name="dataLoadUpdate_couldNotStoreNewData">Could not store new party data. Error: %1$s</string>
     <string name="dataLoadUpdate_failedPreviousDataDelete">failed to delete previous contents, new data will be discarded to maintain the old.</string>
     <string name="dataLoadUpdate_failedNewDataRenamePreviousDestroyed">Failed to rename new data to override old. Old data storage has been destroyed but data itself is preserved.</string>
+
     <string name="card_joining_character_client_input_level">Level</string>
+
+    <string name="sfga_title">Joining a new party</string>
     <string name="sfga_lookingForParties">Searching for parties. Found parties will appear below.</string>
-    <string name="selectFormingGroupActivity_title">Joining a new party</string>
     <string name="sfga_explicitConnectionInstructions">Cannot find your party? Try an explicit connection!</string>
     <string name="sfga_confirmInstructions">You will advance to next step automatically as soon as the party is formed.</string>
-    <string name="selectFormingGroupActivity_startExplicitConnection">Explicit connection</string>
-    <string name="giveUpAndGoBack">Give up and go back</string>
-    <string name="initializing">Initializing…</string>
-    <string name="selectFormingGroupActivity_lostConnection">Lost connection to party \"%1$s\", reason given: %2$s.</string>
+    <string name="sfga_startExplicitConnection">Explicit connection</string>
+    <string name="sfga_lostConnection">Lost connection to party \"%1$s\", reason given: %2$s.</string>
+    <string name="sfga_initializing">Initializing…</string>
 
     <string name="eca_title">Initiate explicit connection</string>
     <string name="eca_disconnected">Could not connect to specified device. Check your input is correct and the device is reachable: it must be on the same Wi-Fi network! Not sure? Try using \"tethering\".</string>
@@ -213,7 +216,7 @@
     <string name="ppa_partyRecovered">Recover successful</string>
     <string name="ppa_menu_restoreDeleted">Restore party</string>
     <string name="ppa_menu_addCharacter">Add character</string>
-    <string name="ppa_menu_addDevice">Add device to party</string>
+    <string name="ppa_menu_addDevice">Add device</string>
     <string name="ppa_inconsistentSessionDataDlgMsg">Errors detected in session data. In the future I might be able to fix this but for the time being there\'s nothing I can do. To protect the data, I will now take you back to main menu.</string>
     <string name="ppa_backMainMenuDlgPosBtn">Give up and go main menu</string>
     <string name="ppa_noInputStream">Failed to get input stream.</string>
