@@ -62,7 +62,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         try {
             MaxUtils.hasher = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setCancelable(false)
                     .setMessage(R.string.mma_failedToInitHasher)
                     .setPositiveButton(getString(R.string.mma_quit), new DialogInterface.OnClickListener() {
@@ -96,7 +96,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             @Override
             protected void onPostExecute(Boolean success) {
                 if(!success) {
-                    new AlertDialog.Builder(MainMenuActivity.this)
+                    new AlertDialog.Builder(MainMenuActivity.this, R.style.AppDialogStyle)
                             .setTitle(R.string.mma_dirStructDlgInitError_title)
                             .setMessage(R.string.mma_dirStructDlgInitError_message)
                             .setCancelable(false)
@@ -142,7 +142,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 String ohno = "";
                 if (0 != errors)
                     ohno = ' ' + String.format(getString(R.string.mma_failedMatchErroReport), errors);
-                new AlertDialog.Builder(MainMenuActivity.this)
+                new AlertDialog.Builder(MainMenuActivity.this, R.style.AppDialogStyle)
                         .setTitle(R.string.mma_impossible)
                         .setMessage(String.format(getString(R.string.mma_failedMatch), ohno))
                         .setCancelable(false)
@@ -182,13 +182,13 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
     /// Called when party owner data loaded version != from current.
     private void upgrade(StartData.PartyOwnerData loaded) {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setMessage(String.format(getString(R.string.mma_noOwnerDataUpgradeAvailable), loaded.version, PersistentDataUtils.OWNER_DATA_VERSION))
                 .show();
     }
 
     private void upgrade(StartData.PartyClientData loaded) {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setMessage(String.format(getString(R.string.mma_noClientDataUpgradeAvailable), loaded.version, PersistentDataUtils.OWNER_DATA_VERSION))
                 .show();
     }
@@ -198,7 +198,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         startService(servName); // this service spans device selection and character approval activities.
         if(!bindService(servName, this, 0)) {
             stopService(servName);
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.mma_failedNewSessionServiceBind)
                     .show();
         }
@@ -213,7 +213,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         startService(servName);
         if(!bindService(servName, this, 0)) {
                 stopService(servName);
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setMessage(R.string.mma_failedNewSessionServiceBind)
                         .show();
             }
@@ -240,7 +240,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         startService(servName);
         if(!bindService(servName, this, 0)) {
             stopService(servName);
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.mma_failedNewSessionServiceBind)
                     .show();
             activeParty = null;
@@ -342,7 +342,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         protected void onPostExecute(Exception e) {
             if(null != e) {
                 // TODO: if the activity has been rotated in the meanwhile, this will have issues. Usual problem with AsyncTask reporting.
-                new AlertDialog.Builder(MainMenuActivity.this)
+                new AlertDialog.Builder(MainMenuActivity.this, R.style.AppDialogStyle)
                         .setMessage(R.string.mma_failedOwnedPartyLoad)
                         .setPositiveButton(R.string.mma_exitApp, new DialogInterface.OnClickListener() {
                             @Override
@@ -359,7 +359,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             if(null != errors) {
                 StringBuilder sb = new StringBuilder();
                 for(String str : errors) sb.append("\n").append(str);
-                new AlertDialog.Builder(MainMenuActivity.this)
+                new AlertDialog.Builder(MainMenuActivity.this, R.style.AppDialogStyle)
                         .setMessage(String.format(getString(R.string.mma_invalidPartyOwnerLoadedData), sb.toString()))
                         .show();
                 return;

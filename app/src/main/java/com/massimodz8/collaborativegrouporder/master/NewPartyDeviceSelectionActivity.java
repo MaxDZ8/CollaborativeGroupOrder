@@ -88,7 +88,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                         use = String.format(Locale.getDefault(), use, devCount);
                 }
                 if(devCount != 1) use = String.format(use, devCount);
-                new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
+                new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this, R.style.AppDialogStyle)
                         .setTitle(R.string.npdsa_sealing_title)
                         .setMessage(use)
                         .setPositiveButton(R.string.npdsa_goDefinePC, new PartySealer())
@@ -196,7 +196,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         if(room.getBuildingPartyName() != null) {
             NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
             if (nsd == null) {
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setMessage(R.string.newPartyDeviceSelectionActivity_noDiscoveryManager)
                         .show();
                 return;
@@ -358,7 +358,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                         startActivityForResult(intent, REQUEST_APPROVE_PLAYING_CHARACTERS);
                         return;
                     }
-                    new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this)
+                    new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this, R.style.AppDialogStyle)
                             .setMessage(R.string.npdsa_failedKeySendDlgMsg)
                             .setPositiveButton(R.string.npdsa_carryOnDlgAction, new DialogInterface.OnClickListener() {
                                 @Override
@@ -386,7 +386,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         ArrayList<StartData.PartyOwnerData.Group> collisions = room.beginBuilding(groupName, getString(R.string.npdsa_unknownDeviceName));
         if (groupName.isEmpty() || null != collisions) {
             int msg = groupName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setTitle(R.string.npdsa_badParty_title)
                     .setCancelable(false)
                     .setMessage(msg)
@@ -401,7 +401,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         }
         NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
         if (nsd == null) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.newPartyDeviceSelectionActivity_noDiscoveryManager)
                     .show();
             return;
@@ -409,7 +409,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         try {
             room.startListening();
         } catch (IOException e) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.master_badServerSocket)
                     .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
                         @Override

@@ -27,7 +27,8 @@ public class WaitInitiativeDialog {
         this.session = session;
     }
     public WaitInitiativeDialog show(@NonNull final AppCompatActivity activity) {
-        dlg = new AlertDialog.Builder(activity).setView(R.layout.dialog_wait_initiative_rolls)
+        dlg = new AlertDialog.Builder(activity, R.style.AppDialogStyle)
+                .setView(R.layout.dialog_wait_initiative_rolls)
                 .setCancelable(false)
                 .show();
         lister = new RecyclerView.Adapter<AdventuringActorControlsVH>() {
@@ -82,7 +83,6 @@ public class WaitInitiativeDialog {
 
             @Override
             public long getItemId(int position) {
-                Network.ActorState match = null;
                 for(int loop = 0; loop < session.getNumActors(); loop++) {
                     final Network.ActorState actor = session.getActor(loop);
                     final SessionHelper.Initiative test = session.initiatives.get(actor.peerKey);

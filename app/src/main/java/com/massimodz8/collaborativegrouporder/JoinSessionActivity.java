@@ -373,7 +373,9 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     private void error(int index, PartyAttempt party) {
         String gname = String.valueOf(index);
         if(null != party.party && null != party.party.name && !party.party.name.isEmpty()) gname = party.party.name;
-        new AlertDialog.Builder(this).setMessage(String.format(getString(R.string.jsa_errorWhileJoining), gname, party.error.getLocalizedMessage())).show();
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                .setMessage(String.format(getString(R.string.jsa_errorWhileJoining), gname, party.error.getLocalizedMessage()))
+                .show();
         party.error = null;
         final Socket goner = party.pipe.socket;
         new AsyncTask<Void, Void, Void>() {
@@ -464,14 +466,14 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         ExplicitConnectionActivity.masterDevice = null;
         ExplicitConnectionActivity.probedParty = null;
         if(ginfo.forming) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.jsa_connectedToForming)
                     .show();
             worker.interrupt();
             return;
         }
         if(!ginfo.name.equals(myState.party.name)) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(String.format(getString(R.string.jsa_connectedDifferentName), ginfo.name))
                     .setPositiveButton(R.string.jsa_connectedAttemptJoin, new DialogInterface.OnClickListener() {
                         @Override

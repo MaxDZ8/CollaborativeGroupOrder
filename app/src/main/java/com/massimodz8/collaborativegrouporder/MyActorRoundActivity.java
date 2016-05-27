@@ -126,7 +126,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
             super.onBackPressed();
             return;
         }
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_nopeDlgTitle)
                 .setMessage(R.string.mara_noBackDlgMessage)
                 .setPositiveButton(R.string.mara_next_title, new DialogInterface.OnClickListener() {
@@ -140,7 +140,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
         if(client == null) return super.onSupportNavigateUp();
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_nopeDlgTitle)
                 .setMessage(R.string.mara_noBackDlgMessage)
                 .setPositiveButton(R.string.mara_next_title, new DialogInterface.OnClickListener() {
@@ -216,7 +216,8 @@ public class MyActorRoundActivity extends AppCompatActivity {
                         });
             } break;
             case R.id.mara_menu_readiedAction: {
-                final AlertDialog dlg = new AlertDialog.Builder(this).setView(R.layout.dialog_ready_action_proposal)
+                final AlertDialog dlg = new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                        .setView(R.layout.dialog_ready_action_proposal)
                         .setOnDismissListener(new DialogInterface.OnDismissListener() {
                             @Override
                             public void onDismiss(DialogInterface dialog) {

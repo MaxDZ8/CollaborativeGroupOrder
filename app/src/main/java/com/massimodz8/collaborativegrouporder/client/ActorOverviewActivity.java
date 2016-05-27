@@ -233,7 +233,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
     }
 
     private void confirmLeaveFinish() {
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.aoa_confirmBackDlgMessage)
                 .setPositiveButton(R.string.aoa_confirmBackDlgPositiveButton, new DialogInterface.OnClickListener() {

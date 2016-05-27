@@ -199,7 +199,7 @@ public class CharSelectionActivity extends AppCompatActivity {
                 case MSG_PARTY_READY: { // detach will follow soon, just reset all my characters
                     Network.PhaseControl real = (Network.PhaseControl)msg.obj;
                     if(real.yourChars.length == 0) {
-                        new AlertDialog.Builder(self)
+                        new AlertDialog.Builder(self, R.style.AppDialogStyle)
                                 .setMessage(self.getString(R.string.csa_noDefinitiveCharactersHere))
                                 .setCancelable(false)
                                 .setPositiveButton(self.getString(R.string.csa_noDefinitiveCharactersHereDlgDone), new DialogInterface.OnClickListener() {

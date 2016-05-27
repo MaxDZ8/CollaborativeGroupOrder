@@ -123,7 +123,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
         final PartyCreationService room = RunningServiceHandles.getInstance().create;
         switch(item.getItemId()) {
             case R.id.ncaa_menu_save: {
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setTitle(R.string.ncaa_save_title)
                         .setMessage(R.string.ncaa_save_msg)
                         .setPositiveButton(R.string.ncaa_done, new DialogInterface.OnClickListener() {
@@ -142,7 +142,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 break;
             }
             case R.id.ncaa_menu_genChar: {
-                final AlertDialog dlg = new AlertDialog.Builder(this)
+                final AlertDialog dlg = new AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setTitle(R.string.ncaa_genCharTitle)
                         .setView(R.layout.vh_playing_character_definition_input)
                         .show();
@@ -208,7 +208,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
             room.defs.add(room.generatedParty);
             room.generatedStat = new Session.Suspended();
             saving = null;
-            new AlertDialog.Builder(NewCharactersApprovalActivity.this)
+            new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
                     .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
                     .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
                     .setCancelable(false)

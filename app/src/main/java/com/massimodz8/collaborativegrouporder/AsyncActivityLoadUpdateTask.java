@@ -25,14 +25,14 @@ public abstract class AsyncActivityLoadUpdateTask<Container extends MessageNano>
         public void onFailedExistingLoad(@NonNull ArrayList<String> errors) {
             StringBuilder concat = new StringBuilder();
             for (String err : errors) concat.append(err).append('\n');
-            new AlertDialog.Builder(owner)
+            new AlertDialog.Builder(owner, R.style.AppDialogStyle)
                     .setMessage(String.format(getError(owner, ERROR_BAD_INFO_FROM_STORAGE), concat.toString()))
                     .show();
         }
 
         @Override
         public void onFailedSave(@NonNull Exception e) {
-            new AlertDialog.Builder(owner)
+            new AlertDialog.Builder(owner, R.style.AppDialogStyle)
                     .setMessage(String.format(getError(owner, ERROR_COULD_NOT_STORE_NEW_DATA), e.getLocalizedMessage()))
                     .show();
         }

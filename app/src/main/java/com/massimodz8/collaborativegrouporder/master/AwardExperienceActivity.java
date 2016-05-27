@@ -170,7 +170,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
 
     private void confirmDiscardFinish() {
         final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.aea_noBackDlgMessage)
                 .setPositiveButton(R.string.aea_confirmDlgPosButton, new DialogInterface.OnClickListener() {

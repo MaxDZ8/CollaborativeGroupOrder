@@ -113,7 +113,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         try {
             port = Integer.parseInt(inetPort.getText().toString());
         } catch(NumberFormatException e) {
-            AlertDialog.Builder build = new AlertDialog.Builder(this);
+            AlertDialog.Builder build = new AlertDialog.Builder(this, R.style.AppDialogStyle);
             build.setMessage(R.string.badPort_msg);
             build.show();
             inetPort.requestFocus();
@@ -168,7 +168,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         attempting = null;
         handShaking = false;
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setMessage(getString(R.string.eca_disconnected))
                 .show();
     }
@@ -236,7 +236,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 refreshGUI();
                 return;
             }
-            final AlertDialog.Builder build = new AlertDialog.Builder(ExplicitConnectionActivity.this);
+            final AlertDialog.Builder build = new AlertDialog.Builder(ExplicitConnectionActivity.this, R.style.AppDialogStyle);
             if(fail.title != null && !fail.title.isEmpty()) build.setTitle(fail.title);
             if(fail.msg != null && !fail.msg.isEmpty()) build.setMessage(fail.msg);
             if(fail.refocus != null) findViewById(fail.refocus).requestFocus();

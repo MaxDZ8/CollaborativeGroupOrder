@@ -93,7 +93,7 @@ public class PartyPickActivity extends AppCompatActivity {
                 pager.setAdapter(new MyFragmentPagerAdapter());
 
                 if(!helper.sessionErrors.isEmpty()) {
-                    new AlertDialog.Builder(PartyPickActivity.this)
+                    new AlertDialog.Builder(PartyPickActivity.this, R.style.AppDialogStyle)
                             .setMessage(R.string.ppa_inconsistentSessionDataDlgMsg)
                             .setCancelable(false)
                             .setPositiveButton(R.string.ppa_backMainMenuDlgPosBtn, new DialogInterface.OnClickListener() {
@@ -198,7 +198,7 @@ public class PartyPickActivity extends AppCompatActivity {
                         restoreDeleted(which);
                     }
                 };
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setTitle(R.string.ppa_menu_restoreDeleted)
                         .setAdapter(la, icl).show();
                 return true;
@@ -222,7 +222,7 @@ public class PartyPickActivity extends AppCompatActivity {
     public void onBackPressed() {
         if(backToPartyList) showPartyList(true);
         else if(null != pending || null != loading) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.ppa_cannotLetYouGoWhileWriting)
                     .show();
         }
@@ -238,7 +238,7 @@ public class PartyPickActivity extends AppCompatActivity {
             return false;
         }
         else if(null != pending || null != loading) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.ppa_cannotLetYouGoWhileWriting)
                     .show();
         }
@@ -836,7 +836,7 @@ public class PartyPickActivity extends AppCompatActivity {
             parent.pending = null;
             parent.modPending = false;
             if(null != e) {
-                new AlertDialog.Builder(parent)
+                new AlertDialog.Builder(parent, R.style.AppDialogStyle)
                         .setMessage(e.getLocalizedMessage())
                         .show();
                 if(null != undo) undo.run();

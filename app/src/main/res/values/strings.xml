@@ -12,6 +12,9 @@
     <string name="generic_validButTooEarly">Too fast. Try again.</string>
     <string name="generic_quit">Quit</string>
     <string name="generic_actionDelete">Delete</string>
+    <string name="generic_mustBeInteger">Must be an integral number.</string>
+    <string name="generic_mustBeAtLeast1">Must >0</string>
+    <string name="generic_mustBeAtLeast0">Must be ≥0.</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
     <string name="master_failedPublish">Could not publish party to wi-fi. Your friends can still connect but only using explicit connections.</string>
@@ -42,13 +45,6 @@
     <string name="card_joiningCharacter_acceptButton">Accept</string>
     <string name="vhCA_acceptedCharacter">Character accepted.</string>
     <string name="charInputValidation_badName">Must have a name.</string>
-    <string name="charInputValidation_hpMustBePositive">Health points must be positive.\n</string>
-    <string name="charInputValidation_hpMustBeInteger">Health points must be a number.\n</string>
-    <string name="charInputValidation_lvlMustBePositive">Level must be positive.\n</string>
-    <string name="charInputValidation_lvlMustBeInteger">Level must be a number.\n</string>
-    <string name="charInputValidation_initMustBeNumber">Initiative must be a number.\n</string>
-    <string name="charInputValidation_xpMustBePositive">Experience must be at least 0.\n</string>
-    <string name="charInputValidation_xpMustBeNumeric">Experience points must be a number.\n</string>
     <string name="ncpa_failedSend">Failed to send character data to party owner, detailed error follows:\n</string>
     <string name="card_joiningCharacter_sentFeedback">Sent. Waiting reply.</string>
     <string name="persistentStorage_cannotReadGroupList">File exists but cannot be read. This is unlikely to happen by accident so you\'re better check your system is fine.</string>

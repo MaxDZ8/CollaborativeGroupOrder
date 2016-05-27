@@ -78,7 +78,7 @@ public abstract class MaxUtils {
     }
 
     public static void askExitConfirmation(final AppCompatActivity goner, @StringRes int msg) {
-        new AlertDialog.Builder(goner)
+        new AlertDialog.Builder(goner, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(msg)
                 .setPositiveButton(R.string.master_exitConfirmedDlgAction, new DialogInterface.OnClickListener() {

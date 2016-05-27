@@ -54,7 +54,7 @@ public class GatheringActivity extends AppCompatActivity {
                     case PublishedService.STATUS_START_FAILED: {
                         int err = room.getPublishError();
                         dst.setText(R.string.ga_publisherFailedStart);
-                        new AlertDialog.Builder(GatheringActivity.this)
+                        new AlertDialog.Builder(GatheringActivity.this, R.style.AppDialogStyle)
                                 .setMessage(String.format(getString(R.string.ga_failedServiceRegistration), MaxUtils.NsdManagerErrorToString(err, GatheringActivity.this)))
                                 .show();
                         break;
@@ -127,7 +127,7 @@ public class GatheringActivity extends AppCompatActivity {
         try {
             room.startListening();
         } catch (IOException e) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.master_badServerSocket)
                     .setPositiveButton(R.string.giveUpAndGoBack, new DialogInterface.OnClickListener() {
                         @Override
@@ -199,7 +199,7 @@ public class GatheringActivity extends AppCompatActivity {
             String firstLine = free.size() == 1? getString(R.string.ga_oneCharNotBound)
                     : String.format(getString(R.string.ga_someCharsNotBound), free.size());
             String message = getString(R.string.ga_unboundCharsDlgMsg);
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(String.format(message, firstLine))
                     .show();
             return;
@@ -263,7 +263,7 @@ public class GatheringActivity extends AppCompatActivity {
                     finish();
                     return;
                 }
-                new AlertDialog.Builder(GatheringActivity.this)
+                new AlertDialog.Builder(GatheringActivity.this, R.style.AppDialogStyle)
                         .setTitle(R.string.ga_dlg_errorWhileFormingGroup_title)
                         .setMessage(R.string.ga_dlg_errorWhileFormingGroup_msg)
                         .show();

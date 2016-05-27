@@ -126,7 +126,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
             final NewCharactersProposalActivity target = this.target.get();
             switch(msg.what) {
                 case MSG_SOCKET_DISCONNECTED: {
-                    new AlertDialog.Builder(target)
+                    new AlertDialog.Builder(target, R.style.AppDialogStyle)
                             .setMessage(R.string.ncpa_lostConnection)
                             .setPositiveButton(R.string.ncpa_lostConnection_backToMain, new DialogInterface.OnClickListener() {
                                 @Override
@@ -157,7 +157,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         if(null == match) return;
         match.status = obj.accepted? BuildingPlayingCharacter.STATUS_ACCEPTED : BuildingPlayingCharacter.STATUS_BUILDING;
         if(!obj.accepted) {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(String.format(getString(R.string.ncpa_characterRejectedRetryMessage), match.name))
                     .show();
         }
@@ -172,7 +172,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
                 String extra = ' ' + getString(R.string.ncpa_goingAdventuring);
                 String msg = String.format(getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");
                 int label = goAdventuring? R.string.ncpa_goAdventuring : R.string.ncpa_newDataSaved_done;
-                new AlertDialog.Builder(self)
+                new AlertDialog.Builder(self, R.style.AppDialogStyle)
                         .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
                         .setMessage(msg)
                         .setCancelable(false)
@@ -264,7 +264,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
                         @Override
                         protected void onPostExecute(Exception e) {
                             if(e != null) {
-                                new AlertDialog.Builder(NewCharactersProposalActivity.this)
+                                new AlertDialog.Builder(NewCharactersProposalActivity.this, R.style.AppDialogStyle)
                                         .setMessage(getString(R.string.ncpa_failedSend) + e.getLocalizedMessage());
                                 return;
                             }

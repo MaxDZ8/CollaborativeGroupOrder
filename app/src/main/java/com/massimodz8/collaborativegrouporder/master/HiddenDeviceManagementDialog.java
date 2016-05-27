@@ -1,6 +1,5 @@
 package com.massimodz8.collaborativegrouporder.master;
 
-import android.content.Context;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,7 @@ public abstract class HiddenDeviceManagementDialog {
     public final AlertDialog dialog;
 
     public HiddenDeviceManagementDialog(final AppCompatActivity ctx, final ArrayList<PartyDefinitionHelper.DeviceStatus> kicked) {
-        dialog = new AlertDialog.Builder(ctx).show();
+        dialog = new AlertDialog.Builder(ctx, R.style.AppDialogStyle).show();
         dialog.setContentView(R.layout.dialog_manage_hidden_devices);
         RecyclerView rv = (RecyclerView) dialog.findViewById(R.id.dlgMHD_list);
         new PreSeparatorDecorator(rv, ctx) {

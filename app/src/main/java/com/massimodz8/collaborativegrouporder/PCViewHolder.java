@@ -51,9 +51,9 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
         error = null;
         try {
             hp = Integer.parseInt(health.getEditText().getText().toString());
-            if (hp <= 0) error = getString(R.string.charInputValidation_hpMustBePositive);
+            if (hp <= 0) error = getString(R.string.generic_mustBeAtLeast1);
         } catch (NumberFormatException e) {
-            error = getString(R.string.charInputValidation_hpMustBeInteger);
+            error = getString(R.string.generic_mustBeInteger);
         }
         health.setError(error);
         if(error != null) errorCount++;
@@ -61,9 +61,9 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
         error = null;
         try {
             lvl = Integer.parseInt(level.getEditText().getText().toString());
-            if(lvl <= 0) error = getString(R.string.charInputValidation_lvlMustBePositive);
+            if(lvl <= 0) error = getString(R.string.generic_mustBeAtLeast1);
         } catch(NumberFormatException e) {
-            error = getString(R.string.charInputValidation_lvlMustBeInteger);
+            error = getString(R.string.generic_mustBeInteger);
         }
         level.setError(error);
         if(error != null) errorCount++;
@@ -72,7 +72,7 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
         try {
             init = Integer.parseInt(initiative.getEditText().getText().toString());
         } catch(NumberFormatException e) {
-            error = getString(R.string.charInputValidation_initMustBeNumber);
+            error = getString(R.string.generic_mustBeInteger);
         }
         initiative.setError(error);
         if(error != null) errorCount++;
@@ -80,9 +80,9 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
         error = null;
         try {
             xp = Integer.parseInt(experience.getEditText().getText().toString());
-            if(xp <= 0) error = getString(R.string.charInputValidation_xpMustBePositive);
+            if(xp <= 0) error = getString(R.string.generic_mustBeAtLeast0);
         } catch(NumberFormatException e) {
-            error = getString(R.string.charInputValidation_xpMustBeNumeric);
+            error = getString(R.string.generic_mustBeInteger);
         }
         experience.setError(error);
         if(error != null) errorCount++;

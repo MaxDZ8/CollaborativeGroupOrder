@@ -49,7 +49,7 @@ public class BattleActivity extends AppCompatActivity {
         final SessionHelper session = game.session;
         final Network.TurnControl msg = new Network.TurnControl();
         msg.type = Network.TurnControl.T_BATTLE_ENDED;
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.ba_backDlgMessage)
                 .setPositiveButton(R.string.ba_backDlgPositive, new DialogInterface.OnClickListener() {
@@ -292,7 +292,7 @@ public class BattleActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.ba_menu_endBattle: {
-                new AlertDialog.Builder(this)
+                new AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setTitle(R.string.ba_endBattleDlg_title)
                         .setMessage(R.string.ba_endBattleDlg_msg)
                         .setPositiveButton(R.string.ba_endBattleDlg_positive, new DialogInterface.OnClickListener() {
@@ -351,7 +351,7 @@ public class BattleActivity extends AppCompatActivity {
             return;
         }
         final int currentSlot = currSlot;
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setMessage(String.format(getString(R.string.ba_dlg_gotPreparedAction), actor.name))
                 .setPositiveButton(R.string.ba_dlg_gotPreparedAction_renew, new DialogInterface.OnClickListener() {
                     @Override
