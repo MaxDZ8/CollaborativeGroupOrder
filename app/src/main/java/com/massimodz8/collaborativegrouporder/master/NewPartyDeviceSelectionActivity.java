@@ -69,11 +69,17 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
         final TextInputLayout namein = (TextInputLayout) findViewById(R.id.npdsa_partyName);
         EditText sure = namein.getEditText();
-        if(null != sure) {
-            sure.setOnEditorActionListener(this);
+        if(null == sure) { // impossible, but the static analyzer does not know
+            finish();
+            return;
         }
+        sure.setOnEditorActionListener(this);
 
         final PartyCreationService room = RunningServiceHandles.getInstance().create;
+        if(room.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
+            sure.setText(room.generatedParty.name);
+            sure.setEnabled(false);
+        }
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,18 +87,31 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 final int devCount = room.getMemberCount();
                 String use;
                 switch(devCount) {
-                    case 0: use = getString(R.string.npdsa_emptyParty); break;
-                    case 1: use = getString(R.string.npdsa_singleDeviceParty); break;
+                    case 0: {
+                        if(room.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
+                            finish();
+                            return; // seriously, what are you doing man?
+                        }
+                        use = getString(R.string.npdsa_emptyParty);
+                    } break;
+                    case 1: {
+                        use = getString(R.string.npdsa_singleDeviceParty);
+                    } break;
                     default:
                         use = getString(R.string.npdsa_closing_pluralDevices);
                         use = String.format(Locale.getDefault(), use, devCount);
                 }
                 if(devCount != 1) use = String.format(use, devCount);
-                new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this, R.style.AppDialogStyle)
-                        .setTitle(R.string.npdsa_sealing_title)
-                        .setMessage(use)
-                        .setPositiveButton(R.string.npdsa_goDefinePC, new PartySealer())
-                        .show();
+                PartySealer sealer = new PartySealer();
+                if(room.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) sealer.onClick(null, -1);
+                else {
+                    new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this, R.style.AppDialogStyle)
+                            .setTitle(R.string.npdsa_sealing_title)
+                            .setMessage(use)
+                            .setPositiveButton(R.string.npdsa_goDefinePC, sealer)
+                            .show();
+
+                }
             }
         });
         final TextView status = (TextView) findViewById(R.id.npdsa_status);
@@ -191,6 +210,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     protected void onStart() {
+        super.onStart();
         final PartyCreationService room = RunningServiceHandles.getInstance().create;
         room.accept();
         if(room.getBuildingPartyName() != null) {
@@ -201,9 +221,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                         .show();
                 return;
             }
-            room.beginPublishing(nsd, room.getBuildingPartyName(), PartyCreationService.PARTY_FORMING_SERVICE_TYPE);
+            if(room.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
+            else room.beginPublishing(nsd, room.getBuildingPartyName(), PartyCreationService.PARTY_FORMING_SERVICE_TYPE);
         }
-        super.onStart();
     }
 
     @Override
@@ -442,10 +462,13 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     // TextView.OnEditorActionListener ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     private void elevateServicePriority() {
         final PartyCreationService room = RunningServiceHandles.getInstance().create;
+        final int resid = room.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING?
+                R.string.npdsa_notifyContentAdd :
+                R.string.npdsa_notifyContentNew;
         final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
                 .setOngoing(true)
                 .setContentTitle(room.getBuildingPartyName())
-                .setContentText(getString(R.string.npdsa_notifyContent))
+                .setContentText(getText(resid))
                 .setSmallIcon(R.drawable.ic_notify_icon)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

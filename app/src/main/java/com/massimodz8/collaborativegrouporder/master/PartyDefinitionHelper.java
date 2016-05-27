@@ -307,7 +307,7 @@ public abstract class PartyDefinitionHelper {
     private void hello(final MessageChannel from, Network.Hello payload) {
         final Network.GroupInfo info = new Network.GroupInfo();
         info.forming = true;
-        info.name = PartyDefinitionHelper.this.name;
+        info.name = this.name;
         info.version = MainMenuActivity.NETWORK_VERSION;
         final Network.CharBudget bud = helloBudget(from);
         new Thread(new Runnable() {

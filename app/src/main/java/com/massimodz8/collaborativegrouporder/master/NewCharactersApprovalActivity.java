@@ -114,6 +114,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ncaa_menu, menu);
         storeGroup = menu.findItem(R.id.ncaa_menu_save);
+        if(RunningServiceHandles.getInstance().create.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) storeGroup.setEnabled(true);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -190,10 +191,15 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
 
         @Override
         public void onCompletedSuccessfully() {
-            final PartyCreationService room = RunningServiceHandles.getInstance().create;
-            room.defs.add(room.generatedParty);
-            room.generatedStat = new Session.Suspended();
             saving = null;
+            final PartyCreationService room = RunningServiceHandles.getInstance().create;
+            int negative;
+            if(room.mode != PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
+                room.defs.add(room.generatedParty);
+                room.generatedStat = new Session.Suspended();
+                negative = R.string.dataLoadUpdate_finished_newDataSaved_mainMenu;
+            }
+            else negative = R.string.dataLoadUpdate_finished_newDataSaved_partyPick;
             new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
                     .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
                     .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
@@ -206,7 +212,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                             temp.execute();
                         }
                     })
-                    .setNegativeButton(R.string.dataLoadUpdate_finished_newDataSaved_mainMenu, new DialogInterface.OnClickListener() {
+                    .setNegativeButton(negative, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(false, new SendCompleteCallback(false));

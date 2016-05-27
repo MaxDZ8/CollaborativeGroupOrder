@@ -87,6 +87,7 @@
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
     <string name="dataLoadUpdate_newGroupSaved_msg">Data successfully saved to internal storage. Do you want to go adventuring right away?</string>
     <string name="dataLoadUpdate_finished_newDataSaved_mainMenu">Main menu</string>
+    <string name="dataLoadUpdate_finished_newDataSaved_partyPick">Party pick</string>
     <string name="dataLoadUpdate_couldNotStoreNewData">Could not store new party data. Error: %1$s</string>
     <string name="dataLoadUpdate_failedPreviousDataDelete">failed to delete previous contents, new data will be discarded to maintain the old.</string>
     <string name="dataLoadUpdate_failedNewDataRenamePreviousDestroyed">Failed to rename new data to override old. Old data storage has been destroyed but data itself is preserved.</string>
@@ -145,6 +146,7 @@
     <string name="npdsa_sealing_title">Sealing a party</string>
     <string name="npdsa_emptyParty">You are creating an empty party.</string>
     <string name="npdsa_singleDeviceParty">Party counts a single device.</string>
+    <string name="npdsa_addingSingleDevice">Adding a single device.</string>
     <string name="npdsa_closing_pluralDevices">Forming a party with client %1$d devices.</string>
     <string name="npdsa_goDefinePC">Go define characters</string>
     <string name="npdsa_failedKeySendDlgMsg">At least one connected device couldn\'t get in the party.</string>
@@ -293,7 +295,8 @@
     <string name="ga_ctx_unassigned_pc_playHere">Play on this device</string>
 
     <string name="card_joiningDevice_groupMember">Party member</string>
-    <string name="npdsa_notifyContent">Forming new party.</string>
+    <string name="npdsa_notifyContentNew">Forming new party.</string>
+    <string name="npdsa_notifyContentAdd">Adding to existing party.</string>
     <string name="pjos_label">RPG order management</string>
     <string name="pcs_label">RPG party creation</string>
     <string name="dlg_iec_noPort">Port not currently open.\nNo connections available.</string>
