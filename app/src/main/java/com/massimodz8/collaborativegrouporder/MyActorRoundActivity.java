@@ -84,7 +84,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
         helper.bindData(actor);
         holder.setVisibility(View.VISIBLE);
         helper.prepared.setEnabled(false);
-        ((TextView) findViewById(R.id.mara_round)).setText(String.format(Locale.ROOT, getString(R.string.mara_round), round));
+        ((TextView) findViewById(R.id.mara_round)).setText(String.format(Locale.getDefault(), getString(R.string.mara_round), round));
         MaxUtils.setTextUnlessNull((TextView) findViewById(R.id.mara_nextActorName), nextActor, View.GONE);
 
         if(savedInstanceState != null) return; // when regenerated, probably because of user rotating device, no need to gain more attention.

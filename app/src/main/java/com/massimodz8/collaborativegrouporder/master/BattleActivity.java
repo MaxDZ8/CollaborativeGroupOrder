@@ -66,7 +66,7 @@ public class BattleActivity extends AppCompatActivity {
                         finish();
                     }
                 })
-                .setNegativeButton(R.string.ba_backDlgNegative, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.generic_discard, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         for (Network.ActorState goner : session.temporaries) session.willFight(goner.peerKey, false);
@@ -123,7 +123,7 @@ public class BattleActivity extends AppCompatActivity {
         if(battle.round > 0) { // battle already started...
             findViewById(R.id.fab).setVisibility(View.GONE);
             final TextView status = (TextView) findViewById(R.id.ba_roundCount);
-            status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
+            status.setText(String.format(Locale.getDefault(), getString(R.string.ba_roundNumber), battle.round));
             actionCompleted(false);
         }
 
@@ -139,7 +139,7 @@ public class BattleActivity extends AppCompatActivity {
                 fab.setVisibility(View.GONE);
                 MaxUtils.beginDelayedTransition(BattleActivity.this);
                 final TextView status = (TextView) findViewById(R.id.ba_roundCount);
-                status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
+                status.setText(String.format(Locale.getDefault(), getString(R.string.ba_roundNumber), battle.round));
                 actionCompleted(true);
                 lister.notifyItemChanged(0);
             }
@@ -336,7 +336,7 @@ public class BattleActivity extends AppCompatActivity {
         lister.notifyDataSetChanged(); // check everything, player might have healed or damaged others
         MaxUtils.beginDelayedTransition(this);
         final TextView status = (TextView) findViewById(R.id.ba_roundCount);
-        status.setText(String.format(Locale.ROOT, getString(R.string.ba_roundNumber), battle.round));
+        status.setText(String.format(Locale.getDefault(), getString(R.string.ba_roundNumber), battle.round));
         final Network.ActorState actor = game.session.getActorById(battle.currentActor);
         final MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
         if(actor.prepareCondition.isEmpty()) {

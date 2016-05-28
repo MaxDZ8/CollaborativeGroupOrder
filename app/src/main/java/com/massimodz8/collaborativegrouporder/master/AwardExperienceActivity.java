@@ -173,7 +173,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.aea_noBackDlgMessage)
-                .setPositiveButton(R.string.aea_confirmDlgPosButton, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.generic_discard, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         for (SessionHelper.DefeatedData el : game.session.defeated) el.consume = true;
@@ -194,10 +194,9 @@ public class AwardExperienceActivity extends AppCompatActivity {
                 xp += xpFrom(el.numerator, el.denominator);
             }
         }
-        String countString = count == game.session.defeated.size()? getString(R.string.aea_selectedAll) : String.valueOf(count);
-
-        String mob = getString(R.string.aea_mobReport);
-        mob = String.format(Locale.ROOT, mob, countString, xp);
+        String mob = getString(count == 1? R.string.aea_mobReportSingular :
+                (count != game.session.defeated.size()? R.string.aea_mobReportPlural : R.string.aea_mobReportAll));
+        mob = String.format(Locale.getDefault(), mob, count, xp);
         TextView report = (TextView) findViewById(R.id.aea_mobReport);
         report.setText(mob);
 
@@ -205,10 +204,11 @@ public class AwardExperienceActivity extends AppCompatActivity {
         for(SessionHelper.WinnerData el : game.session.winners) {
             if(el.award) count++;
         }
-        countString = count == game.session.winners.size()? getString(R.string.aea_selectedAll) : String.valueOf(count);
-        String win = getString(R.string.aea_winnersCount);
-        win = String.format(win, countString);
-        win += '\n' + (count == 0? "" : String.format(Locale.ROOT, getString(R.string.aea_winnersAward), xp / count));
+        String win;
+        if(count == 1) win = getString(R.string.aea_winnersCountSingular);
+        else if(count == game.session.winners.size()) win = getString(R.string.aea_winnersCountAll);
+        else win = String.format(Locale.getDefault(), getString(R.string.aea_winnersCountPlural), count);
+        win += '\n' + (count == 0? "" : String.format(Locale.getDefault(), getString(R.string.aea_winnersAward), xp / count));
         report = (TextView) findViewById(R.id.aea_winnersReport);
         report.setText(win);
         findViewById(R.id.fab).setVisibility(count == 0? View.GONE : View.VISIBLE);

@@ -385,7 +385,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                                 public void onClick(DialogInterface dialog, int which) {
                                     startActivityForResult(intent, REQUEST_APPROVE_PLAYING_CHARACTERS);
                                 }
-                            }).setNegativeButton(R.string.npdsa_discardDlgAction, new DialogInterface.OnClickListener() {
+                            }).setNegativeButton(R.string.master_giveUpAndGoBack, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();

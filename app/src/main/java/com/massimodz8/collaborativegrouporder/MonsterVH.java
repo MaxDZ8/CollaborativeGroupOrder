@@ -146,8 +146,7 @@ public class MonsterVH extends RecyclerView.ViewHolder {
                 case MonsterData.Monster.MetaData.MATURITY: {
                     final int mat = tag.note.maturity;
                     final int expansion = mat < MonsterData.Monster.MetaData.EG_SMALL? R.string.mVH_dragonMaturityNameExpansion : R.string.mVH_elementalMaturityNameExpansion;
-                    final String str = maturityStrings.get(mat);
-                    main = String.format(ctx.getString(expansion), main, str);
+                    main = String.format(ctx.getString(expansion), main, maturityStrings.get(mat));
                 } break;
                 case MonsterData.Monster.MetaData.ADDITIONAL_SELECTION_INFO: {
                     if(extraNotes == null) extraNotes = new StringBuilder("(");
@@ -230,7 +229,7 @@ public class MonsterVH extends RecyclerView.ViewHolder {
 
     private void updatedBattleCount(int count) {
         if(count > 0) {
-            inBattle.setText(String.format(ctx.getString(R.string.mVH_spawnCountFeedback), String.valueOf(count)));
+            inBattle.setText(String.format(Locale.getDefault(), ctx.getString(R.string.mVH_spawnCountFeedback), count));
             inBattle.setCompoundDrawables(null, null, battlingIcon, null);
         }
         else {
