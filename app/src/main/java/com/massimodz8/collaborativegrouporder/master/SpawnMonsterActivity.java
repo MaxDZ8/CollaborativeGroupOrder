@@ -415,7 +415,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                     protected String selectedText() {
                         final Integer count = mobCount.get(actor);
                         if(count == null || count < 1) return null;
-                        return String.format(getString(R.string.mVH_spawnCountFeedback), String.valueOf(count));
+                        return String.format(Locale.getDefault(), getString(R.string.mVH_spawnCountFeedback), count);
                     }
                 };
             }
