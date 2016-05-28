@@ -263,7 +263,7 @@
     <string name="mobs_race_human">umano</string>
     <string name="mobs_race_kobold">coboldo</string>
     <string name="mobs_race_catfolk">felinide</string>
-    <string name="mobs_race_fetchling" translatable="false">ghermito</string>
+    <string name="mobs_race_fetchling">ghermito</string>
     <string name="mobs_race_aasimar">aasimar</string>
     <string name="mobs_race_astmoi">astmoi</string>
     <string name="mobs_race_caligni">caligni</string>
@@ -273,8 +273,8 @@
     <string name="mobs_race_drow">drow</string>
     <string name="mobs_race_duergar">duergar</string>
     <string name="mobs_race_ganzi">ganzi</string>
-    <string name="mobs_race_gargoyle" translatable="false">gargoyle</string>
-    <string name="mobs_race_gathlain" translatable="false">gathlain</string>
+    <string name="mobs_race_gargoyle">gargoyle</string>
+    <string name="mobs_race_gathlain">gathlain</string>
     <string name="mobs_race_ghoran">ghoran</string>
     <string name="mobs_race_gillmen">gillmen</string>
     <string name="mobs_race_gnoll">gnoll</string>
@@ -284,7 +284,7 @@
     <string name="mobs_race_hobgoblin">hobgoblin</string>
     <string name="mobs_race_ifrit">ifrit</string>
     <string name="mobs_race_kasatha">kasatha</string>
-    <string name="mobs_race_kitsune" translatable="false">kitsune</string>
+    <string name="mobs_race_kitsune">kitsune</string>
     <string name="mobs_race_kuru">kuru</string>
     <string name="mobs_race_lashunta">lashunta</string>
     <string name="mobs_race_lizardfolk">lucertoloide</string>
