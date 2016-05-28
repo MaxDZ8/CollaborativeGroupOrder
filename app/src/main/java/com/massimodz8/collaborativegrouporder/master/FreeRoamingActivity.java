@@ -459,18 +459,22 @@ public class FreeRoamingActivity extends AppCompatActivity {
         for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
             if(dev.pipe != null) count++;
         }
-        final LatchingHandler lh = new LatchingHandler(count, new Runnable() {
-            @Override
-            public void run() {
-                new MyRefreshStore(game, save);
+        if(game.assignmentHelper.peers.size() > 0) {
+            final LatchingHandler lh = new LatchingHandler(count, new Runnable() {
+                @Override
+                public void run() {
+                    new MyRefreshStore(game, save);
+                }
+            });
+            for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+                if (dev.pipe != null) {
+                    final SendRequest send = new SendRequest(dev.pipe, ProtoBufferEnum.PHASE_CONTROL, end, lh.ticker);
+                    game.assignmentHelper.mailman.out.add(send);
+                }
             }
-        });
-        for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
-            if(dev.pipe != null) {
-                final SendRequest send = new SendRequest(dev.pipe, ProtoBufferEnum.PHASE_CONTROL, end, lh.ticker);
-                game.assignmentHelper.mailman.out.add(send);
-            }
+            return;
         }
+        new MyRefreshStore(game, save);
     }
 
     private static class LatchingHandler extends Handler {
