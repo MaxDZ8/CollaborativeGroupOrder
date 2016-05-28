@@ -35,7 +35,7 @@ public class InitiativeShuffleDialog {
     public void show(@NonNull final AppCompatActivity activity, @NonNull final OnApplyCallback confirmed) {
         final AlertDialog dlg = new AlertDialog.Builder(activity, R.style.AppDialogStyle)
                 .setView(R.layout.dialog_shuffle_initiative_order)
-                .setPositiveButton(activity.getString(R.string.mara_dlgSIO_apply), new DialogInterface.OnClickListener() {
+                .setPositiveButton(activity.getString(R.string.isd_apply), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         confirmed.newOrder(actor);

@@ -1,17 +1,15 @@
 <resources>
     <string name="app_name">Party Order</string>
 
-    <string name="generic_unreadable_at_start" translatable="false">_initialized_</string>
     <string name="generic_IOError">I/O error</string>
     <string name="generic_connFailedWithError">Could not connect to host. System message:\n%1$s</string>
-    <string name="generic_action_undo">Undo</string>
+    <string name="generic_undo">Undo</string>
     <string name="generic_initializing">Initializing…</string>
     <string name="generic_carefulDlgTitle">Careful!</string>
     <string name="generic_nopeDlgTitle">No way out</string>
     <string name="generic_action_rename">Rename</string>
-    <string name="generic_validButTooEarly">Too fast. Try again.</string>
     <string name="generic_quit">Quit</string>
-    <string name="generic_actionDelete">Delete</string>
+    <string name="generic_delete">Delete</string>
     <string name="generic_mustBeInteger">Must be an integral number.</string>
     <string name="generic_mustBeAtLeast1">Must >0</string>
     <string name="generic_mustBeAtLeast0">Must be ≥0.</string>
@@ -22,33 +20,23 @@
     <string name="master_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
     <string name="master_exitConfirmedDlgAction">Interrupt operations</string>
     <string name="master_cannotBindPartyService">Failed to get an handle to the party creation service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
-    <string name="master_cannotBindAdventuringService">Failed to get an handle to the party adventuring service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
     <string name="master_badServerSocket">Cannot open communication so your friend\'s devices can connect. This is very serious and prevents anything from working.</string>
     <string name="master_giveUpAndGoBack">Give up and go back</string>
+    <string name="master_cannotEnumerateNICs">Failed to get network information. This isn\'t really a problem but you\'ll have to find this device network address in some other way in case your friends need explicit connection data.</string>
 
     <string name="both_noDiscoveryManager">Looks like Network Service Discovery is unavailable. I require this thing to let your friends join the party.</string>
 
-    <string name="btn_txt_attemptConnection">Connect</string>
-    <string name="badPort_msg">This does not look like a valid port number. Ports are usually between 1024 and 65535. Try again.</string>
-    <string name="badHost_msg">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
-    <string name="card_group_options">Options: </string>
-    <string name="explicitConnectionActivity_probingFeedback">Probing, please wait…</string>
-    <string name="cannotEnumerateNICs">Failed to get network information. This isn\'t really a problem but you\'ll have to find this device network address in some other way in case your friends need explicit connection data.</string>
-    <string name="card_joinableGroup_talkHint">Message to join</string>
-    <string name="sendMessageErrorDesc">"Error detected while attempting to send message to party owner. Details: "</string>
-    <string name="saySomethingToServer_emptyForbidden">Empty messages are forbidden.</string>
-    <string name="saySomethingToServer_tooLong">Message too long. It might be displayed partially or not at all. Go back and fit the given budget.</string>
-    <string name="card_joinableGroup_lengthMaxDivisor"> / </string>
-    <string name="card_joiningCharacter_healthPoints">Health points</string>
-    <string name="card_joiningCharacter_initBonus">Initiative bonus</string>
-    <string name="card_joiningCharacter_sendButton">Send</string>
-    <string name="card_joiningCharacter_experience">Experience</string>
-    <string name="card_joiningCharacter_refuseButton">Refuse</string>
-    <string name="card_joiningCharacter_acceptButton">Accept</string>
+    <string name="vhCA_healthPoints">Health points</string>
+    <string name="vhCA_initBonus">Initiative bonus</string>
+    <string name="vhCA_experience">Experience</string>
     <string name="vhCA_acceptedCharacter">Character accepted.</string>
-    <string name="charInputValidation_badName">Must have a name.</string>
-    <string name="ncpa_failedSend">Failed to send character data to party owner, detailed error follows:\n</string>
-    <string name="card_joiningCharacter_sentFeedback">Sent. Waiting reply.</string>
+    <string name="vhCA_level">Level</string>
+
+    <string name="pcVH_badName">Must have a name.</string>
+
+    <string name="card_group_options">Options: </string>
+    <string name="card_joinableGroup_lengthMaxDivisor"> / </string>
+
     <string name="persistentStorage_cannotReadGroupList">File exists but cannot be read. This is unlikely to happen by accident so you\'re better check your system is fine.</string>
     <string name="persistentStorage_archiveTooBig">Data archive exceeds maximum size.</string>
     <string name="persistentStorage_groupDataVersionZero">party version 0 should have never been saved.</string>
@@ -92,8 +80,6 @@
     <string name="dataLoadUpdate_failedPreviousDataDelete">failed to delete previous contents, new data will be discarded to maintain the old.</string>
     <string name="dataLoadUpdate_failedNewDataRenamePreviousDestroyed">Failed to rename new data to override old. Old data storage has been destroyed but data itself is preserved.</string>
 
-    <string name="card_joining_character_client_input_level">Level</string>
-
     <string name="sfga_title">Joining a new party</string>
     <string name="sfga_lookingForParties">Searching for parties. Found parties will appear below.</string>
     <string name="sfga_explicitConnectionInstructions">Cannot find your party? Try an explicit connection!</string>
@@ -101,6 +87,12 @@
     <string name="sfga_startExplicitConnection">Explicit connection</string>
     <string name="sfga_lostConnection">Lost connection to party \"%1$s\", reason given: %2$s.</string>
     <string name="sfga_initializing">Initializing…</string>
+    <string name="sfga_talkHint">Message to join</string>
+    <string name="sfga_sendMessageErrorDesc">"Error detected while attempting to send message to party owner. Details: "</string>
+    <string name="sfga_emptyMessageForbidden">Empty messages are forbidden.</string>
+    <string name="sfga_messageTooLong">Message too long. It might be displayed partially or not at all. Go back and fit the given budget.</string>
+    <string name="sfga_connectedNotForming">Found a party, but it is not being formed. Discarding.</string>
+    <string name="sfga_connectedGotDoormat">Found a party but master wants to verify key and I don\'t know what to do. Discarding.</string>
 
     <string name="eca_title">Initiate explicit connection</string>
     <string name="eca_disconnected">Could not connect to specified device. Check your input is correct and the device is reachable: it must be on the same Wi-Fi network! Not sure? Try using \"tethering\".</string>
@@ -109,6 +101,10 @@
     <string name="eca_networkAddress">Network address</string>
     <string name="eca_failedHello">Could not send HELLO to host. System message:\n%1$s</string>
     <string name="eca_connected">Connected.</string>
+    <string name="eca_attemptConnection">Connect</string>
+    <string name="eca_badPort">This does not look like a valid port number. Ports are usually between 1024 and 65535. Try again.</string>
+    <string name="eca_badHost">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
+    <string name="eca_probingFeedback">Probing, please wait…</string>
 
     <string name="mma_failedOwnedPartyLoad">Failed to load owned party data. This is required for the app to function. Ignoring this will only make the problem worse so the app will now close.</string>
     <string name="mma_exitApp">Exit app</string>
@@ -126,7 +122,6 @@
     <string name="mma_failedNewSessionServiceBind">Could not set up the server. Try again after clearing some memory.</string>
     <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nThis is required for stuff to work so app will now close.</string>
     <string name="mma_loading">Loading data…</string>
-    <string name="mma_quit">Quit</string>
     <string name="mma_menu_ogl">Open Game License</string>
     <string name="mma_menu_oglShort">OGL</string>
     <string name="mma_customMonstersButton">Custom monsters…</string>
@@ -136,17 +131,17 @@
     <string name="mma_dirStructDlgNegContinue">Proceed at your risk</string>
     <string name="mma_endedSessionByebye">Master ended session, see you next time!</string>
     <string name="mma_menu_aboutShort">About</string>
+    <string name="mma_notificationDesc">Adventuring</string>
 
+    <string name="npdsa_title">Device selection</string>
     <string name="npdsa_badParty_title">Bad party name</string>
     <string name="npdsa_badParty_msg_emptyName">Every party needs a name.\nYour friends need to know which party to join and I need a name to store party data you can later retrieve.</string>
     <string name="npdsa_badParty_msg_alreadyThere">A party with the same name already exists. Names must be unique.</string>
     <string name="npdsa_badParty_retry">Modify party name</string>
-    <string name="npdsa_title">Device selection</string>
     <string name="npdsa_groupNameHint">Party name</string>
     <string name="npdsa_sealing_title">Sealing a party</string>
     <string name="npdsa_emptyParty">You are creating an empty party.</string>
     <string name="npdsa_singleDeviceParty">Party counts a single device.</string>
-    <string name="npdsa_addingSingleDevice">Adding a single device.</string>
     <string name="npdsa_closing_pluralDevices">Forming a party with client %1$d devices.</string>
     <string name="npdsa_goDefinePC">Go define characters</string>
     <string name="npdsa_failedKeySendDlgMsg">At least one connected device couldn\'t get in the party.</string>
@@ -161,7 +156,10 @@
     <string name="npdsaAM_setCharBudget">Set characters budget</string>
     <string name="npdsa_tapHint">Tap devices to let them in the party.</string>
     <string name="npdsa_longTapHint">Long tap device for options</string>
+    <string name="npdsa_notifyContentNew">Forming new party.</string>
+    <string name="npdsa_notifyContentAdd">Adding to existing party.</string>
 
+    <string name="ncaa_title">Approve PCs</string>
     <string name="ncaa_definingPCs">Players are defining characters.</string>
     <string name="ncaa_menu_save">Save party</string>
     <string name="ncaa_menu_genChar">New playing character</string>
@@ -173,9 +171,7 @@
     <string name="ncaa_menu_saveShort">Save</string>
     <string name="ncaa_menu_genCharShort">New PC</string>
     <string name="ncaa_exitConfirmMsg">Undergoing I/O. Try again later.</string>
-    <string name="ncaa_title">Approve PCs</string>
     <string name="ncaa_genCharTitle">New playing character</string>
-    <string name="ncaa_genCharAction">Add character</string>
 
     <string name="ncpa_title">Propose PCs</string>
     <string name="ncpa_instructions">Define as many characters as you want. The process will complete when party owner decides so.</string>
@@ -187,6 +183,7 @@
     <string name="ncpa_creationCompleted">Party creation completed.%1$s</string>
     <string name="ncpa_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
     <string name="ncpa_newDataSaved_done">Done</string>
+    <string name="ncpa_failedSend">Failed to send character data to party owner, detailed error follows:\n</string>
 
     <string name="cardOPS_iconDesc">Owned party icon</string>
     <string name="cardOPS_title">Owned parties</string>
@@ -196,7 +193,7 @@
     <string name="cardJPS_title">Joined parties</string>
     <string name="cardJPS_desc">This device holds a key allowing you to join games as a player.</string>
 
-    <string name="ppa_playingCharacterNameSeparator">", "</string>
+    <string name="ppa_title">Pick a party</string>
     <string name="ppa_noPartySelected">No party selected.</string>
     <string name="ppa_noPartySelectedMoreInstructions">Tap on a party overview to show information and actions here.</string>
     <string name="ppa_ownedDetails_createdLabel">Created:</string>
@@ -205,13 +202,11 @@
     <string name="ppa_ownedDetails_newSession">New session</string>
     <string name="ppa_ownedDetails_continueSession">Continue last session</string>
     <string name="ppa_ownedDetails_continueBattle">Continue battle</string>
-    <string name="ppa_ownedDetails_npcList">Assisting %1$s</string>
     <string name="ppa_joinedDetails_lastPlayLabel">Last played:</string>
     <string name="ppa_joinedDetails_createdLabel">Key received:</string>
     <string name="ppa_joinedDetails_newSession">Go adventuring</string>
     <string name="ppa_joinedDetails_continueSession">Keep adventuring</string>
     <string name="ppa_joinedDetails_continueBattle">Keep fighting</string>
-    <string name="ppa_title">Pick a party</string>
     <string name="ppa_title_details">Party details</string>
     <string name="ppa_deletedParty">Deleted \"%1$s\"</string>
     <string name="ppa_cannotLetYouGoWhileWriting">I am rewriting storage data so I cannot let you go away. By the time you have read this, I\'ve hopefully finished.</string>
@@ -229,6 +224,10 @@
     <string name="ppa_lastSavedInconsistent">Inconsistent data!</string>
     <string name="ppa_actorDeleted">\"%1$s\" deleted.</string>
     <string name="ppa_deviceDeleted">\"%1$s\" removed.</string>
+    <string name="ppa_charCount_singular">A lone adventurer</string>
+    <string name="ppa_charCount_plural">%1$d playing characters</string>
+    <string name="ppa_charLevel_same">Level %1$d</string>
+    <string name="ppa_charLevel_different">Levels %1$d - %2$d</string>
 
     <string name="ga_title">Gathering heroes</string>
     <string name="ga_identifiedDevices">Identified devices</string>
@@ -244,18 +243,20 @@
     <string name="ga_dlg_errorWhileFormingGroup_msg">Something went wrong while giving out session data. This is very wrong and state is now likely inconsistent. Please report this issue.</string>
 
     <string name="dialog_explicitConnectionInfo_title">Connection informations</string>
-    <string name="dlg_iec_port">Port: %1$s</string>
-    <string name="dlg_iec_portInfo">Port is valid for all addresses.</string>
-    <string name="dlg_iec_networkAddresses">Network addresses</string>
-    <string name="dlg_iec_tryAddressesHint">Try only one at time</string>
+    <string name="card_character_classesAndLevels">Classes and levels</string>
+
+    <string name="dlgIEC_port">Port: %1$s</string>
+    <string name="dlgIEC_portInfo">Port is valid for all addresses.</string>
+    <string name="dlgIEC_networkAddresses">Network addresses</string>
+    <string name="dlgIEC_tryAddressesHint">Try only one at time</string>
+    <string name="dlgIEC_noPort">Port not currently open.\nNo connections available.</string>
+
     <string name="nsdError_alreadyActive">already active</string>
     <string name="nsdError_internal">internal error</string>
     <string name="nsdError_maxLimitReached">max limit reached</string>
     <string name="nsdError_unknown">unknown error</string>
-    <string name="card_character_classesAndLevels">Classes and levels</string>
 
     <string name="jsa_title">Join party</string>
-    <string name="jsa_initializing">Initializing…</string>
     <string name="jsa_lookingForParty">Looking for party</string>
     <string name="jsa_autoAdvanceInfo">You will advance to character selection as soon as I can connect to the master device.</string>
     <string name="jsa_errorWhileJoining">Error while joining party %1$s: %2$s</string>
@@ -265,66 +266,68 @@
     <string name="jsa_connectedToForming">Found a party there but it is still being formed. I\'m ignoring it.</string>
     <string name="jsa_connectedDifferentName">Found party \"%1$s\" there. It is not the one we\'re looking for. I suggest to forget about this party but if you want I can try to join anyway (I\'ll most likely fail).</string>
     <string name="jsa_connectedAttemptJoin">Attempt join</string>
-    <string name="sfga_connectedNotForming">Found a party, but it is not being formed. Discarding.</string>
-    <string name="sfga_connectedGotDoormat">Found a party but master wants to verify key and I don\'t know what to do. Discarding.</string>
-    <string name="csa_title">Character selection</string>
-    <string name="csa_assigned">Assigned to this device</string>
-    <string name="csa_assignedInstructions">You can swipe those away to give up a character. They will not be deleted.</string>
-    <string name="csa_available">Available</string>
-    <string name="csa_request">Tap to request the master to assign those to you.</string>
 
-    <string name="vhPHC_imageDesc">Character image</string>
-    <string name="vhAC_imageDesc">Character image</string>
-    <string name="vhAC_hpMax">HP max: %1$d</string>
-    <string name="vhAC_level">Level: %1$d</string>
-    <string name="vhAC_xp">XP: %1$d</string>
+    <string name="csa_title">Character selection</string>
+    <string name="csa_hpMax">HP max: %1$d</string>
+    <string name="csa_level">Level: %1$d</string>
+    <string name="csa_xp">XP: %1$d</string>
     <string name="csa_oneCharSomewhere">One character played on another device.</string>
     <string name="csa_pluralCharsSomewhere">%1$d characters played elsewhere.</string>
-    <string name="vhAC_requested">Requested to be played on this device</string>
     <string name="csa_charOwnershipChangeRefused">Your ownership change request for \"%1$s\" was refused.</string>
     <string name="csa_charOwnershipToSomeoneUnsolicited">Character \"%1$s\" taken away.</string>
     <string name="csa_charOwnershipRequestToSomeoneElse">Character \"%1$s\" will be played on another device.</string>
     <string name="csa_noDefinitiveCharactersHere">The party is now playing, but looks like you have been given no characters! Nothing to do.</string>
     <string name="csa_noDefinitiveCharactersHereDlgDone">Main menu</string>
-    <string name="ga_cannotBindPartyService">Failed to get an handle to the party maintenance service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
+
+    <string name="vhCSAS_assigned">Assigned to this device</string>
+    <string name="vhCSAS_assignedInstructions">You can swipe those away to give up a character. They will not be deleted.</string>
+    <string name="vhCSAS_available">Available</string>
+    <string name="vhCSAS_request">Tap to request the master to assign those to you.</string>
+
+    <string name="vhCSPHC_imageDesc">Character image</string>
+
+    <string name="vhCSAC_imageDesc">Character image</string>
+    <string name="vhCSAC_requested">Requested to be played on this device</string>
+
     <string name="ga_notificationDesc">Play session over network.</string>
-    <string name="ga_lostServiceConnection">Lost connection to the party maintenance service. This was not supposed to happen. Please report this!</string>
     <string name="ga_oneCharNotBound">One character has not been assigned to any device.</string>
     <string name="ga_someCharsNotBound">%1$d characters have not been assigned to any device.</string>
     <string name="ga_unboundCharsDlgMsg">%1$s\nTo continue, all characters must be played by someone.\n\nGo back and long press an unassigned character for some options.</string>
     <string name="ga_ctx_unassigned_pc_playHere">Play on this device</string>
 
     <string name="card_joiningDevice_groupMember">Party member</string>
-    <string name="npdsa_notifyContentNew">Forming new party.</string>
-    <string name="npdsa_notifyContentAdd">Adding to existing party.</string>
+
     <string name="pjos_label">RPG order management</string>
     <string name="pcs_label">RPG party creation</string>
-    <string name="dlg_iec_noPort">Port not currently open.\nNo connections available.</string>
+
     <string name="dlgMHD_instructions">Hidden devices are listed below. You can restore them to view or disconnect them. Both operations require care!</string>
+
     <string name="vhHD_disconnect">Disconnect</string>
     <string name="vhHD_restore">Restore</string>
+
     <string name="dlgSDN_title">Rename device</string>
     <string name="dlgSDN_newNameHint">New name</string>
     <string name="dlgSDN_badName">Names must have at least one character.</string>
     <string name="dlgSDN_visibilityNote">Device names are visible only from this device.</string>
+
     <string name="dlgSCB_title">Set message budget</string>
     <string name="dlgSCB_description">Messages exceeding this length will not be shown.\nPlaying characters have their separate budget.</string>
 
-    <string name="vhOP_charCount_singular">A lone adventurer</string>
-    <string name="vhOP_charCount_plural">%1$d playing characters</string>
-    <string name="vhOP_charLevel_same">Level %1$d</string>
-    <string name="vhOP_charLevel_different">Levels %1$d - %2$d</string>
-    <string name="pes_sessionNotFound">Missing session file.</string>
-    <string name="pes_sessionTooBig">session file takes %1$d, maximum size allowed is %2$d</string>
+    <string name="pps_sessionNotFound">Missing session file.</string>
+    <string name="pps_sessionTooBig">session file takes %1$d, maximum size allowed is %2$d</string>
 
-    <string name="vhAC_avatarDesc">Actor pic</string>
+    <string name="vhAAD_avatarDesc">Actor pic</string>
+
+    <string name="aadVH_actorType_playingCharacter">PC</string>
+    <string name="aadVH_actorType_monster">MOB</string>
+    <string name="aadVH_actorType_npc">NPC</string>
+    <string name="aadVH_actorType_unmatched">\???</string>
+
+    <string name="dlgWIR_title">Waiting initiative rolls</string>
+    <string name="dlgWIR_info">I will switch to battle as soon as I can figure out an order of initiative.\nFor the time being, you must wait.</string>
 
     <string name="fra_title">Adventuring</string>
     <string name="fra_instructions">Select everyone taking part in next battle.</string>
-    <string name="fra_actorType_playingCharacter">PC</string>
-    <string name="fra_actorType_monster">MOB</string>
-    <string name="fra_actorType_npc">NPC</string>
-    <string name="fra_actorType_unmatched">\???</string>
     <string name="fra_startBrandNewSession">Started brand new session.</string>
     <string name="fra_restoredSession">Restored from %1$s.</string>
     <string name="fra_noBattle_zeroPcs">At least one playing character required.</string>
@@ -332,8 +335,6 @@
     <string name="fra_searchable_hint">Search mobs to battle</string>
     <string name="fra_dlgActionIgnoreMissingCharacters">Ignore and start battle</string>
     <string name="fra_dlgMsg_missingChars">Someone will not take part to battle. Is that what you intended?\nInitial surprise round can be managed later.</string>
-    <string name="fra_dlgWIR_title">Waiting initiative rolls</string>
-    <string name="fra_dlgWIR_info">I will switch to battle as soon as I can figure out an order of initiative.\nFor the time being, you must wait.</string>
     <string name="fra_dlgIOErrorSerializingSession_impossible">Could not save session data.\nDetails: %1$s</string>
     <string name="fra_exitDlgMsg">Session data will be saved for later. However, players will have to reconnect and you will have to assign characters again.</string>
     <string name="fra_exitButtonConfirm">Get me out</string>
@@ -347,27 +348,28 @@
     <string name="sma_monsterNameSpawnNote">%1$s (%2$d)</string>
     <string name="sma_battleWillFight">Will fight</string>
 
-    <string name="sma_dlg_mbi_title">Monster book informations</string>
-    <string name="sma_dlg_mbi_created">Created:</string>
-    <string name="sma_dlg_mbi_entries">Entries:</string>
-    <string name="sma_dlg_mbi_monsterCount">Monsters total:</string>
-    <string name="sma_dlg_mbi_incoherentPublisherUnknown">!!! Unknown publisher !!!</string>
-    <string name="sma_dlg_mbi_incoherentPublisherInvalid">!!! Invalid publisher !!!</string>
-    <string name="sma_dlg_mbi_thirdPartyPublisher">(3rd party)</string>
+    <string name="dlgMBI_title">Monster book informations</string>
+    <string name="dlgMBI_created">Created:</string>
+    <string name="dlgMBI_entries">Entries:</string>
+    <string name="dlgMBI_monsterCount">Monsters total:</string>
 
-    <string name="vhMLE_challangeRatio_integral">"CR %1$d"</string>
-    <string name="vhMLE_challangeRatio_fraction">CR %1$d/%2$d</string>
+    <string name="mVH_incoherentPublisherUnknown">!!! Unknown publisher !!!</string>
+    <string name="mVH_incoherentPublisherInvalid">!!! Invalid publisher !!!</string>
+    <string name="mVH_thirdPartyPublisher">(3rd party)</string>
+    <string name="mVH_challangeRatio_integral">CR %1$d</string>
+    <string name="mVH_challangeRatio_fraction">CR %1$d/%2$d</string>
+    <string name="mVH_tappedFeedback">Tap to battle</string>
+    <string name="mVH_spawnCountFeedback">Spawncount to battle: %1$s</string>
+    <string name="mVH_badActionClimbToken">!! Unknown ACTION_CLIMB token !!</string>
+    <string name="mVH_badActionClimbParamArray">!! ACTION_CLIMB param array bad size !!</string>
+    <string name="mVH_actionClimb_tree">tree</string>
+    <string name="mVH_badConditionalInitiative">!! Unknown conditional initiative action !!</string>
+    <string name="mVH_actionClimbing">climbing</string>
+    <string name="mVH_actionClimbingMessage">%1$d if %2$s %3$s</string>
+    <string name="mVH_dragonMaturityNameExpansion">%1$s, %2$s</string>
+    <string name="mVH_elementalMaturityNameExpansion">%1$s, %2$s</string>
+
     <string name="vhMLE_initiative">Initiative:</string>
-    <string name="vhMLE_tappedFeedback">Tap to battle</string>
-    <string name="vhMLE_spawnCountFeedback">Spawncount to battle: %1$s</string>
-    <string name="vhMLE_badActionClimbToken">!! Unknown ACTION_CLIMB token !!</string>
-    <string name="vhMLE_badActionClimbParamArray">!! ACTION_CLIMB param array bad size !!</string>
-    <string name="vhMLE_actionClimb_tree">tree</string>
-    <string name="vhMLE_badConditionalInitiative">!! Unknown conditional initiative action !!</string>
-    <string name="vhMLE_actionClimbing">climbing</string>
-    <string name="vhMLE_actionClimbingMessage">%1$d if %2$s %3$s</string>
-    <string name="vhMLE_dragonMaturityNameExpansion">%1$s, %2$s</string>
-    <string name="vhMLE_elementalMaturityNameExpansion">%1$s, %2$s</string>
 
     <string name="mobs_maturity_da_wyrmling">Wyrmling</string>
     <string name="mobs_maturity_da_veryYoung">Very Young</string>
@@ -382,7 +384,7 @@
     <string name="mobs_maturity_da_wyrm">Wyrm</string>
     <string name="mobs_maturity_da_greatWyrm">Great Wyrm</string>
     <string name="mobs_maturity_eg_small">Small</string>
-    <string name="mobs_maturity_maturity_eg_medium">Medium</string>
+    <string name="mobs_maturity_eg_medium">Medium</string>
     <string name="mobs_maturity_eg_large">Large</string>
     <string name="mobs_maturity_eg_huge">Huge</string>
     <string name="mobs_maturity_eg_greater">Greater</string>
@@ -607,33 +609,36 @@
     <string name="mara_next_title">Pass round to next player</string>
     <string name="mara_next_titleShort">Next</string>
     <string name="mara_round">Round %1$d</string>
-    <string name="mara_dlg_shuffle_title">Delay action</string>
-    <string name="mara_dlg_readyAction_title">Ready action</string>
-
-    <string name="mara_dlgSIO_title">Delay action</string>
-    <string name="mara_dlgSIO_moveBefore">Move up in order</string>
-    <string name="mara_dlgSIO_moveAfter">Move down in order</string>
-    <string name="mara_dlgSIO_apply">Apply</string>
-    <string name="mara_dlgRAP_title">Ready Action</string>
-    <string name="mara_dlgRAP_optionalMessageHint">Optional condition description.</string>
-    <string name="mara_dlgRAP_apply">Apply</string>
+    <string name="mara_shuffle">Delay action</string>
+    <string name="mara_readyAction">Ready action</string>
     <string name="mara_noBackDlgMessage">I cannot let you do that. You have been given a turn to play, you will act. You can get out only by passing turn.</string>
+
+    <string name="dlgSIO_title">Delay action</string>
+    <string name="dlgSIO_moveBefore">Move up in order</string>
+    <string name="dlgSIO_moveAfter">Move down in order</string>
+
+    <string name="isd_apply">Apply</string>
+
+    <string name="dlgRAP_title">Ready Action</string>
+    <string name="dlgRAP_optionalMessageHint">Optional condition description.</string>
+    <string name="dlgRAP_apply">Apply</string>
+
 
     <string name="aoa_title">Hanging around…</string>
     <string name="aoa_title_fighting">Fighting!</string>
     <string name="aoa_startingStatus">Waiting master device.</string>
-    <string name="client_failedServiceBind">Failed to connect to adventuring service. This is required to prevent data loss.\nThis is hopefully a transient error. Try rebooting your device.</string>
-    <string name="aoa_notificationDesc">Adventuring</string>
     <string name="aoa_waitingForBattleStart">Waiting for battle start.</string>
-    <string name="aoa_dlgRI_done">Confirm</string>
-    <string name="aoa_dlgRI_title">Roll for Initiative!</string>
-    <string name="aoa_dlgRI_instructionsAndModifier">Just roll dice and enter result.\nModifier (%1$s) applied automatically.</string>
     <string name="aoa_waitingOtherPlayersRoll">Waiting other players to roll.</string>
     <string name="aoa_waitingMyTurn">Waiting turn.\nDevice will vibrate when your attention is required.</string>
     <string name="aoa_confirmBackDlgMessage">One does not simply get outta there. You are connected to master device, if you go away stuff might go awry for other players.</string>
     <string name="aoa_confirmBackDlgPositiveButton">Quit game</string>
     <string name="aoa_xpIncrement">Awarded +%1$s XPs</string>
     <string name="aoa_xpTotal">%1$s total XPs</string>
+
+    <string name="rid_done">Confirm</string>
+    <string name="rid_instructionsAndModifier">Just roll dice and enter result.\nModifier (%1$s) applied automatically.</string>
+
+    <string name="dlgRI_title">Roll for Initiative!</string>
 
     <string name="aea_title">Distribute XP</string>
     <string name="aea_mobListInfo">Select the monsters to compute their XP awards.</string>
@@ -744,7 +749,7 @@
     <string name="ncma_nameTilHint">Name</string>
     <string name="ncma_save">Validate and save</string>
     <string name="ncma_actionShort">Save</string>
-    <string name="ncma_initLabel">Initiative modifier:</string>
+    <string name="ncma_initLabel">Initiative modifier</string>
     <string name="ncma_tagBtn_notSet">Set tags</string>
     <string name="ncma_crBtn_notSet">Set Challenge Ratio</string>
     <string name="ncma_sizeBtn_notSet">Set size</string>
@@ -799,6 +804,7 @@
 	
     <string name="cardPDS_title">Member devices</string>
     <string name="cardPDS_moreInfo">Those devices have a key to join game.\nNeed to add a device? Hit the menu ︙</string>
+
     <string name="vhPMD_iconDesc">Device icon</string>
 
 </resources>

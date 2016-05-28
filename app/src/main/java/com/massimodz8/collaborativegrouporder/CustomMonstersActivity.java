@@ -54,7 +54,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
                     ids.remove(goner);
                     rv.getAdapter().notifyDataSetChanged();
                     Snackbar.make(findViewById(R.id.activityRoot), R.string.cma_confirmDelete, Snackbar.LENGTH_LONG)
-                            .setAction(R.string.generic_actionDelete, new View.OnClickListener() {
+                            .setAction(R.string.generic_delete, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     // For the time being there are no variations here so I keep it easy.

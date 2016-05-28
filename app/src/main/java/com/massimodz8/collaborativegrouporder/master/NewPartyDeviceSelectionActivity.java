@@ -163,7 +163,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 hiddenManagement.setEnabled(true);
                 String msg = String.format(getString(R.string.npdsa_deviceHidden), room.getDeviceNameByKey(real.key));
                 Snackbar.make(findViewById(R.id.activityRoot), msg, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.generic_action_undo, new View.OnClickListener() {
+                        .setAction(R.string.generic_undo, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 room.setVisible(real.key);

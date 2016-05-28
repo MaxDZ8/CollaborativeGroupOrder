@@ -55,8 +55,8 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         if(!Intent.ACTION_SEARCH.equals(intent.getAction())) return;
         final String query = intent.getStringExtra(SearchManager.QUERY).trim();
 
-        SpawnableAdventuringActorVH.intCrFormat = getString(R.string.vhMLE_challangeRatio_integral);
-        SpawnableAdventuringActorVH.ratioCrFormat = getString(R.string.vhMLE_challangeRatio_fraction);
+        SpawnableAdventuringActorVH.intCrFormat = getString(R.string.mVH_challangeRatio_integral);
+        SpawnableAdventuringActorVH.ratioCrFormat = getString(R.string.mVH_challangeRatio_fraction);
 
         new AsyncTask<Void, Void, Void>() {
             final ArrayList<MatchedEntry> matched = new ArrayList<>();
@@ -415,7 +415,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                     protected String selectedText() {
                         final Integer count = mobCount.get(actor);
                         if(count == null || count < 1) return null;
-                        return String.format(getString(R.string.vhMLE_spawnCountFeedback), String.valueOf(count));
+                        return String.format(getString(R.string.mVH_spawnCountFeedback), String.valueOf(count));
                     }
                 };
             }

@@ -453,7 +453,7 @@ public class PartyPickActivity extends AppCompatActivity {
                 }
             };
             Snackbar sb = Snackbar.make(findViewById(R.id.activityRoot), msg, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.generic_action_undo, new View.OnClickListener() {
+                    .setAction(R.string.generic_undo, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) { undo.run(); }
                     }).setCallback(new Snackbar.Callback() {
@@ -506,7 +506,7 @@ public class PartyPickActivity extends AppCompatActivity {
             group = denseDefs.get(position);
             if(group == null) return; // impossible by construction
             name.setText(group.name);
-            String str = getString(group.party.length == 1? R.string.vhOP_charCount_singular : R.string.vhOP_charCount_plural);
+            String str = getString(group.party.length == 1? R.string.ppa_charCount_singular : R.string.ppa_charCount_plural);
             if(group.party.length > 1) str = String.format(str, group.party.length);
             pgCount.setText(str);
             int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
@@ -514,8 +514,8 @@ public class PartyPickActivity extends AppCompatActivity {
                 min = Math.min(min, actor.level);
                 max = Math.max(max, actor.level);
             }
-            if(min == max) str = String.format(getString(R.string.vhOP_charLevel_same), min);
-            else str = String.format(getString(R.string.vhOP_charLevel_different), max, min);
+            if(min == max) str = String.format(getString(R.string.ppa_charLevel_same), min);
+            else str = String.format(getString(R.string.ppa_charLevel_different), max, min);
             level.setText(str);
             final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
             if(helper == null || helper.sessionData == null) lastPlay.setVisibility(View.GONE);
@@ -711,7 +711,7 @@ public class PartyPickActivity extends AppCompatActivity {
                         final String text = String.format(target.getString(R.string.ppa_actorDeleted), goner.name);
                         final boolean[] rollback = new boolean[] { false };
                         Snackbar.make(target.findViewById(R.id.activityRoot), text, Snackbar.LENGTH_SHORT)
-                                .setAction(R.string.generic_action_undo, new View.OnClickListener() {
+                                .setAction(R.string.generic_undo, new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) { rollback[0] = true; }
                                 }).setCallback(new Snackbar.Callback() {
@@ -746,7 +746,7 @@ public class PartyPickActivity extends AppCompatActivity {
                         final String text = String.format(target.getString(R.string.ppa_deviceDeleted), goner.name);
                         final boolean[] rollback = new boolean[] { false };
                         Snackbar.make(target.findViewById(R.id.activityRoot), text, Snackbar.LENGTH_SHORT)
-                                .setAction(R.string.generic_action_undo, new View.OnClickListener() {
+                                .setAction(R.string.generic_undo, new View.OnClickListener() {
                                     @Override
                                     public void onClick(View v) { rollback[0] = true; }
                                 })

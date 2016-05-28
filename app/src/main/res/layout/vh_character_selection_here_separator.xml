@@ -17,14 +17,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/csa_assigned"
+            android:text="@string/vhCSAS_assigned"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="@string/csa_assignedInstructions" />
+            android:text="@string/vhCSAS_assignedInstructions" />
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

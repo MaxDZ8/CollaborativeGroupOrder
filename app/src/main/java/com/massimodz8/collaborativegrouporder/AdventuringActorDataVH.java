@@ -39,16 +39,16 @@ public abstract class AdventuringActorDataVH extends RecyclerView.ViewHolder imp
         int res;
         switch (actor.type) {
             case Network.ActorState.T_PLAYING_CHARACTER:
-                res = R.string.fra_actorType_playingCharacter;
+                res = R.string.aadVH_actorType_playingCharacter;
                 break;
             case Network.ActorState.T_MOB:
-                res = R.string.fra_actorType_monster;
+                res = R.string.aadVH_actorType_monster;
                 break;
             case Network.ActorState.T_NPC:
-                res = R.string.fra_actorType_npc;
+                res = R.string.aadVH_actorType_npc;
                 break;
             default:
-                res = R.string.fra_actorType_unmatched;
+                res = R.string.aadVH_actorType_unmatched;
         }
         actorShortType.setText(res);
         name.setText(actor.name);

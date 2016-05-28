@@ -114,7 +114,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             port = Integer.parseInt(inetPort.getText().toString());
         } catch(NumberFormatException e) {
             AlertDialog.Builder build = new AlertDialog.Builder(this, R.style.AppDialogStyle);
-            build.setMessage(R.string.badPort_msg);
+            build.setMessage(R.string.eca_badPort);
             build.show();
             inetPort.requestFocus();
             return;
@@ -206,7 +206,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             try {
                 s = new Socket(addr, port);
             } catch (UnknownHostException e) {
-                fail = new Error(null, getString(R.string.badHost_msg));
+                fail = new Error(null, getString(R.string.eca_badHost));
                 fail.refocus = R.id.eca_inetAddr;
                 return null;
 

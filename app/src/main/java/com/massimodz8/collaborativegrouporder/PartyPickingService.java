@@ -79,7 +79,7 @@ public class PartyPickingService extends Service {
                 File subdir = new File(getFilesDir(), PersistentDataUtils.SESSION_DATA_SUBDIR);
                 File data = new File(subdir, sessionFile);
                 if(!data.exists()) {
-                    errors.put(party, getString(R.string.pes_sessionNotFound));
+                    errors.put(party, getString(R.string.pps_sessionNotFound));
                     return 1;
                 }
                 Session.Suspended loaded = new Session.Suspended();
@@ -88,7 +88,7 @@ public class PartyPickingService extends Service {
                     return 0;
                 }
                 if(data.length() > PersistentDataUtils.MAX_SESSION_DATA_BYTES) {
-                    errors.put(party, String.format(getString(R.string.pes_sessionTooBig), data.length(), PersistentDataUtils.MAX_SESSION_DATA_BYTES));
+                    errors.put(party, String.format(getString(R.string.pps_sessionTooBig), data.length(), PersistentDataUtils.MAX_SESSION_DATA_BYTES));
                     return 1;
                 }
                 FileInputStream load;

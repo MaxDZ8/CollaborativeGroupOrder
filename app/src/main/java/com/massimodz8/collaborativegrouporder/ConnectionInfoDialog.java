@@ -33,7 +33,7 @@ public class ConnectionInfoDialog {
         diag.setContentView(R.layout.dialog_info_explicit_connect);
         final TextView port = (TextView) diag.findViewById(R.id.dlg_iec_port);
         final TextView addr = (TextView) diag.findViewById(R.id.dlg_iec_addresses);
-        port.setText(String.format(activity.getString(R.string.dlg_iec_port), serverPort));
+        port.setText(String.format(activity.getString(R.string.dlgIEC_port), serverPort));
         addr.setText(listAddresses(activity));
         MaxUtils.setVisibility(diag, serverPort == 0? View.GONE : View.VISIBLE,
                 R.id.dlg_iec_addrInstructions,
@@ -50,7 +50,7 @@ public class ConnectionInfoDialog {
         try {
             nics = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e) {
-            return ctx.getString(R.string.cannotEnumerateNICs);
+            return ctx.getString(R.string.master_cannotEnumerateNICs);
         }
         String hostInfo = "";
         if (nics != null) {

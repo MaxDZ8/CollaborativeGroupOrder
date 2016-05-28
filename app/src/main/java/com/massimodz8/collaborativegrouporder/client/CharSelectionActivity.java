@@ -424,9 +424,9 @@ public class CharSelectionActivity extends AppCompatActivity {
         public void bind(TransactingCharacter o) {
             charKey = o.pc.peerKey;
             name.setText(o.pc.name);
-            level.setText(String.format(getString(R.string.vhAC_level), o.pc.level));
-            hpmax.setText(String.format(getString(R.string.vhAC_hpMax), o.pc.healthPoints));
-            xp.setText(String.format(getString(R.string.vhAC_xp), o.pc.experience));
+            level.setText(String.format(getString(R.string.csa_level), o.pc.level));
+            hpmax.setText(String.format(getString(R.string.csa_hpMax), o.pc.healthPoints));
+            xp.setText(String.format(getString(R.string.csa_xp), o.pc.experience));
             requested.setVisibility(o.pending != TransactingCharacter.NO_REQUEST? View.VISIBLE : View.GONE);
         }
 

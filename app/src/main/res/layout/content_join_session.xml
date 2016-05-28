@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/jsa_initializing"
+        android:text="@string/generic_initializing"
         android:id="@+id/jsa_state"
         android:layout_gravity="center_horizontal" />
 
@@ -40,7 +40,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/generic_unreadable_at_start"
         android:id="@+id/jsa_partyName"
         android:layout_gravity="center_horizontal" />
 

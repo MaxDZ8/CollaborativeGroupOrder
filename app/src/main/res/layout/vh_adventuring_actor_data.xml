@@ -9,7 +9,7 @@
         android:id="@+id/vhAAD_avatar"
         android:layout_alignParentTop="true"
         android:src="@drawable/placeholder_todo"
-        android:contentDescription="@string/vhAC_avatarDesc"
+        android:contentDescription="@string/vhAAD_avatarDesc"
         android:layout_marginRight="4dp" />
 
     <TextView

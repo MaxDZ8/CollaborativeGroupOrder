@@ -21,7 +21,6 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:id="@+id/card_joinableGroup_name"
             android:layout_gravity="center_horizontal"
-            android:text="@string/generic_unreadable_at_start"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
@@ -29,7 +28,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/generic_unreadable_at_start"
             android:id="@+id/card_joinableGroup_options"
             android:visibility="visible"
             android:layout_gravity="center_horizontal"
@@ -43,7 +41,7 @@
             android:inputType="textAutoComplete|textAutoCorrect"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:hint="@string/card_joinableGroup_talkHint"
+            android:hint="@string/sfga_talkHint"
             android:layout_below="@+id/card_joinableGroup_options"
             android:imeOptions="actionSend"
             android:gravity="center_horizontal" />

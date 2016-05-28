@@ -44,7 +44,7 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
         int hp = 0, lvl = 0, init = 0, xp = 0;
         int errorCount = 0;
         String error = null;
-        if(name.getEditText().getText().length() < 1) error = getString(R.string.charInputValidation_badName);
+        if(name.getEditText().getText().length() < 1) error = getString(R.string.pcVH_badName);
         name.setError(error);
         if(error != null) errorCount++;
 

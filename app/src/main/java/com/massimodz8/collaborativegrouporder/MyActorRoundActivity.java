@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -175,8 +174,9 @@ public class MyActorRoundActivity extends AppCompatActivity {
                 final PartyJoinOrderService server = RunningServiceHandles.getInstance().play;
                 final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
                 if(server == null && client == null) {
-                    Snackbar.make(findViewById(R.id.activityRoot), R.string.generic_validButTooEarly, Snackbar.LENGTH_SHORT).show();
-                    break; // possible, if user hits button before service connection estabilished. Not likely.
+                    // Now I use singletons I don't need to connect to the service so this is impossible.
+                    // But the static analyzer does not know. Make it happy.
+                    break;
                 }
                 if(server != null) {
                     BattleHelper battle  = server.session.battleState;
@@ -190,8 +190,9 @@ public class MyActorRoundActivity extends AppCompatActivity {
                     myIndex = gotcha;
                 }
                 else if(client.currentActor == -1) {
-                    Snackbar.make(findViewById(R.id.activityRoot), R.string.generic_validButTooEarly, Snackbar.LENGTH_SHORT).show();
-                    break; // impossible by construction if we're here, but maybe state is slightly inconsistent as just transitioned. Protect from future changes.
+                    // Now I use singletons I don't need to connect to the service so this is impossible.
+                    // But the static analyzer does not know. Make it happy.
+                    break;
                 }
                 else {
                     AdventuringService.ActorWithKnownOrder current = client.actors.get(client.currentActor);
@@ -228,13 +229,13 @@ public class MyActorRoundActivity extends AppCompatActivity {
                                 }
                             }
                         }).create();
-                dlg.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.mara_dlgRAP_apply), new DialogInterface.OnClickListener() {
+                dlg.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dlgRAP_apply), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             EditText text = (EditText) dlg.findViewById(R.id.mara_dlgRAP_optionalMessage);
                             final String s = text.getText().toString();
                             if(!s.isEmpty()) requestReadiedAction(s);
-                            else requestReadiedAction(getString(R.string.mara_dlg_readyAction_title));
+                            else requestReadiedAction(getString(R.string.mara_readyAction));
                             turnDone();
                         }
                     }

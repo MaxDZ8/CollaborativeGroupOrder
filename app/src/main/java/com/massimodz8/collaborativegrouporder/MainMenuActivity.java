@@ -65,7 +65,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setCancelable(false)
                     .setMessage(R.string.mma_failedToInitHasher)
-                    .setPositiveButton(getString(R.string.mma_quit), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.generic_quit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             finish();
@@ -592,7 +592,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     .setWhen(System.currentTimeMillis())
                     .setShowWhen(true)
                     .setContentTitle(temp.name)
-                    .setContentText(getString(R.string.aoa_notificationDesc))
+                    .setContentText(getString(R.string.mma_notificationDesc))
                     .setSmallIcon(R.drawable.ic_notify_icon)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

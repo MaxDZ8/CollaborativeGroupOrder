@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/dlg_iec_networkAddresses"
+        android:text="@string/dlgIEC_networkAddresses"
         android:layout_gravity="center_horizontal" />
 
     <TextView
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/dlg_iec_tryAddressesHint"
+        android:text="@string/dlgIEC_tryAddressesHint"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="8sp"
         android:id="@+id/dlg_iec_addrInstructions" />
@@ -54,7 +54,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/dlg_iec_portInfo"
+        android:text="@string/dlgIEC_portInfo"
         android:layout_gravity="center_horizontal"
         android:id="@+id/dlg_iec_portInstructions" />
 
@@ -62,7 +62,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/dlg_iec_noPort"
+        android:text="@string/dlgIEC_noPort"
         android:id="@+id/dlg_iec_noPort"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>

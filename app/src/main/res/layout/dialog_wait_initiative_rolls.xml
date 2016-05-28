@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/fra_dlgWIR_title"
+        android:text="@string/dlgWIR_title"
         android:textStyle="bold"
         android:layout_gravity="center_horizontal" />
 
@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/fra_dlgWIR_info" />
+        android:text="@string/dlgWIR_info" />
 
     <ProgressBar
         style="?android:attr/progressBarStyleHorizontal"

@@ -15,7 +15,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/generic_unreadable_at_start"
         android:id="@+id/card_joiningDevice_msg"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="false"

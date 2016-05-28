@@ -210,13 +210,13 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
                     final CharSequence msg = message.getText();
                     if(msg.length() == 0) {
                         new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
-                                .setMessage(R.string.saySomethingToServer_emptyForbidden)
+                                .setMessage(R.string.sfga_emptyMessageForbidden)
                                 .show();
                         return false;
                     }
                     if(msg.length() > source.charBudget) {
                         new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
-                                .setMessage(R.string.saySomethingToServer_tooLong)
+                                .setMessage(R.string.sfga_messageTooLong)
                                 .show();
                         return false;
                     }
@@ -242,7 +242,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
             holder.name.setText(info.group.name);
             holder.curLen.setText(String.valueOf(current));
             holder.lenLimit.setText(String.valueOf(allowed));
-            holder.message.setHint(info.lastMsgSent != null? info.lastMsgSent : getString(R.string.card_joinableGroup_talkHint));
+            holder.message.setHint(info.lastMsgSent != null? info.lastMsgSent : getString(R.string.sfga_talkHint));
             if(info.group.options == null || info.group.options.length == 0) holder.options.setVisibility(View.GONE);
             else {
                 String total = getString(R.string.card_group_options);
@@ -408,7 +408,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
             protected void onPostExecute(Exception error) {
                 if(error != null) {
                     new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
-                            .setMessage(getString(R.string.sendMessageErrorDesc) + error.getLocalizedMessage())
+                            .setMessage(getString(R.string.sfga_sendMessageErrorDesc) + error.getLocalizedMessage())
                             .show();
                     return;
                 }

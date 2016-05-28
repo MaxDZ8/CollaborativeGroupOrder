@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/mara_dlgSIO_title"
+        android:text="@string/dlgSIO_title"
         android:textStyle="bold"
         android:layout_gravity="center_horizontal" />
 
@@ -25,7 +25,7 @@
         android:drawableLeft="@drawable/ic_arrow_upward_white_24dp"
         android:drawableRight="@drawable/ic_arrow_upward_white_24dp"
         android:id="@+id/mara_dlgSIO_moveBefore"
-        android:text="@string/mara_dlgSIO_moveBefore" />
+        android:text="@string/dlgSIO_moveBefore" />
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="wrap_content"
@@ -42,5 +42,5 @@
         android:drawableLeft="@drawable/ic_arrow_downward_white_24dp"
         android:drawableRight="@drawable/ic_arrow_downward_white_24dp"
         android:id="@+id/mara_dlgSIO_moveAfter"
-        android:text="@string/mara_dlgSIO_moveAfter" />
+        android:text="@string/dlgSIO_moveAfter" />
 </LinearLayout>
