@@ -153,4 +153,10 @@ public abstract class MaxUtils {
     /**//**//**/public static final int FA_PARAM_STEP_ASSEMBLED = 1; // device gathering ok, free roaming launched
     /**//**//**/public static final int FA_PARAM_STEP_NEW_BATTLE = 2; // device gathering ok, free roaming launched
     /**/public static final String FA_PARAM_ADVENTURING_ID = "sortaUniqueGroupId"; // byte[]
+
+    // Used with FirebaseAnalytics.Event.SEARCH
+    /**/public static final String FA_PARAM_MONSTERS = "currentEnemies"; // String[]
+
+    // Used with FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS
+    /**/public static final String FA_PARAM_SEARCH_MATCH_COUNT = "matchedEnemies"; // int
 }
