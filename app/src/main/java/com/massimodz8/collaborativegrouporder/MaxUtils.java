@@ -140,4 +140,10 @@ public abstract class MaxUtils {
             fullData = buffer;
         }
     }
+
+    // Events for all Firebase Analytics events I want to track to help me monitor userbase health more accurately.
+    // I gather everything here for the lack of a better place.
+    public static final String FA_EVENT_PARTY_COMPLETED = "newParty";
+        public static final String FA_PARAM_GOING_ADVENTURE = "adventureShortcut";
+        public static final String FA_PARAM_KNOWN_PC_COUNT = "pcsAtCreationTime";
 }

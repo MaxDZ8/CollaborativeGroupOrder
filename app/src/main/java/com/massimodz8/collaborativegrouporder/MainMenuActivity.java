@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.ActorOverviewActivity;
@@ -118,6 +119,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 new AsyncLoadAll().execute();
             }
         }.execute();
+
+        FirebaseAnalytics.getInstance(this); // not really relevant, it's for initialization!
     }
 
     private void dataRefreshed() {
