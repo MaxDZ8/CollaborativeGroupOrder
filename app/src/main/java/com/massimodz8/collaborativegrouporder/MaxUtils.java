@@ -140,4 +140,23 @@ public abstract class MaxUtils {
             fullData = buffer;
         }
     }
+
+    // Events for all Firebase Analytics events I want to track to help me monitor userbase health more accurately.
+    // I gather everything here for the lack of a better place.
+    public static final String FA_EVENT_PARTY_COMPLETED = "newParty";
+    /**/public static final String FA_PARAM_GOING_ADVENTURE = "adventureShortcut";
+    /**/public static final String FA_PARAM_KNOWN_PC_COUNT = "pcsAtCreationTime";
+
+    public static final String FA_EVENT_PLAYING = "playing";
+    /**/public static final String FA_PARAM_STEP = "phase"; // enumerated value, can be
+    /**//**/public static final int FA_PARAM_STEP_GATHER = 0; // started gathering devices
+    /**//**//**/public static final int FA_PARAM_STEP_ASSEMBLED = 1; // device gathering ok, free roaming launched
+    /**//**//**/public static final int FA_PARAM_STEP_NEW_BATTLE = 2; // device gathering ok, free roaming launched
+    /**/public static final String FA_PARAM_ADVENTURING_ID = "sortaUniqueGroupId"; // byte[]
+
+    // Used with FirebaseAnalytics.Event.SEARCH
+    /**/public static final String FA_PARAM_MONSTERS = "currentEnemies"; // String[]
+
+    // Used with FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS
+    /**/public static final String FA_PARAM_SEARCH_MATCH_COUNT = "matchedEnemies"; // int
 }

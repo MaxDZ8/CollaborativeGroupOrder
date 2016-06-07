@@ -49,6 +49,8 @@ public class PartyJoinOrderService extends PublishAcceptService {
      */
     public ArrayList<StartData.PartyOwnerData.Group> allOwnedGroups;
 
+    public byte[] publishToken;
+
     /* Section 3: identifying joining devices and binding characters. ------------------------------
                 This goes in parallel with landing socket and publish management so you're better set this up ASAP.
                 As usual, it can be initialized only once and then the service will have to be destroyed.

@@ -14,10 +14,13 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.AdventuringActorDataVH;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
-import com.massimodz8.collaborativegrouporder.InterstitialAdPlaceholderActivity;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
@@ -60,6 +63,19 @@ public class ActorOverviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actor_overview);
+
+        AdView mAdView = (AdView) findViewById(R.id.aoa_advertising_banner);
+        mAdView.loadAd(new AdRequest.Builder().build());
+
+        interstitial = new InterstitialAd(this);
+        interstitial.setAdUnitId(getString(R.string.aoa_advertising_interstitial_id));
+        interstitial.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                interstitial.loadAd(new AdRequest.Builder().build());
+            }
+        });
+        interstitial.loadAd(new AdRequest.Builder().build());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -394,6 +410,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
     public static final int RESULT_GOODBYE = RESULT_FIRST_USER;
 
     private int updateCall, rollRequestCall, actorChangedCall, endedCall;
+    private InterstitialAd interstitial;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -402,12 +419,11 @@ public class ActorOverviewActivity extends AppCompatActivity {
             lister.notifyDataSetChanged();
             if (resultCode == RESULT_OK) {
                 ticker.ticksSinceLastAd++;
-                boolean admobReady = true;
-                if (ticker.ticksSinceLastAd >= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER && admobReady) {
+                if (ticker.ticksSinceLastAd >= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER && interstitial != null && interstitial.isLoaded()) {
                     ticker.ticksSinceLastAd -= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER;
-                    startActivity(new Intent(this, InterstitialAdPlaceholderActivity.class));
-                    return;
+                    interstitial.show();
                 }
+                return;
             }
         }
         ticker.onCurrentActorChanged.get().run();

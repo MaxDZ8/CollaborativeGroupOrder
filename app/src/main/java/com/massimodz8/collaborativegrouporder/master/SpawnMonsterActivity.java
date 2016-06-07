@@ -10,18 +10,21 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MonsterVH;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
@@ -34,6 +37,7 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class SpawnMonsterActivity extends AppCompatActivity {
     public static boolean includePreparedBattles = true;
@@ -54,6 +58,14 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(!Intent.ACTION_SEARCH.equals(intent.getAction())) return;
         final String query = intent.getStringExtra(SearchManager.QUERY).trim();
+
+        // Match what .spawn adds to name in case of collisions. This is currently the name followed by parameters.
+        Pattern simplifier = Pattern.compile("\\s\\(\\d*\\)");
+        FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
+        Bundle info = new Bundle();
+        info.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
+        info.putStringArrayList(MaxUtils.FA_PARAM_MONSTERS, mobNames(simplifier));
+        surveyor.logEvent(FirebaseAnalytics.Event.SEARCH, info);
 
         SpawnableAdventuringActorVH.intCrFormat = getString(R.string.mVH_challangeRatio_integral);
         SpawnableAdventuringActorVH.ratioCrFormat = getString(R.string.mVH_challangeRatio_fraction);
@@ -162,6 +174,12 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 final TextView status = (TextView) findViewById(R.id.sma_status);
                 if(this.matched.size() == 1) status.setText(R.string.sma_status_matchedSingle);
                 else status.setText(String.format(getString(R.string.sma_status_matchedMultiple), this.matched.size()));
+
+                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(SpawnMonsterActivity.this);
+                Bundle info = new Bundle();
+                info.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
+                info.putInt(MaxUtils.FA_PARAM_SEARCH_MATCH_COUNT, matched.size());
+                surveyor.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, info);
             }
         }.execute();
 
@@ -182,6 +200,27 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private ArrayList<String> mobNames(Pattern simplifier) {
+        SessionHelper session = RunningServiceHandles.getInstance().play.session;
+        int count = 0;
+        for (Network.ActorState as : session.temporaries) {
+            if(as.type != Network.ActorState.T_MOB) continue;
+            count++;
+        }
+        ArrayList<String> res = new ArrayList<>(count);
+        // Problem: what if the user inputs custom monsters which names are (C), (R), ™ or whatever?
+        // I cannot just store them. So what I'm doing: I remove everything I might have added to disambiguate,
+        // I remove digits, (), punctuation and then hash it. Same hash, same thing. But! I cannot store those either as
+        // bundles have arrays of strings but not arrays of arrays... meh! I just send everything Base64 and be done.
+        for (Network.ActorState as : session.temporaries) {
+            if(as.type != Network.ActorState.T_MOB) continue;
+            String cleared = simplifier.matcher(as.name).replaceAll("");
+            MaxUtils.hasher.reset();
+            res.add(Base64.encodeToString(MaxUtils.hasher.digest(cleared.getBytes()), Base64.DEFAULT));
+        }
+        return res;
     }
 
     private void spawn(HashMap<String, Integer> nameColl, Network.ActorState actorState, Integer count) {

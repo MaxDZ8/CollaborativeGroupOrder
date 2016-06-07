@@ -20,6 +20,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.ActorOverviewActivity;
@@ -118,6 +120,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 new AsyncLoadAll().execute();
             }
         }.execute();
+
+        FirebaseAnalytics.getInstance(this); // not really relevant, it's for initialization!
+        MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
     }
 
     private void dataRefreshed() {
@@ -485,6 +490,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             } break;
             case REQUEST_GATHER_DEVICES: {
                 startActivityForResult(new Intent(this, FreeRoamingActivity.class), REQUEST_PLAY);
+
+                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
+                Bundle bundle = new Bundle();
+                bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_ASSEMBLED);
+                bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, RunningServiceHandles.getInstance().play.publishToken);
+                surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
                 break;
             }
         }

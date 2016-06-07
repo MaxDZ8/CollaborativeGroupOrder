@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "583972878375",
+    "firebase_url": "https://project-2781791718113738158.firebaseio.com",
+    "project_id": "project-2781791718113738158",
+    "storage_bucket": "project-2781791718113738158.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583972878375:android:c8e5b4b4a48d88d5",
+        "android_client_info": {
+          "package_name": "com.massimodz8.collaborativegrouporder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583972878375-ih9spemf555lfk6icqfb7q4ickpn7mvs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPUIcsgzuGrBcEJu9KxuwvKuabI_bpFdk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

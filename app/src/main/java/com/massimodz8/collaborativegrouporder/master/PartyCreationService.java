@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.AsyncLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
@@ -304,6 +306,22 @@ public class PartyCreationService extends PublishAcceptService {
                 } catch (InterruptedException e) {
                     // Sorry dudes, we're going down anyway.
                 }
+
+                int count = 0;
+                for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                    if(!dev.groupMember || dev.kicked) continue;
+                    for (BuildingPlayingCharacter pc : dev.chars) {
+                        if(pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED) count++;
+                    }
+                }
+                for (BuildingPlayingCharacter pc : building.localChars) {
+                    if(pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED) count++;
+                }
+                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(PartyCreationService.this);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(MaxUtils.FA_EVENT_PARTY_COMPLETED, goAdventuring);
+                surveyor.logEvent(MaxUtils.FA_PARAM_GOING_ADVENTURE, bundle);
+                bundle.putInt(MaxUtils.FA_PARAM_KNOWN_PC_COUNT, count);
                 return null;
             }
 

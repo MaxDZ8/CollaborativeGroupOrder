@@ -22,11 +22,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
+import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
@@ -204,6 +206,11 @@ public class FreeRoamingActivity extends AppCompatActivity {
                     dev.movedToBattlePumper = true;
                 }
                 startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
+                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
+                Bundle bundle = new Bundle();
+                bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_NEW_BATTLE);
+                bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, RunningServiceHandles.getInstance().play.publishToken);
+                surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
             }
             else {
                 String date = DateFormat.getDateInstance().format(new Date(stats.lastSaved.seconds * 1000));
@@ -348,7 +355,14 @@ public class FreeRoamingActivity extends AppCompatActivity {
         game.session.battleState = new BattleHelper(order);
         game.pushBattleOrder();
         for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
+
         startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
+        FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_NEW_BATTLE);
+        bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, RunningServiceHandles.getInstance().play.publishToken);
+        surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
+
         findViewById(R.id.fab).setVisibility(View.VISIBLE);
         return true;
     }

@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
@@ -32,6 +33,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 /** The server is 'gathering' player devices so they can join a new session.
  * This is important and we must be able to navigate back there every time needed in case
@@ -138,7 +140,19 @@ public class GatheringActivity extends AppCompatActivity {
             return;
         }
         final NsdManager sys = (NsdManager) getSystemService(NSD_SERVICE);
-        room.beginPublishing(sys, room.getPartyOwnerData().name, PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
+        StartData.PartyOwnerData.Group party = room.getPartyOwnerData();
+        room.beginPublishing(sys, party.name, PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
+
+        String easygoing = String.format(Locale.ENGLISH, "name: %1$s, published: %2$d, charCount=%3$d, devCount=%4$d, created=%5$d. Measure userbase health.",
+                party.name, System.currentTimeMillis(),
+                party.party.length + party.npcs.length, party.devices.length, party.created.seconds);
+        MaxUtils.hasher.reset();
+        room.publishToken = MaxUtils.hasher.digest(easygoing.getBytes());
+        FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_GATHER);
+        bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, room.publishToken);
+        surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
     }
 
     @Override
