@@ -16,10 +16,7 @@ app/build/outputs/apk/app-debug.apk
 app/build/outputs/logs
 app/build/generated/source/buildConfig/androidTest/debug/com/massimodz8/collaborativegrouporder/test/BuildConfig.java
 app/build/generated/source/buildConfig/debug/com/massimodz8/collaborativegrouporder/BuildConfig.java
-app/build/generated/source/r/debug/android/support/v7/appcompat/R.java
-app/build/generated/source/r/debug/com/massimodz8/collaborativegrouporder/R.java
 build/intermediates/dex-cache/cache.xml
-app/build/generated/source/r/debug/android/support/design/R.java
 .gradle/2.10/taskArtifacts/cache.properties.lock
 .gradle/2.10/taskArtifacts/fileHashes.bin
 .gradle/2.10/taskArtifacts/fileSnapshots.bin
@@ -34,3 +31,5 @@ app/build/generated/res/pngs
 .gradle/2.10/tasks/_app_compileDebugAndroidTestJavaWithJavac
 .gradle/2.10/tasks/_app_compileDebugUnitTestJavaWithJavac
 app/build/tmp
+app/build/generated/source/r
+.idea/libraries
