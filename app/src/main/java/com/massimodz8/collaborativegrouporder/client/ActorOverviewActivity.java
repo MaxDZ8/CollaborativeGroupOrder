@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.AdventuringActorDataVH;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
@@ -60,6 +62,9 @@ public class ActorOverviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actor_overview);
+
+        AdView mAdView = (AdView) findViewById(R.id.aoa_advertising_banner);
+        mAdView.loadAd(new AdRequest.Builder().build());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

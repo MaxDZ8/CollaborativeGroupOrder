@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
@@ -121,6 +122,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         }.execute();
 
         FirebaseAnalytics.getInstance(this); // not really relevant, it's for initialization!
+        MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
     }
 
     private void dataRefreshed() {
