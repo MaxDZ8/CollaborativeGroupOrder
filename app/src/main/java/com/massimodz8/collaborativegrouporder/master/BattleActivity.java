@@ -173,6 +173,7 @@ public class BattleActivity extends AppCompatActivity {
                     if (actor.peerKey != state.currentActor) {
                         if(selected.isEnabled()) selected.setChecked(!selected.isChecked()); // toggle 'will act next round'
                     } else {
+                        game.session.lastActivated = BattleHelper.INVALID_ACTOR;
                         activateNewActorLocal();
                     }
                 }
@@ -243,12 +244,13 @@ public class BattleActivity extends AppCompatActivity {
             //battle.actorCompleted(true);
             if(target.actor.peerKey < game.assignmentHelper.assignment.size()) { // chance it could be remote
                 Integer index = game.assignmentHelper.assignment.get(target.actor.peerKey);
-                if(index != null && index != PcAssignmentHelper.LOCAL_BINDING) {
+                if(index != null && index != PcAssignmentHelper.LOCAL_BINDING && target.actor.peerKey != game.session.lastActivated) {
                     final MessageChannel pipe = game.assignmentHelper.peers.get(index).pipe;
                     Network.TurnControl activation = new Network.TurnControl();
                     activation.type = Network.TurnControl.T_PREPARED_TRIGGERED;
                     activation.peerKey = target.actor.peerKey;
                     activation.round = battle.round;
+                    game.session.lastActivated = target.actor.peerKey;
                     if(pipe != null) game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.TURN_CONTROL, activation, null));
                 }
             }
@@ -279,6 +281,7 @@ public class BattleActivity extends AppCompatActivity {
             lister.notifyDataSetChanged();
             return;
         }
+        RunningServiceHandles.getInstance().play.session.lastActivated = BattleHelper.INVALID_ACTOR;
         actionCompleted(true);
     }
 
@@ -340,7 +343,7 @@ public class BattleActivity extends AppCompatActivity {
         final Network.ActorState actor = game.session.getActorById(battle.currentActor);
         final MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
         if(actor.prepareCondition.isEmpty()) {
-            if(pipe != null) {
+            if(pipe != null && game.session.lastActivated != actor.peerKey) {
                 Network.TurnControl payload = new Network.TurnControl();
                 payload.peerKey = actor.peerKey;
                 payload.type = Network.TurnControl.T_REGULAR;
@@ -377,7 +380,8 @@ public class BattleActivity extends AppCompatActivity {
                             payload.peerKey = actor.peerKey;
                             payload.type = Network.TurnControl.T_REGULAR;
                             payload.round = battle.round;
-                            if(dev.pipe != null) game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, payload, null));
+                            if(dev.pipe != null && game.session.lastActivated != actor.peerKey) game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, payload, null));
+                            game.session.lastActivated = actor.peerKey;
                         }
                         activateNewActorLocal();
                     }
@@ -395,6 +399,8 @@ public class BattleActivity extends AppCompatActivity {
                 return;
             }
         }
+        if(active == game.session.lastActivated) return;
+        game.session.lastActivated = active;
         final Intent intent = new Intent(this, MyActorRoundActivity.class)
                 .putExtra(MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION, true)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

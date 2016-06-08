@@ -27,7 +27,6 @@ import java.util.Set;
  * state. Session data is a superset of StartData so we have to be careful!
  */
 public abstract class SessionHelper {
-
     abstract void onRollReceived(); // called after rollRequest.push
     abstract public void turnDone(MessageChannel from, int peerKey);
     public abstract void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot);
@@ -44,7 +43,14 @@ public abstract class SessionHelper {
      * When gone from there, delete it forever (from the pooled ids, usually from SessionHelper.temporaries)
      */
     public ArrayList<DefeatedData> defeated;
-    public @ActorId  ArrayList<WinnerData> winners;
+    public @ActorId ArrayList<WinnerData> winners;
+
+    /**
+     * This can be INVALID_ACTOR or the id of the actor we have activated.
+     * Activation can be local (go to MARA) or remote (send packets). When this is the same as the
+     * current actor those two behaviours are suppressed.
+     */
+    public @ActorId int lastActivated = BattleHelper.INVALID_ACTOR;
 
     /**
      * If this is non-null then we're preparing to start a new battle.

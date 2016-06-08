@@ -68,8 +68,10 @@ public class MyActorRoundActivity extends AppCompatActivity {
         else {
             final PartyJoinOrderService server = RunningServiceHandles.getInstance().play;
             BattleHelper battle  = server.session.battleState;
-            int curid = battle.actorCompleted(false);
-            actor = server.session.getActorById(curid);
+            int curid = battle.currentActor;
+            actor = server.session.getActorById(server.session.lastActivated);
+            battle.currentActor = server.session.lastActivated;
+            battle.actorCompleted(false);
             round = battle.round;
             nextActor = server.session.getActorById(battle.currentActor).name;
             battle.currentActor = curid;
