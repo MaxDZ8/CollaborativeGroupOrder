@@ -145,7 +145,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
             }
         };
         Session.Suspended stats = game.session.stats;
-        if(stats.live.length > 0) { // restore state from previous session!
+        if(stats.live != null && stats.live.length > 0) { // restore state from previous session!
             HashMap<Integer, Integer> remember = new HashMap<>(); // peerkey remapping is only useful for 'temporary' actors but it makes code more streamlined
             for(int loop = 0; loop < stats.live.length; loop++) { // First we take care of 'byDef' characters, they're easier.
                 Network.ActorState live = stats.live[loop];
@@ -217,7 +217,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 String snackMsg = String.format(getString(R.string.fra_restoredSession), date);
                 Snackbar.make(findViewById(R.id.activityRoot), snackMsg, Snackbar.LENGTH_SHORT).show();
             }
-            stats.live = null;  // put everything back to runtime, no need to keep. Avoid logical leak.
+            stats.live = null;  // put everything back to runtime, no need to keep. Avoid logical leak. Note this is not a valid protobuf object anymore!
             stats.notFighting = null;
             stats.fighting = null;
             lister.notifyDataSetChanged();
@@ -227,7 +227,10 @@ public class FreeRoamingActivity extends AppCompatActivity {
         if(game.session.initiatives != null) waiting = new WaitInitiativeDialog(game.session).show(this);
         attemptBattleStart();
         lister.notifyDataSetChanged();
-        Snackbar.make(findViewById(R.id.activityRoot), getString(R.string.fra_startBrandNewSession), Snackbar.LENGTH_SHORT).show();
+        if(stats.live != null) {
+            Snackbar.make(findViewById(R.id.activityRoot), getString(R.string.fra_startBrandNewSession), Snackbar.LENGTH_SHORT).show();
+            stats.live = null;
+        }
         numActors = lister.getItemCount();
     }
 
