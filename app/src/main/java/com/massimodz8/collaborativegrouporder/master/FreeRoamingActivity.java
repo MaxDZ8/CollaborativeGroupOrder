@@ -359,6 +359,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         game.pushBattleOrder();
         for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
 
+        game.session.initiatives = null;
         startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
         FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
