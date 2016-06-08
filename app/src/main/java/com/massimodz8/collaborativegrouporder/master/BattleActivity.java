@@ -94,6 +94,13 @@ public class BattleActivity extends AppCompatActivity {
         final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
         lister.playState = game.session;
         final BattleHelper battle = game.session.battleState;
+        if(battle == null) {
+            // this happens on devices with 'destroy activities' option
+            // The activity needs to be recreated so it can process onActivityResult meh!
+            // Do I want to call finish on this one?
+            //finish(); // no, I call it onActivityResult instead.
+            return;
+        }
         lister.notifyDataSetChanged();
         final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);
         rv.setAdapter(lister);
@@ -273,6 +280,11 @@ public class BattleActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        SessionHelper session = RunningServiceHandles.getInstance().play.session;
+        if(session.battleState == null) {
+            finish();
+            return;
+        }
         if(requestCode != REQUEST_MONSTER_TURN) return;
         if(resultCode != RESULT_OK) {
             MaxUtils.beginDelayedTransition(this);
@@ -281,7 +293,7 @@ public class BattleActivity extends AppCompatActivity {
             lister.notifyDataSetChanged();
             return;
         }
-        RunningServiceHandles.getInstance().play.session.lastActivated = BattleHelper.INVALID_ACTOR;
+        session.lastActivated = BattleHelper.INVALID_ACTOR;
         actionCompleted(true);
     }
 
