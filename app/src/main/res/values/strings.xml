@@ -54,7 +54,6 @@
     <string name="persistentStorage_partyDefValidationPremise">party definition data</string>
     <string name="persistentStorage_playingCharacters">playing characters</string>
     <string name="persistentStorage_NPC">NPC</string>
-    <string name="persistentStorage_groupWithNoActors">: empty list.</string>
     <string name="persistentStorage_actorMissingName">: missing name.</string>
     <string name="persistentStorage_badLevel">: level is 0.</string>
     <string name="persistentStorage_actorStatsEmpty">: empty.</string>

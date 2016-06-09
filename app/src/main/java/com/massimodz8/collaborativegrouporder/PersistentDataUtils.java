@@ -165,8 +165,8 @@ public abstract class PersistentDataUtils {
         if(group.sessionFile == null || group.sessionFile.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_badSessionFile));
 
         new ActorValidator(true, errors, String.format("%1$s->%2$s", premise, getString(R.string.persistentStorage_partyDefValidationPremise)))
-                .check(getString(R.string.persistentStorage_playingCharacters), group.party, true)
-                .check(getString(R.string.persistentStorage_NPC), group.npcs, false);
+                .check(getString(R.string.persistentStorage_playingCharacters), group.party)
+                .check(getString(R.string.persistentStorage_NPC), group.npcs);
 
         for(int loop = 0; loop < group.devices.length; loop++) {
             StartData.PartyOwnerData.DeviceInfo dev = group.devices[loop];
@@ -217,12 +217,8 @@ public abstract class PersistentDataUtils {
             base = premiseBase;
         }
 
-        ActorValidator check(String mod, StartData.ActorDefinition[] list, boolean required) {
+        ActorValidator check(String mod, StartData.ActorDefinition[] list) {
             final String premise = base + mod;
-            if(list.length == 0) {
-                if(required) errors.add(premise + getString(R.string.persistentStorage_groupWithNoActors));
-                return this;
-            }
             for(int i = 0; i < list.length; i++) {
                 final StartData.ActorDefinition actor = list[i];
                 String head = String.format(Locale.getDefault(), "%1$s[%2$d]", premise, i);
@@ -339,20 +335,6 @@ public abstract class PersistentDataUtils {
                 }
             }
             if(!found) return getString(R.string.persistentStorage_invalidCurrentActor);
-        }
-        return null;
-    }
-
-    private String loadCatchClose(MessageNano data, CodedInputByteBufferNano input, FileInputStream file) {
-        try {
-            input.readMessage(data);
-        } catch (IOException e) {
-            try {
-                file.close();
-            } catch (IOException e1) {
-                // ignore
-            }
-            return getString(R.string.persistentStorage_failedRead);
         }
         return null;
     }
