@@ -201,7 +201,7 @@
     <string name="master_publishing">Pronto. I tuoi amici possono connettersi.</string>
     <string name="mma_customMonstersButton">Mostri personalizzati…</string>
     <string name="mma_dirStructDlgInitError_message">La struttura delle directory del programma è incoerente. Contatta il supporto per la riparazione manuale. Se continui, il programma non funzionerà correttamente e danneggerà ulteriormente i tuoi dati.</string>
-    <string name="mma_dirStructDlgInitError_title">Errore d\'inizializzazione</string>
+    <string name="generic_initError">Errore d\'inizializzazione</string>
     <string name="mma_dirStructDlgNegContinue">Continua a mio rischio </string>
     <string name="mma_endedSessionByebye">Il Master ha chiuso la sessione! Alla prossima!</string>
     <string name="mma_exit">Esci</string>

@@ -14,6 +14,7 @@
     <string name="generic_mustBeAtLeast1">Must >0</string>
     <string name="generic_mustBeAtLeast0">Must be ≥0</string>
     <string name="generic_discard">Discard</string>
+    <string name="generic_initError">Initialization error</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
     <string name="master_failedPublish">Could not publish party to wi-fi. Your friends can still connect but only using explicit connections.</string>
@@ -125,12 +126,10 @@
     <string name="mma_menu_oglShort" translatable="false">OGL</string>
     <string name="mma_customMonstersButton">Custom monsters…</string>
     <string name="mma_preparedBattlesButton">Prepared battles…</string>
-    <string name="mma_dirStructDlgInitError_title">Initialization error</string>
-    <string name="mma_dirStructDlgInitError_message">Program directory structure is incoherent. It is suggested you get support for manual repair. If you continue the program will not work and further damage your data.</string>
-    <string name="mma_dirStructDlgNegContinue">Proceed at my own risk</string>
     <string name="mma_endedSessionByebye">Master ended session, see you next time!</string>
     <string name="mma_menu_aboutShort">About</string>
     <string name="mma_notificationDesc">Adventuring</string>
+    <string name="mma_badDataLoadMsg">Inconsistent data detected. Proceeding will only make the problem worse. Please report this and maybe we\'ll be able to recover your data.</string>
 
     <string name="npdsa_title">Device selection</string>
     <string name="npdsa_badParty_title">Bad party name</string>
@@ -805,5 +804,8 @@
     <string name="cardPDS_moreInfo">Those devices have a key to join game.\nNeed to add a device? Hit the menu ︙</string>
 
     <string name="vhPMD_iconDesc">Device icon</string>
+    <string name="iss_existsButNoDir">\"%1$s\" exists but it\'s not a directory.</string>
+    <string name="iss_cannotCreateDir">Cannot create \"%1$s\" directory.</string>
+    <string name="mma_emptyHint">Empty party lists. Master: CREATE. Player: JOIN.</string>
 
 </resources>
