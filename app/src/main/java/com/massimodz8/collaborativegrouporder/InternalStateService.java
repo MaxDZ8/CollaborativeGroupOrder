@@ -3,7 +3,6 @@ package com.massimodz8.collaborativegrouporder;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -13,8 +12,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 
-import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
@@ -74,7 +71,7 @@ public class InternalStateService extends Service {
             status = DATA_LOADING;
 
             new AsyncTask<Void, Void, Boolean>() {
-                ArrayList<String> pending = new ArrayList<String>();
+                ArrayList<String> pending = new ArrayList<>();
 
                 @Override
                 protected Boolean doInBackground(Void... params) {
@@ -210,6 +207,7 @@ public class InternalStateService extends Service {
 
         @Override
         protected void onPostExecute(Exception e) {
+            data.status = DATA_DONE;
             if(null != e) {
                 data.error = new ArrayList<>();
                 data.error.add(e.getLocalizedMessage());
@@ -233,7 +231,6 @@ public class InternalStateService extends Service {
             Runnable runnable = data.onStatusChanged.get();
             if(runnable != null) runnable.run();
         }
-        protected void onSuccessfullyRefreshed() { }
     }
 
     /// Called when party owner data loaded version != from current.

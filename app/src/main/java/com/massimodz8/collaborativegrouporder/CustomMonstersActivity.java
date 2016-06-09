@@ -17,8 +17,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import java.util.IdentityHashMap;
 
 public class CustomMonstersActivity extends AppCompatActivity {
-    public static MonsterData.MonsterBook custom;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +26,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
         final android.support.v7.app.ActionBar sab = getSupportActionBar();
         if(sab != null) sab.setDisplayHomeAsUpEnabled(true);
 
+        final MonsterData.MonsterBook custom = RunningServiceHandles.getInstance().state.data.customMonsters;
         for (MonsterData.MonsterBook.Entry el : custom.entries) {
             ids.put(el.main, nextId++);
             for (MonsterData.Monster inner : el.variations) ids.put(inner, nextId++);
@@ -133,6 +132,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode != REQUEST_NEW_MONSTER) return;
         if(resultCode != RESULT_OK) return;
+        MonsterData.MonsterBook custom = RunningServiceHandles.getInstance().state.data.customMonsters;
         ids.put(custom.entries[custom.entries.length - 1].main, nextId++);
         final RecyclerView rv = (RecyclerView) findViewById(R.id.cma_list);
         rv.getAdapter().notifyItemInserted(custom.entries.length - 1);
@@ -155,6 +155,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
         public void onBindViewHolder(MonsterVH holder, int position) {
             MonsterData.Monster data = null;
             String[] name = null;
+            MonsterData.MonsterBook custom = RunningServiceHandles.getInstance().state.data.customMonsters;
             for (MonsterData.MonsterBook.Entry el : custom.entries) {
                 if(position == 0) {
                     data = el.main;
@@ -178,6 +179,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             int count = 0;
+            MonsterData.MonsterBook custom = RunningServiceHandles.getInstance().state.data.customMonsters;
             for (MonsterData.MonsterBook.Entry el : custom.entries) {
                 count++;
                 count += el.variations.length;
@@ -187,6 +189,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int position) {
+            MonsterData.MonsterBook custom = RunningServiceHandles.getInstance().state.data.customMonsters;
             for (MonsterData.MonsterBook.Entry el : custom.entries) {
                 if(position == 0) return ids.get(el.main);
                 position--;
