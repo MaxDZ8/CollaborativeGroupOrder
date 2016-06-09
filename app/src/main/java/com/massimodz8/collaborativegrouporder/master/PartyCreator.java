@@ -1,11 +1,9 @@
 package com.massimodz8.collaborativegrouporder.master;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Binder;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -20,9 +18,9 @@ import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
-import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +29,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 
-public class PartyCreationService extends PublishAcceptService {
+public class PartyCreator extends PublishAcceptHelper {
     public static final String PARTY_FORMING_SERVICE_TYPE = "_formingGroupInitiative._tcp";
     public static final int MODE_MAKE_NEW_PARTY = 0;
     public static final int MODE_ADD_NEW_DEVICES_TO_EXISTING = 1;
@@ -59,7 +57,8 @@ public class PartyCreationService extends PublishAcceptService {
      */
     public ArrayList<StartData.PartyOwnerData.Group> defs;
 
-    public PartyCreationService() {
+    public PartyCreator(Context context) {
+        this.context = context;
     }
 
     /**
@@ -224,6 +223,27 @@ public class PartyCreationService extends PublishAcceptService {
         return count;
     }
 
+    public void shutdown() {
+        stopListening(true);
+        stopPublishing();
+        if(building != null) {
+            final Pumper.MessagePumpingThread[] away = building.netPump.move();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (Pumper.MessagePumpingThread worker : away) {
+                        worker.interrupt();
+                        try {
+                            worker.getSource().socket.close();
+                        } catch (IOException e) {
+                            // suppress
+                        }
+                    }
+                }
+            });
+        }
+    }
+
     public AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> saveParty(final @NonNull Activity activity, @NonNull AsyncLoadUpdateTask.Callbacks cb) {
         return new AsyncActivityLoadUpdateTask<StartData.PartyOwnerData>(PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", activity, cb) {
             @Override
@@ -317,7 +337,7 @@ public class PartyCreationService extends PublishAcceptService {
                 for (BuildingPlayingCharacter pc : building.localChars) {
                     if(pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED) count++;
                 }
-                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(PartyCreationService.this);
+                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(context);
                 Bundle bundle = new Bundle();
                 bundle.putBoolean(MaxUtils.FA_EVENT_PARTY_COMPLETED, goAdventuring);
                 surveyor.logEvent(MaxUtils.FA_PARAM_GOING_ADVENTURE, bundle);
@@ -343,13 +363,6 @@ public class PartyCreationService extends PublishAcceptService {
             result[loop] = building.netPump.move(validish.get(loop).source);
         }
         return result;
-    }
-
-
-    public class LocalBinder extends Binder {
-        public PartyCreationService getConcreteService() {
-            return PartyCreationService.this;
-        }
     }
 
 
@@ -475,6 +488,8 @@ public class PartyCreationService extends PublishAcceptService {
         return built;
     }
 
+    private Context context;
+
     // PublishAcceptService vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     private String unknownDeviceName;
     @Override
@@ -486,33 +501,4 @@ public class PartyCreationService extends PublishAcceptService {
     }
 
     // PublishAcceptService ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    // Service vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    @Override
-    public IBinder onBind(Intent intent) {
-        return new LocalBinder();
-    }
-
-    @Override
-    public void onDestroy() {
-        stopListening(true);
-        stopPublishing();
-        if(building != null) {
-            final Pumper.MessagePumpingThread[] away = building.netPump.move();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    for (Pumper.MessagePumpingThread worker : away) {
-                        worker.interrupt();
-                        try {
-                            worker.getSource().socket.close();
-                        } catch (IOException e) {
-                            // suppress
-                        }
-                    }
-                }
-            });
-        }
-        super.onDestroy();
-    }
-    // Service ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }

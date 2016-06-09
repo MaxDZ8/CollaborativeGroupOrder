@@ -19,7 +19,7 @@ import java.util.Vector;
  * Created by Massimo on 04/03/2016.
  * Base class for my two services. Provides management of a ServerSocket and publish status.
  */
-public abstract class PublishAcceptService extends Service implements NsdManager.RegistrationListener {
+public abstract class PublishAcceptHelper implements NsdManager.RegistrationListener {
     public static final int PUBLISHER_IDLE = 0; // just created, doing nothing.
     public static final int PUBLISHER_STARTING = 1; // we have a service name and type
     public static final int PUBLISHER_START_FAILED = 2; // as above, plus we got an error code
@@ -35,10 +35,11 @@ public abstract class PublishAcceptService extends Service implements NsdManager
     only way to ensure client connection data is persistent. Otherwise, I might have to re-publish
     and similar. Poll based for the description in class doc.
     */
-    public void startListening() throws IOException {
+    public void startListening(@Nullable ServerSocket reuse) throws IOException {
         rejectConnections = false;
         if(landing != null) return;
-        final ServerSocket temp = new ServerSocket(0);
+        funnel = new MyHandler(this);
+        final ServerSocket temp = reuse == null? new ServerSocket(0) : reuse;
         acceptor = new Thread() {
             @Override
             public void run() {
@@ -144,18 +145,6 @@ public abstract class PublishAcceptService extends Service implements NsdManager
     }
     NewPublishStatusCallback onNewPublishStatus;
 
-    // Service vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    @Override
-    public void onCreate() {
-        funnel = new MyHandler(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        stopListening(true);
-        stopPublishing();
-    }
-    // Service ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     // NsdManager.RegistrationListener vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceRegistered(NsdServiceInfo info) {
@@ -192,15 +181,15 @@ public abstract class PublishAcceptService extends Service implements NsdManager
     private static final int MSG_SET_PUBLISH_ERROR = 3;
 
     private static class MyHandler extends Handler {
-        final WeakReference<PublishAcceptService> self;
+        final WeakReference<PublishAcceptHelper> self;
 
-        private MyHandler(PublishAcceptService self) {
+        private MyHandler(PublishAcceptHelper self) {
             this.self = new WeakReference<>(self);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            final PublishAcceptService self = this.self.get();
+            final PublishAcceptHelper self = this.self.get();
             switch (msg.what) {
                 case MSG_NEW_CLIENT:
                     self.onNewClient((MessageChannel) msg.obj);

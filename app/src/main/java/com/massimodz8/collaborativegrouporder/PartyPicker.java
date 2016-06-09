@@ -1,6 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Binder;
@@ -22,24 +23,19 @@ import java.util.IdentityHashMap;
 /**
  * Support PartyPickActivity by providing an internal, semi-persistent state.
  */
-public class PartyPickingService extends Service {
+public class PartyPicker {
     public MessageNano sessionParty; // when party picking goes adventuring the party to use is put there.
     public IdentityHashMap<MessageNano, Session.Suspended> sessionData;
     public IdentityHashMap<MessageNano, String> sessionErrors;
     public Runnable onSessionDataLoaded;
 
-    public PartyPickingService() {
-    }
-
-
-    PartyPickingService setKnownParties(final ArrayList<StartData.PartyOwnerData.Group> defs,
-                                        final ArrayList<StartData.PartyClientData.Group> keys) {
+    PartyPicker() {
+        InternalStateService.Data data = RunningServiceHandles.getInstance().state.data;
+        hideDefKey = new boolean[data.groupDefs.size() + data.groupKeys.size()];
         this.defs = new ArrayList<>();
         this.keys = new ArrayList<>();
         this.defs.addAll(defs);
         this.keys.addAll(keys);
-        hideDefKey = new boolean[defs.size() + keys.size()];
-        return this;
     }
 
     AsyncTask<Void, Void, Integer> makeSessionLoadingTask() {
@@ -50,7 +46,7 @@ public class PartyPickingService extends Service {
         final PersistentDataUtils loader = new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
             protected String getString(@StringRes int resource) {
-                return PartyPickingService.this.getString(resource);
+                return RunningServiceHandles.getInstance().state.getString(resource);
             }
         };
         final ArrayList<StartData.PartyOwnerData.Group> threadDefs = new ArrayList<>();
@@ -76,10 +72,11 @@ public class PartyPickingService extends Service {
             }
 
             private int loadSession(MessageNano party, String sessionFile) {
-                File subdir = new File(getFilesDir(), PersistentDataUtils.SESSION_DATA_SUBDIR);
+                Context ctx = RunningServiceHandles.getInstance().state;
+                File subdir = new File(ctx.getFilesDir(), PersistentDataUtils.SESSION_DATA_SUBDIR);
                 File data = new File(subdir, sessionFile);
                 if(!data.exists()) {
-                    errors.put(party, getString(R.string.pps_sessionNotFound));
+                    errors.put(party, ctx.getString(R.string.pps_sessionNotFound));
                     return 1;
                 }
                 Session.Suspended loaded = new Session.Suspended();
@@ -88,14 +85,14 @@ public class PartyPickingService extends Service {
                     return 0;
                 }
                 if(data.length() > PersistentDataUtils.MAX_SESSION_DATA_BYTES) {
-                    errors.put(party, String.format(getString(R.string.pps_sessionTooBig), data.length(), PersistentDataUtils.MAX_SESSION_DATA_BYTES));
+                    errors.put(party, String.format(ctx.getString(R.string.pps_sessionTooBig), data.length(), PersistentDataUtils.MAX_SESSION_DATA_BYTES));
                     return 1;
                 }
                 FileInputStream load;
                 try {
                     load = new FileInputStream(data);
                 } catch (FileNotFoundException e) {
-                    errors.put(party, getString(R.string.ppa_noInputStream));
+                    errors.put(party, ctx.getString(R.string.ppa_noInputStream));
                     return 1;
                 }
                 String error = loader.load(loaded, load, (int)data.length());
@@ -154,16 +151,7 @@ public class PartyPickingService extends Service {
         return -1;
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return new LocalBinder();
-    }
-
-    class LocalBinder extends Binder {
-        PartyPickingService getConcreteService() { return PartyPickingService.this; }
-    }
-
-    private ArrayList<StartData.PartyOwnerData.Group> defs;
-    private ArrayList<StartData.PartyClientData.Group> keys;
-    private boolean[] hideDefKey;
+    private final ArrayList<StartData.PartyOwnerData.Group> defs;
+    private final ArrayList<StartData.PartyClientData.Group> keys;
+    private final boolean[] hideDefKey;
 }

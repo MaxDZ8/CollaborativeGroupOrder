@@ -41,13 +41,7 @@ import java.util.Map;
  * e.g. try popping an AlertDialog while the activity is being destroyed...
  * long story short: I must keep track of those events and remember them. Meh!
  */
-public class PartyJoinOrderService extends PublishAcceptService {
-    /**
-     * For the time being, there is a single 'owned' file for all groups so I don't have to deal
-     * with collisions. This means that everytime I issue a save I need access to all groups.
-     * One of those groups is the group we will manage. Those objects are unique and persistent.
-     */
-    public ArrayList<StartData.PartyOwnerData.Group> allOwnedGroups;
+public class PartyJoinOrder extends PublishAcceptHelper {
 
     public byte[] publishToken;
 
@@ -55,7 +49,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
                 This goes in parallel with landing socket and publish management so you're better set this up ASAP.
                 As usual, it can be initialized only once and then the service will have to be destroyed.
                 */
-    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @NonNull JoinVerificator keyMaster, MonsterData.MonsterBook monsterBook, MonsterData.MonsterBook customMobs, PreparedEncounters.Collection customBattles) {
+    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @NonNull JoinVerificator keyMaster) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster) {
             @Override
             protected StartData.ActorDefinition getActorData(int unique) {
@@ -66,7 +60,7 @@ public class PartyJoinOrderService extends PublishAcceptService {
         ArrayList<Network.ActorState> byDef = new ArrayList<>();
         for(StartData.ActorDefinition el : party.party) byDef.add(MaxUtils.makeActorState(el, nextActorId++, Network.ActorState.T_PLAYING_CHARACTER));
         for(StartData.ActorDefinition el : party.npcs) byDef.add(MaxUtils.makeActorState(el, nextActorId++, Network.ActorState.T_NPC));
-        session = new SessionHelper(live, byDef, monsterBook, customMobs, customBattles) {
+        session = new SessionHelper(live, byDef) {
             @Override
             void onRollReceived() {
                 while(!session.rollResults.isEmpty()) {
@@ -299,22 +293,4 @@ public class PartyJoinOrderService extends PublishAcceptService {
         assignmentHelper.pump(fresh);
     }
     // PublishAcceptService ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-    // Service _____________________________________________________________________________________
-    @Override
-    public IBinder onBind(Intent intent) {
-        return new LocalBinder(); // this is called once by the OS when first bind is received.
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        shutdownPartyManagement();
-    }
-
-    public class LocalBinder extends Binder {
-        public PartyJoinOrderService getConcreteService() {
-            return PartyJoinOrderService.this;
-        }
-    }
 }

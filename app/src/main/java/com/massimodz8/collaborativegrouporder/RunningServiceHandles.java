@@ -1,8 +1,8 @@
 package com.massimodz8.collaborativegrouporder;
 
-import com.massimodz8.collaborativegrouporder.client.AdventuringService;
-import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
-import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
+import com.massimodz8.collaborativegrouporder.client.Adventure;
+import com.massimodz8.collaborativegrouporder.master.PartyCreator;
+import com.massimodz8.collaborativegrouporder.master.PartyJoinOrder;
 
 /**
  * Created by Massimo on 21/05/2016.
@@ -20,10 +20,12 @@ import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
  * Now who calls .startService(intent) binds and sets the handle here.
  */
 public class RunningServiceHandles {
-    public PartyPickingService pick;
-    public PartyJoinOrderService play;
-    public PartyCreationService create;
-    public AdventuringService clientPlay;
+    public PartyPicker pick;
+    public PartyJoinOrder play;
+    public PartyCreator create;
+    public Adventure clientPlay;
+
+    public InternalStateService state;
 
 
     public static RunningServiceHandles getInstance() {
