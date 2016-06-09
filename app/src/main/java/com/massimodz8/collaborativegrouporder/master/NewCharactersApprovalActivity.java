@@ -31,7 +31,6 @@ import java.util.ArrayList;
 public class NewCharactersApprovalActivity extends AppCompatActivity {
     public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity.RESULT";
     public static final String RESULT_EXTRA_GO_ADVENTURING = "com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING";
-    private MenuItem storeGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +77,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                             if(pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED) count++;
                         }
                     }
-                    storeGroup.setEnabled(count != 0);
                 }
             }
 
@@ -113,8 +111,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.ncaa_menu, menu);
-        storeGroup = menu.findItem(R.id.ncaa_menu_save);
-        if(RunningServiceHandles.getInstance().create.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) storeGroup.setEnabled(true);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -133,7 +129,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                                 final TextView status = (TextView) findViewById(R.id.ncaa_status);
                                 status.setText(R.string.ncaa_savingPleaseWait);
                                 findViewById(R.id.ncaa_list).setEnabled(false);
-                                storeGroup.setEnabled(false);
                                 final AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> temp = room.saveParty(NewCharactersApprovalActivity.this, new StoreDoneCallbacks());
                                 temp.execute();
                                 saving = temp;
@@ -263,7 +258,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
             room.approve(unique);
             MaxUtils.beginDelayedTransition(NewCharactersApprovalActivity.this);
             accepted.setVisibility(View.VISIBLE);
-            storeGroup.setEnabled(true);
         }
     }
 }

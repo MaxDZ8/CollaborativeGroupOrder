@@ -4,8 +4,7 @@
     <item android:title="@string/ncaa_menu_save"
         android:id="@+id/ncaa_menu_save"
         android:titleCondensed="@string/ncaa_menu_saveShort"
-        app:showAsAction="ifRoom|withText"
-        android:enabled="false"/>
+        app:showAsAction="ifRoom|withText"/>
     <item android:title="@string/ncaa_menu_genChar"
         android:id="@+id/ncaa_menu_genChar"
         android:titleCondensed="@string/ncaa_menu_genCharShort"
