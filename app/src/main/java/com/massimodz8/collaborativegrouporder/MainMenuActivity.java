@@ -38,10 +38,10 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Locale;
 
 public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final int NETWORK_VERSION = 1;
-    private static final int INTERNAL_STATE_NOTIFICATION_ID = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +124,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         InternalStateService state = RunningServiceHandles.getInstance().state;
         Notification build = state.buildNotification(getString(R.string.pcs_label), null);
         NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if(serv != null) serv.notify(INTERNAL_STATE_NOTIFICATION_ID, build);
+        if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
         state.notification = build;
 
         final RunningServiceHandles handles = RunningServiceHandles.getInstance();
@@ -136,7 +136,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         InternalStateService state = RunningServiceHandles.getInstance().state;
         Notification build = state.buildNotification(getString(R.string.jsa_title), null);
         NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if(serv != null) serv.notify(INTERNAL_STATE_NOTIFICATION_ID, build);
+        if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
         state.notification = build;
 
         startActivityForResult(new Intent(this, SelectFormingGroupActivity.class), REQUEST_JOIN_FORMING);
@@ -176,10 +176,23 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             return;
         }
         real.beginPublishing(nsdm, activeParty.name, PartyJoinOrder.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
+        real.accept();
         // Update notification with more stuff.
         InternalStateService state = RunningServiceHandles.getInstance().state;
-        state.buildNotification(real.getPartyOwnerData().name, getString(R.string.ga_title));
+        StartData.PartyOwnerData.Group party = real.getPartyOwnerData();
+        state.buildNotification(party.name, getString(R.string.ga_title));
         startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_GATHER_DEVICES);
+
+        String easygoing = String.format(Locale.ENGLISH, "name: %1$s, published: %2$d, charCount=%3$d, devCount=%4$d, created=%5$d. Measure userbase health.",
+                party.name, System.currentTimeMillis(),
+                party.party.length + party.npcs.length, party.devices.length, party.created.seconds);
+        MaxUtils.hasher.reset();
+        real.publishToken = MaxUtils.hasher.digest(easygoing.getBytes());
+        FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_GATHER);
+        bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, real.publishToken);
+        surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
     }
 
 
@@ -229,30 +242,36 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 break;
             }
             case REQUEST_PULL_CHAR_LIST: {
-                final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-                CharSelectionActivity.prepare(state.jsaResult.worker, state.jsaResult.party, state.jsaResult.first);
-                state.jsaResult = null;
-                startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
+                if(resultCode == RESULT_OK) {
+                    final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
+                    CharSelectionActivity.prepare(state.jsaResult.worker, state.jsaResult.party, state.jsaResult.first);
+                    state.jsaResult = null;
+                    startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
+                }
+                else baseNotification();
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                handles.clientPlay = new Adventure();
-                final StartData.PartyClientData.Group temp = CharSelectionActivity.movePlayingParty();
-                ActorOverviewActivity.prepare(temp,
-                CharSelectionActivity.movePlayChars(),
-                CharSelectionActivity.moveServerWorker());
-                startActivityForResult(new Intent(this, ActorOverviewActivity.class), REQUEST_CLIENT_PLAY);
+                if(resultCode == RESULT_OK) {
+                    handles.clientPlay = new Adventure();
+                    final StartData.PartyClientData.Group temp = CharSelectionActivity.movePlayingParty();
+                    ActorOverviewActivity.prepare(
+                            CharSelectionActivity.movePlayChars(),
+                            CharSelectionActivity.moveServerWorker());
+                    startActivityForResult(new Intent(this, ActorOverviewActivity.class), REQUEST_CLIENT_PLAY);
 
-                Notification updated = handles.state.buildNotification(temp.name, getString(R.string.mma_notificationDesc));
-                NotificationManager man = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                if(man != null) man.notify(INTERNAL_STATE_NOTIFICATION_ID, updated);
-                handles.state.notification = updated;
+                    Notification updated = handles.state.buildNotification(temp.name, getString(R.string.mma_notificationDesc));
+                    NotificationManager man = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                    if(man != null) man.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, updated);
+                    handles.state.notification = updated;
+                }
+                else baseNotification();
             } break;
             case REQUEST_JOIN_FORMING: {
                 if(resultCode == RESULT_OK) {
                     startActivityForResult(new Intent(this, NewCharactersProposalActivity.class), REQUEST_PROPOSE_CHARACTERS);
                     Notification build = handles.state.buildNotification(handles.play.getPartyOwnerData().name, getString(R.string.ncpa_title));
                     NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    if(serv != null) serv.notify(INTERNAL_STATE_NOTIFICATION_ID, build);
+                    if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
                     handles.state.notification = build;
                 }
                 else baseNotification();
@@ -277,7 +296,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
                     Notification build = handles.state.buildNotification(handles.play.getPartyOwnerData().name, getString(R.string.fra_title));
                     NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    if(serv != null) serv.notify(INTERNAL_STATE_NOTIFICATION_ID, build);
+                    if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
                     handles.state.notification = build;
 
                     FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
@@ -319,7 +338,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         InternalStateService state = RunningServiceHandles.getInstance().state;
         Notification build = state.buildNotification(getString(R.string.app_name), null);
         NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if(serv != null) serv.notify(INTERNAL_STATE_NOTIFICATION_ID, build);
+        if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
         state.notification = build;
     }
 
@@ -376,7 +395,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         }
         if(state.notification == null) {
             Notification build = state.buildNotification(getString(R.string.app_name), null);
-            state.startForeground(INTERNAL_STATE_NOTIFICATION_ID, build);
+            state.startForeground(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
             state.notification = build;
             FirebaseAnalytics.getInstance(this); // not really relevant, it's for initialization!
             MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));

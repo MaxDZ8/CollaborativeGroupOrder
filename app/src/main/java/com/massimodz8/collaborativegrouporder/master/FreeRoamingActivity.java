@@ -70,7 +70,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         final ComponentName compName = new ComponentName(this, SpawnMonsterActivity.class);
         swidget.setSearchableInfo(sm.getSearchableInfo(compName));
 
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +117,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 if(viewHolder instanceof AdventuringActorControlsVH) {
                     final AdventuringActorControlsVH real = (AdventuringActorControlsVH) viewHolder;
                     if(real.actor == null) return;
-                    final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+                    final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                     game.session.willFight(real.actor.peerKey, false);
                     game.session.temporaries.remove(real.actor);
                     lister.notifyDataSetChanged();
@@ -237,7 +237,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
     @Override
     protected void onResume() { // maybe we got there after a monster has been added.
         super.onResume();
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         if(SpawnMonsterActivity.found != null && SpawnMonsterActivity.found.size() > 0) {
             for (Network.ActorState got : SpawnMonsterActivity.found) {
                 got.peerKey = game.nextActorId++;
@@ -253,7 +253,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         if(game != null) game.onRollReceived = null;
         if(waiting != null) waiting.dlg.dismiss();
         super.onDestroy();
@@ -285,7 +285,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
 
 
     private void sendInitiativeRollRequests() {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
             if(dev.movedToBattlePumper) continue;
             game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
@@ -323,7 +323,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
 
     /// Called every time at least one initiative is written so we can try sorting & starting.
     boolean attemptBattleStart() {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         if(game.session.initiatives == null) return false;
         int count = 0;
         if(waiting != null) waiting.lister.notifyDataSetChanged(); // maybe not but I take it easy.
@@ -432,7 +432,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         }
         if(saving) return;
         saving = true; // no need to set it to false, we terminate activity
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         final Session.Suspended save = game.session.stats;
         save.lastSaved = new Timestamp();
         save.lastSaved.seconds = new Date().getTime() / 1000;
@@ -514,7 +514,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
             if(msg.what != MSG_INCREMENT) return;
             count++;
             if(count == expect) {
-                final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+                final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                 for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
                     if (dev.pipe != null) try {
                         dev.pipe.socket.getOutputStream().flush();
@@ -538,7 +538,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
     }
 
     private class MyRefreshStore extends AsyncRenamingStore<Session.Suspended> {
-        public MyRefreshStore(@NonNull PartyJoinOrderService game, @NonNull Session.Suspended suspended) {
+        public MyRefreshStore(@NonNull PartyJoinOrder game, @NonNull Session.Suspended suspended) {
             super(getFilesDir(), PersistentDataUtils.SESSION_DATA_SUBDIR, game.getPartyOwnerData().sessionFile, suspended);
         }
 

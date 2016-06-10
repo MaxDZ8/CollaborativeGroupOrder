@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
+import com.massimodz8.collaborativegrouporder.InternalStateService;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
@@ -45,7 +46,7 @@ import java.util.Locale;
 public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextView.OnEditorActionListener {
     @Override
     protected void onDestroy() {
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
+        final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room != null) { // in many cases, parent_activity.onActivityResult has already cleaned up when this is destroyed so...
             room.onNewPublishStatus = null;
             room.setNewClientDevicesAdapter(null);
@@ -75,9 +76,10 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         }
         sure.setOnEditorActionListener(this);
 
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
-        if(room.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
+        final PartyCreator room = RunningServiceHandles.getInstance().create;
+        if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
             sure.setText(room.generatedParty.name);
+            sure.setSelection(0, 0);
             sure.setEnabled(false);
         }
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -88,7 +90,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 String use;
                 switch(devCount) {
                     case 0: {
-                        if(room.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
+                        if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
                             finish();
                             return; // seriously, what are you doing man?
                         }
@@ -103,7 +105,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 }
                 if(devCount != 1) use = String.format(use, devCount);
                 PartySealer sealer = new PartySealer();
-                if(room.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) sealer.onClick(null, -1);
+                if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) sealer.onClick(null, -1);
                 else {
                     new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this, R.style.AppDialogStyle)
                             .setTitle(R.string.npdsa_sealing_title)
@@ -115,16 +117,16 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             }
         });
         final TextView status = (TextView) findViewById(R.id.npdsa_status);
-        room.onNewPublishStatus = new PublishAcceptService.NewPublishStatusCallback() {
+        room.onNewPublishStatus = new PublishAcceptHelper.NewPublishStatusCallback() {
             @Override
             public void onNewPublishStatus(int now) {
                 switch(now) {
-                    case PublishAcceptService.PUBLISHER_PUBLISHING: {
+                    case PublishAcceptHelper.PUBLISHER_PUBLISHING: {
                         MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
                         status.setText(R.string.master_publishing);
                         findViewById(R.id.npdsa_partyName).setEnabled(true);
                     } break;
-                    case PublishAcceptService.PUBLISHER_START_FAILED: {
+                    case PublishAcceptHelper.PUBLISHER_START_FAILED: {
                         MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
                         status.setText(R.string.master_failedPublish);
                         findViewById(R.id.npdsa_partyName).setEnabled(true);
@@ -137,7 +139,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         MaxUtils.beginDelayedTransition(this);
         devList = (RecyclerView) findViewById(R.id.npdsa_deviceList);
         devList.setLayoutManager(new LinearLayoutManager(this));
-        devList.setAdapter(room.setNewClientDevicesAdapter(new PartyCreationService.ClientDeviceHolderFactoryBinder<DeviceViewHolder>() {
+        devList.setAdapter(room.setNewClientDevicesAdapter(new PartyCreator.ClientDeviceHolderFactoryBinder<DeviceViewHolder>() {
             @Override
             public DeviceViewHolder createUnbound(ViewGroup parent, int viewType) {
                 View layout = getLayoutInflater().inflate(R.layout.card_joining_device, parent, false);
@@ -186,7 +188,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             status.setText(R.string.npdsa_waitingPartyName);
         }
         final int[] previously = new int[] { 0, 0 };
-        room.onTalkingDeviceCountChanged = new PartyCreationService.OnTalkingDeviceCountListener() {
+        room.onTalkingDeviceCountChanged = new PartyCreator.OnTalkingDeviceCountListener() {
             @Override
             public void currentlyTalking(int count) {
                 if(room.getMemberCount() != 0) return; // already transitioned to another state
@@ -211,7 +213,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     @Override
     protected void onStart() {
         super.onStart();
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
+        final PartyCreator room = RunningServiceHandles.getInstance().create;
         room.accept();
         if(room.getBuildingPartyName() != null) {
             NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
@@ -221,8 +223,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                         .show();
                 return;
             }
-            if(room.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
-            else room.beginPublishing(nsd, room.getBuildingPartyName(), PartyCreationService.PARTY_FORMING_SERVICE_TYPE);
+            if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
+            else room.beginPublishing(nsd, room.getBuildingPartyName(), PartyCreator.PARTY_FORMING_SERVICE_TYPE);
         }
     }
 
@@ -236,7 +238,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
+        final PartyCreator room = RunningServiceHandles.getInstance().create;
         switch(item.getItemId()) {
             case R.id.npdsa_menu_explicitConnInfo: {
                 int serverPort = room == null? 0 : room.getServerPort();
@@ -265,7 +267,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     public boolean onSupportNavigateUp() {
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
+        final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room.getBuildingPartyName() != null && room.getMemberCount() != 0) {
             MaxUtils.askExitConfirmation(this);
             return true;
@@ -275,7 +277,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     public void onBackPressed() {
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
+        final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room.getBuildingPartyName() != null && room.getMemberCount() != 0) MaxUtils.askExitConfirmation(this);
         else super.onBackPressed();
     }
@@ -338,7 +340,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            final PartyCreationService room = RunningServiceHandles.getInstance().create;
+            final PartyCreator room = RunningServiceHandles.getInstance().create;
             switch(item.getItemId()) {
                 case R.id.npdsaAM_setName:
                     new SetNameDialog(NewPartyDeviceSelectionActivity.this, mode, room.building.get(key), new Runnable() {
@@ -370,8 +372,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         @Override
         public void onClick(DialogInterface dialog, int which) {
             final Intent intent = new Intent(NewPartyDeviceSelectionActivity.this, NewCharactersApprovalActivity.class);
-            final PartyCreationService room = RunningServiceHandles.getInstance().create;
-            room.closeGroup(new PartyCreationService.OnKeysSentListener() {
+            final PartyCreator room = RunningServiceHandles.getInstance().create;
+            room.closeGroup(new PartyCreator.OnKeysSentListener() {
                 @Override
                 public void onKeysSent(int bad) {
                     if (0 == bad) {
@@ -397,8 +399,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     }
 
     private void publishGroup() {
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
-        if(room.getPublishStatus() != PartyCreationService.PUBLISHER_IDLE) return; // unlikely, as I disable trigger
+        final PartyCreator room = RunningServiceHandles.getInstance().create;
+        if(room.getPublishStatus() != PartyCreator.PUBLISHER_IDLE) return; // unlikely, as I disable trigger
         final TextInputLayout til = (TextInputLayout) findViewById(R.id.npdsa_partyName);
         final EditText view = til.getEditText();
         if(view == null) return; // impossible
@@ -440,10 +442,19 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                     .show();
             return;
         }
-        room.beginPublishing(nsd, groupName, PartyCreationService.PARTY_FORMING_SERVICE_TYPE);
+        room.beginPublishing(nsd, groupName, PartyCreator.PARTY_FORMING_SERVICE_TYPE);
         MaxUtils.beginDelayedTransition(this);
         view.setEnabled(false);
-        elevateServicePriority();
+
+        InternalStateService state = RunningServiceHandles.getInstance().state;
+        final int resid = room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING?
+                R.string.npdsa_notifyContentAdd :
+                R.string.npdsa_notifyContentNew;
+        Notification notification = state.buildNotification(groupName, getString(resid));
+        NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        nm.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, notification);
+        state.notification = notification;
+
         MaxUtils.setVisibility(this, View.VISIBLE,
                 R.id.npdsa_deviceList,
                 R.id.npdsa_publishing,
@@ -460,24 +471,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         return true;
     }
     // TextView.OnEditorActionListener ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    private void elevateServicePriority() {
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
-        final int resid = room.mode == PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING?
-                R.string.npdsa_notifyContentAdd :
-                R.string.npdsa_notifyContentNew;
-        final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
-                .setOngoing(true)
-                .setContentTitle(room.getBuildingPartyName())
-                .setContentText(getText(resid))
-                .setSmallIcon(R.drawable.ic_notify_icon)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            help.setCategory(Notification.CATEGORY_SERVICE);
-        }
-        room.startForeground(NOTIFICATION_ID, help.build());
-    }
 
-    private static final int NOTIFICATION_ID = 1;
     private RecyclerView devList;
     private ActionMode actionMode;
     private MenuItem hiddenManagement;

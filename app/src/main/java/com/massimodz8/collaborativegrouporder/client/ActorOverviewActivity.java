@@ -82,7 +82,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
-        final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
+        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
         final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);
         rv.setAdapter(lister);
         rv.addItemDecoration(new PreSeparatorDecorator(rv, ActorOverviewActivity.this) {
@@ -97,7 +97,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 if(!(viewHolder instanceof ExperienceAwardVH)) return; // impossible!
                 ExperienceAwardVH real = (ExperienceAwardVH)viewHolder;
-                final AdventuringService.ActorWithKnownOrder actor = ticker.actors.get(real.peerKey);
+                final Adventure.ActorWithKnownOrder actor = ticker.actors.get(real.peerKey);
                 if(actor == null) return; // very unlikely
                 actor.xpReceived = 0;
                 rv.getAdapter().notifyDataSetChanged();
@@ -116,7 +116,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             public void run() {
                 int known = 0, knownOrders = 0;
                 for (int id : ticker.playedHere) {
-                    final AdventuringService.ActorWithKnownOrder awo = ticker.actors.get(id);
+                    final Adventure.ActorWithKnownOrder awo = ticker.actors.get(id);
                     if (awo != null && awo.actor != null) {
                         known++;
                         if(awo.keyOrder != null) knownOrders++;
@@ -136,7 +136,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 }
                 MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
                 final TextView status = (TextView) findViewById(R.id.aoa_status);
-                if(ticker.round == AdventuringService.ROUND_NOT_FIGHTING) {
+                if(ticker.round == Adventure.ROUND_NOT_FIGHTING) {
                     status.setText(R.string.aoa_waitingForBattleStart);
                     final ActionBar sab = getSupportActionBar();
                     if(sab != null) sab.setTitle(R.string.aoa_title);
@@ -177,7 +177,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             @Override
             public void run() {
                 final TextView status = (TextView) findViewById(R.id.aoa_status);
-                if(ticker.round == AdventuringService.ROUND_NOT_FIGHTING) {
+                if(ticker.round == Adventure.ROUND_NOT_FIGHTING) {
                     status.setText(R.string.aoa_waitingForBattleStart);
                     final ActionBar sab = getSupportActionBar();
                     if(sab != null) sab.setTitle(R.string.aoa_title);
@@ -186,8 +186,8 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 else status.setText(R.string.aoa_waitingMyTurn);
 
                 final ActionBar sab = getSupportActionBar();
-                if(sab != null) sab.setTitle(ticker.round == AdventuringService.ROUND_NOT_FIGHTING? R.string.aoa_title : R.string.aoa_title_fighting);
-                if(ticker.round == AdventuringService.ROUND_NOT_FIGHTING) return;
+                if(sab != null) sab.setTitle(ticker.round == Adventure.ROUND_NOT_FIGHTING? R.string.aoa_title : R.string.aoa_title_fighting);
+                if(ticker.round == Adventure.ROUND_NOT_FIGHTING) return;
                 boolean here = false;
                 for (int key : ticker.playedHere) {
                     if (key == ticker.currentActor) {
@@ -225,7 +225,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
+        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
         if(ticker != null) {
             ticker.onActorUpdated.remove(updateCall);
             ticker.onCurrentActorChanged.remove(actorChangedCall);
@@ -264,7 +264,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
     private RecyclerView.Adapter lister = new MyActorAdapter();
 
     private class MyActorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
+        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
 
         public MyActorAdapter() {
             setHasStableIds(true);
@@ -287,7 +287,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             Network.ActorState as = null;
             int xp = 0;
             for (int key : ticker.playedHere) {
-                final AdventuringService.ActorWithKnownOrder known = ticker.actors.get(key);
+                final Adventure.ActorWithKnownOrder known = ticker.actors.get(key);
                 if(known != null && known.actor != null) {
                     if(position == 0) {
                         as = known.actor;
@@ -325,7 +325,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             if(ticker == null || ticker.playedHere == null) return 0;
             int count = 0;
             for (int key : ticker.playedHere) {
-                final AdventuringService.ActorWithKnownOrder known = ticker.actors.get(key);
+                final Adventure.ActorWithKnownOrder known = ticker.actors.get(key);
                 if(known != null && known.actor != null) {
                     count++;
                     if (known.xpReceived != 0) count++;
@@ -338,7 +338,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
         public long getItemId(int position) {
             if(ticker == null || ticker.playedHere == null) return RecyclerView.NO_ID;
             for (int key : ticker.playedHere) {
-                final AdventuringService.ActorWithKnownOrder known = ticker.actors.get(key);
+                final Adventure.ActorWithKnownOrder known = ticker.actors.get(key);
                 if(known != null && known.actor != null) {
                     if (position == 0) return known.actor.peerKey * OPTIONAL_HOLDERS_COUNT;
                     position--;
@@ -355,7 +355,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
         public int getItemViewType(int position) {
             if(ticker == null || ticker.playedHere == null) return 0; // impossible
             for (int key : ticker.playedHere) {
-                final AdventuringService.ActorWithKnownOrder known = ticker.actors.get(key);
+                final Adventure.ActorWithKnownOrder known = ticker.actors.get(key);
                 if(known != null && known.actor != null) {
                     if(position == 0) return T_ACTOR;
                     position--;
@@ -389,7 +389,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
     private class SendRollCallback implements Runnable {
         @Override
         public void run() {
-            final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
+            final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
             final Network.Roll ready = ticker.rollRequests.removeFirst();
             final Network.Roll reply = new Network.Roll();
             reply.result = ready.result;
@@ -414,7 +414,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
+        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
         if(requestCode == REQUEST_TURN) {
             lister.notifyDataSetChanged();
             if (resultCode == RESULT_OK) {
@@ -432,7 +432,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        final AdventuringService ticker = RunningServiceHandles.getInstance().clientPlay;
+        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
         ticker.onCurrentActorChanged.get().run(); // maybe not. But convenient to mangle round and update UI.
         ticker.onActorUpdated.get().run();
         super.onResume();

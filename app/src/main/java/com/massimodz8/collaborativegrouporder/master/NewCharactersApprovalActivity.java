@@ -70,13 +70,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 if(viewHolder instanceof PcApprovalVh) {
                     PcApprovalVh real = (PcApprovalVh) viewHolder;
                     room.reject(real.unique);
-                    int count = 0;
-                    for (PartyDefinitionHelper.DeviceStatus dev : room.building.clients) {
-                        if(dev.kicked || !dev.groupMember) continue;
-                        for (BuildingPlayingCharacter pc : dev.chars) {
-                            if(pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED) count++;
-                        }
-                    }
                 }
             }
 

@@ -45,7 +45,7 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     private void backDialog() {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         final SessionHelper session = game.session;
         final Network.TurnControl msg = new Network.TurnControl();
         msg.type = Network.TurnControl.T_BATTLE_ENDED;
@@ -91,7 +91,7 @@ public class BattleActivity extends AppCompatActivity {
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         lister.playState = game.session;
         final BattleHelper battle = game.session.battleState;
         if(battle == null) {
@@ -138,7 +138,7 @@ public class BattleActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+                final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                 final BattleHelper battle = game.session.battleState;
                 battle.round = 0;
                 battle.currentActor = battle.ordered[battle.ordered.length - 1].actorID;
@@ -154,7 +154,7 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter() {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         @Override
         public AdventuringActorControlsVH onCreateViewHolder(ViewGroup parent, int viewType) {
             final AdventuringActorControlsVH result = new AdventuringActorControlsVH(BattleActivity.this.getLayoutInflater().inflate(R.layout.vh_adventuring_actor_controls, parent, false)) {
@@ -235,7 +235,7 @@ public class BattleActivity extends AppCompatActivity {
         public void onClick(View v) {
             if (target.actor == null || target.actor.prepareCondition == null)
                 return; // impossible by context
-            final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+            final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
             final BattleHelper battle = game.session.battleState;
             if (battle.interrupted == null) battle.interrupted = new ArrayDeque<>();
             battle.interrupted.push(battle.currentActor);
@@ -268,7 +268,7 @@ public class BattleActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         if(game != null) {
             game.onTurnCompletedRemote.remove(turnCallback);
             game.onActorShuffledRemote.remove(shuffleCallback);
@@ -316,7 +316,7 @@ public class BattleActivity extends AppCompatActivity {
                                 setResult(RESULT_OK_AWARD);
                                 Network.TurnControl msg = new Network.TurnControl();
                                 msg.type = Network.TurnControl.T_BATTLE_ENDED;
-                                final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+                                final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                                 for (PcAssignmentHelper.PlayingDevice client : game.assignmentHelper.peers) {
                                     if(client.pipe == null) continue;
                                     game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg, null));
@@ -335,7 +335,7 @@ public class BattleActivity extends AppCompatActivity {
     static final int RESULT_OK_SUSPEND = RESULT_OK_AWARD + 1;
 
     private void actionCompleted(boolean advance) {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         final BattleHelper battle = game.session.battleState;
         int previous = advance? battle.actorCompleted(true) : battle.currentActor;
         if(battle.prevWasReadied) {
@@ -402,7 +402,7 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     private void activateNewActorLocal() {        // If played here open detail screen. Otherwise, send your-turn message.
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         int active = game.session.battleState.currentActor;
         if(active < game.assignmentHelper.assignment.size()) {
             Integer own = game.assignmentHelper.assignment.get(active);

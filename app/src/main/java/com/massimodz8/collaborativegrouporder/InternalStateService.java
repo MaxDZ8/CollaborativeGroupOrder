@@ -49,6 +49,7 @@ public class InternalStateService extends Service {
      * by tracking the foreground notification.
      */
     public Notification notification;
+    public static final int INTERNAL_STATE_NOTIFICATION_ID = 123;
 
     public static final int DATA_EMPTY = 0;
     public static final int DATA_LOADING = 1;
@@ -108,7 +109,7 @@ public class InternalStateService extends Service {
         }
     }
 
-    Notification buildNotification(@NonNull String title, @Nullable String message) {
+    public Notification buildNotification(@NonNull String title, @Nullable String message) {
         final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
                 .setOngoing(true)
                 .setWhen(System.currentTimeMillis())

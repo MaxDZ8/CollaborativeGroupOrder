@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
+import com.massimodz8.collaborativegrouporder.master.PartyCreator;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -63,7 +63,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
                         .show();
                 return;
             }
-            explorer.beginDiscovery(PartyCreationService.PARTY_FORMING_SERVICE_TYPE, nsd, this);
+            explorer.beginDiscovery(PartyCreator.PARTY_FORMING_SERVICE_TYPE, nsd, this);
         }
         if(null != state.candidates) {
             candidates = state.candidates;

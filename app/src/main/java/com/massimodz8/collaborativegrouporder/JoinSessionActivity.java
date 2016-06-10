@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
+import com.massimodz8.collaborativegrouporder.master.PartyJoinOrder;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -119,7 +119,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
             else {
                 final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
                 myState.explorer = new AccumulatingDiscoveryListener();
-                myState.explorer.beginDiscovery(PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE, nsd, this);
+                myState.explorer.beginDiscovery(PartyJoinOrder.PARTY_GOING_ADVENTURING_SERVICE_TYPE, nsd, this);
             }
             if (null != myState.workers) {
                 for (Pumper.MessagePumpingThread w : myState.workers) pumper.pump(w);

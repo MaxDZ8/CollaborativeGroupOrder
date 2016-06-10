@@ -45,8 +45,8 @@ public class GatheringActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gathering);
 
-        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
-        room.onNewPublishStatus = new PublishAcceptService.NewPublishStatusCallback() {
+        final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
+        room.onNewPublishStatus = new PublishAcceptHelper.NewPublishStatusCallback() {
             @Override
             public void onNewPublishStatus(int state) {
                 if(state == PublishedService.STATUS_STARTING) return;
@@ -157,7 +157,7 @@ public class GatheringActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
         if(room != null) {
             room.setNewAuthDevicesAdapter(null);
             room.setNewUnassignedPcsAdapter(null);
@@ -188,7 +188,7 @@ public class GatheringActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
         switch(item.getItemId()) {
             case R.id.ga_menu_explicitConnInfo: {
                 int serverPort = room == null? 0 : room.getServerPort();
@@ -207,7 +207,7 @@ public class GatheringActivity extends AppCompatActivity {
     }
 
     public void startSession_callback(View btn) {
-        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
         final ArrayList<StartData.ActorDefinition> free = room.getUnboundedPcs();
         if(!free.isEmpty()) {
             String firstLine = free.size() == 1? getString(R.string.ga_oneCharNotBound)
@@ -338,7 +338,7 @@ public class GatheringActivity extends AppCompatActivity {
             switch(item.getItemId()) {
                 case R.id.ga_ctx_unassigned_pc_playHere: {
                     StartData.ActorDefinition was = (StartData.ActorDefinition) mode.getTag();
-                    final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
+                    final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
                     if(null != room && null != was) room.local(was);
                     mode.finish();
                     return true;
