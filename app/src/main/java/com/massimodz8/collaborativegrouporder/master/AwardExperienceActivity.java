@@ -34,7 +34,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
         final android.support.v7.app.ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         SessionHelper session = game.session;
         if(session.battleState != null) { // consume this and get it to 'to be awarded' data.
             session.defeated = new ArrayList<>();
@@ -169,7 +169,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
     }
 
     private void confirmDiscardFinish() {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.aea_noBackDlgMessage)
@@ -187,7 +187,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
 
     private void update() {
         int xp = 0, count = 0;
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         for (SessionHelper.DefeatedData el : game.session.defeated) {
             if(el.consume) {
                 count++;
