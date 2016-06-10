@@ -1,13 +1,12 @@
 package com.massimodz8.collaborativegrouporder.master;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -16,7 +15,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -181,10 +179,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             @Override
             protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) { return true; }
         };
-        if(room.getBuildingPartyName() != null) { // restoring, so pull it in foreground! Otherwise defer until group name entered.
-            elevateServicePriority();
-        }
-        else {
+        if(room.getBuildingPartyName() == null) { // restoring, so pull it in foreground! Otherwise defer until group name entered.
             status.setText(R.string.npdsa_waitingPartyName);
         }
         final int[] previously = new int[] { 0, 0 };
@@ -429,7 +424,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             return;
         }
         try {
-            room.startListening();
+            room.startListening(null);
         } catch (IOException e) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.master_badServerSocket)

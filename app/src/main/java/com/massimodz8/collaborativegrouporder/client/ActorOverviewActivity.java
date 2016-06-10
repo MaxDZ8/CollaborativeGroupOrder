@@ -31,7 +31,6 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.text.DecimalFormat;
 
@@ -54,7 +53,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
     private static Pumper.MessagePumpingThread serverWorker; // in
     private static int[] actorKeys; // in, server ids of actors to manage here
 
-    public static void prepare(StartData.PartyClientData.Group group, int[] actorKeys_, Pumper.MessagePumpingThread serverWorker_) {
+    public static void prepare(int[] actorKeys_, Pumper.MessagePumpingThread serverWorker_) {
         actorKeys = actorKeys_;
         serverWorker = serverWorker_;
     }

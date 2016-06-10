@@ -392,8 +392,11 @@ public class FreeRoamingActivity extends AppCompatActivity {
             }
             case REQUEST_AWARD_EXPERIENCE: {
                 if(resultCode == RESULT_OK) { // ouch! We need to update defs with the new xp, and maybe else... Luckly everything is already in place!
-                    final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
-                    new AsyncRenamingStore<StartData.PartyOwnerData>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(game.allOwnedGroups)) {
+                    final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
+                    final ArrayList<StartData.PartyOwnerData.Group> allOwned = RunningServiceHandles.getInstance().state.data.groupDefs;
+                    new AsyncRenamingStore<StartData.PartyOwnerData>(getFilesDir(),
+                            PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
+                            PersistentDataUtils.makePartyOwnerData(allOwned)) {
                         @Override
                         protected String getString(@StringRes int res) { return FreeRoamingActivity.this.getString(res); }
 

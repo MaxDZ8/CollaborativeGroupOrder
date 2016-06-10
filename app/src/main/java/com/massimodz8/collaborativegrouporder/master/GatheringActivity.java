@@ -1,16 +1,12 @@
 package com.massimodz8.collaborativegrouporder.master;
 
-import android.content.DialogInterface;
-import android.net.nsd.NsdManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionManager;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
@@ -30,10 +25,8 @@ import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 
 /** The server is 'gathering' player devices so they can join a new session.
  * This is important and we must be able to navigate back there every time needed in case
@@ -50,7 +43,7 @@ public class GatheringActivity extends AppCompatActivity {
             @Override
             public void onNewPublishStatus(int state) {
                 if(state == PublishedService.STATUS_STARTING) return;
-                beginDelayedTransition();
+                MaxUtils.beginDelayedTransition(GatheringActivity.this);
                 final TextView dst = (TextView) findViewById(R.id.ga_state);
                 switch(state) {
                     case PublishedService.STATUS_START_FAILED: {
@@ -76,11 +69,13 @@ public class GatheringActivity extends AppCompatActivity {
         room.setUnassignedPcsCountListener(new PcAssignmentHelper.OnBoundPcCallback() {
             @Override
             public void onUnboundCountChanged(int stillToBind) {
-                availablePcs(stillToBind);
+                MaxUtils.beginDelayedTransition(GatheringActivity.this);
+                findViewById(R.id.ga_pcUnassignedList).setVisibility(stillToBind > 0 ? View.VISIBLE : View.GONE);
+                final TextView label = (TextView) findViewById(R.id.ga_pcUnassignedListDesc);
+                label.setText(stillToBind > 0 ? R.string.ga_playingCharactersAssignment : R.string.ga_allAssigned);
             }
         });
-        room.accept();
-        beginDelayedTransition();
+        MaxUtils.beginDelayedTransition(this);
         findViewById(R.id.ga_pcUnassignedListDesc).setVisibility(View.VISIBLE);
         final RecyclerView devList = (RecyclerView) findViewById(R.id.ga_deviceList);
         devList.setAdapter(room.setNewAuthDevicesAdapter(new PcAssignmentHelper.AuthDeviceHolderFactoryBinder<AuthDeviceViewHolder>() {
@@ -123,39 +118,6 @@ public class GatheringActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
-        try {
-            room.startListening();
-        } catch (IOException e) {
-            new AlertDialog.Builder(this, R.style.AppDialogStyle)
-                    .setMessage(R.string.master_badServerSocket)
-                    .setPositiveButton(R.string.master_giveUpAndGoBack, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            finish();
-                        }
-                    }).show();
-            return;
-        }
-        final NsdManager sys = (NsdManager) getSystemService(NSD_SERVICE);
-        StartData.PartyOwnerData.Group party = room.getPartyOwnerData();
-        room.beginPublishing(sys, party.name, PartyJoinOrderService.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
-
-        String easygoing = String.format(Locale.ENGLISH, "name: %1$s, published: %2$d, charCount=%3$d, devCount=%4$d, created=%5$d. Measure userbase health.",
-                party.name, System.currentTimeMillis(),
-                party.party.length + party.npcs.length, party.devices.length, party.created.seconds);
-        MaxUtils.hasher.reset();
-        room.publishToken = MaxUtils.hasher.digest(easygoing.getBytes());
-        FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
-        Bundle bundle = new Bundle();
-        bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_GATHER);
-        bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, room.publishToken);
-        surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
-    }
-
-    @Override
     protected void onDestroy() {
         final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
         if(room != null) {
@@ -164,20 +126,6 @@ public class GatheringActivity extends AppCompatActivity {
             room.onNewPublishStatus = null;
         }
         super.onDestroy();
-    }
-
-    @Override
-    protected void onStop() {
-        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
-        if(room != null) room.stopListening(false); // in case this is called before .onDestroy
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart() {
-        final PartyJoinOrderService room = RunningServiceHandles.getInstance().play;
-        room.accept();
-        super.onStart();
     }
 
     @Override
@@ -197,13 +145,6 @@ public class GatheringActivity extends AppCompatActivity {
             }
         }
         return false;
-    }
-
-    private void availablePcs(int itemCount) {
-        beginDelayedTransition();
-        findViewById(R.id.ga_pcUnassignedList).setVisibility(itemCount > 0 ? View.VISIBLE : View.GONE);
-        final TextView label = (TextView) findViewById(R.id.ga_pcUnassignedListDesc);
-        label.setText(itemCount > 0 ? R.string.ga_playingCharactersAssignment : R.string.ga_allAssigned);
     }
 
     public void startSession_callback(View btn) {
@@ -283,12 +224,6 @@ public class GatheringActivity extends AppCompatActivity {
                         .show();
             }
         }.execute();
-    }
-
-    private void beginDelayedTransition() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.ga_activityRoot));
-        }
     }
 
     private static class AuthDeviceViewHolder extends RecyclerView.ViewHolder {

@@ -80,7 +80,6 @@ public class NewPreparedBattleActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case R.id.npba_save: {
                 // First I validate the data.
-                final View root = findViewById(R.id.activityRoot);
                 TextInputLayout til = (TextInputLayout)findViewById(R.id.npba_tilDesc);
                 View view = findViewById(R.id.npba_desc);
                 final String desc = ((EditText) view).getText().toString();
@@ -102,10 +101,11 @@ public class NewPreparedBattleActivity extends AppCompatActivity {
                     baddie.peerKey = clear;
                     battle.actors[dst++] = baddie;
                 }
-                PreparedEncounters.Battle[] longer = Arrays.copyOf(PreparedBattlesActivity.custom.battles, PreparedBattlesActivity.custom.battles.length + 1);
-                longer[PreparedBattlesActivity.custom.battles.length] = battle;
-                PreparedBattlesActivity.custom.battles = longer;
-                saving = new AsyncRenamingStore<PreparedEncounters.Collection>(getFilesDir(), PersistentDataUtils.USER_CUSTOM_DATA_SUBDIR, PersistentDataUtils.CUSTOM_ENCOUNTERS_FILE_NAME, PreparedBattlesActivity.custom) {
+                PreparedEncounters.Collection custom = RunningServiceHandles.getInstance().state.data.customBattles;
+                PreparedEncounters.Battle[] longer = Arrays.copyOf(custom.battles, custom.battles.length + 1);
+                longer[custom.battles.length] = battle;
+                custom.battles = longer;
+                saving = new AsyncRenamingStore<PreparedEncounters.Collection>(getFilesDir(), PersistentDataUtils.USER_CUSTOM_DATA_SUBDIR, PersistentDataUtils.CUSTOM_ENCOUNTERS_FILE_NAME, custom) {
                     @Override
                     protected String getString(@StringRes int res) {
                         return NewPreparedBattleActivity.this.getString(res);

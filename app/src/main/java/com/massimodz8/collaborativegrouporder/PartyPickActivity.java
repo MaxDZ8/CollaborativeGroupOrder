@@ -1,13 +1,10 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,7 +37,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -132,14 +128,12 @@ public class PartyPickActivity extends AppCompatActivity {
             super.onActivityResult(requestCode, resultCode, data);
             return;
         }
-        StartData.PartyOwnerData.Group party = null;
-        if(seconn != null) {  // maybe the activity has been destroyed in the meanwhile and then we won't have the view anywore
-            party = seconn.adding;
-            RecyclerView rv = seconn.lister.get();
+        if(activeParty != null) {  // maybe the activity has been destroyed in the meanwhile and then we won't have the view anywore
+            RecyclerView rv = ownedFragments.get(activeParty).actorList;
             if (rv != null) rv.getAdapter().notifyDataSetChanged();
         }
-        seconn = null;
-        stopService(new Intent(this, PartyCreationService.class));
+        RunningServiceHandles.getInstance().create.shutdown();
+        RunningServiceHandles.getInstance().create = null;
         boolean goAdventuring = data != null && data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
         if(goAdventuring && activeParty != null) new SelectionListener(this, activeParty).onClick(null);
     }
@@ -249,20 +243,14 @@ public class PartyPickActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.ppa_menu_addDevice: {
-                final Intent intent = new Intent(this, PartyCreationService.class);
-                startService(intent);
-                OwnedPartyFragment curFrag = ownedFragments.get(activeParty);
-                seconn = new MyAddDevicesServiceConnection(activeParty, curFrag != null? curFrag.actorList : null);
-                if(!bindService(intent, seconn, 0)) {
-                    seconn = null;
-                    stopService(intent);
-                    new AlertDialog.Builder(this)
-                            .setMessage(R.string.master_cannotBindPartyService)
-                            .setIcon(R.drawable.ic_error_white_24dp)
-                            .show();
-                    return true;
-                }
+                PartyCreator creator = new PartyCreator(this);
+                RunningServiceHandles.getInstance().create = creator;
+                creator.generatedParty = activeParty;
+                creator.mode = PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING;
+                startActivityForResult(new Intent(PartyPickActivity.this, NewPartyDeviceSelectionActivity.class), REQUEST_ADD_STUFF);
+                return true;
             }
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -939,29 +927,6 @@ public class PartyPickActivity extends AppCompatActivity {
         }
     }
 
-    private class MyAddDevicesServiceConnection implements ServiceConnection {
-        public final StartData.PartyOwnerData.Group adding;
-        public final WeakReference<RecyclerView> lister;
-
-        public MyAddDevicesServiceConnection(StartData.PartyOwnerData.Group adding, RecyclerView lister) {
-            this.adding = adding;
-            this.lister = new WeakReference<>(lister);
-        }
-
-        @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                PartyCreationService real = ((PartyCreationService.LocalBinder) service).getConcreteService();
-                RunningServiceHandles.getInstance().create = real;
-                unbindService(this);
-                real.generatedParty = adding;
-                real.mode = PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING;
-                startActivityForResult(new Intent(PartyPickActivity.this, NewPartyDeviceSelectionActivity.class), REQUEST_ADD_STUFF);
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) { }
-    }
-
 
     private DateFormat local = DateFormat.getDateInstance(DateFormat.MEDIUM);
     private String getNiceDate(Timestamp ts) {
@@ -969,6 +934,5 @@ public class PartyPickActivity extends AppCompatActivity {
     }
 
     private final IdentityHashMap<StartData.PartyOwnerData.Group, OwnedPartyFragment> ownedFragments = new IdentityHashMap<>();
-    private MyAddDevicesServiceConnection seconn;
     private static final int REQUEST_ADD_STUFF = 159;
 }

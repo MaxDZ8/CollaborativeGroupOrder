@@ -166,11 +166,12 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
                 // Our new mob is ready. Kinda. Now let's add it to the book and start a save!
                 MonsterData.MonsterBook.Entry parent = new MonsterData.MonsterBook.Entry();
                 parent.main = mob;
-                final MonsterData.MonsterBook.Entry[] longer = Arrays.copyOf(CustomMonstersActivity.custom.entries, CustomMonstersActivity.custom.entries.length + 1);
-                longer[CustomMonstersActivity.custom.entries.length] = parent;
-                CustomMonstersActivity.custom.entries = longer;
+                MonsterData.MonsterBook cmobs = RunningServiceHandles.getInstance().state.data.customMonsters;
+                final MonsterData.MonsterBook.Entry[] longer = Arrays.copyOf(cmobs.entries, cmobs.entries.length + 1);
+                longer[cmobs.entries.length] = parent;
+                cmobs.entries = longer;
                 saveAction.setEnabled(false);
-                saving = new AsyncRenamingStore<MonsterData.MonsterBook>(getFilesDir(), PersistentDataUtils.USER_CUSTOM_DATA_SUBDIR, PersistentDataUtils.CUSTOM_MOBS_FILE_NAME, CustomMonstersActivity.custom) {
+                saving = new AsyncRenamingStore<MonsterData.MonsterBook>(getFilesDir(), PersistentDataUtils.USER_CUSTOM_DATA_SUBDIR, PersistentDataUtils.CUSTOM_MOBS_FILE_NAME, cmobs) {
                     @Override
                     protected String getString(@StringRes int res) {
                         return NewCustomMonsterActivity.this.getString(res);
