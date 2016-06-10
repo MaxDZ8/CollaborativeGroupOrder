@@ -12,7 +12,7 @@
     tools:context="com.massimodz8.collaborativegrouporder.JoinSessionActivity"
     tools:showIn="@layout/activity_join_session"
     android:orientation="vertical"
-    android:id="@+id/jsa_contentRoot">
+    android:id="@+id/activityRoot">
 
     <TextView
         android:layout_width="wrap_content"

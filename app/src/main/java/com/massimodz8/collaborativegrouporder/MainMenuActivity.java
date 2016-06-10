@@ -200,7 +200,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(null != serverConn) state.pumpers = new Pumper.MessagePumpingThread[] { serverConn };
         else state.pumpers = null; // be safe-r. Sort of.
-        state.jsaState = new JoinSessionActivity.State(activeParty);
+        JoinSessionActivity.prepare(activeParty);
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
@@ -243,9 +243,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             }
             case REQUEST_PULL_CHAR_LIST: {
                 if(resultCode == RESULT_OK) {
-                    final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-                    CharSelectionActivity.prepare(state.jsaResult.worker, state.jsaResult.party, state.jsaResult.first);
-                    state.jsaResult = null;
+                    JoinSessionActivity.Result res = JoinSessionActivity.result;
+                    CharSelectionActivity.prepare(res.worker, res.party, res.first);
+                    JoinSessionActivity.result = null;
                     startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
                 }
                 else baseNotification();
@@ -282,13 +282,13 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 state.pumpers = null;
                 if(resultCode == RESULT_OK) {
                     InternalStateService.Data everything = RunningServiceHandles.getInstance().state.data;
-                    everything.groupKeys.add(state.newKey);
-                    if (serverConn != null) startGoAdventuringActivity(state.newKey, serverConn);
+                    everything.groupKeys.add(NewCharactersProposalActivity.justJoined);
+                    if (serverConn != null) startGoAdventuringActivity(NewCharactersProposalActivity.justJoined, serverConn);
                     else baseNotification();
                     guiRefreshDataChanged.run();
                 }
                 else baseNotification();
-                state.newKey = null;
+                NewCharactersProposalActivity.justJoined = null;
             } break;
             case REQUEST_GATHER_DEVICES: {
                 if(resultCode == RESULT_OK) {

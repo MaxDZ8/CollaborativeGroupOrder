@@ -50,9 +50,9 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         }
 
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        if(null != state.explorer) {
-            explorer = state.explorer;
-            state.explorer = null;
+        if(null != survive) {
+            explorer = survive;
+            survive = null;
             explorer.setCallback(this);
         }
         else {
@@ -126,7 +126,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
             state.candidates = candidates;
             candidates = null;
             explorer.unregisterCallback();
-            state.explorer = explorer;
+            survive = explorer;
             explorer = null;
             state.pumpers = netPump.move();
         }
@@ -155,7 +155,8 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
     static final int MSG_GROUP_FORMED = 6;
 
     Vector<GroupState> candidates = new Vector<>();
-    AccumulatingDiscoveryListener explorer = new AccumulatingDiscoveryListener();
+    private AccumulatingDiscoveryListener explorer = new AccumulatingDiscoveryListener();
+    private static AccumulatingDiscoveryListener survive; // I use this to pass data to myself when I get destroyed.
     int prevDiscoveryStatus = AccumulatingDiscoveryListener.IDLE;
 
     GroupListAdapter listAdapter;

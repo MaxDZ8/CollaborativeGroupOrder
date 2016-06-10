@@ -35,29 +35,22 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class JoinSessionActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
-    public static class State {
-        /// This must be initially populated by whoever spans this activity.
-        final StartData.PartyClientData.Group party;
-
-        AccumulatingDiscoveryListener explorer;
-        ArrayList<PartyAttempt> attempts = new ArrayList<>();
-        Pumper.MessagePumpingThread[] workers;
-
-        public State(StartData.PartyClientData.Group party) {
-            this.party = party;
-        }
+    public static void prepare(StartData.PartyClientData.Group party) {
+        survive = new JoinSessionActivity.State(party);
     }
+
     public static class Result {
         final Pumper.MessagePumpingThread worker;
         final StartData.PartyClientData.Group party;
         final Network.PlayingCharacterDefinition first; // if I get one of those it's because I have been identified.
 
-        public Result(Pumper.MessagePumpingThread worker, StartData.PartyClientData.Group party, Network.PlayingCharacterDefinition first) {
+        protected Result(Pumper.MessagePumpingThread worker, StartData.PartyClientData.Group party, Network.PlayingCharacterDefinition first) {
             this.worker = worker;
             this.party = party;
             this.first = first;
         }
     }
+    public static Result result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,45 +68,35 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         });
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        willBeRestored = false; // we don't really know, but we have being restored now so let's try again.
-
-        final CrossActivityShare share = ((CrossActivityShare) getApplicationContext());
-        if(null == myState) {
-            myState = share.jsaState;
-            share.jsaState = null;
-        }
-
+        myState = survive;
+        survive = null;
+        willSave = true;
         ((TextView)findViewById(R.id.jsa_partyName)).setText(myState.party.name);
 
         if(null == handler) handler = new MyHandler(this);
-        if(null == pumper) {
-            pumper = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
-                    .add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
-                        @Override
-                        public Network.GroupInfo make() { return new Network.GroupInfo(); }
+        pumper = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
+                .add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
+                    @Override
+                    public Network.GroupInfo make() { return new Network.GroupInfo(); }
 
-                        @Override
-                        public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
-                            handler.sendMessage(handler.obtainMessage(MSG_PARTY_INFO, new Events.GroupInfo(from, msg)));
-                            return false;
-                        }
-                    }).add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
-                        @Override
-                        public Network.PlayingCharacterDefinition make() { return new Network.PlayingCharacterDefinition(); }
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+                        handler.sendMessage(handler.obtainMessage(MSG_PARTY_INFO, new Events.GroupInfo(from, msg)));
+                        return false;
+                    }
+                }).add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
+                    @Override
+                    public Network.PlayingCharacterDefinition make() { return new Network.PlayingCharacterDefinition(); }
 
-                        @Override
-                        public boolean mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
-                            handler.sendMessage(handler.obtainMessage(MSG_CHAR_DEFINITION, new Events.CharacterDefinition(from, msg)));
-                            return true;
-                        }
-                    });
-        }
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
+                        handler.sendMessage(handler.obtainMessage(MSG_CHAR_DEFINITION, new Events.CharacterDefinition(from, msg)));
+                        return true;
+                    }
+                });
 
+        final CrossActivityShare share = ((CrossActivityShare) getApplicationContext());
         if(null == share.pumpers) { // initialize network scan mode
             if (null != myState.explorer) myState.explorer.setCallback(this);
             else {
@@ -133,11 +116,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
             myState.attempts.add(dummy);
             share.pumpers = null;
             dummy.refresh(); // kick in our pretty sequence of events.
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                ViewGroup contentRoot = (ViewGroup) findViewById(R.id.jsa_contentRoot);
-                TransitionManager.beginDelayedTransition(contentRoot);
-            }
+            MaxUtils.beginDelayedTransition(this);
             TextView state = (TextView) findViewById(R.id.jsa_state);
             state.setText(R.string.jsa_pullingFromExistingConnection);
         }
@@ -145,17 +124,29 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        final CrossActivityShare share = (CrossActivityShare) getApplicationContext();
         if(null != myState.explorer) myState.explorer.unregisterCallback(); // perhaps we continued using an existing connection
         myState.workers = pumper.move();
-        share.jsaState = myState;
-        willBeRestored = true;
+        if(willSave) survive = myState; // otherwise we're closing
     }
 
     @Override
     protected void onDestroy() {
-        if(!willBeRestored) {
-            pumper.shutdown();
+        if(survive == null) {
+            final Pumper.MessagePumpingThread[] bye = pumper.move();
+            new Thread() {
+                @Override
+                public void run() {
+                    for (Pumper.MessagePumpingThread goner : bye) {
+                        goner.interrupt();
+                        try {
+                            goner.getSource().socket.close();
+                        } catch (IOException e) {
+                            // suppress
+                        }
+                    }
+
+                }
+            }.start();
             if(myState.explorer != null) myState.explorer.stopDiscovery(); // only created if not reusing an existing connection
             new AsyncTask<Void, Void, Void>() {
                 @Override
@@ -171,9 +162,20 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                     return null;
                 }
             }.execute();
-
         }
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        willSave = false;
+        return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onBackPressed() {
+        willSave = false;
+        super.onBackPressed();
     }
 
     // AccumulatingDiscoveryListener.OnTick vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -191,6 +193,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     private static final int MSG_CHAR_DEFINITION = 5;
 
     State myState;
+    private boolean willSave;
     Handler handler;
     Pumper pumper;
 
@@ -321,7 +324,10 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                         if(real == check.pipe) {
                             final Pumper.MessagePumpingThread move = me.pumper.move(real);
                             me.myState.attempts.remove(check);
-                            me.gotcha(move, check);
+                            result = new Result(move, me.myState.party, check.charDef);
+                            me.willSave = false;
+                            me.setResult(RESULT_OK);
+                            me.finish();
                             return;
                         }
                     }
@@ -361,13 +367,6 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
             case STOP_FAILED = 6 ;
             */
         }
-    }
-
-    private void gotcha(Pumper.MessagePumpingThread move, PartyAttempt check) {
-        final CrossActivityShare share = (CrossActivityShare) getApplicationContext();
-        share.jsaResult = new Result(move, myState.party, check.charDef);
-        setResult(RESULT_OK);
-        finish();
     }
 
     private void error(int index, PartyAttempt party) {
@@ -504,6 +503,17 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         pumper.pump(worker);
     }
 
-    /// Set by onSaveInstanceState to understand when to clean resources/connections for real.
-    private boolean willBeRestored;
+    private static class State {
+        /// This must be initially populated by whoever spans this activity.
+        final StartData.PartyClientData.Group party;
+
+        AccumulatingDiscoveryListener explorer;
+        ArrayList<PartyAttempt> attempts = new ArrayList<>();
+        Pumper.MessagePumpingThread[] workers;
+
+        public State(StartData.PartyClientData.Group party) {
+            this.party = party;
+        }
+    }
+    private static JoinSessionActivity.State survive;
 }

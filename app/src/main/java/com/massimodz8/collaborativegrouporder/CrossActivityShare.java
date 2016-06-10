@@ -15,18 +15,8 @@ import java.util.Vector;
  * Application class and use it to keep persistent state.
  */
 public class CrossActivityShare extends Application {
-
-    public JoinSessionActivity.State jsaState;
-    public JoinSessionActivity.Result jsaResult;
-
     // SelectFormingGroupActivity ------------------------------------------------------------------
-    AccumulatingDiscoveryListener explorer;
     Vector<GroupState> candidates;
-    //----------------------------------------------------------------------------------------------
-
-    // NewCharacterProposalActivity result ---------------------------------------------------------
-    //public boolean goAdventuring; // does not exist, use the pumpers instead
-    public StartData.PartyClientData.Group newKey;
     //----------------------------------------------------------------------------------------------
 
 

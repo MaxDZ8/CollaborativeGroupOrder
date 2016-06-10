@@ -28,6 +28,11 @@ import java.util.Date;
 import java.util.Vector;
 
 public class NewCharactersProposalActivity extends AppCompatActivity {
+    /** The result of running this activity.
+     * Set this to null ASAP. It will be set by the activity before returning RESULT_OK. */
+    public static StartData.PartyClientData.Group justJoined;
+
+
     GroupState party;
     final ArrayList<BuildingPlayingCharacter> characters = new ArrayList<>();
     final MyLister list = new MyLister();
@@ -214,7 +219,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
 
     private void finishingTouches(boolean goAdventuring) {
         CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        state.newKey = newKey;
+        justJoined = newKey;
         if(goAdventuring) {
             state.pumpers = netWorker.move();
             party = null; // party != null --> onDestroy will close socket!
