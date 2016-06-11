@@ -197,10 +197,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
 
     private void startGoAdventuringActivity(@NonNull StartData.PartyClientData.Group activeParty, @Nullable Pumper.MessagePumpingThread serverConn) {
-        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        if(null != serverConn) state.pumpers = new Pumper.MessagePumpingThread[] { serverConn };
-        else state.pumpers = null; // be safe-r. Sort of.
-        JoinSessionActivity.prepare(activeParty);
+        JoinSessionActivity.prepare(activeParty, serverConn);
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
@@ -268,6 +265,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             } break;
             case REQUEST_JOIN_FORMING: {
                 if(resultCode == RESULT_OK) {
+                    NewCharactersProposalActivity.prepare(SelectFormingGroupActivity.resParty, SelectFormingGroupActivity.resWorker);
+                    SelectFormingGroupActivity.resParty = null;
+                    SelectFormingGroupActivity.resWorker = null;
                     startActivityForResult(new Intent(this, NewCharactersProposalActivity.class), REQUEST_PROPOSE_CHARACTERS);
                     Notification build = handles.state.buildNotification(handles.play.getPartyOwnerData().name, getString(R.string.ncpa_title));
                     NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -277,18 +277,18 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 else baseNotification();
             } break;
             case REQUEST_PROPOSE_CHARACTERS: {
-                final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-                final Pumper.MessagePumpingThread serverConn = state.pumpers != null? state.pumpers[0] : null;
-                state.pumpers = null;
                 if(resultCode == RESULT_OK) {
                     InternalStateService.Data everything = RunningServiceHandles.getInstance().state.data;
-                    everything.groupKeys.add(NewCharactersProposalActivity.justJoined);
-                    if (serverConn != null) startGoAdventuringActivity(NewCharactersProposalActivity.justJoined, serverConn);
+                    everything.groupKeys.add(NewCharactersProposalActivity.resJoined);
+                    Pumper.MessagePumpingThread serverConn = NewCharactersProposalActivity.resMaster;
+                    if (serverConn != null) startGoAdventuringActivity(NewCharactersProposalActivity.resJoined, serverConn);
                     else baseNotification();
                     guiRefreshDataChanged.run();
+                    NewCharactersProposalActivity.resJoined = null;
+                    NewCharactersProposalActivity.resMaster = null;
                 }
                 else baseNotification();
-                NewCharactersProposalActivity.justJoined = null;
+                NewCharactersProposalActivity.resJoined = null;
             } break;
             case REQUEST_GATHER_DEVICES: {
                 if(resultCode == RESULT_OK) {

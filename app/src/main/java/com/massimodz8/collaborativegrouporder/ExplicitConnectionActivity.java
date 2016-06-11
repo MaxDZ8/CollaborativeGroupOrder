@@ -38,8 +38,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
-        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        if(netPump.getClientCount() != 0) state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(attempting) };
+        if(netPump.getClientCount() != 0) survive = netPump.move(attempting);
         attempting = null;
 
         if(null != connecting) {
@@ -63,7 +62,6 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_explicit_connection);
         handler = new MyHandler(this);
 
-        final CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED);
         netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
             @Override
@@ -74,10 +72,10 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 return true;
             }
         });
-        if(null != state.pumpers) {
-            attempting = state.pumpers[0].getSource();
-            netPump.pump(state.pumpers[0]);
-            state.pumpers = null;
+        if(null != survive) {
+            attempting = survive.getSource();
+            netPump.pump(survive);
+            survive = null;
         }
         if(null != savedInstanceState) {
             int port = savedInstanceState.getInt(BUNDLE_PORT, -1);
@@ -245,4 +243,5 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             refreshGUI();
         }
     }
+    private static Pumper.MessagePumpingThread survive;
 }

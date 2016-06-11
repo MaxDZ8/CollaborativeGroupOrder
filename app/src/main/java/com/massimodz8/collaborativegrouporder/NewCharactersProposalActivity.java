@@ -2,12 +2,12 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,25 +18,32 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
-import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
 
 public class NewCharactersProposalActivity extends AppCompatActivity {
     /** The result of running this activity.
      * Set this to null ASAP. It will be set by the activity before returning RESULT_OK. */
-    public static StartData.PartyClientData.Group justJoined;
+    public static StartData.PartyClientData.Group resJoined;
+    public static Pumper.MessagePumpingThread resMaster; // this might be null!
+
+
+    public static void prepare(GroupState joining, Pumper.MessagePumpingThread master) {
+        survive = new Model(joining, master, new ArrayList<BuildingPlayingCharacter>(), new Mailman());
+        survive.sender.start();
+    }
 
 
     GroupState party;
-    final ArrayList<BuildingPlayingCharacter> characters = new ArrayList<>();
+    ArrayList<BuildingPlayingCharacter> characters;
     final MyLister list = new MyLister();
-    Handler handler = new MyHandler(this);
+    final Handler handler = new MyHandler(this);
+    Mailman sender;
     Pumper netWorker = new Pumper(handler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED)
             .add(ProtoBufferEnum.GROUP_FORMED, new PumpTarget.Callbacks<Network.GroupFormed>() {
                 @Override
@@ -70,14 +77,12 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_characters_proposal);
-
-        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        party = state.candidates.elementAt(0);
-        state.candidates = null;
-        netWorker.pump(state.pumpers[0]);
-        state.pumpers = null;
-
-        characters.add(new BuildingPlayingCharacter());
+        party = survive.party;
+        netWorker.pump(survive.toMaster);
+        characters = survive.characters;
+        sender = survive.sender;
+        survive = null;
+        if(characters.isEmpty()) characters.add(new BuildingPlayingCharacter());
 
         RecyclerView listWidget = (RecyclerView)findViewById(R.id.ncpa_list);
         listWidget.setLayoutManager(new LinearLayoutManager(this));
@@ -87,11 +92,8 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        state.candidates = new Vector<>();
-        state.candidates.add(party);
-        state.pumpers = new Pumper.MessagePumpingThread[] { netWorker.move(party.channel) };
-        party = null;
+        survive = new Model(party, netWorker.move(party.channel), characters, sender);
+        sender = null;
     }
 
     @Override
@@ -104,6 +106,10 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
             } catch (IOException e) {
                 // nothing, we're going away.
             }
+        }
+        if(sender != null) {
+            sender.out.add(new SendRequest());
+            sender.interrupt();
         }
         super.onDestroy();
     }
@@ -184,7 +190,10 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
                         .setPositiveButton(label, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                finishingTouches(goAdventuring);
+                                resJoined = newKey;
+                                if(goAdventuring) resMaster = netWorker.move(party.channel);
+                                setResult(RESULT_OK);
+                                finish();
                             }
                         })
                         .show();
@@ -216,18 +225,6 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
     }
 
     private StartData.PartyClientData.Group newKey;
-
-    private void finishingTouches(boolean goAdventuring) {
-        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        justJoined = newKey;
-        if(goAdventuring) {
-            state.pumpers = netWorker.move();
-            party = null; // party != null --> onDestroy will close socket!
-        }
-        setResult(RESULT_OK);
-        finish();
-    }
-
     public void addCharCandidate(View v) {
         characters.add(new BuildingPlayingCharacter());
         refreshGUI();
@@ -258,11 +255,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
                             wire.experience = who.experience;
                             wire.peerKey = who.unique;
                             wire.level = who.level;
-                            try {
-                                channel.writeSync(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, wire);
-                            } catch (IOException e) {
-                                return e;
-                            }
+                            sender.out.add(new SendRequest(channel, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, wire, null));
                             return null;
                         }
 
@@ -287,4 +280,19 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         @Override
         public int getItemCount() { return characters.size(); }
     }
+
+    private static class Model {
+        final GroupState party;
+        final Pumper.MessagePumpingThread toMaster;
+        final ArrayList<BuildingPlayingCharacter> characters;
+        final Mailman sender;
+
+        private Model(GroupState party, Pumper.MessagePumpingThread toMaster, ArrayList<BuildingPlayingCharacter> characters, Mailman sender) {
+            this.party = party;
+            this.toMaster = toMaster;
+            this.characters = characters;
+            this.sender = sender;
+        }
+    }
+    private static Model survive;
 }

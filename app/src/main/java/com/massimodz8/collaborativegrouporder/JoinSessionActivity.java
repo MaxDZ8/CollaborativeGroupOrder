@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,9 +14,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.transition.TransitionManager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrder;
@@ -26,8 +23,8 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
-import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -35,8 +32,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class JoinSessionActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
-    public static void prepare(StartData.PartyClientData.Group party) {
-        survive = new JoinSessionActivity.State(party);
+    public static void prepare(StartData.PartyClientData.Group party, Pumper.MessagePumpingThread serverConn) {
+        survive = new Model(party);
+        masterConn = serverConn;
     }
 
     public static class Result {
@@ -71,54 +69,43 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
 
         myState = survive;
         survive = null;
-        willSave = true;
         ((TextView)findViewById(R.id.jsa_partyName)).setText(myState.party.name);
 
-        if(null == handler) handler = new MyHandler(this);
-        pumper = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
-                .add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
-                    @Override
-                    public Network.GroupInfo make() { return new Network.GroupInfo(); }
+        handler = new MyHandler(this);
 
-                    @Override
-                    public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
-                        handler.sendMessage(handler.obtainMessage(MSG_PARTY_INFO, new Events.GroupInfo(from, msg)));
-                        return false;
-                    }
-                }).add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
-                    @Override
-                    public Network.PlayingCharacterDefinition make() { return new Network.PlayingCharacterDefinition(); }
-
-                    @Override
-                    public boolean mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
-                        handler.sendMessage(handler.obtainMessage(MSG_CHAR_DEFINITION, new Events.CharacterDefinition(from, msg)));
-                        return true;
-                    }
-                });
-
-        final CrossActivityShare share = ((CrossActivityShare) getApplicationContext());
-        if(null == share.pumpers) { // initialize network scan mode
-            if (null != myState.explorer) myState.explorer.setCallback(this);
-            else {
-                final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
-                myState.explorer = new AccumulatingDiscoveryListener();
-                myState.explorer.beginDiscovery(PartyJoinOrder.PARTY_GOING_ADVENTURING_SERVICE_TYPE, nsd, this);
+        // Two ways to start:
+        // I start from the party picking. Then I have a party name to look for and no server connection.
+        // I start from the forming activity. Party name to look for and a server pipe alredy there!
+        // So there are two modes, only the first needs exploring.
+        // There is in practice a third mode: I am restoring previous state.
+        // This activity is always launched by .prepare, .attempts is null if this is first run.
+        myState = survive;
+        if(survive.attempts == null) {
+            myState = survive;
+            myState.attempts = new ArrayList<>();
+            if(masterConn != null) { // running in 'connect to known host' mode
+                PartyAttempt dummy = new PartyAttempt(null);
+                dummy.pipe = masterConn.getSource();
+                pumper.pump(masterConn);
+                myState.attempts.add(dummy);
+                masterConn = null;
+                dummy.refresh(); // kick in our pretty sequence of events.
+                MaxUtils.beginDelayedTransition(this);
+                TextView state = (TextView) findViewById(R.id.jsa_state);
+                state.setText(R.string.jsa_pullingFromExistingConnection);
             }
-            if (null != myState.workers) {
-                for (Pumper.MessagePumpingThread w : myState.workers) pumper.pump(w);
-                myState.workers = null;
+            else {
+                if(myState.explorer == null) {
+                    final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
+                    myState.explorer = new AccumulatingDiscoveryListener();
+                    myState.explorer.beginDiscovery(PartyJoinOrder.PARTY_GOING_ADVENTURING_SERVICE_TYPE, nsd, this);
+                }
             }
         }
-        else { // just shake to the specified peer and be done with it.
-            PartyAttempt dummy = new PartyAttempt(null);
-            dummy.pipe = share.pumpers[0].getSource();
-            pumper.pump(share.pumpers[0]);
-            myState.attempts.add(dummy);
-            share.pumpers = null;
-            dummy.refresh(); // kick in our pretty sequence of events.
-            MaxUtils.beginDelayedTransition(this);
-            TextView state = (TextView) findViewById(R.id.jsa_state);
-            state.setText(R.string.jsa_pullingFromExistingConnection);
+        survive = null;
+        if(myState.explorer != null) myState.explorer.setCallback(this);
+        if(myState.workers != null) {
+            for (Pumper.MessagePumpingThread thread : myState.workers) pumper.pump(thread);
         }
     }
 
@@ -126,7 +113,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     protected void onSaveInstanceState(Bundle outState) {
         if(null != myState.explorer) myState.explorer.unregisterCallback(); // perhaps we continued using an existing connection
         myState.workers = pumper.move();
-        if(willSave) survive = myState; // otherwise we're closing
+        survive = myState; // otherwise we're closing
     }
 
     @Override
@@ -166,18 +153,6 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         super.onDestroy();
     }
 
-    @Override
-    public boolean onSupportNavigateUp() {
-        willSave = false;
-        return super.onSupportNavigateUp();
-    }
-
-    @Override
-    public void onBackPressed() {
-        willSave = false;
-        super.onBackPressed();
-    }
-
     // AccumulatingDiscoveryListener.OnTick vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void tick(int old, int current) {
@@ -192,10 +167,28 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
     private static final int MSG_PARTY_INFO = 4;
     private static final int MSG_CHAR_DEFINITION = 5;
 
-    State myState;
-    private boolean willSave;
+    Model myState;
     Handler handler;
-    Pumper pumper;
+    Pumper pumper = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
+            .add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
+                @Override
+                public Network.GroupInfo make() { return new Network.GroupInfo(); }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+                    handler.sendMessage(handler.obtainMessage(MSG_PARTY_INFO, new Events.GroupInfo(from, msg)));
+                    return false;
+                }
+            }).add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
+                @Override
+                public Network.PlayingCharacterDefinition make() { return new Network.PlayingCharacterDefinition(); }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
+                    handler.sendMessage(handler.obtainMessage(MSG_CHAR_DEFINITION, new Events.CharacterDefinition(from, msg)));
+                    return true;
+                }
+            });
 
     private class PartyAttempt {
         final NsdServiceInfo source; /// set first
@@ -325,7 +318,6 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
                             final Pumper.MessagePumpingThread move = me.pumper.move(real);
                             me.myState.attempts.remove(check);
                             result = new Result(move, me.myState.party, check.charDef);
-                            me.willSave = false;
                             me.setResult(RESULT_OK);
                             me.finish();
                             return;
@@ -346,10 +338,7 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
 
     private void refreshStatus(int was, int now) {
         if(was == now) return;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            ViewGroup contentRoot = (ViewGroup) findViewById(R.id.jsa_contentRoot);
-            TransitionManager.beginDelayedTransition(contentRoot);
-        }
+        MaxUtils.beginDelayedTransition(this);
         TextView status = (TextView) findViewById(R.id.jsa_state);
         switch(now) {
             case AccumulatingDiscoveryListener.START_FAILED:
@@ -503,17 +492,18 @@ public class JoinSessionActivity extends AppCompatActivity implements Accumulati
         pumper.pump(worker);
     }
 
-    private static class State {
+    private static class Model {
         /// This must be initially populated by whoever spans this activity.
         final StartData.PartyClientData.Group party;
 
         AccumulatingDiscoveryListener explorer;
-        ArrayList<PartyAttempt> attempts = new ArrayList<>();
         Pumper.MessagePumpingThread[] workers;
+        ArrayList<PartyAttempt> attempts;
 
-        public State(StartData.PartyClientData.Group party) {
+        private Model(StartData.PartyClientData.Group party) {
             this.party = party;
         }
     }
-    private static JoinSessionActivity.State survive;
+    private static JoinSessionActivity.Model survive;
+    private static Pumper.MessagePumpingThread masterConn; // used when started by connecting to an already found service
 }

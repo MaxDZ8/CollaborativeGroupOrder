@@ -31,9 +31,12 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class SelectFormingGroupActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
+    public static GroupState resParty;
+    public static Pumper.MessagePumpingThread resWorker;
+
     @Override
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -44,18 +47,16 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(listAdapter);
 
-        if(sender == null) {
-            sender = new Mailman();
-            sender.start();
-        }
-
-        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
         if(null != survive) {
-            explorer = survive;
+            explorer = survive.explorer;
+            candidates = survive.candidates;
+            for(Pumper.MessagePumpingThread p : survive.pumpers) netPump.pump(p);
+            sender = survive.sender;
             survive = null;
-            explorer.setCallback(this);
         }
         else {
+            sender = new Mailman();
+            sender.start();
             final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
             if (nsd == null) {
                 new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
@@ -65,53 +66,32 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
             }
             explorer.beginDiscovery(PartyCreator.PARTY_FORMING_SERVICE_TYPE, nsd, this);
         }
-        if(null != state.candidates) {
-            candidates = state.candidates;
-            state.candidates = null;
-        }
-        netPump = new Pumper(guiHandler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED);
-        netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
-            @Override
-            public Network.GroupInfo make() {
-                return new Network.GroupInfo();
-            }
-
-            @Override
-            public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
-                guiHandler.sendMessage(guiHandler.obtainMessage(MSG_GROUP_INFO, new Events.GroupInfo(from, msg)));
-                return false;
-            }
-        }).add(ProtoBufferEnum.CHAR_BUDGET, new PumpTarget.Callbacks<Network.CharBudget>() {
-            @Override
-            public Network.CharBudget make() {
-                return new Network.CharBudget();
-            }
-
-            @Override
-            public boolean mangle(MessageChannel from, Network.CharBudget msg) throws IOException {
-                guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHAR_BUDGET, new Events.CharBudget(from, msg)));
-                return false;
-            }
-        }).add(ProtoBufferEnum.GROUP_FORMED, new PumpTarget.Callbacks<Network.GroupFormed>() {
-            @Override
-            public Network.GroupFormed make() { return new Network.GroupFormed(); }
-
-            @Override
-            public boolean mangle(MessageChannel from, Network.GroupFormed msg) throws IOException {
-                guiHandler.sendMessage(guiHandler.obtainMessage(MSG_GROUP_FORMED, new Events.GroupKey(from, msg.salt)));
-                return true;
-            }
-        });
-        if(null != state.pumpers) {
-            for(Pumper.MessagePumpingThread p : state.pumpers) netPump.pump(p);
-            state.pumpers = null;
+        if(explorer != null) {
+            explorer.setCallback(this); // maybe I lost something while I was disconnected.
+            guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHECK_NETWORK_SERVICES));
         }
     }
 
     @Override
     protected void onDestroy() {
         if(explorer != null) explorer.stopDiscovery();
-        if(netPump != null) netPump.shutdown();
+        if(netPump != null) {
+            final Pumper.MessagePumpingThread[] goners = netPump.move();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (Pumper.MessagePumpingThread bye : goners) {
+                        bye.interrupt();
+                        try {
+                            bye.getSource().socket.close();
+                        } catch (IOException e) {
+                            // ignore
+                        }
+                    }
+
+                }
+            }).start();
+        }
         if(sender != null) {
             sender.out.add(new SendRequest()); // this one should be sufficient really
             sender.interrupt();
@@ -121,15 +101,11 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
 
     @Override
     protected void onSaveInstanceState(Bundle out) {
-        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        if(null != candidates && candidates.size() > 0) {
-            state.candidates = candidates;
-            candidates = null;
-            explorer.unregisterCallback();
-            survive = explorer;
-            explorer = null;
-            state.pumpers = netPump.move();
-        }
+        explorer.unregisterCallback();
+        survive = new Model(explorer, candidates, netPump.move(), sender);
+        sender = null;
+        explorer = null;
+        netPump = null;
         // Don't call this. The whole GUI is regenerated anyway from the state.
         //super.onSaveInstanceState(out);
     }
@@ -154,14 +130,60 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
     static final int MSG_PUMPER_DETACHED = 5;
     static final int MSG_GROUP_FORMED = 6;
 
-    Vector<GroupState> candidates = new Vector<>();
+    ArrayList<GroupState> candidates = new ArrayList<>();
     private AccumulatingDiscoveryListener explorer = new AccumulatingDiscoveryListener();
-    private static AccumulatingDiscoveryListener survive; // I use this to pass data to myself when I get destroyed.
     int prevDiscoveryStatus = AccumulatingDiscoveryListener.IDLE;
+
+    private static class Model {  // I use this to pass data to myself when I get destroyed.
+        final AccumulatingDiscoveryListener explorer;
+        final ArrayList<GroupState> candidates;
+        final Pumper.MessagePumpingThread[] pumpers;
+        final Mailman sender;
+
+        private Model(AccumulatingDiscoveryListener explorer, ArrayList<GroupState> candidates, Pumper.MessagePumpingThread[] pumpers, Mailman sender) {
+            this.explorer = explorer;
+            this.candidates = candidates;
+            this.pumpers = pumpers;
+            this.sender = sender;
+        }
+    }
+    private static Model survive;
 
     GroupListAdapter listAdapter;
     Handler guiHandler = new MyHandler(this);
-    Pumper netPump;
+    Pumper netPump = new Pumper(guiHandler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED)
+            .add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
+                @Override
+                public Network.GroupInfo make() {
+                    return new Network.GroupInfo();
+                }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
+                    guiHandler.sendMessage(guiHandler.obtainMessage(MSG_GROUP_INFO, new Events.GroupInfo(from, msg)));
+                    return false;
+                }
+            }).add(ProtoBufferEnum.CHAR_BUDGET, new PumpTarget.Callbacks<Network.CharBudget>() {
+                @Override
+                public Network.CharBudget make() {
+                    return new Network.CharBudget();
+                }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.CharBudget msg) throws IOException {
+                    guiHandler.sendMessage(guiHandler.obtainMessage(MSG_CHAR_BUDGET, new Events.CharBudget(from, msg)));
+                    return false;
+                }
+            }).add(ProtoBufferEnum.GROUP_FORMED, new PumpTarget.Callbacks<Network.GroupFormed>() {
+                @Override
+                public Network.GroupFormed make() { return new Network.GroupFormed(); }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.GroupFormed msg) throws IOException {
+                    guiHandler.sendMessage(guiHandler.obtainMessage(MSG_GROUP_FORMED, new Events.GroupKey(from, msg.salt)));
+                    return true;
+                }
+            });
     private Mailman sender;
 
 
@@ -236,7 +258,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
 
         @Override
         public void onBindViewHolder(GroupViewHolder holder, int position) {
-            final GroupState info = candidates.elementAt(position);
+            final GroupState info = candidates.get(position);
             final int current = holder.message.getText().length();
             final int allowed = info.charBudget;
             holder.source = info;
@@ -325,37 +347,16 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         }
         if(got == null) return; // impossible
         // Also get the rid of everything that isn't you. Farewell.
-        final GroupState save = got;
-        final Vector<GroupState> clear = this.candidates;
-        this.candidates = new Vector<>();
-
-        CrossActivityShare state = (CrossActivityShare) getApplicationContext();
-        state.candidates = new Vector<>();
-        state.candidates.add(save);
-        state.pumpers = new Pumper.MessagePumpingThread[] { netPump.move(save.channel) };
-
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                for (GroupState away : clear) {
-                    if (save == away) continue;
-                    try {
-                        away.channel.socket.close();
-                    } catch (IOException e) {
-                        // I don't care.
-                    }
-                }
-                return null;
-            }
-        }.execute();
+        resParty = got;
+        resWorker = netPump.move(got.channel);
 
         explorer.stopDiscovery();
         final Pumper.MessagePumpingThread[] goners = netPump.move();
-        for (Pumper.MessagePumpingThread bye : goners) bye.interrupt();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 for (Pumper.MessagePumpingThread bye : goners) {
+                    bye.interrupt();
                     try {
                         bye.getSource().socket.close();
                     } catch (IOException e) {
@@ -365,7 +366,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
 
             }
         }).start();
-        netPump = null;
 
         setResult(RESULT_OK);
         finish();
@@ -430,7 +430,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
             for (AccumulatingDiscoveryListener.FoundService el : explorer.foundServices) {
                 int match = el.socket == null ? candidates.size() : 0;
                 for (; match < candidates.size(); match++) {
-                    if (candidates.elementAt(match).channel.socket == el.socket) break;
+                    if (candidates.get(match).channel.socket == el.socket) break;
                 }
                 if (match == candidates.size()) {
                     final GroupState ngs = new GroupState(new MessageChannel(el.socket));
@@ -443,7 +443,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
                 }
             }
             for (int loop = 0; loop < candidates.size(); loop++) {
-                final GroupState gs = candidates.elementAt(loop);
+                final GroupState gs = candidates.get(loop);
                 if (!gs.discovered) continue;
                 AccumulatingDiscoveryListener.FoundService match = null;
                 for (AccumulatingDiscoveryListener.FoundService el : explorer.foundServices) {
