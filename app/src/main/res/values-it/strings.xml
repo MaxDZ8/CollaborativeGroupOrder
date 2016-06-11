@@ -83,7 +83,7 @@
     <string name="dataLoadUpdate_failedPreviousDataDelete">impossibile cancellare i contenuti precedenti, i nuovi dati saranno scartati per mantenere i vecchi.</string>
     <string name="dataLoadUpdate_finished_newDataSaved_mainMenu">Menu principale</string>
     <string name="dataLoadUpdate_finished_newDataSaved_partyPick">Selezione gruppo</string>
-    <string name="dataLoadUpdate_newGroupSaved_msg">Dati salvati con successo nella memoria interna. Vuoi andare direttamente all\'avventura?</string>
+    <string name="dataLoadUpdate_newGroupSaved_msg">!!!!!!!!!MODIFICATO!!!!!!!!!</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Successo!</string>
     <string name="dialog_explicitConnectionInfo_title">Informazioni di connessione</string>
     <string name="dlgIEC_networkAddresses">Indirizzi di rete</string>

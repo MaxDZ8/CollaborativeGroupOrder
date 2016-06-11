@@ -195,6 +195,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 negative = R.string.dataLoadUpdate_finished_newDataSaved_mainMenu;
             }
             else negative = R.string.dataLoadUpdate_finished_newDataSaved_partyPick;
+            if(room.generatedParty.party.length != 0 && room.generatedParty.devices.length != 0) {
             new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
                     .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
                     .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
@@ -216,6 +217,22 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                         }
                     })
                     .show();
+        }
+            else {
+                new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
+                        .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
+                        .setMessage(R.string.dataLoadUpdate_newEmptyGroupSaved_msg)
+                        .setCancelable(false)
+                        .setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(false, new SendCompleteCallback(false));
+                                sending = temp;
+                                temp.execute();
+                            }
+                        })
+                        .show();
+            }
         }
     }
 

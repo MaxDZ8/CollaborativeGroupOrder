@@ -74,7 +74,8 @@
 
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
-    <string name="dataLoadUpdate_newGroupSaved_msg">Data successfully saved to internal storage. Do you want to go adventuring right away?</string>
+    <string name="dataLoadUpdate_newGroupSaved_msg">Party saved to internal storage. Do you want to go adventuring right away?</string>
+    <string name="dataLoadUpdate_newEmptyGroupSaved_msg">Empty party  saved to internal storage. We\'re going back to main menu now.</string>
     <string name="dataLoadUpdate_finished_newDataSaved_mainMenu">Main menu</string>
     <string name="dataLoadUpdate_finished_newDataSaved_partyPick">Party pick</string>
     <string name="dataLoadUpdate_couldNotStoreNewData">Could not store new party data. Error: %1$s</string>
@@ -221,10 +222,13 @@
     <string name="ppa_lastSavedInconsistent">Inconsistent data!</string>
     <string name="ppa_actorDeleted">\"%1$s\" deleted.</string>
     <string name="ppa_deviceDeleted">\"%1$s\" removed.</string>
+    <string name="ppa_charCount_zero">Empty party.</string>
     <string name="ppa_charCount_singular">A lone adventurer</string>
     <string name="ppa_charCount_plural">%1$d playing characters</string>
     <string name="ppa_charLevel_same">Level %1$d</string>
     <string name="ppa_charLevel_different">Levels %1$d - %2$d</string>
+    <string name="ppa_noDevicesInParty">No devices in party. Nobody would be able to play so I\'m doing nothing.\nAdd at least one device.</string>
+    <string name="ppa_noCharactersInParty">No playing characters in party. There\'s no way to make a game so I\'m doing nothing.\nAdd at least one playing character.</string>
 
     <string name="ga_title">Gathering heroes</string>
     <string name="ga_identifiedDevices">Identified devices</string>

@@ -493,9 +493,13 @@ public class PartyPickActivity extends AppCompatActivity {
             group = denseDefs.get(position);
             if(group == null) return; // impossible by construction
             name.setText(group.name);
-            String str = getString(group.party.length == 1? R.string.ppa_charCount_singular : R.string.ppa_charCount_plural);
-            if(group.party.length > 1) str = String.format(str, group.party.length);
+            String str;
+            if(group.party.length == 0) str = getString(R.string.ppa_charCount_zero);
+            else if(group.party.length == 1) str = getString(R.string.ppa_charCount_singular);
+            else str = String.format(getString(R.string.ppa_charCount_plural), group.party.length);
             pgCount.setText(str);
+            if (group.party.length == 0) level.setVisibility(View.GONE);
+            else {
             int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
             for (StartData.ActorDefinition actor : group.party) {
                 min = Math.min(min, actor.level);
@@ -504,6 +508,8 @@ public class PartyPickActivity extends AppCompatActivity {
             if(min == max) str = String.format(getString(R.string.ppa_charLevel_same), min);
             else str = String.format(getString(R.string.ppa_charLevel_different), max, min);
             level.setText(str);
+                level.setVisibility(View.VISIBLE);
+            }
             final PartyPicker helper = RunningServiceHandles.getInstance().pick;
             if(helper == null || helper.sessionData == null) lastPlay.setVisibility(View.GONE);
             else {
@@ -828,7 +834,23 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             final PartyPicker helper = RunningServiceHandles.getInstance().pick;
-            if(owned != null) helper.sessionParty = owned;
+            if(owned != null) {
+                if(owned.devices.length == 0) {
+                    new AlertDialog.Builder(target, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_warning_white_24px)
+                            .setMessage(target.getString(R.string.ppa_noDevicesInParty))
+                            .show();
+                    return;
+                }
+                if(owned.party.length == 0) {
+                    new AlertDialog.Builder(target, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_warning_white_24px)
+                            .setMessage(target.getString(R.string.ppa_noCharactersInParty))
+                            .show();
+                    return;
+                }
+                helper.sessionParty = owned;
+            }
             else helper.sessionParty = joined;
             target.setResult(RESULT_OK);
             target.finish();
