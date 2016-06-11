@@ -145,6 +145,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     public void pickParty_callback(View btn) {
         RunningServiceHandles handles = RunningServiceHandles.getInstance();
         handles.pick = new PartyPicker();
+
         startActivityForResult(new Intent(this, PartyPickActivity.class), REQUEST_PICK_PARTY);
     }
 
@@ -210,7 +211,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 else {
                     guiRefreshDataChanged.run(); // might have been updated as result of party creation.
                     boolean goAdventuringWithCreated = data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
-                    handles.state.data.groupDefs = handles.create.defs;
                     if(goAdventuringWithCreated) startNewSessionActivity(handles.create.generatedParty, handles.create.getLanding(true), handles.create.moveClients(), handles.create.generatedStat);
                     else handles.state.baseNotification();
                 }

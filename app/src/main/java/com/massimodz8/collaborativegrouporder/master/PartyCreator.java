@@ -15,6 +15,7 @@ import com.massimodz8.collaborativegrouporder.AsyncLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
+import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
@@ -50,13 +51,6 @@ public class PartyCreator extends PublishAcceptHelper {
     }
     public OnTalkingDeviceCountListener onTalkingDeviceCountChanged;
 
-    /**
-     * This is to be set immediately after binding to the service. Used as an 'input' to check if
-     * adding a new group collides with an existing one as owned groups must have unique names!
-     * Also, output of party creation already saved and synched to storage.
-     */
-    public ArrayList<StartData.PartyOwnerData.Group> defs;
-
     public PartyCreator(Context context) {
         this.context = context;
     }
@@ -72,6 +66,7 @@ public class PartyCreator extends PublishAcceptHelper {
     public @Nullable ArrayList<StartData.PartyOwnerData.Group> beginBuilding(String name, String unknownDeviceName) {
         ArrayList<StartData.PartyOwnerData.Group> collisions = null;
         if(mode != MODE_ADD_NEW_DEVICES_TO_EXISTING) { // if == already validated.
+            ArrayList<StartData.PartyOwnerData.Group> defs = RunningServiceHandles.getInstance().state.data.groupDefs;
             for (StartData.PartyOwnerData.Group match : defs) {
                 if (match.name.equals(name)) {
                     if (null == collisions) collisions = new ArrayList<>();

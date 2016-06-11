@@ -236,6 +236,8 @@ public class InternalStateService extends Service {
             data.monsters = monsterBook;
             data.customMonsters = customMobs;
             data.customBattles = custBattles;
+            data.groupDefs = new ArrayList<>();
+            data.groupKeys = new ArrayList<>();
             Collections.addAll(data.groupDefs, owned.everything);
             Collections.addAll(data.groupKeys, joined.everything);
             Runnable runnable = data.onStatusChanged.get();

@@ -34,8 +34,8 @@ public class PartyPicker {
         hideDefKey = new boolean[data.groupDefs.size() + data.groupKeys.size()];
         this.defs = new ArrayList<>();
         this.keys = new ArrayList<>();
-        this.defs.addAll(defs);
-        this.keys.addAll(keys);
+        this.defs.addAll(data.groupDefs);
+        this.keys.addAll(data.groupKeys);
     }
 
     AsyncTask<Void, Void, Integer> makeSessionLoadingTask() {
