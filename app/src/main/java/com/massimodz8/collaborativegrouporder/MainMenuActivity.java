@@ -206,13 +206,13 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         final RunningServiceHandles handles = RunningServiceHandles.getInstance();
         switch(requestCode) { // stuff to shut down no matter what
             case REQUEST_NEW_PARTY: {
-                if(resultCode == RESULT_CANCELED) baseNotification();
+                if(resultCode == RESULT_CANCELED) handles.state.baseNotification();
                 else {
                     guiRefreshDataChanged.run(); // might have been updated as result of party creation.
                     boolean goAdventuringWithCreated = data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
                     handles.state.data.groupDefs = handles.create.defs;
                     if(goAdventuringWithCreated) startNewSessionActivity(handles.create.generatedParty, handles.create.getLanding(true), handles.create.moveClients(), handles.create.generatedStat);
-                    else baseNotification();
+                    else handles.state.baseNotification();
                 }
                 handles.create.shutdown();
                 handles.create = null;
@@ -245,7 +245,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     JoinSessionActivity.result = null;
                     startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
                 }
-                else baseNotification();
+                else handles.state.baseNotification();
             } break;
             case REQUEST_BIND_CHARACTERS: {
                 if(resultCode == RESULT_OK) {
@@ -261,7 +261,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     if(man != null) man.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, updated);
                     handles.state.notification = updated;
                 }
-                else baseNotification();
+                else handles.state.baseNotification();
             } break;
             case REQUEST_JOIN_FORMING: {
                 if(resultCode == RESULT_OK) {
@@ -274,7 +274,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
                     handles.state.notification = build;
                 }
-                else baseNotification();
+                else handles.state.baseNotification();
             } break;
             case REQUEST_PROPOSE_CHARACTERS: {
                 if(resultCode == RESULT_OK) {
@@ -282,12 +282,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     everything.groupKeys.add(NewCharactersProposalActivity.resJoined);
                     Pumper.MessagePumpingThread serverConn = NewCharactersProposalActivity.resMaster;
                     if (serverConn != null) startGoAdventuringActivity(NewCharactersProposalActivity.resJoined, serverConn);
-                    else baseNotification();
+                    else handles.state.baseNotification();
                     guiRefreshDataChanged.run();
                     NewCharactersProposalActivity.resJoined = null;
                     NewCharactersProposalActivity.resMaster = null;
                 }
-                else baseNotification();
+                else handles.state.baseNotification();
                 NewCharactersProposalActivity.resJoined = null;
             } break;
             case REQUEST_GATHER_DEVICES: {
@@ -306,7 +306,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
                 }
                 else {
-                    baseNotification();
+                    handles.state.baseNotification();
                     handles.play.shutdownPartyManagement();
                     handles.play.stopPublishing();
                     handles.play.stopListening(true);
@@ -315,7 +315,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 break;
             }
             case REQUEST_PLAY: {
-                baseNotification();
+                handles.state.baseNotification();
                 handles.play.shutdownPartyManagement();
                 handles.play.stopPublishing();
                 handles.play.stopListening(true);
@@ -332,14 +332,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 break;
             }
         }
-    }
-
-    private void baseNotification() {
-        InternalStateService state = RunningServiceHandles.getInstance().state;
-        Notification build = state.buildNotification(getString(R.string.app_name), null);
-        NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
-        state.notification = build;
     }
 
     private final Runnable guiRefreshDataChanged = new Runnable() {

@@ -1,6 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -122,6 +123,14 @@ public class InternalStateService extends Service {
             help.setCategory(Notification.CATEGORY_SERVICE);
         }
         return help.build();
+    }
+
+    public void baseNotification() {
+        InternalStateService state = RunningServiceHandles.getInstance().state;
+        Notification build = state.buildNotification(getString(R.string.app_name), null);
+        NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
+        state.notification = build;
     }
 
     //----------------------------------------------------------------------------------------------

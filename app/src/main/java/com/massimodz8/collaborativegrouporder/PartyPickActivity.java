@@ -124,6 +124,8 @@ public class PartyPickActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        RunningServiceHandles handles = RunningServiceHandles.getInstance();
+        handles.state.baseNotification();
         if(requestCode != REQUEST_ADD_STUFF) {
             super.onActivityResult(requestCode, resultCode, data);
             return;
@@ -132,8 +134,8 @@ public class PartyPickActivity extends AppCompatActivity {
             RecyclerView rv = ownedFragments.get(activeParty).actorList;
             if (rv != null) rv.getAdapter().notifyDataSetChanged();
         }
-        RunningServiceHandles.getInstance().create.shutdown();
-        RunningServiceHandles.getInstance().create = null;
+        handles.create.shutdown();
+        handles.create = null;
         boolean goAdventuring = data != null && data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
         if(goAdventuring && activeParty != null) new SelectionListener(this, activeParty).onClick(null);
     }
@@ -500,14 +502,14 @@ public class PartyPickActivity extends AppCompatActivity {
             pgCount.setText(str);
             if (group.party.length == 0) level.setVisibility(View.GONE);
             else {
-            int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
-            for (StartData.ActorDefinition actor : group.party) {
-                min = Math.min(min, actor.level);
-                max = Math.max(max, actor.level);
-            }
-            if(min == max) str = String.format(getString(R.string.ppa_charLevel_same), min);
-            else str = String.format(getString(R.string.ppa_charLevel_different), max, min);
-            level.setText(str);
+                int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+                for (StartData.ActorDefinition actor : group.party) {
+                    min = Math.min(min, actor.level);
+                    max = Math.max(max, actor.level);
+                }
+                if (min == max) str = String.format(getString(R.string.ppa_charLevel_same), min);
+                else str = String.format(getString(R.string.ppa_charLevel_different), max, min);
+                level.setText(str);
                 level.setVisibility(View.VISIBLE);
             }
             final PartyPicker helper = RunningServiceHandles.getInstance().pick;
