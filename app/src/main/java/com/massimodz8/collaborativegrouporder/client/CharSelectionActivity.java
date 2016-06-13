@@ -68,6 +68,11 @@ public class CharSelectionActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_char_selection);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         handler = new MyHandler(this);
         netPump = new Pumper(handler, MSG_DISCONNECT, MSG_DETACH)
                 .add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
@@ -139,9 +144,10 @@ public class CharSelectionActivity extends AppCompatActivity {
         serverPipe = null;
     }
 
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         if(null != netPump) {
             final Pumper.MessagePumpingThread[] threads = netPump.move();
             for (Pumper.MessagePumpingThread worker : threads) worker.interrupt();
