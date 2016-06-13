@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -358,8 +359,11 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             }
 
             if(!canPick && !errors) {
-                View root = findViewById(R.id.activityRoot);
-                Snackbar.make(root, R.string.mma_emptyHint, Snackbar.LENGTH_LONG).show();
+                new SuccessiveSnackbars(findViewById(R.id.activityRoot), Snackbar.LENGTH_SHORT,
+                        getString(R.string.mma_emptyHint_1),
+                        String.format(getString(R.string.mma_emptyHint_2), ((Button)findViewById(R.id.mma_newParty)).getText().toString()),
+                        String.format(getString(R.string.mma_emptyHint_3), ((Button)findViewById(R.id.mma_joinParty)).getText().toString()))
+                        .show();
             }
         }
     };

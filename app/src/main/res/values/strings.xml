@@ -131,6 +131,9 @@
     <string name="mma_menu_aboutShort">About</string>
     <string name="mma_notificationDesc">Adventuring</string>
     <string name="mma_badDataLoadMsg">Inconsistent data detected. Proceeding will only make the problem worse. Please report this and maybe we\'ll be able to recover your data.</string>
+    <string name="mma_emptyHint_1">Empty party data.</string>
+    <string name="mma_emptyHint_2">Master? Try\n%1$s</string>
+    <string name="mma_emptyHint_3">Player? Try\n%1$s</string>
 
     <string name="npdsa_title">Device selection</string>
     <string name="npdsa_badParty_title">Bad party name</string>
@@ -587,7 +590,7 @@
     <string name="mobs_align_asCreator">as creator</string>
 
     <string name="ba_title">Fight!</string>
-    <string name="ba_initialInstructions">Actors with no ✔ will skip round.\nUse this for surprise rounds!</string>
+    <string name="ba_initialInstructions">Actors without tick will skip round.\nUse this for surprise rounds!</string>
     <string name="ba_roundNumber">Round %1$d</string>
     <string name="ba_dlg_gotPreparedAction">%1$s has a readied action. You can renew the prepared action or discard it.</string>
     <string name="ba_dlg_gotPreparedAction_renew">Renew prepared action and go next</string>
@@ -810,6 +813,5 @@
     <string name="vhPMD_iconDesc">Device icon</string>
     <string name="iss_existsButNoDir">\"%1$s\" exists but it\'s not a directory.</string>
     <string name="iss_cannotCreateDir">Cannot create \"%1$s\" directory.</string>
-    <string name="mma_emptyHint">Empty party lists. Master: CREATE. Player: JOIN.</string>
 
 </resources>

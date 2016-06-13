@@ -19,7 +19,7 @@
     <string name="aea_noBackDlgMessage">Se esci ora i PE non saranno assegnati. Il modo giusto di fare le cose è consumare tutti i mostri.</string>
     <string name="aea_title">Distribuisci PE</string>
     <string name="aea_winnersAward">%1$d PE a testa</string>
-    <string name="aa_copyright">©2015-2016 Massimo Del Zotto, tutti i diritti riservati.</string>
+    <string name="aa_copyright">©2015–2016 Massimo Del Zotto, tutti i diritti riservati.</string>
     <string name="aea_mobReportAll">Tutti i mostri per un totale di %2$d PE</string>
     <string name="aea_winnersCountAll">Tutti i personaggi selezionati.</string>
     <string name="aea_winnersCountPlural">Selezionati: %1$d</string>
@@ -39,12 +39,12 @@
     <string name="ba_backDlgMessage">Puoi sospendere la battalia o scartarla. Se scarti non distribuirai PE. In ogni caso gli effetti della battaglia già applicati saranno mantenuti.</string>
     <string name="ba_backDlgPositive">Sospendi a più tardi</string>
     <string name="ba_dlg_gotPreparedAction">%1$s ha preparato un\'azione. Puoi rinnovarla o scartarla.</string>
-    <string name="ba_dlg_gotPreparedAction_discard">Scarta ed ed agisci</string>
+    <string name="ba_dlg_gotPreparedAction_discard">Scarta ed agisci</string>
     <string name="ba_dlg_gotPreparedAction_renew">Rinnova azione e passa</string>
     <string name="ba_endBattleDlg_msg">Non si torna indietro! L\'ordine di battaglia e lo stato dei mostri andrà perso.</string>
     <string name="ba_endBattleDlg_positive">Distribuisci PE</string>
     <string name="ba_endBattleDlg_title">Finita?</string>
-    <string name="ba_initialInstructions">Personaggi senza la ✔ salteranno il turno.\nTorna utile per i round di sorpresa!</string>
+    <string name="ba_initialInstructions">Personaggi senza spunta salteranno il turno.\nTorna utile per i round di sorpresa!</string>
     <string name="ba_menu_endBattle_title">Termina battaglia e distribuisci PE</string>
     <string name="ba_menu_endBattle_titleShort">Termina battaglia</string>
     <string name="ba_roundCount">Non stiamo ancora combattendo!\nL\'ordine d\'iniziativa sarà quello mostrato.</string>
@@ -83,7 +83,6 @@
     <string name="dataLoadUpdate_failedPreviousDataDelete">impossibile cancellare i contenuti precedenti, i nuovi dati saranno scartati per mantenere i vecchi.</string>
     <string name="dataLoadUpdate_finished_newDataSaved_mainMenu">Menu principale</string>
     <string name="dataLoadUpdate_finished_newDataSaved_partyPick">Selezione gruppo</string>
-    <string name="dataLoadUpdate_newGroupSaved_msg">!!!!!!!!!MODIFICATO!!!!!!!!!</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Successo!</string>
     <string name="dialog_explicitConnectionInfo_title">Informazioni di connessione</string>
     <string name="dlgIEC_networkAddresses">Indirizzi di rete</string>
@@ -209,7 +208,7 @@
     <string name="mma_failedMatch">Mi sono connesso ad un gruppo appena creato ma non ho potuto identificarlo. Questo è un errore grave.%1$s</string>
     <string name="mma_failedMatchErroReport">Inoltre, %1$d eccezion(e/i) lanciat(a/e) mentre tentavo di chiudere i canali di comunicazione.</string>
     <string name="mma_failedNewSessionServiceBind">Non riesco a lanciare il servizio. Prova di nuovo, magari dopo un riavvio.</string>
-    <string name="mma_failedOwnedPartyLoad">Impossibile caricare i dati dei gruppi. Questo è indispensabile perchè l\'app funzioni. Ignorare questo problema lo aggrava perciò l\'app ora si chiuderà.</string>
+    <string name="mma_failedOwnedPartyLoad">Impossibile caricare i dati dei gruppi. Questo è indispensabile perché l\'app funzioni. Ignorare questo problema lo aggrava perciò l\'app ora si chiuderà.</string>
     <string name="mma_failedToInitHasher">Impossibile inizializzare le strutture crittografiche. Questo non dovrebbe succedere!\n\nNon posso fare molto senza quindi l\'app ora si chiuderà.</string>
     <string name="mma_impossible">Impossibile</string>
     <string name="mma_invalidPartyOwnerLoadedData">Informazioni gruppo inconsistenti. Puoi procedere a tuo rischio aggravando il problema. Lista degli errori:%1$s</string>
