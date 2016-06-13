@@ -32,6 +32,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SelectFormingGroupActivity extends AppCompatActivity implements AccumulatingDiscoveryListener.OnTick {
     public static GroupState resParty;
@@ -546,8 +547,17 @@ public class SelectFormingGroupActivity extends AppCompatActivity implements Acc
         final GroupState add = new GroupState(pumper.getSource()).explicit();
         add.group = new PartyInfo(probed.version, probed.name);
         add.group.options = probed.options;
-        candidates.add(add);
-        netPump.pump(pumper);
+        // It seems on some devices .onActivityResult can be called BEFORE .onCreate... WTF!!!
+        if(survive != null) {
+            Pumper.MessagePumpingThread[] lp = Arrays.copyOf(survive.pumpers, survive.pumpers.length + 1);
+            lp[survive.pumpers.length] = pumper;
+            survive.candidates.add(add);
+            survive = new Model(survive.explorer, survive.candidates, lp, survive.sender);
+        }
+        else {
+            candidates.add(add);
+            netPump.pump(pumper);
+        }
         refreshGUI();
     }
 }
