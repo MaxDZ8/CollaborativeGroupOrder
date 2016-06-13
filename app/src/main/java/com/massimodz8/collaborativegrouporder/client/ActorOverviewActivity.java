@@ -63,23 +63,31 @@ public class ActorOverviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_actor_overview);
 
-        AdView mAdView = (AdView) findViewById(R.id.aoa_advertising_banner);
-        mAdView.loadAd(new AdRequest.Builder().build());
-
-        interstitial = new InterstitialAd(this);
-        interstitial.setAdUnitId(getString(R.string.aoa_advertising_interstitial_id));
-        interstitial.setAdListener(new AdListener() {
-            @Override
-            public void onAdClosed() {
-                interstitial.loadAd(new AdRequest.Builder().build());
-            }
-        });
-        interstitial.loadAd(new AdRequest.Builder().build());
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(adView == null) {
+            adView = (AdView) findViewById(R.id.aoa_advertising_banner);
+            adView.loadAd(new AdRequest.Builder().build());
+        }
+        if(interstitial == null) {
+            interstitial = new InterstitialAd(this);
+            interstitial.setAdUnitId(getString(R.string.aoa_advertising_interstitial_id));
+            interstitial.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    interstitial.loadAd(new AdRequest.Builder().build());
+                }
+            });
+            interstitial.loadAd(new AdRequest.Builder().build());
+        }
 
         final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
         final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);
@@ -219,11 +227,15 @@ public class ActorOverviewActivity extends AppCompatActivity {
         ticker.onActorUpdated.get().run();
         ticker.onRollRequestPushed.get().run();
         ticker.onCurrentActorChanged.get().run();
+
+        ticker.onCurrentActorChanged.get().run(); // maybe not. But convenient to mangle round and update UI.
+        ticker.onActorUpdated.get().run();
     }
 
+
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
         final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
         if(ticker != null) {
             ticker.onActorUpdated.remove(updateCall);
@@ -410,6 +422,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     private int updateCall, rollRequestCall, actorChangedCall, endedCall;
     private InterstitialAd interstitial;
+    private AdView adView;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -427,13 +440,5 @@ public class ActorOverviewActivity extends AppCompatActivity {
         }
         ticker.onCurrentActorChanged.get().run();
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    protected void onResume() {
-        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
-        ticker.onCurrentActorChanged.get().run(); // maybe not. But convenient to mangle round and update UI.
-        ticker.onActorUpdated.get().run();
-        super.onResume();
     }
 }
