@@ -25,6 +25,7 @@ import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.ActorOverviewActivity;
 import com.massimodz8.collaborativegrouporder.client.Adventure;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
+import com.massimodz8.collaborativegrouporder.client.PcAssignmentState;
 import com.massimodz8.collaborativegrouporder.master.FreeRoamingActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
 import com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity;
@@ -242,7 +243,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             case REQUEST_PULL_CHAR_LIST: {
                 if(resultCode == RESULT_OK) {
                     JoinSessionActivity.Result res = JoinSessionActivity.result;
-                    CharSelectionActivity.prepare(res.worker, res.party, res.first);
+                    handles.bindChars = new PcAssignmentState(res.worker, res.party, res.first);
                     JoinSessionActivity.result = null;
                     startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
                 }
@@ -251,18 +252,19 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             case REQUEST_BIND_CHARACTERS: {
                 if(resultCode == RESULT_OK) {
                     handles.clientPlay = new Adventure();
-                    final StartData.PartyClientData.Group temp = CharSelectionActivity.movePlayingParty();
                     ActorOverviewActivity.prepare(
-                            CharSelectionActivity.movePlayChars(),
-                            CharSelectionActivity.moveServerWorker());
+                            handles.bindChars.playChars,
+                            handles.bindChars.server);
                     startActivityForResult(new Intent(this, ActorOverviewActivity.class), REQUEST_CLIENT_PLAY);
 
-                    Notification updated = handles.state.buildNotification(temp.name, getString(R.string.mma_notificationDesc));
+                    Notification updated = handles.state.buildNotification(handles.bindChars.party.name, getString(R.string.mma_notificationDesc));
                     NotificationManager man = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                     if(man != null) man.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, updated);
                     handles.state.notification = updated;
                 }
                 else handles.state.baseNotification();
+                handles.bindChars.shutdown(resultCode == RESULT_OK);
+                handles.bindChars = null;
             } break;
             case REQUEST_JOIN_FORMING: {
                 if(resultCode == RESULT_OK) {

@@ -1,6 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
 import com.massimodz8.collaborativegrouporder.client.Adventure;
+import com.massimodz8.collaborativegrouporder.client.PcAssignmentState;
 import com.massimodz8.collaborativegrouporder.master.PartyCreator;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrder;
 
@@ -24,6 +25,7 @@ public class RunningServiceHandles {
     public PartyJoinOrder play;
     public PartyCreator create;
     public Adventure clientPlay;
+    public PcAssignmentState bindChars;
 
     public InternalStateService state;
 
