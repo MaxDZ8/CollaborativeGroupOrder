@@ -32,70 +32,14 @@ public class AwardExperienceActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final android.support.v7.app.ActionBar sab = getSupportActionBar();
-        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
 
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
-        SessionHelper session = game.session;
-        if(session.battleState != null) { // consume this and get it to 'to be awarded' data.
-            session.defeated = new ArrayList<>();
-            session.winners = new ArrayList<>();
-            for (InitiativeScore el : session.battleState.ordered) {
-                Network.ActorState actor = session.getActorById(el.actorID);
-                if(actor.type == Network.ActorState.T_MOB && actor.cr != null) session.defeated.add(new SessionHelper.DefeatedData(actor.peerKey, actor.cr.numerator, actor.cr.denominator));
-                else if(actor.type == Network.ActorState.T_PLAYING_CHARACTER || actor.type == Network.ActorState.T_NPC) session.winners.add(new SessionHelper.WinnerData(actor.peerKey));
-            }
-            game.session.battleState = null;
-        }
-        findViewById(R.id.fab).setVisibility(View.VISIBLE);
-        mobLister = new ActorListerWithControls<SessionHelper.DefeatedData>(session.defeated, getLayoutInflater(), session) {
-            @Override
-            protected boolean representedProperty(SessionHelper.DefeatedData entry, Boolean newValue) {
-                if(newValue != null) entry.consume = newValue;
-                update();
-                return entry.consume;
-            }
-
-            @Override
-            protected int getPeerKey(SessionHelper.DefeatedData entry) { return entry.id; }
-
-            @Override
-            protected boolean match(SessionHelper.DefeatedData entry, @ActorId int id) { return entry.id == id; }
-        };
-        RecyclerView.Adapter winnersLister = new ActorListerWithControls<SessionHelper.WinnerData>(session.winners, getLayoutInflater(), session) {
-            @Override
-            protected boolean representedProperty(SessionHelper.WinnerData entry, Boolean newValue) {
-                if (newValue != null) entry.award = newValue;
-                update();
-                return entry.award;
-            }
-
-
-            @Override
-            protected int getPeerKey(SessionHelper.WinnerData entry) {
-                return entry.id;
-            }
-
-
-            @Override
-            protected boolean match(SessionHelper.WinnerData entry, @ActorId int id) {
-                return entry.id == id;
-            }
-        };
-        MaxUtils.beginDelayedTransition(this);
-        findViewById(R.id.aea_status).setVisibility(View.GONE);
-        MaxUtils.setVisibility(this, View.VISIBLE,
-                R.id.aea_mobListInfo, R.id.aea_mobList, R.id.aea_mobReport,
-                R.id.aea_winnersListInfo, R.id.aea_winnersList, R.id.aea_winnersReport);
-        RecyclerView rv = (RecyclerView) findViewById(R.id.aea_mobList);
-        rv.setAdapter(mobLister);
-        rv = (RecyclerView) findViewById(R.id.aea_winnersList);
-        rv.setAdapter(winnersLister);
-        update();
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                 int xp = 0;
                 for (int loop = 0; loop < game.session.defeated.size(); loop++) {
                     final SessionHelper.DefeatedData el = game.session.defeated.get(loop);
@@ -148,16 +92,70 @@ public class AwardExperienceActivity extends AppCompatActivity {
                 finish();
             }
         });
+        findViewById(R.id.fab).setVisibility(View.VISIBLE);
+        SessionHelper session = RunningServiceHandles.getInstance().play.session;
+        mobLister = new ActorListerWithControls<SessionHelper.DefeatedData>(session.defeated, getLayoutInflater(), session) {
+            @Override
+            protected boolean representedProperty(SessionHelper.DefeatedData entry, Boolean newValue) {
+                if(newValue != null) entry.consume = newValue;
+                update();
+                return entry.consume;
+            }
+
+            @Override
+            protected int getPeerKey(SessionHelper.DefeatedData entry) { return entry.id; }
+
+            @Override
+            protected boolean match(SessionHelper.DefeatedData entry, @ActorId int id) { return entry.id == id; }
+        };
+        RecyclerView.Adapter winnersLister = new ActorListerWithControls<SessionHelper.WinnerData>(session.winners, getLayoutInflater(), session) {
+            @Override
+            protected boolean representedProperty(SessionHelper.WinnerData entry, Boolean newValue) {
+                if (newValue != null) entry.award = newValue;
+                update();
+                return entry.award;
+            }
+
+
+            @Override
+            protected int getPeerKey(SessionHelper.WinnerData entry) {
+                return entry.id;
+            }
+
+
+            @Override
+            protected boolean match(SessionHelper.WinnerData entry, @ActorId int id) {
+                return entry.id == id;
+            }
+        };
+
+        RecyclerView rv = (RecyclerView) findViewById(R.id.aea_mobList);
+        rv.setAdapter(mobLister);
+        rv = (RecyclerView) findViewById(R.id.aea_winnersList);
+        rv.setAdapter(winnersLister);
     }
 
     @Override
-    protected void onDestroy() {
-        // No matter what, when we're outta there we get the rid of all battle data, including those
-        // transient lists.
-        final SessionHelper session = RunningServiceHandles.getInstance().play.session;
-        session.winners = null;
-        session.defeated = null;
-        super.onDestroy();
+    protected void onResume() {
+        super.onResume();
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
+        SessionHelper session = game.session;
+        if(session.battleState != null) { // consume this and get it to 'to be awarded' data.
+            session.defeated = new ArrayList<>();
+            session.winners = new ArrayList<>();
+            for (InitiativeScore el : session.battleState.ordered) {
+                Network.ActorState actor = session.getActorById(el.actorID);
+                if(actor.type == Network.ActorState.T_MOB && actor.cr != null) session.defeated.add(new SessionHelper.DefeatedData(actor.peerKey, actor.cr.numerator, actor.cr.denominator));
+                else if(actor.type == Network.ActorState.T_PLAYING_CHARACTER || actor.type == Network.ActorState.T_NPC) session.winners.add(new SessionHelper.WinnerData(actor.peerKey));
+            }
+            game.session.battleState = null;
+        }
+        MaxUtils.beginDelayedTransition(this);
+        findViewById(R.id.aea_status).setVisibility(View.GONE);
+        MaxUtils.setVisibility(this, View.VISIBLE,
+                R.id.aea_mobListInfo, R.id.aea_mobList, R.id.aea_mobReport,
+                R.id.aea_winnersListInfo, R.id.aea_winnersList, R.id.aea_winnersReport);
+        update();
     }
 
     @Override

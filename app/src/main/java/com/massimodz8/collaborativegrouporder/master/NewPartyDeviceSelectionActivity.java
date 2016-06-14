@@ -43,7 +43,7 @@ import java.util.Locale;
 
 public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextView.OnEditorActionListener {
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
         final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room != null) { // in many cases, parent_activity.onActivityResult has already cleaned up when this is destroyed so...
             room.onNewPublishStatus = null;
@@ -61,25 +61,11 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
-        if(null != sab) {
+        if (null != sab) {
             sab.setDisplayHomeAsUpEnabled(true);
             sab.setTitle(R.string.npdsa_title);
         }
-
-        final TextInputLayout namein = (TextInputLayout) findViewById(R.id.npdsa_partyName);
-        EditText sure = namein.getEditText();
-        if(null == sure) { // impossible, but the static analyzer does not know
-            finish();
-            return;
-        }
-        sure.setOnEditorActionListener(this);
-
         final PartyCreator room = RunningServiceHandles.getInstance().create;
-        if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
-            sure.setText(room.generatedParty.name);
-            sure.setSelection(0, 0);
-            sure.setEnabled(false);
-        }
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,41 +100,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 }
             }
         });
-        final TextView status = (TextView) findViewById(R.id.npdsa_status);
-        room.onNewPublishStatus = new PublishAcceptHelper.NewPublishStatusCallback() {
-            @Override
-            public void onNewPublishStatus(int now) {
-                switch(now) {
-                    case PublishAcceptHelper.PUBLISHER_PUBLISHING: {
-                        MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
-                        status.setText(R.string.master_publishing);
-                        findViewById(R.id.npdsa_partyName).setEnabled(true);
-                    } break;
-                    case PublishAcceptHelper.PUBLISHER_START_FAILED: {
-                        MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
-                        status.setText(R.string.master_failedPublish);
-                        findViewById(R.id.npdsa_partyName).setEnabled(true);
-                    } break;
-                }
-
-            }
-        };
-
-        MaxUtils.beginDelayedTransition(this);
         devList = (RecyclerView) findViewById(R.id.npdsa_deviceList);
         devList.setLayoutManager(new LinearLayoutManager(this));
-        devList.setAdapter(room.setNewClientDevicesAdapter(new PartyCreator.ClientDeviceHolderFactoryBinder<DeviceViewHolder>() {
-            @Override
-            public DeviceViewHolder createUnbound(ViewGroup parent, int viewType) {
-                View layout = getLayoutInflater().inflate(R.layout.card_joining_device, parent, false);
-                return new DeviceViewHolder(layout);
-            }
-
-            @Override
-            public void bind(@NonNull DeviceViewHolder holder, @NonNull PartyDefinitionHelper.DeviceStatus dev) {
-                holder.bind(dev);
-            }
-        }));
         devList.addItemDecoration(new PreSeparatorDecorator(devList, this) {
             @Override
             protected boolean isEligible(int position) {
@@ -179,6 +132,72 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             @Override
             protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) { return true; }
         };
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        final PartyCreator room = RunningServiceHandles.getInstance().create;
+        room.accept();
+        if(room.getBuildingPartyName() != null) {
+            NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
+            if (nsd == null) {
+                new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                        .setMessage(R.string.both_noDiscoveryManager)
+                        .show();
+                return;
+            }
+            if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
+            else room.beginPublishing(nsd, room.getBuildingPartyName(), PartyCreator.PARTY_FORMING_SERVICE_TYPE);
+        }
+
+        final TextInputLayout namein = (TextInputLayout) findViewById(R.id.npdsa_partyName);
+        EditText sure = namein.getEditText();
+        if(null == sure) { // impossible, but the static analyzer does not know
+            finish();
+            return;
+        }
+        sure.setOnEditorActionListener(this);
+
+        if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
+            sure.setText(room.generatedParty.name);
+            sure.setSelection(0, 0);
+            sure.setEnabled(false);
+        }
+        final TextView status = (TextView) findViewById(R.id.npdsa_status);
+        room.onNewPublishStatus = new PublishAcceptHelper.NewPublishStatusCallback() {
+            @Override
+            public void onNewPublishStatus(int now) {
+                switch(now) {
+                    case PublishAcceptHelper.PUBLISHER_PUBLISHING: {
+                        MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
+                        status.setText(R.string.master_publishing);
+                        findViewById(R.id.npdsa_partyName).setEnabled(true);
+                    } break;
+                    case PublishAcceptHelper.PUBLISHER_START_FAILED: {
+                        MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
+                        status.setText(R.string.master_failedPublish);
+                        findViewById(R.id.npdsa_partyName).setEnabled(true);
+                    } break;
+                }
+
+            }
+        };
+
+        MaxUtils.beginDelayedTransition(this);
+        devList.setAdapter(room.setNewClientDevicesAdapter(new PartyCreator.ClientDeviceHolderFactoryBinder<DeviceViewHolder>() {
+            @Override
+            public DeviceViewHolder createUnbound(ViewGroup parent, int viewType) {
+                View layout = getLayoutInflater().inflate(R.layout.card_joining_device, parent, false);
+                return new DeviceViewHolder(layout);
+            }
+
+            @Override
+            public void bind(@NonNull DeviceViewHolder holder, @NonNull PartyDefinitionHelper.DeviceStatus dev) {
+                holder.bind(dev);
+            }
+        }));
         if(room.getBuildingPartyName() == null) { // restoring, so pull it in foreground! Otherwise defer until group name entered.
             status.setText(R.string.npdsa_waitingPartyName);
         }
@@ -203,24 +222,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 }
             }
         };
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
-        room.accept();
-        if(room.getBuildingPartyName() != null) {
-            NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
-            if (nsd == null) {
-                new AlertDialog.Builder(this, R.style.AppDialogStyle)
-                        .setMessage(R.string.both_noDiscoveryManager)
-                        .show();
-                return;
-            }
-            if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
-            else room.beginPublishing(nsd, room.getBuildingPartyName(), PartyCreator.PARTY_FORMING_SERVICE_TYPE);
-        }
     }
 
     @Override

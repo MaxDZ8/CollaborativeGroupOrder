@@ -37,7 +37,11 @@ public class GatheringActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gathering);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
         room.onNewPublishStatus = new PublishAcceptHelper.NewPublishStatusCallback() {
             @Override
@@ -118,14 +122,14 @@ public class GatheringActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
+        super.onPause();
         final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
         if(room != null) {
             room.setNewAuthDevicesAdapter(null);
             room.setNewUnassignedPcsAdapter(null);
             room.onNewPublishStatus = null;
         }
-        super.onDestroy();
     }
 
     @Override

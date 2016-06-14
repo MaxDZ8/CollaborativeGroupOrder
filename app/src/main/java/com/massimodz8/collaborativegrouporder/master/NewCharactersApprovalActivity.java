@@ -38,26 +38,8 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_characters_approval);
 
         final PartyCreator room = RunningServiceHandles.getInstance().create;
-
         RecyclerView groupList = (RecyclerView) findViewById(R.id.ncaa_list);
         groupList.setLayoutManager(new LinearLayoutManager(this));
-        groupList.setAdapter(room.building.setNewCharsApprovalAdapter(new PartyDefinitionHelper.CharsApprovalHolderFactoryBinder<PcApprovalVh>() {
-            @Override
-            public PcApprovalVh createUnbound(ViewGroup parent, int viewType) {
-                return new PcApprovalVh(getLayoutInflater().inflate(R.layout.vh_character_approval, parent, false));
-            }
-
-            @Override
-            public void bind(@NonNull PcApprovalVh vh, @NonNull BuildingPlayingCharacter proposal) {
-                vh.name.setText(proposal.name);
-                vh.hp.setText(String.valueOf(proposal.fullHealth));
-                vh.initBonus.setText(String.valueOf(proposal.initiativeBonus));
-                vh.xp.setText(String.valueOf(proposal.experience));
-                vh.level.setText(String.valueOf(proposal.level));
-                vh.unique = proposal.unique;
-                vh.accepted.setVisibility(proposal.status == BuildingPlayingCharacter.STATUS_ACCEPTED? View.VISIBLE : View.GONE);
-            }
-        }));
         groupList.addItemDecoration(new PreSeparatorDecorator(groupList, this) {
             @Override
             protected boolean isEligible(int position) {
@@ -87,13 +69,39 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 return true;
             }
         };
+
         MaxUtils.beginDelayedTransition(this);
         TextView status = (TextView) findViewById(R.id.ncaa_status);
         status.setText(R.string.ncaa_definingPCs);
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onResume() {
+        super.onResume();
+        final PartyCreator room = RunningServiceHandles.getInstance().create;
+        RecyclerView groupList = (RecyclerView) findViewById(R.id.ncaa_list);
+        groupList.setAdapter(room.building.setNewCharsApprovalAdapter(new PartyDefinitionHelper.CharsApprovalHolderFactoryBinder<PcApprovalVh>() {
+            @Override
+            public PcApprovalVh createUnbound(ViewGroup parent, int viewType) {
+                return new PcApprovalVh(getLayoutInflater().inflate(R.layout.vh_character_approval, parent, false));
+            }
+
+            @Override
+            public void bind(@NonNull PcApprovalVh vh, @NonNull BuildingPlayingCharacter proposal) {
+                vh.name.setText(proposal.name);
+                vh.hp.setText(String.valueOf(proposal.fullHealth));
+                vh.initBonus.setText(String.valueOf(proposal.initiativeBonus));
+                vh.xp.setText(String.valueOf(proposal.experience));
+                vh.level.setText(String.valueOf(proposal.level));
+                vh.unique = proposal.unique;
+                vh.accepted.setVisibility(proposal.status == BuildingPlayingCharacter.STATUS_ACCEPTED? View.VISIBLE : View.GONE);
+            }
+        }));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room != null) {
             if(room.building != null) room.building.setNewCharsApprovalAdapter(null);

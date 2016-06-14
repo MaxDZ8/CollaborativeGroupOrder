@@ -89,8 +89,14 @@ public class BattleActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
-        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);
+        rv.setAdapter(lister);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         lister.playState = game.session;
         final BattleHelper battle = game.session.battleState;
@@ -103,7 +109,6 @@ public class BattleActivity extends AppCompatActivity {
         }
         lister.notifyDataSetChanged();
         final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);
-        rv.setAdapter(lister);
         rv.addItemDecoration(new PreSeparatorDecorator(rv, this) {
             @Override
             protected boolean isEligible(int position) {
@@ -267,14 +272,14 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
         final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         if(game != null) {
             game.onTurnCompletedRemote.remove(turnCallback);
             game.onActorShuffledRemote.remove(shuffleCallback);
             game.onActorUpdatedRemote.remove(updatedCallback);
         }
-        super.onDestroy();
+        super.onPause();
     }
 
     @Override

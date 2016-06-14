@@ -60,8 +60,8 @@ public class FreeRoamingActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
-        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
-        SearchView swidget = (SearchView)findViewById(R.id.fra_searchMobs);
+        if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        SearchView swidget = (SearchView) findViewById(R.id.fra_searchMobs);
         swidget.setIconifiedByDefault(false);
         swidget.setQueryHint(getString(R.string.fra_searchable_hint));
 
@@ -69,14 +69,13 @@ public class FreeRoamingActivity extends AppCompatActivity {
         SpawnMonsterActivity.includePreparedBattles = true;
         final ComponentName compName = new ComponentName(this, SpawnMonsterActivity.class);
         swidget.setSearchableInfo(sm.getSearchableInfo(compName));
-
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int count = 0;
                 int pgCount = 0;
+                final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                 for(int loop = 0; loop < game.session.getNumActors(); loop++) {
                     Network.ActorState actor = game.session.getActor(loop);
                     int add = game.session.willFight(actor.peerKey, null)? 1 : 0;
@@ -136,7 +135,12 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 return false;
             }
         };
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         lister.playState = game.session;
         game.onRollReceived = new Runnable() {
             @Override
@@ -212,32 +216,27 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, RunningServiceHandles.getInstance().play.publishToken);
                 surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
             }
-            else {
+            else if(!game.session.restoreNotified){
                 String date = DateFormat.getDateInstance().format(new Date(stats.lastSaved.seconds * 1000));
                 String snackMsg = String.format(getString(R.string.fra_restoredSession), date);
                 Snackbar.make(findViewById(R.id.activityRoot), snackMsg, Snackbar.LENGTH_SHORT).show();
+                game.session.restoreNotified = true;
             }
             stats.live = null;  // put everything back to runtime, no need to keep. Avoid logical leak. Note this is not a valid protobuf object anymore!
             stats.notFighting = null;
             stats.fighting = null;
             lister.notifyDataSetChanged();
-            numActors = lister.getItemCount();
             return;
         }
         if(game.session.initiatives != null) waiting = new WaitInitiativeDialog(game.session).show(this);
         attemptBattleStart();
         lister.notifyDataSetChanged();
-        if(stats.live != null) {
+        if(stats.live != null && !game.session.restoreNotified) {
             Snackbar.make(findViewById(R.id.activityRoot), getString(R.string.fra_startBrandNewSession), Snackbar.LENGTH_SHORT).show();
             stats.live = null;
+            game.session.restoreNotified = true;
         }
-        numActors = lister.getItemCount();
-    }
-
-    @Override
-    protected void onResume() { // maybe we got there after a monster has been added.
-        super.onResume();
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
+        int numActors = lister.getItemCount();
         if(SpawnMonsterActivity.found != null && SpawnMonsterActivity.found.size() > 0) {
             for (Network.ActorState got : SpawnMonsterActivity.found) {
                 got.peerKey = game.nextActorId++;
@@ -245,18 +244,17 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 game.session.willFight(got.peerKey, true);
             }
             lister.notifyItemRangeInserted(numActors, SpawnMonsterActivity.found.size());
-            numActors += SpawnMonsterActivity.found.size();
             SpawnMonsterActivity.found = null;
             if(game.session.battleState == null) findViewById(R.id.fab).setVisibility(View.VISIBLE);
         }
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
+        super.onPause();
         final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         if(game != null) game.onRollReceived = null;
         if(waiting != null) waiting.dlg.dismiss();
-        super.onDestroy();
     }
 
 
@@ -271,7 +269,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
         return false;
     }
 
-    private int numActors;
     private final AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter() {
         @Override
         protected boolean isCurrent(Network.ActorState actor) { return false; }
@@ -391,8 +388,12 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 break;
             }
             case REQUEST_AWARD_EXPERIENCE: {
+                // No matter what, when we're outta there we get the rid of all battle data, including those
+                // transient lists.
+                final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
+                game.session.winners = null;
+                game.session.defeated = null;
                 if(resultCode == RESULT_OK) { // ouch! We need to update defs with the new xp, and maybe else... Luckly everything is already in place!
-                    final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                     final ArrayList<StartData.PartyOwnerData.Group> allOwned = RunningServiceHandles.getInstance().state.data.groupDefs;
                     new AsyncRenamingStore<StartData.PartyOwnerData>(getFilesDir(),
                             PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,

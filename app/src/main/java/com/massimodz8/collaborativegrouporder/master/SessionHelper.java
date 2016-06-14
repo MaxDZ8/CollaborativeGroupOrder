@@ -29,6 +29,7 @@ public abstract class SessionHelper {
     abstract public void turnDone(MessageChannel from, int peerKey);
     public abstract void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot);
 
+    public boolean restoreNotified; // true if session restore has been notified to user
 
     public final Session.Suspended stats;
     public final ArrayList<Network.ActorState> existByDef;
