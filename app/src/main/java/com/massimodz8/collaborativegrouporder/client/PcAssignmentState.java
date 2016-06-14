@@ -227,7 +227,7 @@ public class PcAssignmentState {
         switch(msg.type) {
             case Network.CharacterOwnership.REQUEST: return; // the server does not use this currently... perhaps to update ticket?
             case Network.CharacterOwnership.OBSOLETE: { // just try again with the updated ticket.
-                character.sendRequest(server.getSource());
+                character.sendRequest(sender, server.getSource());
                 return;
             }
             case Network.CharacterOwnership.ACCEPTED: {
