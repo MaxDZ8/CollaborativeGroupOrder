@@ -1,5 +1,6 @@
-package com.massimodz8.collaborativegrouporder;
+package com.massimodz8.collaborativegrouporder.client;
 
+import com.massimodz8.collaborativegrouporder.PartyInfo;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 
 /**
@@ -9,6 +10,7 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 class GroupState {
     final MessageChannel channel;
     PartyInfo group;
+    Exception disconnected; // if null, everything is fine.
 
     int charBudget;
     int nextMsgDelay_ms;

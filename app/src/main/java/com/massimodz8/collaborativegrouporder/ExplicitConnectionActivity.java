@@ -23,87 +23,51 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class ExplicitConnectionActivity extends AppCompatActivity {
-    public static Pumper.MessagePumpingThread masterDevice;
-    public static Network.GroupInfo probedParty;
-
-    Pumper netPump;
-    MessageChannel attempting;
-    boolean handShaking;
-    AsyncConnectTask connecting;
-    Handler handler;
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        final ActionBar sab = getSupportActionBar();
-        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
-
-        if(netPump.getClientCount() != 0) survive = netPump.move(attempting);
-        attempting = null;
-
-        if(null != connecting) {
-            connecting.cancel(true);
-            outState.putString(BUNDLE_HOST, connecting.getAddr());
-            outState.putInt(BUNDLE_PORT, connecting.getPort());
-            connecting = null;
-        }
-    }
-
-    private static final String BUNDLE_HOST = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.host";
-    private static final String BUNDLE_PORT = "com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity.port";
-
-    private static final int MSG_DISCONNECTED = 1;
-    private static final int MSG_GOT_REPLY = 2;
-    private static final int MSG_DETACHED = 3;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explicit_connection);
-        handler = new MyHandler(this);
-
-        netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED);
-        netPump.add(ProtoBufferEnum.GROUP_INFO, new PumpTarget.Callbacks<Network.GroupInfo>() {
-            @Override
-            public Network.GroupInfo make() { return new Network.GroupInfo(); }
-            @Override
-            public boolean mangle(MessageChannel from, Network.GroupInfo msg) throws IOException {
-                handler.sendMessage(handler.obtainMessage(MSG_GOT_REPLY, new Events.GroupInfo(from, msg)));
-                return true;
-            }
-        });
-        if(null != survive) {
-            attempting = survive.getSource();
-            netPump.pump(survive);
-            survive = null;
-        }
-        if(null != savedInstanceState) {
-            int port = savedInstanceState.getInt(BUNDLE_PORT, -1);
-            String host = savedInstanceState.getString(BUNDLE_HOST, "");
-            if(-1 != port) {
-                connecting = new AsyncConnectTask(host, port);
-                connecting.execute();
-            }
-        }
-        refreshGUI();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(netPump != null) netPump.shutdown();
-        if(attempting != null) {
-            try {
-                attempting.socket.close();
-            } catch (IOException e) {
-                // well... nothing?
-            }
+    protected void onResume() {
+        super.onResume();
+        final ConnectionAttempt state = RunningServiceHandles.getInstance().connectionAttempt;
+        eventid = state.onEvent.put(new Runnable() {
+            @Override
+            public void run() { refresh(); }
+        });
+    }
+
+    int eventid;
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        RunningServiceHandles.getInstance().connectionAttempt.onEvent.remove(eventid);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        final RunningServiceHandles handles = RunningServiceHandles.getInstance();
+        if(handles.connectionAttempt != null) {
+            handles.connectionAttempt.shutdown();
+            handles.connectionAttempt = null;
         }
-        if(null != connecting) connecting.cancel(true);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        final RunningServiceHandles handles = RunningServiceHandles.getInstance();
+        if(handles.connectionAttempt != null) {
+            handles.connectionAttempt.shutdown();
+            handles.connectionAttempt = null;
+        }
+        super.onBackPressed();
     }
 
     public void connect_callback(View triggerer) {
-        triggerer.setEnabled(false);
         final EditText inetAddr = (EditText)findViewById(R.id.eca_inetAddr);
         final EditText inetPort = (EditText)findViewById(R.id.eca_port);
         final String addr = inetAddr.getText().toString();
@@ -117,131 +81,56 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             inetPort.requestFocus();
             return;
         }
-        handShaking = true;
-        refreshGUI();
-        connecting = new AsyncConnectTask(addr, port);
-        connecting.execute();
+        RunningServiceHandles.getInstance().connectionAttempt = new ConnectionAttempt(addr, port);
+        refresh();
     }
 
-    static class Error {
-        String title;
-        String msg;
-        Integer refocus;
-        Error(String title, String msg) { this.title = title; this.msg = msg; }
-    }
-
-    void refreshGUI() {
-        findViewById(R.id.eca_probingProgress).setVisibility(handShaking ? View.VISIBLE : View.GONE);
-        findViewById(R.id.eca_probing).setVisibility(null != connecting? View.VISIBLE : View.GONE);
-        findViewById(R.id.eca_connected).setVisibility(null == connecting && netPump.getClientCount() > 0? View.VISIBLE : View.GONE);
-        MaxUtils.setEnabled(this, !handShaking,
+    /// Drives both GUI settings and evolution of the state machine.
+    void refresh() {
+        final ConnectionAttempt state = RunningServiceHandles.getInstance().connectionAttempt;
+        if(state == null) {
+            MaxUtils.setEnabled(this, true, R.id.eca_inetAddr, R.id.eca_port, R.id.eca_attempt);
+            MaxUtils.setVisibility(this, View.GONE,
+                    R.id.eca_probing,
+                    R.id.eca_probingProgress,
+                    R.id.eca_connected);
+            return;
+        }
+        boolean connecting = state.connecting !=  null && state.connecting.error == null;
+        MaxUtils.setVisibility(this, connecting? View.VISIBLE : View.GONE,
+                R.id.eca_probingProgress,
+                R.id.eca_probing);
+        findViewById(R.id.eca_connected).setVisibility(state.attempting != null? View.VISIBLE : View.GONE);
+        MaxUtils.setEnabled(this, !connecting,
                 R.id.eca_inetAddr,
                 R.id.eca_port,
                 R.id.eca_attempt);
-    }
-
-    private static class MyHandler extends Handler {
-        WeakReference<ExplicitConnectionActivity> target;
-        public MyHandler(ExplicitConnectionActivity target) { this.target = new WeakReference<>(target); }
-
-        @Override
-        public void handleMessage(Message msg) {
-            ExplicitConnectionActivity target = this.target.get();
-            switch(msg.what) {
-                case MSG_DISCONNECTED: target.disconnect(); break;
-                case MSG_GOT_REPLY: target.replied((Events.GroupInfo)msg.obj); break;
-                case MSG_DETACHED: break; // this comes after MSG_GOT_REPLY and can be ignored here.
+        if(state.connecting != null && state.connecting.error != null) {
+            switch(state.connecting.status) {
+                case ConnectionAttempt.HANDSHAKE_FAILED_HOST: {
+                    findViewById(R.id.eca_inetAddr).requestFocus();
+                    new AlertDialog.Builder(this)
+                            .setMessage(R.string.eca_badHost)
+                            .show();
+                } break;
+                case ConnectionAttempt.HANDSHAKE_FAILED_OPEN:
+                case ConnectionAttempt.HANDSHAKE_FAILED_SEND: {
+                    final int res = state.connecting.status == ConnectionAttempt.HANDSHAKE_FAILED_OPEN? R.string.generic_connFailedWithError : R.string.eca_failedHello;
+                    new AlertDialog.Builder(this)
+                            .setTitle(R.string.generic_IOError)
+                            .setMessage(String.format(getString(res), state.connecting.error.getLocalizedMessage()))
+                            .show();
+                }
             }
-            target.refreshGUI();
+            state.connecting = null;
+            state.shutdown();
+            RunningServiceHandles.getInstance().connectionAttempt = null;
+            refresh();
+        }
+        if(state.resMaster != null) {
+            state.shutdown();
+            setResult(RESULT_OK);
+            finish();
         }
     }
-
-    private void disconnect() {
-        netPump.forget(attempting);
-        try {
-            attempting.socket.close();
-        } catch (IOException e) {
-            // Ok, I could signal this really... but I'm lazy
-        }
-        attempting = null;
-        handShaking = false;
-
-        new AlertDialog.Builder(this, R.style.AppDialogStyle)
-                .setMessage(getString(R.string.eca_disconnected))
-                .show();
-    }
-
-    private void replied(Events.GroupInfo result) { // oh yeah I like this
-        masterDevice = netPump.move(attempting);
-        probedParty = result.payload;
-        handShaking = false;
-        attempting = null;
-        setResult(RESULT_OK);
-        finish();
-    }
-
-    private class AsyncConnectTask extends AsyncTask<Void, Void, MessageChannel> {
-        private final String addr;
-        private final int port;
-        volatile Error fail;
-
-        public String getAddr() {
-            return addr;
-        }
-
-        public int getPort() {
-            return port;
-        }
-
-        public AsyncConnectTask(String addr, int port) {
-            this.addr = addr;
-            this.port = port;
-        }
-
-        @Override
-        protected MessageChannel doInBackground(Void... params) {
-            Socket s;
-            try {
-                s = new Socket(addr, port);
-            } catch (UnknownHostException e) {
-                fail = new Error(null, getString(R.string.eca_badHost));
-                fail.refocus = R.id.eca_inetAddr;
-                return null;
-
-            } catch (IOException e) {
-                fail = new Error(getString(R.string.generic_IOError), String.format(getString(R.string.generic_connFailedWithError), e.getLocalizedMessage()));
-                return null;
-            }
-            MessageChannel chan = new MessageChannel(s);
-            Network.Hello payload = new Network.Hello();
-            payload.version = MainMenuActivity.NETWORK_VERSION;
-            try {
-                chan.write(ProtoBufferEnum.HELLO, payload);
-            } catch (IOException e) {
-                // most likely because connection timed out
-                fail = new Error(getString(R.string.generic_IOError), String.format(getString(R.string.eca_failedHello), e.getLocalizedMessage()));
-                return null;
-            }
-            return chan;
-        }
-
-        @Override
-        protected void onPostExecute(MessageChannel pipe) {
-            connecting = null;
-            if(pipe != null) {
-                attempting = pipe;
-                netPump.pump(pipe);
-                refreshGUI();
-                return;
-            }
-            final AlertDialog.Builder build = new AlertDialog.Builder(ExplicitConnectionActivity.this, R.style.AppDialogStyle);
-            if(fail.title != null && !fail.title.isEmpty()) build.setTitle(fail.title);
-            if(fail.msg != null && !fail.msg.isEmpty()) build.setMessage(fail.msg);
-            if(fail.refocus != null) findViewById(fail.refocus).requestFocus();
-            build.show();
-            handShaking = false;
-            refreshGUI();
-        }
-    }
-    private static Pumper.MessagePumpingThread survive;
 }

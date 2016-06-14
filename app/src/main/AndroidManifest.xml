@@ -35,7 +35,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SelectFormingGroupActivity"
+            android:name=".client.SelectFormingGroupActivity"
             android:label="@string/sfga_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -63,7 +63,7 @@
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
         <activity
-            android:name=".NewCharactersProposalActivity"
+            android:name=".client.NewCharactersProposalActivity"
             android:label="@string/ncpa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -87,7 +87,7 @@
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
         <activity
-            android:name=".JoinSessionActivity"
+            android:name=".client.JoinSessionActivity"
             android:label="@string/jsa_title"
             android:parentActivityName=".MainMenuActivity"
             android:theme="@style/AppTheme.NoActionBar">

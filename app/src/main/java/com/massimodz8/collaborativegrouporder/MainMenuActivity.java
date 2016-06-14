@@ -3,6 +3,7 @@ package com.massimodz8.collaborativegrouporder;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -25,7 +26,11 @@ import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.ActorOverviewActivity;
 import com.massimodz8.collaborativegrouporder.client.Adventure;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
+import com.massimodz8.collaborativegrouporder.client.JoinSessionActivity;
+import com.massimodz8.collaborativegrouporder.client.NewCharactersProposalActivity;
+import com.massimodz8.collaborativegrouporder.client.PartySelection;
 import com.massimodz8.collaborativegrouporder.client.PcAssignmentState;
+import com.massimodz8.collaborativegrouporder.client.SelectFormingGroupActivity;
 import com.massimodz8.collaborativegrouporder.master.FreeRoamingActivity;
 import com.massimodz8.collaborativegrouporder.master.GatheringActivity;
 import com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity;
@@ -141,6 +146,14 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
         state.notification = build;
 
+        final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
+        if (nsd == null) {
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setMessage(R.string.both_noDiscoveryManager)
+                    .show();
+            return;
+        }
+        RunningServiceHandles.getInstance().partySelection = new PartySelection(nsd);
         startActivityForResult(new Intent(this, SelectFormingGroupActivity.class), REQUEST_JOIN_FORMING);
     }
 
@@ -268,9 +281,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             } break;
             case REQUEST_JOIN_FORMING: {
                 if(resultCode == RESULT_OK) {
-                    NewCharactersProposalActivity.prepare(SelectFormingGroupActivity.resParty, SelectFormingGroupActivity.resWorker);
-                    SelectFormingGroupActivity.resParty = null;
-                    SelectFormingGroupActivity.resWorker = null;
+                    NewCharactersProposalActivity.prepare(handles.partySelection.resParty, handles.partySelection.resWorker);
                     startActivityForResult(new Intent(this, NewCharactersProposalActivity.class), REQUEST_PROPOSE_CHARACTERS);
                     Notification build = handles.state.buildNotification(handles.play.getPartyOwnerData().name, getString(R.string.ncpa_title));
                     NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -278,6 +289,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     handles.state.notification = build;
                 }
                 else handles.state.baseNotification();
+                handles.partySelection.shutdown();
+                handles.partySelection = null;
             } break;
             case REQUEST_PROPOSE_CHARACTERS: {
                 if(resultCode == RESULT_OK) {

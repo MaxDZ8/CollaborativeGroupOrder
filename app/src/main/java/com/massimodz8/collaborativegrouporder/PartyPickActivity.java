@@ -64,7 +64,7 @@ public class PartyPickActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_party);
-        pager = (ViewPager)findViewById(R.id.ppa_pager);
+        pager = (ViewPager) findViewById(R.id.ppa_pager);
         partyList = (RecyclerView) findViewById(R.id.ppa_list);
         partyList.setLayoutManager(new LinearLayoutManager(this));
         partyList.setAdapter(listAll);
@@ -73,9 +73,9 @@ public class PartyPickActivity extends AppCompatActivity {
             @Override
             protected boolean isEligible(int position) {
                 // Problem here: positions are stable, but not all of those are to be shown, so...
-                if(position == 0) return false; // separator
-                if(denseDefs.size() > 0) position--;
-                if(position < denseDefs.size()) return position != 0;
+                if (position == 0) return false; // separator
+                if (denseDefs.size() > 0) position--;
+                if (position < denseDefs.size()) return position != 0;
                 position -= denseDefs.size();
                 return position > 1;
             }
@@ -83,10 +83,13 @@ public class PartyPickActivity extends AppCompatActivity {
         final ItemTouchHelper swiper = new ItemTouchHelper(new MyItemTouchCallback());
         partyList.addItemDecoration(swiper);
         swiper.attachToRecyclerView(partyList);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         final PartyPicker helper = RunningServiceHandles.getInstance().pick;
         helper.getDense(denseDefs, denseKeys, false);
-
         helper.onSessionDataLoaded = new Runnable() {
             @Override
             public void run() {
@@ -116,10 +119,10 @@ public class PartyPickActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
+        super.onPause();
         final PartyPicker helper = RunningServiceHandles.getInstance().pick;
         if(helper != null) helper.onSessionDataLoaded = null;
-        super.onDestroy();
     }
 
     @Override

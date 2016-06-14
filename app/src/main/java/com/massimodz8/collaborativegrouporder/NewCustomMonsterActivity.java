@@ -30,31 +30,38 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final android.support.v7.app.ActionBar sab = getSupportActionBar();
-        if(sab != null) sab.setDisplayHomeAsUpEnabled(true);
+        if (sab != null) sab.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         refresh();
     }
 
     @Override
-    protected void onDestroy() {
-        if(!isChangingConfigurations()) {
-            xpAward = null;
-            size = null;
-            type = null;
-            race = null;
-            if(alignFlags != null) Arrays.fill(alignFlags, false);
-            if(tagFlags != null) Arrays.fill(tagFlags, false);
-        }
-        super.onDestroy();
-    }
-
-    @Override
     public void onBackPressed() {
-        if(saving == null) super.onBackPressed();
+        if(saving == null) {
+            reset();
+            super.onBackPressed();
+        }
     }
 
     @Override
     public boolean onSupportNavigateUp() { // takes a second anyway.
+        if(saving == null) {
+            reset();
+        }
         return saving == null && super.onSupportNavigateUp();
+    }
+
+    private void reset() {
+        xpAward = null;
+        size = null;
+        type = null;
+        race = null;
+        if(alignFlags != null) Arrays.fill(alignFlags, false);
+        if(tagFlags != null) Arrays.fill(tagFlags, false);
     }
 
     @Override
@@ -179,6 +186,7 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
 
                     @Override
                     protected void onPostExecute(Exception e) {
+                        reset();
                         setResult(RESULT_OK);
                         finish();
                     }

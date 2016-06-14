@@ -27,7 +27,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
     public static final int STOPPED = 5;
     public static final int STOP_FAILED = 6;
 
-    interface OnTick {
+    public interface OnTick {
         /**  Called every time the state changes. Those are called from a different thread.
          * If the new status reported is START_FAILED or STOPPED then no more
          * notifications will be generated.
@@ -106,7 +106,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
      * Do not call this when already discovering something. Two calls must always be interleaved
      * by at least one stopDiscovery() call or leads to undefined resuls.
      */
-    void beginDiscovery(String serviceType, NsdManager nsd, OnTick onTick) {
+    public void beginDiscovery(String serviceType, NsdManager nsd, OnTick onTick) {
         this.nsd = nsd;
         status = STARTING;
         callback = onTick;
@@ -127,7 +127,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
 
     public void setCallback(OnTick newTarget) { callback = newTarget; }
     public void unregisterCallback() { callback = null; }
-    void stopDiscovery() {
+    public void stopDiscovery() {
         if(nsd != null) {
             unregisterCallback();
             nsd.stopServiceDiscovery(this);
@@ -135,7 +135,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
             status = STOPPING;
         }
     }
-    int getDiscoveryStatus() { return status; }
+    public int getDiscoveryStatus() { return status; }
 
     private NsdManager nsd;
     Timer checker;

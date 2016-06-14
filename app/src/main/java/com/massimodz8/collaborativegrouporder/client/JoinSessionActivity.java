@@ -1,4 +1,4 @@
-package com.massimodz8.collaborativegrouporder;
+package com.massimodz8.collaborativegrouporder.client;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +17,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.AccumulatingDiscoveryListener;
+import com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity;
+import com.massimodz8.collaborativegrouporder.JoinVerificator;
+import com.massimodz8.collaborativegrouporder.MainMenuActivity;
+import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.PartyInfo;
+import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrder;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
