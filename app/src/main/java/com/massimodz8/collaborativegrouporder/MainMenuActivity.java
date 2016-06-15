@@ -192,7 +192,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             return;
         }
         real.beginPublishing(nsdm, activeParty.name, PartyJoinOrder.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
-        real.accept();
         // Update notification with more stuff.
         InternalStateService state = RunningServiceHandles.getInstance().state;
         StartData.PartyOwnerData.Group party = real.getPartyOwnerData();

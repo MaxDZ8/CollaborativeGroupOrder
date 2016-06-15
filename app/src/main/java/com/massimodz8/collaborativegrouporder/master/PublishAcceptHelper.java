@@ -96,15 +96,6 @@ public abstract class PublishAcceptHelper implements NsdManager.RegistrationList
             landing = null;
         }
     }
-
-    /**
-     * @return True if new connections will eventually be accepted, otherwise you made a hard stop listen and must recreate from scratch.
-     */
-    public boolean accept() {
-        if(stoppingListener) return false;
-        rejectConnections = true;
-        return true;
-    }
     public @Nullable ServerSocket getLanding(boolean release) {
         ServerSocket ret = landing;
         if(release) landing = null;

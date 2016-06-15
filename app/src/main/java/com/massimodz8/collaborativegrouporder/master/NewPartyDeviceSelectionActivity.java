@@ -44,6 +44,7 @@ import java.util.Locale;
 public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextView.OnEditorActionListener {
     @Override
     protected void onPause() {
+        super.onPause();
         final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room != null) { // in many cases, parent_activity.onActivityResult has already cleaned up when this is destroyed so...
             room.onNewPublishStatus = null;
@@ -51,7 +52,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             room.onTalkingDeviceCountChanged = null;
             // Shutting down is not necessary at all... the parent activity shuts down service anyway.
         }
-        super.onDestroy();
     }
 
     @Override
@@ -139,18 +139,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         super.onResume();
 
         final PartyCreator room = RunningServiceHandles.getInstance().create;
-        room.accept();
-        if(room.getBuildingPartyName() != null) {
-            NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
-            if (nsd == null) {
-                new AlertDialog.Builder(this, R.style.AppDialogStyle)
-                        .setMessage(R.string.both_noDiscoveryManager)
-                        .show();
-                return;
-            }
-            if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
-            else room.beginPublishing(nsd, room.getBuildingPartyName(), PartyCreator.PARTY_FORMING_SERVICE_TYPE);
-        }
+        if(room.getBuildingPartyName() != null && room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
 
         final TextInputLayout namein = (TextInputLayout) findViewById(R.id.npdsa_partyName);
         EditText sure = namein.getEditText();
@@ -162,7 +151,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
         if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
             sure.setText(room.generatedParty.name);
-            sure.setSelection(0, 0);
+            sure.clearFocus();
             sure.setEnabled(false);
         }
         final TextView status = (TextView) findViewById(R.id.npdsa_status);
