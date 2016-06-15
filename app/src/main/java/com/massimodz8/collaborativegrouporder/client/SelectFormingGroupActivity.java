@@ -90,7 +90,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     }
 
     public void startExplicitConnectionActivity_callback(View btn) {
-        RunningServiceHandles.getInstance();
         startActivityForResult(new Intent(this, ExplicitConnectionActivity.class), EXPLICIT_CONNECTION_REQUEST);
     }
 

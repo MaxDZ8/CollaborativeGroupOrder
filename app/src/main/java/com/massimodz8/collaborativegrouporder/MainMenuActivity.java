@@ -26,6 +26,8 @@ import com.google.protobuf.nano.MessageNano;
 import com.massimodz8.collaborativegrouporder.client.ActorOverviewActivity;
 import com.massimodz8.collaborativegrouporder.client.Adventure;
 import com.massimodz8.collaborativegrouporder.client.CharSelectionActivity;
+import com.massimodz8.collaborativegrouporder.client.CharacterProposals;
+import com.massimodz8.collaborativegrouporder.client.JoinGame;
 import com.massimodz8.collaborativegrouporder.client.JoinSessionActivity;
 import com.massimodz8.collaborativegrouporder.client.NewCharactersProposalActivity;
 import com.massimodz8.collaborativegrouporder.client.PartySelection;
@@ -160,7 +162,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     public void pickParty_callback(View btn) {
         RunningServiceHandles handles = RunningServiceHandles.getInstance();
         handles.pick = new PartyPicker();
-
         startActivityForResult(new Intent(this, PartyPickActivity.class), REQUEST_PICK_PARTY);
     }
 
@@ -212,7 +213,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
 
     private void startGoAdventuringActivity(@NonNull StartData.PartyClientData.Group activeParty, @Nullable Pumper.MessagePumpingThread serverConn) {
-        JoinSessionActivity.prepare(activeParty, serverConn);
+        RunningServiceHandles.getInstance().joinGame = new JoinGame(activeParty, serverConn, (NsdManager) getSystemService(Context.NSD_SERVICE));
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
@@ -254,12 +255,12 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             }
             case REQUEST_PULL_CHAR_LIST: {
                 if(resultCode == RESULT_OK) {
-                    JoinSessionActivity.Result res = JoinSessionActivity.result;
-                    handles.bindChars = new PcAssignmentState(res.worker, res.party, res.first);
-                    JoinSessionActivity.result = null;
+                    handles.bindChars = new PcAssignmentState(handles.joinGame.result.worker, handles.joinGame.party, handles.joinGame.result.first);
                     startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
                 }
                 else handles.state.baseNotification();
+                handles.joinGame.shutdown();
+                handles.joinGame = null;
             } break;
             case REQUEST_BIND_CHARACTERS: {
                 if(resultCode == RESULT_OK) {
@@ -280,7 +281,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             } break;
             case REQUEST_JOIN_FORMING: {
                 if(resultCode == RESULT_OK) {
-                    NewCharactersProposalActivity.prepare(handles.partySelection.resParty, handles.partySelection.resWorker);
+                    handles.newChars = new CharacterProposals(handles.partySelection.resParty, handles.partySelection.resWorker);
                     startActivityForResult(new Intent(this, NewCharactersProposalActivity.class), REQUEST_PROPOSE_CHARACTERS);
                     Notification build = handles.state.buildNotification(handles.play.getPartyOwnerData().name, getString(R.string.ncpa_title));
                     NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -294,16 +295,17 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             case REQUEST_PROPOSE_CHARACTERS: {
                 if(resultCode == RESULT_OK) {
                     InternalStateService.Data everything = RunningServiceHandles.getInstance().state.data;
-                    everything.groupKeys.add(NewCharactersProposalActivity.resJoined);
-                    Pumper.MessagePumpingThread serverConn = NewCharactersProposalActivity.resMaster;
-                    if (serverConn != null) startGoAdventuringActivity(NewCharactersProposalActivity.resJoined, serverConn);
+                    everything.groupKeys.add(handles.newChars.resParty);
+                    if (handles.newChars.master != null) {
+                        startGoAdventuringActivity(handles.newChars.resParty, handles.newChars.master);
+                        handles.newChars.master = null; // keep it going!
+                    }
                     else handles.state.baseNotification();
                     guiRefreshDataChanged.run();
-                    NewCharactersProposalActivity.resJoined = null;
-                    NewCharactersProposalActivity.resMaster = null;
                 }
                 else handles.state.baseNotification();
-                NewCharactersProposalActivity.resJoined = null;
+                handles.newChars.shutdown();
+                handles.newChars = null;
             } break;
             case REQUEST_GATHER_DEVICES: {
                 if(resultCode == RESULT_OK) {
@@ -319,15 +321,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_ASSEMBLED);
                     bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, RunningServiceHandles.getInstance().play.publishToken);
                     surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
+                    break;
                 }
-                else {
-                    handles.state.baseNotification();
-                    handles.play.shutdownPartyManagement();
-                    handles.play.stopPublishing();
-                    handles.play.stopListening(true);
-                    handles.play = null;
-                }
-                break;
+                // else fall through
             }
             case REQUEST_PLAY: {
                 handles.state.baseNotification();

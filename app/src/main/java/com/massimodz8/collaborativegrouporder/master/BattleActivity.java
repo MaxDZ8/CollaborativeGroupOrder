@@ -92,13 +92,14 @@ public class BattleActivity extends AppCompatActivity {
         if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
         final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);
         rv.setAdapter(lister);
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
+        lister.playState = game.session;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
-        lister.playState = game.session;
         final BattleHelper battle = game.session.battleState;
         if(battle == null) {
             // this happens on devices with 'destroy activities' option

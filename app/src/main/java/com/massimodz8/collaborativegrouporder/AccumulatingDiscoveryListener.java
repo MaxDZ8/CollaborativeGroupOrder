@@ -38,7 +38,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
     }
 
     public static class FoundService {
-        final NsdServiceInfo info;
+        final public NsdServiceInfo info;
         public Socket socket; /// very handy to have this here with no fuss added.
 
         public FoundService(NsdServiceInfo info) {

@@ -6,9 +6,8 @@ import android.os.Message;
 import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.Mailman;
-import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.PseudoStack;
-import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
+import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
@@ -20,7 +19,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Massimo on 14/06/2016.
@@ -28,9 +26,10 @@ import java.util.Date;
  */
 public class CharacterProposals {
     final GroupState party;
-    public Pumper.MessagePumpingThread resMaster; // if non null, go adventuring
-    private StartData.PartyClientData.Group resParty;
+    public Pumper.MessagePumpingThread master; // on result, if non null, go adventuring
+    public StartData.PartyClientData.Group resParty;
     boolean disconnected, detached, done, saved;
+    public AsyncActivityLoadUpdateTask<StartData.PartyClientData> saving;
 
     final Handler handler = new MyHandler(this);
     final Pumper pump = new Pumper(handler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED)
@@ -56,14 +55,43 @@ public class CharacterProposals {
                 }
             });
     final ArrayList<BuildingPlayingCharacter> characters = new ArrayList<>();
-    final Mailman sender;
+    final Mailman sender = new Mailman();
     final PseudoStack<Runnable> onEvent = new PseudoStack<>();
+    public final ArrayList<BuildingPlayingCharacter> rejected = new ArrayList<>();
 
     // You can reuse a previous sender for this one. It must be already started.
-    CharacterProposals(GroupState party, Mailman sender) {
+    public CharacterProposals(GroupState party, Pumper.MessagePumpingThread master) {
         this.party = party;
-        this.sender = sender;
+        this.master = master;
+        sender.start();
         characters.add(new BuildingPlayingCharacter());
+    }
+
+    public void shutdown() {
+        sender.out.add(new SendRequest());
+        sender.interrupt();
+        final Pumper.MessagePumpingThread also = this.master;
+        new Thread() {
+            @Override
+            public void run() {
+                for (Pumper.MessagePumpingThread goner : pump.move()) {
+                    goner.interrupt();
+                    try {
+                        goner.getSource().socket.close();
+                    } catch (IOException e) {
+                        // don't care.
+                    }
+                }
+                if(also != null) {
+                    also.interrupt();
+                    try {
+                        also.getSource().socket.close();
+                    } catch (IOException e) {
+                        // nope
+                    }
+                }
+            }
+        }.start();
     }
 
     static class MyHandler extends Handler {
@@ -90,12 +118,10 @@ public class CharacterProposals {
                 case MSG_PC_APPROVAL: {
                     target.confirmationStatus((Events.CharacterAcceptStatus) msg.obj);
                     if (listener != null) listener.run();
-                }
-                    break;
-
+                } break;
                 case MSG_DONE: {
                     final Boolean goAdv = (Boolean) msg.obj;
-                    if(goAdv) target.resMaster = target.pump.move(target.party.channel);
+                    if(goAdv) target.master = target.pump.move(target.party.channel);
                     target.done = true;
                     if(listener != null) listener.run();
                 } break;
@@ -119,14 +145,7 @@ public class CharacterProposals {
         }
         if(null == match) return false;
         match.status = obj.accepted? BuildingPlayingCharacter.STATUS_ACCEPTED : BuildingPlayingCharacter.STATUS_BUILDING;
+        if(!obj.accepted) rejected.add(match);
         return obj.accepted;
-        /*
-        if(!obj.accepted) {
-            new AlertDialog.Builder(this, R.style.AppDialogStyle)
-                    .setMessage(String.format(getString(R.string.ncpa_characterRejectedRetryMessage), match.name))
-                    .show();
-        }
-        refreshGUI();
-        */
     }
 }
