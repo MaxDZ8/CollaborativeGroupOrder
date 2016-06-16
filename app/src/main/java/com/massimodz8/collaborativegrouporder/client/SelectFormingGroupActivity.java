@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.AccumulatingDiscoveryListener;
+import com.massimodz8.collaborativegrouporder.ConnectionAttempt;
 import com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PartyInfo;
@@ -90,6 +92,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     }
 
     public void startExplicitConnectionActivity_callback(View btn) {
+        RunningServiceHandles.getInstance().connectionAttempt = new ConnectionAttempt();
         startActivityForResult(new Intent(this, ExplicitConnectionActivity.class), EXPLICIT_CONNECTION_REQUEST);
     }
 
@@ -251,7 +254,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         if(resultCode == RESULT_OK) {
             Pumper.MessagePumpingThread pumper = handles.connectionAttempt.resMaster;
             Network.GroupInfo probed = handles.connectionAttempt.resParty;
-            handles.connectionAttempt = null;
             if(!probed.forming) {
                 pumper.interrupt();
                 new AlertDialog.Builder(this, R.style.AppDialogStyle)
@@ -276,6 +278,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             state.candidates.add(add);
             state.netPump.pump(pumper);
         }
+        handles.connectionAttempt = null;
         refreshGUI();
     }
 }

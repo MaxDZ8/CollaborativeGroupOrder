@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.AccumulatingDiscoveryListener;
+import com.massimodz8.collaborativegrouporder.ConnectionAttempt;
 import com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity;
 import com.massimodz8.collaborativegrouporder.PartyInfo;
 import com.massimodz8.collaborativegrouporder.R;
@@ -32,6 +33,7 @@ public class JoinSessionActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                RunningServiceHandles.getInstance().connectionAttempt = new ConnectionAttempt();
                 startActivityForResult(new Intent(JoinSessionActivity.this, ExplicitConnectionActivity.class), REQUEST_EXPLICIT_CONNECTION);
             }
         });

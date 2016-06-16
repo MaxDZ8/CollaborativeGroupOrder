@@ -1,26 +1,10 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
-
-import com.massimodz8.collaborativegrouporder.networkio.Events;
-import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
-import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
-import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
-import com.massimodz8.collaborativegrouporder.networkio.Pumper;
-import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 public class ExplicitConnectionActivity extends AppCompatActivity {
     @Override
@@ -81,14 +65,14 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             inetPort.requestFocus();
             return;
         }
-        RunningServiceHandles.getInstance().connectionAttempt = new ConnectionAttempt(addr, port);
+        RunningServiceHandles.getInstance().connectionAttempt.connect(addr, port);
         refresh();
     }
 
     /// Drives both GUI settings and evolution of the state machine.
     void refresh() {
         final ConnectionAttempt state = RunningServiceHandles.getInstance().connectionAttempt;
-        if(state == null) {
+        if(state.connecting == null) {
             MaxUtils.setEnabled(this, true, R.id.eca_inetAddr, R.id.eca_port, R.id.eca_attempt);
             MaxUtils.setVisibility(this, View.GONE,
                     R.id.eca_probing,
@@ -96,7 +80,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                     R.id.eca_connected);
             return;
         }
-        boolean connecting = state.connecting !=  null && state.connecting.error == null;
+        boolean connecting = state.connecting.error == null;
         MaxUtils.setVisibility(this, connecting? View.VISIBLE : View.GONE,
                 R.id.eca_probingProgress,
                 R.id.eca_probing);
@@ -123,8 +107,6 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 }
             }
             state.connecting = null;
-            state.shutdown();
-            RunningServiceHandles.getInstance().connectionAttempt = null;
             refresh();
         }
         if(state.resMaster != null) {

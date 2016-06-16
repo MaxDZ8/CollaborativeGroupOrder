@@ -26,8 +26,9 @@ public class ConnectionAttempt {
     public Pumper.MessagePumpingThread resMaster;
     public Network.GroupInfo resParty;
 
-    ConnectionAttempt(String addr, int port) {
+    void connect(String addr, int port) {
         connecting = new Handshake(addr, port);
+        connecting.execute();
     }
 
     void shutdown() {
@@ -69,9 +70,8 @@ public class ConnectionAttempt {
     public static final int HANDSHAKE_WAITING_REPLY = 4;
 
     class Handshake extends AsyncTask<Void, Void, MessageChannel> {
-        public int status = HANDSHAKE_READY;
-        public Exception error; // Maybe there with _FAILED
-
+        public volatile int status = HANDSHAKE_READY;
+        public volatile Exception error; // Maybe there with _FAILED
 
         private final String addr;
         private final int port;
