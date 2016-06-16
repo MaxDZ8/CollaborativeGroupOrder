@@ -28,7 +28,9 @@ public class CharacterProposals {
     final GroupState party;
     public Pumper.MessagePumpingThread master; // on result, if non null, go adventuring
     public StartData.PartyClientData.Group resParty;
-    boolean disconnected, detached, done, saved;
+    boolean disconnected;
+    boolean detached;
+    boolean done;
     public AsyncActivityLoadUpdateTask<StartData.PartyClientData> saving;
 
     final Handler handler = new MyHandler(this);
@@ -64,13 +66,13 @@ public class CharacterProposals {
         this.party = party;
         this.master = master;
         sender.start();
+        pump.pump(master);
         characters.add(new BuildingPlayingCharacter());
     }
 
     public void shutdown() {
         sender.out.add(new SendRequest());
         sender.interrupt();
-        final Pumper.MessagePumpingThread also = this.master;
         new Thread() {
             @Override
             public void run() {
@@ -80,14 +82,6 @@ public class CharacterProposals {
                         goner.getSource().socket.close();
                     } catch (IOException e) {
                         // don't care.
-                    }
-                }
-                if(also != null) {
-                    also.interrupt();
-                    try {
-                        also.getSource().socket.close();
-                    } catch (IOException e) {
-                        // nope
                     }
                 }
             }
@@ -106,26 +100,24 @@ public class CharacterProposals {
             switch(msg.what) {
                 case MSG_SOCKET_DISCONNECTED:
                     target.disconnected = true;
-                    if(listener != null) listener.run();
                     break;
                 case MSG_PUMPER_DETACHED:
                     target.detached = true;
-                    if(listener != null) listener.run();
                     break;
                 case MSG_NEW_KEY: {
                     target.party.salt = (byte[]) msg.obj;
                 } break;
                 case MSG_PC_APPROVAL: {
                     target.confirmationStatus((Events.CharacterAcceptStatus) msg.obj);
-                    if (listener != null) listener.run();
                 } break;
                 case MSG_DONE: {
                     final Boolean goAdv = (Boolean) msg.obj;
                     if(goAdv) target.master = target.pump.move(target.party.channel);
+                    else target.master = null; // leave it in the pump so it'll get closed.
                     target.done = true;
-                    if(listener != null) listener.run();
                 } break;
             }
+            if(listener != null) listener.run();
         }
 
     }

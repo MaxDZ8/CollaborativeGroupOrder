@@ -35,8 +35,12 @@ public class MyActorRoundActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
-        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         final Network.ActorState actor;
         final int round;
         final String nextActor;
@@ -89,8 +93,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.mara_round)).setText(String.format(Locale.getDefault(), getString(R.string.mara_round), round));
         MaxUtils.setTextUnlessNull((TextView) findViewById(R.id.mara_nextActorName), nextActor, View.GONE);
 
-        if(savedInstanceState != null) return; // when regenerated, probably because of user rotating device, no need to gain more attention.
-
         if(!getIntent().getBooleanExtra(EXTRA_SUPPRESS_VIBRATION, false)) {
             // We cheat and give out notifications right away. By the time the user reacts we'll have
             // managed to connect to service and pulled the data.
@@ -110,14 +112,14 @@ public class MyActorRoundActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    protected void onPause() {
         final Adventure client = RunningServiceHandles.getInstance().clientPlay;
         if(client != null) {
             client.onCurrentActorChanged.remove(actorChangedCall);
             client.onSessionEnded.remove(endedCall);
         }
         if(!isChangingConfigurations()) getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        super.onDestroy();
+        super.onPause();
     }
 
     @Override

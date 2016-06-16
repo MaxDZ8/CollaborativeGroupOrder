@@ -106,7 +106,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
         if(room != null) {
             if(room.building != null) room.building.setNewCharsApprovalAdapter(null);
         }
-        super.onDestroy();
     }
 
     @Override

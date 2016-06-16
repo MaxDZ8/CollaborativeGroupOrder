@@ -283,7 +283,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 if(resultCode == RESULT_OK) {
                     handles.newChars = new CharacterProposals(handles.partySelection.resParty, handles.partySelection.resWorker);
                     startActivityForResult(new Intent(this, NewCharactersProposalActivity.class), REQUEST_PROPOSE_CHARACTERS);
-                    Notification build = handles.state.buildNotification(handles.play.getPartyOwnerData().name, getString(R.string.ncpa_title));
+                    Notification build = handles.state.buildNotification(handles.partySelection.resParty.group.name, getString(R.string.ncpa_title));
                     NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
                     if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
                     handles.state.notification = build;

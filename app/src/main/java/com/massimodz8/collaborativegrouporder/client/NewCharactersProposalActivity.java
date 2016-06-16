@@ -3,7 +3,6 @@ package com.massimodz8.collaborativegrouporder.client;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -68,10 +67,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(RunningServiceHandles.getInstance().newChars.saving == null) {
-            super.onBackPressed();
-            return;
-        }
+        if(RunningServiceHandles.getInstance().newChars.saving == null) super.onBackPressed();
     }
 
     void refresh() {
@@ -191,6 +187,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
                     wire.peerKey = who.unique;
                     wire.level = who.level;
                     state.sender.out.add(new SendRequest(channel, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, wire, null));
+                    who.status = BuildingPlayingCharacter.STATUS_SENT;
                     refresh();
                 }
             };

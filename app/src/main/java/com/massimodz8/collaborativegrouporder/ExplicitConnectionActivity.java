@@ -33,21 +33,13 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        final RunningServiceHandles handles = RunningServiceHandles.getInstance();
-        if(handles.connectionAttempt != null) {
-            handles.connectionAttempt.shutdown();
-            handles.connectionAttempt = null;
-        }
+        RunningServiceHandles.getInstance().connectionAttempt.shutdown();
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        final RunningServiceHandles handles = RunningServiceHandles.getInstance();
-        if(handles.connectionAttempt != null) {
-            handles.connectionAttempt.shutdown();
-            handles.connectionAttempt = null;
-        }
+        RunningServiceHandles.getInstance().connectionAttempt.shutdown();
         super.onBackPressed();
     }
 
