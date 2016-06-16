@@ -58,6 +58,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
         final int port;
         try {
             port = Integer.parseInt(inetPort.getText().toString());
+            if(port < 1024 || port > 65535) throw new NumberFormatException(); // take it easy
         } catch(NumberFormatException e) {
             AlertDialog.Builder build = new AlertDialog.Builder(this, R.style.AppDialogStyle);
             build.setMessage(R.string.eca_badPort);
