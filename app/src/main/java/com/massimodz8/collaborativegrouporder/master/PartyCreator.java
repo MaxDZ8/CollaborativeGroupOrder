@@ -450,7 +450,7 @@ public class PartyCreator extends PublishAcceptHelper {
                 if(BuildingPlayingCharacter.STATUS_ACCEPTED == pc.status) count++;
             }
         }
-        ret.party = new StartData.ActorDefinition[count];
+        ret.party = new StartData.ActorDefinition[count + building.localChars.size()];
         count = 0;
         for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
             if(dev.kicked || !dev.groupMember) continue;
@@ -460,6 +460,7 @@ public class PartyCreator extends PublishAcceptHelper {
                 }
             }
         }
+        for (BuildingPlayingCharacter loc : building.localChars) ret.party[count++] = from(loc);
         return ret;
     }
 
