@@ -344,11 +344,12 @@ public abstract class PcAssignmentHelper {
             initial[loop] = new Network.CharacterOwnership();
             initial[loop].ticket = nextValidRequest;
             initial[loop].type = Network.CharacterOwnership.BOUND;
+            initial[loop].character = bound.get(loop);
         }
         mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial, null));
     }
 
-    private Network.PlayingCharacterDefinition simplify(StartData.ActorDefinition actor, int loop) {
+    private Network.PlayingCharacterDefinition simplify(StartData.ActorDefinition actor, @ActorId int id) {
         Network.PlayingCharacterDefinition res = new Network.PlayingCharacterDefinition();
         StartData.ActorStatistics currently = actor.stats[0];
         res.name = actor.name;
@@ -356,7 +357,7 @@ public abstract class PcAssignmentHelper {
         res.healthPoints = currently.healthPoints;
         res.experience = actor.experience;
         res.level = actor.level;
-        res.peerKey = loop;
+        res.peerKey = id;
         return res;
     }
 

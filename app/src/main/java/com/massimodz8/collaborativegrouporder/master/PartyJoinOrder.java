@@ -183,13 +183,6 @@ public class PartyJoinOrder extends PublishAcceptHelper {
         return assignmentHelper.getUnboundedPcs();
     }
 
-    public int getNumIdentifiedClients() {
-        return assignmentHelper.getNumIdentifiedClients();
-    }
-
-    /// Marks the given character to be managed locally. Will trigger ownership change.
-    public void local(StartData.ActorDefinition actor) { assignmentHelper.local(actor); }
-
     /// Promotes freshly connected clients to anonymous handshaking clients.
     public void pumpClients(@Nullable Pumper.MessagePumpingThread[] existing) {
         if(existing == null) return;

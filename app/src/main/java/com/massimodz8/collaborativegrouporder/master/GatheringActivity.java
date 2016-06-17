@@ -277,7 +277,7 @@ public class GatheringActivity extends AppCompatActivity {
             switch(item.getItemId()) {
                 case R.id.ga_ctx_unassigned_pc_playHere: {
                     StartData.ActorDefinition was = (StartData.ActorDefinition) mode.getTag();
-                    if(null != room && null != was) room.local(was);
+                    if(null != room && null != was) room.assignmentHelper.local(was);
                     mode.finish();
                     return true;
                 }

@@ -135,6 +135,7 @@ public class BattleActivity extends AppCompatActivity {
             }
         });
         if(battle.round > 0) { // battle already started...
+            MaxUtils.setVisibility(this, View.GONE, R.id.fab, R.id.ba_hint);
             findViewById(R.id.fab).setVisibility(View.GONE);
             final TextView status = (TextView) findViewById(R.id.ba_roundCount);
             status.setText(String.format(Locale.getDefault(), getString(R.string.ba_roundNumber), battle.round));
