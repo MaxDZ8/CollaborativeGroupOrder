@@ -52,6 +52,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class FreeRoamingActivity extends AppCompatActivity {
+    private PartyJoinOrder game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         SearchView swidget = (SearchView) findViewById(R.id.fra_searchMobs);
         swidget.setIconifiedByDefault(false);
         swidget.setQueryHint(getString(R.string.fra_searchable_hint));
+        game = RunningServiceHandles.getInstance().play;
 
         final SearchManager sm = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         SpawnMonsterActivity.includePreparedBattles = true;
@@ -75,7 +77,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int count = 0;
                 int pgCount = 0;
-                final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                 for(int loop = 0; loop < game.session.getNumActors(); loop++) {
                     Network.ActorState actor = game.session.getActor(loop);
                     int add = game.session.willFight(actor.peerKey, null)? 1 : 0;
@@ -116,7 +117,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 if(viewHolder instanceof AdventuringActorControlsVH) {
                     final AdventuringActorControlsVH real = (AdventuringActorControlsVH) viewHolder;
                     if(real.actor == null) return;
-                    final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                     game.session.willFight(real.actor.peerKey, false);
                     game.session.temporaries.remove(real.actor);
                     lister.notifyDataSetChanged();
@@ -140,7 +140,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         lister.playState = game.session;
         game.onRollReceived = new Runnable() {
             @Override
@@ -213,7 +212,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
                 Bundle bundle = new Bundle();
                 bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_NEW_BATTLE);
-                bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, RunningServiceHandles.getInstance().play.publishToken);
+                bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, game.publishToken);
                 surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
             }
             else if(!game.session.restoreNotified){
@@ -252,7 +251,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         if(game != null) game.onRollReceived = null;
         if(waiting != null) waiting.dlg.dismiss();
     }
@@ -282,7 +280,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
 
 
     private void sendInitiativeRollRequests() {
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
             if(dev.movedToBattlePumper) continue;
             game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
@@ -320,7 +317,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
 
     /// Called every time at least one initiative is written so we can try sorting & starting.
     boolean attemptBattleStart() {
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         if(game.session.initiatives == null) return false;
         int count = 0;
         if(waiting != null) waiting.lister.notifyDataSetChanged(); // maybe not but I take it easy.
@@ -361,7 +357,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
         bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_NEW_BATTLE);
-        bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, RunningServiceHandles.getInstance().play.publishToken);
+        bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, game.publishToken);
         surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
 
         findViewById(R.id.fab).setVisibility(View.VISIBLE);
@@ -390,7 +386,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
             case REQUEST_AWARD_EXPERIENCE: {
                 // No matter what, when we're outta there we get the rid of all battle data, including those
                 // transient lists.
-                final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                 game.session.winners = null;
                 game.session.defeated = null;
                 if(resultCode == RESULT_OK) { // ouch! We need to update defs with the new xp, and maybe else... Luckly everything is already in place!
@@ -436,7 +431,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
         }
         if(saving) return;
         saving = true; // no need to set it to false, we terminate activity
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         final Session.Suspended save = game.session.stats;
         save.lastSaved = new Timestamp();
         save.lastSaved.seconds = new Date().getTime() / 1000;
@@ -482,7 +476,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
             if(dev.pipe != null) count++;
         }
         if(game.assignmentHelper.peers.size() > 0) {
-            final LatchingHandler lh = new LatchingHandler(count, new Runnable() {
+            final LatchingHandler lh = new LatchingHandler(game, count, new Runnable() {
                 @Override
                 public void run() {
                     new MyRefreshStore(game, save);
@@ -501,8 +495,10 @@ public class FreeRoamingActivity extends AppCompatActivity {
 
     private static class LatchingHandler extends Handler {
         final Runnable ticker;
+        final PartyJoinOrder game;
 
-        LatchingHandler(int expect, @NonNull Runnable latched) {
+        LatchingHandler(PartyJoinOrder game, int expect, @NonNull Runnable latched) {
+            this.game = game;
             this.expect = expect;
             this.latched = latched;
             ticker = new Runnable() {
@@ -518,7 +514,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
             if(msg.what != MSG_INCREMENT) return;
             count++;
             if(count == expect) {
-                final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                 for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
                     if (dev.pipe != null) try {
                         dev.pipe.socket.getOutputStream().flush();

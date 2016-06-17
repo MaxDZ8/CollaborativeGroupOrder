@@ -21,12 +21,15 @@ import com.massimodz8.collaborativegrouporder.master.BattleHelper;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrder;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.Locale;
 
 public class MyActorRoundActivity extends AppCompatActivity {
     public static final String EXTRA_SUPPRESS_VIBRATION = "com.massimodz8.collaborativegrouporder.MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION";
     public static final String EXTRA_CLIENT_MODE = "com.massimodz8.collaborativegrouporder.MyActorRoundActivity.EXTRA_CLIENT_MODE";
+    private @UserOf Adventure client;
+    private @UserOf PartyJoinOrder server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,8 @@ public class MyActorRoundActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        client = RunningServiceHandles.getInstance().clientPlay;
+        server = RunningServiceHandles.getInstance().play;
     }
 
     @Override
@@ -45,7 +50,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
         final int round;
         final String nextActor;
         if(getIntent().getBooleanExtra(EXTRA_CLIENT_MODE, false)) {
-            final Adventure client = RunningServiceHandles.getInstance().clientPlay;
             actorChangedCall = client.onCurrentActorChanged.put(new Runnable() {
                 @Override
                 public void run() {
@@ -70,7 +74,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
             nextActor = null;
         }
         else {
-            final PartyJoinOrder server = RunningServiceHandles.getInstance().play;
             BattleHelper battle  = server.session.battleState;
             int curid = battle.currentActor;
             actor = server.session.getActorById(server.session.lastActivated);
@@ -113,7 +116,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        final Adventure client = RunningServiceHandles.getInstance().clientPlay;
         if(client != null) {
             client.onCurrentActorChanged.remove(actorChangedCall);
             client.onSessionEnded.remove(endedCall);
@@ -124,7 +126,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        final Adventure client = RunningServiceHandles.getInstance().clientPlay;
         if(client == null) {
             super.onBackPressed();
             return;
@@ -141,7 +142,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        final Adventure client = RunningServiceHandles.getInstance().clientPlay;
         if(client == null) return super.onSupportNavigateUp();
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_nopeDlgTitle)
@@ -175,8 +175,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
             case R.id.mara_menu_shuffle: {
                 final int myIndex;
                 final Network.ActorState[] order;
-                final PartyJoinOrder server = RunningServiceHandles.getInstance().play;
-                final Adventure client = RunningServiceHandles.getInstance().clientPlay;
                 if(server == null && client == null) {
                     // Now I use singletons I don't need to connect to the service so this is impossible.
                     // But the static analyzer does not know. Make it happy.
@@ -252,7 +250,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
     }
 
     private void turnDone() {
-        final Adventure client = RunningServiceHandles.getInstance().clientPlay;
         if(client != null) {
             Adventure.ActorWithKnownOrder current = client.actors.get(client.currentActor);
             if(current == null) return; // impossible
@@ -272,8 +269,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
 
     /// Called from the 'wait' dialog to request to shuffle my actor somewhere else.
     private void requestNewOrder(int newPos) {
-        final PartyJoinOrder server = RunningServiceHandles.getInstance().play;
-        final Adventure client = RunningServiceHandles.getInstance().clientPlay;
         if(server == null && client == null) return; // impossible
         if(server != null) {
             if(server.session.battleState.moveCurrentToSlot(newPos, false)) {
@@ -294,8 +289,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
 
 
     private void requestReadiedAction(String s) {
-        final PartyJoinOrder server = RunningServiceHandles.getInstance().play;
-        final Adventure client = RunningServiceHandles.getInstance().clientPlay;
         if(client == null && server == null) return; // unlikely
         if(server != null) {
             BattleHelper battle  = server.session.battleState;

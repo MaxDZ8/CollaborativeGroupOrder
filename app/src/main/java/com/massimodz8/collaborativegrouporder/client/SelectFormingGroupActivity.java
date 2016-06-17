@@ -27,8 +27,11 @@ import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 public class SelectFormingGroupActivity extends AppCompatActivity {
+    private @UserOf PartySelection state;
+
     @Override
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -37,12 +40,12 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         RecyclerView groupList = (RecyclerView) findViewById(R.id.selectFormingGroupActivity_groupList);
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(new GroupListAdapter());
+        state = RunningServiceHandles.getInstance().partySelection;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        final PartySelection state = RunningServiceHandles.getInstance().partySelection;
         final PartySelection.Listener callbacks = new PartySelection.Listener() {
             @Override
             public void onDisconnected(GroupState gs) {
@@ -87,7 +90,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        RunningServiceHandles.getInstance().partySelection.onEvent.remove(eventid);
+        state.onEvent.remove(eventid);
     }
 
     public void startExplicitConnectionActivity_callback(View btn) {
@@ -166,7 +169,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(GroupViewHolder holder, int position) {
-            final PartySelection state = RunningServiceHandles.getInstance().partySelection;
             final GroupState info = state.candidates.get(position);
             final int current = holder.message.getText().length();
             final int allowed = info.charBudget;
@@ -192,7 +194,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         @Override
         public long getItemId(int position) {
             int match = 0;
-            final PartySelection state = RunningServiceHandles.getInstance().partySelection;
             for(GroupState gs : state.candidates) {
                 if(gs.group == null) continue;
                 if(match == position) return gs.channel.unique;
@@ -204,7 +205,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             int count = 0;
-            final PartySelection state = RunningServiceHandles.getInstance().partySelection;
             for(GroupState gs : state.candidates) if(gs.group != null) count++;
             return count;
         }
@@ -215,7 +215,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         gs.charBudget -= msg.length();
         gs.nextEnabled_ms = SystemClock.elapsedRealtime() + gs.nextMsgDelay_ms;
         final String send = msg.toString();
-        final PartySelection state = RunningServiceHandles.getInstance().partySelection;
         Network.PeerMessage payload = new Network.PeerMessage();
         payload.text = send;
         state.sender.out.add(new SendRequest(gs.channel, ProtoBufferEnum.PEER_MESSAGE, payload, null));
@@ -223,7 +222,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     }
 
     private void refreshGUI() {
-        final PartySelection state = RunningServiceHandles.getInstance().partySelection;
         boolean discovering = state.explorer.getDiscoveryStatus() == AccumulatingDiscoveryListener.EXPLORING;
         int talked = 0, explicit = 0;
         for (GroupState gs : state.candidates) {

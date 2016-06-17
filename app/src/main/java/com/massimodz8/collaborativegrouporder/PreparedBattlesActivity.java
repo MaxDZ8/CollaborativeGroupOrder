@@ -11,10 +11,13 @@ import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.IdentityHashMap;
 
 public class PreparedBattlesActivity extends AppCompatActivity {
+    private @UserOf PreparedEncounters.Collection custom;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +30,7 @@ public class PreparedBattlesActivity extends AppCompatActivity {
         PreparedBattleHeaderVH.createFormat = getString(R.string.pba_battleCreatedFormat);
 
         TextView status = (TextView) findViewById(R.id.pba_status);
-        PreparedEncounters.Collection custom = RunningServiceHandles.getInstance().state.data.customBattles;
+        custom = RunningServiceHandles.getInstance().state.data.customBattles;
         if(custom.battles.length == 0) status.setText(R.string.pba_nothingFound);
         else status.setVisibility(View.GONE);
 
@@ -53,7 +56,6 @@ public class PreparedBattlesActivity extends AppCompatActivity {
         if(requestCode != REQUEST_PREPARE_NEW) return;
         if(resultCode != RESULT_OK) return;
         RecyclerView rv = (RecyclerView) findViewById(R.id.pba_list);
-        PreparedEncounters.Collection custom = RunningServiceHandles.getInstance().state.data.customBattles;
         rv.getAdapter().notifyItemInserted(custom.battles.length - 1);
     }
 
@@ -76,7 +78,6 @@ public class PreparedBattlesActivity extends AppCompatActivity {
                 PreparedBattleHeaderVH real = (PreparedBattleHeaderVH)holder;
                 PreparedEncounters.Battle battle = null;
                 int index = 0;
-                PreparedEncounters.Collection custom = RunningServiceHandles.getInstance().state.data.customBattles;
                 for (PreparedEncounters.Battle cand : custom.battles) {
                     if(index == position) {
                         battle = cand;
@@ -90,7 +91,6 @@ public class PreparedBattlesActivity extends AppCompatActivity {
             if(holder instanceof AdventuringActorDataVH) {
                 AdventuringActorDataVH real = (AdventuringActorDataVH)holder;
                 Network.ActorState actor = null;
-                PreparedEncounters.Collection custom = RunningServiceHandles.getInstance().state.data.customBattles;
                 for (PreparedEncounters.Battle cand : custom.battles) {
                     position--;
                     if(position < cand.actors.length) {
@@ -105,7 +105,6 @@ public class PreparedBattlesActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            PreparedEncounters.Collection custom = RunningServiceHandles.getInstance().state.data.customBattles;
             int count = custom.battles.length;
             for (PreparedEncounters.Battle el : custom.battles) count += el.actors.length;
             return count;
@@ -113,7 +112,6 @@ public class PreparedBattlesActivity extends AppCompatActivity {
 
         @Override
         public int getItemViewType(int position) {
-            PreparedEncounters.Collection custom = RunningServiceHandles.getInstance().state.data.customBattles;
             for (PreparedEncounters.Battle el : custom.battles) {
                 if(position == 0) return BATTLE;
                 position--;
@@ -125,7 +123,6 @@ public class PreparedBattlesActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int position) {
-            PreparedEncounters.Collection custom = RunningServiceHandles.getInstance().state.data.customBattles;
             for (PreparedEncounters.Battle cand : custom.battles) {
                 if(position == 0) return ids.get(cand);
                 position--;

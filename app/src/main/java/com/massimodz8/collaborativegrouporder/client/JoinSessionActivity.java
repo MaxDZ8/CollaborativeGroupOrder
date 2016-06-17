@@ -18,8 +18,10 @@ import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 public class JoinSessionActivity extends AppCompatActivity {
+    private @UserOf JoinGame state;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class JoinSessionActivity extends AppCompatActivity {
         });
         final ActionBar sab = getSupportActionBar();
         if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        state = RunningServiceHandles.getInstance().joinGame;
     }
 
     @Override
@@ -48,7 +51,7 @@ public class JoinSessionActivity extends AppCompatActivity {
         // I start from the forming activity. Party name to look for and a server pipe alredy there!
         // So there are two modes, only the first needs exploring.
         // In both cases, I get the state from persistent structure whose lifetime is managed by MainMenuActivity
-        RunningServiceHandles.getInstance().joinGame.onEvent.put(new Runnable() {
+        state.onEvent.put(new Runnable() {
             @Override
             public void run() {
                 refresh();
@@ -62,11 +65,10 @@ public class JoinSessionActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        RunningServiceHandles.getInstance().joinGame.onEvent.remove(eventid);
+        state.onEvent.remove(eventid);
     }
 
     private void refresh() {
-        final JoinGame state = RunningServiceHandles.getInstance().joinGame;
         TextView status = (TextView) findViewById(R.id.jsa_state);
         if(state.explorer != null) {
             switch (state.explorer.getDiscoveryStatus()) {

@@ -6,17 +6,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
+
 public class ExplicitConnectionActivity extends AppCompatActivity {
+    private @UserOf ConnectionAttempt state;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_explicit_connection);
+        state = RunningServiceHandles.getInstance().connectionAttempt;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        final ConnectionAttempt state = RunningServiceHandles.getInstance().connectionAttempt;
         eventid = state.onEvent.put(new Runnable() {
             @Override
             public void run() { refresh(); }
@@ -28,18 +32,18 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        RunningServiceHandles.getInstance().connectionAttempt.onEvent.remove(eventid);
+        state.onEvent.remove(eventid);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        RunningServiceHandles.getInstance().connectionAttempt.shutdown();
+        state.shutdown();
         return true;
     }
 
     @Override
     public void onBackPressed() {
-        RunningServiceHandles.getInstance().connectionAttempt.shutdown();
+        state.shutdown();
         super.onBackPressed();
     }
 
@@ -58,13 +62,12 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             inetPort.requestFocus();
             return;
         }
-        RunningServiceHandles.getInstance().connectionAttempt.connect(addr, port);
+        state.connect(addr, port);
         refresh();
     }
 
     /// Drives both GUI settings and evolution of the state machine.
     void refresh() {
-        final ConnectionAttempt state = RunningServiceHandles.getInstance().connectionAttempt;
         if(state.connecting == null) {
             MaxUtils.setEnabled(this, true, R.id.eca_inetAddr, R.id.eca_port, R.id.eca_attempt);
             MaxUtils.setVisibility(this, View.GONE,

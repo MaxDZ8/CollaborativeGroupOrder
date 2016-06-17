@@ -24,6 +24,7 @@ import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,16 +34,18 @@ import java.util.Date;
  * players get disconnected.
  */
 public class GatheringActivity extends AppCompatActivity {
+    private @UserOf PartyJoinOrder room;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gathering);
+        room = RunningServiceHandles.getInstance().play;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
         room.onNewPublishStatus = new PublishAcceptHelper.NewPublishStatusCallback() {
             @Override
             public void onNewPublishStatus(int state) {
@@ -124,7 +127,6 @@ public class GatheringActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
         if(room != null) {
             room.setNewAuthDevicesAdapter(null);
             room.setNewUnassignedPcsAdapter(null);
@@ -140,7 +142,6 @@ public class GatheringActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
         switch(item.getItemId()) {
             case R.id.ga_menu_explicitConnInfo: {
                 int serverPort = room == null? 0 : room.getServerPort();
@@ -152,7 +153,6 @@ public class GatheringActivity extends AppCompatActivity {
     }
 
     public void startSession_callback(View btn) {
-        final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
         final ArrayList<StartData.ActorDefinition> free = room.getUnboundedPcs();
         if(!free.isEmpty()) {
             String firstLine = free.size() == 1? getString(R.string.ga_oneCharNotBound)
@@ -277,7 +277,6 @@ public class GatheringActivity extends AppCompatActivity {
             switch(item.getItemId()) {
                 case R.id.ga_ctx_unassigned_pc_playHere: {
                     StartData.ActorDefinition was = (StartData.ActorDefinition) mode.getTag();
-                    final PartyJoinOrder room = RunningServiceHandles.getInstance().play;
                     if(null != room && null != was) room.local(was);
                     mode.finish();
                     return true;

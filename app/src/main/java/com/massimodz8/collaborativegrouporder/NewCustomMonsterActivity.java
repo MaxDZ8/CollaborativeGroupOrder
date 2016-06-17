@@ -16,12 +16,14 @@ import android.widget.EditText;
 
 import com.massimodz8.collaborativegrouporder.master.AwardExperienceActivity;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
 public class NewCustomMonsterActivity extends AppCompatActivity {
+    private @UserOf MonsterData.MonsterBook cmobs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,7 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final android.support.v7.app.ActionBar sab = getSupportActionBar();
         if (sab != null) sab.setDisplayHomeAsUpEnabled(true);
+        cmobs = RunningServiceHandles.getInstance().state.data.customMonsters;
     }
 
     @Override
@@ -173,7 +176,6 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
                 // Our new mob is ready. Kinda. Now let's add it to the book and start a save!
                 MonsterData.MonsterBook.Entry parent = new MonsterData.MonsterBook.Entry();
                 parent.main = mob;
-                MonsterData.MonsterBook cmobs = RunningServiceHandles.getInstance().state.data.customMonsters;
                 final MonsterData.MonsterBook.Entry[] longer = Arrays.copyOf(cmobs.entries, cmobs.entries.length + 1);
                 longer[cmobs.entries.length] = parent;
                 cmobs.entries = longer;

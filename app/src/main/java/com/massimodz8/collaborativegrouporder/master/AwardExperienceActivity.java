@@ -20,11 +20,14 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class AwardExperienceActivity extends AppCompatActivity {
+    private @UserOf PartyJoinOrder game;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,13 +36,12 @@ public class AwardExperienceActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final android.support.v7.app.ActionBar sab = getSupportActionBar();
         if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
-
+        game = RunningServiceHandles.getInstance().play;
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
                 int xp = 0;
                 for (int loop = 0; loop < game.session.defeated.size(); loop++) {
                     final SessionHelper.DefeatedData el = game.session.defeated.get(loop);
@@ -93,7 +95,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
             }
         });
         findViewById(R.id.fab).setVisibility(View.VISIBLE);
-        SessionHelper session = RunningServiceHandles.getInstance().play.session;
+        SessionHelper session = game.session;
         mobLister = new ActorListerWithControls<SessionHelper.DefeatedData>(session.defeated, getLayoutInflater(), session) {
             @Override
             protected boolean representedProperty(SessionHelper.DefeatedData entry, Boolean newValue) {
@@ -138,7 +140,6 @@ public class AwardExperienceActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         SessionHelper session = game.session;
         if(session.battleState != null) { // consume this and get it to 'to be awarded' data.
             session.defeated = new ArrayList<>();
@@ -167,7 +168,6 @@ public class AwardExperienceActivity extends AppCompatActivity {
     }
 
     private void confirmDiscardFinish() {
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.aea_noBackDlgMessage)
@@ -185,7 +185,6 @@ public class AwardExperienceActivity extends AppCompatActivity {
 
     private void update() {
         int xp = 0, count = 0;
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         for (SessionHelper.DefeatedData el : game.session.defeated) {
             if(el.consume) {
                 count++;

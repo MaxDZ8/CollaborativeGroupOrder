@@ -22,11 +22,14 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class NewCharactersProposalActivity extends AppCompatActivity {
+    private @UserOf CharacterProposals state;
+
     final MyLister list = new MyLister();
 
     @Override
@@ -37,13 +40,14 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         RecyclerView listWidget = (RecyclerView)findViewById(R.id.ncpa_list);
         listWidget.setLayoutManager(new LinearLayoutManager(this));
         listWidget.setAdapter(list);
+        state = RunningServiceHandles.getInstance().newChars;
         refresh();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        eventid = RunningServiceHandles.getInstance().newChars.onEvent.put(new Runnable() {
+        eventid = state.onEvent.put(new Runnable() {
             @Override
             public void run() {
                 refresh();
@@ -56,23 +60,22 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        RunningServiceHandles.getInstance().newChars.onEvent.remove(eventid);
+        state.onEvent.remove(eventid);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        if(RunningServiceHandles.getInstance().newChars.saving == null) return true;
+        if(state.saving == null) return true;
         // We do nothing. I'll be out very soon automatically.
         return false;
     }
 
     @Override
     public void onBackPressed() {
-        if(RunningServiceHandles.getInstance().newChars.saving == null) super.onBackPressed();
+        if(state.saving == null) super.onBackPressed();
     }
 
     void refresh() {
-        final CharacterProposals state = RunningServiceHandles.getInstance().newChars;
         boolean status = true;
         for(BuildingPlayingCharacter c : state.characters) {
             if (BuildingPlayingCharacter.STATUS_BUILDING == c.status) {
@@ -173,7 +176,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
     }
 
     public void addCharCandidate_callback(View v) {
-        RunningServiceHandles.getInstance().newChars.characters.add(new BuildingPlayingCharacter());
+        state.characters.add(new BuildingPlayingCharacter());
         refresh();
     }
 
@@ -212,7 +215,6 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         @Override
         public int getItemCount() { return state.characters.size(); }
 
-        private final CharacterProposals state = RunningServiceHandles.getInstance().newChars;
     }
     private AlertDialog dialog;
 }

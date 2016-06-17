@@ -25,19 +25,21 @@ import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.ArrayList;
 
 public class NewCharactersApprovalActivity extends AppCompatActivity {
     public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity.RESULT";
     public static final String RESULT_EXTRA_GO_ADVENTURING = "com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING";
+    private @UserOf PartyCreator room;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_characters_approval);
 
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
+        room = RunningServiceHandles.getInstance().create;
         RecyclerView groupList = (RecyclerView) findViewById(R.id.ncaa_list);
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.addItemDecoration(new PreSeparatorDecorator(groupList, this) {
@@ -78,7 +80,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
         RecyclerView groupList = (RecyclerView) findViewById(R.id.ncaa_list);
         groupList.setAdapter(room.building.setNewCharsApprovalAdapter(new PartyDefinitionHelper.CharsApprovalHolderFactoryBinder<PcApprovalVh>() {
             @Override
@@ -102,7 +103,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room != null) {
             if(room.building != null) room.building.setNewCharsApprovalAdapter(null);
         }
@@ -116,7 +116,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
         switch(item.getItemId()) {
             case R.id.ncaa_menu_save: {
                 new AlertDialog.Builder(this, R.style.AppDialogStyle)
@@ -141,8 +140,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
                     @Override
                     public void onInputCompleted(BuildingPlayingCharacter pc) {
-                        final PartyCreator create = RunningServiceHandles.getInstance().create;
-                        create.building.defineLocalCharacter(pc);
+                        room.building.defineLocalCharacter(pc);
                     }
                 });
                 break;
@@ -194,7 +192,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
         public void onCompletedSuccessfully() {
             saving = null;
             target.setEnabled(true);
-            final PartyCreator room = RunningServiceHandles.getInstance().create;
             int negative;
             if(room.mode != PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
                 ArrayList<StartData.PartyOwnerData.Group> defs = RunningServiceHandles.getInstance().state.data.groupDefs;
@@ -279,7 +276,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            final PartyCreator room = RunningServiceHandles.getInstance().create;
             room.approve(unique);
             MaxUtils.beginDelayedTransition(NewCharactersApprovalActivity.this);
             accepted.setVisibility(View.VISIBLE);

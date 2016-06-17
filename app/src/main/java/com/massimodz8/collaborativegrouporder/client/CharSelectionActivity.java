@@ -16,12 +16,15 @@ import android.widget.TextView;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 /**
  * This Activity 'does nothing' but presenting its state. It is assumed state exists when this
  * runs. This complete separation simplifies management considerably.
  */
 public class CharSelectionActivity extends AppCompatActivity {
+    private @UserOf PcAssignmentState state;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,11 +33,11 @@ public class CharSelectionActivity extends AppCompatActivity {
         RecyclerView list = (RecyclerView) findViewById(R.id.csa_pcList);
         final RecyclerView.Adapter adapter = new MyLister();
         list.setAdapter(adapter);
+        state = RunningServiceHandles.getInstance().bindChars;
         list.addItemDecoration(new PreSeparatorDecorator(list, this) {
             @Override
             protected boolean isEligible(int position) {
                 // see adapter's onBindViewHolder
-                final PcAssignmentState state = RunningServiceHandles.getInstance().bindChars;
                 int here = state.count(PcAssignmentState.TransactingCharacter.PLAYED_HERE);
                 int avail = state.count(PcAssignmentState.TransactingCharacter.AVAILABLE);
                 //int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
@@ -62,7 +65,6 @@ public class CharSelectionActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        final PcAssignmentState state = RunningServiceHandles.getInstance().bindChars;
         final Runnable checkReady = new Runnable() {
             @Override
             public void run() {
@@ -151,7 +153,6 @@ public class CharSelectionActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        final PcAssignmentState state = RunningServiceHandles.getInstance().bindChars;
         state.onPartyReady.remove(partyReady);
         state.onDisconnected.remove(disconnect);
         state.onCharacterDefined.remove(charDefined);
@@ -201,7 +202,7 @@ public class CharSelectionActivity extends AppCompatActivity {
 
         @Override
         public void bind(PcAssignmentState.TransactingCharacter o) {
-            int count = RunningServiceHandles.getInstance().bindChars.count(PcAssignmentState.TransactingCharacter.PLAYED_SOMEWHERE);
+            int count = state.count(PcAssignmentState.TransactingCharacter.PLAYED_SOMEWHERE);
             String msg;
             if(count == 1) msg = getString(R.string.csa_oneCharSomewhere);
             else msg = String.format(getString(R.string.csa_pluralCharsSomewhere), count);
@@ -272,7 +273,6 @@ public class CharSelectionActivity extends AppCompatActivity {
             // If you look at the protocol, it turns out peer keys are uint!
             // Java is shit and does not have uints, but it's very convenient.
             // To be kept in sync with onBindViewHolder
-            final PcAssignmentState state = RunningServiceHandles.getInstance().bindChars;
             int here = state.count(PcAssignmentState.TransactingCharacter.PLAYED_HERE);
             int avail = state.count(PcAssignmentState.TransactingCharacter.AVAILABLE);
             //int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
@@ -302,7 +302,6 @@ public class CharSelectionActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            final PcAssignmentState state = RunningServiceHandles.getInstance().bindChars;
             int here = state.count(PcAssignmentState.TransactingCharacter.PLAYED_HERE);
             int avail = state.count(PcAssignmentState.TransactingCharacter.AVAILABLE);
             int somewhere = state.count(PcAssignmentState.TransactingCharacter.PLAYED_SOMEWHERE);
@@ -315,7 +314,6 @@ public class CharSelectionActivity extends AppCompatActivity {
 
         @Override
         public int getItemViewType(int position) {
-            final PcAssignmentState state = RunningServiceHandles.getInstance().bindChars;
             int here = state.count(PcAssignmentState.TransactingCharacter.PLAYED_HERE);
             int avail = state.count(PcAssignmentState.TransactingCharacter.AVAILABLE);
             //int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
@@ -354,7 +352,6 @@ public class CharSelectionActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(VariedHolder holder, int position) {
-            final PcAssignmentState state = RunningServiceHandles.getInstance().bindChars;
             int here = state.count(PcAssignmentState.TransactingCharacter.PLAYED_HERE);
             int avail = state.count(PcAssignmentState.TransactingCharacter.AVAILABLE);
             //int somewhere = count(TransactingCharacter.PLAYED_SOMEWHERE);
@@ -388,7 +385,7 @@ public class CharSelectionActivity extends AppCompatActivity {
 
     /// Either ask a char to be assigned to me or ask it to be given away.
     private void characterRequest(int charKey) {
-        if(RunningServiceHandles.getInstance().bindChars.characterRequest(charKey)) {
+        if(state.characterRequest(charKey)) {
             ((RecyclerView)findViewById(R.id.csa_pcList)).getAdapter().notifyDataSetChanged();
         }
     }

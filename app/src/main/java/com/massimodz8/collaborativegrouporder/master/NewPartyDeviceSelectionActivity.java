@@ -36,16 +36,18 @@ import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class NewPartyDeviceSelectionActivity extends AppCompatActivity implements TextView.OnEditorActionListener {
+    private @UserOf PartyCreator room;
+
     @Override
     protected void onPause() {
         super.onPause();
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room != null) { // in many cases, parent_activity.onActivityResult has already cleaned up when this is destroyed so...
             room.onNewPublishStatus = null;
             room.setNewClientDevicesAdapter(null);
@@ -65,7 +67,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             sab.setDisplayHomeAsUpEnabled(true);
             sab.setTitle(R.string.npdsa_title);
         }
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
+        room = RunningServiceHandles.getInstance().create;
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,8 +139,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     @Override
     protected void onResume() {
         super.onResume();
-
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room.getBuildingPartyName() != null && room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
 
         final TextInputLayout namein = (TextInputLayout) findViewById(R.id.npdsa_partyName);
@@ -223,7 +223,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
         switch(item.getItemId()) {
             case R.id.npdsa_menu_explicitConnInfo: {
                 int serverPort = room == null? 0 : room.getServerPort();
@@ -252,7 +251,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     public boolean onSupportNavigateUp() {
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room.getBuildingPartyName() != null && room.getMemberCount() != 0) {
             MaxUtils.askExitConfirmation(this);
             return true;
@@ -262,7 +260,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
     @Override
     public void onBackPressed() {
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room.getBuildingPartyName() != null && room.getMemberCount() != 0) MaxUtils.askExitConfirmation(this);
         else super.onBackPressed();
     }
@@ -293,7 +290,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
         @Override
         public void onClick(View v) {
-            RunningServiceHandles.getInstance().create.toggleMembership(key);
+            room.toggleMembership(key);
         }
 
         public void bind(PartyDefinitionHelper.DeviceStatus dev) {
@@ -325,7 +322,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            final PartyCreator room = RunningServiceHandles.getInstance().create;
             switch(item.getItemId()) {
                 case R.id.npdsaAM_setName:
                     new SetNameDialog(NewPartyDeviceSelectionActivity.this, mode, room.building.get(key), new Runnable() {
@@ -357,7 +353,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         @Override
         public void onClick(DialogInterface dialog, int which) {
             final Intent intent = new Intent(NewPartyDeviceSelectionActivity.this, NewCharactersApprovalActivity.class);
-            final PartyCreator room = RunningServiceHandles.getInstance().create;
             room.closeGroup(new PartyCreator.OnKeysSentListener() {
                 @Override
                 public void onKeysSent(int bad) {
@@ -384,7 +379,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     }
 
     private void publishGroup() {
-        final PartyCreator room = RunningServiceHandles.getInstance().create;
         if(room.getPublishStatus() != PartyCreator.PUBLISHER_IDLE) return; // unlikely, as I disable trigger
         final TextInputLayout til = (TextInputLayout) findViewById(R.id.npdsa_partyName);
         final EditText view = til.getEditText();

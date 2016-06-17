@@ -28,6 +28,7 @@ import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -40,6 +41,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class SpawnMonsterActivity extends AppCompatActivity {
+    private @UserOf PartyJoinOrder game;
     public static boolean includePreparedBattles = true;
     public static ArrayList<Network.ActorState> found;
     public static MonsterData.MonsterBook monsters, custom;
@@ -53,6 +55,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        game = RunningServiceHandles.getInstance().play;
 
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
@@ -203,7 +206,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
     }
 
     private ArrayList<String> mobNames(Pattern simplifier) {
-        SessionHelper session = RunningServiceHandles.getInstance().play.session;
+        SessionHelper session = game.session;
         int count = 0;
         for (Network.ActorState as : session.temporaries) {
             if(as.type != Network.ActorState.T_MOB) continue;

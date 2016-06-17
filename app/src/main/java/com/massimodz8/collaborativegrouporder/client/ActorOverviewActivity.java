@@ -31,6 +31,7 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.text.DecimalFormat;
 
@@ -47,6 +48,8 @@ import java.text.DecimalFormat;
  * Then we have TurnControl and real game.
  */
 public class ActorOverviewActivity extends AppCompatActivity {
+    private @UserOf Adventure ticker;
+
     // Before starting this activity, make sure to populate its connection parameters and friends.
     // Those will be cleared as soon as the activity goes onCreate and then never reused again.
     // onCreate assumes those non-null. Just call prepare(...)
@@ -67,6 +70,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        ticker = RunningServiceHandles.getInstance().clientPlay;
     }
 
     @Override
@@ -89,7 +93,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
             interstitial.loadAd(new AdRequest.Builder().build());
         }
 
-        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
         final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);
         rv.setAdapter(lister);
         rv.addItemDecoration(new PreSeparatorDecorator(rv, ActorOverviewActivity.this) {
@@ -236,7 +239,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
         if(ticker != null) {
             ticker.onActorUpdated.remove(updateCall);
             ticker.onCurrentActorChanged.remove(actorChangedCall);
@@ -275,8 +277,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
     private RecyclerView.Adapter lister = new MyActorAdapter();
 
     private class MyActorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
-
         public MyActorAdapter() {
             setHasStableIds(true);
         }
@@ -400,7 +400,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
     private class SendRollCallback implements Runnable {
         @Override
         public void run() {
-            final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
             final Network.Roll ready = ticker.rollRequests.removeFirst();
             final Network.Roll reply = new Network.Roll();
             reply.result = ready.result;
@@ -426,7 +425,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
         if(requestCode == REQUEST_TURN) {
             lister.notifyDataSetChanged();
             if (resultCode == RESULT_OK) {

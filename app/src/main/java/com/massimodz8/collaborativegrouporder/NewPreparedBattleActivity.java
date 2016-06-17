@@ -20,12 +20,14 @@ import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.master.SpawnMonsterActivity;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
 public class NewPreparedBattleActivity extends AppCompatActivity {
+    private @UserOf PreparedEncounters.Collection custom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class NewPreparedBattleActivity extends AppCompatActivity {
                 return position != 0;
             }
         });
+        custom = RunningServiceHandles.getInstance().state.data.customBattles;
     }
 
     @Override
@@ -101,7 +104,6 @@ public class NewPreparedBattleActivity extends AppCompatActivity {
                     baddie.peerKey = clear;
                     battle.actors[dst++] = baddie;
                 }
-                PreparedEncounters.Collection custom = RunningServiceHandles.getInstance().state.data.customBattles;
                 PreparedEncounters.Battle[] longer = Arrays.copyOf(custom.battles, custom.battles.length + 1);
                 longer[custom.battles.length] = battle;
                 custom.battles = longer;
