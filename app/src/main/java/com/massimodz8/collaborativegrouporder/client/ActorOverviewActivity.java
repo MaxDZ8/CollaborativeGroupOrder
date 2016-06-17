@@ -79,7 +79,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
         if(adView == null) {
             adView = (AdView) findViewById(R.id.aoa_advertising_banner);
-            adView.loadAd(new AdRequest.Builder().build());
+            adView.loadAd(request());
         }
         if(interstitial == null) {
             interstitial = new InterstitialAd(this);
@@ -90,7 +90,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
                     interstitial.loadAd(new AdRequest.Builder().build());
                 }
             });
-            interstitial.loadAd(new AdRequest.Builder().build());
+            interstitial.loadAd(request());
         }
 
         final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);
@@ -249,6 +249,16 @@ public class ActorOverviewActivity extends AppCompatActivity {
             rollDialog.dlg.dismiss(); // I'm going to regenerate this next time anyway.
         }
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+    private AdRequest request() {
+        final AdRequest.Builder maker = new AdRequest.Builder();
+        final String[] arr = getResources().getStringArray(R.array.admob_test_devices);
+        if(arr != null && arr.length > 0) {
+            maker.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+            for (String s : arr) maker.addTestDevice(s);
+        }
+        return maker.build();
     }
 
 

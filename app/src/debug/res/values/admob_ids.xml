@@ -3,4 +3,8 @@
     <string name="admob_app_id">ca-app-pub-3002930398482369~8283586932</string>
     <string name="aoa_advertising_banner_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="aoa_advertising_interstitial_id">ca-app-pub-3940256099942544/1033173712</string>
+
+    <string-array name="admob_test_devices">
+        <item>931322DD254B25EC1FB9F1877C1831BF</item>
+    </string-array>
 </resources>
