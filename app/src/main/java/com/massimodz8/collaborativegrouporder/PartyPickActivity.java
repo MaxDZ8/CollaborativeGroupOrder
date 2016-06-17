@@ -89,6 +89,8 @@ public class PartyPickActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         final PartyPicker helper = RunningServiceHandles.getInstance().pick;
+        denseDefs.clear();
+        denseKeys.clear();
         helper.getDense(denseDefs, denseKeys, false);
         helper.onSessionDataLoaded = new Runnable() {
             @Override
@@ -647,7 +649,7 @@ public class PartyPickActivity extends AppCompatActivity {
                 if(structs != null) {
                     PartyPickActivity target = (PartyPickActivity)getActivity();
                     if (structs.fighting != null) got = target.getString(R.string.ppa_status_battle);
-                    else if (structs.live != null) got = target.getString(R.string.ppa_status_adventure);
+                    else if (structs.live.length != 0) got = target.getString(R.string.ppa_status_adventure);
                     else got = target.getString(R.string.ppa_status_asDefined);
                 }
             }

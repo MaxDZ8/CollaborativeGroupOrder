@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.massimodz8.collaborativegrouporder.AccumulatingDiscoveryListener;
 import com.massimodz8.collaborativegrouporder.ConnectionAttempt;
 import com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity;
-import com.massimodz8.collaborativegrouporder.PartyInfo;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;

@@ -1,5 +1,6 @@
 package com.massimodz8.collaborativegrouporder.client;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -112,27 +113,8 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         }
         if(!state.done || !state.detached || state.party.salt == null) return; // wait some more. A bit of a waste but that's milliseconds, not relevant for UI
         if(state.saving == null) {
-            state.saving = new AsyncActivityLoadUpdateTask<StartData.PartyClientData>(PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self, new AsyncActivityLoadUpdateTask.ActivityCallbacks(this) {
-                @Override
-                public void onCompletedSuccessfully() {
-                    final boolean goAdventuring = state.master != null;
-                    String extra = ' ' + getString(R.string.ncpa_goingAdventuring);
-                    String msg = String.format(getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");
-                    int label = goAdventuring? R.string.ncpa_goAdventuring : R.string.ncpa_newDataSaved_done;
-                    new AlertDialog.Builder(self, R.style.AppDialogStyle)
-                            .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
-                            .setMessage(msg)
-                            .setCancelable(false)
-                            .setPositiveButton(label, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    setResult(RESULT_OK);
-                                    finish();
-                                }
-                            })
-                            .show();
-                }
-            }) {
+            final UpdateCallback callback = new UpdateCallback(this);
+            state.saving = new AsyncActivityLoadUpdateTask<StartData.PartyClientData>(PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self, callback) {
                 @Override
                 protected void appendNewEntry(StartData.PartyClientData loaded) {
                     StartData.PartyClientData.Group[] longer = new StartData.PartyClientData.Group[loaded.everything.length + 1];
@@ -145,6 +127,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
                     gen.sessionFile = PersistentDataUtils.makeInitialSession(new Date(), self.getFilesDir(), gen.name);
                     longer[loaded.everything.length] = gen;
                     loaded.everything =  longer;
+                    callback.saved = gen;
                 }
                 @Override
                 protected void setVersion(StartData.PartyClientData result) { result.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION; }
@@ -156,6 +139,36 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
                 protected StartData.PartyClientData allocate() { return new StartData.PartyClientData(); }
             };
             state.saving.execute();
+        }
+    }
+
+    private static class UpdateCallback extends AsyncActivityLoadUpdateTask.ActivityCallbacks {
+        public StartData.PartyClientData.Group saved;
+
+        public UpdateCallback(Activity owner) {
+            super(owner);
+        }
+
+        @Override
+        public void onCompletedSuccessfully() {
+            final RunningServiceHandles handles = RunningServiceHandles.getInstance();
+            handles.state.data.groupKeys.add(saved);
+            final boolean goAdventuring = handles.newChars.master != null;
+            String extra = ' ' + owner.getString(R.string.ncpa_goingAdventuring);
+            String msg = String.format(owner.getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");
+            int label = goAdventuring ? R.string.ncpa_goAdventuring : R.string.ncpa_newDataSaved_done;
+            new AlertDialog.Builder(owner, R.style.AppDialogStyle)
+                    .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
+                    .setMessage(msg)
+                    .setCancelable(false)
+                    .setPositiveButton(label, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            owner.setResult(RESULT_OK);
+                            owner.finish();
+                        }
+                    })
+                    .show();
         }
     }
 

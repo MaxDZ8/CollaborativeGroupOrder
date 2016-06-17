@@ -395,6 +395,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     public void onServiceConnected(ComponentName name, IBinder service) {
         InternalStateService state = RunningServiceHandles.getInstance().state = ((InternalStateService.LocalBinder) service).getConcreteService();
         dataStatusCallback = state.data.onStatusChanged.put(guiRefreshDataChanged);
+        unbindService(this);
         if(state.data.status != InternalStateService.DATA_EMPTY) {
             guiRefreshDataChanged.run();
             return;
@@ -407,7 +408,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             MobileAds.initialize(this, getResources().getString(R.string.admob_app_id));
         }
         state.data.loadAll();
-        unbindService(this);
     }
 
     @Override
