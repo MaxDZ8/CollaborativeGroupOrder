@@ -284,6 +284,8 @@ public class BattleActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // In this case using RSH is fine as for sure we're not getting destroyed... hopefully!
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         SessionHelper session = game.session;
         if(session.battleState == null) {
             finish();
@@ -338,6 +340,8 @@ public class BattleActivity extends AppCompatActivity {
     static final int RESULT_OK_SUSPEND = RESULT_OK_AWARD + 1;
 
     private void actionCompleted(boolean advance) {
+        // Might be called from .onActivityResult, be careful! Hope to use RSH
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         final BattleHelper battle = game.session.battleState;
         int previous = advance? battle.actorCompleted(true) : battle.currentActor;
         if(battle.prevWasReadied) {

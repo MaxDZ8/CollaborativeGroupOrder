@@ -425,18 +425,21 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_TURN) {
-            lister.notifyDataSetChanged();
-            if (resultCode == RESULT_OK) {
-                ticker.ticksSinceLastAd++;
-                if (ticker.ticksSinceLastAd >= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER && interstitial != null && interstitial.isLoaded()) {
-                    ticker.ticksSinceLastAd -= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER;
-                    interstitial.show();
-                }
-                return;
+        if (requestCode != REQUEST_TURN) super.onActivityResult(requestCode, resultCode, data);
+        // Remember .onActivityResult might be called before .onCreate so no internal handle nor callback!
+        // Hopefully this is not called if we're already getting destroyed so RSH is *hopefully* ok.
+        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
+        lister.notifyDataSetChanged();
+        if (resultCode == RESULT_OK) {
+            ticker.ticksSinceLastAd++;
+            final int period = ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER;
+            if (ticker.ticksSinceLastAd >= period && interstitial != null && interstitial.isLoaded()) {
+                ticker.ticksSinceLastAd -= period;
+                interstitial.show();
             }
+            return;
         }
-        ticker.onCurrentActorChanged.get().run();
-        super.onActivityResult(requestCode, resultCode, data);
+        final Runnable callback = ticker.onCurrentActorChanged.get();
+        if (callback != null) callback.run();
     }
 }

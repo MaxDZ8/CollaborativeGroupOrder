@@ -369,6 +369,9 @@ public class FreeRoamingActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Be sure to resist being called before .onCreate!
+        // If we're being created we're not being destroyed so it is safe to use the handles directly. Hopefully.
+        PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         switch(requestCode) {
             case REQUEST_BATTLE: {
                 switch(resultCode) {
@@ -431,6 +434,8 @@ public class FreeRoamingActivity extends AppCompatActivity {
         }
         if(saving) return;
         saving = true; // no need to set it to false, we terminate activity
+        // Might be called from .onActivityResult or while active, using RSH directly is safe in both cases
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         final Session.Suspended save = game.session.stats;
         save.lastSaved = new Timestamp();
         save.lastSaved.seconds = new Date().getTime() / 1000;
