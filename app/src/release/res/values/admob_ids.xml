@@ -7,5 +7,6 @@
     <string-array name="admob_test_devices">
         <!-- Perhaps I should remove those from release builds in the future, IDK -->
         <string>931322DD254B25EC1FB9F1877C1831BF</string>
+        <string>7124C643D31E95853166598FDC1002BB</string>
     </string-array>
 </resources>

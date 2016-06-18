@@ -5,6 +5,7 @@
     <string name="aoa_advertising_interstitial_id">ca-app-pub-3940256099942544/1033173712</string>
 
     <string-array name="admob_test_devices">
-        <item>931322DD254B25EC1FB9F1877C1831BF</item>
+        <item>931322DD254B25EC1FB9F1877C1831BF</item> <!-- my y360 -->
+        <item>7124C643D31E95853166598FDC1002BB</item> <!-- Ant S6 -->
     </string-array>
 </resources>

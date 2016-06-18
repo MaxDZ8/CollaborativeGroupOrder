@@ -87,7 +87,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
                     }
                 }
                 if(game.session.defeated != null) {
-                    mobLister.notifyDataSetChanged();
+                    ((RecyclerView)findViewById(R.id.aea_mobList)).getAdapter().notifyDataSetChanged();
                     return;
                 }
                 if(awarded != 0) setResult(RESULT_OK);
@@ -96,7 +96,17 @@ public class AwardExperienceActivity extends AppCompatActivity {
         });
         findViewById(R.id.fab).setVisibility(View.VISIBLE);
         SessionHelper session = game.session;
-        mobLister = new ActorListerWithControls<SessionHelper.DefeatedData>(session.defeated, getLayoutInflater(), session) {
+        if(session.battleState != null) { // consume this and get it to 'to be awarded' data.
+            session.defeated = new ArrayList<>();
+            session.winners = new ArrayList<>();
+            for (InitiativeScore el : session.battleState.ordered) {
+                Network.ActorState actor = session.getActorById(el.actorID);
+                if(actor.type == Network.ActorState.T_MOB && actor.cr != null) session.defeated.add(new SessionHelper.DefeatedData(actor.peerKey, actor.cr.numerator, actor.cr.denominator));
+                else if(actor.type == Network.ActorState.T_PLAYING_CHARACTER || actor.type == Network.ActorState.T_NPC) session.winners.add(new SessionHelper.WinnerData(actor.peerKey));
+            }
+            game.session.battleState = null;
+        }
+        RecyclerView.Adapter mobLister = new ActorListerWithControls<SessionHelper.DefeatedData>(session.defeated, getLayoutInflater(), session) {
             @Override
             protected boolean representedProperty(SessionHelper.DefeatedData entry, Boolean newValue) {
                 if(newValue != null) entry.consume = newValue;
@@ -140,17 +150,6 @@ public class AwardExperienceActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        SessionHelper session = game.session;
-        if(session.battleState != null) { // consume this and get it to 'to be awarded' data.
-            session.defeated = new ArrayList<>();
-            session.winners = new ArrayList<>();
-            for (InitiativeScore el : session.battleState.ordered) {
-                Network.ActorState actor = session.getActorById(el.actorID);
-                if(actor.type == Network.ActorState.T_MOB && actor.cr != null) session.defeated.add(new SessionHelper.DefeatedData(actor.peerKey, actor.cr.numerator, actor.cr.denominator));
-                else if(actor.type == Network.ActorState.T_PLAYING_CHARACTER || actor.type == Network.ActorState.T_NPC) session.winners.add(new SessionHelper.WinnerData(actor.peerKey));
-            }
-            game.session.battleState = null;
-        }
         MaxUtils.beginDelayedTransition(this);
         findViewById(R.id.aea_status).setVisibility(View.GONE);
         MaxUtils.setVisibility(this, View.VISIBLE,
@@ -228,7 +227,5 @@ public class AwardExperienceActivity extends AppCompatActivity {
         if(numerator == 2) return 600;
         return 2 * xpFrom(numerator - 2, 1);
     }
-
-    private RecyclerView.Adapter mobLister;
     private int awarded;
 }

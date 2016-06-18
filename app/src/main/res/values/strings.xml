@@ -286,7 +286,7 @@
     <string name="vhCSAS_assigned">Assigned to this device</string>
     <string name="vhCSAS_assignedInstructions">You can swipe those away to give up a character. They will not be deleted.</string>
     <string name="vhCSAS_available">Available</string>
-    <string name="vhCSAS_request">Tap to request the master to assign those to you.</string>
+    <string name="vhCSAS_request">Tap to request to play here.</string>
 
     <string name="vhCSPHC_imageDesc">Character image</string>
 

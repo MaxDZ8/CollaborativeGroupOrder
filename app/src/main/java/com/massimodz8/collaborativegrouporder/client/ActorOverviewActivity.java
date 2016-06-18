@@ -87,7 +87,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             interstitial.setAdListener(new AdListener() {
                 @Override
                 public void onAdClosed() {
-                    interstitial.loadAd(new AdRequest.Builder().build());
+                    interstitial.loadAd(request());
                 }
             });
             interstitial.loadAd(request());

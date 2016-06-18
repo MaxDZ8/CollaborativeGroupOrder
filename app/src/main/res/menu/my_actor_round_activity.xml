@@ -5,21 +5,21 @@
         android:id="@+id/mara_menu_shuffle"
         android:title="@string/mara_shuffle"
         android:titleCondensed="@string/mara_shuffle"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item android:icon="@mipmap/ic_readied_action_white_24dp"
         android:id="@+id/mara_menu_readiedAction"
         android:title="@string/mara_readyAction"
         android:titleCondensed="@string/mara_readyAction"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
     <item android:icon="@mipmap/ic_skip_next_white_24dp"
         android:id="@+id/mara_menu_done"
         android:title="@string/mara_next_title"
         android:titleCondensed="@string/mara_next_titleShort"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item android:icon="@mipmap/ic_done_white_24dp"
         android:id="@+id/mara_menu_doneConfirmed"
         android:title="@string/mara_next_title"
         android:titleCondensed="@string/mara_next_titleShort"
         android:visible="false"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 </menu>

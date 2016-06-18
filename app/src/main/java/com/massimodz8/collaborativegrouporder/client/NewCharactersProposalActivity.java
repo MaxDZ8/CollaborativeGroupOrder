@@ -156,6 +156,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         public void onCompletedSuccessfully() {
             final RunningServiceHandles handles = RunningServiceHandles.getInstance();
             handles.state.data.groupKeys.add(saved);
+            handles.newChars.resParty = saved;
             final boolean goAdventuring = handles.newChars.master != null;
             String extra = ' ' + owner.getString(R.string.ncpa_goingAdventuring);
             String msg = String.format(owner.getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");

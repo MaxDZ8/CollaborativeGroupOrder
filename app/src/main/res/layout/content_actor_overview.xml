@@ -37,10 +37,12 @@
     <com.google.android.gms.ads.AdView
         android:id="@+id/aoa_advertising_banner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="90dp"
         android:layout_alignParentBottom="true"
         app:adSize="SMART_BANNER"
         app:adUnitId="@string/aoa_advertising_banner_id"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         android:layout_alignParentEnd="false"
         android:layout_alignParentStart="false" />
 

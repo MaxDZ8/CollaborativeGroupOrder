@@ -151,6 +151,7 @@ public class BattleActivity extends AppCompatActivity {
                 battle.currentActor = battle.ordered[battle.ordered.length - 1].actorID;
 
                 fab.setVisibility(View.GONE);
+                findViewById(R.id.ba_hint).setVisibility(View.GONE);
                 MaxUtils.beginDelayedTransition(BattleActivity.this);
                 final TextView status = (TextView) findViewById(R.id.ba_roundCount);
                 status.setText(String.format(Locale.getDefault(), getString(R.string.ba_roundNumber), battle.round));

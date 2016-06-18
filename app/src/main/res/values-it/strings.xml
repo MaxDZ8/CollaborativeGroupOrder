@@ -618,8 +618,8 @@
     <string name="vhCSAC_requested">Inviata richiesta di giocarlo su questo dispositivo</string>
     <string name="vhCSAS_assigned">Assegnato a questo dispositivo</string>
     <string name="vhCSAS_assignedInstructions">Lancia via un personaggio per ridarlo al master. Non sarà eliminato.</string>
-    <string name="vhCSAS_available">Disponibile</string>
-    <string name="vhCSAS_request">Toccali per chiedere al master di assegnarteli.</string>
+    <string name="vhCSAS_available">Disponibili</string>
+    <string name="vhCSAS_request">Toccali chiedere di giocarli qui.</string>
     <string name="vhCSPHC_imageDesc">Immagine personaggio</string>
     <string name="vhHD_disconnect">Disconnetti</string>
     <string name="vhHD_restore">Ripristina</string>

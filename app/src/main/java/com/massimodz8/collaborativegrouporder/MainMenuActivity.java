@@ -295,7 +295,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             case REQUEST_PROPOSE_CHARACTERS: {
                 if(resultCode == RESULT_OK) {
                     InternalStateService.Data everything = RunningServiceHandles.getInstance().state.data;
-                    everything.groupKeys.add(handles.newChars.resParty);
                     if (handles.newChars.master != null) {
                         startGoAdventuringActivity(handles.newChars.resParty, handles.newChars.master);
                         handles.newChars.master = null; // keep it going!
