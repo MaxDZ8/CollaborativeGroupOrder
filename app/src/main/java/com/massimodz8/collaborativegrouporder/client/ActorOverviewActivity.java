@@ -148,6 +148,11 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
                 final TextView status = (TextView) findViewById(R.id.aoa_status);
                 if(ticker.round == Adventure.ROUND_NOT_FIGHTING) {
+                    if(rollDialog != null) {
+                        rollDialog.dlg.dismiss();
+                        rollDialog = null;
+                        Snackbar.make(findViewById(R.id.activityRoot), R.string.aoa_battleCancelled, Snackbar.LENGTH_SHORT);
+                    }
                     status.setText(R.string.aoa_waitingForBattleStart);
                     final ActionBar sab = getSupportActionBar();
                     if(sab != null) sab.setTitle(R.string.aoa_title);
