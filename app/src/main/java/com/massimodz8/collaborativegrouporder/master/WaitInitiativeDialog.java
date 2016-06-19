@@ -53,7 +53,7 @@ public class WaitInitiativeDialog {
                 for(int loop = 0; loop < session.getNumActors(); loop++) {
                     final Network.ActorState actor = session.getActor(loop);
                     final SessionHelper.Initiative test = session.initiatives.get(actor.peerKey);
-                    if(test.request != null) {
+                    if(test != null && test.request != null) {
                         if(position == 0) {
                             initiative = test;
                             match = actor;
@@ -74,8 +74,9 @@ public class WaitInitiativeDialog {
                 int count = 0;
                 for(int loop = 0; loop < session.getNumActors(); loop++) {
                     final SessionHelper.Initiative initiative = session.initiatives.get(session.getActor(loop).peerKey);
-                    if(initiative.request != null) count++;
-                    // else rolled automatically, do not list.
+                    if(initiative == null) continue; // this PC was not added to battle. It's fine.
+                    if(initiative.request == null) continue; // PC automatically rolled (usually local)
+                    count++;
                 }
                 return count;
             }
@@ -85,7 +86,7 @@ public class WaitInitiativeDialog {
                 for(int loop = 0; loop < session.getNumActors(); loop++) {
                     final Network.ActorState actor = session.getActor(loop);
                     final SessionHelper.Initiative test = session.initiatives.get(actor.peerKey);
-                    if(test.request != null) {
+                    if(test != null && test.request != null) {
                         if(position == 0) return actor.peerKey;
                         position--;
                     }

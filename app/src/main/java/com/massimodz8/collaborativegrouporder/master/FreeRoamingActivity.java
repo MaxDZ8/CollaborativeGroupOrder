@@ -311,8 +311,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 local.add(actor);
             }
         }
-        if(local.isEmpty()) return;
-        // For the time being, those are rolled automatically.
+        // For the time being, locals are rolled automatically, no questions asked!
         final int range = 20;
         for (Network.ActorState actor : local) {
             final SessionHelper.Initiative pair = game.session.initiatives.get(actor.peerKey);

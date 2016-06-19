@@ -92,6 +92,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
         };
         helper.bindData(actor);
         holder.setVisibility(View.VISIBLE);
+        if(client != null) helper.actorShortType.setVisibility(View.GONE);
         helper.prepared.setEnabled(false);
         ((TextView) findViewById(R.id.mara_round)).setText(String.format(Locale.getDefault(), getString(R.string.mara_round), round));
         MaxUtils.setTextUnlessNull((TextView) findViewById(R.id.mara_nextActorName), nextActor, View.GONE);
