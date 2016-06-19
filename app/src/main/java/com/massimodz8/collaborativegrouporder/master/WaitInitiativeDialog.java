@@ -29,7 +29,6 @@ public class WaitInitiativeDialog {
     public WaitInitiativeDialog show(@NonNull final AppCompatActivity activity) {
         dlg = new AlertDialog.Builder(activity, R.style.AppDialogStyle)
                 .setView(R.layout.dialog_wait_initiative_rolls)
-                .setCancelable(false)
                 .show();
         lister = new RecyclerView.Adapter<AdventuringActorControlsVH>() {
             @Override

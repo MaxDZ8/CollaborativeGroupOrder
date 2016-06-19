@@ -39,7 +39,7 @@ public class Adventure {
     public PseudoStack<Runnable> onSessionEnded = new PseudoStack<>();
 
     public @ActorId int currentActor = -1; // -1 = no current known actor
-    ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
+    final ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
     public int round = ROUND_NOT_FIGHTING; // 0 = waiting other players roll 1+ fighting
     public final Mailman mailman = new Mailman();
     public MessageChannel pipe;
@@ -190,6 +190,7 @@ public class Adventure {
                 case MSG_TURN_CONTROL: {
                     final Network.TurnControl real = (Network.TurnControl) msg.obj;
                     if(real.type == Network.TurnControl.T_BATTLE_ENDED) { // clear list of actors, easier to just rebuild it.
+                        self.rollRequests.clear(); // this can happen if a battle start is cancelled.
                         self.round = ROUND_NOT_FIGHTING;
                         ArrayList<ActorWithKnownOrder> reuse = new ArrayList<>();
                         for (int key : self.playedHere) {

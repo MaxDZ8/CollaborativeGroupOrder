@@ -141,6 +141,10 @@ public class FreeRoamingActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         lister.playState = game.session;
+        refresh();
+    }
+
+    private void refresh() {
         game.onRollReceived = new Runnable() {
             @Override
             public void run() {
@@ -227,7 +231,10 @@ public class FreeRoamingActivity extends AppCompatActivity {
             lister.notifyDataSetChanged();
             return;
         }
-        if(game.session.initiatives != null) waiting = new WaitInitiativeDialog(game.session).show(this);
+        if(game.session.initiatives != null) {
+            waiting = new WaitInitiativeDialog(game.session).show(this);
+            waiting.dlg.setOnDismissListener(new CancelRolls());
+        }
         attemptBattleStart();
         lister.notifyDataSetChanged();
         if(stats.live != null && !game.session.restoreNotified) {
@@ -244,8 +251,8 @@ public class FreeRoamingActivity extends AppCompatActivity {
             }
             lister.notifyItemRangeInserted(numActors, SpawnMonsterActivity.found.size());
             SpawnMonsterActivity.found = null;
-            if(game.session.battleState == null) findViewById(R.id.fab).setVisibility(View.VISIBLE);
         }
+        findViewById(R.id.fab).setVisibility(game.session.battleState == null? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -312,7 +319,10 @@ public class FreeRoamingActivity extends AppCompatActivity {
             pair.rolled = randomizer.nextInt(range) + actor.initiativeBonus;
         }
         if(attemptBattleStart()) return;
-        if(game.session.initiatives != null) waiting = new WaitInitiativeDialog(game.session).show(this);
+        if(game.session.initiatives != null) {
+            waiting = new WaitInitiativeDialog(game.session).show(this);
+            waiting.dlg.setOnDismissListener(new CancelRolls());
+        }
     }
 
     /// Called every time at least one initiative is written so we can try sorting & starting.
@@ -561,6 +571,21 @@ public class FreeRoamingActivity extends AppCompatActivity {
                     .setTitle(R.string.generic_IOError)
                     .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
                     .show();
+        }
+    }
+
+    private class CancelRolls implements DialogInterface.OnDismissListener {
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            game.session.initiatives = null;
+            waiting = null;
+            Network.TurnControl msg = new Network.TurnControl();
+            msg.type = Network.TurnControl.T_BATTLE_ENDED;
+            for (PcAssignmentHelper.PlayingDevice client : game.assignmentHelper.peers) {
+                if(client.pipe == null) continue;
+                game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg, null));
+            }
+            refresh();
         }
     }
 }
