@@ -366,14 +366,9 @@ public abstract class PcAssignmentHelper {
         if(requester == null) return; // impossible
         final int ticket = payload.ticket;
         payload.ticket = nextValidRequest;
-        if(ticket != nextValidRequest) {
-            payload.type = Network.CharacterOwnership.OBSOLETE;
+        if(ticket != nextValidRequest || payload.character >= party.party.length) {
+            payload.type = ticket != nextValidRequest? Network.CharacterOwnership.OBSOLETE : Network.CharacterOwnership.REJECTED;
             if(requester.pipe != null)  mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
-            return;
-        }
-        if(payload.character >= party.party.length) { // requester asked chars before providing key.
-            payload.type = Network.CharacterOwnership.REJECTED;
-            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
             return;
         }
         Integer currKeyIndex = assignment.get(payload.character);
@@ -395,7 +390,7 @@ public abstract class PcAssignmentHelper {
             sendAvailability(type, payload.character, origin, nextValidRequest);
             if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
             if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
-            if(onBoundPc != null && currKeyIndex == null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
+            if(onBoundPc != null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
             return;
         }
         // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose

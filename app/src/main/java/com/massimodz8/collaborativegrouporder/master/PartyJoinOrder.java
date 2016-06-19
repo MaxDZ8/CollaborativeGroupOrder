@@ -1,9 +1,6 @@
 package com.massimodz8.collaborativegrouporder.master;
 
-import android.content.Intent;
-import android.os.Binder;
 import android.os.Handler;
-import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -19,9 +16,7 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
-import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
