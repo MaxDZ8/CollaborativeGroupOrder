@@ -33,3 +33,6 @@ app/build/generated/res/pngs
 app/build/tmp
 app/build/generated/source/r
 .idea/libraries
+.gradle/2.10/tasks
+app/build/generated
+app/build/outputs
