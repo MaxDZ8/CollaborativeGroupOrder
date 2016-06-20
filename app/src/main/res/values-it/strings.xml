@@ -114,7 +114,6 @@
     <string name="eca_badHost">Non posso connettermi al dispositivo specificato. Assicurati di averlo individuato correttamente e che sia raggiungibile (il \'thethering\' aiuta molto). Prova di nuovo.</string>
     <string name="eca_badPort">Non sembra un numero di porta valido. Le porte di solito sono tra 1024 e 65535. Prova di nuovo.</string>
     <string name="eca_connected">Connesso.</string>
-    <string name="eca_disconnected">Non posso connettermi al dispositivo. Assicurati di aver digitato correttamente e che il dispositivo sia raggiungibile: deve essere nella stessa rete Wi-Fi! Non sei sicuro? Prova con il \"tethering\".</string>
     <string name="eca_failedHello">Non riesco ad inviare HELLO al dispositivo. Messaggio di sistema:\n%1$s</string>
     <string name="eca_infoDesc">L\'informazione di cui hai bisogno è sul dispositivo Master. C\'è un\'opzione di menù apposita.</string>
     <string name="eca_networkAddress">Indirizzo di rete.</string>
@@ -129,7 +128,6 @@
     <string name="fra_instructions">Seleziona i partecipanti alla prossima battaglia.</string>
     <string name="fra_noBattle_oneActor">Servono almeno due attori per fare una battaglia.</string>
     <string name="fra_noBattle_zeroPcs">Serve almeno un personaggio giocante.</string>
-    <string name="fra_restoredSession">Ripristinato da %1$s.</string>
     <string name="fra_searchable_hint">Cerca mostri da sconfiggere.</string>
     <string name="fra_startBrandNewSession">Iniziata sessione nuova.</string>
     <string name="fra_title">All\'avventura</string>
@@ -141,7 +139,6 @@
     <string name="ga_identifiedDevices">Dispositivi identificati</string>
     <string name="ga_noMorePublishing">Pubblicazione fermata (connessioni esplicite ancora disponibili).</string>
     <string name="ga_noPcsOnDevice">Nessun personaggio giocante su questo dispositivo.</string>
-    <string name="ga_notificationDesc">Sessione di gioco via rete.</string>
     <string name="ga_oneCharNotBound">Un personaggio non ancora assegnato.</string>
     <string name="ga_playingCharactersAssignment">Personaggi non assegnati</string>
     <string name="ga_publisherFailedStart">Impossibile pubblicare il servizio. Le connessioni esplicite sono ancora disponibili.</string>
@@ -168,7 +165,6 @@
     <string name="jsa_connectedAttemptJoin">Prova ad entrare</string>
     <string name="jsa_connectedDifferentName">Trovato gruppo \"%1$s\". Non è quello che stavo cercando. Suggerisco di lasciar perdere ma se vuoi puoi provare comunque ad entrare (ma probabilmente fallirà).</string>
     <string name="jsa_connectedToForming">Trovato un gruppo ancora in formazione. Lo ignoro.</string>
-    <string name="jsa_errorWhileJoining">Errore nell\'entrare nel gruppo %1$s: %2$s</string>
     <string name="jsa_failedNetworkExploreStart">Non posso esplorare la rete. Devi usare una connessione esplicita.</string>
     <string name="jsa_lookingForParty">Cerco gruppi</string>
     <string name="jsa_pullingFromExistingConnection">Estrazione personaggi dal dispositivo Master…</string>
@@ -190,7 +186,6 @@
     <string name="mara_shuffle">Ritarda azione</string>
     <string name="mara_title">Agisci!</string>
     <string name="master_badServerSocket">Non posso aprire le comunicazioni per permettere ai tuoi amici di connettersi. Questo è molto grave ed impedisce ogni funzionamento.</string>
-    <string name="master_cannotBindPartyService">Non rienco a collegarmi al servizio creazione gruppi. Questo è indispensabile quindi mi fermo qui senza far nulla. Prova di nuovo, magari dopo aver riavviato.</string>
     <string name="master_cannotEnumerateNICs">Non riesco ad avere informazioni sulla rete. Questo di solito non è un problema ma se i tuoi amici hanno bisogno delle connessioni esplicite dovrai trovare le informazioni richieste in qualche altro modo.</string>
     <string name="master_carefulDlgMessage">Sembra che qualcuno sia connesso. Se continui le comunicazioni saranno interrotte.\n\nVuoi tornare al menù principale?</string>
     <string name="master_exitConfirmedDlgAction">Interrompi operazioni</string>
@@ -199,19 +194,10 @@
     <string name="master_menu_showConnectionInfos">Info connessione</string>
     <string name="master_publishing">Pronto. I tuoi amici possono connettersi.</string>
     <string name="mma_customMonstersButton">Mostri personalizzati…</string>
-    <string name="mma_dirStructDlgInitError_message">La struttura delle directory del programma è incoerente. Contatta il supporto per la riparazione manuale. Se continui, il programma non funzionerà correttamente e danneggerà ulteriormente i tuoi dati.</string>
     <string name="generic_initError">Errore d\'inizializzazione</string>
-    <string name="mma_dirStructDlgNegContinue">Continua a mio rischio </string>
     <string name="mma_endedSessionByebye">Il Master ha chiuso la sessione! Alla prossima!</string>
-    <string name="mma_exit">Esci</string>
-    <string name="mma_exitApp">Chiudi app</string>
-    <string name="mma_failedMatch">Mi sono connesso ad un gruppo appena creato ma non ho potuto identificarlo. Questo è un errore grave.%1$s</string>
-    <string name="mma_failedMatchErroReport">Inoltre, %1$d eccezion(e/i) lanciat(a/e) mentre tentavo di chiudere i canali di comunicazione.</string>
     <string name="mma_failedNewSessionServiceBind">Non riesco a lanciare il servizio. Prova di nuovo, magari dopo un riavvio.</string>
-    <string name="mma_failedOwnedPartyLoad">Impossibile caricare i dati dei gruppi. Questo è indispensabile perché l\'app funzioni. Ignorare questo problema lo aggrava perciò l\'app ora si chiuderà.</string>
     <string name="mma_failedToInitHasher">Impossibile inizializzare le strutture crittografiche. Questo non dovrebbe succedere!\n\nNon posso fare molto senza quindi l\'app ora si chiuderà.</string>
-    <string name="mma_impossible">Impossibile</string>
-    <string name="mma_invalidPartyOwnerLoadedData">Informazioni gruppo inconsistenti. Puoi procedere a tuo rischio aggravando il problema. Lista degli errori:%1$s</string>
     <string name="mma_joinNewParty">Entra in un nuovo gruppo</string>
     <string name="mma_loading">Sto caricando i dati…</string>
     <string name="mma_menu_aboutShort">A proposito di…</string>
@@ -219,7 +205,6 @@
     <string name="mma_noClientDataUpgradeAvailable">Dati client caricati con versione %1$d. Versione attuale %2$d quindi i dati andrebbero aggiornati ma questo non è ancora possibile. Continui a tuo rischio.</string>
     <string name="mma_noOwnerDataUpgradeAvailable">Dati Master caricati con versione %1$d. Versione attuale %2$d quindi i dati andrebbero aggiornati ma questo non è ancora possibile. Continui a tuo rischio.</string>
     <string name="mma_notificationDesc">All\'avventura</string>
-    <string name="mma_partyManagerNotificationTitle">Gestione gruppi</string>
     <string name="mma_pickParty">Scegli un gruppo…</string>
     <string name="mma_preparedBattlesButton">Battaglie preparate…</string>
     <string name="mobs_align_asCreator">come il creatore</string>
@@ -455,7 +440,6 @@
     <string name="ncma_crDlg_title">Imposta Grado di Sfida</string>
     <string name="ncma_emptyInitiative">Inserisci il modificatore d\'iniziativa!</string>
     <string name="ncma_emptyName">Inserisci il nome!</string>
-    <string name="ncma_initLabel">Modificatore iniziativa</string>
     <string name="ncma_initiativeTilHint">Modificatore iniziativa</string>
     <string name="ncma_nameTilHint">Nome</string>
     <string name="ncma_race_notSet">Imposta razza opzionale</string>
@@ -469,7 +453,6 @@
     <string name="ncpa_addChar">Aggiungi personaggio</string>
     <string name="ncpa_characterRejectedRetryMessage">\"%1$s\" rifiutato. Puoi modificare qualcosa e ritentare.</string>
     <string name="ncpa_creationCompleted">Creazione gruppo completata.%1$s</string>
-    <string name="ncpa_failedSend">Impossibile inviare i dati personaggio al Master, segue errore dettagliato:\n</string>
     <string name="ncpa_goAdventuring">All\'avventura</string>
     <string name="ncpa_goingAdventuring">Il Master sta iniziando una nuova sessione! Andiamo in modalità gioco!</string>
     <string name="ncpa_instructions">Puoi definire quanti personaggi vuoi. Il processo completa quando decide il Master.</string>
@@ -539,7 +522,6 @@
     <string name="persistentStorage_groupDataVersionZero">gruppo di versione 0, non dovrebbe essere stato salvato.</string>
     <string name="persistentStorage_groupKeyNameClash">la chiave di gruppo %1$d collide con %2$d, entrambi si chiamano \"%3$s\" e hanno la stessa chiave!</string>
     <string name="persistentStorage_groupNameClash">il gruppo %1$d collide con il %2$d, entrambi si chiamano \"%3$s\".</string>
-    <string name="persistentStorage_groupWithNoActors">: lista vuota.</string>
     <string name="persistentStorage_incoherentInitiativeLists">Vettori iniziative incoerenti, hanno dimensioni diverse.</string>
     <string name="persistentStorage_initiativeMismatch">Ordine d\'iniziativa incoerente: atteso %1$d, disponibile %2$d</string>
     <string name="persistentStorage_invalidCurrentActor">Attore attuale non valido.</string>
@@ -597,7 +579,6 @@
     <string name="sfga_lookingForParties">Ricerca gruppi. I gruppi trovati appariranno sotto.</string>
     <string name="sfga_lostConnection">Connessione al gruppo \"%1$s\" interrotta, ragione: %2$s.</string>
     <string name="sfga_messageTooLong">Messaggio troppo lungo. Potrebbe essere stato mostrato parzialmente o completamente ignorato. La prossima volta rispetta il budget!</string>
-    <string name="sfga_sendMessageErrorDesc">Individuato errore mentre cercavo di inviale il messaggio al master. Dettagli:</string>
     <string name="sfga_startExplicitConnection">Connessione esplicita</string>
     <string name="sfga_talkHint">Manda un messaggio per unirti</string>
     <string name="sfga_title">Sto entrando nel gruppo</string>
@@ -633,4 +614,16 @@
     <string name="vhPCDI_nameHint">Nome personaggio</string>
     <string name="vhPMD_iconDesc">Icona dispositivo</string>
     <string name="vhXA_swipeHint">Puoi lanciare via questa nota.</string>
+    <string name="aoa_battleCancelled">Scontro annullato.</string>
+    <string name="dataLoadUpdate_newEmptyGroupSaved_msg">Ho salvato nella memoria interna un gruppo vuoto. Ora ti riporto al menù principale.</string>
+    <string name="dataLoadUpdate_newGroupSaved_msg">Gruppo salvato nella memoria interna. Vuoi iniziare subito l\'avventura?</string>
+    <string name="iss_cannotCreateDir">Non riesco a creare la cartella \"%1$s\".</string>
+    <string name="iss_existsButNoDir">\"%1$s\" esiste ma non è una cartella.</string>
+    <string name="mma_badDataLoadMsg">Dati inconsistenti. Continuare peggiorerà il problema! Per favore contatta l\'autore, forse riuscirà a recuperare i tuoi dati.</string>
+    <string name="mma_emptyHint_1">Archivio gruppi vuoto.</string>
+    <string name="mma_emptyHint_2">Master? Prova\n%1$s</string>
+    <string name="mma_emptyHint_3">Giocatore? Prova\n%1$</string>
+    <string name="ppa_charCount_zero">Gruppo vuoto.</string>
+    <string name="ppa_noCharactersInParty">Non ci sono personaggi giocanti. Non si può creare un gioco quindi non faccio nulla.\nAggiungi almeno un personaggio giocante.</string>
+    <string name="ppa_noDevicesInParty">Nessun dispositivo nel gruppo. Nessuno potrebbe giocare quindi non faccio nulla.\nAggiungi almeno un dispositivo.</string>
 </resources>

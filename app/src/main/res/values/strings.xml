@@ -21,7 +21,6 @@
     <string name="master_menu_showConnectionInfos">Connection infos</string>
     <string name="master_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
     <string name="master_exitConfirmedDlgAction">Interrupt operations</string>
-    <string name="master_cannotBindPartyService">Failed to get an handle to the party creation service. This is required to work so I\'ll just stop there and no nothing. Try again, maybe after a reboot.</string>
     <string name="master_badServerSocket">Cannot open communication so your friend\'s devices can connect. This is very serious and prevents anything from working.</string>
     <string name="master_giveUpAndGoBack">Give up and go back</string>
     <string name="master_cannotEnumerateNICs">Failed to get network information. This isn\'t really a problem but you\'ll have to find this device network address in some other way in case your friends need explicit connection data.</string>
@@ -75,7 +74,7 @@
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
     <string name="dataLoadUpdate_newGroupSaved_msg">Party saved to internal storage. Do you want to go adventuring right away?</string>
-    <string name="dataLoadUpdate_newEmptyGroupSaved_msg">Empty party  saved to internal storage. We\'re going back to main menu now.</string>
+    <string name="dataLoadUpdate_newEmptyGroupSaved_msg">Empty party saved to internal storage. We\'re going back to main menu now.</string>
     <string name="dataLoadUpdate_finished_newDataSaved_mainMenu">Main menu</string>
     <string name="dataLoadUpdate_finished_newDataSaved_partyPick">Party pick</string>
     <string name="dataLoadUpdate_couldNotStoreNewData">Could not store new party data. Error: %1$s</string>
@@ -89,14 +88,12 @@
     <string name="sfga_startExplicitConnection">Explicit connection</string>
     <string name="sfga_lostConnection">Lost connection to party \"%1$s\", reason given: %2$s.</string>
     <string name="sfga_talkHint">Message to join</string>
-    <string name="sfga_sendMessageErrorDesc">Error detected while attempting to send message to party owner. Details: </string>
     <string name="sfga_emptyMessageForbidden">Empty messages are forbidden.</string>
     <string name="sfga_messageTooLong">Message too long. It might be displayed partially or not at all. Next time, fit the budget!</string>
     <string name="sfga_connectedNotForming">Found a party, but it is not being formed. Discarding.</string>
     <string name="sfga_connectedGotDoormat">Found a party but master wants to verify key and I don\'t know what to do. Discarding.</string>
 
     <string name="eca_title">Initiate explicit connection</string>
-    <string name="eca_disconnected">Could not connect to device. Check your input is correct and the device is reachable: it must be on the same Wi-Fi network! Not sure? Try using \"tethering\".</string>
     <string name="eca_infoDesc">The information you need can be found on Master device. There\'s a menu option.</string>
     <string name="eca_port">Port</string>
     <string name="eca_networkAddress">Network address</string>
@@ -107,19 +104,11 @@
     <string name="eca_badHost">Unable to connect to the specified host. Make sure you\'re specifying a valid host and the host is reachable (\'thethering\' will help). Try again.</string>
     <string name="eca_probingFeedback">Probing, please wait…</string>
 
-    <string name="mma_failedOwnedPartyLoad">Failed to load owned party data. This is required for the app to function. Ignoring this will only make the problem worse so the app will now close.</string>
-    <string name="mma_exitApp">Exit app</string>
     <string name="mma_noOwnerDataUpgradeAvailable">Loaded party owner data is version %1$d. Current version is %2$d so data should be upgraded but no upgrading is possible yet. Continue at your own risk.</string>
     <string name="mma_noClientDataUpgradeAvailable">Loaded client data is version %1$d. Current version is %2$d so data should be upgraded but no upgrading is possible yet. Continue at your own risk.</string>
-    <string name="mma_invalidPartyOwnerLoadedData">Inconsistent party data loaded. You can proceed at your own risk making the problem worse. List of errors:%1$s</string>
     <string name="mma_newParty">Assemble a new party</string>
     <string name="mma_joinNewParty">Join a new party</string>
-    <string name="mma_failedMatchErroReport">Additionally, %1$d exception(s) were thrown while disposing of the communication channels.</string>
-    <string name="mma_impossible">Impossible</string>
-    <string name="mma_failedMatch">It seems I had to go with a newly created party but I couldn\'t match it. This is a very serious error.%1$s</string>
-    <string name="mma_exit">Exit</string>
     <string name="mma_pickParty">Pick a party…</string>
-    <string name="mma_partyManagerNotificationTitle">Party manager</string>
     <string name="mma_failedNewSessionServiceBind">Could not set up the service. Try again after rebooting.</string>
     <string name="mma_failedToInitHasher">Failed to initialize cryptographic data digest structures. This was not supposed to happen!\n\nI cannot do much without those so app will now close.</string>
     <string name="mma_loading">Loading data…</string>
@@ -184,7 +173,6 @@
     <string name="ncpa_creationCompleted">Party creation completed.%1$s</string>
     <string name="ncpa_characterRejectedRetryMessage">Character \"%1$s\" was rejected. You can modify something and retry.</string>
     <string name="ncpa_newDataSaved_done">Done</string>
-    <string name="ncpa_failedSend">Failed to send character data to Master device, detailed error follows:\n</string>
 
     <string name="cardOPS_iconDesc">Owned party icon</string>
     <string name="cardOPS_title">Owned parties</string>
@@ -217,7 +205,7 @@
     <string name="ppa_menu_addDevice">Add device</string>
     <string name="ppa_inconsistentSessionDataDlgMsg">Errors detected in session data. In the future I might be able to fix this but for the time being there\'s nothing I can do. To protect the data, I will now take you back to main menu.</string>
     <string name="ppa_backMainMenuDlgPosBtn">Give up and go main menu</string>
-    <string name="ppa_noInputStream">Failed to get input stream.</string>
+    <string name="ppa_noInputStream">Failed to get input stream.</string>	
     <string name="ppa_neverPlayed">never</string>
     <string name="ppa_status_battle">fighting</string>
     <string name="ppa_status_adventure">adventuring</string>
@@ -263,7 +251,6 @@
     <string name="jsa_title">Join party</string>
     <string name="jsa_lookingForParty">Looking for party</string>
     <string name="jsa_autoAdvanceInfo">You will advance to character selection as soon as I can connect to the Master device.</string>
-    <string name="jsa_errorWhileJoining">Error while joining party %1$s: %2$s</string>
     <string name="jsa_pullingFromExistingConnection">Pulling character data from Master device…</string>
     <string name="jsa_failedNetworkExploreStart">Cannot explore network. You must use an explicit connection.</string>
     <string name="jsa_searching">Exploring Wi-Fi…</string>
@@ -293,7 +280,6 @@
     <string name="vhCSAC_imageDesc">Character image</string>
     <string name="vhCSAC_requested">Requested to be played on this device</string>
 
-    <string name="ga_notificationDesc">Play session over network.</string>
     <string name="ga_oneCharNotBound">One character has not been assigned.</string>
     <string name="ga_someCharsNotBound">%1$d characters have not been assigned.</string>
     <string name="ga_unboundCharsDlgMsg">%1$s\nTo continue, all characters must be played by someone.\n\nLong press an unassigned character for some options.</string>
@@ -333,7 +319,6 @@
     <string name="fra_title">Adventuring</string>
     <string name="fra_instructions">Select everyone taking part in next battle.</string>
     <string name="fra_startBrandNewSession">Started brand new session.</string>
-    <string name="fra_restoredSession">Restored from %1$s.</string>
     <string name="fra_noBattle_zeroPcs">At least one playing character required.</string>
     <string name="fra_noBattle_oneActor">You need at least two actors to fight.</string>
     <string name="fra_searchable_hint">Search mobs to battle</string>
@@ -755,7 +740,6 @@
     <string name="ncma_nameTilHint">Name</string>
     <string name="ncma_save">Validate and save</string>
     <string name="ncma_actionShort">Save</string>
-    <string name="ncma_initLabel">Initiative modifier</string>
     <string name="ncma_tagBtn_notSet">Set tags</string>
     <string name="ncma_crBtn_notSet">Set Challenge Ratio</string>
     <string name="ncma_sizeBtn_notSet">Set size</string>

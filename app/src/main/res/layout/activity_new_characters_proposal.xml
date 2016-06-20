@@ -34,7 +34,6 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/ncpa_instructions"
-        android:id="@+id/textView9"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal" />
 
