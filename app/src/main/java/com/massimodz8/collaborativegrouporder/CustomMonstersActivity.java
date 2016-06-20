@@ -13,11 +13,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.IdentityHashMap;
 
 public class CustomMonstersActivity extends AppCompatActivity {
-    public static MonsterData.MonsterBook custom;
+    private @UserOf MonsterData.MonsterBook custom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
         final android.support.v7.app.ActionBar sab = getSupportActionBar();
         if(sab != null) sab.setDisplayHomeAsUpEnabled(true);
 
+        custom = RunningServiceHandles.getInstance().state.data.customMonsters;
         for (MonsterData.MonsterBook.Entry el : custom.entries) {
             ids.put(el.main, nextId++);
             for (MonsterData.Monster inner : el.variations) ids.put(inner, nextId++);
@@ -54,7 +56,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
                     ids.remove(goner);
                     rv.getAdapter().notifyDataSetChanged();
                     Snackbar.make(findViewById(R.id.activityRoot), R.string.cma_confirmDelete, Snackbar.LENGTH_LONG)
-                            .setAction(R.string.generic_actionDelete, new View.OnClickListener() {
+                            .setAction(R.string.generic_delete, new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
                                     // For the time being there are no variations here so I keep it easy.

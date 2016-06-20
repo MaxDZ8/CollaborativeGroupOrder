@@ -102,7 +102,7 @@ public abstract class PcAssignmentHelper {
         rebound.ticket = nextValidRequest;
         rebound.character = match;
         for (PlayingDevice dst : peers) {
-            if(dst.pipe != null) mailman.out.add(new SendRequest(dst.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, rebound));
+            if(dst.pipe != null) mailman.out.add(new SendRequest(dst.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, rebound, null));
         }
         if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
         if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
@@ -137,45 +137,6 @@ public abstract class PcAssignmentHelper {
 
             }
         }.start();
-    }
-
-    /**
-     * This still keeps a reference to sockets and all mappings. The only data which is going
-     * away is those of devices which were not mapped to any characters. They are useless.
-     * @return Worker threads to be sent to the "adventuring" pumper.
-     */
-    public ArrayList<Pumper.MessagePumpingThread> getBoundKickOthers() {
-        final ArrayList<PlayingDevice> goners = new ArrayList<>();
-        final ArrayList<Pumper.MessagePumpingThread> players = new ArrayList<>();
-        for (PlayingDevice dev : peers) {
-            int count = 0;
-            if(dev.pipe != null) {
-                for (Integer check : assignment) {
-                    if(check != null && check >= 0 && check < peers.size()) {
-                        if(peers.get(check) == dev) count++;
-                    }
-                }
-            }
-            if(count == 0) goners.add(dev);
-            else players.add(netPump.move(dev.pipe));
-        }
-        peers.removeAll(goners);
-        final Pumper.MessagePumpingThread[] byebye = netPump.move();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (Pumper.MessagePumpingThread worker : byebye) worker.interrupt();
-                for (Pumper.MessagePumpingThread worker : byebye) {
-                    MessageChannel pipe = worker.getSource();
-                    if(pipe != null) try {
-                        pipe.socket.close();
-                    } catch (IOException e) {
-                        // I don't care bro. You're nobody I care anymore.
-                    }
-                }
-            }
-        }).start();
-        return players;
     }
 
     private final SecureRandom randomizer = new SecureRandom();
@@ -332,7 +293,7 @@ public abstract class PcAssignmentHelper {
         send.name = party.name;
         send.version = MainMenuActivity.NETWORK_VERSION;
         send.doormat = dev.doormat;
-        mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.GROUP_INFO, send));
+        mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.GROUP_INFO, send, null));
     }
 
     private void helloAuth(final @NonNull MessageChannel origin, @NonNull Network.Hello msg) {
@@ -372,7 +333,7 @@ public abstract class PcAssignmentHelper {
         for (int loop = 0; loop < party.party.length; loop++) {
             stream[loop] = simplify(party.party[loop], loop);
         }
-        if(dev.pipe != null) mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, stream));
+        if(dev.pipe != null) mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, stream, null));
         // Also send a notification for each character which is already assigned to someone else.
         final ArrayList<Integer> bound = new ArrayList<>(party.party.length);
         for(int loop = 0; loop < assignment.size(); loop++) {
@@ -383,11 +344,12 @@ public abstract class PcAssignmentHelper {
             initial[loop] = new Network.CharacterOwnership();
             initial[loop].ticket = nextValidRequest;
             initial[loop].type = Network.CharacterOwnership.BOUND;
+            initial[loop].character = bound.get(loop);
         }
-        mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial));
+        mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial, null));
     }
 
-    private Network.PlayingCharacterDefinition simplify(StartData.ActorDefinition actor, int loop) {
+    private Network.PlayingCharacterDefinition simplify(StartData.ActorDefinition actor, @ActorId int id) {
         Network.PlayingCharacterDefinition res = new Network.PlayingCharacterDefinition();
         StartData.ActorStatistics currently = actor.stats[0];
         res.name = actor.name;
@@ -395,7 +357,7 @@ public abstract class PcAssignmentHelper {
         res.healthPoints = currently.healthPoints;
         res.experience = actor.experience;
         res.level = actor.level;
-        res.peerKey = loop;
+        res.peerKey = id;
         return res;
     }
 
@@ -404,20 +366,15 @@ public abstract class PcAssignmentHelper {
         if(requester == null) return; // impossible
         final int ticket = payload.ticket;
         payload.ticket = nextValidRequest;
-        if(ticket != nextValidRequest) {
-            payload.type = Network.CharacterOwnership.OBSOLETE;
-            if(requester.pipe != null)  mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
-            return;
-        }
-        if(payload.character >= party.party.length) { // requester asked chars before providing key.
-            payload.type = Network.CharacterOwnership.REJECTED;
-            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+        if(ticket != nextValidRequest || payload.character >= party.party.length) {
+            payload.type = ticket != nextValidRequest? Network.CharacterOwnership.OBSOLETE : Network.CharacterOwnership.REJECTED;
+            if(requester.pipe != null)  mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
             return;
         }
         Integer currKeyIndex = assignment.get(payload.character);
         if(currKeyIndex != null && currKeyIndex == LOCAL_BINDING) { // bound to me, silently rejected as mapping to me is a very strong action
             payload.type = Network.CharacterOwnership.REJECTED;
-            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
             return;
         }
         // taking ownership from AVAIL is silently accepted as common.
@@ -428,12 +385,12 @@ public abstract class PcAssignmentHelper {
             assignment.set(payload.character, newMapping);
             payload.type = Network.CharacterOwnership.ACCEPTED;
             payload.ticket = ++nextValidRequest;
-            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
             int type = newMapping == null? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
             sendAvailability(type, payload.character, origin, nextValidRequest);
             if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
             if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
-            if(onBoundPc != null && currKeyIndex == null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
+            if(onBoundPc != null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
             return;
         }
         // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose
@@ -441,7 +398,7 @@ public abstract class PcAssignmentHelper {
         // I don't want all the other requests to be somehow blocked or rejected in the meanwhile...
         // So reject this instead. Looks like this is the only viable option.
         payload.type = Network.CharacterOwnership.REJECTED;
-        if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload));
+        if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
     }
 
     private void sendAvailability(int type, int charIndex, MessageChannel excluding, int request) {
@@ -452,7 +409,7 @@ public abstract class PcAssignmentHelper {
             notification.ticket = request;
             notification.character = charIndex;
             notification.type = type;
-            if(peer.pipe != null) mailman.out.add(new SendRequest(peer.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, notification));
+            if(peer.pipe != null) mailman.out.add(new SendRequest(peer.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, notification, null));
         }
     }
 

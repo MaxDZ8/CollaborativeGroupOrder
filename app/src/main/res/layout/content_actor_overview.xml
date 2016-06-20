@@ -6,10 +6,6 @@
     tools:showIn="@layout/activity_actor_overview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <TextView
@@ -20,7 +16,9 @@
         android:id="@+id/aoa_status"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="wrap_content"
@@ -29,23 +27,23 @@
         android:layout_below="@+id/aoa_status"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_above="@+id/textView"
+        android:layout_above="@+id/aoa_advertising_banner"
         app:layoutManager="LinearLayoutManager"
         tools:listitem="@layout/vh_adventuring_actor_data"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"/>
 
-    <TextView
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/aoa_advertising_banner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="ADVERTISING"
-        android:id="@+id/textView"
+        android:layout_height="90dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:textColor="#16a800"
-        android:background="#b388ff"
-        android:padding="16sp"
-        android:textStyle="bold|italic"
-        android:textSize="32sp" />
+        app:adSize="SMART_BANNER"
+        app:adUnitId="@string/aoa_advertising_banner_id"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false" />
 
 </RelativeLayout>

@@ -20,18 +20,22 @@ public class SendRequest {
 
     public Exception error;
 
-    public SendRequest(@NonNull MessageChannel destination, int type, @NonNull MessageNano payload) {
+    public final Runnable onSendAttempted;
+
+    public SendRequest(@NonNull MessageChannel destination, int type, @NonNull MessageNano payload, Runnable onSendAttempted) {
         this.destination = destination;
         this.type = type;
         one = payload;
         this.many = null;
+        this.onSendAttempted = onSendAttempted;
     }
 
-    public SendRequest(@NonNull MessageChannel destination, int type, @NonNull MessageNano[] payload) {
+    public SendRequest(@NonNull MessageChannel destination, int type, @NonNull MessageNano[] payload, Runnable onSendAttempted) {
         this.destination = destination;
         this.type = type;
         one = null;
         many = payload;
+        this.onSendAttempted = onSendAttempted;
     }
 
     public SendRequest() { // causes the mailman to shut down gracefully
@@ -39,5 +43,6 @@ public class SendRequest {
         type = -1;
         one = null;
         many = null;
+        onSendAttempted = null;
     }
 }

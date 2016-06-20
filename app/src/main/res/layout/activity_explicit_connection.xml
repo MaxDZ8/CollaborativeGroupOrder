@@ -38,7 +38,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/btn_txt_attemptConnection"
+        android:text="@string/eca_attemptConnection"
         android:id="@+id/eca_attempt"
         android:layout_gravity="center_horizontal"
         android:onClick="connect_callback" />
@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/explicitConnectionActivity_probingFeedback"
+        android:text="@string/eca_probingFeedback"
         android:id="@+id/eca_probing"
         android:layout_gravity="center_horizontal"
         android:visibility="gone" />

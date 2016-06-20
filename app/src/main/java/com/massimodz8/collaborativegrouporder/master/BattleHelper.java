@@ -15,7 +15,8 @@ import java.util.ArrayDeque;
 public class BattleHelper {
     public final InitiativeScore[] ordered;
 
-    public @ActorId int currentActor = -1; // only relevant if this.round != 0
+    public static final int INVALID_ACTOR = -1;
+    public @ActorId int currentActor = INVALID_ACTOR; // only relevant if this.round != 0
     public int round = 0;
     boolean prevWasReadied;
     /**

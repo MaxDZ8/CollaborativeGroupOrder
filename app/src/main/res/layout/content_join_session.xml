@@ -9,16 +9,16 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.massimodz8.collaborativegrouporder.JoinSessionActivity"
+    tools:context=".client.JoinSessionActivity"
     tools:showIn="@layout/activity_join_session"
     android:orientation="vertical"
-    android:id="@+id/jsa_contentRoot">
+    android:id="@+id/activityRoot">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="@string/jsa_initializing"
+        android:text="@string/generic_initializing"
         android:id="@+id/jsa_state"
         android:layout_gravity="center_horizontal" />
 
@@ -40,7 +40,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/generic_unreadable_at_start"
         android:id="@+id/jsa_partyName"
         android:layout_gravity="center_horizontal" />
 

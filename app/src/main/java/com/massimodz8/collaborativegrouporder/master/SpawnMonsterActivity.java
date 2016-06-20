@@ -10,21 +10,26 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
+import com.massimodz8.collaborativegrouporder.InternalStateService;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MonsterVH;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -34,12 +39,14 @@ import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class SpawnMonsterActivity extends AppCompatActivity {
+    private @UserOf PartyJoinOrder game;
+    private @UserOf InternalStateService.Data data;
+
     public static boolean includePreparedBattles = true;
     public static ArrayList<Network.ActorState> found;
-    public static MonsterData.MonsterBook monsters, custom;
-    public static PreparedEncounters.Collection preppedBattles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +56,24 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        game = RunningServiceHandles.getInstance().play;
+        data = RunningServiceHandles.getInstance().state.data; // this should be no trouble but comes handy
 
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
         if(!Intent.ACTION_SEARCH.equals(intent.getAction())) return;
         final String query = intent.getStringExtra(SearchManager.QUERY).trim();
 
-        SpawnableAdventuringActorVH.intCrFormat = getString(R.string.vhMLE_challangeRatio_integral);
-        SpawnableAdventuringActorVH.ratioCrFormat = getString(R.string.vhMLE_challangeRatio_fraction);
+        // Match what .spawn adds to name in case of collisions. This is currently the name followed by parameters.
+        Pattern simplifier = Pattern.compile("\\s\\(\\d*\\)");
+        FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
+        Bundle info = new Bundle();
+        info.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
+        info.putStringArrayList(MaxUtils.FA_PARAM_MONSTERS, mobNames(simplifier));
+        surveyor.logEvent(FirebaseAnalytics.Event.SEARCH, info);
+
+        SpawnableAdventuringActorVH.intCrFormat = getString(R.string.mVH_challangeRatio_integral);
+        SpawnableAdventuringActorVH.ratioCrFormat = getString(R.string.mVH_challangeRatio_fraction);
 
         new AsyncTask<Void, Void, Void>() {
             final ArrayList<MatchedEntry> matched = new ArrayList<>();
@@ -69,7 +86,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
             protected Void doInBackground(Void... params) {
                 final IdentityHashMap<String, String> tolower = new IdentityHashMap<>();
                 if(includePreparedBattles) {
-                    for (PreparedEncounters.Battle battle : preppedBattles.battles) {
+                    for (PreparedEncounters.Battle battle : data.customBattles.battles) {
                         String lc = battle.desc.toLowerCase();
                         if(lc.startsWith(lcq)) {
                             MatchedEntry build = new MatchedEntry();
@@ -78,7 +95,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
 
                         }
                     }
-                    for (PreparedEncounters.Battle battle : preppedBattles.battles) {
+                    for (PreparedEncounters.Battle battle : data.customBattles.battles) {
                         String lc = battle.desc.toLowerCase();
                         if(lc.indexOf(lcq) >= 1) {
                             MatchedEntry build = new MatchedEntry();
@@ -87,12 +104,12 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                         }
                     }
                 }
-                lowerify(tolower, monsters);
-                lowerify(tolower, custom);
-                matchStarting(tolower, custom);
-                matchStarting(tolower, monsters);
-                matchContaining(tolower, custom);
-                matchContaining(tolower, monsters);
+                lowerify(tolower, data.monsters);
+                lowerify(tolower, data.customMonsters);
+                matchStarting(tolower, data.customMonsters);
+                matchStarting(tolower, data.monsters);
+                matchContaining(tolower, data.customMonsters);
+                matchContaining(tolower, data.monsters);
                 return null;
             }
 
@@ -162,6 +179,12 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 final TextView status = (TextView) findViewById(R.id.sma_status);
                 if(this.matched.size() == 1) status.setText(R.string.sma_status_matchedSingle);
                 else status.setText(String.format(getString(R.string.sma_status_matchedMultiple), this.matched.size()));
+
+                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(SpawnMonsterActivity.this);
+                Bundle info = new Bundle();
+                info.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
+                info.putInt(MaxUtils.FA_PARAM_SEARCH_MATCH_COUNT, matched.size());
+                surveyor.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, info);
             }
         }.execute();
 
@@ -182,6 +205,27 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private ArrayList<String> mobNames(Pattern simplifier) {
+        SessionHelper session = game.session;
+        int count = 0;
+        for (Network.ActorState as : session.temporaries) {
+            if(as.type != Network.ActorState.T_MOB) continue;
+            count++;
+        }
+        ArrayList<String> res = new ArrayList<>(count);
+        // Problem: what if the user inputs custom monsters which names are (C), (R), ™ or whatever?
+        // I cannot just store them. So what I'm doing: I remove everything I might have added to disambiguate,
+        // I remove digits, (), punctuation and then hash it. Same hash, same thing. But! I cannot store those either as
+        // bundles have arrays of strings but not arrays of arrays... meh! I just send everything Base64 and be done.
+        for (Network.ActorState as : session.temporaries) {
+            if(as.type != Network.ActorState.T_MOB) continue;
+            String cleared = simplifier.matcher(as.name).replaceAll("");
+            MaxUtils.hasher.reset();
+            res.add(Base64.encodeToString(MaxUtils.hasher.digest(cleared.getBytes()), Base64.DEFAULT));
+        }
+        return res;
     }
 
     private void spawn(HashMap<String, Integer> nameColl, Network.ActorState actorState, Integer count) {
@@ -230,7 +274,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
             case R.id.sma_menu_showMonsterBookInfo: {
                 final ArrayList<MonsterData.Monster> flat = new ArrayList<>();
                 final ArrayList<String[]> names = new ArrayList<>();
-                for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+                for (MonsterData.MonsterBook.Entry entry : data.monsters.entries) {
                     final MonsterData.Monster main = entry.main;
                     flat.add(main);
                     names.add(main.header.name);
@@ -239,7 +283,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                         names.add(completeVariationNames(main.header.name, modi.header.name));
                     }
                 }
-                final android.support.v7.app.AlertDialog dlg = new android.support.v7.app.AlertDialog.Builder(this)
+                final android.support.v7.app.AlertDialog dlg = new android.support.v7.app.AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setView(R.layout.dialog_monster_book_info)
                         .show();
                 final RecyclerView rv = (RecyclerView) dlg.findViewById(R.id.sma_dlg_smbi_list);
@@ -247,9 +291,9 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 final TextView created = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_created);
                 final TextView entries = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_entries);
                 final TextView count = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_monstersCount);
-                final String when = DateFormat.getDateInstance().format(new Date(monsters.created.seconds * 1000));
+                final String when = DateFormat.getDateInstance().format(new Date(data.monsters.created.seconds * 1000));
                 created.setText(when);
-                entries.setText(String.valueOf(monsters.entries.length));
+                entries.setText(String.valueOf(data.monsters.entries.length));
                 count.setText(String.valueOf(la.getItemCount()));
                 break;
             }
@@ -334,13 +378,13 @@ public class SpawnMonsterActivity extends AppCompatActivity {
      * @return mob name[0] if monster is a parent, otherwise parent.name[0]
      */
     private String getPreferredName(MonsterData.Monster mob) {
-        for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+        for (MonsterData.MonsterBook.Entry entry : data.monsters.entries) {
             if(mob == entry.main) return entry.main.header.name[0];
             for (MonsterData.Monster inner : entry.variations) {
                 if(mob == inner) return entry.main.header.name[0];
             }
         }
-        for (MonsterData.MonsterBook.Entry entry : custom.entries) {
+        for (MonsterData.MonsterBook.Entry entry : data.monsters.entries) {
             if(mob == entry.main) return entry.main.header.name[0];
             for (MonsterData.Monster inner : entry.variations) {
                 if(mob == inner) return entry.main.header.name[0];
@@ -415,7 +459,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                     protected String selectedText() {
                         final Integer count = mobCount.get(actor);
                         if(count == null || count < 1) return null;
-                        return String.format(getString(R.string.vhMLE_spawnCountFeedback), String.valueOf(count));
+                        return String.format(Locale.getDefault(), getString(R.string.mVH_spawnCountFeedback), count);
                     }
                 };
             }

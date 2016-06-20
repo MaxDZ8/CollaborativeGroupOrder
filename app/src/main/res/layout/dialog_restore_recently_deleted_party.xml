@@ -7,7 +7,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/generic_unreadable_at_start"
         android:id="@+id/ppa_dialogName"
         android:layout_gravity="center_horizontal"
         android:layout_margin="8sp" />

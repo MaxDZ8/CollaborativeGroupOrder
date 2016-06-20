@@ -13,7 +13,7 @@
         android:layout_centerVertical="true"
         android:layout_margin="8dp"
         android:src="@drawable/placeholder_todo"
-        android:contentDescription="@string/vhPHC_imageDesc" />
+        android:contentDescription="@string/vhCSPHC_imageDesc" />
 
     <TextView
         android:layout_width="wrap_content"

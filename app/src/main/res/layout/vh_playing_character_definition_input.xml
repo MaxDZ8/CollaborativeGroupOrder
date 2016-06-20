@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/vhRoot"
+    style="@style/CardTheme">
+
+    <RelativeLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/vhPCDI_tilName"
+            app:errorEnabled="true"
+            android:hint="@string/vhPCDI_nameHint"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:nextFocusDown="@+id/vhPCDI_level"
+            android:nextFocusForward="@+id/vhPCDI_level"
+            android:nextFocusLeft="@+id/vhPCDI_level"
+            android:nextFocusRight="@+id/vhPCDI_level">
+
+            <EditText
+                android:id="@+id/vhPCDI_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textCapWords|textPersonName|text"
+                android:textStyle="bold"
+                android:gravity="center_horizontal" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Space
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/vhPCDI_tilName"
+            android:id="@+id/vhPCDI_middle" />
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/vhPCDI_tilLevel"
+            app:errorEnabled="true"
+            android:hint="@string/vhPCDI_levelHint"
+            android:layout_toLeftOf="@+id/vhPCDI_middle"
+            android:layout_below="@+id/vhPCDI_middle"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:nextFocusDown="@+id/vhPCDI_maxHealth"
+            android:nextFocusForward="@+id/vhPCDI_initiative"
+            android:nextFocusRight="@+id/vhPCDI_initiative"
+            android:nextFocusUp="@+id/vhPCDI_name">
+
+            <EditText
+                android:id="@+id/vhPCDI_level"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:gravity="center_horizontal"
+                android:selectAllOnFocus="true"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/vhPCDI_tilInitiative"
+            app:errorEnabled="true"
+            android:hint="@string/vhPCDI_initiativeHint"
+            android:layout_below="@+id/vhPCDI_middle"
+            android:layout_toRightOf="@+id/vhPCDI_middle"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:nextFocusDown="@+id/vhPCDI_experience"
+            android:nextFocusUp="@+id/vhPCDI_name"
+            android:nextFocusForward="@+id/vhPCDI_maxHealth"
+            android:nextFocusLeft="@+id/vhPCDI_level">
+
+            <EditText
+                android:id="@+id/vhPCDI_initiative"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberSigned"
+                android:gravity="center_horizontal"
+                android:selectAllOnFocus="true"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/vhPCDI_tilMaxHealth"
+            app:errorEnabled="true"
+            android:hint="@string/vhPCDI_maxHealthHint"
+            android:layout_below="@+id/vhPCDI_tilLevel"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignRight="@+id/vhPCDI_tilLevel"
+            android:layout_alignEnd="@+id/vhPCDI_tilLevel"
+            android:nextFocusUp="@+id/vhPCDI_level"
+            android:nextFocusForward="@+id/vhPCDI_experience"
+            android:nextFocusRight="@+id/vhPCDI_experience">
+
+            <EditText
+                android:id="@+id/vhPCDI_health"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:gravity="center_horizontal"
+                android:selectAllOnFocus="true"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/vhPCDI_tilExperience"
+            app:errorEnabled="true"
+            android:hint="@string/vhPCDI_experienceHint"
+            android:layout_below="@+id/vhPCDI_tilInitiative"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignLeft="@+id/vhPCDI_tilInitiative"
+            android:layout_alignStart="@+id/vhPCDI_tilInitiative"
+            android:nextFocusUp="@+id/vhPCDI_initiative"
+            android:nextFocusLeft="@+id/vhPCDI_maxHealth">
+            <EditText
+                android:id="@+id/vhPCDI_experience"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:gravity="center_horizontal"
+                android:selectAllOnFocus="true"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/vhPCDI_add"
+            android:id="@+id/vhPCDI_makeNewChar"
+            android:layout_gravity="right"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_below="@+id/vhPCDI_tilExperience"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/vhPCDI_accepted"
+            android:id="@+id/vhPCDI_accepted"
+            android:checked="true"
+            android:enabled="false"
+            android:textStyle="bold"
+            android:visibility="visible"
+            android:layout_gravity="right"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/vhPCDI_tilExperience" />
+
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

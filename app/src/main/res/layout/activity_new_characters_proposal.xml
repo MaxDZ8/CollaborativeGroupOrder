@@ -8,7 +8,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.massimodz8.collaborativegrouporder.NewCharactersProposalActivity">
+    android:id="@+id/activityRoot"
+    tools:context=".client.NewCharactersProposalActivity">
 
 
     <android.support.v7.widget.RecyclerView
@@ -26,14 +27,13 @@
         android:text="@string/ncpa_addChar"
         android:id="@+id/ncpa_action"
         android:layout_gravity="center_horizontal"
-        android:onClick="addCharCandidate" />
+        android:onClick="addCharCandidate_callback" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/ncpa_instructions"
-        android:id="@+id/textView9"
         android:layout_gravity="center_horizontal"
         android:gravity="center_horizontal" />
 

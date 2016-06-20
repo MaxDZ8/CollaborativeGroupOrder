@@ -11,11 +11,12 @@ import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.IdentityHashMap;
 
 public class PreparedBattlesActivity extends AppCompatActivity {
-    public static PreparedEncounters.Collection custom;
+    private @UserOf PreparedEncounters.Collection custom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,7 @@ public class PreparedBattlesActivity extends AppCompatActivity {
         PreparedBattleHeaderVH.createFormat = getString(R.string.pba_battleCreatedFormat);
 
         TextView status = (TextView) findViewById(R.id.pba_status);
+        custom = RunningServiceHandles.getInstance().state.data.customBattles;
         if(custom.battles.length == 0) status.setText(R.string.pba_nothingFound);
         else status.setVisibility(View.GONE);
 

@@ -22,9 +22,10 @@ public class RollInitiativeDialog {
 
     public RollInitiativeDialog(Network.ActorState actor, final Network.Roll request, final Runnable onEntered, @NonNull final AppCompatActivity activity) {
         this.request = request;
-        dlg = new AlertDialog.Builder(activity).setView(R.layout.dialog_roll_initiative)
+        dlg = new AlertDialog.Builder(activity, R.style.AppDialogStyle)
+                .setView(R.layout.dialog_roll_initiative)
                 .setCancelable(false)
-                .setPositiveButton(activity.getString(R.string.aoa_dlgRI_done), new DialogInterface.OnClickListener() {
+                .setPositiveButton(activity.getString(R.string.rid_done), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         request.result = picker.getValue();
@@ -42,7 +43,7 @@ public class RollInitiativeDialog {
         int modifier = actor.initiativeBonus;
         String ms = String.valueOf(modifier);
         if(modifier >= 0) ms = '+' + ms;
-        db.setText(String.format(activity.getString(R.string.aoa_dlgRI_instructionsAndModifier), ms));
+        db.setText(String.format(activity.getString(R.string.rid_instructionsAndModifier), ms));
         picker = (NumberPicker) dlg.findViewById(R.id.aoa_dlgRI_rollResult);
         picker.setMinValue(1);
         picker.setMaxValue(20);

@@ -1,43 +1,40 @@
 package com.massimodz8.collaborativegrouporder.client;
 
-import android.app.Notification;
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.os.Vibrator;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.AdventuringActorAdapter;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.AdventuringActorDataVH;
-import com.massimodz8.collaborativegrouporder.InterstitialAdPlaceholderActivity;
+import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
+import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
+import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
-import java.io.IOException;
-import java.util.Locale;
+import java.text.DecimalFormat;
 
 /**
  * Start this when assignment completed. It is signaled by a GroupReady message with a YOURS field.
@@ -51,16 +48,16 @@ import java.util.Locale;
  * by orders are defined in advance.
  * Then we have TurnControl and real game.
  */
-public class ActorOverviewActivity extends AppCompatActivity implements ServiceConnection {
+public class ActorOverviewActivity extends AppCompatActivity {
+    private @UserOf Adventure ticker;
+
     // Before starting this activity, make sure to populate its connection parameters and friends.
     // Those will be cleared as soon as the activity goes onCreate and then never reused again.
     // onCreate assumes those non-null. Just call prepare(...)
     private static Pumper.MessagePumpingThread serverWorker; // in
-    private static StartData.PartyClientData.Group connectedParty; // in
     private static int[] actorKeys; // in, server ids of actors to manage here
 
-    public static void prepare(StartData.PartyClientData.Group group, int[] actorKeys_, Pumper.MessagePumpingThread serverWorker_) {
-        connectedParty = group;
+    public static void prepare(int[] actorKeys_, Pumper.MessagePumpingThread serverWorker_) {
         actorKeys = actorKeys_;
         serverWorker = serverWorker_;
     }
@@ -74,191 +71,69 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
-
-        final Intent intent = new Intent(this, AdventuringService.class);
-        if(savedInstanceState == null) startService(intent);
-        if(!bindService(intent, this, 0)) {
-            stopService(intent);
-            MaxUtils.beginDelayedTransition(this);
-            final TextView status = (TextView) findViewById(R.id.aoa_status);
-            status.setText(R.string.client_failedServiceBind);
-            return;
-        }
-        mustUnbind = true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if(ticker != null) {
-            ticker.onActorUpdated.pop();
-            ticker.onCurrentActorChanged.pop();
-            ticker.onRollRequestPushed.pop();
-        }
-        if(mustUnbind) {
-            unbindService(this);
-        }
-        if(!isChangingConfigurations()) {
-            if(ticker != null) ticker.stopForeground(true);
-            final Intent intent = new Intent(this, AdventuringService.class);
-            stopService(intent);
-        }
-        if(rollDialog != null) {
-            rollDialog.dlg.dismiss(); // I'm going to regenerate this next time anyway.
-        }
-        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
-
-    @Override
-    public void onBackPressed() { confirmLeaveFinish(); }
-    @Override
-    public boolean onSupportNavigateUp() {
-        confirmLeaveFinish();
-        return false;
-    }
-
-    private void confirmLeaveFinish() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.generic_carefulDlgTitle)
-                .setMessage(R.string.aoa_confirmBackDlgMessage)
-                .setPositiveButton(R.string.aoa_confirmBackDlgPositiveButton, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) { ActorOverviewActivity.super.onBackPressed(); }
-                })
-                .show();
-    }
-
-    boolean mustUnbind;
-    static final int NOTIFICATION_ID = 100;
-    private AdventuringService ticker;
-    private RollInitiativeDialog rollDialog;
-    private MessageChannel serverPipe;
-    private AdventuringActorAdapter<AdventuringActorDataVH> lister = new AdventuringActorAdapter<AdventuringActorDataVH>() {
-        @Override
-        public AdventuringActorDataVH onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
-                @Override
-                public void onClick(View v) { }
-            };
-        }
-
-        @Override
-        public void onBindViewHolder(AdventuringActorDataVH holder, int position) {
-            holder.bindData(ticker.actors.get(ticker.playedHere[position]).actor);
-            holder.prepared.setEnabled(false);
-        }
-
-        @Override
-        public int getItemCount() {
-            if(ticker == null || ticker.playedHere == null) return 0;
-            int count = 0;
-            for (int key : ticker.playedHere) {
-                final AdventuringService.ActorWithKnownOrder known = ticker.actors.get(key);
-                if(known != null && known.actor != null) count++;
-            }
-            return count;
-        }
-
-        @Override
-        protected boolean isCurrent(Network.ActorState actor) {
-            return ticker == null || ticker.currentActor == actor.peerKey;
-        }
-
-        @Override
-        public Network.ActorState getActorByPos(int position) {
-            for (int key : ticker.playedHere) {
-                final AdventuringService.ActorWithKnownOrder known = ticker.actors.get(key);
-                if(known != null && known.actor != null) {
-                    if(position == 0) return known.actor;
-                }
-                position--;
-            }
-            return null;
-        }
-
-        @Override
-        protected LayoutInflater getLayoutInflater() {
-            return ActorOverviewActivity.this.getLayoutInflater();
-        }
-    };
-
-    private class SendRollCallback implements Runnable {
-        @Override
-        public void run() {
-            final Network.Roll ready = ticker.rollRequests.pop();
-            final Network.Roll reply = new Network.Roll();
-            reply.result = ready.result;
-            reply.unique = ready.unique;
-            reply.peerKey = ready.peerKey;
-            new Thread() {
-                @Override
-                public void run() {
-                    try {
-                        serverPipe.writeSync(ProtoBufferEnum.ROLL, reply);
-                    } catch (IOException e) {
-                        // todo: collect those in the service mailman maybe and have better error support.
-                    }
-                }
-            }.start();
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-            rollDialog.dlg.dismiss();
-            rollDialog = null;
-            ticker.onRollRequestPushed.getFirst().run(); // there might be more rolls pending.
-        }
-    }
-
-    private static final int REQUEST_TURN = 1;
-
-    private static final int CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER = 2;
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQUEST_TURN) {
-            lister.notifyDataSetChanged();
-            ticker.onCurrentActorChanged.getFirst().run(); // maybe not, but easy to check
-            if (resultCode == RESULT_OK) {
-                ticker.ticksSinceLastAd++;
-                boolean admobReady = true;
-                if (ticker.ticksSinceLastAd >= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER && admobReady) {
-                    ticker.ticksSinceLastAd -= ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER;
-                    startActivity(new Intent(this, InterstitialAdPlaceholderActivity.class));
-                }
-            }
-            else { // we have somehow got out. MARA is protected against accidental exit so...
-                ticker.onCurrentActorChanged.getFirst().run();
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+        ticker = RunningServiceHandles.getInstance().clientPlay;
     }
 
     @Override
     protected void onResume() {
-        if(ticker != null) {
-            ticker.onCurrentActorChanged.getFirst().run(); // maybe not. But convenient to mangle round and update UI.
-            ticker.onActorUpdated.getFirst().run();
-        }
         super.onResume();
-    }
 
-    // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    @Override
-    public void onServiceConnected(ComponentName name, IBinder service) {
-        ticker = ((AdventuringService.LocalBinder) service).getConcreteService();
-        ticker.onActorUpdated.push(new Runnable() {
+        if(adView == null) {
+            adView = (AdView) findViewById(R.id.aoa_advertising_banner);
+            adView.loadAd(request());
+        }
+        if(interstitial == null) {
+            interstitial = new InterstitialAd(this);
+            interstitial.setAdUnitId(getString(R.string.aoa_advertising_interstitial_id));
+            interstitial.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    interstitial.loadAd(request());
+                }
+            });
+            interstitial.loadAd(request());
+        }
+
+        final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);
+        rv.setAdapter(lister);
+        rv.addItemDecoration(new PreSeparatorDecorator(rv, ActorOverviewActivity.this) {
+            @Override
+            protected boolean isEligible(int position) {
+                final int type = rv.getAdapter().getItemViewType(position);
+                return position != 0 && type != MyActorAdapter.T_AWARD;
+            }
+        });
+        new HoriSwipeOnlyTouchCallback(rv) {
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if(!(viewHolder instanceof ExperienceAwardVH)) return; // impossible!
+                ExperienceAwardVH real = (ExperienceAwardVH)viewHolder;
+                final Adventure.ActorWithKnownOrder actor = ticker.actors.get(real.peerKey);
+                if(actor == null) return; // very unlikely
+                actor.xpReceived = 0;
+                rv.getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            protected boolean disable() { return false; }
+
+            @Override
+            protected boolean canSwipe(RecyclerView rv, RecyclerView.ViewHolder vh) { return vh instanceof ExperienceAwardVH; }
+        };
+
+        updateCall = ticker.onActorUpdated.put(new Runnable() {
             boolean first = true;
             @Override
             public void run() {
                 int known = 0, knownOrders = 0;
                 for (int id : ticker.playedHere) {
-                    final AdventuringService.ActorWithKnownOrder awo = ticker.actors.get(id);
+                    final Adventure.ActorWithKnownOrder awo = ticker.actors.get(id);
                     if (awo != null && awo.actor != null) {
                         known++;
                         if(awo.keyOrder != null) knownOrders++;
                         if(awo.xpReceived != 0) {
-                            String text = getString(R.string.aoa_xpReward);
-                            text = String.format(Locale.getDefault(), text, awo.actor.name, awo.xpReceived, awo.actor.experience);
-                            Snackbar.make(findViewById(R.id.activityRoot), text, Snackbar.LENGTH_INDEFINITE).show();
-                            awo.xpReceived = 0;
+                            lister.notifyDataSetChanged();
+                            // awo.xpReceived = 0; // no more here, keep displaying until swiped away
                             awo.updated = false;
                         }
                     }
@@ -267,20 +142,17 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                 if (first) {
                     first = false;
                     MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
-                    final RecyclerView rv = (RecyclerView) findViewById(R.id.aoa_list);
-                    rv.setAdapter(lister);
-                    rv.addItemDecoration(new PreSeparatorDecorator(rv, ActorOverviewActivity.this) {
-                        @Override
-                        protected boolean isEligible(int position) {
-                            return position != 0;
-                        }
-                    });
                     rv.setVisibility(View.VISIBLE);
                     if(ticker.playedHere.length > 1) return;
                 }
                 MaxUtils.beginDelayedTransition(ActorOverviewActivity.this);
                 final TextView status = (TextView) findViewById(R.id.aoa_status);
-                if(ticker.round == AdventuringService.ROUND_NOT_FIGHTING) {
+                if(ticker.round == Adventure.ROUND_NOT_FIGHTING) {
+                    if(rollDialog != null) {
+                        rollDialog.dlg.dismiss();
+                        rollDialog = null;
+                        Snackbar.make(findViewById(R.id.activityRoot), R.string.aoa_battleCancelled, Snackbar.LENGTH_SHORT);
+                    }
                     status.setText(R.string.aoa_waitingForBattleStart);
                     final ActionBar sab = getSupportActionBar();
                     if(sab != null) sab.setTitle(R.string.aoa_title);
@@ -291,7 +163,7 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                 if(knownOrders == ticker.playedHere.length) rollDialog = null;
             }
         });
-        ticker.onRollRequestPushed.push(new Runnable() {
+        rollRequestCall = ticker.onRollRequestPushed.put(new Runnable() {
             @Override
             public void run() {
                 if (rollDialog != null) return;
@@ -317,11 +189,16 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                 rollDialog = new RollInitiativeDialog(actor, request, new SendRollCallback(), ActorOverviewActivity.this);
             }
         });
-        ticker.onCurrentActorChanged.push(new Runnable() {
+        actorChangedCall = ticker.onCurrentActorChanged.put(new Runnable() {
             @Override
             public void run() {
                 final TextView status = (TextView) findViewById(R.id.aoa_status);
-                if(ticker.round == AdventuringService.ROUND_NOT_FIGHTING) {
+                if(ticker.round == Adventure.ROUND_NOT_FIGHTING) {
+                    if(rollDialog != null) {
+                        rollDialog.dlg.dismiss();
+                        rollDialog = null;
+                        Snackbar.make(findViewById(R.id.activityRoot), R.string.aoa_battleCancelled, Snackbar.LENGTH_SHORT);
+                    }
                     status.setText(R.string.aoa_waitingForBattleStart);
                     final ActionBar sab = getSupportActionBar();
                     if(sab != null) sab.setTitle(R.string.aoa_title);
@@ -330,8 +207,8 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                 else status.setText(R.string.aoa_waitingMyTurn);
 
                 final ActionBar sab = getSupportActionBar();
-                if(sab != null) sab.setTitle(ticker.round == AdventuringService.ROUND_NOT_FIGHTING? R.string.aoa_title : R.string.aoa_title_fighting);
-                if(ticker.round == AdventuringService.ROUND_NOT_FIGHTING) return;
+                if(sab != null) sab.setTitle(ticker.round == Adventure.ROUND_NOT_FIGHTING? R.string.aoa_title : R.string.aoa_title_fighting);
+                if(ticker.round == Adventure.ROUND_NOT_FIGHTING) return;
                 boolean here = false;
                 for (int key : ticker.playedHere) {
                     if (key == ticker.currentActor) {
@@ -346,6 +223,13 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
                 startActivityForResult(intent, REQUEST_TURN);
             }
         });
+        endedCall = ticker.onSessionEnded.put(new Runnable() {
+            @Override
+            public void run() {
+                setResult(RESULT_GOODBYE);
+                finish();
+            }
+        });
         if(serverWorker != null) { // Initialize service and start pumping.
             serverPipe = serverWorker.getSource();
             ticker.playedHere = actorKeys;
@@ -353,27 +237,230 @@ public class ActorOverviewActivity extends AppCompatActivity implements ServiceC
             ticker.netPump.pump(serverWorker);
             serverWorker = null;
             actorKeys = null;
-            final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
-                    .setOngoing(true)
-                    .setWhen(System.currentTimeMillis())
-                    .setShowWhen(true)
-                    .setContentTitle(connectedParty.name)
-                    .setContentText(getString(R.string.aoa_notificationDesc))
-                    .setSmallIcon(R.drawable.ic_notify_icon)
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.placeholder_todo));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                help.setCategory(Notification.CATEGORY_SERVICE);
-            }
-            ticker.startForeground(NOTIFICATION_ID, help.build());
         }
-        ticker.onActorUpdated.getFirst().run();
-        ticker.onRollRequestPushed.getFirst().run();
-        ticker.onCurrentActorChanged.getFirst().run();
+        ticker.onActorUpdated.get().run();
+        ticker.onRollRequestPushed.get().run();
+        ticker.onCurrentActorChanged.get().run();
+
+        ticker.onCurrentActorChanged.get().run(); // maybe not. But convenient to mangle round and update UI.
+        ticker.onActorUpdated.get().run();
     }
 
+
     @Override
-    public void onServiceDisconnected(ComponentName name) {
-        // I still don't get what to do here.
+    protected void onPause() {
+        super.onPause();
+        if(ticker != null) {
+            ticker.onActorUpdated.remove(updateCall);
+            ticker.onCurrentActorChanged.remove(actorChangedCall);
+            ticker.onRollRequestPushed.remove(rollRequestCall);
+            ticker.onSessionEnded.remove(endedCall);
+        }
+        if(rollDialog != null) {
+            rollDialog.dlg.dismiss(); // I'm going to regenerate this next time anyway.
+        }
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
-    // ServiceConnection ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    private AdRequest request() {
+        final AdRequest.Builder maker = new AdRequest.Builder();
+        final String[] arr = getResources().getStringArray(R.array.admob_test_devices);
+        if(arr != null && arr.length > 0) {
+            maker.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+            for (String s : arr) maker.addTestDevice(s);
+        }
+        return maker.build();
+    }
+
+
+
+    @Override
+    public void onBackPressed() { confirmLeaveFinish(); }
+    @Override
+    public boolean onSupportNavigateUp() {
+        confirmLeaveFinish();
+        return false;
+    }
+
+    private void confirmLeaveFinish() {
+        new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                .setTitle(R.string.generic_carefulDlgTitle)
+                .setMessage(R.string.aoa_confirmBackDlgMessage)
+                .setPositiveButton(R.string.aoa_confirmBackDlgPositiveButton, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { ActorOverviewActivity.super.onBackPressed(); }
+                })
+                .show();
+    }
+
+    private RollInitiativeDialog rollDialog;
+    private MessageChannel serverPipe;
+    private RecyclerView.Adapter lister = new MyActorAdapter();
+
+    private class MyActorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        public MyActorAdapter() {
+            setHasStableIds(true);
+        }
+
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            switch (viewType) {
+                case T_ACTOR: return new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
+                    @Override
+                    public void onClick(View v) { }
+                };
+                case T_AWARD: return new ExperienceAwardVH(getLayoutInflater().inflate(R.layout.vh_xp_awarded, parent, false));
+            }
+            return null;
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            Network.ActorState as = null;
+            int xp = 0;
+            for (int key : ticker.playedHere) {
+                final Adventure.ActorWithKnownOrder known = ticker.actors.get(key);
+                if(known != null && known.actor != null) {
+                    if(position == 0) {
+                        as = known.actor;
+                        break;
+                    }
+                    position--;
+                    if(known.xpReceived != 0) {
+                        if(position == 0) {
+                            as = known.actor;
+                            xp = known.xpReceived;
+                            break;
+                        }
+                        position--;
+                    }
+                }
+            }
+            if(as == null) return; // impossible
+            if(holder instanceof AdventuringActorDataVH) {
+                AdventuringActorDataVH real = (AdventuringActorDataVH)holder;
+                real.bindData(as);
+            }
+            if(holder instanceof ExperienceAwardVH) {
+                ExperienceAwardVH real = (ExperienceAwardVH)holder;
+                real.peerKey = as.peerKey;
+                DecimalFormat thousands = new DecimalFormat("###,###,###,###");
+                String value = thousands.format(xp);
+                real.awarded.setText(String.format(getString(R.string.aoa_xpIncrement), value));
+                value = thousands.format(as.experience);
+                real.total.setText(String.format(getString(R.string.aoa_xpTotal), value));
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            if(ticker == null || ticker.playedHere == null) return 0;
+            int count = 0;
+            for (int key : ticker.playedHere) {
+                final Adventure.ActorWithKnownOrder known = ticker.actors.get(key);
+                if(known != null && known.actor != null) {
+                    count++;
+                    if (known.xpReceived != 0) count++;
+                }
+            }
+            return count;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            if(ticker == null || ticker.playedHere == null) return RecyclerView.NO_ID;
+            for (int key : ticker.playedHere) {
+                final Adventure.ActorWithKnownOrder known = ticker.actors.get(key);
+                if(known != null && known.actor != null) {
+                    if (position == 0) return known.actor.peerKey * OPTIONAL_HOLDERS_COUNT;
+                    position--;
+                    if (known.xpReceived != 0) {
+                        if(position == 0) return known.actor.peerKey * OPTIONAL_HOLDERS_COUNT + XP_AWARD_OFFSET;
+                        position--;
+                    }
+                }
+            }
+            return RecyclerView.NO_ID;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if(ticker == null || ticker.playedHere == null) return 0; // impossible
+            for (int key : ticker.playedHere) {
+                final Adventure.ActorWithKnownOrder known = ticker.actors.get(key);
+                if(known != null && known.actor != null) {
+                    if(position == 0) return T_ACTOR;
+                    position--;
+                    if(known.xpReceived != 0) {
+                        if(position == 0) return T_AWARD;
+                        position--;
+                    }
+                }
+            }
+            return 0; // impossible
+        }
+
+        static final int T_ACTOR = 1, T_AWARD = 2;
+        static final int OPTIONAL_HOLDERS_COUNT = 2;
+        static final int XP_AWARD_OFFSET = 1;
+    }
+
+    private static class ExperienceAwardVH  extends RecyclerView.ViewHolder {
+        public static final int UNBOUND = -1;
+        public @ActorId int peerKey = UNBOUND;
+
+        public ExperienceAwardVH(View iv) {
+            super(iv);
+            awarded = (TextView)iv.findViewById(R.id.vhXA_awarded);
+            total = (TextView)iv.findViewById(R.id.vhXA_total);
+        }
+
+        final TextView awarded, total;
+    }
+
+    private class SendRollCallback implements Runnable {
+        @Override
+        public void run() {
+            final Network.Roll ready = ticker.rollRequests.removeFirst();
+            final Network.Roll reply = new Network.Roll();
+            reply.result = ready.result;
+            reply.unique = ready.unique;
+            reply.peerKey = ready.peerKey;
+            ticker.mailman.out.add(new SendRequest(serverPipe, ProtoBufferEnum.ROLL, reply, null));
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            rollDialog.dlg.dismiss();
+            rollDialog = null;
+            ticker.onRollRequestPushed.get().run(); // there might be more rolls pending.
+        }
+    }
+
+    private static final int REQUEST_TURN = 1;
+
+    private static final int CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER = 2;
+
+    public static final int RESULT_GOODBYE = RESULT_FIRST_USER;
+
+    private int updateCall, rollRequestCall, actorChangedCall, endedCall;
+    private InterstitialAd interstitial;
+    private AdView adView;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode != REQUEST_TURN) super.onActivityResult(requestCode, resultCode, data);
+        // Remember .onActivityResult might be called before .onCreate so no internal handle nor callback!
+        // Hopefully this is not called if we're already getting destroyed so RSH is *hopefully* ok.
+        final Adventure ticker = RunningServiceHandles.getInstance().clientPlay;
+        lister.notifyDataSetChanged();
+        if (resultCode == RESULT_OK) {
+            ticker.ticksSinceLastAd++;
+            final int period = ticker.playedHere.length * CLIENT_ONLY_INTERSTITIAL_FREQUENCY_DIVIDER;
+            if (ticker.ticksSinceLastAd >= period && interstitial != null && interstitial.isLoaded()) {
+                ticker.ticksSinceLastAd -= period;
+                interstitial.show();
+            }
+            return;
+        }
+        final Runnable callback = ticker.onCurrentActorChanged.get();
+        if (callback != null) callback.run();
+    }
 }

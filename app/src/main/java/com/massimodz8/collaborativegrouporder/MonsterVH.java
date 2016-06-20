@@ -83,8 +83,8 @@ public class MonsterVH extends RecyclerView.ViewHolder {
 
         if(publisherStrings == null) {
             publisherStrings = new IdentityHashMap<>();
-            publisherStrings.put(MonsterData.Monster.MetaData.P_INVALID, ctx.getString(R.string.sma_dlg_mbi_incoherentPublisherInvalid));
-            publisherStrings.put(MonsterData.Monster.MetaData.P_THIRD_PART_GENERIC, ctx.getString(R.string.sma_dlg_mbi_thirdPartyPublisher));
+            publisherStrings.put(MonsterData.Monster.MetaData.P_INVALID, ctx.getString(R.string.mVH_incoherentPublisherInvalid));
+            publisherStrings.put(MonsterData.Monster.MetaData.P_THIRD_PART_GENERIC, ctx.getString(R.string.mVH_thirdPartyPublisher));
             publisherStrings.put(MonsterData.Monster.MetaData.P_FGG, "(FGG)");
             publisherStrings.put(MonsterData.Monster.MetaData.P_OD, "(OD)");
             publisherStrings.put(MonsterData.Monster.MetaData.P_TO, "(TO)");
@@ -108,7 +108,7 @@ public class MonsterVH extends RecyclerView.ViewHolder {
             maturityStrings.put(MonsterData.Monster.MetaData.DA_GREAT_WYRM, ctx.getString(R.string.mobs_maturity_da_greatWyrm));
             
             maturityStrings.put(MonsterData.Monster.MetaData.EG_SMALL, ctx.getString(R.string.mobs_maturity_eg_small));
-            maturityStrings.put(MonsterData.Monster.MetaData.EG_MEDIUM, ctx.getString(R.string.mobs_maturity_maturity_eg_medium));
+            maturityStrings.put(MonsterData.Monster.MetaData.EG_MEDIUM, ctx.getString(R.string.mobs_maturity_eg_medium));
             maturityStrings.put(MonsterData.Monster.MetaData.EG_LARGE, ctx.getString(R.string.mobs_maturity_eg_large));
             maturityStrings.put(MonsterData.Monster.MetaData.EG_HUGE, ctx.getString(R.string.mobs_maturity_eg_huge));
             maturityStrings.put(MonsterData.Monster.MetaData.EG_GREATER, ctx.getString(R.string.mobs_maturity_eg_greater));
@@ -145,9 +145,8 @@ public class MonsterVH extends RecyclerView.ViewHolder {
             switch(tag.note.type) {
                 case MonsterData.Monster.MetaData.MATURITY: {
                     final int mat = tag.note.maturity;
-                    final int expansion = mat < MonsterData.Monster.MetaData.EG_SMALL? R.string.vhMLE_dragonMaturityNameExpansion : R.string.vhMLE_elementalMaturityNameExpansion;
-                    final String str = maturityStrings.get(mat);
-                    main = String.format(ctx.getString(expansion), main, str);
+                    final int expansion = mat < MonsterData.Monster.MetaData.EG_SMALL? R.string.mVH_dragonMaturityNameExpansion : R.string.mVH_elementalMaturityNameExpansion;
+                    main = String.format(ctx.getString(expansion), main, maturityStrings.get(mat));
                 } break;
                 case MonsterData.Monster.MetaData.ADDITIONAL_SELECTION_INFO: {
                     if(extraNotes == null) extraNotes = new StringBuilder("(");
@@ -185,11 +184,11 @@ public class MonsterVH extends RecyclerView.ViewHolder {
         }
         MaxUtils.setTextUnlessNull(otherNames, concat.length() == 0? null : concat, View.GONE);
         if(data.header.cr.denominator == 1) {
-            final String crInt = ctx.getString(R.string.vhMLE_challangeRatio_integral);
+            final String crInt = ctx.getString(R.string.mVH_challangeRatio_integral);
             cr.setText(String.format(Locale.ENGLISH, crInt, data.header.cr.numerator));  // TODO: how are numbers going here?
         }
         else {
-            final String crFrac = ctx.getString(R.string.vhMLE_challangeRatio_fraction);
+            final String crFrac = ctx.getString(R.string.mVH_challangeRatio_fraction);
             cr.setText(String.format(Locale.ENGLISH, crFrac, data.header.cr.numerator, data.header.cr.denominator)); // TODO: how are numbers going here?
         }
         concat = "";
@@ -197,7 +196,7 @@ public class MonsterVH extends RecyclerView.ViewHolder {
             if(tag.type != MonsterData.Monster.TT_EXTRA_METADATA) continue;
             if(tag.note.type != MonsterData.Monster.MetaData.PUBLISHER) continue;
             String known = publisherStrings.get(tag.note.publisher);
-            if(null == known) known = ctx.getString(R.string.sma_dlg_mbi_incoherentPublisherUnknown);
+            if(null == known) known = ctx.getString(R.string.mVH_incoherentPublisherUnknown);
             concat = known;
             break;
         }
@@ -215,14 +214,14 @@ public class MonsterVH extends RecyclerView.ViewHolder {
             if(result.length() > 0) result.append('\n');
             switch(tag.ctxInit.when) {
                 case MonsterData.Monster.ConditionalInitiative.ACTION_CLIMB: {
-                    String expr = ctx.getString(R.string.vhMLE_badActionClimbToken);
-                    if(tag.ctxInit.params.length != 1) expr = ctx.getString(R.string.vhMLE_badActionClimbParamArray);
-                    else if(tag.ctxInit.params[0] == MonsterData.Monster.ConditionalInitiative.TREE) expr = ctx.getString(R.string.vhMLE_actionClimb_tree);
+                    String expr = ctx.getString(R.string.mVH_badActionClimbToken);
+                    if(tag.ctxInit.params.length != 1) expr = ctx.getString(R.string.mVH_badActionClimbParamArray);
+                    else if(tag.ctxInit.params[0] == MonsterData.Monster.ConditionalInitiative.TREE) expr = ctx.getString(R.string.mVH_actionClimb_tree);
                     // TODO: this is stupid! Just let this be a presentation string!
-                    result.append(String.format(Locale.ENGLISH, ctx.getString(R.string.vhMLE_actionClimbingMessage), tag.ctxInit.init, ctx.getString(R.string.vhMLE_actionClimbing), expr));
+                    result.append(String.format(Locale.ENGLISH, ctx.getString(R.string.mVH_actionClimbingMessage), tag.ctxInit.init, ctx.getString(R.string.mVH_actionClimbing), expr));
                 } break;
                 default:
-                    result.append(ctx.getString(R.string.vhMLE_badConditionalInitiative));
+                    result.append(ctx.getString(R.string.mVH_badConditionalInitiative));
             }
         }
         return result.length() == 0? null : result.toString();
@@ -230,11 +229,11 @@ public class MonsterVH extends RecyclerView.ViewHolder {
 
     private void updatedBattleCount(int count) {
         if(count > 0) {
-            inBattle.setText(String.format(ctx.getString(R.string.vhMLE_spawnCountFeedback), String.valueOf(count)));
+            inBattle.setText(String.format(Locale.getDefault(), ctx.getString(R.string.mVH_spawnCountFeedback), count));
             inBattle.setCompoundDrawables(null, null, battlingIcon, null);
         }
         else {
-            inBattle.setText(R.string.vhMLE_tappedFeedback);
+            inBattle.setText(R.string.mVH_tappedFeedback);
             inBattle.setCompoundDrawables(null, null, null, null);
         }
         if(onSpawnableChanged != null) onSpawnableChanged.run();

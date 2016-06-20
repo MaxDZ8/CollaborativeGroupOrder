@@ -7,17 +7,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.massimodz8.collaborativegrouporder.SelectFormingGroupActivity"
+    tools:context=".client.SelectFormingGroupActivity"
     android:orientation="vertical"
     android:gravity="center_horizontal">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/initializing"
-        android:id="@+id/selectFormingGroupActivity_initializing"
-        android:visibility="visible" />
 
     <TextView
         android:layout_width="match_parent"
@@ -66,7 +58,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/selectFormingGroupActivity_startExplicitConnection"
+        android:text="@string/sfga_startExplicitConnection"
         android:id="@+id/selectFormingGroupActivity_startExplicitConnection"
         android:onClick="startExplicitConnectionActivity_callback"
         android:visibility="gone" />

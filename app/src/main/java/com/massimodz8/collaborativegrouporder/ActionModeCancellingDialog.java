@@ -22,7 +22,7 @@ public abstract class ActionModeCancellingDialog {
 
     protected ActionModeCancellingDialog(@NonNull final AppCompatActivity activity, @NonNull final ActionMode mode, @LayoutRes int layout) {
         this.activity = activity;
-        dialog = new AlertDialog.Builder(activity)
+        dialog = new AlertDialog.Builder(activity, R.style.AppDialogStyle)
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {

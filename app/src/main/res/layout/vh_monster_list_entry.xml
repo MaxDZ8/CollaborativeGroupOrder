@@ -103,7 +103,7 @@
         android:layout_row="6"
         android:layout_column="0"
         android:layout_columnSpan="4"
-        android:text="@string/vhMLE_tappedFeedback"
+        android:text="@string/mVH_tappedFeedback"
         android:drawableRight="@mipmap/ic_start_battle"
         android:layout_gravity="right" />
 </GridLayout>

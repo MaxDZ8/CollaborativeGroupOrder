@@ -19,15 +19,15 @@ public class MyBattleHandler extends Handler {
     public static final int MSG_SHUFFLE_ME = 5;
     public static final int MSG_READIED_ACTION_CONDITION = 6;
 
-    private final WeakReference<PartyJoinOrderService> target;
+    private final WeakReference<PartyJoinOrder> target;
 
-    public MyBattleHandler(PartyJoinOrderService target) {
+    public MyBattleHandler(PartyJoinOrder target) {
         this.target = new WeakReference<>(target);
     }
 
     @Override
     public void handleMessage(Message msg) {
-        final PartyJoinOrderService target = this.target.get();
+        final PartyJoinOrder target = this.target.get();
         final SessionHelper session = target.session;
         switch(msg.what) {
             case MSG_DISCONNECTED: {
@@ -63,7 +63,8 @@ public class MyBattleHandler extends Handler {
                 final PcAssignmentHelper.PlayingDevice dev = target.assignmentHelper.peers.get(owner);
                 if(dev.pipe == null || dev.pipe == real.from) { // if you're the real owner or you were at a certain point and we are out of sync somehow...
                     session.getActorById(session.battleState.currentActor).prepareCondition = real.desc;
-                    if(!target.onActorUpdatedRemote.isEmpty()) target.onActorUpdatedRemote.getFirst().run();
+                    final Runnable runnable = target.onActorUpdatedRemote.get();
+                    if(runnable != null) runnable.run();
                 }
                 break;
             }

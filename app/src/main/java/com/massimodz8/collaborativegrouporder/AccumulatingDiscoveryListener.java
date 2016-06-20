@@ -3,6 +3,8 @@ package com.massimodz8.collaborativegrouporder;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 
+import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -25,7 +27,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
     public static final int STOPPED = 5;
     public static final int STOP_FAILED = 6;
 
-    interface OnTick {
+    public interface OnTick {
         /**  Called every time the state changes. Those are called from a different thread.
          * If the new status reported is START_FAILED or STOPPED then no more
          * notifications will be generated.
@@ -36,7 +38,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
     }
 
     public static class FoundService {
-        final NsdServiceInfo info;
+        final public NsdServiceInfo info;
         public Socket socket; /// very handy to have this here with no fuss added.
 
         public FoundService(NsdServiceInfo info) {
@@ -59,9 +61,28 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
 
     @Override
     public void onServiceFound(NsdServiceInfo serviceInfo) {
-        synchronized (foundServices) {
-            foundServices.add(new FoundService(serviceInfo));
-        }
+        nsd.resolveService(serviceInfo, new NsdManager.ResolveListener() {
+            @Override
+            public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
+                // If we cannot resolve it we cannot connect to it so we're not interested.
+            }
+
+            @Override
+            public void onServiceResolved(NsdServiceInfo res) {
+                synchronized (foundServices) {
+                    final FoundService newly = new FoundService(res);
+                    final InetAddress host = res.getHost();
+                    final int port = res.getPort();
+                    try {
+                        newly.socket = new Socket(host, port);
+                    } catch (IOException e) {
+                        // error connecting? Just drop it!
+                        return;
+                    }
+                    foundServices.add(newly);
+                }
+            }
+        });
     }
 
     @Override
@@ -72,7 +93,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
                 if (foundServices.elementAt(match).info.equals(serviceInfo)) break;
             }
             if (match < foundServices.size())
-                foundServices.remove(match); // impossible to NOT happen
+                foundServices.remove(match); // might happen if we failed to resolve. Unlikely.
         }
     }
 
@@ -85,9 +106,8 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
      * Do not call this when already discovering something. Two calls must always be interleaved
      * by at least one stopDiscovery() call or leads to undefined resuls.
      */
-    void beginDiscovery(String serviceType, NsdManager nsd, OnTick onTick) {
+    public void beginDiscovery(String serviceType, NsdManager nsd, OnTick onTick) {
         this.nsd = nsd;
-        this.serviceType = serviceType;
         status = STARTING;
         callback = onTick;
         checker = new Timer("network publisher status check");
@@ -104,22 +124,20 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
         }, DISCOVERY_PROBE_DELAY, DISCOVERY_PROBE_INTERVAL);
         nsd.discoverServices(serviceType, NsdManager.PROTOCOL_DNS_SD, this);
     }
-    String startAttempted() { return serviceType; }
+
     public void setCallback(OnTick newTarget) { callback = newTarget; }
     public void unregisterCallback() { callback = null; }
-    void stopDiscovery() {
+    public void stopDiscovery() {
         if(nsd != null) {
             unregisterCallback();
             nsd.stopServiceDiscovery(this);
             nsd = null;
-            serviceType = null;
             status = STOPPING;
         }
     }
-    int getDiscoveryStatus() { return status; }
+    public int getDiscoveryStatus() { return status; }
 
     private NsdManager nsd;
-    private String serviceType;
     Timer checker;
     volatile OnTick callback;
 

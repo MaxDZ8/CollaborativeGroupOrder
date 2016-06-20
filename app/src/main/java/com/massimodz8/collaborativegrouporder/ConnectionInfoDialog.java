@@ -11,6 +11,7 @@ import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 /**
@@ -23,7 +24,7 @@ public class ConnectionInfoDialog {
     AppCompatActivity activity;
     int serverPort;
     public ConnectionInfoDialog(AppCompatActivity activity, int serverPort) {
-        diag = new AlertDialog.Builder(activity).create();
+        diag = new AlertDialog.Builder(activity, R.style.AppDialogStyle).create();
         this.activity = activity;
         this.serverPort = serverPort;
     }
@@ -32,7 +33,7 @@ public class ConnectionInfoDialog {
         diag.setContentView(R.layout.dialog_info_explicit_connect);
         final TextView port = (TextView) diag.findViewById(R.id.dlg_iec_port);
         final TextView addr = (TextView) diag.findViewById(R.id.dlg_iec_addresses);
-        port.setText(String.format(activity.getString(R.string.dlg_iec_port), serverPort));
+        port.setText(String.format(activity.getString(R.string.dlgIEC_port), serverPort));
         addr.setText(listAddresses(activity));
         MaxUtils.setVisibility(diag, serverPort == 0? View.GONE : View.VISIBLE,
                 R.id.dlg_iec_addrInstructions,
@@ -49,10 +50,11 @@ public class ConnectionInfoDialog {
         try {
             nics = NetworkInterface.getNetworkInterfaces();
         } catch (SocketException e) {
-            return ctx.getString(R.string.cannotEnumerateNICs);
+            return ctx.getString(R.string.master_cannotEnumerateNICs);
         }
         String hostInfo = "";
         if (nics != null) {
+            ArrayList<String> unique = new ArrayList<>();
             while (nics.hasMoreElements()) {
                 NetworkInterface n = nics.nextElement();
                 Enumeration<InetAddress> addrs = n.getInetAddresses();
@@ -65,13 +67,27 @@ public class ConnectionInfoDialog {
                     if (ipFour == null && a instanceof Inet4Address) ipFour = (Inet4Address) a;
                     if (ipSix == null && a instanceof Inet6Address) ipSix = (Inet6Address) a;
                 }
-                if (ipFour != null)
-                    hostInfo += String.format(ctx.getString(R.string.explicit_address), stripUselessChars(ipFour.toString()));
-                if (ipSix != null)
-                    hostInfo += String.format(ctx.getString(R.string.explicit_address), stripUselessChars(ipSix.toString()));
+                String addr;
+                if(ipFour != null) addr = ipFour.toString();
+                else if(ipSix != null) addr = ipSix.toString();
+                else continue;
+                addr = stripUselessChars(addr);
+                boolean found = false;
+                for (String already : unique) {
+                    if(already.equals(addr)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if(found) continue;
+                unique.add(addr);
+            }
+            for (String str : unique) {
+                if(hostInfo.length() > 0) hostInfo += '\n';
+                hostInfo += str;
             }
         }
-        return hostInfo.substring(0, hostInfo.length() - 1);
+        return hostInfo;
     }
 
     private static String stripUselessChars(String s) {

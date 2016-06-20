@@ -37,6 +37,7 @@ public class Mailman extends Thread {
                 req.error = e;
                 errors.add(req);
             }
+            if(req.onSendAttempted != null) req.onSendAttempted.run();
         }
     }
 
