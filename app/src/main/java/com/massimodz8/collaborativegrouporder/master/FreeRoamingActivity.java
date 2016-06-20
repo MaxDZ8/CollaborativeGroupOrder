@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
@@ -233,7 +231,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         }
         if(game.session.initiatives != null) {
             waiting = new WaitInitiativeDialog(game.session).show(this);
-            waiting.dlg.setOnDismissListener(new CancelRolls());
+            waiting.dlg.setOnCancelListener(new CancelRolls());
         }
         attemptBattleStart();
         lister.notifyDataSetChanged();
@@ -265,12 +263,12 @@ public class FreeRoamingActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        saveSessionStateAndFinish(false);
+        syncSaveAndFinish(false);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        saveSessionStateAndFinish(false);
+        syncSaveAndFinish(false);
         return false;
     }
 
@@ -320,7 +318,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         if(attemptBattleStart()) return;
         if(game.session.initiatives != null) {
             waiting = new WaitInitiativeDialog(game.session).show(this);
-            waiting.dlg.setOnDismissListener(new CancelRolls());
+            waiting.dlg.setOnCancelListener(new CancelRolls());
         }
     }
 
@@ -389,7 +387,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                         break;
                     }
                     case BattleActivity.RESULT_OK_SUSPEND: {
-                        saveSessionStateAndFinish(true);
+                        syncSaveAndFinish(true);
                         break;
                     }
                 }
@@ -401,6 +399,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 game.session.winners = null;
                 game.session.defeated = null;
                 if(resultCode == RESULT_OK) { // ouch! We need to update defs with the new xp, and maybe else... Luckly everything is already in place!
+                    syncDefsToLive();
                     final ArrayList<StartData.PartyOwnerData.Group> allOwned = RunningServiceHandles.getInstance().state.data.groupDefs;
                     new AsyncRenamingStore<StartData.PartyOwnerData>(getFilesDir(),
                             PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
@@ -427,7 +426,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
     }
 
     private boolean saving;
-    private void saveSessionStateAndFinish(boolean confirmed) {
+    private void syncSaveAndFinish(boolean confirmed) {
         if(!confirmed) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setTitle(R.string.generic_carefulDlgTitle)
@@ -435,7 +434,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                     .setPositiveButton(R.string.fra_exitButtonConfirm, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            saveSessionStateAndFinish(true);
+                            syncSaveAndFinish(true);
                         }
                     })
                     .show();
@@ -463,12 +462,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 if(!game.session.willFight(actor.peerKey, null)) save.notFighting[idle++] = actor.peerKey;
             }
         }
-        save.live = new Network.ActorState[game.session.getNumActors()];
-        for(int loop = 0; loop < game.session.getNumActors(); loop++) {
-            save.live[loop] = game.session.getActor(loop);
-            // TODO if my serialization == serialization from byDef canonical object then don't serialize me
-            // TODO so we can start the new session instead of restoring one... but that's the case only if we have no mobs nor other state to restore!
-        }
+        save.live = persist();
         if(game.session.battleState != null) save.fighting = game.session.battleState.asProtoBuf();
         int takes = save.getSerializedSize();
         for(int loop = 0; loop < game.session.getNumActors(); loop++) takes += game.session.getActor(loop).getSerializedSize();
@@ -490,7 +484,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
             if(dev.pipe != null) count++;
         }
         if(game.assignmentHelper.peers.size() > 0) {
-            final LatchingHandler lh = new LatchingHandler(game, count, new Runnable() {
+            final LatchingHandler lh = new LatchingHandler(count, new Runnable() {
                 @Override
                 public void run() {
                     new MyRefreshStore(game, save);
@@ -507,47 +501,71 @@ public class FreeRoamingActivity extends AppCompatActivity {
         new MyRefreshStore(game, save);
     }
 
-    private static class LatchingHandler extends Handler {
-        final Runnable ticker;
-        final PartyJoinOrder game;
-
-        LatchingHandler(PartyJoinOrder game, int expect, @NonNull Runnable latched) {
-            this.game = game;
-            this.expect = expect;
-            this.latched = latched;
-            ticker = new Runnable() {
-                @Override
-                public void run() {
-                    LatchingHandler.this.sendEmptyMessage(LatchingHandler.MSG_INCREMENT);
-                }
-            };
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            if(msg.what != MSG_INCREMENT) return;
-            count++;
-            if(count == expect) {
-                for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
-                    if (dev.pipe != null) try {
-                        dev.pipe.socket.getOutputStream().flush();
-                    } catch (IOException e) {
-                        // just ignore, it was simply convenience
-                    }
-                }
-                try {
-                    Thread.sleep(125); // be reasonably sure we give time to go client as well, stall the mailman for a while
-                } catch (InterruptedException e) {
-                    // again, just convenience
-                }
-                latched.run();
+    /**
+     * This helper function considers the current live actors and puts everything it can in the
+     * 'definition' state. At this point the two representations are 'the same'. It then considers
+     * extra state and figures out what needs to be serialized as live actors and what not.
+     * Actors 'by definitions' don't need to be defined as live actors if they have no extra state.
+     * @return A valid 'live' array, possibly empty.
+     */
+    private @NonNull Network.ActorState[] persist() {
+        syncDefsToLive();
+        final StartData.ActorDefinition[] playing = game.getPartyOwnerData().party;
+        final StartData.ActorDefinition[] npcs = game.getPartyOwnerData().npcs;
+        // Now data is sync'd we can try to guess what needs to go in 'live' and what not.
+        final ArrayList<Network.ActorState> complex = new ArrayList<>(game.session.getNumActors());
+        byte[] storea = new byte[256];
+        byte[] storeb = new byte[256];
+        for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+            final Network.ActorState actor = game.session.getActor(loop);
+            if (actor.peerKey >= playing.length + npcs.length) { // if not by def, sure it needs to be live
+                complex.add(actor);
+                continue;
             }
+            // Defined characters are omitted if possible: this is mostly a requirement than everything else,
+            // if there are no effects to persist, the session ends, otherwise it must carry on.
+            // This is quite complicated and not pretty at all!
+            final StartData.ActorDefinition original;
+            if (actor.peerKey < playing.length) original = playing[actor.peerKey];
+            else original = npcs[actor.peerKey - playing.length];
+            final Network.ActorState reference = MaxUtils.makeActorState(original, actor.peerKey, actor.type);
+            final int a = reference.getSerializedSize();
+            final int b = actor.getSerializedSize();
+            if(a == b) { // a chance they are the same
+                if(a > storea.length) storea = new byte[a];
+                if(b > storeb.length) storeb = new byte[b];
+                if(Arrays.equals(serialize(reference, storea), serialize(actor, storeb))) continue;
+            }
+            complex.add(actor);
         }
+        final Network.ActorState[] live = new Network.ActorState[complex.size()];
+        int dst = 0;
+        for (Network.ActorState el : complex) live[dst++] = el;
+        return live;
+    }
 
-        private int count;
-        private final int expect;
-        private final Runnable latched;
-        private static final int MSG_INCREMENT = 1;
+    private static byte[] serialize(Network.ActorState obj, byte[] storage) {
+        final CodedOutputByteBufferNano mangler = CodedOutputByteBufferNano.newInstance(storage);
+        try {
+            obj.writeTo(mangler);
+        } catch (IOException e) {
+            // I don't think that's possible with this construction.
+        }
+        return storage;
+    }
+
+    private void syncDefsToLive() {
+        // Let's put in definitions everything we can. Currently: experience points.
+        final StartData.ActorDefinition[] playing = game.getPartyOwnerData().party;
+        final StartData.ActorDefinition[] npcs = game.getPartyOwnerData().npcs;
+        for(int loop = 0; loop < game.session.getNumActors(); loop++) {
+            final Network.ActorState current = game.session.getActor(loop);
+            StartData.ActorDefinition actor = null;
+            if(current.peerKey < playing.length) actor = playing[current.peerKey];
+            else if(current.peerKey - playing.length < npcs.length) actor = npcs[current.peerKey - playing.length];
+            if(actor == null || actor.experience == current.experience) continue;
+            actor.experience = current.experience;
+        }
     }
 
     private class MyRefreshStore extends AsyncRenamingStore<Session.Suspended> {
@@ -573,9 +591,9 @@ public class FreeRoamingActivity extends AppCompatActivity {
         }
     }
 
-    private class CancelRolls implements DialogInterface.OnDismissListener {
+    private class CancelRolls implements DialogInterface.OnCancelListener {
         @Override
-        public void onDismiss(DialogInterface dialog) {
+        public void onCancel(DialogInterface dialog) {
             game.session.initiatives = null;
             waiting = null;
             Network.TurnControl msg = new Network.TurnControl();
@@ -585,6 +603,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg, null));
             }
             refresh();
+
         }
     }
 }
