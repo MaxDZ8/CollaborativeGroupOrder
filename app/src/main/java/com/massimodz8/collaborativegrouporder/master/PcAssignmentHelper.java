@@ -344,11 +344,12 @@ public abstract class PcAssignmentHelper {
             initial[loop] = new Network.CharacterOwnership();
             initial[loop].ticket = nextValidRequest;
             initial[loop].type = Network.CharacterOwnership.BOUND;
+            initial[loop].character = bound.get(loop);
         }
         mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, initial, null));
     }
 
-    private Network.PlayingCharacterDefinition simplify(StartData.ActorDefinition actor, int loop) {
+    private Network.PlayingCharacterDefinition simplify(StartData.ActorDefinition actor, @ActorId int id) {
         Network.PlayingCharacterDefinition res = new Network.PlayingCharacterDefinition();
         StartData.ActorStatistics currently = actor.stats[0];
         res.name = actor.name;
@@ -356,7 +357,7 @@ public abstract class PcAssignmentHelper {
         res.healthPoints = currently.healthPoints;
         res.experience = actor.experience;
         res.level = actor.level;
-        res.peerKey = loop;
+        res.peerKey = id;
         return res;
     }
 
@@ -365,14 +366,9 @@ public abstract class PcAssignmentHelper {
         if(requester == null) return; // impossible
         final int ticket = payload.ticket;
         payload.ticket = nextValidRequest;
-        if(ticket != nextValidRequest) {
-            payload.type = Network.CharacterOwnership.OBSOLETE;
+        if(ticket != nextValidRequest || payload.character >= party.party.length) {
+            payload.type = ticket != nextValidRequest? Network.CharacterOwnership.OBSOLETE : Network.CharacterOwnership.REJECTED;
             if(requester.pipe != null)  mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
-            return;
-        }
-        if(payload.character >= party.party.length) { // requester asked chars before providing key.
-            payload.type = Network.CharacterOwnership.REJECTED;
-            if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
             return;
         }
         Integer currKeyIndex = assignment.get(payload.character);
@@ -394,7 +390,7 @@ public abstract class PcAssignmentHelper {
             sendAvailability(type, payload.character, origin, nextValidRequest);
             if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
             if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
-            if(onBoundPc != null && currKeyIndex == null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
+            if(onBoundPc != null) onBoundPc.onUnboundCountChanged(getNumUnboundedPcs());
             return;
         }
         // Serious shit. We have a collision. In a first implementation I spawned a dialog message asking the master to choose

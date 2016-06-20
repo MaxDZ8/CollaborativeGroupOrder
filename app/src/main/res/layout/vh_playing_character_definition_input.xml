@@ -20,10 +20,10 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:nextFocusDown="@+id/vhPCDI_tilLevel"
-            android:nextFocusForward="@+id/vhPCDI_tilLevel"
-            android:nextFocusLeft="@+id/vhPCDI_tilLevel"
-            android:nextFocusRight="@+id/vhPCDI_tilLevel">
+            android:nextFocusDown="@+id/vhPCDI_level"
+            android:nextFocusForward="@+id/vhPCDI_level"
+            android:nextFocusLeft="@+id/vhPCDI_level"
+            android:nextFocusRight="@+id/vhPCDI_level">
 
             <EditText
                 android:id="@+id/vhPCDI_name"
@@ -51,10 +51,10 @@
             android:layout_below="@+id/vhPCDI_middle"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:nextFocusDown="@+id/vhPCDI_tilMaxHealth"
-            android:nextFocusForward="@+id/vhPCDI_tilInitiative"
-            android:nextFocusRight="@+id/vhPCDI_tilInitiative"
-            android:nextFocusUp="@+id/vhPCDI_tilName">
+            android:nextFocusDown="@+id/vhPCDI_maxHealth"
+            android:nextFocusForward="@+id/vhPCDI_initiative"
+            android:nextFocusRight="@+id/vhPCDI_initiative"
+            android:nextFocusUp="@+id/vhPCDI_name">
 
             <EditText
                 android:id="@+id/vhPCDI_level"
@@ -76,10 +76,10 @@
             android:layout_toRightOf="@+id/vhPCDI_middle"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:nextFocusDown="@+id/vhPCDI_tilExperience"
-            android:nextFocusUp="@+id/vhPCDI_tilName"
-            android:nextFocusForward="@+id/vhPCDI_tilMaxHealth"
-            android:nextFocusLeft="@+id/vhPCDI_tilLevel">
+            android:nextFocusDown="@+id/vhPCDI_experience"
+            android:nextFocusUp="@+id/vhPCDI_name"
+            android:nextFocusForward="@+id/vhPCDI_maxHealth"
+            android:nextFocusLeft="@+id/vhPCDI_level">
 
             <EditText
                 android:id="@+id/vhPCDI_initiative"
@@ -102,9 +102,9 @@
             android:layout_alignParentStart="true"
             android:layout_alignRight="@+id/vhPCDI_tilLevel"
             android:layout_alignEnd="@+id/vhPCDI_tilLevel"
-            android:nextFocusUp="@+id/vhPCDI_tilLevel"
-            android:nextFocusForward="@+id/vhPCDI_tilExperience"
-            android:nextFocusRight="@+id/vhPCDI_tilExperience">
+            android:nextFocusUp="@+id/vhPCDI_level"
+            android:nextFocusForward="@+id/vhPCDI_experience"
+            android:nextFocusRight="@+id/vhPCDI_experience">
 
             <EditText
                 android:id="@+id/vhPCDI_health"
@@ -127,8 +127,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignLeft="@+id/vhPCDI_tilInitiative"
             android:layout_alignStart="@+id/vhPCDI_tilInitiative"
-            android:nextFocusUp="@+id/vhPCDI_tilInitiative"
-            android:nextFocusLeft="@+id/vhPCDI_tilMaxHealth">
+            android:nextFocusUp="@+id/vhPCDI_initiative"
+            android:nextFocusLeft="@+id/vhPCDI_maxHealth">
             <EditText
                 android:id="@+id/vhPCDI_experience"
                 android:layout_width="match_parent"

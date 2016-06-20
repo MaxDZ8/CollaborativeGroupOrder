@@ -32,7 +32,7 @@ public abstract class PartyDefinitionHelper {
     final public String name;
     public ArrayList<DeviceStatus> clients = new ArrayList<>();
     public Pumper netPump;
-    public ArrayList<BuildingPlayingCharacter> localChars = new ArrayList<>();
+    public final ArrayList<BuildingPlayingCharacter> localChars = new ArrayList<>();
 
     public PartyDefinitionHelper(String name) {
         this.name = name;
@@ -438,6 +438,13 @@ public abstract class PartyDefinitionHelper {
                     if (charsApprovalAdapter != null) charsApprovalAdapter.notifyDataSetChanged();
                     sendApproval(dev.source, pc.peerKey, pc.status);
                 }
+                return true;
+            }
+        }
+        for (BuildingPlayingCharacter el : localChars) {
+            if(el.unique == unique) {
+                localChars.remove(el);
+                return true;
             }
         }
         return false;
@@ -466,6 +473,9 @@ public abstract class PartyDefinitionHelper {
                 if(pc.unique != unique) continue;
                 return pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED;
             }
+        }
+        for (BuildingPlayingCharacter el : localChars) {
+            if(el.unique == unique) return true;
         }
         return false;
     }

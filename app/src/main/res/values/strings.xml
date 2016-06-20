@@ -14,6 +14,7 @@
     <string name="generic_mustBeAtLeast1">Must >0</string>
     <string name="generic_mustBeAtLeast0">Must be ≥0</string>
     <string name="generic_discard">Discard</string>
+    <string name="generic_initError">Initialization error</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
     <string name="master_failedPublish">Could not publish party to wi-fi. Your friends can still connect but only using explicit connections.</string>
@@ -73,7 +74,8 @@
 
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
-    <string name="dataLoadUpdate_newGroupSaved_msg">Data successfully saved to internal storage. Do you want to go adventuring right away?</string>
+    <string name="dataLoadUpdate_newGroupSaved_msg">Party saved to internal storage. Do you want to go adventuring right away?</string>
+    <string name="dataLoadUpdate_newEmptyGroupSaved_msg">Empty party  saved to internal storage. We\'re going back to main menu now.</string>
     <string name="dataLoadUpdate_finished_newDataSaved_mainMenu">Main menu</string>
     <string name="dataLoadUpdate_finished_newDataSaved_partyPick">Party pick</string>
     <string name="dataLoadUpdate_couldNotStoreNewData">Could not store new party data. Error: %1$s</string>
@@ -125,12 +127,13 @@
     <string name="mma_menu_oglShort" translatable="false">OGL</string>
     <string name="mma_customMonstersButton">Custom monsters…</string>
     <string name="mma_preparedBattlesButton">Prepared battles…</string>
-    <string name="mma_dirStructDlgInitError_title">Initialization error</string>
-    <string name="mma_dirStructDlgInitError_message">Program directory structure is incoherent. It is suggested you get support for manual repair. If you continue the program will not work and further damage your data.</string>
-    <string name="mma_dirStructDlgNegContinue">Proceed at my own risk</string>
     <string name="mma_endedSessionByebye">Master ended session, see you next time!</string>
     <string name="mma_menu_aboutShort">About</string>
     <string name="mma_notificationDesc">Adventuring</string>
+    <string name="mma_badDataLoadMsg">Inconsistent data detected. Proceeding will only make the problem worse. Please report this and maybe we\'ll be able to recover your data.</string>
+    <string name="mma_emptyHint_1">Empty party data.</string>
+    <string name="mma_emptyHint_2">Master? Try\n%1$s</string>
+    <string name="mma_emptyHint_3">Player? Try\n%1$s</string>
 
     <string name="npdsa_title">Device selection</string>
     <string name="npdsa_badParty_title">Bad party name</string>
@@ -222,10 +225,13 @@
     <string name="ppa_lastSavedInconsistent">Inconsistent data!</string>
     <string name="ppa_actorDeleted">\"%1$s\" deleted.</string>
     <string name="ppa_deviceDeleted">\"%1$s\" removed.</string>
+    <string name="ppa_charCount_zero">Empty party.</string>
     <string name="ppa_charCount_singular">A lone adventurer</string>
     <string name="ppa_charCount_plural">%1$d playing characters</string>
     <string name="ppa_charLevel_same">Level %1$d</string>
     <string name="ppa_charLevel_different">Levels %1$d - %2$d</string>
+    <string name="ppa_noDevicesInParty">No devices in party. Nobody would be able to play so I\'m doing nothing.\nAdd at least one device.</string>
+    <string name="ppa_noCharactersInParty">No playing characters in party. There\'s no way to make a game so I\'m doing nothing.\nAdd at least one playing character.</string>
 
     <string name="ga_title">Gathering heroes</string>
     <string name="ga_identifiedDevices">Identified devices</string>
@@ -280,7 +286,7 @@
     <string name="vhCSAS_assigned">Assigned to this device</string>
     <string name="vhCSAS_assignedInstructions">You can swipe those away to give up a character. They will not be deleted.</string>
     <string name="vhCSAS_available">Available</string>
-    <string name="vhCSAS_request">Tap to request the master to assign those to you.</string>
+    <string name="vhCSAS_request">Tap to request to play here.</string>
 
     <string name="vhCSPHC_imageDesc">Character image</string>
 
@@ -584,7 +590,7 @@
     <string name="mobs_align_asCreator">as creator</string>
 
     <string name="ba_title">Fight!</string>
-    <string name="ba_initialInstructions">Actors with no ✔ will skip round.\nUse this for surprise rounds!</string>
+    <string name="ba_initialInstructions">Actors without tick will skip round.\nUse this for surprise rounds!</string>
     <string name="ba_roundNumber">Round %1$d</string>
     <string name="ba_dlg_gotPreparedAction">%1$s has a readied action. You can renew the prepared action or discard it.</string>
     <string name="ba_dlg_gotPreparedAction_renew">Renew prepared action and go next</string>
@@ -631,6 +637,7 @@
     <string name="aoa_confirmBackDlgPositiveButton">Quit game</string>
     <string name="aoa_xpIncrement">Awarded +%1$s XPs</string>
     <string name="aoa_xpTotal">%1$s total XPs</string>
+    <string name="aoa_battleCancelled">Battle cancelled.</string>
 
     <string name="rid_done">Confirm</string>
     <string name="rid_instructionsAndModifier">Roll dice and enter result.\nModifier (%1$s) applied automatically.</string>
@@ -805,5 +812,7 @@
     <string name="cardPDS_moreInfo">Those devices have a key to join game.\nNeed to add a device? Hit the menu ︙</string>
 
     <string name="vhPMD_iconDesc">Device icon</string>
+    <string name="iss_existsButNoDir">\"%1$s\" exists but it\'s not a directory.</string>
+    <string name="iss_cannotCreateDir">Cannot create \"%1$s\" directory.</string>
 
 </resources>

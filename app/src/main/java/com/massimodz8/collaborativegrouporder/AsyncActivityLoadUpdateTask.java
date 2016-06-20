@@ -15,7 +15,7 @@ import java.util.ArrayList;
  */
 public abstract class AsyncActivityLoadUpdateTask<Container extends MessageNano> extends AsyncLoadUpdateTask<Container> {
     public static abstract class ActivityCallbacks implements Callbacks {
-        final Activity owner;
+        final protected Activity owner;
 
         public ActivityCallbacks(Activity owner) {
             this.owner = owner;

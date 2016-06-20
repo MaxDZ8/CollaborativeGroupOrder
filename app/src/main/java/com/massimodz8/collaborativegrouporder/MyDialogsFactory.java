@@ -4,8 +4,6 @@ import android.content.Context;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 
-import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
-
 /**
  * Created by Massimo on 27/05/2016.
  * There are a few dialogs around and I want to unify them in both use and appearance.

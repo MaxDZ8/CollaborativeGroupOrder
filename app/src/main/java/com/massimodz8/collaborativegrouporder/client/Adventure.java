@@ -1,17 +1,12 @@
 package com.massimodz8.collaborativegrouporder.client;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.Binder;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.Mailman;
 import com.massimodz8.collaborativegrouporder.PseudoStack;
-import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.PumpTarget;
@@ -32,7 +27,7 @@ import java.util.Map;
  * our playing characters assigned and we're roaming our dream land.
  * We will eventually also fight but that's not much of a big deal for the client.
  */
-public class AdventuringService extends Service {
+public class Adventure {
     public StartData.PartyClientData party;
     @ActorId  int[] playedHere; // actors played here, added automatically to this.actors after flushed
     public HashMap<Integer, ActorWithKnownOrder> actors = new HashMap<>(); // ID -> struct, flushed every time a new battle starts
@@ -44,7 +39,7 @@ public class AdventuringService extends Service {
     public PseudoStack<Runnable> onSessionEnded = new PseudoStack<>();
 
     public @ActorId int currentActor = -1; // -1 = no current known actor
-    ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
+    final ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
     public int round = ROUND_NOT_FIGHTING; // 0 = waiting other players roll 1+ fighting
     public final Mailman mailman = new Mailman();
     public MessageChannel pipe;
@@ -70,27 +65,7 @@ public class AdventuringService extends Service {
         public int xpReceived;
     }
 
-    public AdventuringService() { }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        mailman.start();
-        return super.onStartCommand(intent, flags, startId);
-    }
-
-    @Override
-    public void onDestroy() {
-        mailman.out.add(new SendRequest());
-    }
-
-    public class LocalBinder extends Binder {
-        public AdventuringService getConcreteService() { return AdventuringService.this; }
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return new LocalBinder(); // this is called once by the OS when first bind is received.
-    }
+    public Adventure() { mailman.start(); }
 
     private Handler handler = new MyHandler(this);
     Pumper netPump = new Pumper(handler, MSG_DISCONNECT, MSG_DETACH)
@@ -150,16 +125,16 @@ public class AdventuringService extends Service {
     private static final int MSG_SESSION_ENDED = 6;
 
     private static class MyHandler extends Handler {
-        final WeakReference<AdventuringService> self;
+        final WeakReference<Adventure> self;
 
-        private MyHandler(AdventuringService self) {
+        private MyHandler(Adventure self) {
             this.self = new WeakReference<>(self);
         }
 
         @Override
         public void handleMessage(Message msg) {
             // This network architecture is shitty. It must go.
-            final AdventuringService self = this.self.get();
+            final Adventure self = this.self.get();
             switch(msg.what) {
                 case MSG_DISCONNECT:
                     // TODO Where to signal?
@@ -215,6 +190,7 @@ public class AdventuringService extends Service {
                 case MSG_TURN_CONTROL: {
                     final Network.TurnControl real = (Network.TurnControl) msg.obj;
                     if(real.type == Network.TurnControl.T_BATTLE_ENDED) { // clear list of actors, easier to just rebuild it.
+                        self.rollRequests.clear(); // this can happen if a battle start is cancelled.
                         self.round = ROUND_NOT_FIGHTING;
                         ArrayList<ActorWithKnownOrder> reuse = new ArrayList<>();
                         for (int key : self.playedHere) {

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
+import com.massimodz8.collaborativegrouporder.InternalStateService;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MonsterVH;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
@@ -28,6 +29,7 @@ import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -40,10 +42,11 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class SpawnMonsterActivity extends AppCompatActivity {
+    private @UserOf PartyJoinOrder game;
+    private @UserOf InternalStateService.Data data;
+
     public static boolean includePreparedBattles = true;
     public static ArrayList<Network.ActorState> found;
-    public static MonsterData.MonsterBook monsters, custom;
-    public static PreparedEncounters.Collection preppedBattles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,8 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        game = RunningServiceHandles.getInstance().play;
+        data = RunningServiceHandles.getInstance().state.data; // this should be no trouble but comes handy
 
         // Get the intent, verify the action and get the query
         Intent intent = getIntent();
@@ -81,7 +86,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
             protected Void doInBackground(Void... params) {
                 final IdentityHashMap<String, String> tolower = new IdentityHashMap<>();
                 if(includePreparedBattles) {
-                    for (PreparedEncounters.Battle battle : preppedBattles.battles) {
+                    for (PreparedEncounters.Battle battle : data.customBattles.battles) {
                         String lc = battle.desc.toLowerCase();
                         if(lc.startsWith(lcq)) {
                             MatchedEntry build = new MatchedEntry();
@@ -90,7 +95,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
 
                         }
                     }
-                    for (PreparedEncounters.Battle battle : preppedBattles.battles) {
+                    for (PreparedEncounters.Battle battle : data.customBattles.battles) {
                         String lc = battle.desc.toLowerCase();
                         if(lc.indexOf(lcq) >= 1) {
                             MatchedEntry build = new MatchedEntry();
@@ -99,12 +104,12 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                         }
                     }
                 }
-                lowerify(tolower, monsters);
-                lowerify(tolower, custom);
-                matchStarting(tolower, custom);
-                matchStarting(tolower, monsters);
-                matchContaining(tolower, custom);
-                matchContaining(tolower, monsters);
+                lowerify(tolower, data.monsters);
+                lowerify(tolower, data.customMonsters);
+                matchStarting(tolower, data.customMonsters);
+                matchStarting(tolower, data.monsters);
+                matchContaining(tolower, data.customMonsters);
+                matchContaining(tolower, data.monsters);
                 return null;
             }
 
@@ -203,7 +208,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
     }
 
     private ArrayList<String> mobNames(Pattern simplifier) {
-        SessionHelper session = RunningServiceHandles.getInstance().play.session;
+        SessionHelper session = game.session;
         int count = 0;
         for (Network.ActorState as : session.temporaries) {
             if(as.type != Network.ActorState.T_MOB) continue;
@@ -269,7 +274,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
             case R.id.sma_menu_showMonsterBookInfo: {
                 final ArrayList<MonsterData.Monster> flat = new ArrayList<>();
                 final ArrayList<String[]> names = new ArrayList<>();
-                for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+                for (MonsterData.MonsterBook.Entry entry : data.monsters.entries) {
                     final MonsterData.Monster main = entry.main;
                     flat.add(main);
                     names.add(main.header.name);
@@ -286,9 +291,9 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 final TextView created = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_created);
                 final TextView entries = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_entries);
                 final TextView count = (TextView) dlg.findViewById(R.id.sma_dlg_smbi_monstersCount);
-                final String when = DateFormat.getDateInstance().format(new Date(monsters.created.seconds * 1000));
+                final String when = DateFormat.getDateInstance().format(new Date(data.monsters.created.seconds * 1000));
                 created.setText(when);
-                entries.setText(String.valueOf(monsters.entries.length));
+                entries.setText(String.valueOf(data.monsters.entries.length));
                 count.setText(String.valueOf(la.getItemCount()));
                 break;
             }
@@ -373,13 +378,13 @@ public class SpawnMonsterActivity extends AppCompatActivity {
      * @return mob name[0] if monster is a parent, otherwise parent.name[0]
      */
     private String getPreferredName(MonsterData.Monster mob) {
-        for (MonsterData.MonsterBook.Entry entry : monsters.entries) {
+        for (MonsterData.MonsterBook.Entry entry : data.monsters.entries) {
             if(mob == entry.main) return entry.main.header.name[0];
             for (MonsterData.Monster inner : entry.variations) {
                 if(mob == inner) return entry.main.header.name[0];
             }
         }
-        for (MonsterData.MonsterBook.Entry entry : custom.entries) {
+        for (MonsterData.MonsterBook.Entry entry : data.monsters.entries) {
             if(mob == entry.main) return entry.main.header.name[0];
             for (MonsterData.Monster inner : entry.variations) {
                 if(mob == inner) return entry.main.header.name[0];

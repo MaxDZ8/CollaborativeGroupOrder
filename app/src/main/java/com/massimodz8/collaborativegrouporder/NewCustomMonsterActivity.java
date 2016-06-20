@@ -16,12 +16,14 @@ import android.widget.EditText;
 
 import com.massimodz8.collaborativegrouporder.master.AwardExperienceActivity;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
 public class NewCustomMonsterActivity extends AppCompatActivity {
+    private @UserOf MonsterData.MonsterBook cmobs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,31 +32,39 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final android.support.v7.app.ActionBar sab = getSupportActionBar();
-        if(sab != null) sab.setDisplayHomeAsUpEnabled(true);
+        if (sab != null) sab.setDisplayHomeAsUpEnabled(true);
+        cmobs = RunningServiceHandles.getInstance().state.data.customMonsters;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         refresh();
     }
 
     @Override
-    protected void onDestroy() {
-        if(!isChangingConfigurations()) {
-            xpAward = null;
-            size = null;
-            type = null;
-            race = null;
-            if(alignFlags != null) Arrays.fill(alignFlags, false);
-            if(tagFlags != null) Arrays.fill(tagFlags, false);
-        }
-        super.onDestroy();
-    }
-
-    @Override
     public void onBackPressed() {
-        if(saving == null) super.onBackPressed();
+        if(saving == null) {
+            reset();
+            super.onBackPressed();
+        }
     }
 
     @Override
     public boolean onSupportNavigateUp() { // takes a second anyway.
+        if(saving == null) {
+            reset();
+        }
         return saving == null && super.onSupportNavigateUp();
+    }
+
+    private void reset() {
+        xpAward = null;
+        size = null;
+        type = null;
+        race = null;
+        if(alignFlags != null) Arrays.fill(alignFlags, false);
+        if(tagFlags != null) Arrays.fill(tagFlags, false);
     }
 
     @Override
@@ -166,11 +176,11 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
                 // Our new mob is ready. Kinda. Now let's add it to the book and start a save!
                 MonsterData.MonsterBook.Entry parent = new MonsterData.MonsterBook.Entry();
                 parent.main = mob;
-                final MonsterData.MonsterBook.Entry[] longer = Arrays.copyOf(CustomMonstersActivity.custom.entries, CustomMonstersActivity.custom.entries.length + 1);
-                longer[CustomMonstersActivity.custom.entries.length] = parent;
-                CustomMonstersActivity.custom.entries = longer;
+                final MonsterData.MonsterBook.Entry[] longer = Arrays.copyOf(cmobs.entries, cmobs.entries.length + 1);
+                longer[cmobs.entries.length] = parent;
+                cmobs.entries = longer;
                 saveAction.setEnabled(false);
-                saving = new AsyncRenamingStore<MonsterData.MonsterBook>(getFilesDir(), PersistentDataUtils.USER_CUSTOM_DATA_SUBDIR, PersistentDataUtils.CUSTOM_MOBS_FILE_NAME, CustomMonstersActivity.custom) {
+                saving = new AsyncRenamingStore<MonsterData.MonsterBook>(getFilesDir(), PersistentDataUtils.USER_CUSTOM_DATA_SUBDIR, PersistentDataUtils.CUSTOM_MOBS_FILE_NAME, cmobs) {
                     @Override
                     protected String getString(@StringRes int res) {
                         return NewCustomMonsterActivity.this.getString(res);
@@ -178,6 +188,7 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
 
                     @Override
                     protected void onPostExecute(Exception e) {
+                        reset();
                         setResult(RESULT_OK);
                         finish();
                     }

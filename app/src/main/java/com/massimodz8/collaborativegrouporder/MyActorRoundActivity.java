@@ -16,17 +16,20 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.client.AdventuringService;
+import com.massimodz8.collaborativegrouporder.client.Adventure;
 import com.massimodz8.collaborativegrouporder.master.BattleHelper;
-import com.massimodz8.collaborativegrouporder.master.PartyJoinOrderService;
+import com.massimodz8.collaborativegrouporder.master.PartyJoinOrder;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.Locale;
 
 public class MyActorRoundActivity extends AppCompatActivity {
     public static final String EXTRA_SUPPRESS_VIBRATION = "com.massimodz8.collaborativegrouporder.MyActorRoundActivity.EXTRA_SUPPRESS_VIBRATION";
     public static final String EXTRA_CLIENT_MODE = "com.massimodz8.collaborativegrouporder.MyActorRoundActivity.EXTRA_CLIENT_MODE";
+    private @UserOf Adventure client;
+    private @UserOf PartyJoinOrder server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +38,18 @@ public class MyActorRoundActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
-        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        client = RunningServiceHandles.getInstance().clientPlay;
+        server = RunningServiceHandles.getInstance().play;
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         final Network.ActorState actor;
         final int round;
         final String nextActor;
         if(getIntent().getBooleanExtra(EXTRA_CLIENT_MODE, false)) {
-            final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
             actorChangedCall = client.onCurrentActorChanged.put(new Runnable() {
                 @Override
                 public void run() {
@@ -66,7 +74,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
             nextActor = null;
         }
         else {
-            final PartyJoinOrderService server = RunningServiceHandles.getInstance().play;
             BattleHelper battle  = server.session.battleState;
             int curid = battle.currentActor;
             actor = server.session.getActorById(server.session.lastActivated);
@@ -85,11 +92,10 @@ public class MyActorRoundActivity extends AppCompatActivity {
         };
         helper.bindData(actor);
         holder.setVisibility(View.VISIBLE);
+        if(client != null) helper.actorShortType.setVisibility(View.GONE);
         helper.prepared.setEnabled(false);
         ((TextView) findViewById(R.id.mara_round)).setText(String.format(Locale.getDefault(), getString(R.string.mara_round), round));
         MaxUtils.setTextUnlessNull((TextView) findViewById(R.id.mara_nextActorName), nextActor, View.GONE);
-
-        if(savedInstanceState != null) return; // when regenerated, probably because of user rotating device, no need to gain more attention.
 
         if(!getIntent().getBooleanExtra(EXTRA_SUPPRESS_VIBRATION, false)) {
             // We cheat and give out notifications right away. By the time the user reacts we'll have
@@ -110,19 +116,17 @@ public class MyActorRoundActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
+    protected void onPause() {
         if(client != null) {
             client.onCurrentActorChanged.remove(actorChangedCall);
             client.onSessionEnded.remove(endedCall);
         }
         if(!isChangingConfigurations()) getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        super.onDestroy();
+        super.onPause();
     }
 
     @Override
     public void onBackPressed() {
-        final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
         if(client == null) {
             super.onBackPressed();
             return;
@@ -139,7 +143,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
         if(client == null) return super.onSupportNavigateUp();
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.generic_nopeDlgTitle)
@@ -173,8 +176,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
             case R.id.mara_menu_shuffle: {
                 final int myIndex;
                 final Network.ActorState[] order;
-                final PartyJoinOrderService server = RunningServiceHandles.getInstance().play;
-                final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
                 if(server == null && client == null) {
                     // Now I use singletons I don't need to connect to the service so this is impossible.
                     // But the static analyzer does not know. Make it happy.
@@ -197,7 +198,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
                     break;
                 }
                 else {
-                    AdventuringService.ActorWithKnownOrder current = client.actors.get(client.currentActor);
+                    Adventure.ActorWithKnownOrder current = client.actors.get(client.currentActor);
                     if(current == null || current.keyOrder == null) break; // impossible if we are here!
                     order = new Network.ActorState[current.keyOrder.length];
                     int dst = 0;
@@ -250,9 +251,8 @@ public class MyActorRoundActivity extends AppCompatActivity {
     }
 
     private void turnDone() {
-        final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
         if(client != null) {
-            AdventuringService.ActorWithKnownOrder current = client.actors.get(client.currentActor);
+            Adventure.ActorWithKnownOrder current = client.actors.get(client.currentActor);
             if(current == null) return; // impossible
             if(current.actor.preparedTriggered) {
                 current.actor.prepareCondition = "";
@@ -270,8 +270,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
 
     /// Called from the 'wait' dialog to request to shuffle my actor somewhere else.
     private void requestNewOrder(int newPos) {
-        final PartyJoinOrderService server = RunningServiceHandles.getInstance().play;
-        final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
         if(server == null && client == null) return; // impossible
         if(server != null) {
             if(server.session.battleState.moveCurrentToSlot(newPos, false)) {
@@ -292,8 +290,6 @@ public class MyActorRoundActivity extends AppCompatActivity {
 
 
     private void requestReadiedAction(String s) {
-        final PartyJoinOrderService server = RunningServiceHandles.getInstance().play;
-        final AdventuringService client = RunningServiceHandles.getInstance().clientPlay;
         if(client == null && server == null) return; // unlikely
         if(server != null) {
             BattleHelper battle  = server.session.battleState;
@@ -307,7 +303,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
         send.peerKey = client.currentActor;
         send.prepareCondition = s;
         client.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, send, null));
-        AdventuringService.ActorWithKnownOrder current = client.actors.get(client.currentActor);
+        Adventure.ActorWithKnownOrder current = client.actors.get(client.currentActor);
         if(current == null) return; // impossible
         current.actor.prepareCondition = s;
     }

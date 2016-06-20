@@ -1,13 +1,10 @@
 package com.massimodz8.collaborativegrouporder;
 
-import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.DataSetObserver;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,12 +32,12 @@ import com.google.protobuf.nano.MessageNano;
 import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity;
 import com.massimodz8.collaborativegrouporder.master.NewPartyDeviceSelectionActivity;
-import com.massimodz8.collaborativegrouporder.master.PartyCreationService;
+import com.massimodz8.collaborativegrouporder.master.PartyCreator;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,6 +46,7 @@ import java.util.IdentityHashMap;
 
 
 public class PartyPickActivity extends AppCompatActivity {
+    private @UserOf PartyPicker helper;
     private ViewPager pager;
     private RecyclerView partyList;
     private RecyclerView.Adapter listAll = new MyPartyListAdapter();
@@ -68,7 +66,7 @@ public class PartyPickActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pick_party);
-        pager = (ViewPager)findViewById(R.id.ppa_pager);
+        pager = (ViewPager) findViewById(R.id.ppa_pager);
         partyList = (RecyclerView) findViewById(R.id.ppa_list);
         partyList.setLayoutManager(new LinearLayoutManager(this));
         partyList.setAdapter(listAll);
@@ -77,9 +75,9 @@ public class PartyPickActivity extends AppCompatActivity {
             @Override
             protected boolean isEligible(int position) {
                 // Problem here: positions are stable, but not all of those are to be shown, so...
-                if(position == 0) return false; // separator
-                if(denseDefs.size() > 0) position--;
-                if(position < denseDefs.size()) return position != 0;
+                if (position == 0) return false; // separator
+                if (denseDefs.size() > 0) position--;
+                if (position < denseDefs.size()) return position != 0;
                 position -= denseDefs.size();
                 return position > 1;
             }
@@ -87,10 +85,15 @@ public class PartyPickActivity extends AppCompatActivity {
         final ItemTouchHelper swiper = new ItemTouchHelper(new MyItemTouchCallback());
         partyList.addItemDecoration(swiper);
         swiper.attachToRecyclerView(partyList);
+        helper = RunningServiceHandles.getInstance().pick;
+    }
 
-        final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        denseDefs.clear();
+        denseKeys.clear();
         helper.getDense(denseDefs, denseKeys, false);
-
         helper.onSessionDataLoaded = new Runnable() {
             @Override
             public void run() {
@@ -120,28 +123,27 @@ public class PartyPickActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
-        if(helper != null) helper.onSessionDataLoaded = null;
-        super.onDestroy();
+    protected void onPause() {
+        super.onPause();
+        helper.onSessionDataLoaded = null;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        RunningServiceHandles handles = RunningServiceHandles.getInstance();
+        handles.state.baseNotification();
         if(requestCode != REQUEST_ADD_STUFF) {
             super.onActivityResult(requestCode, resultCode, data);
             return;
         }
-        StartData.PartyOwnerData.Group party = null;
-        if(seconn != null) {  // maybe the activity has been destroyed in the meanwhile and then we won't have the view anywore
-            party = seconn.adding;
-            RecyclerView rv = seconn.lister.get();
+        if(activeParty != null) {  // maybe the activity has been destroyed in the meanwhile and then we won't have the view anywore
+            RecyclerView rv = ownedFragments.get(activeParty).actorList;
             if (rv != null) rv.getAdapter().notifyDataSetChanged();
         }
-        seconn = null;
-        stopService(new Intent(this, PartyCreationService.class));
+        handles.create.shutdown();
+        handles.create = null;
         boolean goAdventuring = data != null && data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
-        if(goAdventuring && party != null) new SelectionListener(this, party).onClick(null);
+        if(goAdventuring && activeParty != null) new SelectionListener(this, activeParty).onClick(null);
     }
 
     @Override
@@ -159,7 +161,6 @@ public class PartyPickActivity extends AppCompatActivity {
             case R.id.ppa_menu_restoreDeleted: {
                 final ArrayList<StartData.PartyOwnerData.Group> hiddenDefs = new ArrayList<>();
                 final ArrayList<StartData.PartyClientData.Group> hiddenKeys = new ArrayList<>();
-                final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
                 helper.getDense(hiddenDefs, hiddenKeys, true);
                 ListAdapter la = new ListAdapter() {
                     @Override
@@ -235,7 +236,7 @@ public class PartyPickActivity extends AppCompatActivity {
                     public void onInputCompleted(BuildingPlayingCharacter pc) {
                         modPending = true;
                         StartData.ActorDefinition[] longer = Arrays.copyOf(activeParty.party, activeParty.party.length + 1);
-                        longer[activeParty.party.length] = PartyCreationService.from(pc);
+                        longer[activeParty.party.length] = PartyCreator.from(pc);
                         activeParty.party = longer;
                         pending = new MyAsyncRenamingStore<>(PartyPickActivity.this, getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
                                 PersistentDataUtils.makePartyOwnerData(denseDefs),
@@ -249,19 +250,12 @@ public class PartyPickActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.ppa_menu_addDevice: {
-                final Intent intent = new Intent(this, PartyCreationService.class);
-                startService(intent);
-                OwnedPartyFragment curFrag = ownedFragments.get(activeParty);
-                seconn = new MyAddDevicesServiceConnection(activeParty, curFrag != null? curFrag.actorList : null);
-                if(!bindService(intent, seconn, 0)) {
-                    seconn = null;
-                    stopService(intent);
-                    new AlertDialog.Builder(this)
-                            .setMessage(R.string.master_cannotBindPartyService)
-                            .setIcon(R.drawable.ic_error_white_24dp)
-                            .show();
-                    return true;
-                }
+                PartyCreator creator = new PartyCreator(this);
+                RunningServiceHandles.getInstance().create = creator;
+                creator.generatedParty = activeParty;
+                creator.mode = PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING;
+                startActivityForResult(new Intent(PartyPickActivity.this, NewPartyDeviceSelectionActivity.class), REQUEST_ADD_STUFF);
+                return true;
             }
         }
         return super.onOptionsItemSelected(item);
@@ -311,7 +305,6 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int position) {
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
             if(denseDefs.size() > 0) {
                 if(0 == position) return 0;
                 position--;
@@ -407,7 +400,6 @@ public class PartyPickActivity extends AppCompatActivity {
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
             final MessageNano party;
             final String name;
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
             if (viewHolder instanceof OwnedPartyHolder) {
                 OwnedPartyHolder real = (OwnedPartyHolder) viewHolder;
                 party = real.group;
@@ -506,18 +498,23 @@ public class PartyPickActivity extends AppCompatActivity {
             group = denseDefs.get(position);
             if(group == null) return; // impossible by construction
             name.setText(group.name);
-            String str = getString(group.party.length == 1? R.string.ppa_charCount_singular : R.string.ppa_charCount_plural);
-            if(group.party.length > 1) str = String.format(str, group.party.length);
+            String str;
+            if(group.party.length == 0) str = getString(R.string.ppa_charCount_zero);
+            else if(group.party.length == 1) str = getString(R.string.ppa_charCount_singular);
+            else str = String.format(getString(R.string.ppa_charCount_plural), group.party.length);
             pgCount.setText(str);
-            int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
-            for (StartData.ActorDefinition actor : group.party) {
-                min = Math.min(min, actor.level);
-                max = Math.max(max, actor.level);
+            if (group.party.length == 0) level.setVisibility(View.GONE);
+            else {
+                int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+                for (StartData.ActorDefinition actor : group.party) {
+                    min = Math.min(min, actor.level);
+                    max = Math.max(max, actor.level);
+                }
+                if (min == max) str = String.format(getString(R.string.ppa_charLevel_same), min);
+                else str = String.format(getString(R.string.ppa_charLevel_different), max, min);
+                level.setText(str);
+                level.setVisibility(View.VISIBLE);
             }
-            if(min == max) str = String.format(getString(R.string.ppa_charLevel_same), min);
-            else str = String.format(getString(R.string.ppa_charLevel_different), max, min);
-            level.setText(str);
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
             if(helper == null || helper.sessionData == null) lastPlay.setVisibility(View.GONE);
             else {
                 Session.Suspended structs = helper.sessionData.get(group);
@@ -560,7 +557,6 @@ public class PartyPickActivity extends AppCompatActivity {
             group = denseKeys.get(position);
             if(group == null) return; // impossible by construction
             name.setText(group.name);
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
             if(helper == null || helper.sessionData == null) date.setVisibility(View.GONE);
             else {
                 Session.Suspended structs = helper.sessionData.get(group);
@@ -620,7 +616,7 @@ public class PartyPickActivity extends AppCompatActivity {
         }
 
         @StringRes int sessionButton(MessageNano party, boolean owned) {
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            final PartyPicker helper = ((PartyPickActivity)getActivity()).helper;
             if(helper == null || helper.sessionData == null)
                 return owned? R.string.ppa_ownedDetails_newSession : R.string.ppa_joinedDetails_newSession;
             Session.Suspended structs = helper.sessionData.get(party);
@@ -633,7 +629,7 @@ public class PartyPickActivity extends AppCompatActivity {
 
         protected void note(MessageNano party, @IdRes int view, View container) {
             String got = null;
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            final PartyPicker helper = ((PartyPickActivity)getActivity()).helper;
             if(helper != null && helper.sessionData != null) {
                 Session.Suspended structs = helper.sessionData.get(party);
                 if (structs != null && !structs.note.isEmpty()) got = structs.note;
@@ -643,13 +639,13 @@ public class PartyPickActivity extends AppCompatActivity {
 
         protected void state(MessageNano party, @IdRes int view, View container) {
             String got = null;
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            final PartyPicker helper = ((PartyPickActivity)getActivity()).helper;
             if(helper != null && helper.sessionData != null) {
                 Session.Suspended structs = helper.sessionData.get(party);
                 if(structs != null) {
                     PartyPickActivity target = (PartyPickActivity)getActivity();
                     if (structs.fighting != null) got = target.getString(R.string.ppa_status_battle);
-                    else if (structs.live != null) got = target.getString(R.string.ppa_status_adventure);
+                    else if (structs.live.length != 0) got = target.getString(R.string.ppa_status_adventure);
                     else got = target.getString(R.string.ppa_status_asDefined);
                 }
             }
@@ -658,7 +654,7 @@ public class PartyPickActivity extends AppCompatActivity {
 
         protected String lastPlayed(MessageNano party, TextView view) {
             String got = null;
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            final PartyPicker helper = ((PartyPickActivity)getActivity()).helper;
             if(helper != null && helper.sessionData != null) {
                 Session.Suspended structs = helper.sessionData.get(party);
                 if(structs != null) {
@@ -683,7 +679,7 @@ public class PartyPickActivity extends AppCompatActivity {
             final PartyPickActivity target = (PartyPickActivity)getActivity();
             if(getIndex() < 0 || getIndex() >= target.denseDefs.size()) return layout;
 
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            final PartyPicker helper = ((PartyPickActivity)getActivity()).helper;
             final StartData.PartyOwnerData.Group party = helper.getOwned(getIndex());
             target.ownedFragments.put(party, this);
             ((TextView)layout.findViewById(R.id.fragPPAOD_partyName)).setText(party.name);
@@ -761,7 +757,7 @@ public class PartyPickActivity extends AppCompatActivity {
                                         else {
                                             ArrayList<StartData.PartyOwnerData.Group> owned = new ArrayList<>();
                                             ArrayList<StartData.PartyClientData.Group> joined = new ArrayList<>();
-                                            RunningServiceHandles.getInstance().pick.getDense(owned, joined, false);
+                                            ((PartyPickActivity)getActivity()).helper.getDense(owned, joined, false);
                                             target.pending = new MyAsyncRenamingStore<>(target, target.getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME,
                                                     PersistentDataUtils.makePartyOwnerData(owned), null, null);
                                         }
@@ -797,7 +793,7 @@ public class PartyPickActivity extends AppCompatActivity {
             final PartyPickActivity target = (PartyPickActivity) getActivity();
             if(getIndex() < 0 || getIndex() >= target.denseKeys.size()) return layout;
 
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+            final PartyPicker helper = ((PartyPickActivity)getActivity()).helper;
             final StartData.PartyClientData.Group party = helper.getJoined(getIndex());
             ((TextView)layout.findViewById(R.id.fragPPAJD_partyName)).setText(party.name);
             MaxUtils.setTextUnlessNull((TextView) layout.findViewById(R.id.fragPPAJD_lastPlayedPcs), target.listLastPlayedPcs(party), View.GONE);
@@ -840,9 +836,24 @@ public class PartyPickActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
-            if(owned != null) helper.sessionParty = owned;
-            else helper.sessionParty = joined;
+            if(owned != null) {
+                if(owned.devices.length == 0) {
+                    new AlertDialog.Builder(target, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_warning_white_24px)
+                            .setMessage(target.getString(R.string.ppa_noDevicesInParty))
+                            .show();
+                    return;
+                }
+                if(owned.party.length == 0) {
+                    new AlertDialog.Builder(target, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_warning_white_24px)
+                            .setMessage(target.getString(R.string.ppa_noCharactersInParty))
+                            .show();
+                    return;
+                }
+                target.helper.sessionParty = owned;
+            }
+            else target.helper.sessionParty = joined;
             target.setResult(RESULT_OK);
             target.finish();
         }
@@ -913,7 +924,7 @@ public class PartyPickActivity extends AppCompatActivity {
     private void restoreDeleted(int hiddenPos) {
         ArrayList<StartData.PartyOwnerData.Group> owned = new ArrayList<>();
         ArrayList<StartData.PartyClientData.Group> joined = new ArrayList<>();
-        final PartyPickingService helper = RunningServiceHandles.getInstance().pick;
+        final PartyPicker helper = RunningServiceHandles.getInstance().pick;
         helper.getDense(owned, joined, true);
         MessageNano match;
         if(hiddenPos < owned.size()) match = owned.get(hiddenPos);
@@ -940,29 +951,6 @@ public class PartyPickActivity extends AppCompatActivity {
         }
     }
 
-    private class MyAddDevicesServiceConnection implements ServiceConnection {
-        public final StartData.PartyOwnerData.Group adding;
-        public final WeakReference<RecyclerView> lister;
-
-        public MyAddDevicesServiceConnection(StartData.PartyOwnerData.Group adding, RecyclerView lister) {
-            this.adding = adding;
-            this.lister = new WeakReference<>(lister);
-        }
-
-        @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                PartyCreationService real = ((PartyCreationService.LocalBinder) service).getConcreteService();
-                RunningServiceHandles.getInstance().create = real;
-                unbindService(this);
-                real.generatedParty = adding;
-                real.mode = PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING;
-                startActivityForResult(new Intent(PartyPickActivity.this, NewPartyDeviceSelectionActivity.class), REQUEST_ADD_STUFF);
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) { }
-    }
-
 
     private DateFormat local = DateFormat.getDateInstance(DateFormat.MEDIUM);
     private String getNiceDate(Timestamp ts) {
@@ -970,6 +958,5 @@ public class PartyPickActivity extends AppCompatActivity {
     }
 
     private final IdentityHashMap<StartData.PartyOwnerData.Group, OwnedPartyFragment> ownedFragments = new IdentityHashMap<>();
-    private MyAddDevicesServiceConnection seconn;
     private static final int REQUEST_ADD_STUFF = 159;
 }

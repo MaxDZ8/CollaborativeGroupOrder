@@ -13,11 +13,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.IdentityHashMap;
 
 public class CustomMonstersActivity extends AppCompatActivity {
-    public static MonsterData.MonsterBook custom;
+    private @UserOf MonsterData.MonsterBook custom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,7 @@ public class CustomMonstersActivity extends AppCompatActivity {
         final android.support.v7.app.ActionBar sab = getSupportActionBar();
         if(sab != null) sab.setDisplayHomeAsUpEnabled(true);
 
+        custom = RunningServiceHandles.getInstance().state.data.customMonsters;
         for (MonsterData.MonsterBook.Entry el : custom.entries) {
             ids.put(el.main, nextId++);
             for (MonsterData.Monster inner : el.variations) ids.put(inner, nextId++);

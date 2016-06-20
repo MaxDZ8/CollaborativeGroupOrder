@@ -25,39 +25,23 @@ import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.ArrayList;
 
 public class NewCharactersApprovalActivity extends AppCompatActivity {
     public static final String RESULT_ACTION = "com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity.RESULT";
     public static final String RESULT_EXTRA_GO_ADVENTURING = "com.massimodz8.collaborativegrouporder.master.NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING";
+    private @UserOf PartyCreator room;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_characters_approval);
 
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
-
+        room = RunningServiceHandles.getInstance().create;
         RecyclerView groupList = (RecyclerView) findViewById(R.id.ncaa_list);
         groupList.setLayoutManager(new LinearLayoutManager(this));
-        groupList.setAdapter(room.building.setNewCharsApprovalAdapter(new PartyDefinitionHelper.CharsApprovalHolderFactoryBinder<PcApprovalVh>() {
-            @Override
-            public PcApprovalVh createUnbound(ViewGroup parent, int viewType) {
-                return new PcApprovalVh(getLayoutInflater().inflate(R.layout.vh_character_approval, parent, false));
-            }
-
-            @Override
-            public void bind(@NonNull PcApprovalVh vh, @NonNull BuildingPlayingCharacter proposal) {
-                vh.name.setText(proposal.name);
-                vh.hp.setText(String.valueOf(proposal.fullHealth));
-                vh.initBonus.setText(String.valueOf(proposal.initiativeBonus));
-                vh.xp.setText(String.valueOf(proposal.experience));
-                vh.level.setText(String.valueOf(proposal.level));
-                vh.unique = proposal.unique;
-                vh.accepted.setVisibility(proposal.status == BuildingPlayingCharacter.STATUS_ACCEPTED? View.VISIBLE : View.GONE);
-            }
-        }));
         groupList.addItemDecoration(new PreSeparatorDecorator(groupList, this) {
             @Override
             protected boolean isEligible(int position) {
@@ -70,13 +54,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 if(viewHolder instanceof PcApprovalVh) {
                     PcApprovalVh real = (PcApprovalVh) viewHolder;
                     room.reject(real.unique);
-                    int count = 0;
-                    for (PartyDefinitionHelper.DeviceStatus dev : room.building.clients) {
-                        if(dev.kicked || !dev.groupMember) continue;
-                        for (BuildingPlayingCharacter pc : dev.chars) {
-                            if(pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED) count++;
-                        }
-                    }
                 }
             }
 
@@ -94,18 +71,41 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 return true;
             }
         };
+
         MaxUtils.beginDelayedTransition(this);
         TextView status = (TextView) findViewById(R.id.ncaa_status);
         status.setText(R.string.ncaa_definingPCs);
     }
 
     @Override
-    protected void onDestroy() {
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
+    protected void onResume() {
+        super.onResume();
+        RecyclerView groupList = (RecyclerView) findViewById(R.id.ncaa_list);
+        groupList.setAdapter(room.building.setNewCharsApprovalAdapter(new PartyDefinitionHelper.CharsApprovalHolderFactoryBinder<PcApprovalVh>() {
+            @Override
+            public PcApprovalVh createUnbound(ViewGroup parent, int viewType) {
+                return new PcApprovalVh(getLayoutInflater().inflate(R.layout.vh_character_approval, parent, false));
+            }
+
+            @Override
+            public void bind(@NonNull PcApprovalVh vh, @NonNull BuildingPlayingCharacter proposal) {
+                vh.name.setText(proposal.name);
+                vh.hp.setText(String.valueOf(proposal.fullHealth));
+                vh.initBonus.setText(String.valueOf(proposal.initiativeBonus));
+                vh.xp.setText(String.valueOf(proposal.experience));
+                vh.level.setText(String.valueOf(proposal.level));
+                vh.unique = proposal.unique;
+                vh.accepted.setVisibility(proposal.status == BuildingPlayingCharacter.STATUS_ACCEPTED? View.VISIBLE : View.GONE);
+            }
+        }));
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
         if(room != null) {
             if(room.building != null) room.building.setNewCharsApprovalAdapter(null);
         }
-        super.onDestroy();
     }
 
     @Override
@@ -115,8 +115,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        final PartyCreationService room = RunningServiceHandles.getInstance().create;
+    public boolean onOptionsItemSelected(final MenuItem item) {
         switch(item.getItemId()) {
             case R.id.ncaa_menu_save: {
                 new AlertDialog.Builder(this, R.style.AppDialogStyle)
@@ -129,7 +128,8 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                                 final TextView status = (TextView) findViewById(R.id.ncaa_status);
                                 status.setText(R.string.ncaa_savingPleaseWait);
                                 findViewById(R.id.ncaa_list).setEnabled(false);
-                                final AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> temp = room.saveParty(NewCharactersApprovalActivity.this, new StoreDoneCallbacks());
+                                item.setEnabled(false);
+                                final AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> temp = room.saveParty(NewCharactersApprovalActivity.this, new StoreDoneCallbacks(item));
                                 temp.execute();
                                 saving = temp;
                             }
@@ -140,8 +140,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
                     @Override
                     public void onInputCompleted(BuildingPlayingCharacter pc) {
-                        final PartyCreationService create = RunningServiceHandles.getInstance().create;
-                        create.building.defineLocalCharacter(pc);
+                        room.building.defineLocalCharacter(pc);
                     }
                 });
                 break;
@@ -168,54 +167,77 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     AsyncTask saving, sending;
 
     private class StoreDoneCallbacks extends AsyncActivityLoadUpdateTask.ActivityCallbacks {
-        public StoreDoneCallbacks() {
+        public StoreDoneCallbacks(MenuItem item) {
             super(NewCharactersApprovalActivity.this);
+            target = item;
         }
+
+        private final MenuItem target;
 
         @Override
         public void onFailedExistingLoad(@NonNull ArrayList<String> errors) {
             saving = null;
+            target.setEnabled(true);
             super.onFailedExistingLoad(errors);
         }
 
         @Override
         public void onFailedSave(@NonNull Exception wrong) {
             saving = null;
+            target.setEnabled(true);
             super.onFailedSave(wrong);
         }
 
         @Override
         public void onCompletedSuccessfully() {
             saving = null;
-            final PartyCreationService room = RunningServiceHandles.getInstance().create;
+            target.setEnabled(true);
             int negative;
-            if(room.mode != PartyCreationService.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
-                room.defs.add(room.generatedParty);
+            if(room.mode != PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
+                ArrayList<StartData.PartyOwnerData.Group> defs = RunningServiceHandles.getInstance().state.data.groupDefs;
+                defs.add(room.generatedParty);
                 room.generatedStat = new Session.Suspended();
                 negative = R.string.dataLoadUpdate_finished_newDataSaved_mainMenu;
             }
             else negative = R.string.dataLoadUpdate_finished_newDataSaved_partyPick;
-            new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
-                    .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
-                    .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.ncaa_newDataSaved_done, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(true, new SendCompleteCallback(true));
-                            sending = temp;
-                            temp.execute();
-                        }
-                    })
-                    .setNegativeButton(negative, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(false, new SendCompleteCallback(false));
-                            sending = temp;
-                            temp.execute();
-                        }
-                    })
-                    .show();
+            if(room.generatedParty.party.length != 0 && room.generatedParty.devices.length != 0) {
+                new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
+                        .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
+                        .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.ncaa_newDataSaved_done, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(true, new SendCompleteCallback(true));
+                                sending = temp;
+                                temp.execute();
+                            }
+                        })
+                        .setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(false, new SendCompleteCallback(false));
+                                sending = temp;
+                                temp.execute();
+                            }
+                        })
+                        .show();
+            }
+            else {
+                new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
+                        .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
+                        .setMessage(R.string.dataLoadUpdate_newEmptyGroupSaved_msg)
+                        .setCancelable(false)
+                        .setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(false, new SendCompleteCallback(false));
+                                sending = temp;
+                                temp.execute();
+                            }
+                        })
+                        .show();
+            }
         }
     }
 
@@ -254,7 +276,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            final PartyCreationService room = RunningServiceHandles.getInstance().create;
             room.approve(unique);
             MaxUtils.beginDelayedTransition(NewCharactersApprovalActivity.this);
             accepted.setVisibility(View.VISIBLE);

@@ -91,7 +91,7 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
         who.experience = xp;
         who.fullHealth = hp;
         who.initiativeBonus = init;
-        who.name = name.getEditText().getText().toString();
+        who.name = name.getEditText().getText().toString().trim();
         who.level = lvl;
         return true;
     }

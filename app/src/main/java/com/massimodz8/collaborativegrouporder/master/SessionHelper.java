@@ -3,9 +3,7 @@ package com.massimodz8.collaborativegrouporder.master;
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.networkio.Events;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
-import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
-import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 
 import java.util.ArrayDeque;
@@ -31,11 +29,10 @@ public abstract class SessionHelper {
     abstract public void turnDone(MessageChannel from, int peerKey);
     public abstract void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot);
 
+    public boolean restoreNotified; // true if session restore has been notified to user
 
     public final Session.Suspended stats;
     public final ArrayList<Network.ActorState> existByDef;
-    public final MonsterData.MonsterBook monsters, customMobs;
-    public final PreparedEncounters.Collection customBattles;
     public BattleHelper battleState;
     public ArrayDeque<Events.Roll> rollResults = new ArrayDeque<>(); // this is to be used even before battle starts.
     /**
@@ -71,12 +68,9 @@ public abstract class SessionHelper {
     }
 
 
-    SessionHelper(Session.Suspended stats, ArrayList<Network.ActorState> existByDef, MonsterData.MonsterBook monsters, MonsterData.MonsterBook customMobs, PreparedEncounters.Collection customBattles) {
+    SessionHelper(Session.Suspended stats, ArrayList<Network.ActorState> existByDef) {
         this.stats = stats;
         this.existByDef = existByDef;
-        this.monsters = monsters;
-        this.customMobs = customMobs;
-        this.customBattles = customBattles;
     }
 
     static class DefeatedData {

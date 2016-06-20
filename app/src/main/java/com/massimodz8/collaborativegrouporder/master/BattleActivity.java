@@ -28,11 +28,14 @@ import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.ArrayDeque;
 import java.util.Locale;
 
 public class BattleActivity extends AppCompatActivity {
+    private @UserOf PartyJoinOrder game;
+
     @Override
     public void onBackPressed() {
         backDialog();
@@ -45,7 +48,6 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     private void backDialog() {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
         final SessionHelper session = game.session;
         final Network.TurnControl msg = new Network.TurnControl();
         msg.type = Network.TurnControl.T_BATTLE_ENDED;
@@ -89,10 +91,16 @@ public class BattleActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
-        if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
-
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
+        final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);
+        rv.setAdapter(lister);
+        game = RunningServiceHandles.getInstance().play;
         lister.playState = game.session;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         final BattleHelper battle = game.session.battleState;
         if(battle == null) {
             // this happens on devices with 'destroy activities' option
@@ -103,7 +111,6 @@ public class BattleActivity extends AppCompatActivity {
         }
         lister.notifyDataSetChanged();
         final RecyclerView rv = (RecyclerView) findViewById(R.id.ba_orderedList);
-        rv.setAdapter(lister);
         rv.addItemDecoration(new PreSeparatorDecorator(rv, this) {
             @Override
             protected boolean isEligible(int position) {
@@ -128,6 +135,7 @@ public class BattleActivity extends AppCompatActivity {
             }
         });
         if(battle.round > 0) { // battle already started...
+            MaxUtils.setVisibility(this, View.GONE, R.id.fab, R.id.ba_hint);
             findViewById(R.id.fab).setVisibility(View.GONE);
             final TextView status = (TextView) findViewById(R.id.ba_roundCount);
             status.setText(String.format(Locale.getDefault(), getString(R.string.ba_roundNumber), battle.round));
@@ -138,12 +146,12 @@ public class BattleActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
                 final BattleHelper battle = game.session.battleState;
                 battle.round = 0;
                 battle.currentActor = battle.ordered[battle.ordered.length - 1].actorID;
 
                 fab.setVisibility(View.GONE);
+                findViewById(R.id.ba_hint).setVisibility(View.GONE);
                 MaxUtils.beginDelayedTransition(BattleActivity.this);
                 final TextView status = (TextView) findViewById(R.id.ba_roundCount);
                 status.setText(String.format(Locale.getDefault(), getString(R.string.ba_roundNumber), battle.round));
@@ -154,7 +162,6 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     private AdventuringActorWithControlsAdapter lister = new AdventuringActorWithControlsAdapter() {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
         @Override
         public AdventuringActorControlsVH onCreateViewHolder(ViewGroup parent, int viewType) {
             final AdventuringActorControlsVH result = new AdventuringActorControlsVH(BattleActivity.this.getLayoutInflater().inflate(R.layout.vh_adventuring_actor_controls, parent, false)) {
@@ -235,7 +242,6 @@ public class BattleActivity extends AppCompatActivity {
         public void onClick(View v) {
             if (target.actor == null || target.actor.prepareCondition == null)
                 return; // impossible by context
-            final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
             final BattleHelper battle = game.session.battleState;
             if (battle.interrupted == null) battle.interrupted = new ArrayDeque<>();
             battle.interrupted.push(battle.currentActor);
@@ -267,20 +273,21 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+    protected void onPause() {
         if(game != null) {
             game.onTurnCompletedRemote.remove(turnCallback);
             game.onActorShuffledRemote.remove(shuffleCallback);
             game.onActorUpdatedRemote.remove(updatedCallback);
         }
-        super.onDestroy();
+        super.onPause();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        SessionHelper session = RunningServiceHandles.getInstance().play.session;
+        // In this case using RSH is fine as for sure we're not getting destroyed... hopefully!
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
+        SessionHelper session = game.session;
         if(session.battleState == null) {
             finish();
             return;
@@ -316,7 +323,6 @@ public class BattleActivity extends AppCompatActivity {
                                 setResult(RESULT_OK_AWARD);
                                 Network.TurnControl msg = new Network.TurnControl();
                                 msg.type = Network.TurnControl.T_BATTLE_ENDED;
-                                final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
                                 for (PcAssignmentHelper.PlayingDevice client : game.assignmentHelper.peers) {
                                     if(client.pipe == null) continue;
                                     game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg, null));
@@ -335,7 +341,8 @@ public class BattleActivity extends AppCompatActivity {
     static final int RESULT_OK_SUSPEND = RESULT_OK_AWARD + 1;
 
     private void actionCompleted(boolean advance) {
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
+        // Might be called from .onActivityResult, be careful! Hope to use RSH
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         final BattleHelper battle = game.session.battleState;
         int previous = advance? battle.actorCompleted(true) : battle.currentActor;
         if(battle.prevWasReadied) {
@@ -402,7 +409,6 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     private void activateNewActorLocal() {        // If played here open detail screen. Otherwise, send your-turn message.
-        final PartyJoinOrderService game = RunningServiceHandles.getInstance().play;
         int active = game.session.battleState.currentActor;
         if(active < game.assignmentHelper.assignment.size()) {
             Integer own = game.assignmentHelper.assignment.get(active);

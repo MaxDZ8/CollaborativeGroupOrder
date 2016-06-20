@@ -19,15 +19,15 @@ public class MyBattleHandler extends Handler {
     public static final int MSG_SHUFFLE_ME = 5;
     public static final int MSG_READIED_ACTION_CONDITION = 6;
 
-    private final WeakReference<PartyJoinOrderService> target;
+    private final WeakReference<PartyJoinOrder> target;
 
-    public MyBattleHandler(PartyJoinOrderService target) {
+    public MyBattleHandler(PartyJoinOrder target) {
         this.target = new WeakReference<>(target);
     }
 
     @Override
     public void handleMessage(Message msg) {
-        final PartyJoinOrderService target = this.target.get();
+        final PartyJoinOrder target = this.target.get();
         final SessionHelper session = target.session;
         switch(msg.what) {
             case MSG_DISCONNECTED: {
