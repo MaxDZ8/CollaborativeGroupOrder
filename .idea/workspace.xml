@@ -233,6 +233,7 @@
   <component name="AndroidLogFilters">
     <option name="TOOL_WINDOW_LOG_LEVEL" value="WARN" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
+    <option name="TOOL_WINDOW_REGEXP_FILTER" value="false" />
     <option name="LOGCAT_FORMAT_STRING" value="%2$s %4$c/%5$s: %6$s" />
   </component>
   <component name="ChangeListManager">
@@ -240,14 +241,14 @@
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/Massimo.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/generated/source/r/debug/android/support/v7/appcompat/R.java" afterPath="$PROJECT_DIR$/app/build/generated/source/r/debug/android/support/v7/appcompat/R.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/generated/source/r/debug/com/massimodz8/collaborativegrouporder/R.java" afterPath="$PROJECT_DIR$/app/build/generated/source/r/debug/com/massimodz8/collaborativegrouporder/R.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/intermediates/symbols/debug/R.txt" afterPath="$PROJECT_DIR$/app/build/intermediates/symbols/debug/R.txt" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/support_v4_23_1_1.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/generated/source/r/debug/com/massimodz8/collaborativegrouporder/R.java" afterPath="$PROJECT_DIR$/app/build/generated/source/r/debug/com/massimodz8/collaborativegrouporder/R.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/build/generated/source/r/debug/android/support/v7/appcompat/R.java" afterPath="$PROJECT_DIR$/app/build/generated/source/r/debug/android/support/v7/appcompat/R.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CreatePartyActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CreatePartyActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" afterPath="$PROJECT_DIR$/.idea/libraries/appcompat_v7_23_1_1.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
     </list>
     <ignored path="CollaborativeGroupOrder.iws" />
@@ -291,104 +292,7 @@
     <favorites_list name="CollaborativeGroupOrder" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="MainMenuActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MainMenuActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="267" column="34" selection-start-line="267" selection-start-column="34" selection-end-line="267" selection-end-column="34" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ActorOverviewActivity.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/ActorOverviewActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.61290324">
-              <caret line="72" column="31" selection-start-line="72" selection-start-column="31" selection-end-line="72" selection-end-column="31" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="RunningServiceHandles.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/RunningServiceHandles.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="34" column="17" selection-start-line="34" selection-start-column="17" selection-end-line="34" selection-end-column="17" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="JoinGame.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/JoinGame.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="310" column="0" selection-start-line="310" selection-start-column="0" selection-end-line="310" selection-end-column="0" />
-              <folding>
-                <element signature="e#2038#2449#0" expanded="true" />
-                <element signature="e#2448#2449#0" expanded="true" />
-                <element signature="e#4580#4581#0" expanded="true" />
-                <element signature="e#4624#4625#0" expanded="true" />
-                <element signature="e#10915#11381#0" expanded="true" />
-                <element signature="e#11380#11381#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="JoinSessionActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/JoinSessionActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="111" column="45" selection-start-line="111" selection-start-column="45" selection-end-line="111" selection-end-column="45" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#2295#2416#0" expanded="true" />
-                <element signature="e#2415#2416#0" expanded="true" />
-                <element signature="e#2987#3025#0" expanded="true" />
-                <element signature="e#3226#3248#0" expanded="true" />
-                <element signature="e#3404#3446#0" expanded="true" />
-                <element signature="e#4240#4271#0" expanded="true" />
-                <element signature="e#4538#4584#0" expanded="true" />
-                <element signature="e#4638#4671#0" expanded="true" />
-                <element signature="e#4673#4941#0" expanded="true" />
-                <element signature="e#4940#4941#0" expanded="true" />
-                <element signature="e#4984#5225#0" expanded="true" />
-                <element signature="e#5224#5225#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="content_join_session.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_join_session.xml">
-          <provider editor-type-id="android-designer">
-            <state />
-          </provider>
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SendRequest.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/SendRequest.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -400,6 +304,7 @@
         <option value="Interface" />
         <option value="resourceFile" />
         <option value="valueResourceFile" />
+        <option value="AnnotationType" />
         <option value="Class" />
       </list>
     </option>
@@ -2150,57 +2055,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PartyJoinOrder.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PartyPickingService.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/AdventuringService.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CustomMonstersActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PreparedBattlesActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MyActorRoundActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/NewPreparedBattleActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MyDialogsFactory.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/content_join_session.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CrossActivityShare.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/NewCharactersProposalActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/JoinSessionActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PartyCreator.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PartyPicker.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_gathering.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/InternalStateService.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/drawable/ic_warning_white_24px.xml" />
-        <option value="$PROJECT_DIR$/app/build/intermediates/res/merged/debug/values/values.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PartyDefinitionHelper.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/SuccessiveSnackbars.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values-it/strings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/SelectFormingGroupActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/ActorOverviewActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/CharSelectionActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/PcAssignmentState.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/AwardExperienceActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/SessionHelper.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/FreeRoamingActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/GatheringActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/NewCharactersApprovalActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_select_forming_group.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/GroupState.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/PartySelection.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ExplicitConnectionActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ConnectionAttempt.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/NewCustomMonsterActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PartyPickActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PublishAcceptHelper.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/NewPartyDeviceSelectionActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/SelectFormingGroupActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/CharacterProposals.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/activity_new_characters_proposal.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/NewCharactersProposalActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/BattleActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/RunningServiceHandles.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/AccumulatingDiscoveryListener.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/JoinSessionActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/JoinGame.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PseudoStack.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ConnectionAttempt.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/GroupState.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/CharacterProposals.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PartyDefinitionHelper.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PartyCreator.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/AsyncActivityLoadUpdateTask.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/protocol/nano/UserOf.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CustomMonstersActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ExplicitConnectionActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/NewCustomMonsterActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/NewPreparedBattleActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PartyPickActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PreparedBattlesActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/CharSelectionActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/JoinSessionActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/SelectFormingGroupActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/NewCharactersApprovalActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/NewPartyDeviceSelectionActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/SpawnMonsterActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PartyJoinOrder.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/GatheringActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PCViewHolder.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/InternalStateService.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/BattleActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/AwardExperienceActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/vh_playing_character_definition_input.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MainMenuActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/NewCharactersProposalActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values-it/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/menu/my_actor_round_activity.xml" />
+        <option value="$PROJECT_DIR$/app/src/debug/res/values/admob_ids.xml" />
+        <option value="$PROJECT_DIR$/app/src/release/res/values/admob_ids.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/content_actor_overview.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/InitiativeShuffleDialog.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/WaitInitiativeDialog.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/ActorOverviewActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PcAssignmentHelper.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/LatchingHandler.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MyActorRoundActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/FreeRoamingActivity.java" />
       </list>
     </option>
   </component>
@@ -2216,8 +2121,7 @@
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1696" />
+    <option name="width" value="1212" />
     <option name="height" value="1026" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
@@ -2437,6 +2341,26 @@
     <panes>
       <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="AndroidView">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CollaborativeGroupOrder" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Gradle Scripts" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CollaborativeGroupOrder" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -2505,197 +2429,95 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
+              <option name="myItemId" value="release" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="values" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CollaborativeGroupOrder" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CollaborativeGroupOrder" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="release" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CollaborativeGroupOrder" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CollaborativeGroupOrder" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="debug" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="values" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CollaborativeGroupOrder" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CollaborativeGroupOrder" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="debug" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="AndroidView">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CollaborativeGroupOrder" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Gradle Scripts" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CollaborativeGroupOrder" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CollaborativeGroupOrder" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="values" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CollaborativeGroupOrder" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="values" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="strings.xml" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResGroupNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CollaborativeGroupOrder" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CollaborativeGroupOrder" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CollaborativeGroupOrder" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="collaborativegrouporder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CollaborativeGroupOrder" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="collaborativegrouporder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="master" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CollaborativeGroupOrder" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="collaborativegrouporder" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="client" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CollaborativeGroupOrder" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="com" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -2707,14 +2529,14 @@
     <property name="last_directory_selection" value="$PROJECT_DIR$/app/src/test/java/com/massimodz8/collaborativegrouporder/master" />
     <property name="extract.method.default.visibility" value="private" />
     <property name="UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager2.WIDTH" value="325" />
-    <property name="DEBUGGABLE_DEVICE" value="huawei-huawei_y360_u61-WCJFVKBQWG79AAZT" />
+    <property name="DEBUGGABLE_DEVICE" value="Nx1_API_19_w_Google [emulator-5554]" />
     <property name="DEBUGGABLE_PROCESS" value="com.massimodz8.collaborativegrouporder" />
     <property name="SHOW_ALL_PROCESSES" value="true" />
     <property name="extractMethod.generateAnnotations" value="true" />
     <property name="SearchEverywhereHistoryKey" value="MyItem&#9;PSI&#9;JAVA://com.massimodz8.collaborativegrouporder.PartyPickActivity.MyItemTouchCallback&#10;MSG_CONNECTED&#9;PSI&#9;JAVA://com.massimodz8.collaborativegrouporder.GatheringActivity#MSG_CONNECTED&#10;detaching&#9;PSI&#9;JAVA://com.massimodz8.collaborativegrouporder.networkio.PumpTarget#detaching&#10;onCreateViewHolder&#9;PSI&#9;JAVA://com.massimodz8.collaborativegrouporder.PlayingCharacterListAdapter#onCreateViewHolder&#10;FAILURE_ALREADY_ACTIVE&#9;null&#9;null&#10;LandingServer&#9;PSI&#9;JAVA://com.massimodz8.collaborativegrouporder.NewPartyDeviceSelectionActivity.MyLandingServer&#10;version&#9;PSI&#9;JAVA://com.massimodz8.collaborativegrouporder.MainMenuActivity#NETWORK_VERSION&#10;.version&#9;PSI&#9;JAVA://com.massimodz8.collaborativegrouporder.protocol.nano.Network.Hello#version&#10;Publ&#9;PSI&#9;JAVA://com.massimodz8.collaborativegrouporder.PublishedService" />
     <property name="android.project.structure.last.selected" value="app" />
     <property name="android.project.structure.proportion" value="0.15" />
-    <property name="device.picker.selection" value="Nx1_API_19_w_Google" />
+    <property name="device.picker.selection" value="WCJFVKBQWG79AAZT" />
     <property name="com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary" value="JUnit4" />
     <property name="last_opened_file_path" value="$USER_HOME$/Desktop" />
     <property name="ExportApk.ApkPath" value="C:\Users\Massimo\Desktop" />
@@ -2722,10 +2544,9 @@
     <property name="ExportApk.BuildType" value="release" />
   </component>
   <component name="RecentsManager">
-    <key name="android.template.parentActivityClass">
-      <recent name="" />
-      <recent name="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
-      <recent name="com.massimodz8.collaborativegrouporder.master.FreeRoamingActivity" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.massimodz8.collaborativegrouporder" />
+      <recent name="com.massimodz8.collaborativegrouporder.master" />
     </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
@@ -2753,9 +2574,10 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\src\main\res\layout" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="com.massimodz8.collaborativegrouporder" />
-      <recent name="com.massimodz8.collaborativegrouporder.master" />
+    <key name="android.template.parentActivityClass">
+      <recent name="" />
+      <recent name="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
+      <recent name="com.massimodz8.collaborativegrouporder.master.FreeRoamingActivity" />
     </key>
   </component>
   <component name="RunManager" selected="Android Application.app">
@@ -3270,7 +3092,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
+    <frame x="-8" y="0" width="1212" height="1026" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32718894" sideWeight="0.49266502" order="6" side_tool="false" content_ui="tabs" />
@@ -3278,23 +3100,21 @@
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20660147" sideWeight="0.5474006" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32718894" sideWeight="0.49022004" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30645162" sideWeight="0.49633253" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294621" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28225806" sideWeight="0.49739584" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30645162" sideWeight="0.4903846" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32911393" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36059907" sideWeight="0.47192982" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36059907" sideWeight="0.47192982" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32718894" sideWeight="0.49266502" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32823962" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28423476" sideWeight="0.38753057" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20660147" sideWeight="0.45259938" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24539171" sideWeight="0.5165441" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2925347" sideWeight="0.45234248" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32823962" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24816626" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24737762" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32762837" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22860636" sideWeight="0.5241935" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28686637" sideWeight="0.5287286" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.20660147" sideWeight="0.5476575" order="5" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2891705" sideWeight="0.5026042" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -3303,6 +3123,8 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294621" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24539171" sideWeight="0.5165441" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -3424,10 +3246,106 @@
           <option name="timeStamp" value="2624" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/SelectFormingGroupActivity.java</url>
-          <line>248</line>
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/CharSelectionActivity.java</url>
+          <line>83</line>
           <properties />
-          <option name="timeStamp" value="2744" />
+          <option name="timeStamp" value="2789" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>149</line>
+          <properties />
+          <option name="timeStamp" value="2839" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/ActorOverviewActivity.java</url>
+          <line>112</line>
+          <properties />
+          <option name="timeStamp" value="2840" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>162</line>
+          <properties />
+          <option name="timeStamp" value="2843" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>148</line>
+          <properties />
+          <option name="timeStamp" value="2844" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>153</line>
+          <properties />
+          <option name="timeStamp" value="2845" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PcAssignmentHelper.java</url>
+          <line>400</line>
+          <properties />
+          <option name="timeStamp" value="2854" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MyActorRoundActivity.java</url>
+          <line>197</line>
+          <properties />
+          <option name="timeStamp" value="2870" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>179</line>
+          <properties />
+          <option name="timeStamp" value="2871" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>202</line>
+          <properties />
+          <option name="timeStamp" value="2872" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>178</line>
+          <properties />
+          <option name="timeStamp" value="2873" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MyActorRoundActivity.java</url>
+          <line>198</line>
+          <properties />
+          <option name="timeStamp" value="2874" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MyActorRoundActivity.java</url>
+          <line>202</line>
+          <properties />
+          <option name="timeStamp" value="2875" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>191</line>
+          <properties />
+          <option name="timeStamp" value="2876" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>180</line>
+          <properties />
+          <option name="timeStamp" value="2877" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>147</line>
+          <properties />
+          <option name="timeStamp" value="2878" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java</url>
+          <line>212</line>
+          <properties />
+          <option name="timeStamp" value="2879" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
@@ -3443,16 +3361,15 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="2745" />
+      <option name="time" value="2884" />
     </breakpoint-manager>
     <watches-manager>
-      <configuration name="app">
-        <watch expression="survive" language="JAVA" custom="" />
-      </configuration>
       <configuration name="Remote">
-        <watch expression="ticker.currentActor" language="JAVA" custom="" />
-        <watch expression="here" language="JAVA" custom="" />
-        <watch expression="client.currentActor" language="JAVA" custom="" />
+        <watch expression="real.name" language="JAVA" custom="" />
+        <watch expression="known.actor.experience" />
+        <watch expression="real.experience" />
+        <watch expression="real.order" />
+        <watch expression="real.peerKey" />
       </configuration>
       <configuration name="JUnit">
         <watch expression="helper.ordered[0].actorID" />
@@ -3466,267 +3383,10 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/SpawnMonsterActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.272727">
-          <caret line="168" column="51" selection-start-line="168" selection-start-column="51" selection-end-line="168" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/AboutActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_select_forming_group.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.124125876">
-          <caret line="11" column="40" selection-start-line="11" selection-start-column="40" selection-end-line="11" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PseudoStack.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.23604466">
-          <caret line="20" column="13" selection-start-line="20" selection-start-column="13" selection-end-line="20" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/networkio/Events.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2982456">
-          <caret line="13" column="31" selection-start-line="13" selection-start-column="31" selection-end-line="13" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/OpenGameLicenseActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.10845295">
-          <caret line="13" column="13" selection-start-line="13" selection-start-column="13" selection-end-line="13" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_explicit_connection.xml">
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ConnectionAttempt.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.4738095">
-          <caret line="25" column="42" selection-start-line="25" selection-start-column="42" selection-end-line="25" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/NewCustomMonsterActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="3.307143">
-          <caret line="429" column="30" selection-start-line="429" selection-start-column="30" selection-end-line="429" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PartyPickActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.4488096">
-          <caret line="122" column="24" selection-start-line="122" selection-start-column="24" selection-end-line="122" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/m2repository/com/android/support/recyclerview-v7/23.1.1/recyclerview-v7-23.1.1-sources.jar!/android/support/v7/widget/LinearLayoutManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3327338">
-          <caret line="143" column="11" selection-start-line="143" selection-start-column="11" selection-end-line="143" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/AsyncActivityLoadUpdateTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="39" column="113" selection-start-line="39" selection-start-column="113" selection-end-line="39" selection-end-column="113" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/NewPreparedBattleActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.87857145">
-          <caret line="164" column="0" selection-start-line="164" selection-start-column="0" selection-end-line="164" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MyActorRoundActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.169048">
-          <caret line="26" column="13" selection-start-line="26" selection-start-column="13" selection-end-line="26" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PublishAcceptHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="75" column="23" selection-start-line="75" selection-start-column="23" selection-end-line="75" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PartyCreator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="150" column="9" selection-start-line="150" selection-start-column="9" selection-end-line="150" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/view/View.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="5573" column="16" selection-start-line="5573" selection-start-column="16" selection-end-line="5573" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/NewCharactersApprovalActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45773524">
-          <caret line="275" column="71" selection-start-line="275" selection-start-column="71" selection-end-line="275" selection-end-column="71" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/NewPartyDeviceSelectionActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.36363637">
-          <caret line="270" column="31" selection-start-line="270" selection-start-column="19" selection-end-line="270" selection-end-column="31" />
-          <folding>
-            <element signature="e#3821#3868#0" expanded="true" />
-            <element signature="e#7069#7951#0" expanded="true" />
-            <element signature="e#7950#7951#0" expanded="true" />
-            <element signature="e#8905#9927#0" expanded="true" />
-            <element signature="e#9926#9927#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MyDialogsFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.52619046">
-          <caret line="30" column="28" selection-start-line="30" selection-start-column="28" selection-end-line="30" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#1119#1120#0" expanded="false" />
-            <element signature="e#1178#1179#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/BuildingPlayingCharacter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2169059">
-          <caret line="8" column="21" selection-start-line="8" selection-start-column="21" selection-end-line="8" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/ExplicitConnectionActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.023923445">
-          <caret line="106" column="28" selection-start-line="106" selection-start-column="28" selection-end-line="106" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/PartySelection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2982456">
-          <caret line="31" column="25" selection-start-line="31" selection-start-column="25" selection-end-line="31" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/GroupState.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16190477">
-          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/m2repository/com/android/support/appcompat-v7/23.1.1/appcompat-v7-23.1.1-sources.jar!/android/support/v7/app/AppCompatActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="335" column="19" selection-start-line="335" selection-start-column="19" selection-end-line="335" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_new_characters_proposal.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.21656051">
-          <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values-it/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PartyPicker.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33545107">
-          <caret line="16" column="66" selection-start-line="16" selection-start-column="66" selection-end-line="16" selection-end-column="66" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/NewCharactersProposalActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.22261904">
-          <caret line="116" column="159" selection-start-line="116" selection-start-column="159" selection-end-line="116" selection-end-column="159" />
-          <folding>
-            <element signature="e#3520#3574#0" expanded="true" />
-            <element signature="e#3671#3953#0" expanded="true" />
-            <element signature="e#3952#3953#0" expanded="true" />
-            <element signature="e#4299#4327#0" expanded="true" />
-            <element signature="e#4368#4407#0" expanded="true" />
-            <element signature="e#4409#4597#0" expanded="true" />
-            <element signature="e#4596#4597#0" expanded="true" />
-            <element signature="e#5313#5354#0" expanded="true" />
-            <element signature="e#5403#5445#0" expanded="true" />
-            <element signature="e#5523#5550#0" expanded="true" />
-            <element signature="e#5553#5584#0" expanded="true" />
-            <element signature="e#5698#5741#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/CharacterProposals.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18214285">
-          <caret line="27" column="16" selection-start-line="27" selection-start-column="16" selection-end-line="27" selection-end-column="16" />
-          <folding />
+          <caret line="255" column="24" selection-start-line="255" selection-start-column="24" selection-end-line="255" selection-end-column="24" />
         </state>
       </provider>
     </entry>
@@ -3735,106 +3395,34 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46242037">
-          <caret line="50" column="39" selection-start-line="50" selection-start-column="39" selection-end-line="50" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/CustomMonstersActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.902381">
-          <caret line="206" column="60" selection-start-line="206" selection-start-column="60" selection-end-line="206" selection-end-column="60" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PreparedBattlesActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.08095238">
-          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
-          <folding />
+        <state vertical-scroll-proportion="0.3512605">
+          <caret line="54" column="19" selection-start-line="54" selection-start-column="19" selection-end-line="54" selection-end-column="19" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PartyJoinOrder.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/ActorListerWithControls.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="193" column="16" selection-start-line="193" selection-start-column="16" selection-end-line="193" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/GatheringActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.6714286">
-          <caret line="166" column="13" selection-start-line="166" selection-start-column="13" selection-end-line="166" selection-end-column="13" />
-          <folding />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="73" column="40" selection-start-line="73" selection-start-column="40" selection-end-line="73" selection-end-column="40" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/AwardExperienceActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.5380952">
-          <caret line="56" column="38" selection-start-line="56" selection-start-column="38" selection-end-line="56" selection-end-column="38" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/BattleActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.75714284">
-          <caret line="424" column="16" selection-start-line="424" selection-start-column="8" selection-end-line="424" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/FreeRoamingActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.35595238">
-          <caret line="379" column="78" selection-start-line="379" selection-start-column="78" selection-end-line="379" selection-end-column="78" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/JoinVerificator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.20238096">
-          <caret line="15" column="13" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/SendRequest.java">
-      <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="24" column="11" selection-start-line="24" selection-start-column="11" selection-end-line="24" selection-end-column="11" />
-          <folding />
+          <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/AccumulatingDiscoveryListener.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="40" column="21" selection-start-line="40" selection-start-column="21" selection-end-line="40" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_join_session.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.109091">
-          <caret line="23" column="43" selection-start-line="23" selection-start-column="43" selection-end-line="23" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_join_session.xml">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_free_roaming.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
@@ -3845,63 +3433,134 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/SelectFormingGroupActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/BuildingPlayingCharacter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3492823">
-          <caret line="251" column="56" selection-start-line="251" selection-start-column="56" selection-end-line="251" selection-end-column="56" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="8" column="13" selection-start-line="8" selection-start-column="13" selection-end-line="8" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/vh_playing_character_definition_input.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="3.6203704">
+          <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/JoinSessionActivity.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MyDialogsFactory.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="111" column="45" selection-start-line="111" selection-start-column="45" selection-end-line="111" selection-end-column="45" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2295#2416#0" expanded="true" />
-            <element signature="e#2415#2416#0" expanded="true" />
-            <element signature="e#2987#3025#0" expanded="true" />
-            <element signature="e#3226#3248#0" expanded="true" />
-            <element signature="e#3404#3446#0" expanded="true" />
-            <element signature="e#4240#4271#0" expanded="true" />
-            <element signature="e#4538#4584#0" expanded="true" />
-            <element signature="e#4638#4671#0" expanded="true" />
-            <element signature="e#4673#4941#0" expanded="true" />
-            <element signature="e#4940#4941#0" expanded="true" />
-            <element signature="e#4984#5225#0" expanded="true" />
-            <element signature="e#5224#5225#0" expanded="true" />
-          </folding>
+          <caret line="19" column="24" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/RunningServiceHandles.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/NewCharactersProposalActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="17" selection-start-line="34" selection-start-column="17" selection-end-line="34" selection-end-column="17" />
+          <caret line="178" column="51" selection-start-line="178" selection-start-column="51" selection-end-line="178" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values-it/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.52583027">
+          <caret line="625" column="56" selection-start-line="625" selection-start-column="56" selection-end-line="625" selection-end-column="56" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/JoinGame.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_my_actor_round.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="310" column="0" selection-start-line="310" selection-start-column="0" selection-end-line="310" selection-end-column="0" />
-          <folding>
-            <element signature="e#2038#2449#0" expanded="true" />
-            <element signature="e#2448#2449#0" expanded="true" />
-            <element signature="e#4580#4581#0" expanded="true" />
-            <element signature="e#4624#4625#0" expanded="true" />
-            <element signature="e#10915#11381#0" expanded="true" />
-            <element signature="e#11380#11381#0" expanded="true" />
-          </folding>
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/menu/my_actor_round_activity.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.71350366">
+          <caret line="23" column="32" selection-start-line="23" selection-start-column="32" selection-end-line="23" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/debug/res/values/admob_ids.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.230769">
+          <caret line="8" column="69" selection-start-line="8" selection-start-column="69" selection-end-line="8" selection-end-column="69" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/release/res/values/admob_ids.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33943427">
+          <caret line="12" column="0" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/InitiativeShuffleDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.20238096">
+          <caret line="34" column="91" selection-start-line="34" selection-start-column="91" selection-end-line="34" selection-end-column="91" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_shuffle_initiative_order.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/content/DialogInterface.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="83" column="14" selection-start-line="83" selection-start-column="14" selection-end-line="83" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/app/Dialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1238" column="51" selection-start-line="1238" selection-start-column="51" selection-end-line="1238" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/dialog_wait_initiative_rolls.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="6" column="37" selection-start-line="6" selection-start-column="37" selection-end-line="6" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PartyPickActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="106" column="29" selection-start-line="106" selection-start-column="29" selection-end-line="106" selection-end-column="29" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/CharSelectionActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16190477">
-          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="74" column="29" selection-start-line="74" selection-start-column="29" selection-end-line="74" selection-end-column="29" />
           <folding />
         </state>
       </provider>
@@ -3909,18 +3568,244 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MainMenuActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="267" column="34" selection-start-line="267" selection-start-column="34" selection-end-line="267" selection-end-column="34" />
+          <caret line="249" column="0" selection-start-line="249" selection-start-column="0" selection-end-line="250" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/SessionHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33275262">
+          <caret line="61" column="31" selection-start-line="61" selection-start-column="31" selection-end-line="61" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/WaitInitiativeDialog.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="56" column="43" selection-start-line="56" selection-start-column="43" selection-end-line="56" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/networkio/Pumper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="174" column="30" selection-start-line="174" selection-start-column="30" selection-end-line="174" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/JoinSessionActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="85" column="20" selection-start-line="85" selection-start-column="20" selection-end-line="85" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/BattleActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33396584">
+          <caret line="61" column="68" selection-start-line="61" selection-start-column="62" selection-end-line="61" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/JoinGame.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="239" column="68" selection-start-line="239" selection-start-column="68" selection-end-line="239" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_actor_overview.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-7.109091">
+          <caret line="23" column="38" selection-start-line="23" selection-start-column="38" selection-end-line="23" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/content_actor_overview.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-5.181818">
+          <caret line="39" column="35" selection-start-line="39" selection-start-column="35" selection-end-line="39" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/m2repository/com/android/support/recyclerview-v7/23.1.1/recyclerview-v7-23.1.1-sources.jar!/android/support/v7/widget/ChildHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="262" column="0" selection-start-line="262" selection-start-column="0" selection-end-line="262" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/android/view/ViewGroup.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33277312">
+          <caret line="5281" column="0" selection-start-line="5281" selection-start-column="0" selection-end-line="5281" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/m2repository/com/android/support/recyclerview-v7/23.1.1/recyclerview-v7-23.1.1-sources.jar!/android/support/v7/widget/RecyclerView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33277312">
+          <caret line="579" column="0" selection-start-line="579" selection-start-column="0" selection-end-line="579" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/GatheringActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="109" column="50" selection-start-line="109" selection-start-column="50" selection-end-line="109" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PcAssignmentHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="526" column="0" selection-start-line="526" selection-start-column="0" selection-end-line="527" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#12807#13113#0" expanded="true" />
+            <element signature="e#13112#13113#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MaxUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="109" column="96" selection-start-line="109" selection-start-column="96" selection-end-line="109" selection-end-column="96" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/app/libs/protobuf-javanano-3.0.0-alpha-4.jar!/com/google/protobuf/nano/CodedOutputByteBufferNano.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.34833333">
+          <caret line="36" column="16" selection-start-line="36" selection-start-column="16" selection-end-line="36" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/protocol/nano/StartData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="551" column="23" selection-start-line="551" selection-start-column="23" selection-end-line="551" selection-end-column="23" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.1.1/support-annotations-23.1.1-sources.jar!/android/support/annotation/MainThread.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.48803827">
+          <caret line="38" column="18" selection-start-line="38" selection-start-column="18" selection-end-line="38" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/java/util/Timer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/PersistentDataUtils.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="68" column="53" selection-start-line="68" selection-start-column="53" selection-end-line="68" selection-end-column="53" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/LatchingHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="4" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/InternalStateService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.5983193">
+          <caret line="213" column="0" selection-start-line="213" selection-start-column="0" selection-end-line="213" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/PartyJoinOrder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="5.9456706">
+          <caret line="228" column="19" selection-start-line="228" selection-start-column="19" selection-end-line="228" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.45470384">
+          <caret line="612" column="53" selection-start-line="612" selection-start-column="53" selection-end-line="612" selection-end-column="53" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/ActorOverviewActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.61290324">
-          <caret line="72" column="31" selection-start-line="72" selection-start-column="31" selection-end-line="72" selection-end-column="31" />
+        <state vertical-scroll-proportion="3.434635">
+          <caret line="155" column="0" selection-start-line="155" selection-start-column="0" selection-end-line="155" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/client/Adventure.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="4.9066215">
+          <caret line="191" column="70" selection-start-line="191" selection-start-column="56" selection-end-line="191" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/MyActorRoundActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="5.5704584">
+          <caret line="212" column="0" selection-start-line="212" selection-start-column="0" selection-end-line="212" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-23/java/util/Arrays.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33277312">
+          <caret line="389" column="22" selection-start-line="389" selection-start-column="22" selection-end-line="389" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/massimodz8/collaborativegrouporder/master/FreeRoamingActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.5925297">
+          <caret line="41" column="34" selection-start-line="41" selection-start-column="34" selection-end-line="41" selection-end-column="34" />
+          <folding>
+            <element signature="e#2753#2792#0" expanded="true" />
+            <element signature="e#3910#3939#0" expanded="true" />
+            <element signature="e#4064#4094#0" expanded="true" />
+            <element signature="e#4334#4377#0" expanded="true" />
+            <element signature="e#4426#4482#0" expanded="true" />
+            <element signature="e#11039#11083#0" expanded="true" />
+            <element signature="e#12065#12066#0" expanded="true" />
+            <element signature="e#12105#12106#0" expanded="true" />
+            <element signature="e#19556#19580#0" expanded="true" />
+            <element signature="e#20165#20197#0" expanded="true" />
+            <element signature="e#20231#20254#0" expanded="true" />
+            <element signature="e#20295#20325#0" expanded="true" />
+            <element signature="e#22567#22591#0" expanded="true" />
+            <element signature="e#22639#22702#0" expanded="true" />
+            <element signature="e#28213#28237#0" expanded="true" />
+            <element signature="e#28285#28348#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

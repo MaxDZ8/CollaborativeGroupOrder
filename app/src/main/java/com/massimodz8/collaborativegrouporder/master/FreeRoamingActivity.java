@@ -40,7 +40,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -150,81 +149,64 @@ public class FreeRoamingActivity extends AppCompatActivity {
             }
         };
         Session.Suspended stats = game.session.stats;
+        HashMap<Integer, Network.ActorState> remember = new HashMap<>(); // deserialized id -> real structure with new id.
+        for (Network.ActorState real : game.session.existByDef) remember.put(real.peerKey, real);
         if(stats.live != null && stats.live.length > 0) { // restore state from previous session!
-            HashMap<Integer, Integer> remember = new HashMap<>(); // peerkey remapping is only useful for 'temporary' actors but it makes code more streamlined
-            for(int loop = 0; loop < stats.live.length; loop++) { // First we take care of 'byDef' characters, they're easier.
-                Network.ActorState live = stats.live[loop];
-                if(live.peerKey >= game.session.existByDef.size()) continue;
-                int found = 0;
-                for (int el : stats.notFighting) {
-                    if(el == live.peerKey) break;
-                    found++;
+            for(Network.ActorState live : stats.live) {
+                final int original = live.peerKey;
+                if(live.peerKey < game.session.existByDef.size()) game.session.existByDef.set(live.peerKey, live);
+                else {
+                    live.peerKey = game.nextActorId++;
+                    game.session.temporaries.add(live);
                 }
-                if(found == stats.notFighting.length || stats.notFighting.length == 0) game.session.willFight(live.peerKey, true); // playing characters start deselected
-                game.session.existByDef.set(live.peerKey, live);
-                remember.put(live.peerKey, live.peerKey);
-            }
-            // All other actors are added. That takes some care as I need to remap peerkeys.
-            // This is a simplified version of SpawnMonster spawning, complicated by peerkey remapping.
-            for(int loop = 0; loop < stats.live.length; loop++) {
-                Network.ActorState live = stats.live[loop];
-                if(live.peerKey < game.session.existByDef.size()) continue;
-                int ori = live.peerKey;
-                remember.put(ori, game.nextActorId);
-                live.peerKey = game.nextActorId++;
-                game.session.add(live);
-                int found = 0;
-                for (int el : stats.notFighting) {
-                    if(el == ori) break;
-                    found++;
-                }
-                if(found == stats.notFighting.length || stats.notFighting.length == 0) game.session.willFight(live.peerKey, true);
-            }
-            if(stats.fighting != null) { // a bit ugh
-                InitiativeScore[] order = new InitiativeScore[stats.fighting.id.length];
-                int slow = 0, fast = 0;
-                for (boolean state : stats.fighting.enabled) {
-                    final int remapped = remember.get(stats.fighting.id[slow]);
-                    order[slow] = new InitiativeScore(stats.fighting.initiative[fast++], stats.fighting.initiative[fast++], stats.fighting.initiative[fast++], remapped);
-                    order[slow++].enabled = state;
-                }
-                final BattleHelper battle = new BattleHelper(order);
-                game.session.battleState = battle;
-                battle.round = stats.fighting.round;
-                if(battle.round != 0) battle.currentActor = remember.get(stats.fighting.currentActor);
-                battle.prevWasReadied = stats.fighting.prevWasReadied;
-                for (int orig : stats.fighting.interrupted) {
-                    battle.interrupted.push(remember.get(orig));
-                }
-                game.pushBattleOrder();
-                for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
-                // Note: this is an extra. We cannot use INITIATIVE roll to signal battle start so...
-                Network.TurnControl notifyRound = new Network.TurnControl();
-                notifyRound.type = Network.TurnControl.T_BATTLE_ROUND;
-                notifyRound.round = battle.round;
-                for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
-                    if(dev.pipe == null) continue;
-                    game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, notifyRound, null));
-
-                    if(dev.movedToBattlePumper) continue;
-                    game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
-                    dev.movedToBattlePumper = true;
-                }
-                startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
-                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
-                Bundle bundle = new Bundle();
-                bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_NEW_BATTLE);
-                bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, game.publishToken);
-                surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
-            }
-            else if(!game.session.restoreNotified){
-                String date = DateFormat.getDateInstance().format(new Date(stats.lastSaved.seconds * 1000));
-                String snackMsg = String.format(getString(R.string.fra_restoredSession), date);
-                Snackbar.make(findViewById(R.id.activityRoot), snackMsg, Snackbar.LENGTH_SHORT).show();
-                game.session.restoreNotified = true;
+                remember.put(original, live);
             }
             stats.live = null;  // put everything back to runtime, no need to keep. Avoid logical leak. Note this is not a valid protobuf object anymore!
+        }
+        if(stats.notFighting != null && stats.notFighting.length > 0) {
+            Arrays.sort(stats.notFighting);
+            for (Map.Entry<Integer, Network.ActorState> el : remember.entrySet()) {
+                final int slot = Arrays.binarySearch(stats.notFighting, el.getKey());
+                game.session.willFight(el.getValue().peerKey, slot < 0);
+            }
             stats.notFighting = null;
+        }
+        if(stats.fighting != null) {
+            InitiativeScore[] order = new InitiativeScore[stats.fighting.id.length];
+            int slow = 0, fast = 0;
+            for (boolean state : stats.fighting.enabled) {
+                final Network.ActorState real = remember.get(stats.fighting.id[slow]);
+                order[slow] = new InitiativeScore(stats.fighting.initiative[fast++], stats.fighting.initiative[fast++], stats.fighting.initiative[fast++], real.peerKey);
+                order[slow++].enabled = state;
+            }
+            final BattleHelper battle = new BattleHelper(order);
+            game.session.battleState = battle;
+            battle.round = stats.fighting.round;
+            if(battle.round != 0) battle.currentActor = remember.get(stats.fighting.currentActor).peerKey;
+            battle.prevWasReadied = stats.fighting.prevWasReadied;
+            for (int orig : stats.fighting.interrupted) {
+                battle.interrupted.push(remember.get(orig).peerKey);
+            }
+            game.pushBattleOrder();
+            for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
+            // Note: this is an extra. We cannot use INITIATIVE roll to signal battle start so...
+            Network.TurnControl notifyRound = new Network.TurnControl();
+            notifyRound.type = Network.TurnControl.T_BATTLE_ROUND;
+            notifyRound.round = battle.round;
+            for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+                if(dev.pipe == null) continue;
+                game.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.TURN_CONTROL, notifyRound, null));
+
+                if(dev.movedToBattlePumper) continue;
+                game.battlePumper.pump(game.assignmentHelper.netPump.move(dev.pipe));
+                dev.movedToBattlePumper = true;
+            }
+            startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
+            FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
+            Bundle bundle = new Bundle();
+            bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_NEW_BATTLE);
+            bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, game.publishToken);
+            surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
             stats.fighting = null;
             lister.notifyDataSetChanged();
             return;
