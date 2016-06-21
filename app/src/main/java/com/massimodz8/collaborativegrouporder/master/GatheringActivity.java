@@ -23,6 +23,7 @@ import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
@@ -215,9 +216,7 @@ public class GatheringActivity extends AppCompatActivity {
                 if(errorCount == 0) {
                     // Ideally do nothing. We wait until the various devices give us back the ACTOR_DATA_REQUEST.
                     // However, if no devices are there nothing will ever detach so... have an extra check
-                    room.session.stats.lastBegin = new Timestamp();
-                    room.session.stats.lastBegin.seconds = new Date().getTime() / 1000;
-                    room.session.stats.numSessions++;
+                    tickSessionData(room.session.stats);
                     setResult(RESULT_OK);
                     finish();
                     return;
@@ -228,6 +227,12 @@ public class GatheringActivity extends AppCompatActivity {
                         .show();
             }
         }.execute();
+    }
+
+    public static void tickSessionData(Session.Suspended stats) {
+        stats.lastBegin = new Timestamp();
+        stats.lastBegin.seconds = new Date().getTime() / 1000;
+        stats.numSessions++;
     }
 
     private static class AuthDeviceViewHolder extends RecyclerView.ViewHolder {

@@ -179,35 +179,43 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     private void startNewSessionActivity(StartData.PartyOwnerData.Group activeParty, ServerSocket activeLanding, Pumper.MessagePumpingThread[] activeConnections, Session.Suspended activeStats) {
-        PartyJoinOrder real = RunningServiceHandles.getInstance().play = new PartyJoinOrder();
-        JoinVerificator keyMaster = new JoinVerificator(activeParty.devices, MaxUtils.hasher);
-        NsdManager nsdm = (NsdManager) getSystemService(NSD_SERVICE);
-        real.initializePartyManagement(activeParty, activeStats, keyMaster);
-        real.pumpClients(activeConnections);
-        try {
-            real.startListening(activeLanding);
-        } catch (IOException e) {
-            new AlertDialog.Builder(this, R.style.AppDialogStyle)
-                    .setMessage(R.string.master_badServerSocket)
-                    .show();
-            return;
-        }
-        real.beginPublishing(nsdm, activeParty.name, PartyJoinOrder.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
-        // Update notification with more stuff.
-        InternalStateService state = RunningServiceHandles.getInstance().state;
-        StartData.PartyOwnerData.Group party = real.getPartyOwnerData();
-        state.buildNotification(party.name, getString(R.string.ga_title));
-        startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_GATHER_DEVICES);
-
         String easygoing = String.format(Locale.ENGLISH, "name: %1$s, published: %2$d, charCount=%3$d, devCount=%4$d, created=%5$d. Measure userbase health.",
-                party.name, System.currentTimeMillis(),
-                party.party.length + party.npcs.length, party.devices.length, party.created.seconds);
+                activeParty.name, System.currentTimeMillis(),
+                activeParty.party.length + activeParty.npcs.length, activeParty.devices.length, activeParty.created.seconds);
         MaxUtils.hasher.reset();
-        real.publishToken = MaxUtils.hasher.digest(easygoing.getBytes());
+        final byte[] digest = MaxUtils.hasher.digest(easygoing.getBytes());
+        JoinVerificator keyMaster = null;
+        if(activeParty.devices.length > 0) keyMaster = new JoinVerificator(activeParty.devices, MaxUtils.hasher);
+
+        PartyJoinOrder real = RunningServiceHandles.getInstance().play = new PartyJoinOrder(activeParty, activeStats, keyMaster, digest);
         FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
         Bundle bundle = new Bundle();
-        bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_GATHER);
         bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, real.publishToken);
+
+        if(activeParty.devices.length > 0) {
+            NsdManager nsdm = (NsdManager) getSystemService(NSD_SERVICE);
+            real.pumpClients(activeConnections);
+            try {
+                real.startListening(activeLanding);
+            } catch (IOException e) {
+                new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                        .setMessage(R.string.master_badServerSocket)
+                        .show();
+                return;
+            }
+            real.beginPublishing(nsdm, activeParty.name, PartyJoinOrder.PARTY_GOING_ADVENTURING_SERVICE_TYPE);
+            // Update notification with more stuff.
+            InternalStateService state = RunningServiceHandles.getInstance().state;
+            StartData.PartyOwnerData.Group party = real.getPartyOwnerData();
+            state.buildNotification(party.name, getString(R.string.ga_title));
+            startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_GATHER_DEVICES);
+        }
+        else {
+            bundle.putBoolean(MaxUtils.FA_PARAM_FULLY_LOCAL_SESSION, true);
+            GatheringActivity.tickSessionData(activeStats);
+            freeRoaming(false);
+        }
+        bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_GATHER);
         surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
     }
 
@@ -307,18 +315,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             } break;
             case REQUEST_GATHER_DEVICES: {
                 if(resultCode == RESULT_OK) {
-                    startActivityForResult(new Intent(this, FreeRoamingActivity.class), REQUEST_PLAY);
-
-                    Notification build = handles.state.buildNotification(handles.play.getPartyOwnerData().name, getString(R.string.fra_title));
-                    NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
-                    handles.state.notification = build;
-
-                    FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_ASSEMBLED);
-                    bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, RunningServiceHandles.getInstance().play.publishToken);
-                    surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
+                    freeRoaming(true);
                     break;
                 }
                 // else fall through
@@ -340,6 +337,23 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 }
                 break;
             }
+        }
+    }
+
+    private void freeRoaming(boolean sendAssembled) {
+        startActivityForResult(new Intent(this, FreeRoamingActivity.class), REQUEST_PLAY);
+        final RunningServiceHandles handles = RunningServiceHandles.getInstance();
+        Notification build = handles.state.buildNotification(handles.play.getPartyOwnerData().name, getString(R.string.fra_title));
+        NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
+        handles.state.notification = build;
+
+        if(sendAssembled) {
+            FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
+            Bundle bundle = new Bundle();
+            bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_ASSEMBLED);
+            bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, handles.play.publishToken);
+            surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
         }
     }
 

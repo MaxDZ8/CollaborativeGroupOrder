@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Vector;
 
 /**
@@ -43,12 +44,15 @@ public abstract class PcAssignmentHelper {
     }
     public OnBoundPcCallback onBoundPc;
 
-    public PcAssignmentHelper(StartData.PartyOwnerData.Group party, JoinVerificator verifier) {
+    public PcAssignmentHelper(StartData.PartyOwnerData.Group party, @Nullable JoinVerificator verifier) {
         this.party = party;
         this.verifier = verifier;
         assignment = new ArrayList<>(party.party.length);
         for (StartData.ActorDefinition ignored : party.party) assignment.add(null);
-        mailman.start();
+        if(verifier != null) mailman.start();
+        else {
+            for(int loop = 0; loop < assignment.size(); loop++) assignment.set(loop, LOCAL_BINDING);
+        }
     }
 
     public void pump(MessageChannel newConn) {

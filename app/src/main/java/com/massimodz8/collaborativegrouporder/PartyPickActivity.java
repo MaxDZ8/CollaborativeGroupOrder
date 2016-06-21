@@ -837,13 +837,6 @@ public class PartyPickActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             if(owned != null) {
-                if(owned.devices.length == 0) {
-                    new AlertDialog.Builder(target, R.style.AppDialogStyle)
-                            .setIcon(R.drawable.ic_warning_white_24px)
-                            .setMessage(target.getString(R.string.ppa_noDevicesInParty))
-                            .show();
-                    return;
-                }
                 if(owned.party.length == 0) {
                     new AlertDialog.Builder(target, R.style.AppDialogStyle)
                             .setIcon(R.drawable.ic_warning_white_24px)

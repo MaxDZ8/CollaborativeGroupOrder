@@ -218,7 +218,6 @@
     <string name="ppa_charCount_plural">%1$d playing characters</string>
     <string name="ppa_charLevel_same">Level %1$d</string>
     <string name="ppa_charLevel_different">Levels %1$d - %2$d</string>
-    <string name="ppa_noDevicesInParty">No devices in party. Nobody would be able to play so I\'m doing nothing.\nAdd at least one device.</string>
     <string name="ppa_noCharactersInParty">No playing characters in party. There\'s no way to make a game so I\'m doing nothing.\nAdd at least one playing character.</string>
 
     <string name="ga_title">Gathering heroes</string>

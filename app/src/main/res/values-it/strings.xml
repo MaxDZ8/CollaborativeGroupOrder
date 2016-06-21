@@ -625,5 +625,4 @@
     <string name="mma_emptyHint_3">Giocatore? Prova\n%1$s</string>
     <string name="ppa_charCount_zero">Gruppo vuoto.</string>
     <string name="ppa_noCharactersInParty">Non ci sono personaggi giocanti. Non si può creare un gioco quindi non faccio nulla.\nAggiungi almeno un personaggio giocante.</string>
-    <string name="ppa_noDevicesInParty">Nessun dispositivo nel gruppo. Nessuno potrebbe giocare quindi non faccio nulla.\nAggiungi almeno un dispositivo.</string>
 </resources>

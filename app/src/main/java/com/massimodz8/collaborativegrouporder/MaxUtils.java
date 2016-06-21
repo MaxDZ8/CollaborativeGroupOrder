@@ -147,11 +147,14 @@ public abstract class MaxUtils {
     /**/public static final String FA_PARAM_GOING_ADVENTURE = "adventureShortcut";
     /**/public static final String FA_PARAM_KNOWN_PC_COUNT = "pcsAtCreationTime";
 
+    // Set to TRUE if GATHER shortcircuited to work in local mode.
+    public static final String FA_PARAM_FULLY_LOCAL_SESSION = "sessionWithZeroClients";
+
     public static final String FA_EVENT_PLAYING = "playing";
     /**/public static final String FA_PARAM_STEP = "phase"; // enumerated value, can be
     /**//**/public static final int FA_PARAM_STEP_GATHER = 0; // started gathering devices
-    /**//**//**/public static final int FA_PARAM_STEP_ASSEMBLED = 1; // device gathering ok, free roaming launched
-    /**//**//**/public static final int FA_PARAM_STEP_NEW_BATTLE = 2; // device gathering ok, free roaming launched
+    /**//**/public static final int FA_PARAM_STEP_ASSEMBLED = 1; // device gathering ok, free roaming launched
+    /**//**/public static final int FA_PARAM_STEP_NEW_BATTLE = 2; // device gathering ok, free roaming launched
     /**/public static final String FA_PARAM_ADVENTURING_ID = "sortaUniqueGroupId"; // byte[]
 
     // Used with FirebaseAnalytics.Event.SEARCH
