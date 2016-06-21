@@ -91,7 +91,12 @@ public class PartyPicker {
                     errors.put(party, ctx.getString(R.string.ppa_noInputStream));
                     return 1;
                 }
-                String error = loader.load(loaded, load, (int)data.length());
+                int byDef = 0;
+                if(party instanceof StartData.PartyOwnerData.Group) {
+                    final StartData.PartyOwnerData.Group real = (StartData.PartyOwnerData.Group) party;
+                    byDef = real.party.length + real.npcs.length;
+                }
+                String error = loader.load(byDef, loaded, load, (int)data.length());
                 if(error != null) {
                     errors.put(party, error);
                     try {

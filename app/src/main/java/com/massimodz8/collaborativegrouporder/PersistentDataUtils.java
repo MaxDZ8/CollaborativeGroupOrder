@@ -19,7 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Locale;
+import java.util.Map;
 
 
 /**
@@ -260,7 +263,7 @@ public abstract class PersistentDataUtils {
         return session;
     }
 
-    public String load(Session.Suspended fetch, FileInputStream source, int size) {
+    public String load(int byDef, Session.Suspended fetch, FileInputStream source, int size) {
         byte[] everything = new byte[size];
         try {
             final int count = source.read(everything);
@@ -285,16 +288,14 @@ public abstract class PersistentDataUtils {
         }
         // the .notFighting flag is not a problem, unknowns are just ignored.
         if(fetch.fighting == null) return null; // we're in free roaming mode and we're fine with it.
-        // Battle order validation requires some more care. As a start, count the number of fighters.
+        // Battle order validation requires some more care, especially now as known byDef actors *can* be omitted.
+        HashMap<Integer, Boolean> actors = new HashMap<>();
+        for(int loop = 0; loop < byDef; loop++) actors.put(loop, true);
+        for (Network.ActorState actor : fetch.live) actors.put(actor.peerKey, true);
+        for (int idle : fetch.notFighting) actors.put(idle, false);
         int numFighters = 0;
-        for(int loop = 0; loop < fetch.live.length; loop++) {
-            int use = fetch.live[loop].peerKey;
-            int search = 0;
-            for (int el : fetch.notFighting) {
-                if(el == use) break;
-                search++;
-            }
-            if(search == fetch.notFighting.length) numFighters++;
+        for (Map.Entry<Integer, Boolean> el : actors.entrySet()) {
+            if(el.getValue()) numFighters++;
         }
         if(fetch.fighting.enabled.length != numFighters) {
             String bad = getString(R.string.persistentStorage_initiativeMismatch);
@@ -312,18 +313,9 @@ public abstract class PersistentDataUtils {
                 }
             }
             // And while we're at it, each entry here must be known and 'selected to fight' !
-            int search = 0;
-            for (Network.ActorState el : fetch.live) {
-                if(el.peerKey == good) break;
-                search++;
-            }
-            if(search == fetch.live.length) return getString(R.string.persistentStorage_unknownFighter);
-            search = 0;
-            for (int el : fetch.notFighting) {
-                if(el == good) break;
-                search++;
-            }
-            if(search != fetch.notFighting.length) return getString(R.string.persistentStorage_actorShouldNotBeFighting);
+            final Boolean willFight = actors.get(good);
+            if(willFight == null) return getString(R.string.persistentStorage_unknownFighter);
+            if(!willFight) return getString(R.string.persistentStorage_actorShouldNotBeFighting);
         }
         if(fetch.fighting.round != 0) { // then actorID must be one in list
             boolean found = false;
