@@ -203,11 +203,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 dev.movedToBattlePumper = true;
             }
             startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
-            FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
-            Bundle bundle = new Bundle();
-            bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_NEW_BATTLE);
-            bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, game.publishToken);
-            surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
+            FirebaseAnalytics.getInstance(this).logEvent(MaxUtils.FA_EVENT_NEW_BATTLE, null);
             stats.fighting = null;
             lister.notifyDataSetChanged();
             return;
@@ -344,11 +340,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
 
         game.session.initiatives = null;
         startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
-        FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
-        Bundle bundle = new Bundle();
-        bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_NEW_BATTLE);
-        bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, game.publishToken);
-        surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
+        FirebaseAnalytics.getInstance(this).logEvent(MaxUtils.FA_EVENT_NEW_BATTLE, null);
 
         findViewById(R.id.fab).setVisibility(View.VISIBLE);
         return true;

@@ -37,11 +37,7 @@ import java.util.Map;
  * long story short: I must keep track of those events and remember them. Meh!
  */
 public class PartyJoinOrder extends PublishAcceptHelper {
-
-    public final byte[] publishToken;
-
-    public PartyJoinOrder(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @Nullable JoinVerificator keyMaster, byte[] digest) {
-        publishToken = digest;
+    public PartyJoinOrder(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @Nullable JoinVerificator keyMaster) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster) {
             @Override
             protected StartData.ActorDefinition getActorData(int unique) {

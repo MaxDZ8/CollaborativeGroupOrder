@@ -183,15 +183,11 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 activeParty.name, System.currentTimeMillis(),
                 activeParty.party.length + activeParty.npcs.length, activeParty.devices.length, activeParty.created.seconds);
         MaxUtils.hasher.reset();
-        final byte[] digest = MaxUtils.hasher.digest(easygoing.getBytes());
         JoinVerificator keyMaster = null;
         if(activeParty.devices.length > 0) keyMaster = new JoinVerificator(activeParty.devices, MaxUtils.hasher);
 
-        PartyJoinOrder real = RunningServiceHandles.getInstance().play = new PartyJoinOrder(activeParty, activeStats, keyMaster, digest);
+        PartyJoinOrder real = RunningServiceHandles.getInstance().play = new PartyJoinOrder(activeParty, activeStats, keyMaster);
         FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
-        Bundle bundle = new Bundle();
-        bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, real.publishToken);
-
         if(activeParty.devices.length > 0) {
             NsdManager nsdm = (NsdManager) getSystemService(NSD_SERVICE);
             real.pumpClients(activeConnections);
@@ -209,14 +205,13 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             StartData.PartyOwnerData.Group party = real.getPartyOwnerData();
             state.buildNotification(party.name, getString(R.string.ga_title));
             startActivityForResult(new Intent(this, GatheringActivity.class), REQUEST_GATHER_DEVICES);
+            surveyor.logEvent(MaxUtils.FA_EVENT_GATHER, null);
         }
         else {
-            bundle.putBoolean(MaxUtils.FA_PARAM_FULLY_LOCAL_SESSION, true);
+            surveyor.logEvent(MaxUtils.FA_EVENT_FULLY_LOCAL_SESSION, null);
             GatheringActivity.tickSessionData(activeStats);
             freeRoaming(false);
         }
-        bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_GATHER);
-        surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
     }
 
 
@@ -349,11 +344,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         handles.state.notification = build;
 
         if(sendAssembled) {
-            FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
-            Bundle bundle = new Bundle();
-            bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_ASSEMBLED);
-            bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, handles.play.publishToken);
-            surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
+            FirebaseAnalytics.getInstance(this).logEvent(MaxUtils.FA_EVENT_CHARS_BOUND, null);
         }
     }
 
