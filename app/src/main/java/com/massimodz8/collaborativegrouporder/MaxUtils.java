@@ -153,6 +153,13 @@ public abstract class MaxUtils {
     public static final String FA_EVENT_CHARS_BOUND = "gatheringComplete";
     public static final String FA_EVENT_NEW_BATTLE = "battleStarted";
 
+    public static final String FA_EVENT_CLIENT_GOT_CHARS = "clientGotChars";
+    /**/public static final String FA_PARAM_BOUND_CHARS_COUNT = "charCount"; // int>0
+
+    public static final String FA_EVENT_CLIENT_ACTIVATED = "remoteClientActivated";
+    /**/public static final String FA_PARAM_ACTIVATION_ROUND = "round"; // int>0
+    /**/public static final String FA_PARAM_ACTIVATION_CHAR = "charKey"; // int>=0
+
     // Used with FirebaseAnalytics.Event.SEARCH
     /**/public static final String FA_PARAM_MONSTERS = "currentEnemies"; // String[]
 
