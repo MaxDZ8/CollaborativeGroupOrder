@@ -37,14 +37,7 @@ import java.util.Map;
  * long story short: I must keep track of those events and remember them. Meh!
  */
 public class PartyJoinOrder extends PublishAcceptHelper {
-
-    public byte[] publishToken;
-
-    /* Section 3: identifying joining devices and binding characters. ------------------------------
-                This goes in parallel with landing socket and publish management so you're better set this up ASAP.
-                As usual, it can be initialized only once and then the service will have to be destroyed.
-                */
-    public void initializePartyManagement(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @NonNull JoinVerificator keyMaster) {
+    public PartyJoinOrder(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @Nullable JoinVerificator keyMaster) {
         assignmentHelper = new PcAssignmentHelper(party, keyMaster) {
             @Override
             protected StartData.ActorDefinition getActorData(int unique) {
@@ -147,6 +140,11 @@ public class PartyJoinOrder extends PublishAcceptHelper {
                     }
                 });
     }
+
+    /* Section 3: identifying joining devices and binding characters. ------------------------------
+                This goes in parallel with landing socket and publish management so you're better set this up ASAP.
+                As usual, it can be initialized only once and then the service will have to be destroyed.
+                */
 
     public void shutdownPartyManagement() {
         if(null != assignmentHelper) {

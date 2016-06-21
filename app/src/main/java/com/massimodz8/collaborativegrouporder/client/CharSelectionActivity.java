@@ -13,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
@@ -81,7 +83,10 @@ public class CharSelectionActivity extends AppCompatActivity {
                             })
                             .show();
                 }
-                // otherwise, wait for detach.
+                // otherwise, wait for detach. But signal binding complete anyway!
+                final Bundle bundle = new Bundle();
+                bundle.putInt(MaxUtils.FA_PARAM_BOUND_CHARS_COUNT, state.playChars.length);
+                FirebaseAnalytics.getInstance(CharSelectionActivity.this).logEvent(MaxUtils.FA_EVENT_CLIENT_GOT_CHARS, bundle);
             }
         };
         partyReady = state.onPartyReady.put(checkReady);

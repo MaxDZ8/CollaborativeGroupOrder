@@ -147,12 +147,18 @@ public abstract class MaxUtils {
     /**/public static final String FA_PARAM_GOING_ADVENTURE = "adventureShortcut";
     /**/public static final String FA_PARAM_KNOWN_PC_COUNT = "pcsAtCreationTime";
 
-    public static final String FA_EVENT_PLAYING = "playing";
-    /**/public static final String FA_PARAM_STEP = "phase"; // enumerated value, can be
-    /**//**/public static final int FA_PARAM_STEP_GATHER = 0; // started gathering devices
-    /**//**//**/public static final int FA_PARAM_STEP_ASSEMBLED = 1; // device gathering ok, free roaming launched
-    /**//**//**/public static final int FA_PARAM_STEP_NEW_BATTLE = 2; // device gathering ok, free roaming launched
-    /**/public static final String FA_PARAM_ADVENTURING_ID = "sortaUniqueGroupId"; // byte[]
+    public static final String FA_EVENT_FULLY_LOCAL_SESSION = "sessionWithZeroClients";
+
+    public static final String FA_EVENT_GATHER = "startedGathering";
+    public static final String FA_EVENT_CHARS_BOUND = "gatheringComplete";
+    public static final String FA_EVENT_NEW_BATTLE = "battleStarted";
+
+    public static final String FA_EVENT_CLIENT_GOT_CHARS = "clientGotChars";
+    /**/public static final String FA_PARAM_BOUND_CHARS_COUNT = "charCount"; // int>0
+
+    public static final String FA_EVENT_CLIENT_ACTIVATED = "remoteClientActivated";
+    /**/public static final String FA_PARAM_ACTIVATION_ROUND = "round"; // int>0
+    /**/public static final String FA_PARAM_ACTIVATION_CHAR = "charKey"; // int>=0
 
     // Used with FirebaseAnalytics.Event.SEARCH
     /**/public static final String FA_PARAM_MONSTERS = "currentEnemies"; // String[]

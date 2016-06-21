@@ -58,6 +58,11 @@ public abstract class SessionHelper {
      */
     public Map<Integer, Initiative> initiatives;
 
+    public int state = S_RUNNING; // S_RUNNING, S_SAVING, S_DONE
+    public static final int S_RUNNING = 0;
+    public static final int S_SAVING = 1;
+    public static final int S_DONE = 2;
+
     public static class Initiative {
         final Network.Roll request; // can be null for 'local' actors, automatically rolled
         Integer rolled; // if null, no result got yet!

@@ -332,11 +332,10 @@ public class PartyCreator extends PublishAcceptHelper {
                 for (BuildingPlayingCharacter pc : building.localChars) {
                     if(pc.status == BuildingPlayingCharacter.STATUS_ACCEPTED) count++;
                 }
-                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(context);
                 Bundle bundle = new Bundle();
-                bundle.putBoolean(MaxUtils.FA_EVENT_PARTY_COMPLETED, goAdventuring);
-                surveyor.logEvent(MaxUtils.FA_PARAM_GOING_ADVENTURE, bundle);
+                bundle.putBoolean(MaxUtils.FA_PARAM_GOING_ADVENTURE, goAdventuring);
                 bundle.putInt(MaxUtils.FA_PARAM_KNOWN_PC_COUNT, count);
+                FirebaseAnalytics.getInstance(context).logEvent(MaxUtils.FA_EVENT_PARTY_COMPLETED, bundle);
                 return null;
             }
 

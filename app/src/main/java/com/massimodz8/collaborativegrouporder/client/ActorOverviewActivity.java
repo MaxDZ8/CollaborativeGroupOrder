@@ -19,6 +19,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.AdventuringActorDataVH;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
@@ -209,18 +210,22 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 final ActionBar sab = getSupportActionBar();
                 if(sab != null) sab.setTitle(ticker.round == Adventure.ROUND_NOT_FIGHTING? R.string.aoa_title : R.string.aoa_title_fighting);
                 if(ticker.round == Adventure.ROUND_NOT_FIGHTING) return;
-                boolean here = false;
-                for (int key : ticker.playedHere) {
-                    if (key == ticker.currentActor) {
-                        here = true;
+                int slot = -1;
+                for (int loop = 0; loop < ticker.playedHere.length; loop++) {
+                    if (ticker.playedHere[loop] == ticker.currentActor) {
+                        slot = loop;
                         break;
                     }
                 }
-                if (!here) return; // in the future maybe current actor will be signaled to other peers as well, not now!
+                if (slot < 0) return; // in the future maybe current actor will be signaled to other peers as well, not now!
                 final Intent intent = new Intent(ActorOverviewActivity.this, MyActorRoundActivity.class)
                         .putExtra(MyActorRoundActivity.EXTRA_CLIENT_MODE, true)
                         .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivityForResult(intent, REQUEST_TURN);
+                final Bundle bundle = new Bundle();
+                bundle.putInt(MaxUtils.FA_PARAM_ACTIVATION_CHAR, slot);
+                bundle.putInt(MaxUtils.FA_PARAM_ACTIVATION_ROUND, ticker.round);
+                FirebaseAnalytics.getInstance(ActorOverviewActivity.this).logEvent(MaxUtils.FA_EVENT_CLIENT_ACTIVATED, bundle);
             }
         });
         endedCall = ticker.onSessionEnded.put(new Runnable() {

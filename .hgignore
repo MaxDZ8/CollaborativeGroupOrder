@@ -36,3 +36,4 @@ app/build/generated/source/r
 .gradle/2.10/tasks
 app/build/generated
 app/build/outputs
+*.apk

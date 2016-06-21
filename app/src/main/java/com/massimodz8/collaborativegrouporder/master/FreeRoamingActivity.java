@@ -142,6 +142,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
     }
 
     private void refresh() {
+        if(game.session.state != SessionHelper.S_RUNNING) return; // just wait a few moments and be gone
         game.onRollReceived = new Runnable() {
             @Override
             public void run() {
@@ -202,11 +203,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 dev.movedToBattlePumper = true;
             }
             startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
-            FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
-            Bundle bundle = new Bundle();
-            bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_NEW_BATTLE);
-            bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, game.publishToken);
-            surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
+            FirebaseAnalytics.getInstance(this).logEvent(MaxUtils.FA_EVENT_NEW_BATTLE, null);
             stats.fighting = null;
             lister.notifyDataSetChanged();
             return;
@@ -343,11 +340,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
 
         game.session.initiatives = null;
         startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
-        FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
-        Bundle bundle = new Bundle();
-        bundle.putInt(MaxUtils.FA_PARAM_STEP, MaxUtils.FA_PARAM_STEP_NEW_BATTLE);
-        bundle.putByteArray(MaxUtils.FA_PARAM_ADVENTURING_ID, game.publishToken);
-        surveyor.logEvent(MaxUtils.FA_EVENT_PLAYING, bundle);
+        FirebaseAnalytics.getInstance(this).logEvent(MaxUtils.FA_EVENT_NEW_BATTLE, null);
 
         findViewById(R.id.fab).setVisibility(View.VISIBLE);
         return true;
@@ -407,9 +400,9 @@ public class FreeRoamingActivity extends AppCompatActivity {
         }
     }
 
-    private boolean saving;
     private void syncSaveAndFinish(boolean confirmed) {
-        if(!confirmed) {
+        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
+        if(!confirmed && !game.assignmentHelper.peers.isEmpty()) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setTitle(R.string.generic_carefulDlgTitle)
                     .setMessage(R.string.fra_exitDlgMsg)
@@ -422,10 +415,9 @@ public class FreeRoamingActivity extends AppCompatActivity {
                     .show();
             return;
         }
-        if(saving) return;
-        saving = true; // no need to set it to false, we terminate activity
+        if(game.session.state != SessionHelper.S_RUNNING) return;
+        game.session.state = SessionHelper.S_SAVING; // no need to set it to false, we terminate activity
         // Might be called from .onActivityResult or while active, using RSH directly is safe in both cases
-        final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         final Session.Suspended save = game.session.stats;
         save.lastSaved = new Timestamp();
         save.lastSaved.seconds = new Date().getTime() / 1000;
@@ -563,6 +555,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Exception e) {
             if(e == null) {
+                RunningServiceHandles.getInstance().play.session.state = SessionHelper.S_DONE;
                 finish();
                 return;
             }
@@ -585,7 +578,6 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg, null));
             }
             refresh();
-
         }
     }
 }
