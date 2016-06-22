@@ -164,5 +164,5 @@ public abstract class MaxUtils {
     /**/public static final String FA_PARAM_MONSTERS = "currentEnemies"; // String[]
 
     // Used with FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS
-    /**/public static final String FA_PARAM_SEARCH_MATCH_COUNT = "matchedEnemies"; // int
+    /**/public static final String FA_PARAM_SEARCH_RESULTS = "matchedEnemies"; // String[]
 }

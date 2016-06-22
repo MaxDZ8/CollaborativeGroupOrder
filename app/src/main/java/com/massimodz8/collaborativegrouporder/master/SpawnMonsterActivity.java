@@ -42,7 +42,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class SpawnMonsterActivity extends AppCompatActivity {
-    private @UserOf PartyJoinOrder game;
     private @UserOf InternalStateService.Data data;
 
     public static boolean includePreparedBattles = true;
@@ -56,7 +55,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
-        game = RunningServiceHandles.getInstance().play;
+        PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         data = RunningServiceHandles.getInstance().state.data; // this should be no trouble but comes handy
 
         // Get the intent, verify the action and get the query
@@ -69,7 +68,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
         Bundle info = new Bundle();
         info.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
-        info.putStringArrayList(MaxUtils.FA_PARAM_MONSTERS, mobNames(simplifier));
+        info.putStringArrayList(MaxUtils.FA_PARAM_MONSTERS, mobNames(game.session.temporaries, simplifier));
         surveyor.logEvent(FirebaseAnalytics.Event.SEARCH, info);
 
         SpawnableAdventuringActorVH.intCrFormat = getString(R.string.mVH_challangeRatio_integral);
@@ -177,13 +176,13 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 list.setVisibility(View.VISIBLE);
                 MaxUtils.setVisibility(SpawnMonsterActivity.this, View.GONE, R.id.sma_progress);
                 final TextView status = (TextView) findViewById(R.id.sma_status);
-                if(this.matched.size() == 1) status.setText(R.string.sma_status_matchedSingle);
-                else status.setText(String.format(getString(R.string.sma_status_matchedMultiple), this.matched.size()));
+                if(matched.size() == 1) status.setText(R.string.sma_status_matchedSingle);
+                else status.setText(String.format(getString(R.string.sma_status_matchedMultiple), matched.size()));
 
                 FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(SpawnMonsterActivity.this);
                 Bundle info = new Bundle();
                 info.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
-                info.putInt(MaxUtils.FA_PARAM_SEARCH_MATCH_COUNT, matched.size());
+                info.putStringArrayList(MaxUtils.FA_PARAM_SEARCH_RESULTS, mobNames(matched));
                 surveyor.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, info);
             }
         }.execute();
@@ -207,10 +206,20 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         });
     }
 
-    private ArrayList<String> mobNames(Pattern simplifier) {
-        SessionHelper session = game.session;
+    private ArrayList<String> mobNames(ArrayList<MatchedEntry> matched) {
+        ArrayList<String> res = new ArrayList<>(64);
+        for (MatchedEntry el : matched) {
+            MaxUtils.hasher.reset();
+            final String name = el.mob != null? el.mob.name : el.battle.desc;
+            final String prefix = el.mob != null? "M:" : String.format(Locale.ENGLISH, "PE(%1$d):", el.battle.actors.length);
+            res.add(prefix + Base64.encodeToString(MaxUtils.hasher.digest(name.getBytes()), Base64.DEFAULT));
+        }
+        return res;
+    }
+
+    private static ArrayList<String> mobNames(ArrayList<Network.ActorState> mobs, Pattern simplifier) {
         int count = 0;
-        for (Network.ActorState as : session.temporaries) {
+        for (Network.ActorState as : mobs) {
             if(as.type != Network.ActorState.T_MOB) continue;
             count++;
         }
@@ -219,7 +228,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         // I cannot just store them. So what I'm doing: I remove everything I might have added to disambiguate,
         // I remove digits, (), punctuation and then hash it. Same hash, same thing. But! I cannot store those either as
         // bundles have arrays of strings but not arrays of arrays... meh! I just send everything Base64 and be done.
-        for (Network.ActorState as : session.temporaries) {
+        for (Network.ActorState as : mobs) {
             if(as.type != Network.ActorState.T_MOB) continue;
             String cleared = simplifier.matcher(as.name).replaceAll("");
             MaxUtils.hasher.reset();
