@@ -27,7 +27,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainMenuActivity">
+        <activity android:name=".MainMenuActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,6 +37,7 @@
         </activity>
         <activity
             android:name=".client.SelectFormingGroupActivity"
+            android:screenOrientation="portrait"
             android:label="@string/sfga_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -44,9 +46,11 @@
         </activity>
         <activity
             android:name=".ExplicitConnectionActivity"
+            android:screenOrientation="portrait"
             android:label="@string/eca_title" />
         <activity
             android:name=".master.NewPartyDeviceSelectionActivity"
+            android:screenOrientation="portrait"
             android:label="@string/npdsa_title"
             android:parentActivityName=".MainMenuActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -56,6 +60,7 @@
         </activity>
         <activity
             android:name=".master.NewCharactersApprovalActivity"
+            android:screenOrientation="portrait"
             android:label="@string/ncaa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -64,6 +69,7 @@
         </activity>
         <activity
             android:name=".client.NewCharactersProposalActivity"
+            android:screenOrientation="portrait"
             android:label="@string/ncpa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -72,6 +78,7 @@
         </activity>
         <activity
             android:name=".PartyPickActivity"
+            android:screenOrientation="portrait"
             android:label="@string/ppa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -80,6 +87,7 @@
         </activity>
         <activity
             android:name=".master.GatheringActivity"
+            android:screenOrientation="portrait"
             android:label="@string/ga_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -88,6 +96,7 @@
         </activity>
         <activity
             android:name=".client.JoinSessionActivity"
+            android:screenOrientation="portrait"
             android:label="@string/jsa_title"
             android:parentActivityName=".MainMenuActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -97,6 +106,7 @@
         </activity>
         <activity
             android:name=".client.CharSelectionActivity"
+            android:screenOrientation="portrait"
             android:label="@string/csa_title"
             android:parentActivityName=".MainMenuActivity">
             <meta-data
@@ -104,23 +114,9 @@
                 android:value="com.massimodz8.collaborativegrouporder.MainMenuActivity" />
         </activity>
 
-        <service
-            android:name=".master.PartyJoinOrderService"
-            android:enabled="true"
-            android:exported="false"
-            android:label="@string/pjos_label" />
-        <service
-            android:name=".master.PartyCreationService"
-            android:enabled="true"
-            android:exported="false"
-            android:label="@string/pcs_label" />
-        <service
-            android:name=".PartyPickingService"
-            android:enabled="true"
-            android:exported="false" />
-
         <activity
             android:name=".master.FreeRoamingActivity"
+            android:screenOrientation="portrait"
             android:label="@string/fra_title"
             android:parentActivityName=".master.GatheringActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -130,6 +126,7 @@
         </activity>
         <activity
             android:name=".master.SpawnMonsterActivity"
+            android:screenOrientation="portrait"
             android:label="@string/sma_title"
             android:parentActivityName=".master.FreeRoamingActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -146,6 +143,7 @@
         </activity>
         <activity
             android:name=".master.BattleActivity"
+            android:screenOrientation="portrait"
             android:label="@string/ba_title"
             android:parentActivityName=".master.FreeRoamingActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -155,6 +153,7 @@
         </activity>
         <activity
             android:name=".MyActorRoundActivity"
+            android:screenOrientation="portrait"
             android:label="@string/mara_title"
             android:parentActivityName=".master.BattleActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -163,13 +162,9 @@
                 android:value=".master.BattleActivity" />
         </activity>
 
-        <service
-            android:name=".client.AdventuringService"
-            android:enabled="true"
-            android:exported="false" />
-
         <activity
             android:name=".client.ActorOverviewActivity"
+            android:screenOrientation="portrait"
             android:label="@string/aoa_title"
             android:parentActivityName=".MainMenuActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -179,6 +174,7 @@
         </activity>
         <activity
             android:name=".master.AwardExperienceActivity"
+            android:screenOrientation="portrait"
             android:label="@string/aea_title"
             android:parentActivityName=".master.FreeRoamingActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -196,6 +192,7 @@
         </activity>
         <activity
             android:name=".CustomMonstersActivity"
+            android:screenOrientation="portrait"
             android:label="@string/cma_title"
             android:parentActivityName=".MainMenuActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -205,6 +202,7 @@
         </activity>
         <activity
             android:name=".PreparedBattlesActivity"
+            android:screenOrientation="portrait"
             android:label="@string/pba_title"
             android:parentActivityName=".MainMenuActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -214,6 +212,7 @@
         </activity>
         <activity
             android:name=".NewCustomMonsterActivity"
+            android:screenOrientation="portrait"
             android:label="@string/ncma_title"
             android:parentActivityName=".CustomMonstersActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -223,6 +222,7 @@
         </activity>
         <activity
             android:name=".NewPreparedBattleActivity"
+            android:screenOrientation="portrait"
             android:label="@string/npba_title"
             android:parentActivityName=".PreparedBattlesActivity"
             android:theme="@style/AppTheme.NoActionBar">
