@@ -165,4 +165,21 @@ public abstract class MaxUtils {
 
     // Used with FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS
     /**/public static final String FA_PARAM_SEARCH_RESULTS = "matchedEnemies"; // String[]
+
+    // Master clicks on the 'trigger readied action' / interrupt control.
+    public static final String FA_EVENT_READIED_ACTION_TRIGGERED = "readiedActionTriggered";
+
+    // A character with a readied action can act normally - its action was lost.
+    public static final String FA_EVENT_READIED_ACTION_TICKED = "readiedUseless";
+    /**/public static final String FA_PARAM_READIED_ACTION_RENEWED = "renewed"; // boolean, if false -> cancelled, default is false
+
+    // Always generated when the user dismisses the shuffle init dialog from client.
+    public static final String FA_EVENT_CLIENT_SHUFFLE_ORDER = "clientOrderShuffle";
+    /**/public static final String FA_PARAM_SHUFFLED_MOVEMENT = "relative"; // int
+    /**/public static final String FA_PARAM_SHUFFLE_CANCELLED = "cancelled"; // bool
+
+    // Always generated when the user dismisses the prepared action dialog from client
+    public static final String FA_EVENT_CLIENT_READY_ACTION = "clientReadiedActionRequest";
+    /**/public static final String FA_PARAM_READY_ACTION_DESC_LEN = "descLen";
+    /**/public static final String FA_PARAM_READY_ACTION_CANCELLED = "descLen";
 }

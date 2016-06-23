@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
@@ -269,6 +270,7 @@ public class BattleActivity extends AppCompatActivity {
             }
             lister.notifyDataSetChanged();
             activateNewActorLocal();
+            FirebaseAnalytics.getInstance(BattleActivity.this).logEvent(MaxUtils.FA_EVENT_READIED_ACTION_TRIGGERED, null);
         }
     }
 
@@ -373,6 +375,8 @@ public class BattleActivity extends AppCompatActivity {
             return;
         }
         final int currentSlot = currSlot;
+        final FirebaseAnalytics survey = FirebaseAnalytics.getInstance(this);
+        final Bundle info = new Bundle();
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setMessage(String.format(getString(R.string.ba_dlg_gotPreparedAction), actor.name))
                 .setPositiveButton(R.string.ba_dlg_gotPreparedAction_renew, new DialogInterface.OnClickListener() {
@@ -380,6 +384,8 @@ public class BattleActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Renewing is super cool - the dude will just not act and we're nice with it.
                         actionCompleted(true);
+                        info.putBoolean(MaxUtils.FA_PARAM_READIED_ACTION_RENEWED, true);
+                        survey.logEvent(MaxUtils.FA_EVENT_READIED_ACTION_TICKED, info);
                     }
                 }).setNegativeButton(getString(R.string.ba_dlg_gotPreparedAction_discard), new DialogInterface.OnClickListener() {
             @Override
@@ -403,6 +409,7 @@ public class BattleActivity extends AppCompatActivity {
                             game.session.lastActivated = actor.peerKey;
                         }
                         activateNewActorLocal();
+                        survey.logEvent(MaxUtils.FA_EVENT_READIED_ACTION_TICKED, info);
                     }
                 }).setCancelable(false)
                 .show();

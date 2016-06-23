@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.massimodz8.collaborativegrouporder.client.Adventure;
 import com.massimodz8.collaborativegrouporder.master.BattleHelper;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrder;
@@ -220,6 +221,8 @@ public class MyActorRoundActivity extends AppCompatActivity {
                         });
             } break;
             case R.id.mara_menu_readiedAction: {
+                final FirebaseAnalytics survey = FirebaseAnalytics.getInstance(this);
+                final Bundle info = new Bundle();
                 final AlertDialog dlg = new AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setView(R.layout.dialog_ready_action_proposal)
                         .setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -230,6 +233,8 @@ public class MyActorRoundActivity extends AppCompatActivity {
                                 if(focused != null && imm != null && imm.isActive()) {
                                     imm.hideSoftInputFromWindow(focused.getWindowToken(), 0);
                                 }
+                                info.putBoolean(MaxUtils.FA_PARAM_READY_ACTION_CANCELLED, true);
+                                survey.logEvent(MaxUtils.FA_EVENT_CLIENT_READY_ACTION, info);
                             }
                         }).create();
                 dlg.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dlgRAP_apply), new DialogInterface.OnClickListener() {
@@ -239,6 +244,8 @@ public class MyActorRoundActivity extends AppCompatActivity {
                             final String s = text.getText().toString();
                             if(!s.isEmpty()) requestReadiedAction(s);
                             else requestReadiedAction(getString(R.string.mara_readyAction));
+                            info.putInt(MaxUtils.FA_PARAM_READY_ACTION_DESC_LEN, s.length());
+                            survey.logEvent(MaxUtils.FA_EVENT_CLIENT_READY_ACTION, info);
                             turnDone();
                         }
                     }
