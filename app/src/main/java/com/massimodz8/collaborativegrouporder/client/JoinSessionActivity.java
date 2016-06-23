@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.massimodz8.collaborativegrouporder.AccumulatingDiscoveryListener;
 import com.massimodz8.collaborativegrouporder.ConnectionAttempt;
 import com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity;
+import com.massimodz8.collaborativegrouporder.MyDialogsFactory;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
@@ -41,6 +43,14 @@ public class JoinSessionActivity extends AppCompatActivity {
         final ActionBar sab = getSupportActionBar();
         if (null != sab) sab.setDisplayHomeAsUpEnabled(true);
         state = RunningServiceHandles.getInstance().joinGame;
+        final Snackbar temp = Snackbar.make(findViewById(R.id.activityRoot), getString(R.string.client_missingMyParty), Snackbar.LENGTH_LONG);
+        temp.setAction(R.string.generic_help, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyDialogsFactory.showNetworkDiscoveryTroubleshoot(JoinSessionActivity.this, true);
+            }
+        });
+        temp.show();
     }
 
     @Override

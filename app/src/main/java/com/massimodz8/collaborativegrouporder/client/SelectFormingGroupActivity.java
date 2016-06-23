@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +21,7 @@ import com.massimodz8.collaborativegrouporder.AccumulatingDiscoveryListener;
 import com.massimodz8.collaborativegrouporder.ConnectionAttempt;
 import com.massimodz8.collaborativegrouporder.ExplicitConnectionActivity;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.MyDialogsFactory;
 import com.massimodz8.collaborativegrouporder.PartyInfo;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
@@ -41,6 +43,14 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         groupList.setLayoutManager(new LinearLayoutManager(this));
         groupList.setAdapter(new GroupListAdapter());
         state = RunningServiceHandles.getInstance().partySelection;
+        final Snackbar temp = Snackbar.make(findViewById(R.id.activityRoot), getString(R.string.client_missingMyParty), Snackbar.LENGTH_LONG);
+        temp.setAction(R.string.generic_help, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyDialogsFactory.showNetworkDiscoveryTroubleshoot(SelectFormingGroupActivity.this, true);
+            }
+        });
+        temp.show();
     }
 
     @Override
@@ -223,20 +233,17 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
 
     private void refreshGUI() {
         boolean discovering = state.explorer.getDiscoveryStatus() == AccumulatingDiscoveryListener.EXPLORING;
-        int talked = 0, explicit = 0;
+        int talked = 0;
         for (GroupState gs : state.candidates) {
             if (gs.lastMsgSent != null) talked++;
-            if(!gs.discovered) explicit++;
         }
         MaxUtils.setVisibility(this, discovering ? View.VISIBLE : View.GONE,
                 R.id.selectFormingGroupActivity_progressBar);
         findViewById(R.id.selectFormingGroupActivity_groupList).setVisibility(state.candidates.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         findViewById(R.id.sfga_confirmInstructions).setVisibility(talked == 0? View.GONE : View.VISIBLE);
         MaxUtils.setVisibility(this, View.VISIBLE,
-                R.id.sfga_explicitConnectionInstructions,
-                R.id.selectFormingGroupActivity_startExplicitConnection);
+                R.id.sfga_startExplicitConnection);
 
-        findViewById(R.id.sfga_explicitConnectionInstructions).setVisibility(explicit == 0? View.VISIBLE : View.GONE);
         findViewById(R.id.sfga_lookingForGroups).setVisibility(discovering && state.candidates.size() == 0? View.VISIBLE : View.GONE);
         ((RecyclerView) findViewById(R.id.selectFormingGroupActivity_groupList)).getAdapter().notifyDataSetChanged();
     }

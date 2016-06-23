@@ -15,6 +15,7 @@
     <string name="generic_mustBeAtLeast0">Must be ≥0</string>
     <string name="generic_discard">Discard</string>
     <string name="generic_initError">Initialization error</string>
+    <string name="generic_help">Help</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
     <string name="master_failedPublish">Could not publish party to wi-fi. Your friends can still connect but only using explicit connections.</string>
@@ -24,6 +25,8 @@
     <string name="master_badServerSocket">Cannot open communication so your friend\'s devices can connect. This is very serious and prevents anything from working.</string>
     <string name="master_giveUpAndGoBack">Give up and go back</string>
     <string name="master_cannotEnumerateNICs">Failed to get network information. This isn\'t really a problem but you\'ll have to find this device network address in some other way in case your friends need explicit connection data.</string>
+
+    <string name="client_missingMyParty">Cannot find your party?</string>
 
     <string name="both_noDiscoveryManager">Looks like Network Service Discovery is unavailable. This functionality is required.</string>
 
@@ -83,7 +86,6 @@
 
     <string name="sfga_title">Joining a new party</string>
     <string name="sfga_lookingForParties">Searching for parties. Found parties will appear below.</string>
-    <string name="sfga_explicitConnectionInstructions">Cannot find your party? Try an explicit connection!</string>
     <string name="sfga_confirmInstructions">You will advance to next step automatically as soon as the party is formed.</string>
     <string name="sfga_startExplicitConnection">Explicit connection</string>
     <string name="sfga_lostConnection">Lost connection to party \"%1$s\", reason given: %2$s.</string>
@@ -797,5 +799,16 @@
     <string name="vhPMD_iconDesc">Device icon</string>
     <string name="iss_existsButNoDir">\"%1$s\" exists but it\'s not a directory.</string>
     <string name="iss_cannotCreateDir">Cannot create \"%1$s\" directory.</string>
+
+    <string name="dlgNSDTroubleshoot_intro">Sorry to know it isn\'t working!\nNetwork exploration works only in certain conditions.</string>
+    <string name="dlgNSDTroubleshoot_h1_title">1. Is master publishing?</string>
+    <string name="dlgNSDTroubleshoot_h1_msg">You need to be in Wi-Fi range and master device must be in "accept connection" mode.</string>
+    <string name="dlgNSDTroubleshoot_h2_title_forming">2. Is the party being assembled right now?</string>
+    <string name="dlgNSDTroubleshoot_h2_msg_forming">Party creation is special: it will let new devices in and distribute them special keys for automated login at later time.</string>
+    <string name="dlgNSDTroubleshoot_h2_title_gathering">2. Are you sure you are in the party?</string>
+    <string name="dlgNSDTroubleshoot_h2_msg_gathering">Once the party is assembled every device gets a special key. This key is used to identify each device and assign its settings. If this device does not hold a key, then Master needs to give it one. He can do so by the \"party picker\", there\'s a special menu option.</string>
+    <string name="dlgNSDTroubleshoot_h3_title">3. Are you on the same network?</string>
+    <string name="dlgNSDTroubleshoot_h3_msg">Because of how the thing works, I can only find parties in the same Wi-Fi network. You can ensure to be on the same network by using <i>tethering</i>. You will need to ask Master to enable it on his/her device, connect to it and restart the app.</string>
+    <string name="dlgNSDTroubleshoot_outro">Still not working? I want to make this work! Please get in touch with support and we\'ll sort it out!\ncollaborativegrouporder@gmail.com\nhttps://www.reddit.com/r/app_cgo\nIn the meanwhile you can also go back and try an <i>explicit connection</i>, you will find it in the menu options.</string>
 
 </resources>

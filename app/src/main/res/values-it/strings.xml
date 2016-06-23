@@ -575,7 +575,6 @@
     <string name="sfga_connectedGotDoormat">Trovato un gruppo ma il master vuole verificare una chiave ed io non so che fare. Scartato.</string>
     <string name="sfga_connectedNotForming">Trovato un gruppo ma non è in fase formazione. Scartato.</string>
     <string name="sfga_emptyMessageForbidden">I messaggi vuoti sono vietati.</string>
-    <string name="sfga_explicitConnectionInstructions">Non trovi il tuo gruppo? Prova una connessione esplicita!</string>
     <string name="sfga_lookingForParties">Ricerca gruppi. I gruppi trovati appariranno sotto.</string>
     <string name="sfga_lostConnection">Connessione al gruppo \"%1$s\" interrotta, ragione: %2$s.</string>
     <string name="sfga_messageTooLong">Messaggio troppo lungo. Potrebbe essere stato mostrato parzialmente o completamente ignorato. La prossima volta rispetta il budget!</string>

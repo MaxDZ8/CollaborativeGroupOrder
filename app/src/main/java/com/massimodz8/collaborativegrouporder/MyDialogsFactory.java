@@ -3,6 +3,7 @@ package com.massimodz8.collaborativegrouporder;
 import android.content.Context;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
+import android.widget.TextView;
 
 /**
  * Created by Massimo on 27/05/2016.
@@ -10,6 +11,14 @@ import android.support.v7.app.AlertDialog;
  * Plus, I want to track them and they're mostly small. Trying a new method.
  */
 public abstract class MyDialogsFactory {
+    public static void showNetworkDiscoveryTroubleshoot(Context ctx, boolean forming) {
+        String title = ctx.getString(forming? R.string.dlgNSDTroubleshoot_h2_title_forming : R.string.dlgNSDTroubleshoot_h2_title_gathering);
+        String msg = ctx.getString(forming? R.string.dlgNSDTroubleshoot_h2_msg_forming : R.string.dlgNSDTroubleshoot_h2_msg_gathering);
+        final AlertDialog temp = new AlertDialog.Builder(ctx, R.style.AppDialogStyle).setView(R.layout.dialog_nsd_troubleshoot).show();
+        ((TextView)temp.findViewById(R.id.dlgNSDTroubleshoot_h2_title)).setText(title);
+        ((TextView)temp.findViewById(R.id.dlgNSDTroubleshoot_h2_msg)).setText(msg);
+    }
+
     public interface ActorProposal {
         void onInputCompleted(BuildingPlayingCharacter pc);
     }
