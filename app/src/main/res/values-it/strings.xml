@@ -171,7 +171,7 @@
     <string name="jsa_searching">Esploro la rete Wi-Fi…</string>
     <string name="jsa_title">Entra in gruppo</string>
     <string name="mVH_challangeRatio_fraction">GS %1$d/%2$d</string>
-    <string name="mVH_challangeRatio_integral">GS %1$d/%2$d</string>
+    <string name="mVH_challangeRatio_integral">GS %1$d</string>
     <string name="mVH_dragonMaturityNameExpansion">%1$s, %2$s</string>
     <string name="mVH_elementalMaturityNameExpansion">%1$s, %2$s</string>
     <string name="mVH_spawnCountFeedback">Genera: %1$d</string>

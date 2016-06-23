@@ -57,8 +57,7 @@ message Monster {
 		TT_AUGMENTING = 2; // this is a special CANON tag which also takes data
 		TT_RACE = 3;
 		TT_EXTRA_TEMPLATE = 4;
-		TT_CONDITIONAL_INITIATIVE = 5;
-		TT_EXTRA_METADATA = 6;
+		TT_EXTRA_METADATA = 5;
 	}
 	
 	message Tag {
@@ -67,25 +66,7 @@ message Monster {
 		MonsterType augmenting = 3; // type == AUGMENTING, can be INVALID_MONSTER_TYPE for 'unspecified' yes, it happens!
 		Race race = 4; // type == RACE
 		ExtraTemplate extraTemplate = 5; // type == EXTRA_TEMPLATE
-		ConditionalInitiative ctxInit = 6; // type == CONDITIONAL_INITIATIVE
 		MetaData note = 7; // type == TT_EXTRA_METADATA
-	}
-	
-	message ConditionalInitiative {
-		int32 init = 1;
-		Condition when = 2;
-		repeated ExprToken params = 3;
-		
-		enum Condition {
-			CONDITION_INVALID = 0;
-			
-			ACTION_CLIMB = 1;
-		}
-		enum ExprToken {
-			TOKEN_INVALID = 0;
-			
-			TREE = 1;
-		}
 	}
 	
 	message MetaData {

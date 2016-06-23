@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class MonsterVH extends RecyclerView.ViewHolder {
     final TextView name, otherNames, cr, publisherInfo, extraNotes;
-    final TextView exampleCreature, initLabel, init, conditionalInitiative;
+    final TextView exampleCreature, initLabel, init;
     final TextView inBattle;
     final Drawable battlingIcon;
     final Map<MonsterData.Monster, Integer> battleCount;
@@ -55,7 +55,6 @@ public class MonsterVH extends RecyclerView.ViewHolder {
         publisherInfo = (TextView) itemView.findViewById(R.id.vhMLE_publisherNotes);
         exampleCreature = (TextView) itemView.findViewById(R.id.vhMLE_exampleCreature);
         init = (TextView) itemView.findViewById(R.id.vhMLE_initiative);
-        conditionalInitiative = (TextView) itemView.findViewById(R.id.vhMLE_conditionalInitiative);
         initLabel = (TextView) itemView.findViewById(R.id.vhMLE_initiativeLabel);
         final TextView temp = (TextView) itemView.findViewById(R.id.vhMLE_inBattle);
         if(battleCount == null) {
@@ -129,11 +128,10 @@ public class MonsterVH extends RecyclerView.ViewHolder {
 
     public void bindData(String[] names, MonsterData.Monster data) {
         currentBinding = data;
-        if(visMode < MODE_STANDARD) MaxUtils.setVisibility(View.GONE, exampleCreature, init, initLabel, conditionalInitiative);
+        if(visMode < MODE_STANDARD) MaxUtils.setVisibility(View.GONE, exampleCreature, init, initLabel);
         else {
             MaxUtils.setVisibility(View.VISIBLE, init, initLabel);
             MaxUtils.setTextUnlessNull(exampleCreature, data.header.example.isEmpty()? null : data.header.example, View.GONE);
-            MaxUtils.setTextUnlessNull(conditionalInitiative, buildCondInitString(), View.GONE);
             init.setText(String.valueOf(data.header.initiative));
 
         }
@@ -205,26 +203,6 @@ public class MonsterVH extends RecyclerView.ViewHolder {
             final Integer integer = battleCount.get(currentBinding);
             updatedBattleCount(integer != null? integer : 0);
         }
-    }
-
-    private String buildCondInitString() {
-        StringBuilder result = new StringBuilder();
-        for (MonsterData.Monster.Tag tag : currentBinding.header.tags) {
-            if(tag.type != MonsterData.Monster.TT_CONDITIONAL_INITIATIVE) continue;
-            if(result.length() > 0) result.append('\n');
-            switch(tag.ctxInit.when) {
-                case MonsterData.Monster.ConditionalInitiative.ACTION_CLIMB: {
-                    String expr = ctx.getString(R.string.mVH_badActionClimbToken);
-                    if(tag.ctxInit.params.length != 1) expr = ctx.getString(R.string.mVH_badActionClimbParamArray);
-                    else if(tag.ctxInit.params[0] == MonsterData.Monster.ConditionalInitiative.TREE) expr = ctx.getString(R.string.mVH_actionClimb_tree);
-                    // TODO: this is stupid! Just let this be a presentation string!
-                    result.append(String.format(Locale.ENGLISH, ctx.getString(R.string.mVH_actionClimbingMessage), tag.ctxInit.init, ctx.getString(R.string.mVH_actionClimbing), expr));
-                } break;
-                default:
-                    result.append(ctx.getString(R.string.mVH_badConditionalInitiative));
-            }
-        }
-        return result.length() == 0? null : result.toString();
     }
 
     private void updatedBattleCount(int count) {

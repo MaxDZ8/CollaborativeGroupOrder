@@ -524,8 +524,7 @@ public interface MonsterData {
     public static final int TT_AUGMENTING = 2;
     public static final int TT_RACE = 3;
     public static final int TT_EXTRA_TEMPLATE = 4;
-    public static final int TT_CONDITIONAL_INITIATIVE = 5;
-    public static final int TT_EXTRA_METADATA = 6;
+    public static final int TT_EXTRA_METADATA = 5;
 
     // enum KnownTemplate
     public static final int KT_INVALID = 0;
@@ -1136,9 +1135,6 @@ public interface MonsterData {
       // optional .collaborativeGroupOrder.ExtraTemplate extraTemplate = 5;
       public int extraTemplate;
 
-      // optional .collaborativeGroupOrder.Monster.ConditionalInitiative ctxInit = 6;
-      public com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative ctxInit;
-
       // optional .collaborativeGroupOrder.Monster.MetaData note = 7;
       public com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.MetaData note;
 
@@ -1152,7 +1148,6 @@ public interface MonsterData {
         augmenting = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE;
         race = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_RACE;
         extraTemplate = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE;
-        ctxInit = null;
         note = null;
         cachedSize = -1;
         return this;
@@ -1175,9 +1170,6 @@ public interface MonsterData {
         }
         if (this.extraTemplate != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE) {
           output.writeInt32(5, this.extraTemplate);
-        }
-        if (this.ctxInit != null) {
-          output.writeMessage(6, this.ctxInit);
         }
         if (this.note != null) {
           output.writeMessage(7, this.note);
@@ -1207,10 +1199,6 @@ public interface MonsterData {
         if (this.extraTemplate != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeInt32Size(5, this.extraTemplate);
-        }
-        if (this.ctxInit != null) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeMessageSize(6, this.ctxInit);
         }
         if (this.note != null) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
@@ -1242,7 +1230,6 @@ public interface MonsterData {
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_AUGMENTING:
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_RACE:
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_EXTRA_TEMPLATE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_CONDITIONAL_INITIATIVE:
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_EXTRA_METADATA:
                   this.type = value;
                   break;
@@ -1567,13 +1554,6 @@ public interface MonsterData {
               }
               break;
             }
-            case 50: {
-              if (this.ctxInit == null) {
-                this.ctxInit = new com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative();
-              }
-              input.readMessage(this.ctxInit);
-              break;
-            }
             case 58: {
               if (this.note == null) {
                 this.note = new com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.MetaData();
@@ -1594,205 +1574,6 @@ public interface MonsterData {
               com.google.protobuf.nano.CodedInputByteBufferNano input)
           throws java.io.IOException {
         return new Tag().mergeFrom(input);
-      }
-    }
-
-    public static final class ConditionalInitiative extends
-        com.google.protobuf.nano.MessageNano {
-
-      // enum Condition
-      public static final int CONDITION_INVALID = 0;
-      public static final int ACTION_CLIMB = 1;
-
-      // enum ExprToken
-      public static final int TOKEN_INVALID = 0;
-      public static final int TREE = 1;
-
-      private static volatile ConditionalInitiative[] _emptyArray;
-      public static ConditionalInitiative[] emptyArray() {
-        // Lazily initializes the empty array
-        if (_emptyArray == null) {
-          synchronized (
-              com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-            if (_emptyArray == null) {
-              _emptyArray = new ConditionalInitiative[0];
-            }
-          }
-        }
-        return _emptyArray;
-      }
-
-      // optional int32 init = 1;
-      public int init;
-
-      // optional .collaborativeGroupOrder.Monster.ConditionalInitiative.Condition when = 2;
-      public int when;
-
-      // repeated .collaborativeGroupOrder.Monster.ConditionalInitiative.ExprToken params = 3;
-      public int[] params;
-
-      public ConditionalInitiative() {
-        clear();
-      }
-
-      public ConditionalInitiative clear() {
-        init = 0;
-        when = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.CONDITION_INVALID;
-        params = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
-        cachedSize = -1;
-        return this;
-      }
-
-      @Override
-      public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-          throws java.io.IOException {
-        if (this.init != 0) {
-          output.writeInt32(1, this.init);
-        }
-        if (this.when != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.CONDITION_INVALID) {
-          output.writeInt32(2, this.when);
-        }
-        if (this.params != null && this.params.length > 0) {
-          for (int i = 0; i < this.params.length; i++) {
-            output.writeInt32(3, this.params[i]);
-          }
-        }
-        super.writeTo(output);
-      }
-
-      @Override
-      protected int computeSerializedSize() {
-        int size = super.computeSerializedSize();
-        if (this.init != 0) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeInt32Size(1, this.init);
-        }
-        if (this.when != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.CONDITION_INVALID) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeInt32Size(2, this.when);
-        }
-        if (this.params != null && this.params.length > 0) {
-          int dataSize = 0;
-          for (int i = 0; i < this.params.length; i++) {
-            int element = this.params[i];
-            dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
-                .computeInt32SizeNoTag(element);
-          }
-          size += dataSize;
-          size += 1 * this.params.length;
-        }
-        return size;
-      }
-
-      @Override
-      public ConditionalInitiative mergeFrom(
-              com.google.protobuf.nano.CodedInputByteBufferNano input)
-          throws java.io.IOException {
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              return this;
-            default: {
-              if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              this.init = input.readInt32();
-              break;
-            }
-            case 16: {
-              int value = input.readInt32();
-              switch (value) {
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.CONDITION_INVALID:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.ACTION_CLIMB:
-                  this.when = value;
-                  break;
-              }
-              break;
-            }
-            case 24: {
-              int length = com.google.protobuf.nano.WireFormatNano
-                  .getRepeatedFieldArrayLength(input, 24);
-              int[] validValues = new int[length];
-              int validCount = 0;
-              for (int i = 0; i < length; i++) {
-                if (i != 0) { // tag for first value already consumed.
-                  input.readTag();
-                }
-                int value = input.readInt32();
-                switch (value) {
-                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TOKEN_INVALID:
-                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TREE:
-                    validValues[validCount++] = value;
-                    break;
-                }
-              }
-              if (validCount != 0) {
-                int i = this.params == null ? 0 : this.params.length;
-                if (i == 0 && validCount == validValues.length) {
-                  this.params = validValues;
-                } else {
-                  int[] newArray = new int[i + validCount];
-                  if (i != 0) {
-                    java.lang.System.arraycopy(this.params, 0, newArray, 0, i);
-                  }
-                  java.lang.System.arraycopy(validValues, 0, newArray, i, validCount);
-                  this.params = newArray;
-                }
-              }
-              break;
-            }
-            case 26: {
-              int bytes = input.readRawVarint32();
-              int limit = input.pushLimit(bytes);
-              // First pass to compute array length.
-              int arrayLength = 0;
-              int startPos = input.getPosition();
-              while (input.getBytesUntilLimit() > 0) {
-                switch (input.readInt32()) {
-                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TOKEN_INVALID:
-                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TREE:
-                    arrayLength++;
-                    break;
-                }
-              }
-              if (arrayLength != 0) {
-                input.rewindToPosition(startPos);
-                int i = this.params == null ? 0 : this.params.length;
-                int[] newArray = new int[i + arrayLength];
-                if (i != 0) {
-                  java.lang.System.arraycopy(this.params, 0, newArray, 0, i);
-                }
-                while (input.getBytesUntilLimit() > 0) {
-                  int value = input.readInt32();
-                  switch (value) {
-                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TOKEN_INVALID:
-                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TREE:
-                      newArray[i++] = value;
-                      break;
-                  }
-                }
-                this.params = newArray;
-              }
-              input.popLimit(limit);
-              break;
-            }
-          }
-        }
-      }
-
-      public static ConditionalInitiative parseFrom(byte[] data)
-          throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-        return com.google.protobuf.nano.MessageNano.mergeFrom(new ConditionalInitiative(), data);
-      }
-
-      public static ConditionalInitiative parseFrom(
-              com.google.protobuf.nano.CodedInputByteBufferNano input)
-          throws java.io.IOException {
-        return new ConditionalInitiative().mergeFrom(input);
       }
     }
 
