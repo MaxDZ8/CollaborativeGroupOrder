@@ -47,12 +47,4 @@
         android:gravity="center_horizontal"
         android:visibility="gone" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sfga_startExplicitConnection"
-        android:id="@+id/sfga_startExplicitConnection"
-        android:onClick="startExplicitConnectionActivity_callback"
-        android:visibility="gone" />
-
 </LinearLayout>

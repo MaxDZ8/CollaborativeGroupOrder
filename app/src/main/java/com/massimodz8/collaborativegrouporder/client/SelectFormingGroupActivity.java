@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -101,11 +103,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         state.onEvent.remove(eventid);
-    }
-
-    public void startExplicitConnectionActivity_callback(View btn) {
-        RunningServiceHandles.getInstance().connectionAttempt = new ConnectionAttempt();
-        startActivityForResult(new Intent(this, ExplicitConnectionActivity.class), EXPLICIT_CONNECTION_REQUEST);
     }
 
     private class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.GroupViewHolder> {
@@ -241,8 +238,6 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                 R.id.selectFormingGroupActivity_progressBar);
         findViewById(R.id.selectFormingGroupActivity_groupList).setVisibility(state.candidates.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         findViewById(R.id.sfga_confirmInstructions).setVisibility(talked == 0? View.GONE : View.VISIBLE);
-        MaxUtils.setVisibility(this, View.VISIBLE,
-                R.id.sfga_startExplicitConnection);
 
         findViewById(R.id.sfga_lookingForGroups).setVisibility(discovering && state.candidates.size() == 0? View.VISIBLE : View.GONE);
         ((RecyclerView) findViewById(R.id.selectFormingGroupActivity_groupList)).getAdapter().notifyDataSetChanged();
@@ -284,5 +279,25 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         }
         handles.connectionAttempt = null;
         refreshGUI();
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.select_forming_group_activity, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.sfga_connectionAttempt: {
+                RunningServiceHandles.getInstance().connectionAttempt = new ConnectionAttempt();
+                startActivityForResult(new Intent(this, ExplicitConnectionActivity.class), EXPLICIT_CONNECTION_REQUEST);
+                break;
+            }
+        }
+        return false;
     }
 }

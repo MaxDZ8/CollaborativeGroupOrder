@@ -27,6 +27,7 @@
     <string name="master_cannotEnumerateNICs">Failed to get network information. This isn\'t really a problem but you\'ll have to find this device network address in some other way in case your friends need explicit connection data.</string>
 
     <string name="client_missingMyParty">Cannot find your party?</string>
+    <string name="client_connectionAttempt">Explicit connection</string>
 
     <string name="both_noDiscoveryManager">Looks like Network Service Discovery is unavailable. This functionality is required.</string>
 
