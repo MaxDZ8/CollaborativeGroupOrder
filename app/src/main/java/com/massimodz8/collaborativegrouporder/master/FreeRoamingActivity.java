@@ -33,6 +33,7 @@ import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.SendRequest;
+import com.massimodz8.collaborativegrouporder.SpawnHelper;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
@@ -221,15 +222,16 @@ public class FreeRoamingActivity extends AppCompatActivity {
             game.session.restoreNotified = true;
         }
         int numActors = lister.getItemCount();
-        if(SpawnMonsterActivity.found != null && SpawnMonsterActivity.found.size() > 0) {
-            for (Network.ActorState got : SpawnMonsterActivity.found) {
+        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+        if(search.spawn != null && search.spawn.size() > 0) {
+            for (Network.ActorState got : search.spawn) {
                 got.peerKey = game.nextActorId++;
                 game.session.add(got);
                 game.session.willFight(got.peerKey, true);
             }
-            lister.notifyItemRangeInserted(numActors, SpawnMonsterActivity.found.size());
-            SpawnMonsterActivity.found = null;
+            lister.notifyItemRangeInserted(numActors, search.spawn.size());
         }
+        search.clear();
         findViewById(R.id.fab).setVisibility(game.session.battleState == null? View.VISIBLE : View.GONE);
     }
 

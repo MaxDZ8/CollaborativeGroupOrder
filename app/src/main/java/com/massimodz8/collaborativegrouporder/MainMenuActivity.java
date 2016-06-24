@@ -89,7 +89,11 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         InternalStateService state = RunningServiceHandles.getInstance().state;
         if(state != null) {
             if(dataStatusCallback != null) state.data.onStatusChanged.remove(dataStatusCallback);
-            if(state.notification == null) stopService(new Intent(this, InternalStateService.class));
+            if(state.notification == null) {
+                final SpawnHelper search = RunningServiceHandles.getInstance().search;
+                if(null != search) search.shutdown();
+                stopService(new Intent(this, InternalStateService.class));
+            }
         }
         super.onDestroy();
     }
@@ -172,6 +176,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 break;
             }
             case R.id.mma_preparedBattles: {
+                final RunningServiceHandles handles = RunningServiceHandles.getInstance();
+                if(handles.search == null) handles.search = new SpawnHelper();
                 startActivity(new Intent(this, PreparedBattlesActivity.class));
                 break;
             }
@@ -179,9 +185,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     private void startNewSessionActivity(StartData.PartyOwnerData.Group activeParty, ServerSocket activeLanding, Pumper.MessagePumpingThread[] activeConnections, Session.Suspended activeStats) {
-        String easygoing = String.format(Locale.ENGLISH, "name: %1$s, published: %2$d, charCount=%3$d, devCount=%4$d, created=%5$d. Measure userbase health.",
-                activeParty.name, System.currentTimeMillis(),
-                activeParty.party.length + activeParty.npcs.length, activeParty.devices.length, activeParty.created.seconds);
         MaxUtils.hasher.reset();
         JoinVerificator keyMaster = null;
         if(activeParty.devices.length > 0) keyMaster = new JoinVerificator(activeParty.devices, MaxUtils.hasher);
@@ -336,8 +339,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     private void freeRoaming(boolean sendAssembled) {
-        startActivityForResult(new Intent(this, FreeRoamingActivity.class), REQUEST_PLAY);
         final RunningServiceHandles handles = RunningServiceHandles.getInstance();
+        if(handles.search == null) handles.search = new SpawnHelper();
+        startActivityForResult(new Intent(this, FreeRoamingActivity.class), REQUEST_PLAY);
         Notification build = handles.state.buildNotification(handles.play.getPartyOwnerData().name, getString(R.string.fra_title));
         NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);

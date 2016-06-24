@@ -33,6 +33,7 @@ public class RunningServiceHandles {
     public ConnectionAttempt connectionAttempt;
     public CharacterProposals newChars;
     public JoinGame joinGame;
+    public SpawnHelper search;
 
     public InternalStateService state;
 
