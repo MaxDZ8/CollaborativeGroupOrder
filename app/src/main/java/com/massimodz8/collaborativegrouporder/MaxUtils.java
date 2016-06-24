@@ -47,17 +47,20 @@ public abstract class MaxUtils {
             if (v != null) v.setVisibility(visibility);
         }
     }
+
     public static void setVisibility(int visibility, View... targets) {
         for (View v : targets) {
             if (v != null) v.setVisibility(visibility);
         }
     }
+
     public static void setEnabled(Activity parent, boolean enabled, int... targets) {
         for (int id : targets) {
             final View v = parent.findViewById(id);
             if (v != null) v.setEnabled(enabled);
         }
     }
+
     public static void setEnabled(boolean status, View... targets) {
         for (View v : targets) {
             if (v != null) v.setEnabled(status);
@@ -65,10 +68,13 @@ public abstract class MaxUtils {
     }
 
     public static String NsdManagerErrorToString(int err, Context ctx) {
-        switch(err) {
-            case NsdManager.FAILURE_ALREADY_ACTIVE: return ctx.getString(R.string.nsdError_alreadyActive);
-            case NsdManager.FAILURE_INTERNAL_ERROR: return ctx.getString(R.string.nsdError_internal);
-            case NsdManager.FAILURE_MAX_LIMIT: return ctx.getString(R.string.nsdError_maxLimitReached);
+        switch (err) {
+            case NsdManager.FAILURE_ALREADY_ACTIVE:
+                return ctx.getString(R.string.nsdError_alreadyActive);
+            case NsdManager.FAILURE_INTERNAL_ERROR:
+                return ctx.getString(R.string.nsdError_internal);
+            case NsdManager.FAILURE_MAX_LIMIT:
+                return ctx.getString(R.string.nsdError_maxLimitReached);
         }
         return ctx.getString(R.string.nsdError_unknown);
     }
@@ -90,14 +96,14 @@ public abstract class MaxUtils {
     }
 
     /**
-     * @param view The view which will be target of state manipulation.
-     * @param text String to set when not null.
+     * @param view    The view which will be target of state manipulation.
+     * @param text    String to set when not null.
      * @param nullVis Visibility to apply when text == null, otherwise ignored
      * @return true if the view is set to VISIBLE, always true if text != null
      */
     public static boolean setTextUnlessNull(@NonNull TextView view, @Nullable String text, int nullVis) {
         view.setVisibility(text == null ? nullVis : View.VISIBLE);
-        if(text != null) view.setText(text);
+        if (text != null) view.setText(text);
         return text != null;
     }
 
@@ -121,16 +127,17 @@ public abstract class MaxUtils {
     public static class TotalLoader {
         final int validBytes;
         final byte[] fullData;
+
         public TotalLoader(@NonNull InputStream src, @Nullable byte[] buffer) throws IOException {
             final int increment = 4 * 1024;
             int loaded = 0;
-            if(buffer == null) buffer = new byte[increment];
+            if (buffer == null) buffer = new byte[increment];
             int chunks = 0;
-            while(true) {
+            while (true) {
                 int got = src.read(buffer, loaded, buffer.length - loaded);
-                if(got == -1) break;
+                if (got == -1) break;
                 loaded += got;
-                if(loaded == buffer.length) {
+                if (loaded == buffer.length) {
                     byte[] realloc = new byte[buffer.length + (increment << (chunks / 10))];
                     System.arraycopy(buffer, 0, realloc, 0, buffer.length);
                     buffer = realloc;
@@ -172,6 +179,9 @@ public abstract class MaxUtils {
     // A character with a readied action can act normally - its action was lost.
     public static final String FA_EVENT_READIED_ACTION_TICKED = "readiedUseless";
     /**/public static final String FA_PARAM_READIED_ACTION_RENEWED = "renewed"; // boolean, if false -> cancelled, default is false
+
+    public static final String FA_EVENT_BATTLE_STOP = "battleStop";
+    /**/public static final String FA_PARAM_BATTLE_DISCARDED = "battleDiscarded"; // boolean, if true -> discarded, default is false
 
     // Always generated when the user dismisses the shuffle init dialog from client.
     public static final String FA_EVENT_CLIENT_SHUFFLE_ORDER = "clientOrderShuffle";

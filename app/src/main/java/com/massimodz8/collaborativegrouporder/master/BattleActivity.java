@@ -67,6 +67,7 @@ public class BattleActivity extends AppCompatActivity {
                         // This could also send session terminate directly but I don't.
                         // It's easier for everyone if I send 'close session' only when not fighting.
                         finish();
+                        FirebaseAnalytics.getInstance(BattleActivity.this).logEvent(MaxUtils.FA_EVENT_BATTLE_STOP, null);
                     }
                 })
                 .setNegativeButton(R.string.generic_discard, new DialogInterface.OnClickListener() {
@@ -80,6 +81,9 @@ public class BattleActivity extends AppCompatActivity {
                             game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg, null));
                         }
                         finish();
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean(MaxUtils.FA_PARAM_BATTLE_DISCARDED, true);
+                        FirebaseAnalytics.getInstance(BattleActivity.this).logEvent(MaxUtils.FA_EVENT_BATTLE_STOP, bundle);
                     }
                 })
                 .show();
