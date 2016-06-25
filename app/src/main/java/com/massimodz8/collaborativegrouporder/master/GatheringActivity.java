@@ -175,22 +175,18 @@ public class GatheringActivity extends AppCompatActivity {
                 Network.PhaseControl yours = new Network.PhaseControl();
                 yours.type = Network.PhaseControl.T_DEFINITIVE_CHAR_ASSIGNMENT;
                 final StartData.ActorDefinition[] playingChars = room.assignmentHelper.party.party;
-                int devIndex = -1;
                 for (PcAssignmentHelper.PlayingDevice known : room.assignmentHelper.peers) {
-                    devIndex++;
                     if(known.pipe == null) continue; // not very likely but possible if connection has just gone down!
                     int count = 0;
                     for(int index = 0; index < playingChars.length; index++) {
-                        final Integer which = room.assignmentHelper.assignment.get(index);
-                        if(which == null) continue;
-                        if(which == devIndex) count++;
+                        final int which = room.assignmentHelper.assignment[index];
+                        if(which == known.keyIndex) count++;
                     }
                     yours.yourChars = new int[count];
                     count = 0;
                     for(int index = 0; index < playingChars.length; index++) {
-                        final Integer which = room.assignmentHelper.assignment.get(index);
-                        if(which == null) continue;
-                        if(which == devIndex) {
+                        final int which = room.assignmentHelper.assignment[index];
+                        if(which == known.keyIndex) {
                             yours.yourChars[count] = index;
                             count++;
                         }
@@ -199,11 +195,16 @@ public class GatheringActivity extends AppCompatActivity {
                 }
                 // Send actor defs to clients.
                 int id = -1;
-                for (Integer index : room.assignmentHelper.assignment) {
+                for (int index : room.assignmentHelper.assignment) {
                     id++;
-                    if(index == null) continue; // impossible, but let's try
-                    if(index == PcAssignmentHelper.LOCAL_BINDING) continue;
-                    PcAssignmentHelper.PlayingDevice dev = room.assignmentHelper.peers.get(index);
+                    PcAssignmentHelper.PlayingDevice dev = null;
+                    for (PcAssignmentHelper.PlayingDevice test : room.assignmentHelper.peers) {
+                        if(test.keyIndex == index) {
+                            dev = test;
+                            break;
+                        }
+                    }
+                    if(dev == null) continue; // maybe it's locally bound
                     if(dev.pipe == null) continue; // connection temporarily lost
                     final Network.ActorState actorData = room.session.getActorById(id);
                     room.assignmentHelper.mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actorData, null));

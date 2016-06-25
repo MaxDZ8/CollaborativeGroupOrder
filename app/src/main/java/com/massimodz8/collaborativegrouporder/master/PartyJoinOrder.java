@@ -38,13 +38,7 @@ import java.util.Map;
  */
 public class PartyJoinOrder extends PublishAcceptHelper {
     public PartyJoinOrder(@NonNull StartData.PartyOwnerData.Group party, Session.Suspended live, @Nullable JoinVerificator keyMaster) {
-        assignmentHelper = new PcAssignmentHelper(party, keyMaster) {
-            @Override
-            protected StartData.ActorDefinition getActorData(int unique) {
-                final StartData.PartyOwnerData.Group group = getPartyOwnerData();
-                return group.party[unique];
-            }
-        };
+        assignmentHelper = new PcAssignmentHelper(party, keyMaster);
         ArrayList<Network.ActorState> byDef = new ArrayList<>();
         for(StartData.ActorDefinition el : party.party) byDef.add(MaxUtils.makeActorState(el, nextActorId++, Network.ActorState.T_PLAYING_CHARACTER));
         for(StartData.ActorDefinition el : party.npcs) byDef.add(MaxUtils.makeActorState(el, nextActorId++, Network.ActorState.T_NPC));
@@ -59,15 +53,16 @@ public class PartyJoinOrder extends PublishAcceptHelper {
 
             @Override
             public void turnDone(MessageChannel from, int peerKey) {
-                if(peerKey >= assignmentHelper.assignment.size()) return; // Discard rubbish first.
-                int index = 0;
-                for (PcAssignmentHelper.PlayingDevice dev : assignmentHelper.peers) {
-                    if(dev.pipe == from) break;
-                    index++;
+                if(peerKey >= assignmentHelper.assignment.length) return; // Discard rubbish first.
+                PcAssignmentHelper.PlayingDevice dev = null;
+                for (PcAssignmentHelper.PlayingDevice test : assignmentHelper.peers) {
+                    if(test.pipe == from) {
+                        dev = test;
+                        break;
+                    }
                 }
-                final Integer bound = assignmentHelper.assignment.get(peerKey);
-                if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
-                if(bound != index) return; // you cannot control this turn you cheater!
+                final int bound = assignmentHelper.assignment[peerKey];
+                if(dev == null || bound != dev.keyIndex) return; // you cannot control this turn you cheater!
                 if(peerKey != battleState.currentActor) return; // that's not his turn anyway!
                 // Don't do that. Might involve popping readied actions. Furthermore, BattleActivity wants to keep track of both previous and current actor.
                 //battleState.tickRound();
@@ -77,15 +72,17 @@ public class PartyJoinOrder extends PublishAcceptHelper {
 
             @Override
             public void shuffle(MessageChannel from, @ActorId int peerKey, int newSlot) {
-                if(peerKey >= assignmentHelper.assignment.size()) return; // Discard rubbish first.
-                int index = 0;
-                for (PcAssignmentHelper.PlayingDevice dev : assignmentHelper.peers) {
-                    if(dev.pipe == from) break;
-                    index++;
+                if(peerKey >= assignmentHelper.assignment.length) return; // Discard rubbish first.
+                PcAssignmentHelper.PlayingDevice dev = null;
+                for (PcAssignmentHelper.PlayingDevice test : assignmentHelper.peers) {
+                    if(test.pipe == from) {
+                        dev = test;
+                        break;
+                    }
                 }
-                final Integer bound = assignmentHelper.assignment.get(peerKey);
-                if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
-                if(bound != index) return; // you cannot control this turn you cheater!
+                final int bound = assignmentHelper.assignment[peerKey];
+                if(bound == PcAssignmentHelper.PlayingDevice.INVALID_ID || bound == PcAssignmentHelper.PlayingDevice.LOCAL_ID) return;
+                if(dev == null || bound != dev.keyIndex) return; // you cannot control this turn you cheater!
                 if(peerKey != battleState.currentActor) return; // How did you manage to do that? Not currently allowed.
                 if(session.battleState.moveCurrentToSlot(newSlot, false)) pushBattleOrder();
                 final Runnable runnable = onActorShuffledRemote.get();
@@ -179,7 +176,10 @@ public class PartyJoinOrder extends PublishAcceptHelper {
     /// Promotes freshly connected clients to anonymous handshaking clients.
     public void pumpClients(@Nullable Pumper.MessagePumpingThread[] existing) {
         if(existing == null) return;
-        for(Pumper.MessagePumpingThread worker : existing) assignmentHelper.pump(worker);
+        for(Pumper.MessagePumpingThread worker : existing) {
+            assignmentHelper.peers.add(new PcAssignmentHelper.PlayingDevice(worker.getSource()));
+            assignmentHelper.netPump.pump(worker);
+        }
     }
 
     public void setUnassignedPcsCountListener(@Nullable PcAssignmentHelper.OnBoundPcCallback listener) {
@@ -229,15 +229,12 @@ public class PartyJoinOrder extends PublishAcceptHelper {
         int[] sequence = new int[order.length];
         int cp = 0;
         for (InitiativeScore score : order) sequence[cp++] = score.actorID;
-        int devIndex = -1;
         for (PcAssignmentHelper.PlayingDevice dev : assignmentHelper.peers) {
-            devIndex++;
             if(dev.pipe == null) continue;
             int actorKey = -1;
-            for (Integer binding : assignmentHelper.assignment) {
+            for (int binding : assignmentHelper.assignment) {
                 actorKey++; // keys here are just their order of definition.
-                if(binding == null) continue; // should not be possible at this point
-                if(binding != devIndex) continue;
+                if(binding != dev.keyIndex) continue;
                 final Network.BattleOrder bo = new Network.BattleOrder();
                 bo.asKnownBy = actorKey;
                 bo.order = sequence;
@@ -248,11 +245,17 @@ public class PartyJoinOrder extends PublishAcceptHelper {
     }
 
     public void pushKnownActorState(int id) {
-        if(id >= assignmentHelper.assignment.size()) return;
-        final Integer bound = assignmentHelper.assignment.get(id);
-        if(bound == null || bound == PcAssignmentHelper.LOCAL_BINDING) return;
-        final PcAssignmentHelper.PlayingDevice dev = assignmentHelper.peers.get(bound);
-        if(dev.pipe == null) return;
+        if(id >= assignmentHelper.assignment.length) return;
+        final int bound = assignmentHelper.assignment[id];
+        if(bound == PcAssignmentHelper.PlayingDevice.INVALID_ID || bound == PcAssignmentHelper.PlayingDevice.LOCAL_ID) return;
+        PcAssignmentHelper.PlayingDevice dev = null;
+        for (PcAssignmentHelper.PlayingDevice test : assignmentHelper.peers) {
+            if(bound == test.keyIndex) {
+                dev = test;
+                break;
+            }
+        }
+        if(dev == null || dev.pipe == null) return;
         // For the time being, just send all actors, be coherent with pushBattleOrder
         Network.ActorState[] current = new Network.ActorState[session.battleState.ordered.length];
         id = 0;
@@ -276,7 +279,8 @@ public class PartyJoinOrder extends PublishAcceptHelper {
             }).start();
             return;
         }
-        assignmentHelper.pump(fresh);
+        assignmentHelper.peers.add(new PcAssignmentHelper.PlayingDevice(fresh));
+        assignmentHelper.netPump.pump(fresh);
     }
     // PublishAcceptService ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 }

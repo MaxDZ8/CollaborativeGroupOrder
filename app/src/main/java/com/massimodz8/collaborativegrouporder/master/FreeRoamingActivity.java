@@ -191,7 +191,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 battle.interrupted.push(remember.get(orig).peerKey);
             }
             game.pushBattleOrder();
-            for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
+            for(int id = 0; id < game.assignmentHelper.assignment.length; id++) game.pushKnownActorState(id);
             // Note: this is an extra. We cannot use INITIATIVE roll to signal battle start so...
             Network.TurnControl notifyRound = new Network.TurnControl();
             notifyRound.type = Network.TurnControl.T_BATTLE_ROUND;
@@ -339,7 +339,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         });
         game.session.battleState = new BattleHelper(order);
         game.pushBattleOrder();
-        for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
+        for(int id = 0; id < game.assignmentHelper.assignment.length; id++) game.pushKnownActorState(id);
 
         game.session.initiatives = null;
         startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
