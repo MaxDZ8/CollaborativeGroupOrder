@@ -63,6 +63,14 @@ public class SpawnHelper {
                         refCount += sub.header.name.length;
                     }
                 }
+                // Custom monsters and battles do not contribute to the count but must still be lowerized.
+                for (MonsterData.MonsterBook.Entry el : data.customMonsters.entries) {
+                    for (String str : el.main.header.name) lowerized.put(str, str.toLowerCase());
+                    for (MonsterData.Monster sub : el.variations) {
+                        for (String str : sub.header.name) lowerized.put(str, str.toLowerCase());
+                    }
+                }
+                for (PreparedEncounters.Battle el : data.customBattles.battles) lowerized.put(el.desc, el.desc.toLowerCase());
                 refCount /= cpus; // each worker will mangle at most this amount of strings. Exception: last thread mangles everything else!
                 // Distributing them however is a bit more involved as each thread mangles an integral amount of Entry objects.
                 final int[] bounds = new int[cpus + 1];
@@ -137,7 +145,7 @@ public class SpawnHelper {
         else customs.clear();
         if(null == parMatches) parMatches = new MatchedEntry[workerCount()][]; // regenerated every time a new query is launched, if not already there
         else Arrays.fill(parMatches, null);
-        for (int loop = 0; loop < assignments.length; loop++) {
+        for (int loop = 0; loop < assignments.length - 1; loop++) {
             searchThreads.submit(new RangedSearch(lcQuery, assignments[loop], assignments[loop + 1], loop, temp.ticker));
         }
     }

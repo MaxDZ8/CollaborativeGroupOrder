@@ -189,6 +189,9 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
                     @Override
                     protected void onPostExecute(Exception e) {
                         reset();
+                        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+                        if(null != search) search.shutdown();
+                        RunningServiceHandles.getInstance().search = null;
                         setResult(RESULT_OK);
                         finish();
                     }

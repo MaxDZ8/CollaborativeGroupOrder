@@ -116,6 +116,9 @@ public class NewPreparedBattleActivity extends AppCompatActivity {
 
                     @Override
                     protected void onPostExecute(Exception e) {
+                        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+                        if(null != search) search.shutdown();
+                        RunningServiceHandles.getInstance().search = null;
                         setResult(RESULT_OK);
                         finish();
                     }
