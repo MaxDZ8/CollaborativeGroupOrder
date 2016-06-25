@@ -136,6 +136,7 @@ public class JoinGame implements AccumulatingDiscoveryListener.OnTick {
                     protected void onPostExecute(MessageChannel messageChannel) {
                         pipe = messageChannel;
                         error = err;
+                        if(null != pipe) pumper.pump(pipe);
                         final Runnable runnable = onEvent.get();
                         if(runnable != null) runnable.run();
                     }
@@ -291,7 +292,7 @@ public class JoinGame implements AccumulatingDiscoveryListener.OnTick {
                     break;
                 }
             }
-            if(null != match) return;
+            if(null != match) continue;
             match = new PartyAttempt(serv.info);
             attempts.add(match);
             match.connect();

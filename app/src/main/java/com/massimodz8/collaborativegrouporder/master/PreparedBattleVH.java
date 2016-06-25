@@ -58,6 +58,7 @@ public abstract class PreparedBattleVH extends RecyclerView.ViewHolder implement
             };
             if(actor.cr.denominator == 1) built.cr.setText(String.format(Locale.getDefault(), SpawnableAdventuringActorVH.intCrFormat, actor.cr.numerator));
             else built.cr.setText(String.format(Locale.getDefault(), SpawnableAdventuringActorVH.ratioCrFormat, actor.cr.numerator, actor.cr.denominator));
+            built.battleCount.setVisibility(View.GONE);
             built.name.setText(actor.name);
             actors.add(built);
             container.addView(built.itemView);
