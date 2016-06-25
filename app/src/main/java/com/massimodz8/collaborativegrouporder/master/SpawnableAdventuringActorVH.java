@@ -1,6 +1,5 @@
 package com.massimodz8.collaborativegrouporder.master;
 
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
-import java.util.IdentityHashMap;
 import java.util.Locale;
 
 /**
@@ -39,9 +37,9 @@ public abstract class SpawnableAdventuringActorVH extends RecyclerView.ViewHolde
         MaxUtils.setTextUnlessNull(battleCount, selectedText(), View.GONE);
         if(mob.header.cr.denominator == 1) cr.setText(String.format(Locale.getDefault(), intCrFormat, mob.header.cr.numerator));
         else cr.setText(String.format(Locale.getDefault(), ratioCrFormat, mob.header.cr.numerator, mob.header.cr.denominator));
-        name.setText(mainNames != null? mainNames[0] : definition.header.name[0]);
+        name.setText(mainNames != null && mainNames.length > 0? mainNames[0] : definition.header.name[0]);
         String others = null;
-        if(mainNames != null) {
+        if(mainNames != null && mainNames.length > 1) {
             others = "";
             for(int loop = 1; loop < mainNames.length; loop++) others += String.format(akaFormat, mainNames[loop]);
         }

@@ -310,10 +310,15 @@ public class ActorOverviewActivity extends AppCompatActivity {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             switch (viewType) {
-                case T_ACTOR: return new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
-                    @Override
-                    public void onClick(View v) { }
-                };
+                case T_ACTOR: {
+                    final AdventuringActorDataVH vh = new AdventuringActorDataVH(getLayoutInflater().inflate(R.layout.vh_adventuring_actor_data, parent, false)) {
+                        @Override
+                        public void onClick(View v) {
+                        }
+                    };
+                    vh.prepared.setEnabled(false);
+                    return vh;
+                }
                 case T_AWARD: return new ExperienceAwardVH(getLayoutInflater().inflate(R.layout.vh_xp_awarded, parent, false));
             }
             return null;

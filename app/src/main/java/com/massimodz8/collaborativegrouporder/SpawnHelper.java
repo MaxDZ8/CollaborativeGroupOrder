@@ -200,6 +200,7 @@ public class SpawnHelper {
                 if(matched || anyStarts(variation.header.name, lcq)) {
                     final MatchedEntry built = new MatchedEntry();
                     built.mob = variation;
+                    built.name = entry.main.header.name;
                     match.add(built);
                 }
             }
