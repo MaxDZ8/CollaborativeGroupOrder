@@ -126,6 +126,8 @@
     <string name="mma_emptyHint_1">Empty party data.</string>
     <string name="mma_emptyHint_2">Master? Try\n%1$s</string>
     <string name="mma_emptyHint_3">Player? Try\n%1$s</string>
+    <string name="mma_noPlayingCharsAssigned">No playing characters given to you.</string>
+    <string name="mma_nothingToDoInParty">I\'ll just stop there.</string>
 
     <string name="npdsa_title">Device selection</string>
     <string name="npdsa_badParty_title">Bad party name</string>

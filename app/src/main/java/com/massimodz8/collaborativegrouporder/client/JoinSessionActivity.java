@@ -80,7 +80,7 @@ public class JoinSessionActivity extends AppCompatActivity {
                     break;
                 case AccumulatingDiscoveryListener.EXPLORING:
                     status.setText(R.string.jsa_searching);
-                    findViewById(R.id.jsa_progressBar).setEnabled(false);
+                    findViewById(R.id.jsa_progressBar).setEnabled(true);
                     break;
             }
         }

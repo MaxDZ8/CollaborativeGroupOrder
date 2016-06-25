@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Locale;
 
 public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final int NETWORK_VERSION = 1;
@@ -219,7 +218,19 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
 
     private void startGoAdventuringActivity(@NonNull StartData.PartyClientData.Group activeParty, @Nullable Pumper.MessagePumpingThread serverConn) {
-        RunningServiceHandles.getInstance().joinGame = new JoinGame(activeParty, serverConn, (NsdManager) getSystemService(Context.NSD_SERVICE));
+        final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
+        if (nsd == null) {
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setMessage(R.string.both_noDiscoveryManager)
+                    .show();
+            return;
+        }
+        InternalStateService state = RunningServiceHandles.getInstance().state;
+        Notification build = state.buildNotification(getString(R.string.jsa_title), null);
+        NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
+        state.notification = build;
+        RunningServiceHandles.getInstance().joinGame = new JoinGame(activeParty, serverConn, nsd);
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
@@ -269,7 +280,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 handles.joinGame = null;
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                if(resultCode == RESULT_OK) {
+                boolean keep = false;
+                if(resultCode == RESULT_OK && handles.bindChars.playChars != null && handles.bindChars.playChars.length > 0) {
+                    keep = true;
                     handles.clientPlay = new Adventure();
                     ActorOverviewActivity.prepare(
                             handles.bindChars.playChars,
@@ -281,8 +294,14 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     if(man != null) man.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, updated);
                     handles.state.notification = updated;
                 }
-                else handles.state.baseNotification();
-                handles.bindChars.shutdown(resultCode == RESULT_OK);
+                else {
+                    if(handles.bindChars.playChars == null || handles.bindChars.playChars.length == 0) {
+                        new SuccessiveSnackbars(findViewById(R.id.activityRoot), Snackbar.LENGTH_LONG, this,
+                                R.string.mma_noPlayingCharsAssigned, R.string.mma_nothingToDoInParty).show();
+                    }
+                    handles.state.baseNotification();
+                }
+                handles.bindChars.shutdown(keep);
                 handles.bindChars = null;
             } break;
             case REQUEST_JOIN_FORMING: {
