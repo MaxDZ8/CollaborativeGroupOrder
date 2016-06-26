@@ -18,7 +18,6 @@ import com.massimodz8.collaborativegrouporder.master.AwardExperienceActivity;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -152,27 +151,16 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
                 mob.header.size = size;
                 mob.header.type = type;
                 mob.header.initiative = modifier;
-                ArrayList<MonsterData.Monster.Tag> easy = new ArrayList<>();
-                if(race != null) {
-                    MonsterData.Monster.Tag tag = new MonsterData.Monster.Tag();
-                    tag.type = MonsterData.Monster.TT_RACE;
-                    tag.race = race;
-                    easy.add(tag);
-                }
+                if(race != null) mob.header.race = race;
                 if(tagFlags != null) {
                     scan = -1;
                     for (int value : tagEnum) {
                         scan++;
                         if(!tagFlags[scan]) continue;
-                        MonsterData.Monster.Tag tag = new MonsterData.Monster.Tag();
-                        tag.type = MonsterData.Monster.TT_SUBTYPE;
-                        tag.subtype = value;
-                        easy.add(tag);
+                        mob.header.subTypes = Arrays.copyOf(mob.header.subTypes, mob.header.subTypes.length + 1);
+                        mob.header.subTypes[mob.header.subTypes.length - 1] = value;
                     }
                 }
-                mob.header.tags = new MonsterData.Monster.Tag[easy.size()];
-                scan = 0;
-                for (MonsterData.Monster.Tag tag :easy) mob.header.tags[scan++] = tag;
                 // Our new mob is ready. Kinda. Now let's add it to the book and start a save!
                 MonsterData.MonsterBook.Entry parent = new MonsterData.MonsterBook.Entry();
                 parent.main = mob;
