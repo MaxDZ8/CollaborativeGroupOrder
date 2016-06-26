@@ -90,7 +90,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             if(dataStatusCallback != null) state.data.onStatusChanged.remove(dataStatusCallback);
             if(state.notification == null) {
                 final SpawnHelper search = RunningServiceHandles.getInstance().search;
-                if(null != search) search.shutdown();
+                if(null != search) {
+                    search.shutdown();
+                    RunningServiceHandles.getInstance().search = null;
+                }
                 stopService(new Intent(this, InternalStateService.class));
             }
         }

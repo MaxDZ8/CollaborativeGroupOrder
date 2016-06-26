@@ -36,7 +36,7 @@
     <string name="aoa_xpIncrement">Ricompensa +%1$s PE</string>
     <string name="aoa_xpTotal">%1$s PE totali</string>
     <string name="ba_actorByPlayerSnack">Personaggio di un giocatore.</string>
-    <string name="ba_backDlgMessage">Puoi sospendere la battalia o scartarla. Se scarti non distribuirai PE. In ogni caso gli effetti della battaglia già applicati saranno mantenuti.</string>
+    <string name="ba_backDlgMessage">Puoi sospendere la battaglia o scartarla. Se scarti non distribuirai PE. In ogni caso gli effetti della battaglia già applicati saranno mantenuti.</string>
     <string name="ba_backDlgPositive">Sospendi a più tardi</string>
     <string name="ba_dlg_gotPreparedAction">%1$s ha preparato un\'azione. Puoi rinnovarla o scartarla.</string>
     <string name="ba_dlg_gotPreparedAction_discard">Scarta ed agisci</string>
