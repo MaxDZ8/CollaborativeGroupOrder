@@ -521,7 +521,6 @@ public interface MonsterData {
     // enum TagType
     public static final int TT_INVALID = 0;
     public static final int TT_AUGMENTING = 2;
-    public static final int TT_EXTRA_TEMPLATE = 4;
     public static final int TT_EXTRA_METADATA = 5;
 
     // enum KnownTemplate
@@ -577,6 +576,9 @@ public interface MonsterData {
       // repeated .collaborativeGroupOrder.MonsterType subTypes = 10;
       public int[] subTypes;
 
+      // repeated .collaborativeGroupOrder.ExtraTemplate extraTemplates = 11;
+      public int[] extraTemplates;
+
       public Header() {
         clear();
       }
@@ -592,6 +594,7 @@ public interface MonsterData {
         tags = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.Tag.emptyArray();
         race = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_RACE;
         subTypes = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
+        extraTemplates = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
         cachedSize = -1;
         return this;
       }
@@ -641,6 +644,11 @@ public interface MonsterData {
         if (this.subTypes != null && this.subTypes.length > 0) {
           for (int i = 0; i < this.subTypes.length; i++) {
             output.writeInt32(10, this.subTypes[i]);
+          }
+        }
+        if (this.extraTemplates != null && this.extraTemplates.length > 0) {
+          for (int i = 0; i < this.extraTemplates.length; i++) {
+            output.writeInt32(11, this.extraTemplates[i]);
           }
         }
         super.writeTo(output);
@@ -715,6 +723,16 @@ public interface MonsterData {
           }
           size += dataSize;
           size += 1 * this.subTypes.length;
+        }
+        if (this.extraTemplates != null && this.extraTemplates.length > 0) {
+          int dataSize = 0;
+          for (int i = 0; i < this.extraTemplates.length; i++) {
+            int element = this.extraTemplates[i];
+            dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+                .computeInt32SizeNoTag(element);
+          }
+          size += dataSize;
+          size += 1 * this.extraTemplates.length;
         }
         return size;
       }
@@ -1472,6 +1490,85 @@ public interface MonsterData {
               input.popLimit(limit);
               break;
             }
+            case 88: {
+              int length = com.google.protobuf.nano.WireFormatNano
+                  .getRepeatedFieldArrayLength(input, 88);
+              int[] validValues = new int[length];
+              int validCount = 0;
+              for (int i = 0; i < length; i++) {
+                if (i != 0) { // tag for first value already consumed.
+                  input.readTag();
+                }
+                int value = input.readInt32();
+                switch (value) {
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ADVANCED:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GIANT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MIGHTY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHRINE__BLESSED:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.NOCTURNAL:
+                    validValues[validCount++] = value;
+                    break;
+                }
+              }
+              if (validCount != 0) {
+                int i = this.extraTemplates == null ? 0 : this.extraTemplates.length;
+                if (i == 0 && validCount == validValues.length) {
+                  this.extraTemplates = validValues;
+                } else {
+                  int[] newArray = new int[i + validCount];
+                  if (i != 0) {
+                    java.lang.System.arraycopy(this.extraTemplates, 0, newArray, 0, i);
+                  }
+                  java.lang.System.arraycopy(validValues, 0, newArray, i, validCount);
+                  this.extraTemplates = newArray;
+                }
+              }
+              break;
+            }
+            case 90: {
+              int bytes = input.readRawVarint32();
+              int limit = input.pushLimit(bytes);
+              // First pass to compute array length.
+              int arrayLength = 0;
+              int startPos = input.getPosition();
+              while (input.getBytesUntilLimit() > 0) {
+                switch (input.readInt32()) {
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ADVANCED:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GIANT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MIGHTY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHRINE__BLESSED:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.NOCTURNAL:
+                    arrayLength++;
+                    break;
+                }
+              }
+              if (arrayLength != 0) {
+                input.rewindToPosition(startPos);
+                int i = this.extraTemplates == null ? 0 : this.extraTemplates.length;
+                int[] newArray = new int[i + arrayLength];
+                if (i != 0) {
+                  java.lang.System.arraycopy(this.extraTemplates, 0, newArray, 0, i);
+                }
+                while (input.getBytesUntilLimit() > 0) {
+                  int value = input.readInt32();
+                  switch (value) {
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ADVANCED:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GIANT:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MIGHTY:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHRINE__BLESSED:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.NOCTURNAL:
+                      newArray[i++] = value;
+                      break;
+                  }
+                }
+                this.extraTemplates = newArray;
+              }
+              input.popLimit(limit);
+              break;
+            }
           }
         }
       }
@@ -1610,9 +1707,6 @@ public interface MonsterData {
       // optional .collaborativeGroupOrder.MonsterType augmenting = 3;
       public int augmenting;
 
-      // optional .collaborativeGroupOrder.ExtraTemplate extraTemplate = 5;
-      public int extraTemplate;
-
       // optional .collaborativeGroupOrder.Monster.MetaData note = 7;
       public com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.MetaData note;
 
@@ -1623,7 +1717,6 @@ public interface MonsterData {
       public Tag clear() {
         type = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_INVALID;
         augmenting = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE;
-        extraTemplate = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE;
         note = null;
         cachedSize = -1;
         return this;
@@ -1637,9 +1730,6 @@ public interface MonsterData {
         }
         if (this.augmenting != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE) {
           output.writeInt32(3, this.augmenting);
-        }
-        if (this.extraTemplate != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE) {
-          output.writeInt32(5, this.extraTemplate);
         }
         if (this.note != null) {
           output.writeMessage(7, this.note);
@@ -1657,10 +1747,6 @@ public interface MonsterData {
         if (this.augmenting != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeInt32Size(3, this.augmenting);
-        }
-        if (this.extraTemplate != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeInt32Size(5, this.extraTemplate);
         }
         if (this.note != null) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
@@ -1689,7 +1775,6 @@ public interface MonsterData {
               switch (value) {
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_INVALID:
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_AUGMENTING:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_EXTRA_TEMPLATE:
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_EXTRA_METADATA:
                   this.type = value;
                   break;
@@ -1807,20 +1892,6 @@ public interface MonsterData {
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FUNGUS:
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PSIONIC:
                   this.augmenting = value;
-                  break;
-              }
-              break;
-            }
-            case 40: {
-              int value = input.readInt32();
-              switch (value) {
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ADVANCED:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GIANT:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MIGHTY:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHRINE__BLESSED:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.NOCTURNAL:
-                  this.extraTemplate = value;
                   break;
               }
               break;

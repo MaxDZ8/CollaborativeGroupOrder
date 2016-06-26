@@ -41,6 +41,7 @@ message Monster {
 		repeated Tag tags = 8;
 		Race race = 9;
 		repeated MonsterType subTypes = 10; // Standard stuff that really goes between (...) even in manuals
+		repeated ExtraTemplate extraTemplates = 11;
 		//repeated ExtraTemplate templates = NOPE; // again, unified in tags
 	}
 	
@@ -55,14 +56,12 @@ message Monster {
 		TT_INVALID = 0;
 		
 		TT_AUGMENTING = 2; // this is a special CANON tag which also takes data
-		TT_EXTRA_TEMPLATE = 4;
 		TT_EXTRA_METADATA = 5;
 	}
 	
 	message Tag {
 		TagType type = 1;
 		MonsterType augmenting = 3; // type == AUGMENTING, can be INVALID_MONSTER_TYPE for 'unspecified' yes, it happens!
-		ExtraTemplate extraTemplate = 5; // type == EXTRA_TEMPLATE
 		MetaData note = 7; // type == TT_EXTRA_METADATA
 	}
 	
