@@ -12,13 +12,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Massimo on 24/06/2016.
  * Various state to be kept around for the purpose of spawning mobs or mobs from prepared battles.
  * Basically the new state of the much improved SpawnMonsterActivity.
+ * In origin this was based on Executors. BUT executors have a quirk.
+ * Because of the way they are laid out in API they go through a proxy object which might call
+ * .shutdown on the (real) executor which destroys my ability to run new jobs.
+ * If the object is collected then I get RejectedExecutionException... cool! So fuck off Java library,
+ * this is most retarded. I get to spawn my threads and done with it.
  */
 public class SpawnHelper {
     // Support SpawnMonsterActivity persistent state, they are regenerated as soon as new query results are ready
@@ -39,8 +44,8 @@ public class SpawnHelper {
 
     SpawnHelper() {
         final int cpus = workerCount();
-        searchThreads = Executors.newFixedThreadPool(cpus);
         final InternalStateService.Data data = RunningServiceHandles.getInstance().state.data;
+        final MyHandler funnel = new MyHandler(this);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -73,22 +78,24 @@ public class SpawnHelper {
                 for (PreparedEncounters.Battle el : data.customBattles.battles) lowerized.put(el.desc, el.desc.toLowerCase());
                 refCount /= cpus; // each worker will mangle at most this amount of strings. Exception: last thread mangles everything else!
                 // Distributing them however is a bit more involved as each thread mangles an integral amount of Entry objects.
-                final int[] bounds = new int[cpus + 1];
+                final RangedSearcher[] workers = new RangedSearcher[cpus];
                 //parMatches = new MatchedEntry[cpus][]; // regenerated every time a new query is launched, if not already there
-                int start = 0;
+                int entry = 0;
                 for(int loop = 0; loop < cpus; loop++) {
-                    bounds[loop] = start;
+                    int from = entry;
                     int count = 0;
-                    while(start < data.monsters.entries.length) {
-                        int got = data.monsters.entries[start].main.header.name.length;
-                        for (MonsterData.Monster sub : data.monsters.entries[start].variations) got += sub.header.name.length;
+                    while(entry < data.monsters.entries.length) {
+                        int got = data.monsters.entries[entry].main.header.name.length;
+                        for (MonsterData.Monster sub : data.monsters.entries[entry].variations) got += sub.header.name.length;
                         if(got + count > refCount) break;
                         count += got;
+                        entry++;
                     }
-                    start += count;
+                    if(loop == cpus - 1) entry = data.monsters.entries.length; // in case we divide oddly
+                    workers[loop] = new RangedSearcher(from, entry, loop);
+                    workers[loop].start();
                 }
-                bounds[cpus] = data.monsters.entries.length;
-                funnel.sendMessage(funnel.obtainMessage(MSG_STRINGS_MANGLED, bounds));
+                funnel.sendMessage(funnel.obtainMessage(MSG_STRINGS_MANGLED, workers));
             }
         }).start();
     }
@@ -104,18 +111,20 @@ public class SpawnHelper {
 
     }
     void shutdown() {
-        searchThreads.shutdown();
+        if(null == workers) return;
+        farewell = true;
+        for (RangedSearcher thread : workers) thread.interrupt();
     }
 
     public void whenReady(Runnable trigger) {
         onStringsMangled = trigger;
-        if(null != trigger && null != assignments) trigger.run();
+        if(null != trigger && null != workers) trigger.run();
     }
     public void beginSearch(final String lcQuery, final boolean includePreparedBattles, Runnable onDone) {
         this.onResultsReady = onDone;
         this.currentQuery = lcQuery;
         if(null == lcQuery || onResultsReady == null) return;
-        LatchingHandler temp = new LatchingHandler(assignments.length - 1, new Runnable() {
+        LatchingHandler temp = new LatchingHandler(workers.length, new Runnable() {
             @Override
             public void run() {
                 final InternalStateService.Data data = RunningServiceHandles.getInstance().state.data;
@@ -143,11 +152,10 @@ public class SpawnHelper {
         });
         if(null == customs) customs = new ArrayList<>();
         else customs.clear();
-        if(null == parMatches) parMatches = new MatchedEntry[workerCount()][]; // regenerated every time a new query is launched, if not already there
+        if(null == parMatches) parMatches = new MatchedEntry[workers.length][]; // regenerated every time a new query is launched, if not already there
         else Arrays.fill(parMatches, null);
-        for (int loop = 0; loop < assignments.length - 1; loop++) {
-            searchThreads.submit(new RangedSearch(lcQuery, assignments[loop], assignments[loop + 1], loop, temp.ticker));
-        }
+        final Request common = new Request(lcQuery, temp.ticker);
+        for (RangedSearcher thread : this.workers) thread.search.add(common);
     }
 
     public static class MatchedEntry {
@@ -156,12 +164,11 @@ public class SpawnHelper {
         public String[] name; // this is for mob variations only, names to use pulled from container mob
     }
 
-    private final ExecutorService searchThreads;
     private final IdentityHashMap<String, String> lowerized = new IdentityHashMap<>();
-    private int[] assignments; // as many entries as cpus, search bounds and marks lowercase strings ready
-    private MyHandler funnel = new MyHandler(this);
+    private RangedSearcher[] workers; // as many entries as cpus, search bounds and marks lowercase strings ready
     private Runnable onStringsMangled, onResultsReady;
 
+    boolean farewell;
     private static class MyHandler extends Handler {
         public MyHandler(SpawnHelper spawnHelper) {
             self = new WeakReference<>(spawnHelper);
@@ -173,9 +180,12 @@ public class SpawnHelper {
             SpawnHelper self = this.self.get();
             switch (msg.what) {
                 case MSG_STRINGS_MANGLED:
-                    self.assignments = (int[])msg.obj;
+                    self.workers = (RangedSearcher[])msg.obj;
+                    if(self.farewell) {
+                        self.shutdown();
+                        return;
+                    }
                     if(null != self.onStringsMangled) self.onStringsMangled.run();
-                    self.funnel = null; // can go away now, no more needed.
                     return;
             }
             super.handleMessage(msg);
@@ -244,34 +254,50 @@ public class SpawnHelper {
         return false;
     }
 
-    private class RangedSearch implements Runnable {
+    private static class Request {
         final String lcQuery;
-        final int slot;
-        final int from, guard;
         final Runnable onComplete;
 
-        public RangedSearch(String lcQuery, int from, int limit, int dst, Runnable onComplete) {
+        private Request(String lcQuery, Runnable onComplete) {
             this.lcQuery = lcQuery;
+            this.onComplete = onComplete;
+        }
+    }
+
+    private class RangedSearcher extends Thread {
+        final int slot;
+        final int from, guard;
+
+        public final BlockingQueue<Request> search = new ArrayBlockingQueue<>(3);
+
+        public RangedSearcher(int from, int limit, int dst) {
             this.from = from;
             this.guard = limit;
             slot = dst;
-            this.onComplete = onComplete;
         }
 
         @Override
         public void run() {
-            final ArrayList<MatchedEntry> match = new ArrayList<>(64);
-            final MonsterData.MonsterBook.Entry[] many = RunningServiceHandles.getInstance().state.data.monsters.entries;
-            addStarting(match, lcQuery, many, from, guard);
-            addContaining(match, lcQuery, many, from, guard);
-            if(match.isEmpty()) parMatches[slot] = null;
-            else {
-                MatchedEntry[] arr;
-                parMatches[slot] = arr = new MatchedEntry[match.size()];
-                int cp = 0;
-                for (MatchedEntry el : match) arr[cp++] = el;
+            while(true) {
+                final Request req;
+                try {
+                    req = search.take();
+                } catch (InterruptedException e) {
+                    return; // standard way to terminate the thread is to interrupt it, no need to put an empty sendRequest.
+                }
+                final ArrayList<MatchedEntry> match = new ArrayList<>(64);
+                final MonsterData.MonsterBook.Entry[] many = RunningServiceHandles.getInstance().state.data.monsters.entries;
+                addStarting(match, req.lcQuery, many, from, guard);
+                addContaining(match, req.lcQuery, many, from, guard);
+                if(match.isEmpty()) parMatches[slot] = null;
+                else {
+                    MatchedEntry[] arr;
+                    parMatches[slot] = arr = new MatchedEntry[match.size()];
+                    int cp = 0;
+                    for (MatchedEntry el : match) arr[cp++] = el;
+                }
+                req.onComplete.run();
             }
-            onComplete.run();
         }
     }
 }
