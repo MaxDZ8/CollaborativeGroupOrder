@@ -22,6 +22,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 /** Encapsulates states and manipulations involved in creating a socket and publishing it to the
@@ -198,6 +199,9 @@ public class PartyJoinOrder extends PublishAcceptHelper {
     public PseudoStack<Runnable> onTurnCompletedRemote = new PseudoStack<>();
     public PseudoStack<Runnable> onActorShuffledRemote = new PseudoStack<>();
     public PseudoStack<Runnable> onActorUpdatedRemote = new PseudoStack<>();
+
+    public final HashMap<Integer, Network.PlayingCharacterDefinition> upgradeTickets = new HashMap<>();
+    public PseudoStack<Runnable> onActorLevelled = new PseudoStack<>();
 
 
     private void matchRoll(MessageChannel from, Network.Roll dice) {

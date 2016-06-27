@@ -16,6 +16,7 @@
     <string name="generic_discard">Discard</string>
     <string name="generic_initError">Initialization error</string>
     <string name="generic_help">Help</string>
+    <string name="generic_ok">OK</string>
 
     <string name="master_publishing">Ready. Your friends can connect.</string>
     <string name="master_failedPublish">Could not publish party to wi-fi. Your friends can still connect but only using explicit connections.</string>
@@ -154,7 +155,7 @@
     <string name="npdsa_notifyContentNew">Forming new party.</string>
     <string name="npdsa_notifyContentAdd">Adding to existing party.</string>
     <string name="npdsa_levelAdvBtn">Set level advancement</string>
-    <string name="npdsa_levelAdv_fast">Fast</string>
+    <string name="npdsa_levelAdv_fast">fast</string>
     <string name="npdsa_levelAdv_medium">medium</string>
     <string name="npdsa_levelAdv_slow">slow</string>
     <string name="npdsa_levelAdv_dlgTitle">Level advancement speed</string>
@@ -651,6 +652,9 @@
     <string name="aea_winnersCountAll">Everyone selected.</string>
     <string name="aea_winnersAward">%1$d XP each</string>
     <string name="aea_noBackDlgMessage">If you go back, you will throw away XPs. The proper way to do that is to consume all monsters.</string>
+    <string name="aea_dlgLevelUp">Level up!</string><string name="aea_levelUpCharList_singular">%1$s reached next level.</string>
+    <string name="aea_levelUpCharList_concatenatePlural">%1$s, %2$s</string>
+    <string name="aea_levelUpCharList_concatenateLast">%1$s and %2$s reached next level!</string>
 
     <string name="ogla_title" translatable="false">OGL, 1.0a</string>
     <string name="ogla_header" translatable="false">Open Game License\nVersion 1.0a</string>
@@ -820,5 +824,7 @@
     <string name="dlgNSDTroubleshoot_h3_title">3. Are you on the same network?</string>
     <string name="dlgNSDTroubleshoot_h3_msg">Because of how the thing works, I can only find parties in the same Wi-Fi network. You can ensure to be on the same network by using <i>tethering</i>. You will need to ask Master to enable it on his/her device, connect to it and restart the app.</string>
     <string name="dlgNSDTroubleshoot_outro">Still not working? I want to make this work! Please get in touch with support and we\'ll sort it out!\ncollaborativegrouporder@gmail.com\nhttps://www.reddit.com/r/app_cgo\nIn the meanwhile you can also go back and try an <i>explicit connection</i>, you will find it in the menu options.</string>
+
+    <string name="dlgML_moreInstructions">Players will now have a chance to modify their characters. You will be presented those new proposals in adventuring mode for your approval.</string>
 
 </resources>

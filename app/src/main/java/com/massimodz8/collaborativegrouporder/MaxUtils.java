@@ -3,6 +3,7 @@ package com.massimodz8.collaborativegrouporder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -146,6 +147,19 @@ public abstract class MaxUtils {
             validBytes = loaded;
             fullData = buffer;
         }
+    }
+
+    public static int level(Resources res, int pace, int xps) {
+        final int[] limit;
+        switch(pace) {
+            case StartData.LA_PF_FAST: limit = res.getIntArray(R.array.levelProgression_fast); break;
+            case StartData.LA_PF_MEDIUM: limit = res.getIntArray(R.array.levelProgression_medium); break;
+            case StartData.LA_PF_SLOW: limit = res.getIntArray(R.array.levelProgression_slow); break;
+            default: return 0;
+        }
+        int level = 1;
+        while(limit[level - 1] < xps && level < 20) level++;
+        return level;
     }
 
     // Events for all Firebase Analytics events I want to track to help me monitor userbase health more accurately.

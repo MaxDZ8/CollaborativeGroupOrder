@@ -72,6 +72,9 @@ public abstract class SessionHelper {
         }
     }
 
+    // Used when distributing XP awards.
+    public ArrayList<Network.ActorState> levelup;
+
 
     SessionHelper(Session.Suspended stats, ArrayList<Network.ActorState> existByDef) {
         this.stats = stats;

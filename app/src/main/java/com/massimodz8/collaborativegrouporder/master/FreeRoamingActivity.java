@@ -361,6 +361,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
             case REQUEST_BATTLE: {
                 switch(resultCode) {
                     case BattleActivity.RESULT_OK_AWARD: {
+                        game.session.levelup = new ArrayList<>();
                         startActivityForResult(new Intent(this, AwardExperienceActivity.class), REQUEST_AWARD_EXPERIENCE);
                         break;
                     }
