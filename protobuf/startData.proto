@@ -11,6 +11,7 @@ import "google/protobuf/timestamp.proto";
 message PartyOwnerData {
     uint32 version = 1;
     repeated Group everything = 2;
+	LevelAdvancement levels = 3;
     
     message DeviceInfo {
         bytes salt = 1; // Unique salt to uniquely identify device. Never empty, counting at least 64 bytes.
@@ -29,6 +30,15 @@ message PartyOwnerData {
         
         // Note: there's no "current group state" anymore, store them somewhere else
     }
+}
+
+
+enum LevelAdvancement {
+    LA_UNSPECIFIED = 0;
+	
+	LA_PF_FAST = 1;
+	LA_PF_MEDIUM = 2;
+	LA_PF_SLOW = 3;
 }
 
     

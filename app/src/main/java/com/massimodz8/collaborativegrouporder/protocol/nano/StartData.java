@@ -5,6 +5,12 @@ package com.massimodz8.collaborativegrouporder.protocol.nano;
 @SuppressWarnings("hiding")
 public interface StartData {
 
+  // enum LevelAdvancement
+  public static final int LA_UNSPECIFIED = 0;
+  public static final int LA_PF_FAST = 1;
+  public static final int LA_PF_MEDIUM = 2;
+  public static final int LA_PF_SLOW = 3;
+
   public static final class PartyOwnerData extends
       com.google.protobuf.nano.MessageNano {
 
@@ -160,6 +166,9 @@ public interface StartData {
       // optional string sessionFile = 7;
       public java.lang.String sessionFile;
 
+      // optional .LevelAdvancement levels = 8;
+      public int levels;
+
       public Group() {
         clear();
       }
@@ -172,6 +181,7 @@ public interface StartData {
         imageFile = "";
         created = null;
         sessionFile = "";
+        levels = com.massimodz8.collaborativegrouporder.protocol.nano.StartData.LA_UNSPECIFIED;
         cachedSize = -1;
         return this;
       }
@@ -214,6 +224,9 @@ public interface StartData {
         }
         if (!this.sessionFile.equals("")) {
           output.writeString(7, this.sessionFile);
+        }
+        if (this.levels != com.massimodz8.collaborativegrouporder.protocol.nano.StartData.LA_UNSPECIFIED) {
+          output.writeInt32(8, this.levels);
         }
         super.writeTo(output);
       }
@@ -263,6 +276,10 @@ public interface StartData {
         if (!this.sessionFile.equals("")) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeStringSize(7, this.sessionFile);
+        }
+        if (this.levels != com.massimodz8.collaborativegrouporder.protocol.nano.StartData.LA_UNSPECIFIED) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(8, this.levels);
         }
         return size;
       }
@@ -359,6 +376,18 @@ public interface StartData {
             }
             case 58: {
               this.sessionFile = input.readString();
+              break;
+            }
+            case 64: {
+              int value = input.readInt32();
+              switch (value) {
+                case com.massimodz8.collaborativegrouporder.protocol.nano.StartData.LA_UNSPECIFIED:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.StartData.LA_PF_FAST:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.StartData.LA_PF_MEDIUM:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.StartData.LA_PF_SLOW:
+                  this.levels = value;
+                  break;
+              }
               break;
             }
           }

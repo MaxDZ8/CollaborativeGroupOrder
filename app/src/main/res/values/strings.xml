@@ -153,6 +153,12 @@
     <string name="npdsa_longTapHint">Long tap device for options</string>
     <string name="npdsa_notifyContentNew">Forming new party.</string>
     <string name="npdsa_notifyContentAdd">Adding to existing party.</string>
+    <string name="npdsa_levelAdvBtn">Set level advancement</string>
+    <string name="npdsa_levelAdv_fast">Fast</string>
+    <string name="npdsa_levelAdv_medium">medium</string>
+    <string name="npdsa_levelAdv_slow">slow</string>
+    <string name="npdsa_levelAdv_dlgTitle">Level advancement speed</string>
+    <string name="npdsa_levelAdvBtn_setFormat">Levelling: %1$s</string>
 
     <string name="ncaa_title">Approve PCs</string>
     <string name="ncaa_definingPCs">Players are defining characters.</string>

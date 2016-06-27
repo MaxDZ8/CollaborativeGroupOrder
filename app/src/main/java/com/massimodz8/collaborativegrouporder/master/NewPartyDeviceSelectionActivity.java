@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -441,6 +442,32 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         findViewById(R.id.npdsa_deviceList).setVisibility(View.VISIBLE);
         Snackbar.make(findViewById(R.id.activityRoot), R.string.npdsa_waitingToTalk, Snackbar.LENGTH_SHORT).show();
         view.setEnabled(false);
+        setLevelAdv_callback(null);
+    }
+
+    public void setLevelAdv_callback(View unused) {
+        final String[] name = {
+                getString(R.string.npdsa_levelAdv_fast),
+                getString(R.string.npdsa_levelAdv_medium),
+                getString(R.string.npdsa_levelAdv_slow)
+        };
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.npdsa_levelAdv_dlgTitle)
+                .setSingleChoiceItems(name, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int[] la = {
+                                StartData.LA_PF_FAST,
+                                StartData.LA_PF_MEDIUM,
+                                StartData.LA_PF_SLOW
+                        };
+                        room.building.advancementPace = la[which];
+                        dialog.dismiss();
+                        MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
+                        ((Button)findViewById(R.id.npdsa_levelAdvBtn)).setText(String.format(getString(R.string.npdsa_levelAdvBtn_setFormat), name[which]));
+                    }
+                })
+                .show();
     }
 
     // TextView.OnEditorActionListener vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
