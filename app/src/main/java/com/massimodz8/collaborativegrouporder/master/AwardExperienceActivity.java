@@ -321,6 +321,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
                         Network.PlayingCharacterDefinition msg = new Network.PlayingCharacterDefinition();
                         msg.redefine = invalid.redefine;
                         msg.peerKey = invalid.peerKey;
+                        msg.advencementPace = game.getPartyOwnerData().levels;
                         helper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, msg, null));
                     }
                 }

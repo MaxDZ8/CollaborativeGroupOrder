@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
@@ -123,6 +124,17 @@ public abstract class MaxUtils {
         res.initiativeBonus = el.stats[0].initBonus;
         res.experience = el.experience;
         return res;
+    }
+
+    public static Network.PlayingCharacterDefinition makePlayingCharacterDefinition(BuildingPlayingCharacter proposal) {
+        final Network.PlayingCharacterDefinition wire = new Network.PlayingCharacterDefinition();
+        wire.name = proposal.name;
+        wire.initiativeBonus = proposal.initiativeBonus;
+        wire.healthPoints = proposal.fullHealth;
+        wire.experience = proposal.experience;
+        wire.peerKey = proposal.unique;
+        wire.level = proposal.level;
+        return wire;
     }
 
     public static class TotalLoader {
