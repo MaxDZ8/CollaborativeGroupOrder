@@ -152,9 +152,9 @@ public abstract class MaxUtils {
     public static int level(Resources res, int pace, int xps) {
         final int[] limit;
         switch(pace) {
-            case StartData.LA_PF_FAST: limit = res.getIntArray(R.array.levelProgression_fast); break;
-            case StartData.LA_PF_MEDIUM: limit = res.getIntArray(R.array.levelProgression_medium); break;
-            case StartData.LA_PF_SLOW: limit = res.getIntArray(R.array.levelProgression_slow); break;
+            case LevelAdvancement.LA_PF_FAST: limit = res.getIntArray(R.array.levelProgression_fast); break;
+            case LevelAdvancement.LA_PF_MEDIUM: limit = res.getIntArray(R.array.levelProgression_medium); break;
+            case LevelAdvancement.LA_PF_SLOW: limit = res.getIntArray(R.array.levelProgression_slow); break;
             default: return 0;
         }
         int level = 1;

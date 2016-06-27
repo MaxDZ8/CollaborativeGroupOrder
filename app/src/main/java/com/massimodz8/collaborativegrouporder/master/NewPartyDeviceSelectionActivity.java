@@ -36,6 +36,7 @@ import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
@@ -457,9 +458,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         int[] la = {
-                                StartData.LA_PF_FAST,
-                                StartData.LA_PF_MEDIUM,
-                                StartData.LA_PF_SLOW
+                                LevelAdvancement.LA_PF_FAST,
+                                LevelAdvancement.LA_PF_MEDIUM,
+                                LevelAdvancement.LA_PF_SLOW
                         };
                         room.building.advancementPace = la[which];
                         dialog.dismiss();

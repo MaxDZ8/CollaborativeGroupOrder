@@ -1,0 +1,13 @@
+syntax = "proto3";
+option java_package = "com.massimodz8.collaborativegrouporder.protocol";
+
+
+// This enumerates the speed of advancements, xps required to reach a certain level.
+// They are used by start data (it's a per-party setting) and network protocol (it's a per-level-up-request property).
+enum LevelAdvancement {
+    LA_UNSPECIFIED = 0;
+	
+	LA_PF_FAST = 1;
+	LA_PF_MEDIUM = 2;
+	LA_PF_SLOW = 3;
+}

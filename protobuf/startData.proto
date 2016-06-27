@@ -1,6 +1,7 @@
 syntax = "proto3";
 option java_package = "com.massimodz8.collaborativegrouporder.protocol";
 import "google/protobuf/timestamp.proto";
+import "LevelAdvancement.proto";
 
 // This is more or less 'static' stuff you would write in your character sheet.
 // That is, if you are the server. For the client it's just simple cryptographic key.
@@ -11,7 +12,6 @@ import "google/protobuf/timestamp.proto";
 message PartyOwnerData {
     uint32 version = 1;
     repeated Group everything = 2;
-	LevelAdvancement levels = 3;
     
     message DeviceInfo {
         bytes salt = 1; // Unique salt to uniquely identify device. Never empty, counting at least 64 bytes.
@@ -27,18 +27,10 @@ message PartyOwnerData {
         string imageFile = 5; // group images are cool as well, used for the service notification.
         google.protobuf.Timestamp created = 6;
         string sessionFile = 7; // the session file is created even before this party is saved
+	    LevelAdvancement levels = 8;
         
         // Note: there's no "current group state" anymore, store them somewhere else
     }
-}
-
-
-enum LevelAdvancement {
-    LA_UNSPECIFIED = 0;
-	
-	LA_PF_FAST = 1;
-	LA_PF_MEDIUM = 2;
-	LA_PF_SLOW = 3;
 }
 
     

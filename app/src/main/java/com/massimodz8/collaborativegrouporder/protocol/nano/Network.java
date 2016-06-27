@@ -641,6 +641,9 @@ public interface Network {
     // optional uint32 redefine = 7;
     public int redefine;
 
+    // optional .LevelAdvancement advencementPace = 8;
+    public int advencementPace;
+
     public PlayingCharacterDefinition() {
       clear();
     }
@@ -653,6 +656,7 @@ public interface Network {
       peerKey = 0;
       level = 0;
       redefine = 0;
+      advencementPace = com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED;
       cachedSize = -1;
       return this;
     }
@@ -680,6 +684,9 @@ public interface Network {
       }
       if (this.redefine != 0) {
         output.writeUInt32(7, this.redefine);
+      }
+      if (this.advencementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
+        output.writeInt32(8, this.advencementPace);
       }
       super.writeTo(output);
     }
@@ -714,6 +721,10 @@ public interface Network {
       if (this.redefine != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(7, this.redefine);
+      }
+      if (this.advencementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeInt32Size(8, this.advencementPace);
       }
       return size;
     }
@@ -759,6 +770,18 @@ public interface Network {
           }
           case 56: {
             this.redefine = input.readUInt32();
+            break;
+          }
+          case 64: {
+            int value = input.readInt32();
+            switch (value) {
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_FAST:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_MEDIUM:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_SLOW:
+                this.advencementPace = value;
+                break;
+            }
             break;
           }
         }
