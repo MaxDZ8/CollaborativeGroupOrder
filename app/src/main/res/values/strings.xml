@@ -338,6 +338,7 @@
     <string name="fra_dlgIOErrorSerializingSession_impossible">Could not save session data.\nDetails: %1$s</string>
     <string name="fra_exitDlgMsg">Session data will be saved but players will have to reconnect and assign characters again.</string>
     <string name="fra_exitButtonConfirm">Get me out</string>
+    <string name="fra_levelUpDlgSubTitle">Reached level %1$d</string>
 
     <string name="sma_title">Spawn monsters</string>
     <string name="sma_searchingMessage">Searching…</string>

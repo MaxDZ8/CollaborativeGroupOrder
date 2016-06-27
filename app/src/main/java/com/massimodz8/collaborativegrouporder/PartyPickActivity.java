@@ -246,7 +246,7 @@ public class PartyPickActivity extends AppCompatActivity {
                             curFrag.actorList.getAdapter().notifyDataSetChanged();
                         }
                     }
-                });
+                }, null);
                 return true;
             }
             case R.id.ppa_menu_addDevice: {

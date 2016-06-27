@@ -24,10 +24,12 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
+import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.LatchingHandler;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.MyDialogsFactory;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
@@ -151,6 +153,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 attemptBattleStart();
             }
         };
+        localCharUpgrade();
         Session.Suspended stats = game.session.stats;
         HashMap<Integer, Network.ActorState> remember = new HashMap<>(); // deserialized id -> real structure with new id.
         for (Network.ActorState real : game.session.existByDef) remember.put(real.peerKey, real);
@@ -583,5 +586,42 @@ public class FreeRoamingActivity extends AppCompatActivity {
             }
             refresh();
         }
+    }
+
+    private void localCharUpgrade() {
+        final HashMap<Integer, Network.PlayingCharacterDefinition> tickets = game.upgradeTickets;
+        if(tickets.isEmpty()) return;
+        Network.PlayingCharacterDefinition match = null;
+        for (Map.Entry<Integer, Network.PlayingCharacterDefinition> el : tickets.entrySet()) {
+            int key = el.getKey();
+            if(key >= game.assignmentHelper.assignment.length) continue;
+            if(game.assignmentHelper.assignment[key] == PcAssignmentHelper.PlayingDevice.LOCAL_ID) {
+                match = el.getValue();
+                break;
+            }
+        }
+        if(null == match) return;
+        final int key = match.redefine, peerKey = match.peerKey;
+        final BuildingPlayingCharacter currently = new BuildingPlayingCharacter();
+        final StartData.ActorDefinition nominal = game.getPartyOwnerData().party[match.peerKey];
+        currently.name = nominal.name;
+        currently.initiativeBonus = nominal.stats[0].initBonus;
+        currently.fullHealth = nominal.stats[0].healthPoints;
+        currently.experience = match.experience;
+        currently.level = MaxUtils.level(getResources(), game.getPartyOwnerData().levels, currently.experience);
+        MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
+            @Override
+            public void onInputCompleted(BuildingPlayingCharacter pc) {
+                tickets.remove(key);
+                // upgrade my runtime state.
+                final Network.ActorState as = game.session.getActorById(peerKey);
+                as.initiativeBonus = pc.initiativeBonus;
+                as.maxHP = pc.fullHealth;
+                // Syncing with reuse... is this smart or ugly?
+                onActivityResult(REQUEST_AWARD_EXPERIENCE, RESULT_OK, null);
+                final Runnable call = game.onActorLeveled.get();
+                if(null != call) call.run();
+            }
+        }, currently);
     }
 }

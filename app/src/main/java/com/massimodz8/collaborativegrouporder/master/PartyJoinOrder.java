@@ -201,7 +201,7 @@ public class PartyJoinOrder extends PublishAcceptHelper {
     public PseudoStack<Runnable> onActorUpdatedRemote = new PseudoStack<>();
 
     public final HashMap<Integer, Network.PlayingCharacterDefinition> upgradeTickets = new HashMap<>();
-    public PseudoStack<Runnable> onActorLevelled = new PseudoStack<>();
+    public PseudoStack<Runnable> onActorLeveled = new PseudoStack<>();
 
 
     private void matchRoll(MessageChannel from, Network.Roll dice) {

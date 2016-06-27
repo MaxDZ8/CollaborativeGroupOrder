@@ -142,7 +142,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                     public void onInputCompleted(BuildingPlayingCharacter pc) {
                         room.building.defineLocalCharacter(pc);
                     }
-                });
+                }, null);
                 break;
             }
         }

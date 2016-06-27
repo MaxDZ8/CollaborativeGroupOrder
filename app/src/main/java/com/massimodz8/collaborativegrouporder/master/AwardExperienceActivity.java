@@ -275,7 +275,6 @@ public class AwardExperienceActivity extends AppCompatActivity {
         // Which means we get in experience awarding in milliseconds, battles taking fractions of milliseconds
         // Then the data we'll work will be stale. Hopefully not!
         final HashMap<Integer, Network.PlayingCharacterDefinition> target = game.upgradeTickets;
-        final ArrayList<Network.ActorState> who = game.session.levelup;
         final ArrayList<Network.PlayingCharacterDefinition> easy = new ArrayList<>();
         final PcAssignmentHelper helper = RunningServiceHandles.getInstance().play.assignmentHelper;
         for (Map.Entry<Integer, Network.PlayingCharacterDefinition> el : target.entrySet()) easy.add(el.getValue());
