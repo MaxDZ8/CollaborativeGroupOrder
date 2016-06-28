@@ -97,30 +97,34 @@ public class AwardExperienceActivity extends AppCompatActivity {
                     ((RecyclerView)findViewById(R.id.aea_mobList)).getAdapter().notifyDataSetChanged();
                     return;
                 }
-                if(!game.session.levelup.isEmpty()) {
-                    final AlertDialog dlg = new AlertDialog.Builder(AwardExperienceActivity.this)
-                            .setView(R.layout.dialog_master_levelup)
-                            .setPositiveButton(R.string.generic_ok, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setCancelable(false)
-                            .show();
-                    final TextView list = (TextView) dlg.findViewById(R.id.dlgML_charList);
-                    String build = game.session.getActorById(game.session.levelup.get(0)).name;
-                    if (game.session.levelup.size() == 1)
-                        build = String.format(getString(R.string.aea_levelUpCharList_singular), build);
-                    else {
-                        for (int loop = 1; loop < game.session.levelup.size() - 1; loop++) {
-                            build = String.format(getString(R.string.aea_levelUpCharList_concatenatePlural), build, game.session.getActorById(game.session.levelup.get(loop)).name);
-                        }
-                        build = String.format(getString(R.string.aea_levelUpCharList_concatenateLast), build, game.session.getActorById(game.session.levelup.size() - 1).name);
-                    }
-                    list.setText(build);
-                    sendLevelupTickets();
+                if(game.session.levelup.isEmpty()) {
+                    setResult(RESULT_OK);
+                    finish();
+                    return;
                 }
+                final AlertDialog dlg = new AlertDialog.Builder(AwardExperienceActivity.this)
+                        .setView(R.layout.dialog_master_levelup)
+                        .setPositiveButton(R.string.generic_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+                final TextView list = (TextView) dlg.findViewById(R.id.dlgML_charList);
+                String build = game.session.getActorById(game.session.levelup.get(0)).name;
+                if (game.session.levelup.size() == 1)
+                    build = String.format(getString(R.string.aea_levelUpCharList_singular), build);
+                else {
+                    for (int loop = 1; loop < game.session.levelup.size() - 1; loop++) {
+                        build = String.format(getString(R.string.aea_levelUpCharList_concatenatePlural), build, game.session.getActorById(game.session.levelup.get(loop)).name);
+                    }
+                    build = String.format(getString(R.string.aea_levelUpCharList_concatenateLast), build, game.session.getActorById(game.session.levelup.size() - 1).name);
+                }
+                list.setText(build);
+                sendLevelupTickets();
+
             }
         });
         findViewById(R.id.fab).setVisibility(View.VISIBLE);

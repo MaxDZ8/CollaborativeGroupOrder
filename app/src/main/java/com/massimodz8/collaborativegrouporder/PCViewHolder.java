@@ -69,7 +69,7 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
         error = null;
         try {
             xp = Integer.parseInt(experience.getEditText().getText().toString());
-            if(xp <= 0) error = getString(R.string.generic_mustBeAtLeast0);
+            if(xp < 0) error = getString(R.string.generic_mustBeAtLeast0);
         } catch(NumberFormatException e) {
             error = getString(R.string.generic_mustBeInteger);
         }

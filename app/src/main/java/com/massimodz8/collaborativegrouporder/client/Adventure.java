@@ -269,6 +269,7 @@ public class Adventure {
                     self.upgradeTickets.put(real.redefine, new UpgradeStatus(real.peerKey, self.advancementPace));
                     Runnable runnable = self.onUpgradeTicket.get();
                     if(null != runnable) runnable.run();
+                    break;
                 }
                 case MSG_LEVELUP_ACCEPTANCE: {
                     Network.GroupFormed real = (Network.GroupFormed) msg.obj;
@@ -289,6 +290,7 @@ public class Adventure {
                         Runnable runnable = self.onUpgradeTicket.get();
                         if(null != runnable) runnable.run();
                     }
+                    break;
                 }
             }
             super.handleMessage(msg);

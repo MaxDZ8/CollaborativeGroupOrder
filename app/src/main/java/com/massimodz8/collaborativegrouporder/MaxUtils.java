@@ -169,7 +169,7 @@ public abstract class MaxUtils {
             default: return 0;
         }
         int level = 1;
-        while(limit[level - 1] < xps && level < 20) level++;
+        while(limit[level - 1] <= xps && level < 20) level++;
         return level;
     }
 

@@ -341,6 +341,7 @@
     <string name="fra_approveLevelUp">Approve level up</string>
     <string name="fra_approveDlgActionPositive">Approve</string>
     <string name="fra_approveDlgActionNegative">Reject</string>
+    <string name="fra_updateChar">Update character</string>
 
     <string name="sma_title">Spawn monsters</string>
     <string name="sma_searchingMessage">Searching…</string>

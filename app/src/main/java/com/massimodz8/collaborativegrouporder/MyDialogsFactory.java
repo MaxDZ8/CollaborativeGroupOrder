@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -49,10 +50,11 @@ public abstract class MyDialogsFactory {
             }
         };
         helper.bind(pc);
+        ((Button)helper.itemView.findViewById(R.id.vhPCDI_makeNewChar)).setText(R.string.fra_updateChar);
         if(currently != null) {
             MaxUtils.setEnabled(false,
-                    dlg.findViewById(R.id.vhPCDI_tilName),
-                    dlg.findViewById(R.id.vhPCDI_tilExperience));
+                    dlg.findViewById(R.id.vhPCDI_name),
+                    dlg.findViewById(R.id.vhPCDI_experience));
             dlg.setCancelable(false);
             final TextView view = (TextView) dlg.findViewById(R.id.vhPCDI_newLevel);
             view.setVisibility(View.VISIBLE);

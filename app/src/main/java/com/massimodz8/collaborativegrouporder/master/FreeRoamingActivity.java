@@ -593,9 +593,9 @@ public class FreeRoamingActivity extends AppCompatActivity {
         if(tickets.isEmpty()) return;
         Network.PlayingCharacterDefinition match = null;
         for (Map.Entry<Integer, Network.PlayingCharacterDefinition> el : tickets.entrySet()) {
-            int key = el.getKey();
-            if(key >= game.assignmentHelper.assignment.length) continue;
-            if(game.assignmentHelper.assignment[key] == PcAssignmentHelper.PlayingDevice.LOCAL_ID) {
+            int peerkey = el.getValue().peerKey;
+            if(peerkey >= game.assignmentHelper.assignment.length) continue;
+            if(game.assignmentHelper.assignment[peerkey] == PcAssignmentHelper.PlayingDevice.LOCAL_ID) {
                 match = el.getValue();
                 break;
             }
@@ -626,10 +626,10 @@ public class FreeRoamingActivity extends AppCompatActivity {
         }
         // Ok, let's scan again and deal with remotely assigned actors this time.
         for (Map.Entry<Integer, Network.PlayingCharacterDefinition> el : tickets.entrySet()) {
-            int key = el.getKey();
-            if(key >= game.assignmentHelper.assignment.length) continue;
-            if(game.assignmentHelper.assignment[key] == PcAssignmentHelper.PlayingDevice.LOCAL_ID) continue;
-            if(game.assignmentHelper.assignment[key] == PcAssignmentHelper.PlayingDevice.INVALID_ID) continue;
+            int peerKey = el.getValue().peerKey;
+            if(peerKey >= game.assignmentHelper.assignment.length) continue;
+            if(game.assignmentHelper.assignment[peerKey] == PcAssignmentHelper.PlayingDevice.LOCAL_ID) continue;
+            if(game.assignmentHelper.assignment[peerKey] == PcAssignmentHelper.PlayingDevice.INVALID_ID) continue;
             Network.PlayingCharacterDefinition prop = el.getValue();
             if(null != prop && prop.name != null) { // null name marks 'not received yet'
                 match = prop;
