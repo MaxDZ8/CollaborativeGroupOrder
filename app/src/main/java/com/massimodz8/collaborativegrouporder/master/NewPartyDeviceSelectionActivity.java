@@ -141,7 +141,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     @Override
     protected void onResume() {
         super.onResume();
-        if(room.getBuildingPartyName() != null && room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
+        if(room.getBuildingPartyName() != null && room.building.advancementPace != LevelAdvancement.LA_UNSPECIFIED && room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
 
         final TextInputLayout namein = (TextInputLayout) findViewById(R.id.npdsa_partyName);
         EditText sure = namein.getEditText();
@@ -466,6 +466,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                         dialog.dismiss();
                         MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
                         ((Button)findViewById(R.id.npdsa_levelAdvBtn)).setText(String.format(getString(R.string.npdsa_levelAdvBtn_setFormat), name[which]));
+                        publishGroup();
                     }
                 })
                 .show();
@@ -474,7 +475,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     // TextView.OnEditorActionListener vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        publishGroup();
+        if(room.building.advancementPace != LevelAdvancement.LA_UNSPECIFIED) publishGroup();
+        else setLevelAdv_callback(null);
         return true;
     }
     // TextView.OnEditorActionListener ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
