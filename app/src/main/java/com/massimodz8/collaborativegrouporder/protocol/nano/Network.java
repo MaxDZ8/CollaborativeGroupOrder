@@ -658,10 +658,7 @@ public interface Network {
     // optional uint32 peerKey = 5;
     public int peerKey;
 
-    // optional uint32 level = 6;
-    public int level;
-
-    // optional uint32 redefine = 7;
+    // optional uint32 redefine = 6;
     public int redefine;
 
     public PlayingCharacterDefinition() {
@@ -674,7 +671,6 @@ public interface Network {
       healthPoints = 0;
       experience = 0;
       peerKey = 0;
-      level = 0;
       redefine = 0;
       cachedSize = -1;
       return this;
@@ -698,11 +694,8 @@ public interface Network {
       if (this.peerKey != 0) {
         output.writeUInt32(5, this.peerKey);
       }
-      if (this.level != 0) {
-        output.writeUInt32(6, this.level);
-      }
       if (this.redefine != 0) {
-        output.writeUInt32(7, this.redefine);
+        output.writeUInt32(6, this.redefine);
       }
       super.writeTo(output);
     }
@@ -730,13 +723,9 @@ public interface Network {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(5, this.peerKey);
       }
-      if (this.level != 0) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(6, this.level);
-      }
       if (this.redefine != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(7, this.redefine);
+            .computeUInt32Size(6, this.redefine);
       }
       return size;
     }
@@ -777,10 +766,6 @@ public interface Network {
             break;
           }
           case 48: {
-            this.level = input.readUInt32();
-            break;
-          }
-          case 56: {
             this.redefine = input.readUInt32();
             break;
           }

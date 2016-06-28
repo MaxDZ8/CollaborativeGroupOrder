@@ -39,10 +39,9 @@ message PartyOwnerData {
 // It's the stuff you would write using a pen in the character sheet. Temporary effects and per-battle data not there.
 message ActorDefinition {
     string name = 1;
-    uint32 level = 2;
-    uint32 experience = 3;
-    string avatarFile = 4;
-    repeated ActorStatistics stats = 5; // at least 1 or error. stats[0] is character level, stats[1] is level-1 etc... character history
+    uint32 experience = 2;
+    string avatarFile = 3;
+    repeated ActorStatistics stats = 4; // at least 1 or error. stats[0] is character level, stats[1] is level-1 etc... character history
 }
 
 

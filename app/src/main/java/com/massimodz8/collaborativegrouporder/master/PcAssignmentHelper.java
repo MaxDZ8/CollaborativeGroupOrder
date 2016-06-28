@@ -332,7 +332,6 @@ public class PcAssignmentHelper {
         res.initiativeBonus = currently.initBonus;
         res.healthPoints = currently.healthPoints;
         res.experience = actor.experience;
-        res.level = actor.level;
         res.peerKey = id;
         return res;
     }

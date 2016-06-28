@@ -29,7 +29,7 @@ public abstract class MyDialogsFactory {
     public interface ActorProposal {
         void onInputCompleted(BuildingPlayingCharacter pc);
     }
-    public static AlertDialog showActorDefinitionInput(final Context ctx, final ActorProposal onInputCompleted, @Nullable BuildingPlayingCharacter currently) {
+    public static AlertDialog showActorDefinitionInput(final Context ctx, final ActorProposal onInputCompleted, @Nullable BuildingPlayingCharacter currently, final int advancementPace) {
         final AlertDialog dlg = new AlertDialog.Builder(ctx, R.style.AppDialogStyle)
                 .setTitle(currently == null? R.string.ncaa_genCharTitle : R.string.aea_dlgLevelUp)
                 .setView(R.layout.vh_playing_character_definition_input)
@@ -52,12 +52,12 @@ public abstract class MyDialogsFactory {
         if(currently != null) {
             MaxUtils.setEnabled(false,
                     dlg.findViewById(R.id.vhPCDI_tilName),
-                    dlg.findViewById(R.id.vhPCDI_tilExperience),
-                    dlg.findViewById(R.id.vhPCDI_tilLevel));
+                    dlg.findViewById(R.id.vhPCDI_tilExperience));
             dlg.setCancelable(false);
             final TextView view = (TextView) dlg.findViewById(R.id.vhPCDI_newLevel);
             view.setVisibility(View.VISIBLE);
-            view.setText(String.format(Locale.getDefault(), ctx.getString(R.string.fra_levelUpDlgSubTitle), pc.level));
+            final int level = MaxUtils.level(ctx.getResources(), advancementPace, pc.experience);
+            view.setText(String.format(Locale.getDefault(), ctx.getString(R.string.fra_levelUpDlgSubTitle), level));
         }
         return dlg;
     }

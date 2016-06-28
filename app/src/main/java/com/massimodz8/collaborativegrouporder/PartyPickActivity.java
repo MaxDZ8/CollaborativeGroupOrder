@@ -246,7 +246,7 @@ public class PartyPickActivity extends AppCompatActivity {
                             curFrag.actorList.getAdapter().notifyDataSetChanged();
                         }
                     }
-                }, null);
+                }, null, activeParty.advancementPace);
                 return true;
             }
             case R.id.ppa_menu_addDevice: {
@@ -507,8 +507,8 @@ public class PartyPickActivity extends AppCompatActivity {
             else {
                 int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
                 for (StartData.ActorDefinition actor : group.party) {
-                    min = Math.min(min, actor.level);
-                    max = Math.max(max, actor.level);
+                    min = Math.min(min, MaxUtils.level(getResources(), group.advancementPace, actor.experience));
+                    max = Math.max(max, MaxUtils.level(getResources(), group.advancementPace, actor.experience));
                 }
                 if (min == max) str = String.format(getString(R.string.ppa_charLevel_same), min);
                 else str = String.format(getString(R.string.ppa_charLevel_different), max, min);

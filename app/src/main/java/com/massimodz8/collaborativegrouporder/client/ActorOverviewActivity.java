@@ -508,7 +508,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
             current.initiativeBonus = live.initiativeBonus;
             current.fullHealth = live.maxHP;
             current.experience = live.experience;
-            current.level = MaxUtils.level(getResources(), fixed.getValue().levelAdvancements, live.experience);
 
         }
         MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
@@ -521,6 +520,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 ticker.mailman.out.add(new SendRequest(ticker.pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, payload, null));
                 mangleLevelUpTickets(); // go next!
             }
-        }, current);
+        }, current, ticker.advancementPace);
     }
 }

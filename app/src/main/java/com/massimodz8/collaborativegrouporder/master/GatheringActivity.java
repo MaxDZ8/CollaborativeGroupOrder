@@ -118,7 +118,7 @@ public class GatheringActivity extends AppCompatActivity {
             public void bind(@NonNull PcViewHolder target, int index) {
                 target.actor = room.getPartyOwnerData().party[index];
                 target.name.setText(target.actor.name);
-                target.levels.setText("<class_todo> " + target.actor.level); // TODO
+                target.levels.setText("<class_todo> " + MaxUtils.level(getResources(), room.getPartyOwnerData().advancementPace, target.actor.experience)); // TODO
 
             }
         }));

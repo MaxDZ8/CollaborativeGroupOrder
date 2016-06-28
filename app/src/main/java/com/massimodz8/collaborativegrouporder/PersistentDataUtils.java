@@ -227,7 +227,6 @@ public abstract class PersistentDataUtils {
                 String head = String.format(Locale.getDefault(), "%1$s[%2$d]", premise, i);
                 if(actor.name.isEmpty()) errors.add(head + getString(R.string.persistentStorage_actorMissingName));
                 head = String.format("%1$s(%2$s)", head, actor.name);
-                if(actor.level == 0) errors.add(head + getString(R.string.persistentStorage_badLevel));
                 check(head + getString(R.string.persistentStorage_actorStatsPremise), actor.stats);
             }
             return this;

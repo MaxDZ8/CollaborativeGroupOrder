@@ -542,16 +542,13 @@ public interface StartData {
     // optional string name = 1;
     public java.lang.String name;
 
-    // optional uint32 level = 2;
-    public int level;
-
-    // optional uint32 experience = 3;
+    // optional uint32 experience = 2;
     public int experience;
 
-    // optional string avatarFile = 4;
+    // optional string avatarFile = 3;
     public java.lang.String avatarFile;
 
-    // repeated .ActorStatistics stats = 5;
+    // repeated .ActorStatistics stats = 4;
     public com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics[] stats;
 
     public ActorDefinition() {
@@ -560,7 +557,6 @@ public interface StartData {
 
     public ActorDefinition clear() {
       name = "";
-      level = 0;
       experience = 0;
       avatarFile = "";
       stats = com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics.emptyArray();
@@ -574,20 +570,17 @@ public interface StartData {
       if (!this.name.equals("")) {
         output.writeString(1, this.name);
       }
-      if (this.level != 0) {
-        output.writeUInt32(2, this.level);
-      }
       if (this.experience != 0) {
-        output.writeUInt32(3, this.experience);
+        output.writeUInt32(2, this.experience);
       }
       if (!this.avatarFile.equals("")) {
-        output.writeString(4, this.avatarFile);
+        output.writeString(3, this.avatarFile);
       }
       if (this.stats != null && this.stats.length > 0) {
         for (int i = 0; i < this.stats.length; i++) {
           com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics element = this.stats[i];
           if (element != null) {
-            output.writeMessage(5, element);
+            output.writeMessage(4, element);
           }
         }
       }
@@ -601,24 +594,20 @@ public interface StartData {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeStringSize(1, this.name);
       }
-      if (this.level != 0) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(2, this.level);
-      }
       if (this.experience != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(3, this.experience);
+            .computeUInt32Size(2, this.experience);
       }
       if (!this.avatarFile.equals("")) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeStringSize(4, this.avatarFile);
+            .computeStringSize(3, this.avatarFile);
       }
       if (this.stats != null && this.stats.length > 0) {
         for (int i = 0; i < this.stats.length; i++) {
           com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics element = this.stats[i];
           if (element != null) {
             size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeMessageSize(5, element);
+              .computeMessageSize(4, element);
           }
         }
       }
@@ -645,20 +634,16 @@ public interface StartData {
             break;
           }
           case 16: {
-            this.level = input.readUInt32();
-            break;
-          }
-          case 24: {
             this.experience = input.readUInt32();
             break;
           }
-          case 34: {
+          case 26: {
             this.avatarFile = input.readString();
             break;
           }
-          case 42: {
+          case 34: {
             int arrayLength = com.google.protobuf.nano.WireFormatNano
-                .getRepeatedFieldArrayLength(input, 42);
+                .getRepeatedFieldArrayLength(input, 34);
             int i = this.stats == null ? 0 : this.stats.length;
             com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics[] newArray =
                 new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics[i + arrayLength];

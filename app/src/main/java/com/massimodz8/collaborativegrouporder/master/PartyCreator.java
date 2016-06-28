@@ -474,7 +474,6 @@ public class PartyCreator extends PublishAcceptHelper {
     public static StartData.ActorDefinition from(BuildingPlayingCharacter pc) {
         StartData.ActorDefinition built = new StartData.ActorDefinition();
         built.name = pc.name;
-        built.level = pc.level;
         built.experience = pc.experience;
         built.stats =  new StartData.ActorStatistics[] {
                 new StartData.ActorStatistics()

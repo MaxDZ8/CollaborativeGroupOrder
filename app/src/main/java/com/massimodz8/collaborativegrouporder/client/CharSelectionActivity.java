@@ -255,7 +255,7 @@ public class CharSelectionActivity extends AppCompatActivity {
         public void bind(PcAssignmentState.TransactingCharacter o) {
             charKey = o.pc.peerKey;
             name.setText(o.pc.name);
-            level.setText(String.format(getString(R.string.csa_level), o.pc.level));
+            level.setText(String.format(getString(R.string.csa_level), MaxUtils.level(getResources(), state.advancement, o.pc.experience)));
             hpmax.setText(String.format(getString(R.string.csa_hpMax), o.pc.healthPoints));
             xp.setText(String.format(getString(R.string.csa_xp), o.pc.experience));
             requested.setVisibility(o.pending != PcAssignmentState.TransactingCharacter.NO_REQUEST? View.VISIBLE : View.GONE);

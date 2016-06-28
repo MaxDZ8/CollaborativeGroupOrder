@@ -133,7 +133,6 @@ public abstract class MaxUtils {
         wire.healthPoints = proposal.fullHealth;
         wire.experience = proposal.experience;
         wire.peerKey = proposal.unique;
-        wire.level = proposal.level;
         return wire;
     }
 

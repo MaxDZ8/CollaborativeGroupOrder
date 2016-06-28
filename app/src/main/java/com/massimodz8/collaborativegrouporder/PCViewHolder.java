@@ -15,7 +15,7 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
     protected abstract String getString(@StringRes int resid);
     protected abstract void action();
 
-    public TextInputLayout name, level, health, initiative, experience;
+    public TextInputLayout name, health, initiative, experience;
     public Button send;
     public CheckBox accepted;
 
@@ -24,7 +24,6 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
     public PCViewHolder(View inflated) {
         super(inflated);
         name = (TextInputLayout) itemView.findViewById(R.id.vhPCDI_tilName);
-        level = (TextInputLayout) itemView.findViewById(R.id.vhPCDI_tilLevel);
         health = (TextInputLayout) itemView.findViewById(R.id.vhPCDI_tilMaxHealth);
         initiative = (TextInputLayout) itemView.findViewById(R.id.vhPCDI_tilInitiative);
         experience = (TextInputLayout) itemView.findViewById(R.id.vhPCDI_tilExperience);
@@ -41,7 +40,7 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
 
     @SuppressWarnings("ConstantConditions")
     private boolean validate() {
-        int hp = 0, lvl = 0, init = 0, xp = 0;
+        int hp = 0, init = 0, xp = 0;
         int errorCount = 0;
         String error = null;
         if(name.getEditText().getText().length() < 1) error = getString(R.string.pcVH_badName);
@@ -56,16 +55,6 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
             error = getString(R.string.generic_mustBeInteger);
         }
         health.setError(error);
-        if(error != null) errorCount++;
-
-        error = null;
-        try {
-            lvl = Integer.parseInt(level.getEditText().getText().toString());
-            if(lvl <= 0) error = getString(R.string.generic_mustBeAtLeast1);
-        } catch(NumberFormatException e) {
-            error = getString(R.string.generic_mustBeInteger);
-        }
-        level.setError(error);
         if(error != null) errorCount++;
 
         error = null;
@@ -92,7 +81,6 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
         who.fullHealth = hp;
         who.initiativeBonus = init;
         who.name = name.getEditText().getText().toString().trim();
-        who.level = lvl;
         return true;
     }
 
@@ -111,15 +99,12 @@ public abstract class PCViewHolder extends RecyclerView.ViewHolder implements Vi
         experience.setError(null);
         name.getEditText().setText(who.name);
         name.setError(null);
-        level.getEditText().setText(valueof(who.level));
-        level.setError(null);
 
         MaxUtils.setEnabled(BuildingPlayingCharacter.STATUS_BUILDING == who.status,
                 initiative.getEditText(),
                 health.getEditText(),
                 experience.getEditText(),
-                name.getEditText(),
-                level.getEditText());
+                name.getEditText());
     }
 
     private static void visibility(View target, BuildingPlayingCharacter state, int match) {

@@ -66,11 +66,10 @@ message PlayingCharacterDefinition {
     uint32 healthPoints = 3;
     uint32 experience = 4;
     uint32 peerKey = 5; // When client sends a new proposal to server, this will be used to identify the PC relative to the peer, must be unique. Reusing the same key re-defines a character. Server uses this as well, see PlayingCharacterList.
-    uint32 level = 6;
-	
+    
 	// When this is != 0 only .peerKey is valid. This is an unique uint to be used to send a character level up request.
 	// It is some sort of a 'ticket' to be used once. The server will approve chars or not and send GroupFormed as usual.
-	uint32 redefine = 7;
+	uint32 redefine = 6;
 }
 
 

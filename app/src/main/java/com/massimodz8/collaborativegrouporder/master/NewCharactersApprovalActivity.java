@@ -93,7 +93,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 vh.hp.setText(String.valueOf(proposal.fullHealth));
                 vh.initBonus.setText(String.valueOf(proposal.initiativeBonus));
                 vh.xp.setText(String.valueOf(proposal.experience));
-                vh.level.setText(String.valueOf(proposal.level));
+                vh.level.setText(String.valueOf(MaxUtils.level(getResources(), room.building.advancementPace, proposal.experience)));
                 vh.unique = proposal.unique;
                 vh.accepted.setVisibility(proposal.status == BuildingPlayingCharacter.STATUS_ACCEPTED? View.VISIBLE : View.GONE);
             }
@@ -142,7 +142,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                     public void onInputCompleted(BuildingPlayingCharacter pc) {
                         room.building.defineLocalCharacter(pc);
                     }
-                }, null);
+                }, null, room.building.advancementPace);
                 break;
             }
         }
