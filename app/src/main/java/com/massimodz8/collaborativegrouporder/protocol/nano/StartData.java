@@ -160,8 +160,8 @@ public interface StartData {
       // optional string sessionFile = 7;
       public java.lang.String sessionFile;
 
-      // optional .LevelAdvancement levels = 8;
-      public int levels;
+      // optional .LevelAdvancement advancementPace = 8;
+      public int advancementPace;
 
       public Group() {
         clear();
@@ -175,7 +175,7 @@ public interface StartData {
         imageFile = "";
         created = null;
         sessionFile = "";
-        levels = com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED;
+        advancementPace = com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED;
         cachedSize = -1;
         return this;
       }
@@ -219,8 +219,8 @@ public interface StartData {
         if (!this.sessionFile.equals("")) {
           output.writeString(7, this.sessionFile);
         }
-        if (this.levels != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
-          output.writeInt32(8, this.levels);
+        if (this.advancementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
+          output.writeInt32(8, this.advancementPace);
         }
         super.writeTo(output);
       }
@@ -271,9 +271,9 @@ public interface StartData {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeStringSize(7, this.sessionFile);
         }
-        if (this.levels != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
+        if (this.advancementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeInt32Size(8, this.levels);
+            .computeInt32Size(8, this.advancementPace);
         }
         return size;
       }
@@ -379,7 +379,7 @@ public interface StartData {
                 case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_FAST:
                 case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_MEDIUM:
                 case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_SLOW:
-                  this.levels = value;
+                  this.advancementPace = value;
                   break;
               }
               break;

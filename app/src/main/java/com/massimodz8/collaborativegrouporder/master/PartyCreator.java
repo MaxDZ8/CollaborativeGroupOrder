@@ -429,7 +429,7 @@ public class PartyCreator extends PublishAcceptHelper {
         ret.sessionFile = PersistentDataUtils.makeInitialSession(new Date(ret.created.seconds * 1000), filesDir, building.name);
         if(ret.sessionFile == null) throw new RuntimeException();
         ret.name = building.name;
-        ret.levels = building.advancementPace;
+        ret.advancementPace = building.advancementPace;
         {
             int devCount = 0;
             for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {

@@ -269,7 +269,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             }
 
             final GroupState add = new GroupState(pumper.getSource()).explicit();
-            add.group = new PartyInfo(probed.version, probed.name);
+            add.group = new PartyInfo(probed.version, probed.name, probed.advancementPace);
             add.group.options = probed.options;
             // It seems on some devices .onActivityResult can be called BEFORE .onCreate... WTF!!!
             // Not a problem anymore now state is unified and semi-persistent.

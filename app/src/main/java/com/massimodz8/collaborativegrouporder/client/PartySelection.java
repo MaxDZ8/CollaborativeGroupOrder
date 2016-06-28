@@ -36,6 +36,7 @@ public class PartySelection implements AccumulatingDiscoveryListener.OnTick {
 
     public GroupState resParty;
     public Pumper.MessagePumpingThread resWorker;
+    public int resAdvancement;
 
     public void shutdown() {
         explorer.stopDiscovery();
@@ -94,7 +95,7 @@ public class PartySelection implements AccumulatingDiscoveryListener.OnTick {
                     GroupState gs = target.getParty(real.which);
                     if(gs == null) return;
                     if(real.payload.name.isEmpty()) return; // I consider those malicious.
-                    PartyInfo keep = new PartyInfo(real.payload.version, real.payload.name);
+                    PartyInfo keep = new PartyInfo(real.payload.version, real.payload.name, real.payload.advancementPace);
                     keep.options = real.payload.options; /// TODO: those should be localized
                     gs.group = keep;
                     if(dispatch != null) dispatch.onPartyInfoChanged(gs);
@@ -115,6 +116,7 @@ public class PartySelection implements AccumulatingDiscoveryListener.OnTick {
                     // Also get the rid of everything that isn't you. Farewell.
                     target.resParty = got;
                     target.resWorker = target.netPump.move(got.channel);
+                    target.resAdvancement = got.group.advancementPace;
                     if(dispatch != null) dispatch.onDone();
                     break;
                 }

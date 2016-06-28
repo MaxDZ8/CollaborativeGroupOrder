@@ -29,8 +29,9 @@ import java.util.Map;
  * We will eventually also fight but that's not much of a big deal for the client.
  */
 public class Adventure {
-    public StartData.PartyClientData party;
-    @ActorId  int[] playedHere; // actors played here, added automatically to this.actors after flushed
+    public final StartData.PartyClientData.Group party;
+    public final int advancementPace;
+    @ActorId int[] playedHere; // actors played here, added automatically to this.actors after flushed
     public HashMap<Integer, ActorWithKnownOrder> actors = new HashMap<>(); // ID -> struct, flushed every time a new battle starts
     public ArrayList<String> errors;
 
@@ -67,7 +68,10 @@ public class Adventure {
         public int xpReceived;
     }
 
-    public Adventure() { mailman.start(); }
+    public Adventure(StartData.PartyClientData.Group party, int advancementPace) {
+        this.party = party;
+        this.advancementPace = advancementPace;
+        mailman.start(); }
 
     private Handler handler = new MyHandler(this);
     Pumper netPump = new Pumper(handler, MSG_DISCONNECT, MSG_DETACH)
@@ -262,7 +266,7 @@ public class Adventure {
                         }
                     }
                     if(!found) return;
-                    self.upgradeTickets.put(real.redefine, new UpgradeStatus(real.peerKey, real.advencementPace));
+                    self.upgradeTickets.put(real.redefine, new UpgradeStatus(real.peerKey, self.advancementPace));
                     Runnable runnable = self.onUpgradeTicket.get();
                     if(null != runnable) runnable.run();
                 }

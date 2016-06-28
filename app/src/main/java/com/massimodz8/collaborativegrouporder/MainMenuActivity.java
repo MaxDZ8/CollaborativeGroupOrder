@@ -220,7 +220,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
 
-    private void startGoAdventuringActivity(@NonNull StartData.PartyClientData.Group activeParty, @Nullable Pumper.MessagePumpingThread serverConn) {
+    private void startGoAdventuringActivity(@NonNull StartData.PartyClientData.Group activeParty, @Nullable Pumper.MessagePumpingThread serverConn, int advancement) {
         final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
         if (nsd == null) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
@@ -233,7 +233,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
         state.notification = build;
-        RunningServiceHandles.getInstance().joinGame = new JoinGame(activeParty, serverConn, nsd);
+        RunningServiceHandles.getInstance().joinGame = new JoinGame(activeParty, serverConn, nsd, advancement);
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
@@ -267,7 +267,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                         startNewSessionActivity(real, null, null, activeStats);
                     } else if (activeParty instanceof StartData.PartyClientData.Group) {
                         StartData.PartyClientData.Group real = (StartData.PartyClientData.Group) activeParty;
-                        startGoAdventuringActivity(real, null);
+                        startGoAdventuringActivity(real, null, 0);
                     }
                 }
                 handles.pick = null;
@@ -275,7 +275,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             }
             case REQUEST_PULL_CHAR_LIST: {
                 if(resultCode == RESULT_OK) {
-                    handles.bindChars = new PcAssignmentState(handles.joinGame.result.worker, handles.joinGame.party, handles.joinGame.result.first);
+                    handles.bindChars = new PcAssignmentState(handles.joinGame.result.worker, handles.joinGame.party, handles.joinGame.result.levelAdvancement, handles.joinGame.result.first);
                     startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
                 }
                 else handles.state.baseNotification();
@@ -286,7 +286,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 boolean keep = false;
                 if(resultCode == RESULT_OK && handles.bindChars.playChars != null && handles.bindChars.playChars.length > 0) {
                     keep = true;
-                    handles.clientPlay = new Adventure();
+                    handles.clientPlay = new Adventure(handles.bindChars.party, handles.bindChars.advancement);
                     ActorOverviewActivity.prepare(
                             handles.bindChars.playChars,
                             handles.bindChars.server);
@@ -323,7 +323,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             case REQUEST_PROPOSE_CHARACTERS: {
                 if(resultCode == RESULT_OK) {
                     if (handles.newChars.master != null) {
-                        startGoAdventuringActivity(handles.newChars.resParty, handles.newChars.master);
+                        startGoAdventuringActivity(handles.newChars.resParty, handles.newChars.master, handles.newChars.party.group.advancementPace);
                         handles.newChars.master = null; // keep it going!
                     }
                     else handles.state.baseNotification();

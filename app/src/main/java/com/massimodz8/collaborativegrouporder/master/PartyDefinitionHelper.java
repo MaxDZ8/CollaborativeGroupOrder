@@ -310,6 +310,7 @@ public abstract class PartyDefinitionHelper {
         info.forming = true;
         info.name = this.name;
         info.version = MainMenuActivity.NETWORK_VERSION;
+        info.advancementPace = advancementPace;
         final Network.CharBudget bud = helloBudget(from);
         new Thread(new Runnable() {
             @Override

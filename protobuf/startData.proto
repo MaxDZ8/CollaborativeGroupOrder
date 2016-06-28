@@ -27,7 +27,7 @@ message PartyOwnerData {
         string imageFile = 5; // group images are cool as well, used for the service notification.
         google.protobuf.Timestamp created = 6;
         string sessionFile = 7; // the session file is created even before this party is saved
-	    LevelAdvancement levels = 8;
+        LevelAdvancement advancementPace = 8;
         
         // Note: there's no "current group state" anymore, store them somewhere else
     }

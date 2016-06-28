@@ -136,6 +136,9 @@ public interface Network {
     // optional bytes doormat = 5;
     public byte[] doormat;
 
+    // optional .LevelAdvancement advancementPace = 6;
+    public int advancementPace;
+
     public GroupInfo() {
       clear();
     }
@@ -146,6 +149,7 @@ public interface Network {
       options = com.google.protobuf.nano.WireFormatNano.EMPTY_STRING_ARRAY;
       forming = false;
       doormat = com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES;
+      advancementPace = com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED;
       cachedSize = -1;
       return this;
     }
@@ -172,6 +176,9 @@ public interface Network {
       }
       if (!java.util.Arrays.equals(this.doormat, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
         output.writeBytes(5, this.doormat);
+      }
+      if (this.advancementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
+        output.writeInt32(6, this.advancementPace);
       }
       super.writeTo(output);
     }
@@ -208,6 +215,10 @@ public interface Network {
       if (!java.util.Arrays.equals(this.doormat, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeBytesSize(5, this.doormat);
+      }
+      if (this.advancementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeInt32Size(6, this.advancementPace);
       }
       return size;
     }
@@ -258,6 +269,18 @@ public interface Network {
           }
           case 42: {
             this.doormat = input.readBytes();
+            break;
+          }
+          case 48: {
+            int value = input.readInt32();
+            switch (value) {
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_FAST:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_MEDIUM:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_SLOW:
+                this.advancementPace = value;
+                break;
+            }
             break;
           }
         }
@@ -641,9 +664,6 @@ public interface Network {
     // optional uint32 redefine = 7;
     public int redefine;
 
-    // optional .LevelAdvancement advencementPace = 8;
-    public int advencementPace;
-
     public PlayingCharacterDefinition() {
       clear();
     }
@@ -656,7 +676,6 @@ public interface Network {
       peerKey = 0;
       level = 0;
       redefine = 0;
-      advencementPace = com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED;
       cachedSize = -1;
       return this;
     }
@@ -684,9 +703,6 @@ public interface Network {
       }
       if (this.redefine != 0) {
         output.writeUInt32(7, this.redefine);
-      }
-      if (this.advencementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
-        output.writeInt32(8, this.advencementPace);
       }
       super.writeTo(output);
     }
@@ -721,10 +737,6 @@ public interface Network {
       if (this.redefine != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(7, this.redefine);
-      }
-      if (this.advencementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-          .computeInt32Size(8, this.advencementPace);
       }
       return size;
     }
@@ -770,18 +782,6 @@ public interface Network {
           }
           case 56: {
             this.redefine = input.readUInt32();
-            break;
-          }
-          case 64: {
-            int value = input.readInt32();
-            switch (value) {
-              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_FAST:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_MEDIUM:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_SLOW:
-                this.advencementPace = value;
-                break;
-            }
             break;
           }
         }

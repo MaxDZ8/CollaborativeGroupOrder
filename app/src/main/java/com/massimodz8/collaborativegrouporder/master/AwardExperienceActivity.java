@@ -75,7 +75,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
                 // E.G. we have discovered we put there the wrong monster and we're rolling back the whole battle
                 if(count != 0) {
                     StartData.ActorDefinition[] pcs = game.getPartyOwnerData().party;
-                    int pace = game.getPartyOwnerData().levels;
+                    int pace = game.getPartyOwnerData().advancementPace;
                     final Resources res = getResources();
                     for (SessionHelper.WinnerData el : game.session.winners) {
                         if (el.award) {
@@ -310,7 +310,6 @@ public class AwardExperienceActivity extends AppCompatActivity {
                         Network.PlayingCharacterDefinition msg = new Network.PlayingCharacterDefinition();
                         msg.redefine = invalid.redefine;
                         msg.peerKey = invalid.peerKey;
-                        msg.advencementPace = game.getPartyOwnerData().levels;
                         helper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, msg, null));
                     }
                 }

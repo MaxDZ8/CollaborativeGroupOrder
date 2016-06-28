@@ -608,7 +608,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
             currently.initiativeBonus = nominal.stats[0].initBonus;
             currently.fullHealth = nominal.stats[0].healthPoints;
             currently.experience = match.experience;
-            currently.level = MaxUtils.level(getResources(), game.getPartyOwnerData().levels, currently.experience);
+            currently.level = MaxUtils.level(getResources(), game.getPartyOwnerData().advancementPace, currently.experience);
             MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
                 @Override
                 public void onInputCompleted(BuildingPlayingCharacter pc) {
@@ -644,13 +644,13 @@ public class FreeRoamingActivity extends AppCompatActivity {
         currently.initiativeBonus = nominal.stats[0].initBonus;
         currently.fullHealth = nominal.stats[0].healthPoints;
         currently.experience = match.experience;
-        currently.level = MaxUtils.level(getResources(), game.getPartyOwnerData().levels, currently.experience);
+        currently.level = MaxUtils.level(getResources(), game.getPartyOwnerData().advancementPace, currently.experience);
         final BuildingPlayingCharacter proposed = new BuildingPlayingCharacter();
         proposed.name = match.name;
         proposed.initiativeBonus = match.initiativeBonus;
         proposed.fullHealth = match.healthPoints;
         proposed.experience = match.experience;
-        proposed.level = MaxUtils.level(getResources(), game.getPartyOwnerData().levels, proposed.experience);
+        proposed.level = MaxUtils.level(getResources(), game.getPartyOwnerData().advancementPace, proposed.experience);
         final Network.PlayingCharacterDefinition fixed = match;
         MyDialogsFactory.showActorComparison(this, currently, proposed, new MyDialogsFactory.ApprovalListener() {
             @Override

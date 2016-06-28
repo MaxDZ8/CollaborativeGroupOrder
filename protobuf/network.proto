@@ -22,6 +22,7 @@ message GroupInfo {
     repeated string options = 3; // "master_initiative_rolls", "scribble", "health_points", "temporary_effects"
     bool forming = 4; // if true we're going to accept new devices in the group, otherwise we go adventuring and the group is 'closed'
     bytes doormat = 5;
+    LevelAdvancement advancementPace = 6;
 }
 
 
@@ -70,7 +71,6 @@ message PlayingCharacterDefinition {
 	// When this is != 0 only .peerKey is valid. This is an unique uint to be used to send a character level up request.
 	// It is some sort of a 'ticket' to be used once. The server will approve chars or not and send GroupFormed as usual.
 	uint32 redefine = 7;
-	LevelAdvancement advencementPace = 8; // only consulted when .redefine != 0
 }
 
 

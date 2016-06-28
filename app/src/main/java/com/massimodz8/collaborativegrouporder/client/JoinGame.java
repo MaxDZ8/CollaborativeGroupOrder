@@ -60,9 +60,11 @@ public class JoinGame implements AccumulatingDiscoveryListener.OnTick {
 
     public static class Result {
         public final Pumper.MessagePumpingThread worker; // if serverConn was not null then references the same object
+        public final int levelAdvancement;
         public final Network.PlayingCharacterDefinition first; // if I get one of those it's because I have been identified.
 
-        protected Result(Pumper.MessagePumpingThread worker, Network.PlayingCharacterDefinition first) {
+        protected Result(int levelAdvancement, Pumper.MessagePumpingThread worker, Network.PlayingCharacterDefinition first) {
+            this.levelAdvancement = levelAdvancement;
             this.worker = worker;
             this.first = first;
         }
@@ -75,7 +77,7 @@ public class JoinGame implements AccumulatingDiscoveryListener.OnTick {
 
     final PseudoStack<Runnable> onEvent = new PseudoStack<>();
 
-    public JoinGame(StartData.PartyClientData.Group party, @Nullable Pumper.MessagePumpingThread serverConn, NsdManager nsd) {
+    public JoinGame(StartData.PartyClientData.Group party, @Nullable Pumper.MessagePumpingThread serverConn, NsdManager nsd, int levelAdv) {
         this.party = party;
         this.serverConn = serverConn;
         sender.start();
@@ -87,6 +89,7 @@ public class JoinGame implements AccumulatingDiscoveryListener.OnTick {
             explorer = null;
             PartyAttempt dummy = new PartyAttempt(null);
             dummy.pipe = serverConn.getSource();
+            dummy.advancementPace = levelAdv;
             pumper.pump(serverConn);
             attempts.add(dummy);
             dummy.refresh(); // kick in our pretty sequence of events.
@@ -109,6 +112,7 @@ public class JoinGame implements AccumulatingDiscoveryListener.OnTick {
 
         byte[] doormat;
         public boolean discarded;
+        public int advancementPace;
 
         private PartyAttempt(NsdServiceInfo source) {
             this.source = source;
@@ -221,7 +225,7 @@ public class JoinGame implements AccumulatingDiscoveryListener.OnTick {
                     MessageChannel real = (MessageChannel)msg.obj;
                     for (PartyAttempt check : me.attempts) {
                         if(real == check.pipe) {
-                            me.result = new Result(me.pumper.move(real), check.charDef);
+                            me.result = new Result(check.advancementPace, me.pumper.move(real), check.charDef);
                             if(callback != null) callback.run();
                             return;
                         }
@@ -254,10 +258,11 @@ public class JoinGame implements AccumulatingDiscoveryListener.OnTick {
                         }.start();
                         break;
                     }
-                    match.party = new PartyInfo(real.payload.version, real.payload.name);
+                    match.party = new PartyInfo(real.payload.version, real.payload.name, real.payload.advancementPace);
                     match.party.options = real.payload.options;
                     match.doormat = real.payload.doormat;
                     match.waitServerReply = false;
+                    match.advancementPace = real.payload.advancementPace;
                     match.refresh();
 
                 } break;
@@ -303,7 +308,7 @@ public class JoinGame implements AccumulatingDiscoveryListener.OnTick {
         PartyAttempt dummy = new PartyAttempt(null);
         dummy.pipe = worker.getSource();
         dummy.lastSend = PartyAttempt.SENT_DOORMAT_REQUEST;
-        dummy.party = new PartyInfo(ginfo.version, ginfo.name);
+        dummy.party = new PartyInfo(ginfo.version, ginfo.name, ginfo.advancementPace);
         dummy.party.options = ginfo.options;
         dummy.doormat = ginfo.doormat;
         attempts.add(dummy);

@@ -267,6 +267,7 @@ public class PcAssignmentHelper {
         send.name = party.name;
         send.version = MainMenuActivity.NETWORK_VERSION;
         send.doormat = dev.doormat;
+        send.advancementPace = party.advancementPace;
         mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.GROUP_INFO, send, null));
     }
 
