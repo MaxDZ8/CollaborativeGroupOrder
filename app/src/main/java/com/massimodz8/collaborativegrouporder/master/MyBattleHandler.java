@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Message;
 
 import com.massimodz8.collaborativegrouporder.networkio.Events;
+import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 
 import java.lang.ref.WeakReference;
 
@@ -18,6 +19,7 @@ public class MyBattleHandler extends Handler {
     public static final int MSG_TURN_DONE = 4;
     public static final int MSG_SHUFFLE_ME = 5;
     public static final int MSG_READIED_ACTION_CONDITION = 6;
+    public static final int MSG_CHARACTER_LEVELUP_PROPOSAL = 7;
 
     private final WeakReference<PartyJoinOrder> target;
 
@@ -73,6 +75,15 @@ public class MyBattleHandler extends Handler {
                     if(runnable != null) runnable.run();
                 }
                 break;
+            }
+            case MSG_CHARACTER_LEVELUP_PROPOSAL: {
+                Events.CharacterDefinition real = (Events.CharacterDefinition) msg.obj;
+                Network.PlayingCharacterDefinition actor = target.upgradeTickets.get(real.character.redefine);
+                if(actor == null || actor.peerKey != real.character.peerKey) break; // not a valid ticket or not the right character
+                if(target.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey) != real.origin) break; // you're cheating
+                target.upgradeTickets.put(real.character.redefine, real.character);
+                Runnable runnable = target.onActorLeveled.get();
+                if(null != runnable) runnable.run();
             }
             default: super.handleMessage(msg);
         }

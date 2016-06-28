@@ -136,6 +136,17 @@ public class PartyJoinOrder extends PublishAcceptHelper {
                         }
                         return false;
                     }
+                }).add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
+                    @Override
+                    public Network.PlayingCharacterDefinition make() { return new Network.PlayingCharacterDefinition(); }
+
+                    @Override
+                    public boolean mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
+                        if(msg.redefine == 0) return false; // not a valid ticket
+                        Events.CharacterDefinition ev = new Events.CharacterDefinition(from, msg);
+                        battleHandler.sendMessage(battleHandler.obtainMessage(MyBattleHandler.MSG_CHARACTER_LEVELUP_PROPOSAL, ev));
+                        return false;
+                    }
                 });
     }
 
@@ -196,12 +207,13 @@ public class PartyJoinOrder extends PublishAcceptHelper {
      */
     int rollRequest;
     Runnable onRollReceived; // called when a roll has been matched to some updated state.
-    public PseudoStack<Runnable> onTurnCompletedRemote = new PseudoStack<>();
-    public PseudoStack<Runnable> onActorShuffledRemote = new PseudoStack<>();
-    public PseudoStack<Runnable> onActorUpdatedRemote = new PseudoStack<>();
+    public final PseudoStack<Runnable> onTurnCompletedRemote = new PseudoStack<>();
+    public final PseudoStack<Runnable> onActorShuffledRemote = new PseudoStack<>();
+    public final PseudoStack<Runnable> onActorUpdatedRemote = new PseudoStack<>();
+    public final PseudoStack<Runnable> onActorLeveled = new PseudoStack<>();
 
-    public final HashMap<Integer, Network.PlayingCharacterDefinition> upgradeTickets = new HashMap<>();
-    public PseudoStack<Runnable> onActorLeveled = new PseudoStack<>();
+    public final HashMap<Integer, Network.PlayingCharacterDefinition> upgradeTickets = new HashMap<>(); // Ticket ID -> character with peerkey
+    // on creation this gets a invalid proto3 object where name=null, recall proto3 string are init to empty strings!
 
 
     private void matchRoll(MessageChannel from, Network.Roll dice) {

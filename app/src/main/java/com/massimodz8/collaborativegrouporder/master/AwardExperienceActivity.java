@@ -26,7 +26,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -87,7 +86,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
                                 pcs[el.id].experience += xp / count;
                                 awarded += xp / count;
                             }
-                            if(MaxUtils.level(res, pace, actor.experience) != MaxUtils.level(res, pace, prev)) game.session.levelup.add(actor);
+                            if(MaxUtils.level(res, pace, actor.experience) != MaxUtils.level(res, pace, prev)) game.session.levelup.add(actor.peerKey);
                             MessageChannel pipe = game.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey);
                             if (pipe == null) continue;
                             game.assignmentHelper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.ACTOR_DATA_UPDATE, actor, null));
@@ -98,18 +97,9 @@ public class AwardExperienceActivity extends AppCompatActivity {
                     ((RecyclerView)findViewById(R.id.aea_mobList)).getAdapter().notifyDataSetChanged();
                     return;
                 }
-                final DialogInterface.OnDismissListener realDone = new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        game.session.levelup = null;
-                        if (awarded != 0) setResult(RESULT_OK);
-                        finish();
-                    }
-                };
                 if(!game.session.levelup.isEmpty()) {
                     final AlertDialog dlg = new AlertDialog.Builder(AwardExperienceActivity.this)
                             .setView(R.layout.dialog_master_levelup)
-                            .setOnDismissListener(realDone)
                             .setPositiveButton(R.string.generic_ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -119,19 +109,18 @@ public class AwardExperienceActivity extends AppCompatActivity {
                             .setCancelable(false)
                             .show();
                     final TextView list = (TextView) dlg.findViewById(R.id.dlgML_charList);
-                    String build = game.session.levelup.get(0).name;
+                    String build = game.session.getActorById(game.session.levelup.get(0)).name;
                     if (game.session.levelup.size() == 1)
                         build = String.format(getString(R.string.aea_levelUpCharList_singular), build);
                     else {
                         for (int loop = 1; loop < game.session.levelup.size() - 1; loop++) {
-                            build = String.format(getString(R.string.aea_levelUpCharList_concatenatePlural), build, game.session.levelup.get(loop));
+                            build = String.format(getString(R.string.aea_levelUpCharList_concatenatePlural), build, game.session.getActorById(game.session.levelup.get(loop)).name);
                         }
-                        build = String.format(getString(R.string.aea_levelUpCharList_concatenateLast), build, game.session.levelup.size() - 1);
+                        build = String.format(getString(R.string.aea_levelUpCharList_concatenateLast), build, game.session.getActorById(game.session.levelup.size() - 1).name);
                     }
                     list.setText(build);
                     sendLevelupTickets();
                 }
-                realDone.onDismiss(null);
             }
         });
         findViewById(R.id.fab).setVisibility(View.VISIBLE);
@@ -274,20 +263,20 @@ public class AwardExperienceActivity extends AppCompatActivity {
         // There's a bug here. If we distribute level up messages very fast...
         // Which means we get in experience awarding in milliseconds, battles taking fractions of milliseconds
         // Then the data we'll work will be stale. Hopefully not!
-        final HashMap<Integer, Network.PlayingCharacterDefinition> target = game.upgradeTickets;
-        final ArrayList<Network.PlayingCharacterDefinition> easy = new ArrayList<>();
         final PcAssignmentHelper helper = RunningServiceHandles.getInstance().play.assignmentHelper;
-        for (Map.Entry<Integer, Network.PlayingCharacterDefinition> el : target.entrySet()) easy.add(el.getValue());
+        final ArrayList<Integer> existing = new ArrayList<>(game.upgradeTickets.size());
+        final ArrayList<Integer> peerKeys = new ArrayList<>(game.session.levelup);
+        for (Map.Entry<Integer, Network.PlayingCharacterDefinition> el : game.upgradeTickets.entrySet()) existing.add(el.getKey());
         new AsyncTask<Void, Void, int[]>() {
             @Override
             protected int[] doInBackground(Void... params) {
-                int[] res = new int[easy.size()];
+                int[] res = new int[game.session.levelup.size()];
                 SecureRandom rand = new SecureRandom();
-                for (int loop = 0; loop < easy.size(); loop++) {
+                for (int loop = 0; loop < game.session.levelup.size(); loop++) {
                     int got = rand.nextInt();
                     boolean matched = got == 0; // not a valid request
-                    for (Network.PlayingCharacterDefinition el : easy) {
-                        if (el.redefine == got) {
+                    for (Integer ticket : existing) {
+                        if (ticket == got) {
                             matched = true;
                             break;
                         }
@@ -312,9 +301,9 @@ public class AwardExperienceActivity extends AppCompatActivity {
                 for (int loop = 0; loop < tickets.length; loop++) {
                     Network.PlayingCharacterDefinition invalid = new Network.PlayingCharacterDefinition();
                     invalid.redefine = tickets[loop];
-                    invalid.peerKey = easy.get(loop).peerKey;
+                    invalid.peerKey = peerKeys.get(loop);
                     invalid.name = null; // so when we receive we can set this and we know we got what we want
-                    target.put(invalid.redefine, invalid);
+                    game.upgradeTickets.put(invalid.redefine, invalid);
 
                     final MessageChannel pipe = helper.getMessageChannelByPeerKey(invalid.peerKey);
                     if(pipe != null) {
@@ -325,6 +314,9 @@ public class AwardExperienceActivity extends AppCompatActivity {
                         helper.mailman.out.add(new SendRequest(pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, msg, null));
                     }
                 }
+                game.session.levelup = null; // promoted to tickets
+                if (awarded != 0) setResult(RESULT_OK);
+                finish(); // bad idea to do this AsyncTask is troublesome but I'm late at this point and I want to ship.
             }
         }.execute();
     }

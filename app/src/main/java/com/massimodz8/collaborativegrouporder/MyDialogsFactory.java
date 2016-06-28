@@ -1,11 +1,14 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.Locale;
 
@@ -57,6 +60,52 @@ public abstract class MyDialogsFactory {
             view.setText(String.format(Locale.getDefault(), ctx.getString(R.string.fra_levelUpDlgSubTitle), pc.level));
         }
         return dlg;
+    }
+    public interface ApprovalListener {
+        void approval(boolean status);
+    }
+    public static AlertDialog showActorComparison(final Context ctx, final BuildingPlayingCharacter origin, final BuildingPlayingCharacter proposed,
+                                                  final ApprovalListener callback) {
+        AlertDialog dlg = new AlertDialog.Builder(ctx, R.style.AppDialogStyle)
+                .setTitle(R.string.fra_approveLevelUp)
+                .setView(R.layout.dialog_leveled_character_compare)
+                .setPositiveButton(R.string.fra_approveDlgActionPositive, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        callback.approval(true);
+                    }
+                })
+                .setNegativeButton(R.string.fra_approveDlgActionNegative, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        callback.approval(false);
+                    }
+                })
+                .setCancelable(false)
+                .show();
+        final PCViewHolder helper = new PCViewHolder(dlg.findViewById(R.id.vhRoot)) {
+            @Override
+            protected String getString(@StringRes int resid) {
+                return ctx.getString(resid);
+            }
 
+            @Override
+            protected void action() { /* not used */ }
+        };
+        MaxUtils.setVisibility(View.GONE,
+                helper.itemView.findViewById(R.id.vhPCDI_makeNewChar),
+                helper.itemView.findViewById(R.id.vhPCDI_accepted));
+        ((ToggleButton)dlg.findViewById(R.id.dlgLCC_toggle)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) helper.bind(proposed);
+                else helper.bind(origin);
+                MaxUtils.setVisibility(View.GONE,
+                        helper.itemView.findViewById(R.id.vhPCDI_makeNewChar),
+                        helper.itemView.findViewById(R.id.vhPCDI_accepted));
+                helper.itemView.setEnabled(isChecked);
+            }
+        });
+        return dlg;
     }
 }

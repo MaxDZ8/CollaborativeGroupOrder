@@ -153,7 +153,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 attemptBattleStart();
             }
         };
-        localCharUpgrade();
+        charUpgrade();
         Session.Suspended stats = game.session.stats;
         HashMap<Integer, Network.ActorState> remember = new HashMap<>(); // deserialized id -> real structure with new id.
         for (Network.ActorState real : game.session.existByDef) remember.put(real.peerKey, real);
@@ -588,7 +588,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         }
     }
 
-    private void localCharUpgrade() {
+    private void charUpgrade() {
         final HashMap<Integer, Network.PlayingCharacterDefinition> tickets = game.upgradeTickets;
         if(tickets.isEmpty()) return;
         Network.PlayingCharacterDefinition match = null;
@@ -600,8 +600,44 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 break;
             }
         }
-        if(null == match) return;
-        final int key = match.redefine, peerKey = match.peerKey;
+        if(null != match) {
+            final int key = match.redefine, peerKey = match.peerKey;
+            final BuildingPlayingCharacter currently = new BuildingPlayingCharacter();
+            final StartData.ActorDefinition nominal = game.getPartyOwnerData().party[match.peerKey];
+            currently.name = nominal.name;
+            currently.initiativeBonus = nominal.stats[0].initBonus;
+            currently.fullHealth = nominal.stats[0].healthPoints;
+            currently.experience = match.experience;
+            currently.level = MaxUtils.level(getResources(), game.getPartyOwnerData().levels, currently.experience);
+            MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
+                @Override
+                public void onInputCompleted(BuildingPlayingCharacter pc) {
+                    tickets.remove(key);
+                    // upgrade my runtime state.
+                    final Network.ActorState as = game.session.getActorById(peerKey);
+                    as.initiativeBonus = pc.initiativeBonus;
+                    as.maxHP = pc.fullHealth;
+                    // Syncing with reuse... is this smart or ugly?
+                    onActivityResult(REQUEST_AWARD_EXPERIENCE, RESULT_OK, null);
+                    final Runnable call = game.onActorLeveled.get();
+                    if (null != call) call.run();
+                }
+            }, currently);
+            return;
+        }
+        // Ok, let's scan again and deal with remotely assigned actors this time.
+        for (Map.Entry<Integer, Network.PlayingCharacterDefinition> el : tickets.entrySet()) {
+            int key = el.getKey();
+            if(key >= game.assignmentHelper.assignment.length) continue;
+            if(game.assignmentHelper.assignment[key] == PcAssignmentHelper.PlayingDevice.LOCAL_ID) continue;
+            if(game.assignmentHelper.assignment[key] == PcAssignmentHelper.PlayingDevice.INVALID_ID) continue;
+            Network.PlayingCharacterDefinition prop = el.getValue();
+            if(null != prop && prop.name != null) { // null name marks 'not received yet'
+                match = prop;
+                break;
+            }
+        }
+        if(null == match) return; // what? This should be impossible at this point
         final BuildingPlayingCharacter currently = new BuildingPlayingCharacter();
         final StartData.ActorDefinition nominal = game.getPartyOwnerData().party[match.peerKey];
         currently.name = nominal.name;
@@ -609,19 +645,34 @@ public class FreeRoamingActivity extends AppCompatActivity {
         currently.fullHealth = nominal.stats[0].healthPoints;
         currently.experience = match.experience;
         currently.level = MaxUtils.level(getResources(), game.getPartyOwnerData().levels, currently.experience);
-        MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
+        final BuildingPlayingCharacter proposed = new BuildingPlayingCharacter();
+        proposed.name = match.name;
+        proposed.initiativeBonus = match.initiativeBonus;
+        proposed.fullHealth = match.healthPoints;
+        proposed.experience = match.experience;
+        proposed.level = MaxUtils.level(getResources(), game.getPartyOwnerData().levels, proposed.experience);
+        final Network.PlayingCharacterDefinition fixed = match;
+        MyDialogsFactory.showActorComparison(this, currently, proposed, new MyDialogsFactory.ApprovalListener() {
             @Override
-            public void onInputCompleted(BuildingPlayingCharacter pc) {
-                tickets.remove(key);
-                // upgrade my runtime state.
-                final Network.ActorState as = game.session.getActorById(peerKey);
-                as.initiativeBonus = pc.initiativeBonus;
-                as.maxHP = pc.fullHealth;
-                // Syncing with reuse... is this smart or ugly?
-                onActivityResult(REQUEST_AWARD_EXPERIENCE, RESULT_OK, null);
+            public void approval(boolean status) {
+                MessageChannel dst = game.assignmentHelper.getMessageChannelByPeerKey(fixed.peerKey);
+                if(null != dst) {
+                    Network.GroupFormed msg = new Network.GroupFormed();
+                    msg.peerKey = fixed.peerKey;
+                    msg.accepted = status;
+                    game.assignmentHelper.mailman.out.add(new SendRequest(dst, ProtoBufferEnum.GROUP_FORMED, msg, null));
+                }
+                if(status) {
+                    tickets.remove(fixed.redefine);
+                    // Syncing with reuse... is this smart or ugly?
+                    onActivityResult(REQUEST_AWARD_EXPERIENCE, RESULT_OK, null);
+                }
+                else {
+                    fixed.name = null;
+                }
                 final Runnable call = game.onActorLeveled.get();
-                if(null != call) call.run();
+                if (null != call) call.run();
             }
-        }, currently);
+        });
     }
 }

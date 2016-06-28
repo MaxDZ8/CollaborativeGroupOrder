@@ -339,6 +339,9 @@
     <string name="fra_exitDlgMsg">Session data will be saved but players will have to reconnect and assign characters again.</string>
     <string name="fra_exitButtonConfirm">Get me out</string>
     <string name="fra_levelUpDlgSubTitle">Reached level %1$d</string>
+    <string name="fra_approveLevelUp">Approve level up</string>
+    <string name="fra_approveDlgActionPositive">Approve</string>
+    <string name="fra_approveDlgActionNegative">Reject</string>
 
     <string name="sma_title">Spawn monsters</string>
     <string name="sma_searchingMessage">Searching…</string>
@@ -827,5 +830,8 @@
     <string name="dlgNSDTroubleshoot_outro">Still not working? I want to make this work! Please get in touch with support and we\'ll sort it out!\ncollaborativegrouporder@gmail.com\nhttps://www.reddit.com/r/app_cgo\nIn the meanwhile you can also go back and try an <i>explicit connection</i>, you will find it in the menu options.</string>
 
     <string name="dlgML_moreInstructions">Players will now have a chance to modify their characters. You will be presented those new proposals in adventuring mode for your approval.</string>
+	
+    <string name="dlgLCC_prev">Previously</string>
+    <string name="dlgLCC_new">New</string>
 
 </resources>
