@@ -30,13 +30,14 @@ public abstract class PartyDefinitionHelper {
     public static final int PEER_MESSAGE_INTERVAL_MS = 2000;
     public static final int INITIAL_MESSAGE_CHAR_BUDGET = 50;
     final public String name;
-    public int advancementPace;
+    final public int advancementPace;
     public ArrayList<DeviceStatus> clients = new ArrayList<>();
     public Pumper netPump;
     public final ArrayList<BuildingPlayingCharacter> localChars = new ArrayList<>();
 
-    public PartyDefinitionHelper(String name) {
+    public PartyDefinitionHelper(String name, int advancementPace) {
         this.name = name;
+        this.advancementPace = advancementPace;
         final Handler handler = new MyHandler(this);
         netPump = new Pumper(handler, MSG_SOCKET_LOST, MSG_PUMPER_DETACHED)
                 .add(ProtoBufferEnum.HELLO, new PumpTarget.Callbacks<Network.Hello>() {

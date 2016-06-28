@@ -58,24 +58,21 @@ public class PartyCreator extends PublishAcceptHelper {
     /**
      * Initializes construction of a new party with the given name. Construction starts if
      * no collisions are detected. Only to be called once.
-     * @param name Name to match against existing groups. Group names must be unique across owned
-     *             groups but can be non-unique across keys or keys and owned. This is because
-     *             clients have no control over group name.
      * @return null, or a list containing at least 1 element.
      */
-    public @Nullable ArrayList<StartData.PartyOwnerData.Group> beginBuilding(String name, String unknownDeviceName) {
+    public @Nullable ArrayList<StartData.PartyOwnerData.Group> beginBuilding(String unknownDeviceName) {
         ArrayList<StartData.PartyOwnerData.Group> collisions = null;
         if(mode != MODE_ADD_NEW_DEVICES_TO_EXISTING) { // if == already validated.
             ArrayList<StartData.PartyOwnerData.Group> defs = RunningServiceHandles.getInstance().state.data.groupDefs;
             for (StartData.PartyOwnerData.Group match : defs) {
-                if (match.name.equals(name)) {
+                if (match.name.equals(newPartyName)) {
                     if (null == collisions) collisions = new ArrayList<>();
                     collisions.add(match);
                 }
             }
         }
         this.unknownDeviceName = unknownDeviceName;
-        if(null == collisions) building = new PartyDefinitionHelper(name) {
+        if(null == collisions) building = new PartyDefinitionHelper(newPartyName, advancementPace) {
             @Override
             protected void onMessageChanged(DeviceStatus owner) {
                 if(null != clientDeviceAdapter) clientDeviceAdapter.notifyDataSetChanged();
@@ -361,6 +358,9 @@ public class PartyCreator extends PublishAcceptHelper {
 
 
     PartyDefinitionHelper building;
+    String newPartyName;
+    int advancementPace;
+
     private RecyclerView.Adapter clientDeviceAdapter;
 
 

@@ -385,10 +385,10 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         final TextInputLayout til = (TextInputLayout) findViewById(R.id.npdsa_partyName);
         final EditText view = til.getEditText();
         if(view == null) return; // impossible
-        final String groupName = view.getText().toString().trim();
-        ArrayList<StartData.PartyOwnerData.Group> collisions = room.beginBuilding(groupName, getString(R.string.npdsa_unknownDeviceName));
-        if (groupName.isEmpty() || null != collisions) {
-            int msg = groupName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
+        room.newPartyName = view.getText().toString().trim();
+        ArrayList<StartData.PartyOwnerData.Group> collisions = room.beginBuilding(getString(R.string.npdsa_unknownDeviceName));
+        if (room.newPartyName.isEmpty() || null != collisions) {
+            int msg = room.newPartyName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setTitle(R.string.npdsa_badParty_title)
                     .setCancelable(false)
@@ -423,7 +423,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                     .show();
             return;
         }
-        room.beginPublishing(nsd, groupName, PartyCreator.PARTY_FORMING_SERVICE_TYPE);
+        room.beginPublishing(nsd, room.newPartyName, PartyCreator.PARTY_FORMING_SERVICE_TYPE);
         MaxUtils.beginDelayedTransition(this);
         view.setEnabled(false);
 
@@ -431,7 +431,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         final int resid = room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING?
                 R.string.npdsa_notifyContentAdd :
                 R.string.npdsa_notifyContentNew;
-        Notification notification = state.buildNotification(groupName, getString(resid));
+        Notification notification = state.buildNotification(room.newPartyName, getString(resid));
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         nm.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, notification);
         state.notification = notification;
@@ -443,7 +443,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         findViewById(R.id.npdsa_deviceList).setVisibility(View.VISIBLE);
         Snackbar.make(findViewById(R.id.activityRoot), R.string.npdsa_waitingToTalk, Snackbar.LENGTH_SHORT).show();
         view.setEnabled(false);
-        setLevelAdv_callback(null);
+        findViewById(R.id.npdsa_levelAdvBtn).setEnabled(false);
     }
 
     public void setLevelAdv_callback(View unused) {
@@ -462,7 +462,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                                 LevelAdvancement.LA_PF_MEDIUM,
                                 LevelAdvancement.LA_PF_SLOW
                         };
-                        room.building.advancementPace = la[which];
+                        room.advancementPace = la[which];
                         dialog.dismiss();
                         MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
                         ((Button)findViewById(R.id.npdsa_levelAdvBtn)).setText(String.format(getString(R.string.npdsa_levelAdvBtn_setFormat), name[which]));
@@ -475,7 +475,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     // TextView.OnEditorActionListener vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        if(room.building.advancementPace != LevelAdvancement.LA_UNSPECIFIED) publishGroup();
+        if(room.advancementPace != LevelAdvancement.LA_UNSPECIFIED) publishGroup();
         else setLevelAdv_callback(null);
         return true;
     }
