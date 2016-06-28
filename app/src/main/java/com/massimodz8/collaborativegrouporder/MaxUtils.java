@@ -174,6 +174,18 @@ public abstract class MaxUtils {
         return level;
     }
 
+    public static int experienceToReachLevel(Resources res, int pace, int level) {
+        if(level < 2) return 0;
+        final int[] limit;
+        switch(pace) {
+            case LevelAdvancement.LA_PF_FAST: limit = res.getIntArray(R.array.levelProgression_fast); break;
+            case LevelAdvancement.LA_PF_MEDIUM: limit = res.getIntArray(R.array.levelProgression_medium); break;
+            case LevelAdvancement.LA_PF_SLOW: limit = res.getIntArray(R.array.levelProgression_slow); break;
+            default: return 0;
+        }
+        return limit[level - 2];
+    }
+
     // Events for all Firebase Analytics events I want to track to help me monitor userbase health more accurately.
     // I gather everything here for the lack of a better place.
     public static final String FA_EVENT_PARTY_COMPLETED = "newParty";

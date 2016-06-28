@@ -368,6 +368,12 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 real.awarded.setText(String.format(getString(R.string.aoa_xpIncrement), value));
                 value = thousands.format(as.experience);
                 real.total.setText(String.format(getString(R.string.aoa_xpTotal), value));
+                int level = MaxUtils.level(getResources(), ticker.advancementPace, as.experience);
+                real.toNext.setVisibility(level < 20? View.VISIBLE : View.GONE);
+                if(level < 20) {
+                    int need = MaxUtils.experienceToReachLevel(getResources(), ticker.advancementPace, level + 1);
+                    real.toNext.setText(String.format(getString(R.string.aoa_xpToNext), thousands.format(need - as.experience)));
+                }
             }
         }
 
@@ -432,9 +438,10 @@ public class ActorOverviewActivity extends AppCompatActivity {
             super(iv);
             awarded = (TextView)iv.findViewById(R.id.vhXA_awarded);
             total = (TextView)iv.findViewById(R.id.vhXA_total);
+            toNext = (TextView)iv.findViewById(R.id.vhXA_toNext);
         }
 
-        final TextView awarded, total;
+        final TextView awarded, total, toNext;
     }
 
     private class SendRollCallback implements Runnable {

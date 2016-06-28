@@ -639,6 +639,7 @@
     <string name="aoa_xpIncrement">Awarded +%1$s XPs</string>
     <string name="aoa_xpTotal">%1$s total XPs</string>
     <string name="aoa_battleCancelled">Battle cancelled.</string>
+    <string name="aoa_xpToNext">To next level: %1$s</string>
 
     <string name="rid_done">Confirm</string>
     <string name="rid_instructionsAndModifier">Roll dice and enter result.\nModifier (%1$s) applied automatically.</string>
