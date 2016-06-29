@@ -220,7 +220,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
 
-    private void startGoAdventuringActivity(@NonNull StartData.PartyClientData.Group activeParty, @Nullable Pumper.MessagePumpingThread serverConn, int advancement) {
+    private void startGoAdventuringActivity(@NonNull StartData.PartyClientData.Group activeParty, @Nullable Pumper.MessagePumpingThread serverConn) {
         final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
         if (nsd == null) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
@@ -233,7 +233,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
         state.notification = build;
-        RunningServiceHandles.getInstance().joinGame = new JoinGame(activeParty, serverConn, nsd, advancement);
+        RunningServiceHandles.getInstance().joinGame = new JoinGame(activeParty, serverConn, nsd);
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
@@ -267,7 +267,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                         startNewSessionActivity(real, null, null, activeStats);
                     } else if (activeParty instanceof StartData.PartyClientData.Group) {
                         StartData.PartyClientData.Group real = (StartData.PartyClientData.Group) activeParty;
-                        startGoAdventuringActivity(real, null, 0);
+                        startGoAdventuringActivity(real, null);
                     }
                 }
                 handles.pick = null;
@@ -323,7 +323,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             case REQUEST_PROPOSE_CHARACTERS: {
                 if(resultCode == RESULT_OK) {
                     if (handles.newChars.master != null) {
-                        startGoAdventuringActivity(handles.newChars.resParty, handles.newChars.master, handles.newChars.party.group.advancementPace);
+                        startGoAdventuringActivity(handles.newChars.resParty, handles.newChars.master);
                         handles.newChars.master = null; // keep it going!
                     }
                     else handles.state.baseNotification();

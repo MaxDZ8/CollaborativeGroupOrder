@@ -50,8 +50,8 @@ public abstract class MyDialogsFactory {
             }
         };
         helper.bind(pc);
-        ((Button)helper.itemView.findViewById(R.id.vhPCDI_makeNewChar)).setText(R.string.fra_updateChar);
         if(currently != null) {
+            ((Button)helper.itemView.findViewById(R.id.vhPCDI_makeNewChar)).setText(R.string.fra_updateChar);
             MaxUtils.setEnabled(false,
                     dlg.findViewById(R.id.vhPCDI_name),
                     dlg.findViewById(R.id.vhPCDI_experience));

@@ -6,6 +6,7 @@ import android.support.annotation.WorkerThread;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.MessageNano;
+import com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
@@ -20,7 +21,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Locale;
 import java.util.Map;
 
@@ -166,6 +166,7 @@ public abstract class PersistentDataUtils {
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
         if(group.created == null || group.created.nanos != 0 || group.created.seconds == 0) errors.add(premise + getString(R.string.persistentStorage_badCreationTimestamp));
         if(group.sessionFile == null || group.sessionFile.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_badSessionFile));
+        if(group.advancementPace == LevelAdvancement.LA_UNSPECIFIED) errors.add(premise + getString(R.string.persistentStorage_badLevelAdvancementPace));
 
         new ActorValidator(true, errors, String.format("%1$s->%2$s", premise, getString(R.string.persistentStorage_partyDefValidationPremise)))
                 .check(getString(R.string.persistentStorage_playingCharacters), group.party)

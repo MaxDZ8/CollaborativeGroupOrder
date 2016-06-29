@@ -74,6 +74,7 @@
     <string name="persistentStorage_actorShouldNotBeFighting">Actor got an initiative but it should not be fighting!</string>
     <string name="persistentStorage_unknownFighter">Unknown fighing actor!</string>
     <string name="persistentStorage_invalidCurrentActor">Invalid current actor.</string>
+    <string name="persistentStorage_badLevelAdvancementPace">: level advancement unspecified.</string>
 
     <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>

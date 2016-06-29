@@ -142,6 +142,11 @@ public class FreeRoamingActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         lister.playState = game.session;
+        game = RunningServiceHandles.getInstance().play;
+        levelupCallback = game.onActorLeveled.put(new Runnable() {
+            @Override
+            public void run() { charUpgrade(); }
+        });
         refresh();
     }
 
@@ -241,9 +246,14 @@ public class FreeRoamingActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if(game != null) game.onRollReceived = null;
+        if(game != null) {
+            game.onRollReceived = null;
+            game.onActorLeveled.remove(levelupCallback);
+        }
         if(waiting != null) waiting.dlg.dismiss();
     }
+
+    int levelupCallback;
 
 
     @Override
