@@ -6,7 +6,7 @@ package com.massimodz8.collaborativegrouporder.protocol.nano;
 public interface RPGClass {
 
   // enum KnownClass
-  public static final int KC_UNSPECIFIED = 0;
+  public static final int KC_INVALID = 0;
   public static final int KC_PF_CORE_BARBARIAN = 1;
   public static final int KC_PF_CORE_BARD = 2;
   public static final int KC_PF_CORE_CLERIC = 3;
@@ -38,7 +38,7 @@ public interface RPGClass {
   public static final int KC_HYB_SHAMAN = 29;
   public static final int KC_HYB_SKALD = 30;
   public static final int KC_HYB_SLAYER = 31;
-  public static final int KG_HYB_SWASHBUCLERK = 32;
+  public static final int KG_HYB_SWASHBUCKLER = 32;
   public static final int KC_HYB_WARPRIEST = 33;
   public static final int KC_UNC_BARBARIAN = 34;
   public static final int KC_UNC_MONK = 35;
@@ -174,7 +174,7 @@ public interface RPGClass {
 
     public LevelClass clear() {
       present = "";
-      known = com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_UNSPECIFIED;
+      known = com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_INVALID;
       cachedSize = -1;
       return this;
     }
@@ -185,7 +185,7 @@ public interface RPGClass {
       if (!this.present.equals("")) {
         output.writeString(1, this.present);
       }
-      if (this.known != com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_UNSPECIFIED) {
+      if (this.known != com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_INVALID) {
         output.writeInt32(2, this.known);
       }
       super.writeTo(output);
@@ -198,7 +198,7 @@ public interface RPGClass {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeStringSize(1, this.present);
       }
-      if (this.known != com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_UNSPECIFIED) {
+      if (this.known != com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_INVALID) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
           .computeInt32Size(2, this.known);
       }
@@ -227,7 +227,7 @@ public interface RPGClass {
           case 16: {
             int value = input.readInt32();
             switch (value) {
-              case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_UNSPECIFIED:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_INVALID:
               case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_PF_CORE_BARBARIAN:
               case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_PF_CORE_BARD:
               case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_PF_CORE_CLERIC:
@@ -259,7 +259,7 @@ public interface RPGClass {
               case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_HYB_SHAMAN:
               case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_HYB_SKALD:
               case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_HYB_SLAYER:
-              case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KG_HYB_SWASHBUCLERK:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KG_HYB_SWASHBUCKLER:
               case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_HYB_WARPRIEST:
               case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_UNC_BARBARIAN:
               case com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.KC_UNC_MONK:
