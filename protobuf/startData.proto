@@ -2,6 +2,7 @@ syntax = "proto3";
 option java_package = "com.massimodz8.collaborativegrouporder.protocol";
 import "google/protobuf/timestamp.proto";
 import "LevelAdvancement.proto";
+import "RPGClass.proto";
 
 // This is more or less 'static' stuff you would write in your character sheet.
 // That is, if you are the server. For the client it's just simple cryptographic key.
@@ -49,6 +50,7 @@ message ActorDefinition {
 message ActorStatistics {
     uint32 initBonus = 1;
     int32 healthPoints = 2; // Group.usually -> full health, otherwise current health
+    LevelClass career = 3;
 }
 
 

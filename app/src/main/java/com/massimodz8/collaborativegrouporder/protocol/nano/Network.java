@@ -658,7 +658,10 @@ public interface Network {
     // optional uint32 peerKey = 5;
     public int peerKey;
 
-    // optional uint32 redefine = 6;
+    // optional .LevelClass career = 6;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.LevelClass career;
+
+    // optional uint32 redefine = 7;
     public int redefine;
 
     public PlayingCharacterDefinition() {
@@ -671,6 +674,7 @@ public interface Network {
       healthPoints = 0;
       experience = 0;
       peerKey = 0;
+      career = null;
       redefine = 0;
       cachedSize = -1;
       return this;
@@ -694,8 +698,11 @@ public interface Network {
       if (this.peerKey != 0) {
         output.writeUInt32(5, this.peerKey);
       }
+      if (this.career != null) {
+        output.writeMessage(6, this.career);
+      }
       if (this.redefine != 0) {
-        output.writeUInt32(6, this.redefine);
+        output.writeUInt32(7, this.redefine);
       }
       super.writeTo(output);
     }
@@ -723,9 +730,13 @@ public interface Network {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(5, this.peerKey);
       }
+      if (this.career != null) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeMessageSize(6, this.career);
+      }
       if (this.redefine != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(6, this.redefine);
+            .computeUInt32Size(7, this.redefine);
       }
       return size;
     }
@@ -765,7 +776,14 @@ public interface Network {
             this.peerKey = input.readUInt32();
             break;
           }
-          case 48: {
+          case 50: {
+            if (this.career == null) {
+              this.career = new com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.LevelClass();
+            }
+            input.readMessage(this.career);
+            break;
+          }
+          case 56: {
             this.redefine = input.readUInt32();
             break;
           }

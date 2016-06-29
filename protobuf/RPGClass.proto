@@ -1,0 +1,168 @@
+syntax = "proto3";
+option java_package = "com.massimodz8.collaborativegrouporder.protocol";
+
+
+// Enumerates core classes.
+enum KnownClass {
+    KC_UNSPECIFIED = 0;
+    
+    KC_PF_CORE_BARBARIAN = 1;
+    KC_PF_CORE_BARD = 2;
+    KC_PF_CORE_CLERIC = 3;
+    KC_PF_CORE_DRUID = 4;
+    KC_PF_CORE_FIGHTER = 5;
+    KC_PF_CORE_MONK = 6;
+    KC_PF_CORE_PALADIN = 7;
+    KC_PF_CORE_RANGER = 8;
+    KC_PF_CORE_ROGUE = 9;
+    KC_PF_CORE_SORCERER = 10;
+    KC_PF_CORE_WIZARD = 11;
+    
+    KC_BASE_ALCHEMIST = 12;
+    KC_BASE_CAVALIER = 13;
+    KC_BASE_GUNSLINGER = 14;
+    KC_BASE_INQUISITOR = 15;
+    KC_BASE_MAGUS = 16;
+    KC_BASE_ORACLE = 17;
+    KC_BASE_SUMMONER = 18;
+    KC_BASE_VIGILANTE = 19;
+    KC_BASE_WITCH = 20;
+    
+    KC_ALT_ANTIPALADIN = 21;
+    KC_ALT_NINJA = 22;
+    KC_ALT_SAMURAI = 23;
+    
+    KC_HYB_ARCHANIST = 24;
+    KC_HYB_BLOODRAGER = 25;
+    KC_HYB_BRAWLER = 26;
+    KC_HYB_HUNTER = 27;
+    KC_HYB_INVESTIGATOR = 28;
+    KC_HYB_SHAMAN = 29;
+    KC_HYB_SKALD = 30;
+    KC_HYB_SLAYER = 31;
+    KG_HYB_SWASHBUCLERK = 32;
+    KC_HYB_WARPRIEST = 33;
+    
+    KC_UNC_BARBARIAN = 34;
+    KC_UNC_MONK = 35;
+    KC_UNC_ROGUE = 36;
+    KC_UNC_SUMMONER = 37;
+    
+    KC_OCC_KINETICIST = 38;
+    KC_OCC_MEDIUM = 39;
+    KC_OCC_MESMERIST = 40;
+    KC_OCC_OCCULTIST = 41;
+    KC_OCC_PSYCHIC = 42;
+    KC_OCC_SPIRITUALIST = 43;
+    
+    KC_PRES_ADV_BATTLE_HERALD = 44;
+    KC_PRES_ADV_HOLY_VINDICATOR = 45;
+    KC_PRES_ADV_HORIZON_WALKER = 46;
+    KC_PRES_ADV_CHYMIST = 47;
+    KC_PRES_ADV_SPY =  48;
+    KC_PRES_ADV_WARDEN = 49;
+    KC_PRES_ADV_RAGE_PROPHET = 50;
+    KC_PRES_ADV_STALWART_DEFENDER = 51;
+    
+    KC_PRES_CORE_ARCHER = 52;
+    KC_PRES_CORE_TRICKSTER = 53;
+    KC_PRES_CORE_ASSASSIN = 54;
+    KC_PRES_CORE_DRAGON_DISCIPLE = 55;
+    KC_PRES_CORE_DUELIST = 56;
+    KC_PRES_CORE_ELDRITCH_KNIGHT = 57;
+    KC_PRES_CORE_LOREMASTER = 58;
+    KC_PRES_CORE_MYSTIC_THEURGE = 59;
+    KC_PRES_CORE_PF_CHRONICLER = 60;
+    KC_PRES_CORE_SHADOWDANCER = 61;
+    
+    KC_PRES_OPZ_AGENT_OF_THE_GRAVE          = 62;
+    KC_PRES_OPZ_ARCANE_SAVANT               = 63;
+    KC_PRES_OPZ_BLOODMAGE                   = 64;
+    KC_PRES_OPZ_BRIGHTNESS_SEEKER           = 65;
+    KC_PRES_OPZ_BROTHER_OF_THE_SEAL         = 66;
+    KC_PRES_OPZ_CELESTIAL_KNIGHT            = 67;
+    KC_PRES_OPZ_CHAMPION_OF_THE_ENLIGHTENED = 68;
+    KC_PRES_OPZ_CHEVALIER                   = 69;
+    KC_PRES_OPZ_COASTAL_PRIRATE             = 70;
+    KC_PRES_OPZ_COLLEGIATE_ARCANIST         = 71;
+    KC_PRES_OPZ_CRIMSON_ASSASSIN            = 72;
+    KC_PRES_OPZ_CYPHERMAGE                  = 73;
+    KC_PRES_OPZ_DAIVRAT                     = 74;
+    KC_PRES_OPZ_DARK_DELVER                 = 75;
+    KC_PRES_OPZ_DARKFIRE_ADEPT              = 76;
+    KC_PRES_OPZ_DEEP_SEA_PIRATE             = 77;
+    KC_PRES_OPZ_DEMONIAC                    = 78;
+    KC_PRES_OPZ_DIABOLIST                   = 79;
+    KC_PRES_OPZ_DISSIDENT_OF_DAWN           = 80;
+    KC_PRES_OPZ_DIVINE_ASSESSOR             = 81;
+    KC_PRES_OPZ_DIVINE_SCION                = 82;
+    KC_PRES_OPZ_ENVOY_OF_BALANCE            = 83;
+    KC_PRES_OPZ_EVANGELIST                  = 84;
+    KC_PRES_OPZ_EXALTED                     = 85;
+    KC_PRES_OPZ_FALSE_PRIEST                = 86;
+    KC_PRES_OPZ_FIELD_AGENT                 = 87;
+    KC_PRES_OPZ_FURIOUS_GUARDIAN            = 88;
+    KC_PRES_OPZ_GENIE_BINDER                = 89;
+    KC_PRES_OPZ_GOLDEN_LEGIONNAIRE          = 90;
+    KC_PRES_OPZ_GRAND_MARSHAL               = 91;
+    KC_PRES_OPZ_GRAY_WARDEN                 = 92;
+    KC_PRES_OPZ_GREEN_FAITH_ACOLYTE         = 93;
+    KC_PRES_OPZ_GROUP_LEADER                = 94;
+    KC_PRES_OPZ_GUILD_AGENT                 = 95;
+    KC_PRES_OPZ_GUILD_POISONER              = 96;
+    KC_PRES_OPZ_HALFLING_OPPORTUNIST        = 97;
+    KC_PRES_OPZ_HARROWER                    = 98;
+    KC_PRES_OPZ_HELL_KNIGHT_COMMANDER       = 99;
+    KC_PRES_OPZ_HELL_KNIGHT_ENFORCER        = 100;
+    
+    KC_PRES_OPZ_INHERITORS_CRUSADER   = 101;
+    KC_PRES_OPZ_JUSTICIAR             = 102;
+    KC_PRES_OPZ_LANTERN_BEARER        = 103;
+    KC_PRES_OPZ_LIBERATOR             = 104;
+    KC_PRES_OPZ_LION_BLADE            = 105;
+    KC_PRES_OPZ_LIVING_MONOLITH       = 106;
+    KC_PRES_OPZ_LOW_TEMPLAR           = 107;
+    KC_PRES_OPZ_MAGE_OF_THE_THIRD_EYE = 108;
+    KC_PRES_OPZ_MAMMOTH_RIDER         = 109;
+    KC_PRES_OPZ_MASTER_OF_STORMS      = 110;
+    KC_PRES_OPZ_MYSTERY_CULTIST       = 111;
+    
+    KC_PRES_OPZ_NATURAL_ALCHEMIST       = 112;
+    KC_PRES_OPZ_NOBLE_SCION             = 113;
+    KC_PRES_OPZ_PAIN_TASTER             = 114;
+    KC_PRES_OPZ_PIT_FIGHTER             = 115;
+    KC_PRES_OPZ_PLANES_WALKER           = 116;
+    KC_PRES_OPZ_PURITY_LEGION_ENFORCER  = 117;
+    
+    KC_PRES_OPZ_SANCTIFIED_PROPHET  = 118;
+    KC_PRES_OPZ_SENTINEL            = 119;
+    KC_PRES_OPZ_SLEEPLESS_DETECTIVE = 120;
+    KC_PRES_OPZ_SOUL_WARDEN         = 121;
+    KC_PRES_OPZ_SOULEATER           = 122;
+    KC_PRES_OPZ_SPHEREWALKER        = 123;
+    KC_PRES_OPZ_STEEL_FALCON        = 124;
+    KC_PRES_OPZ_STUDENT_OF_WAR      = 125;
+    KC_PRES_OPZ_SUN_SEEKER          = 126;
+    KC_PRES_OPZ_SWORDLORD           = 127;
+    KC_PRES_OPZ_TATTOED_MYSTIC      = 128;
+    KC_PRES_OPZ_TECHNOMANCER        = 129;
+    KC_PRES_OPZ_UMBRAL_AGENT        = 130;
+    KC_PRES_OPZ_VEILED_ILLUSIONIST  = 131;
+    KC_PRES_OPZ_WINTER_WITCH        = 132;
+    
+    KC_NPC_ADEPT = 133;
+    KC_NPC_ARISTOCRAT = 134;
+    KC_NPC_COMMONER = 135;
+    KC_NPC_EXPERT = 136;
+    KC_NPC_WARRIOR = 137;
+    
+    // 3rd party classes - I leave those out for the time being!
+}
+
+
+// A levelclass is something which can be taken at each level.
+// It is a string. If it's an empty string then it's a known class.
+message LevelClass {
+    string present = 1;
+    KnownClass known = 2;
+}

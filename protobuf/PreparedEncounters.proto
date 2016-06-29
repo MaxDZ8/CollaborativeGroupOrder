@@ -11,5 +11,6 @@ message Collection {
 
 message Battle {
     google.protobuf.Timestamp created = 1;
-    repeated ActorState actors = 2;	
+    string desc = 2;
+    repeated ActorState actors = 3;    
 }

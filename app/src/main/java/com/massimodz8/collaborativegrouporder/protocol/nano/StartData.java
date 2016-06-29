@@ -700,6 +700,9 @@ public interface StartData {
     // optional int32 healthPoints = 2;
     public int healthPoints;
 
+    // optional .LevelClass career = 3;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.LevelClass career;
+
     public ActorStatistics() {
       clear();
     }
@@ -707,6 +710,7 @@ public interface StartData {
     public ActorStatistics clear() {
       initBonus = 0;
       healthPoints = 0;
+      career = null;
       cachedSize = -1;
       return this;
     }
@@ -719,6 +723,9 @@ public interface StartData {
       }
       if (this.healthPoints != 0) {
         output.writeInt32(2, this.healthPoints);
+      }
+      if (this.career != null) {
+        output.writeMessage(3, this.career);
       }
       super.writeTo(output);
     }
@@ -733,6 +740,10 @@ public interface StartData {
       if (this.healthPoints != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeInt32Size(2, this.healthPoints);
+      }
+      if (this.career != null) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeMessageSize(3, this.career);
       }
       return size;
     }
@@ -758,6 +769,13 @@ public interface StartData {
           }
           case 16: {
             this.healthPoints = input.readInt32();
+            break;
+          }
+          case 26: {
+            if (this.career == null) {
+              this.career = new com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.LevelClass();
+            }
+            input.readMessage(this.career);
             break;
           }
         }
