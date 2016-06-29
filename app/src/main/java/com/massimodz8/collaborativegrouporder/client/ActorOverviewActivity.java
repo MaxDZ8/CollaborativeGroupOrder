@@ -492,6 +492,24 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     private void mangleLevelUpTickets() {
         if(ticker.upgradeTickets.isEmpty()) return;
+        // Upgrade 'accepted' definitions and retry.
+        Map.Entry<Integer, Adventure.UpgradeStatus> accepted = null;
+        for (Map.Entry<Integer, Adventure.UpgradeStatus> el : ticker.upgradeTickets.entrySet()) {
+            final Adventure.UpgradeStatus stat = el.getValue();
+            if(stat.candidate != null && stat.candidate.status == BuildingPlayingCharacter.STATUS_ACCEPTED) accepted = el;
+        }
+        if(accepted != null) {
+            Adventure.UpgradeStatus prop = accepted.getValue();
+            Adventure.ActorWithKnownOrder live = ticker.actors.get(prop.peerKey);
+            if(null == live) return; // impossible, they are persistent
+            live.actor.maxHP = prop.candidate.fullHealth;
+            live.actor.initiativeBonus = prop.candidate.initiativeBonus;
+            live.actor.name = prop.candidate.name;
+            ticker.upgradeTickets.remove(accepted.getKey());
+            lister.notifyDataSetChanged();
+            mangleLevelUpTickets();
+            return;
+        }
         Map.Entry<Integer, Adventure.UpgradeStatus> rejected = null, propose = null;
         for (Map.Entry<Integer, Adventure.UpgradeStatus> el : ticker.upgradeTickets.entrySet()) {
             final Adventure.UpgradeStatus stat = el.getValue();
@@ -508,7 +526,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
             current.initiativeBonus = live.initiativeBonus;
             current.fullHealth = live.maxHP;
             current.experience = live.experience;
-
         }
         MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
             @Override
@@ -517,6 +534,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 fixed.getValue().candidate.status = BuildingPlayingCharacter.STATUS_SENT;
                 Network.PlayingCharacterDefinition payload = MaxUtils.makePlayingCharacterDefinition(pc);
                 payload.redefine = fixed.getKey();
+                payload.peerKey = 0; // default value, it's ok, not used for redefine messages anyway
                 ticker.mailman.out.add(new SendRequest(ticker.pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, payload, null));
                 mangleLevelUpTickets(); // go next!
             }

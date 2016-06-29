@@ -21,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
@@ -671,6 +672,34 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 }
                 if(status) {
                     tickets.remove(fixed.redefine);
+                    final StartData.ActorDefinition modify;
+                    if(fixed.peerKey < game.getPartyOwnerData().party.length) modify = game.getPartyOwnerData().party[fixed.peerKey];
+                    else modify = game.getPartyOwnerData().npcs[fixed.peerKey];
+                    StartData.ActorStatistics[] prev = modify.stats;
+                    modify.stats = new StartData.ActorStatistics[prev.length + 1];
+                    System.arraycopy(prev, 0, modify.stats, 1, prev.length);
+                    final byte[] buff = new byte[prev[0].getSerializedSize()];
+                    CodedOutputByteBufferNano out = CodedOutputByteBufferNano.newInstance(buff);
+                    try {
+                        prev[0].writeTo(out);
+                    } catch (IOException e) {
+                        // impossible in this context
+                    }
+                    modify.stats[0] = new StartData.ActorStatistics();
+                    try {
+                        modify.stats[0].mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+                    } catch (IOException e) {
+                        // impossible in this context
+                    }
+                    modify.stats[0].healthPoints = proposed.fullHealth;
+                    modify.stats[0].initBonus = proposed.initiativeBonus;
+                    modify.experience = proposed.experience;
+                    modify.name = proposed.name;
+                    Network.ActorState live = game.session.getActorById(fixed.peerKey);
+                    live.maxHP = proposed.fullHealth;
+                    live.initiativeBonus = proposed.initiativeBonus;
+                    live.experience = proposed.experience;
+                    live.name = proposed.name;
                     // Syncing with reuse... is this smart or ugly?
                     onActivityResult(REQUEST_AWARD_EXPERIENCE, RESULT_OK, null);
                 }

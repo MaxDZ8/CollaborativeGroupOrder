@@ -49,12 +49,11 @@ public abstract class MyDialogsFactory {
                 onInputCompleted.onInputCompleted(pc);
             }
         };
+        pc.status = BuildingPlayingCharacter.STATUS_BUILDING;
         helper.bind(pc);
+        dlg.findViewById(R.id.vhPCDI_tilExperience).setVisibility(View.GONE);
         if(currently != null) {
             ((Button)helper.itemView.findViewById(R.id.vhPCDI_makeNewChar)).setText(R.string.fra_updateChar);
-            MaxUtils.setEnabled(false,
-                    dlg.findViewById(R.id.vhPCDI_name),
-                    dlg.findViewById(R.id.vhPCDI_experience));
             dlg.setCancelable(false);
             final TextView view = (TextView) dlg.findViewById(R.id.vhPCDI_newLevel);
             view.setVisibility(View.VISIBLE);
@@ -94,20 +93,23 @@ public abstract class MyDialogsFactory {
             @Override
             protected void action() { /* not used */ }
         };
-        MaxUtils.setVisibility(View.GONE,
-                helper.itemView.findViewById(R.id.vhPCDI_makeNewChar),
-                helper.itemView.findViewById(R.id.vhPCDI_accepted));
-        ((ToggleButton)dlg.findViewById(R.id.dlgLCC_toggle)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        ToggleButton toggle = (ToggleButton) dlg.findViewById(R.id.dlgLCC_toggle);
+        toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) helper.bind(proposed);
                 else helper.bind(origin);
+                helper.itemView.findViewById(R.id.vhPCDI_tilExperience).setVisibility(View.GONE);
                 MaxUtils.setVisibility(View.GONE,
-                        helper.itemView.findViewById(R.id.vhPCDI_makeNewChar),
-                        helper.itemView.findViewById(R.id.vhPCDI_accepted));
-                helper.itemView.setEnabled(isChecked);
+                        helper.itemView.findViewById(R.id.vhPCDI_accepted),
+                        helper.itemView.findViewById(R.id.vhPCDI_makeNewChar));
+                MaxUtils.setEnabled(false,
+                        helper.itemView.findViewById(R.id.vhPCDI_name),
+                        helper.itemView.findViewById(R.id.vhPCDI_initiative),
+                        helper.itemView.findViewById(R.id.vhPCDI_health));
             }
         });
+        toggle.performClick();
         return dlg;
     }
 }

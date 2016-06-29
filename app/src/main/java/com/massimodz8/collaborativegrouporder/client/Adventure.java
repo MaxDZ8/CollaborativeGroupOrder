@@ -266,7 +266,7 @@ public class Adventure {
                         }
                     }
                     if(!found) return;
-                    self.upgradeTickets.put(real.redefine, new UpgradeStatus(real.peerKey, self.advancementPace));
+                    self.upgradeTickets.put(real.redefine, new UpgradeStatus(real.peerKey));
                     Runnable runnable = self.onUpgradeTicket.get();
                     if(null != runnable) runnable.run();
                     break;
@@ -275,21 +275,18 @@ public class Adventure {
                     Network.GroupFormed real = (Network.GroupFormed) msg.obj;
                     Map.Entry<Integer, UpgradeStatus> req = null;
                     for (Map.Entry<Integer, UpgradeStatus> el : self.upgradeTickets.entrySet()) {
-                        BuildingPlayingCharacter cand = el.getValue().candidate;
-                        if(cand == null) continue;
-                        if(cand.status != BuildingPlayingCharacter.STATUS_SENT) continue;
-                        if(cand.peerKey == real.peerKey) {
+                        UpgradeStatus up = el.getValue();
+                        if(up == null) continue;
+                        if(up.candidate.status != BuildingPlayingCharacter.STATUS_SENT) continue;
+                        if(up.peerKey == real.peerKey) {
                             req = el;
                             break;
                         }
                     }
                     if(null == req) break;
-                    if(real.accepted) self.upgradeTickets.remove(req.getKey());
-                    else {
-                        req.getValue().candidate.status = BuildingPlayingCharacter.STATUS_REJECTED;
-                        Runnable runnable = self.onUpgradeTicket.get();
-                        if(null != runnable) runnable.run();
-                    }
+                    req.getValue().candidate.status = real.accepted? BuildingPlayingCharacter.STATUS_ACCEPTED : BuildingPlayingCharacter.STATUS_REJECTED;
+                    Runnable runnable = self.onUpgradeTicket.get();
+                    if(null != runnable) runnable.run();
                     break;
                 }
             }
@@ -299,12 +296,10 @@ public class Adventure {
 
     public static class UpgradeStatus {
         final int peerKey;
-        final int levelAdvancements;
         public BuildingPlayingCharacter candidate;
 
-        public UpgradeStatus(int peerKey, int levelAdvancements) {
+        public UpgradeStatus(int peerKey) {
             this.peerKey = peerKey;
-            this.levelAdvancements = levelAdvancements;
         }
     }
 

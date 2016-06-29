@@ -102,11 +102,12 @@ public class AwardExperienceActivity extends AppCompatActivity {
                     finish();
                     return;
                 }
-                final AlertDialog dlg = new AlertDialog.Builder(AwardExperienceActivity.this)
+                final AlertDialog dlg = new AlertDialog.Builder(AwardExperienceActivity.this, R.style.AppDialogStyle)
                         .setView(R.layout.dialog_master_levelup)
                         .setPositiveButton(R.string.generic_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                sendLevelupTickets();
                                 dialog.dismiss();
                             }
                         })
@@ -117,13 +118,16 @@ public class AwardExperienceActivity extends AppCompatActivity {
                 if (game.session.levelup.size() == 1)
                     build = String.format(getString(R.string.aea_levelUpCharList_singular), build);
                 else {
-                    for (int loop = 1; loop < game.session.levelup.size() - 1; loop++) {
-                        build = String.format(getString(R.string.aea_levelUpCharList_concatenatePlural), build, game.session.getActorById(game.session.levelup.get(loop)).name);
+                    int last = game.session.levelup.size() - 1;
+                    int peerKey;
+                    for (int loop = 1; loop < last; loop++) {
+                        peerKey = game.session.levelup.get(loop);
+                        build = String.format(getString(R.string.aea_levelUpCharList_concatenatePlural), build, game.session.getActorById(peerKey).name);
                     }
-                    build = String.format(getString(R.string.aea_levelUpCharList_concatenateLast), build, game.session.getActorById(game.session.levelup.size() - 1).name);
+                    peerKey = game.session.levelup.get(last);
+                    build = String.format(getString(R.string.aea_levelUpCharList_concatenateLast), build, game.session.getActorById(peerKey).name);
                 }
                 list.setText(build);
-                sendLevelupTickets();
 
             }
         });

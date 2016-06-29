@@ -79,7 +79,8 @@ public class MyBattleHandler extends Handler {
             case MSG_CHARACTER_LEVELUP_PROPOSAL: {
                 Events.CharacterDefinition real = (Events.CharacterDefinition) msg.obj;
                 Network.PlayingCharacterDefinition actor = target.upgradeTickets.get(real.character.redefine);
-                if(actor == null || actor.peerKey != real.character.peerKey) break; // not a valid ticket or not the right character
+                if(actor == null) break; // not a valid ticket or not the right character
+                real.character.peerKey = actor.peerKey; // override, ticket is king
                 if(target.assignmentHelper.getMessageChannelByPeerKey(actor.peerKey) != real.origin) break; // you're cheating
                 target.upgradeTickets.put(real.character.redefine, real.character);
                 Runnable runnable = target.onActorLeveled.get();
