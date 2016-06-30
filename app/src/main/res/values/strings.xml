@@ -163,7 +163,7 @@
     <string name="levelAdv_fast">fast</string>
     <string name="levelAdv_medium">medium</string>
     <string name="levelAdv_slow">slow</string>
-    <string name="levelAdv_invalid">!!invalid level progression!!</string>
+    <string name="levelAdv_invalid" translatable="false">!!invalid level progression!!</string>
 
     <string name="ncaa_title">Approve PCs</string>
     <string name="ncaa_definingPCs">Players are defining characters.</string>
@@ -371,12 +371,6 @@
     <string name="mVH_challangeRatio_fraction">CR %1$d/%2$d</string>
     <string name="mVH_tappedFeedback">Tap to battle</string>
     <string name="mVH_spawnCountFeedback">Spawn: %1$d</string>
-    <string name="mVH_badActionClimbToken" translatable="false">!! Unknown ACTION_CLIMB token !!</string>
-    <string name="mVH_badActionClimbParamArray" translatable="false">!! ACTION_CLIMB param array bad size !!</string>
-    <string name="mVH_actionClimb_tree" translatable="false">tree</string>
-    <string name="mVH_badConditionalInitiative" translatable="false">!! Unknown conditional initiative action !!</string>
-    <string name="mVH_actionClimbing" translatable="false">climbing</string>
-    <string name="mVH_actionClimbingMessage" translatable="false">%1$d if %2$s %3$s</string>
     <string name="mVH_dragonMaturityNameExpansion">%1$s, %2$s</string>
     <string name="mVH_elementalMaturityNameExpansion">%1$s, %2$s</string>
 
@@ -843,7 +837,7 @@
     <string name="dlgLCC_prev">Previously</string>
     <string name="dlgLCC_new">New</string>
 
-    <string name="knownClass_invalid">!!INVALID CLASS!!</string>
+    <string name="knownClass_invalid" translatable="false">!!INVALID CLASS!!</string>
     <string name="knownClass_barbarian">barbarian</string>
     <string name="knownClass_bard">bard</string>
     <string name="knownClass_cleric">cleric</string>
@@ -856,8 +850,8 @@
     <string name="knownClass_sorcerer">sorcerer</string>
     <string name="knownClass_wizard">wizard</string>
     <string name="knownClass_alchemist">alchemist</string>
-    <string name="knownClass_cavalier">cavalier</string>
-    <string name="knownClass_gunslinger">gunslinger</string>
+    <string name="knownClass_cavalier" translatable="false">cavalier</string>
+    <string name="knownClass_gunslinger" translatable="false">gunslinger</string>
     <string name="knownClass_inquisitor">inquisitor</string>
     <string name="knownClass_magus">magus</string>
     <string name="knownClass_oracle">oracle</string>
@@ -865,10 +859,10 @@
     <string name="knownClass_vigilante">vigilante</string>
     <string name="knownClass_witch">witch</string>
     <string name="knownClass_antipaladin">antipaladin</string>
-    <string name="knownClass_ninja">ninja</string>
-    <string name="knownClass_samurai">samurai</string>
+    <string name="knownClass_ninja" translatable="false">ninja</string>
+    <string name="knownClass_samurai" translatable="false">samurai</string>
     <string name="knownClass_archanist">archanist</string>
-    <string name="knownClass_bloodrager">bloodrager</string>
+    <string name="knownClass_bloodrager" translatable="false">bloodrager</string>
     <string name="knownClass_brawler">brawler</string>
     <string name="knownClass_hunter">hunter</string>
     <string name="knownClass_investigator">investigator</string>
@@ -900,67 +894,67 @@
     <string name="knownClass_assassin">assassin</string>
     <string name="knownClass_dragonDisciple">dragon disciple</string>
     <string name="knownClass_duelist">duelist</string>
-    <string name="knownClass_eldritchKnight">eldritch knight</string>
-    <string name="knownClass_loremaster">loremaster</string>
+    <string name="knownClass_eldritchKnight" translatable="false">eldritch knight</string>
+    <string name="knownClass_loremaster" translatable="false">loremaster</string>
     <string name="knownClass_mysticTheurge">mystic theurge</string>
-    <string name="knownClass_chronicler">chronicler</string>
+    <string name="knownClass_chronicler" translatable="false">chronicler</string>
     <string name="knownClass_shadowdancer">shadowdancer</string>
-    <string name="knownClass_agentOfTheGrave">agent of the grave</string>
-    <string name="knownClass_arcaneSavant">arcane savant</string>
+    <string name="knownClass_agentOfTheGrave" translatable="false">agent of the grave</string>
+    <string name="knownClass_arcaneSavant" translatable="false">arcane savant</string>
     <string name="knownClass_bloodMage">bloodmage</string>
-    <string name="knownClass_brightnessSeeker">brightness seeker</string>
-    <string name="knownClass_brotherOfTheSeal">brother of the seal</string>
-    <string name="knownClass_celestialKnight">celestial knight</string>
+    <string name="knownClass_brightnessSeeker" translatable="false">brightness seeker</string>
+    <string name="knownClass_brotherOfTheSeal" translatable="false">brother of the seal</string>
+    <string name="knownClass_celestialKnight" translatable="false">celestial knight</string>
     <string name="knownClass_championOfTheEnlighted">champion of The Enlighted</string>
-    <string name="knownClass_chevalier">chevalier</string>
+    <string name="knownClass_chevalier" translatable="false">chevalier</string>
     <string name="knownClass_coastalPirate">coastal pirate</string>
     <string name="knownClass_collegiateArcanist">collegiate arcanist</string>
     <string name="knownClass_crimsonAssassin">crimson assassin</string>
-    <string name="knownClass_cyphermage">cyphermage</string>
-    <string name="knownClass_daivrat">daivrat</string>
-    <string name="knownClass_darkDelver">dark delver</string>
-    <string name="knownClass_darkfireAdept">darkfire adept</string>
-    <string name="knownClass_deepSeaPirate">deep sea pirate</string>
-    <string name="knownClass_demoniac">demoniac</string>
+    <string name="knownClass_cyphermage" translatable="false">cyphermage</string>
+    <string name="knownClass_daivrat" translatable="false">daivrat</string>
+    <string name="knownClass_darkDelver" translatable="false">dark delver</string>
+    <string name="knownClass_darkfireAdept" translatable="false">darkfire adept</string>
+    <string name="knownClass_deepSeaPirate" translatable="false">deep sea pirate</string>
+    <string name="knownClass_demoniac" translatable="false">demoniac</string>
     <string name="knownClass_diabolist">diabolist</string>
     <string name="knownClass_dissidentOfDawn">dissident of dawn</string>
-    <string name="knownClass_divineAssessor">divine assessor</string>
-    <string name="knownClass_divineScion">divine scion</string>
-    <string name="knownClass_envoyOfBalance">envoy of balance</string>
+    <string name="knownClass_divineAssessor" translatable="false">divine assessor</string>
+    <string name="knownClass_divineScion" translatable="false">divine scion</string>
+    <string name="knownClass_envoyOfBalance" translatable="false">envoy of balance</string>
     <string name="knownClass_evangelist">evangelist</string>
     <string name="knownClass_exalted">exalted</string>
     <string name="knownClass_falsePriest">false priest</string>
     <string name="knownClass_fieldAgent">field agent</string>
     <string name="knownClass_furiousGuardian">furious guardian</string>
-    <string name="knownClass_genieBinder">genie binder</string>
+    <string name="knownClass_genieBinder" translatable="false">genie binder</string>
     <string name="knownClass_goldenLegionnaire">golden legionnaire</string>
     <string name="knownClass_grandMarshal">grand marshal</string>
-    <string name="knownClass_grayWarden">gray warden</string>
+    <string name="knownClass_grayWarden" translatable="false">gray warden</string>
     <string name="knownClass_greenFaithAcolyte">green faith acolyte</string>
-    <string name="knownClass_groupLeader">group leader</string>
+    <string name="knownClass_groupLeader" translatable="false">group leader</string>
     <string name="knownClass_guildAgent">guild agent</string>
     <string name="knownClass_poisoner">poisoner</string>
     <string name="knownClass_halflingOpportunist">halfling opportunist</string>
-    <string name="knownClass_harrower">harrower</string>
-    <string name="knownClass_hellKnightCommander">hell knight commander</string>
-    <string name="knownClass_hellKnightEnforcer">hell knight enforcer</string>
-    <string name="knownClass_inheritorsCrusader">inheritor\'s crusader</string>
-    <string name="knownClass_justiciar">justiciar</string>
-    <string name="knownClass_lanternBearer">lantern bearer</string>
+    <string name="knownClass_harrower" translatable="false">harrower</string>
+    <string name="knownClass_hellKnightCommander" translatable="false">hell knight commander</string>
+    <string name="knownClass_hellKnightEnforcer" translatable="false">hell knight enforcer</string>
+    <string name="knownClass_inheritorsCrusader" translatable="false">inheritor\'s crusader</string>
+    <string name="knownClass_justiciar" translatable="false">justiciar</string>
+    <string name="knownClass_lanternBearer" translatable="false">lantern bearer</string>
     <string name="knownClass_liberator">liberator</string>
-    <string name="knownClass_lionBlade">lion blade</string>
+    <string name="knownClass_lionBlade" translatable="false">lion blade</string>
     <string name="knownClass_livingMonolith">living monolith</string>
     <string name="knownClass_lowTemplar">low templar</string>
     <string name="knownClass_mageOfTheThirdEye">mage of the third eye</string>
-    <string name="knownClass_mammothRider">mammoth rider</string>
-    <string name="knownClass_masterOfStorms">master of storms</string>
-    <string name="knownClass_mysteryCultist">mystery cultist</string>
+    <string name="knownClass_mammothRider" translatable="false">mammoth rider</string>
+    <string name="knownClass_masterOfStorms" translatable="false">master of storms</string>
+    <string name="knownClass_mysteryCultist" translatable="false">mystery cultist</string>
     <string name="knownClass_naturalAlchemist">natural alchemist</string>
-    <string name="knownClass_nobleScion">noble scion</string>
-    <string name="knownClass_painTaster">pain taster</string>
-    <string name="knownClass_pitFighter">pit fighter</string>
-    <string name="knownClass_planesWalker">planes walker</string>
-    <string name="knownClass_purityLegionEnforcer">purity legion enforcer</string>
+    <string name="knownClass_nobleScion" translatable="false">noble scion</string>
+    <string name="knownClass_painTaster" translatable="false">pain taster</string>
+    <string name="knownClass_pitFighter" translatable="false">pit fighter</string>
+    <string name="knownClass_planesWalker" translatable="false">planes walker</string>
+    <string name="knownClass_purityLegionEnforcer" translatable="false">purity legion enforcer</string>
     <string name="knownClass_sanctifiedProphet">sanctified prophet</string>
     <string name="knownClass_sentinel">sentinel</string>
     <string name="knownClass_sleeplessDetective">sleepless detective</string>
@@ -978,7 +972,7 @@
     <string name="knownClass_winterWitch">winter witch</string>
     <string name="knownClass_npc_adept">adept (npc)</string>
     <string name="knownClass_npc_aristocrat">aristocrat (npc)</string>
-    <string name="knownClass_npc_commoner">commoner (npc)</string>
+    <string name="knownClass_npc_commoner" translatable="false">commoner (npc)</string>
     <string name="knownClass_npc_expert">expert (npc)</string>
     <string name="knownClass_npc_warrior">warrior (npc)</string>
     <string name="ctx_both_ui_badCustomClassName">Invalid custom class name.</string>
