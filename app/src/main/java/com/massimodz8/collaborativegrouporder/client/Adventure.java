@@ -5,6 +5,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 
 import com.massimodz8.collaborativegrouporder.ActorId;
+import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.Mailman;
 import com.massimodz8.collaborativegrouporder.PseudoStack;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
@@ -28,8 +29,9 @@ import java.util.Map;
  * We will eventually also fight but that's not much of a big deal for the client.
  */
 public class Adventure {
-    public StartData.PartyClientData party;
-    @ActorId  int[] playedHere; // actors played here, added automatically to this.actors after flushed
+    public final StartData.PartyClientData.Group party;
+    public final int advancementPace;
+    @ActorId int[] playedHere; // actors played here, added automatically to this.actors after flushed
     public HashMap<Integer, ActorWithKnownOrder> actors = new HashMap<>(); // ID -> struct, flushed every time a new battle starts
     public ArrayList<String> errors;
 
@@ -37,6 +39,7 @@ public class Adventure {
     public PseudoStack<Runnable> onRollRequestPushed = new PseudoStack<>();
     public PseudoStack<Runnable> onCurrentActorChanged = new PseudoStack<>();
     public PseudoStack<Runnable> onSessionEnded = new PseudoStack<>();
+    public PseudoStack<Runnable> onUpgradeTicket = new PseudoStack<>();
 
     public @ActorId int currentActor = -1; // -1 = no current known actor
     final ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
@@ -65,7 +68,10 @@ public class Adventure {
         public int xpReceived;
     }
 
-    public Adventure() { mailman.start(); }
+    public Adventure(StartData.PartyClientData.Group party, int advancementPace) {
+        this.party = party;
+        this.advancementPace = advancementPace;
+        mailman.start(); }
 
     private Handler handler = new MyHandler(this);
     Pumper netPump = new Pumper(handler, MSG_DISCONNECT, MSG_DETACH)
@@ -115,6 +121,26 @@ public class Adventure {
                     handler.sendEmptyMessage(MSG_SESSION_ENDED);
                     return true;
                 }
+            }).add(ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, new PumpTarget.Callbacks<Network.PlayingCharacterDefinition>() {
+                @Override
+                public Network.PlayingCharacterDefinition make() { return new Network.PlayingCharacterDefinition(); }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.PlayingCharacterDefinition msg) throws IOException {
+                    if(msg.redefine == 0) return false; // not a valid request
+                    handler.sendMessage(handler.obtainMessage(MSG_REDEFINE_CHARACTER, msg));
+                    return false;
+                }
+            }).add(ProtoBufferEnum.GROUP_FORMED, new PumpTarget.Callbacks<Network.GroupFormed>() {
+                @Override
+                public Network.GroupFormed make() { return new Network.GroupFormed(); }
+
+                @Override
+                public boolean mangle(MessageChannel from, Network.GroupFormed msg) throws IOException {
+                    if(msg.salt.length != 0) return false; // WUT?
+                    handler.sendMessage(handler.obtainMessage(MSG_LEVELUP_ACCEPTANCE, msg));
+                    return false;
+                }
             });
     private static final int MSG_DISCONNECT = 0;
     private static final int MSG_DETACH = 1;
@@ -123,6 +149,8 @@ public class Adventure {
     private static final int MSG_BATTLE_ORDER = 4;
     private static final int MSG_TURN_CONTROL = 5;
     private static final int MSG_SESSION_ENDED = 6;
+    private static final int MSG_REDEFINE_CHARACTER = 7;
+    private static final int MSG_LEVELUP_ACCEPTANCE = 8;
 
     private static class MyHandler extends Handler {
         final WeakReference<Adventure> self;
@@ -222,13 +250,58 @@ public class Adventure {
                     final Runnable runnable = self.onCurrentActorChanged.get();
                     if(runnable != null) runnable.run();
                 } break;
-                case MSG_SESSION_ENDED:
+                case MSG_SESSION_ENDED: {
                     self.ended = S_END_REQUEST_RECEIVED;
                     final Runnable runnable = self.onSessionEnded.get();
-                    if(runnable != null) runnable.run();
+                    if (runnable != null) runnable.run();
                     break;
+                }
+                case MSG_REDEFINE_CHARACTER: {
+                    Network.PlayingCharacterDefinition real = (Network.PlayingCharacterDefinition)msg.obj;
+                    boolean found = false;
+                    for (int el : self.playedHere) {
+                        if(el == real.peerKey) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(!found) return;
+                    self.upgradeTickets.put(real.redefine, new UpgradeStatus(real.peerKey));
+                    Runnable runnable = self.onUpgradeTicket.get();
+                    if(null != runnable) runnable.run();
+                    break;
+                }
+                case MSG_LEVELUP_ACCEPTANCE: {
+                    Network.GroupFormed real = (Network.GroupFormed) msg.obj;
+                    Map.Entry<Integer, UpgradeStatus> req = null;
+                    for (Map.Entry<Integer, UpgradeStatus> el : self.upgradeTickets.entrySet()) {
+                        UpgradeStatus up = el.getValue();
+                        if(up == null) continue;
+                        if(up.candidate.status != BuildingPlayingCharacter.STATUS_SENT) continue;
+                        if(up.peerKey == real.peerKey) {
+                            req = el;
+                            break;
+                        }
+                    }
+                    if(null == req) break;
+                    req.getValue().candidate.status = real.accepted? BuildingPlayingCharacter.STATUS_ACCEPTED : BuildingPlayingCharacter.STATUS_REJECTED;
+                    Runnable runnable = self.onUpgradeTicket.get();
+                    if(null != runnable) runnable.run();
+                    break;
+                }
             }
             super.handleMessage(msg);
         }
     }
+
+    public static class UpgradeStatus {
+        final int peerKey;
+        public BuildingPlayingCharacter candidate;
+
+        public UpgradeStatus(int peerKey) {
+            this.peerKey = peerKey;
+        }
+    }
+
+    public final HashMap<Integer, UpgradeStatus> upgradeTickets = new HashMap<>(); // ticket ID --> (actor peerkey, status)
 }

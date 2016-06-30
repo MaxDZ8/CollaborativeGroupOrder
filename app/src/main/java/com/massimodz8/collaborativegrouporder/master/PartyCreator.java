@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.protobuf.nano.CodedInputByteBufferNano;
+import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.AsyncLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
@@ -20,6 +22,7 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
@@ -46,6 +49,9 @@ public class PartyCreator extends PublishAcceptHelper {
     public Session.Suspended generatedStat;
     public int mode = MODE_MAKE_NEW_PARTY;
 
+    public String newPartyName;
+    public int advancementPace;
+
     public interface OnTalkingDeviceCountListener {
         void currentlyTalking(int count);
     }
@@ -58,24 +64,21 @@ public class PartyCreator extends PublishAcceptHelper {
     /**
      * Initializes construction of a new party with the given name. Construction starts if
      * no collisions are detected. Only to be called once.
-     * @param name Name to match against existing groups. Group names must be unique across owned
-     *             groups but can be non-unique across keys or keys and owned. This is because
-     *             clients have no control over group name.
      * @return null, or a list containing at least 1 element.
      */
-    public @Nullable ArrayList<StartData.PartyOwnerData.Group> beginBuilding(String name, String unknownDeviceName) {
+    public @Nullable ArrayList<StartData.PartyOwnerData.Group> beginBuilding(String unknownDeviceName) {
         ArrayList<StartData.PartyOwnerData.Group> collisions = null;
         if(mode != MODE_ADD_NEW_DEVICES_TO_EXISTING) { // if == already validated.
             ArrayList<StartData.PartyOwnerData.Group> defs = RunningServiceHandles.getInstance().state.data.groupDefs;
             for (StartData.PartyOwnerData.Group match : defs) {
-                if (match.name.equals(name)) {
+                if (match.name.equals(newPartyName)) {
                     if (null == collisions) collisions = new ArrayList<>();
                     collisions.add(match);
                 }
             }
         }
         this.unknownDeviceName = unknownDeviceName;
-        if(null == collisions) building = new PartyDefinitionHelper(name) {
+        if(null == collisions) building = new PartyDefinitionHelper(newPartyName, advancementPace) {
             @Override
             protected void onMessageChanged(DeviceStatus owner) {
                 if(null != clientDeviceAdapter) clientDeviceAdapter.notifyDataSetChanged();
@@ -244,19 +247,39 @@ public class PartyCreator extends PublishAcceptHelper {
             @Override
             protected void appendNewEntry(StartData.PartyOwnerData loaded) {
                 if(mode == MODE_ADD_NEW_DEVICES_TO_EXISTING) { // everything is already there but I must generate the new keys.
-                    int devCount = 0;
+                    int devCount = 0, pcCount = 0;
                     for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
                         if(dev.kicked || !dev.groupMember) continue;
                         devCount++; // save all devices, even if they don't have proposed a pg
+                        for (BuildingPlayingCharacter pc : dev.chars) {
+                            if(pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED) continue;
+                            pcCount++;
+                        }
                     }
-                    int previously = generatedParty.devices.length;
-                    StartData.PartyOwnerData.DeviceInfo[] longer = Arrays.copyOf(generatedParty.devices, previously + devCount);
-                    System.arraycopy(generatedParty.devices, 0, longer, 0, previously);
-                    devCount = previously;
-                    for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
-                        longer[devCount++] = from(dev);
+                    {
+                        int previously = generatedParty.devices.length;
+                        StartData.PartyOwnerData.DeviceInfo[] longer = Arrays.copyOf(generatedParty.devices, previously + devCount);
+                        System.arraycopy(generatedParty.devices, 0, longer, 0, previously);
+                        devCount = previously;
+                        for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                            longer[devCount++] = from(dev);
+                        }
+                        generatedParty.devices = longer;
                     }
-                    generatedParty.devices = longer;
+                    {
+                        int previously = generatedParty.devices.length;
+                        StartData.ActorDefinition[] longer = Arrays.copyOf(generatedParty.party, previously + pcCount);
+                        pcCount = previously;
+                        for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                            if(dev.kicked || !dev.groupMember) continue;
+                            devCount++; // save all devices, even if they don't have proposed a pg
+                            for (BuildingPlayingCharacter pc : dev.chars) {
+                                if(pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED) continue;
+                                longer[pcCount++] = from(pc);
+                            }
+                        }
+                        generatedParty.party = longer;
+                    }
                     return;
                 }
                 StartData.PartyOwnerData.Group[] longer = new StartData.PartyOwnerData.Group[loaded.everything.length + 1];
@@ -361,6 +384,7 @@ public class PartyCreator extends PublishAcceptHelper {
 
 
     PartyDefinitionHelper building;
+
     private RecyclerView.Adapter clientDeviceAdapter;
 
 
@@ -429,6 +453,7 @@ public class PartyCreator extends PublishAcceptHelper {
         ret.sessionFile = PersistentDataUtils.makeInitialSession(new Date(ret.created.seconds * 1000), filesDir, building.name);
         if(ret.sessionFile == null) throw new RuntimeException();
         ret.name = building.name;
+        ret.advancementPace = building.advancementPace;
         {
             int devCount = 0;
             for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
@@ -473,13 +498,20 @@ public class PartyCreator extends PublishAcceptHelper {
     public static StartData.ActorDefinition from(BuildingPlayingCharacter pc) {
         StartData.ActorDefinition built = new StartData.ActorDefinition();
         built.name = pc.name;
-        built.level = pc.level;
         built.experience = pc.experience;
         built.stats =  new StartData.ActorStatistics[] {
                 new StartData.ActorStatistics()
         };
         built.stats[0].initBonus = pc.initiativeBonus;
         built.stats[0].healthPoints = pc.fullHealth;
+        final byte[] buff = new byte[pc.lastLevelClass.getSerializedSize()];
+        built.stats[0].career = new RPGClass.LevelClass();
+        try {
+            pc.lastLevelClass.writeTo(CodedOutputByteBufferNano.newInstance(buff));
+            built.stats[0].career.mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+        } catch (IOException e) {
+            // impossible in this context
+        }
         return built;
     }
 

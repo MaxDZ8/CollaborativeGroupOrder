@@ -22,9 +22,11 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.massimodz8.collaborativegrouporder.ActorId;
 import com.massimodz8.collaborativegrouporder.AdventuringActorDataVH;
+import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
+import com.massimodz8.collaborativegrouporder.MyDialogsFactory;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
@@ -36,6 +38,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.text.DecimalFormat;
+import java.util.Map;
 
 /**
  * Start this when assignment completed. It is signaled by a GroupReady message with a YOURS field.
@@ -235,6 +238,10 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 finish();
             }
         });
+        upgradeCall = ticker.onUpgradeTicket.put(new Runnable() {
+            @Override
+            public void run() { mangleLevelUpTickets(); }
+        });
         if(serverWorker != null) { // Initialize service and start pumping.
             serverPipe = serverWorker.getSource();
             ticker.playedHere = actorKeys;
@@ -249,6 +256,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
         ticker.onCurrentActorChanged.get().run(); // maybe not. But convenient to mangle round and update UI.
         ticker.onActorUpdated.get().run();
+        ticker.onUpgradeTicket.get().run();
     }
 
 
@@ -260,6 +268,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             ticker.onCurrentActorChanged.remove(actorChangedCall);
             ticker.onRollRequestPushed.remove(rollRequestCall);
             ticker.onSessionEnded.remove(endedCall);
+            ticker.onUpgradeTicket.remove(upgradeCall);
         }
         if(rollDialog != null) {
             rollDialog.dlg.dismiss(); // I'm going to regenerate this next time anyway.
@@ -359,6 +368,12 @@ public class ActorOverviewActivity extends AppCompatActivity {
                 real.awarded.setText(String.format(getString(R.string.aoa_xpIncrement), value));
                 value = thousands.format(as.experience);
                 real.total.setText(String.format(getString(R.string.aoa_xpTotal), value));
+                int level = MaxUtils.level(getResources(), ticker.advancementPace, as.experience);
+                real.toNext.setVisibility(level < 20? View.VISIBLE : View.GONE);
+                if(level < 20) {
+                    int need = MaxUtils.experienceToReachLevel(getResources(), ticker.advancementPace, level + 1);
+                    real.toNext.setText(String.format(getString(R.string.aoa_xpToNext), thousands.format(need - as.experience)));
+                }
             }
         }
 
@@ -423,9 +438,10 @@ public class ActorOverviewActivity extends AppCompatActivity {
             super(iv);
             awarded = (TextView)iv.findViewById(R.id.vhXA_awarded);
             total = (TextView)iv.findViewById(R.id.vhXA_total);
+            toNext = (TextView)iv.findViewById(R.id.vhXA_toNext);
         }
 
-        final TextView awarded, total;
+        final TextView awarded, total, toNext;
     }
 
     private class SendRollCallback implements Runnable {
@@ -450,7 +466,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
 
     public static final int RESULT_GOODBYE = RESULT_FIRST_USER;
 
-    private int updateCall, rollRequestCall, actorChangedCall, endedCall;
+    private int updateCall, rollRequestCall, actorChangedCall, endedCall, upgradeCall;
     private InterstitialAd interstitial;
     private AdView adView;
 
@@ -472,5 +488,56 @@ public class ActorOverviewActivity extends AppCompatActivity {
         }
         final Runnable callback = ticker.onCurrentActorChanged.get();
         if (callback != null) callback.run();
+    }
+
+    private void mangleLevelUpTickets() {
+        if(ticker.upgradeTickets.isEmpty()) return;
+        // Upgrade 'accepted' definitions and retry.
+        Map.Entry<Integer, Adventure.UpgradeStatus> accepted = null;
+        for (Map.Entry<Integer, Adventure.UpgradeStatus> el : ticker.upgradeTickets.entrySet()) {
+            final Adventure.UpgradeStatus stat = el.getValue();
+            if(stat.candidate != null && stat.candidate.status == BuildingPlayingCharacter.STATUS_ACCEPTED) accepted = el;
+        }
+        if(accepted != null) {
+            Adventure.UpgradeStatus prop = accepted.getValue();
+            Adventure.ActorWithKnownOrder live = ticker.actors.get(prop.peerKey);
+            if(null == live) return; // impossible, they are persistent
+            live.actor.maxHP = prop.candidate.fullHealth;
+            live.actor.initiativeBonus = prop.candidate.initiativeBonus;
+            live.actor.name = prop.candidate.name;
+            ticker.upgradeTickets.remove(accepted.getKey());
+            lister.notifyDataSetChanged();
+            mangleLevelUpTickets();
+            return;
+        }
+        Map.Entry<Integer, Adventure.UpgradeStatus> rejected = null, propose = null;
+        for (Map.Entry<Integer, Adventure.UpgradeStatus> el : ticker.upgradeTickets.entrySet()) {
+            final Adventure.UpgradeStatus stat = el.getValue();
+            if(stat.candidate == null && propose == null) propose = el;
+            if(stat.candidate != null && stat.candidate.status == BuildingPlayingCharacter.STATUS_REJECTED && rejected == null) rejected = el;
+        }
+        final Map.Entry<Integer, Adventure.UpgradeStatus> fixed = null != rejected? rejected : propose;
+        if(fixed == null) return; // rare, but possible
+        final BuildingPlayingCharacter current = null != rejected? rejected.getValue().candidate : new BuildingPlayingCharacter();
+        if(null == rejected) {
+            Network.ActorState live = ticker.actors.get(fixed.getValue().peerKey).actor;
+            fixed.getValue().candidate = current;
+            current.name = live.name;
+            current.initiativeBonus = live.initiativeBonus;
+            current.fullHealth = live.maxHP;
+            current.experience = live.experience;
+        }
+        MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
+            @Override
+            public void onInputCompleted(BuildingPlayingCharacter pc) {
+                fixed.getValue().candidate = pc;
+                fixed.getValue().candidate.status = BuildingPlayingCharacter.STATUS_SENT;
+                Network.PlayingCharacterDefinition payload = MaxUtils.makePlayingCharacterDefinition(pc);
+                payload.redefine = fixed.getKey();
+                payload.peerKey = 0; // default value, it's ok, not used for redefine messages anyway
+                ticker.mailman.out.add(new SendRequest(ticker.pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, payload, null));
+                mangleLevelUpTickets(); // go next!
+            }
+        }, current, ticker.advancementPace);
     }
 }

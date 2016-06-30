@@ -25,7 +25,7 @@ import java.util.ArrayList;
  * Model for NewCharactersProposalActivity.
  */
 public class CharacterProposals {
-    final GroupState party;
+    public final GroupState party;
     public Pumper.MessagePumpingThread master; // on result, if non null, go adventuring
     public StartData.PartyClientData.Group resParty;
     boolean disconnected;

@@ -275,7 +275,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             }
             case REQUEST_PULL_CHAR_LIST: {
                 if(resultCode == RESULT_OK) {
-                    handles.bindChars = new PcAssignmentState(handles.joinGame.result.worker, handles.joinGame.party, handles.joinGame.result.first);
+                    handles.bindChars = new PcAssignmentState(handles.joinGame.result.worker, handles.joinGame.party, handles.joinGame.result.levelAdvancement, handles.joinGame.result.first);
                     startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
                 }
                 else handles.state.baseNotification();
@@ -286,7 +286,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 boolean keep = false;
                 if(resultCode == RESULT_OK && handles.bindChars.playChars != null && handles.bindChars.playChars.length > 0) {
                     keep = true;
-                    handles.clientPlay = new Adventure();
+                    handles.clientPlay = new Adventure(handles.bindChars.party, handles.bindChars.advancement);
                     ActorOverviewActivity.prepare(
                             handles.bindChars.playChars,
                             handles.bindChars.server);

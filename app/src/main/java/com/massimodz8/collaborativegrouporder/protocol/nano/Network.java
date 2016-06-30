@@ -136,6 +136,9 @@ public interface Network {
     // optional bytes doormat = 5;
     public byte[] doormat;
 
+    // optional .LevelAdvancement advancementPace = 6;
+    public int advancementPace;
+
     public GroupInfo() {
       clear();
     }
@@ -146,6 +149,7 @@ public interface Network {
       options = com.google.protobuf.nano.WireFormatNano.EMPTY_STRING_ARRAY;
       forming = false;
       doormat = com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES;
+      advancementPace = com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED;
       cachedSize = -1;
       return this;
     }
@@ -172,6 +176,9 @@ public interface Network {
       }
       if (!java.util.Arrays.equals(this.doormat, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
         output.writeBytes(5, this.doormat);
+      }
+      if (this.advancementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
+        output.writeInt32(6, this.advancementPace);
       }
       super.writeTo(output);
     }
@@ -208,6 +215,10 @@ public interface Network {
       if (!java.util.Arrays.equals(this.doormat, com.google.protobuf.nano.WireFormatNano.EMPTY_BYTES)) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeBytesSize(5, this.doormat);
+      }
+      if (this.advancementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeInt32Size(6, this.advancementPace);
       }
       return size;
     }
@@ -258,6 +269,18 @@ public interface Network {
           }
           case 42: {
             this.doormat = input.readBytes();
+            break;
+          }
+          case 48: {
+            int value = input.readInt32();
+            switch (value) {
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_FAST:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_MEDIUM:
+              case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_SLOW:
+                this.advancementPace = value;
+                break;
+            }
             break;
           }
         }
@@ -635,8 +658,11 @@ public interface Network {
     // optional uint32 peerKey = 5;
     public int peerKey;
 
-    // optional uint32 level = 6;
-    public int level;
+    // optional .LevelClass career = 6;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.LevelClass career;
+
+    // optional uint32 redefine = 7;
+    public int redefine;
 
     public PlayingCharacterDefinition() {
       clear();
@@ -648,7 +674,8 @@ public interface Network {
       healthPoints = 0;
       experience = 0;
       peerKey = 0;
-      level = 0;
+      career = null;
+      redefine = 0;
       cachedSize = -1;
       return this;
     }
@@ -671,8 +698,11 @@ public interface Network {
       if (this.peerKey != 0) {
         output.writeUInt32(5, this.peerKey);
       }
-      if (this.level != 0) {
-        output.writeUInt32(6, this.level);
+      if (this.career != null) {
+        output.writeMessage(6, this.career);
+      }
+      if (this.redefine != 0) {
+        output.writeUInt32(7, this.redefine);
       }
       super.writeTo(output);
     }
@@ -700,9 +730,13 @@ public interface Network {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeUInt32Size(5, this.peerKey);
       }
-      if (this.level != 0) {
+      if (this.career != null) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(6, this.level);
+          .computeMessageSize(6, this.career);
+      }
+      if (this.redefine != 0) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeUInt32Size(7, this.redefine);
       }
       return size;
     }
@@ -742,8 +776,15 @@ public interface Network {
             this.peerKey = input.readUInt32();
             break;
           }
-          case 48: {
-            this.level = input.readUInt32();
+          case 50: {
+            if (this.career == null) {
+              this.career = new com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.LevelClass();
+            }
+            input.readMessage(this.career);
+            break;
+          }
+          case 56: {
+            this.redefine = input.readUInt32();
             break;
           }
         }

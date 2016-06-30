@@ -3,6 +3,7 @@ package com.massimodz8.collaborativegrouporder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -15,7 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.CodedInputByteBufferNano;
+import com.google.protobuf.nano.CodedOutputByteBufferNano;
+import com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
@@ -124,6 +129,24 @@ public abstract class MaxUtils {
         return res;
     }
 
+    public static Network.PlayingCharacterDefinition makePlayingCharacterDefinition(BuildingPlayingCharacter proposal) {
+        final Network.PlayingCharacterDefinition wire = new Network.PlayingCharacterDefinition();
+        wire.name = proposal.name;
+        wire.initiativeBonus = proposal.initiativeBonus;
+        wire.healthPoints = proposal.fullHealth;
+        wire.experience = proposal.experience;
+        wire.peerKey = proposal.unique;
+        final byte[] buff = new byte[proposal.lastLevelClass.getSerializedSize()];
+        wire.career = new RPGClass.LevelClass();
+        try {
+            proposal.lastLevelClass.writeTo(CodedOutputByteBufferNano.newInstance(buff));
+            wire.career.mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+        } catch (IOException e) {
+            // impossible in this context
+        }
+        return wire;
+    }
+
     public static class TotalLoader {
         final int validBytes;
         final byte[] fullData;
@@ -146,6 +169,31 @@ public abstract class MaxUtils {
             validBytes = loaded;
             fullData = buffer;
         }
+    }
+
+    public static int level(Resources res, int pace, int xps) {
+        final int[] limit;
+        switch(pace) {
+            case LevelAdvancement.LA_PF_FAST: limit = res.getIntArray(R.array.levelProgression_fast); break;
+            case LevelAdvancement.LA_PF_MEDIUM: limit = res.getIntArray(R.array.levelProgression_medium); break;
+            case LevelAdvancement.LA_PF_SLOW: limit = res.getIntArray(R.array.levelProgression_slow); break;
+            default: return 0;
+        }
+        int level = 1;
+        while(limit[level - 1] <= xps && level < 20) level++;
+        return level;
+    }
+
+    public static int experienceToReachLevel(Resources res, int pace, int level) {
+        if(level < 2) return 0;
+        final int[] limit;
+        switch(pace) {
+            case LevelAdvancement.LA_PF_FAST: limit = res.getIntArray(R.array.levelProgression_fast); break;
+            case LevelAdvancement.LA_PF_MEDIUM: limit = res.getIntArray(R.array.levelProgression_medium); break;
+            case LevelAdvancement.LA_PF_SLOW: limit = res.getIntArray(R.array.levelProgression_slow); break;
+            default: return 0;
+        }
+        return limit[level - 2];
     }
 
     // Events for all Firebase Analytics events I want to track to help me monitor userbase health more accurately.

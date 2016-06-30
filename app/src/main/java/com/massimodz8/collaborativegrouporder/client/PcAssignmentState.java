@@ -24,10 +24,12 @@ import java.util.ArrayList;
 public class PcAssignmentState {
     final public Pumper.MessagePumpingThread server;
     final public StartData.PartyClientData.Group party;
+    public final int advancement;
 
-    public PcAssignmentState(Pumper.MessagePumpingThread server, StartData.PartyClientData.Group party, Network.PlayingCharacterDefinition character) {
+    public PcAssignmentState(Pumper.MessagePumpingThread server, StartData.PartyClientData.Group party, int advancement, Network.PlayingCharacterDefinition character) {
         this.server = server;
         this.party = party;
+        this.advancement = advancement;
         sender.start();
         if(null != character) addChar(character);
         netPump.pump(server);

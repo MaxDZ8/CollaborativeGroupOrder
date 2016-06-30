@@ -11,7 +11,6 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 public class PlayingCharacter {
     public String name = "";
     public int initiativeBonus = Integer.MIN_VALUE, fullHealth = Integer.MIN_VALUE, experience = Integer.MIN_VALUE;
-    public int level = Integer.MIN_VALUE;
 
     PlayingCharacter() {    }
 
@@ -20,6 +19,5 @@ public class PlayingCharacter {
         initiativeBonus = pc.initiativeBonus;
         fullHealth = pc.healthPoints;
         experience = pc.experience;
-        level = pc.level;
     }
 }

@@ -17,18 +17,21 @@ import android.widget.TextView;
 import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.ConnectionInfoDialog;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.ProtobufSupport;
 import com.massimodz8.collaborativegrouporder.PublishedService;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.SendRequest;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 /** The server is 'gathering' player devices so they can join a new session.
  * This is important and we must be able to navigate back there every time needed in case
@@ -118,7 +121,10 @@ public class GatheringActivity extends AppCompatActivity {
             public void bind(@NonNull PcViewHolder target, int index) {
                 target.actor = room.getPartyOwnerData().party[index];
                 target.name.setText(target.actor.name);
-                target.levels.setText("<class_todo> " + target.actor.level); // TODO
+                RPGClass.LevelClass lc = target.actor.stats[0].career;
+                final String lastClass = lc.present.isEmpty()? ProtobufSupport.knownClassToString(lc.known, target.itemView.getContext()) : lc.present;
+                int level = MaxUtils.level(getResources(), room.getPartyOwnerData().advancementPace, target.actor.experience);
+                target.levels.setText(String.format(Locale.getDefault(), getString(R.string.ga_charLevelSingleClass), level, lastClass));
 
             }
         }));

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer-array name="levelProgression_slow">
+        <item>3000</item>
+        <item>7500</item>
+        <item>14000</item>
+        <item>23000</item>
+        <item>35000</item>
+        <item>53000</item>
+        <item>77000</item>
+        <item>115000</item>
+        <item>160000</item>
+        <item>235000</item>
+        <item>330000</item>
+        <item>475000</item>
+        <item>665000</item>
+        <item>955000</item>
+        <item>135000</item>
+        <item>190000</item>
+        <item>270000</item>
+        <item>385000</item>
+        <item>535000</item>
+    </integer-array>
+    <integer-array name="levelProgression_medium">
+        <item>2000</item>
+        <item>5000</item>
+        <item>9000</item>
+        <item>15000</item>
+        <item>23000</item>
+        <item>35000</item>
+        <item>51000</item>
+        <item>75000</item>
+        <item>105000</item>
+        <item>155000</item>
+        <item>220000</item>
+        <item>315000</item>
+        <item>445000</item>
+        <item>635000</item>
+        <item>890000</item>
+        <item>1300000</item>
+        <item>1800000</item>
+        <item>2550000</item>
+        <item>3600000</item>
+    </integer-array>
+    <integer-array name="levelProgression_fast">
+        <item>1300</item>
+        <item>3300</item>
+        <item>6000</item>
+        <item>10000</item>
+        <item>15000</item>
+        <item>23000</item>
+        <item>34000</item>
+        <item>50000</item>
+        <item>71000</item>
+        <item>105000</item>
+        <item>142000</item>
+        <item>210000</item>
+        <item>295000</item>
+        <item>425000</item>
+        <item>600000</item>
+        <item>850000</item>
+        <item>1200000</item>
+        <item>1700000</item>
+        <item>2400000</item>
+    </integer-array>
+
+</resources>
