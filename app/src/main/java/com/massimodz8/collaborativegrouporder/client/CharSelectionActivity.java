@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder.client;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,8 +17,10 @@ import android.widget.TextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
+import com.massimodz8.collaborativegrouporder.ProtobufSupport;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
+import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
 import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
 /**
@@ -255,7 +258,10 @@ public class CharSelectionActivity extends AppCompatActivity {
         public void bind(PcAssignmentState.TransactingCharacter o) {
             charKey = o.pc.peerKey;
             name.setText(o.pc.name);
-            level.setText(String.format(getString(R.string.csa_level), o.pc.level));
+            RPGClass.LevelClass lc = o.pc.career;
+            int curlev = MaxUtils.level(getResources(), state.advancement, o.pc.experience);
+            final String lastClass = lc.present.isEmpty()? ProtobufSupport.knownClassToString(lc.known, itemView.getContext()) : lc.present;
+            level.setText(String.format(getString(R.string.csa_levelAndLastClass), curlev, lastClass));
             hpmax.setText(String.format(getString(R.string.csa_hpMax), o.pc.healthPoints));
             xp.setText(String.format(getString(R.string.csa_xp), o.pc.experience));
             requested.setVisibility(o.pending != PcAssignmentState.TransactingCharacter.NO_REQUEST? View.VISIBLE : View.GONE);

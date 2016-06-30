@@ -3,6 +3,7 @@ package com.massimodz8.collaborativegrouporder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.net.nsd.NsdManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -15,7 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.CodedInputByteBufferNano;
+import com.google.protobuf.nano.CodedOutputByteBufferNano;
+import com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
@@ -47,17 +52,20 @@ public abstract class MaxUtils {
             if (v != null) v.setVisibility(visibility);
         }
     }
+
     public static void setVisibility(int visibility, View... targets) {
         for (View v : targets) {
             if (v != null) v.setVisibility(visibility);
         }
     }
+
     public static void setEnabled(Activity parent, boolean enabled, int... targets) {
         for (int id : targets) {
             final View v = parent.findViewById(id);
             if (v != null) v.setEnabled(enabled);
         }
     }
+
     public static void setEnabled(boolean status, View... targets) {
         for (View v : targets) {
             if (v != null) v.setEnabled(status);
@@ -65,10 +73,13 @@ public abstract class MaxUtils {
     }
 
     public static String NsdManagerErrorToString(int err, Context ctx) {
-        switch(err) {
-            case NsdManager.FAILURE_ALREADY_ACTIVE: return ctx.getString(R.string.nsdError_alreadyActive);
-            case NsdManager.FAILURE_INTERNAL_ERROR: return ctx.getString(R.string.nsdError_internal);
-            case NsdManager.FAILURE_MAX_LIMIT: return ctx.getString(R.string.nsdError_maxLimitReached);
+        switch (err) {
+            case NsdManager.FAILURE_ALREADY_ACTIVE:
+                return ctx.getString(R.string.nsdError_alreadyActive);
+            case NsdManager.FAILURE_INTERNAL_ERROR:
+                return ctx.getString(R.string.nsdError_internal);
+            case NsdManager.FAILURE_MAX_LIMIT:
+                return ctx.getString(R.string.nsdError_maxLimitReached);
         }
         return ctx.getString(R.string.nsdError_unknown);
     }
@@ -90,14 +101,14 @@ public abstract class MaxUtils {
     }
 
     /**
-     * @param view The view which will be target of state manipulation.
-     * @param text String to set when not null.
+     * @param view    The view which will be target of state manipulation.
+     * @param text    String to set when not null.
      * @param nullVis Visibility to apply when text == null, otherwise ignored
      * @return true if the view is set to VISIBLE, always true if text != null
      */
     public static boolean setTextUnlessNull(@NonNull TextView view, @Nullable String text, int nullVis) {
         view.setVisibility(text == null ? nullVis : View.VISIBLE);
-        if(text != null) view.setText(text);
+        if (text != null) view.setText(text);
         return text != null;
     }
 
@@ -118,19 +129,38 @@ public abstract class MaxUtils {
         return res;
     }
 
+    public static Network.PlayingCharacterDefinition makePlayingCharacterDefinition(BuildingPlayingCharacter proposal) {
+        final Network.PlayingCharacterDefinition wire = new Network.PlayingCharacterDefinition();
+        wire.name = proposal.name;
+        wire.initiativeBonus = proposal.initiativeBonus;
+        wire.healthPoints = proposal.fullHealth;
+        wire.experience = proposal.experience;
+        wire.peerKey = proposal.unique;
+        final byte[] buff = new byte[proposal.lastLevelClass.getSerializedSize()];
+        wire.career = new RPGClass.LevelClass();
+        try {
+            proposal.lastLevelClass.writeTo(CodedOutputByteBufferNano.newInstance(buff));
+            wire.career.mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+        } catch (IOException e) {
+            // impossible in this context
+        }
+        return wire;
+    }
+
     public static class TotalLoader {
         final int validBytes;
         final byte[] fullData;
+
         public TotalLoader(@NonNull InputStream src, @Nullable byte[] buffer) throws IOException {
             final int increment = 4 * 1024;
             int loaded = 0;
-            if(buffer == null) buffer = new byte[increment];
+            if (buffer == null) buffer = new byte[increment];
             int chunks = 0;
-            while(true) {
+            while (true) {
                 int got = src.read(buffer, loaded, buffer.length - loaded);
-                if(got == -1) break;
+                if (got == -1) break;
                 loaded += got;
-                if(loaded == buffer.length) {
+                if (loaded == buffer.length) {
                     byte[] realloc = new byte[buffer.length + (increment << (chunks / 10))];
                     System.arraycopy(buffer, 0, realloc, 0, buffer.length);
                     buffer = realloc;
@@ -139,6 +169,31 @@ public abstract class MaxUtils {
             validBytes = loaded;
             fullData = buffer;
         }
+    }
+
+    public static int level(Resources res, int pace, int xps) {
+        final int[] limit;
+        switch(pace) {
+            case LevelAdvancement.LA_PF_FAST: limit = res.getIntArray(R.array.levelProgression_fast); break;
+            case LevelAdvancement.LA_PF_MEDIUM: limit = res.getIntArray(R.array.levelProgression_medium); break;
+            case LevelAdvancement.LA_PF_SLOW: limit = res.getIntArray(R.array.levelProgression_slow); break;
+            default: return 0;
+        }
+        int level = 1;
+        while(limit[level - 1] <= xps && level < 20) level++;
+        return level;
+    }
+
+    public static int experienceToReachLevel(Resources res, int pace, int level) {
+        if(level < 2) return 0;
+        final int[] limit;
+        switch(pace) {
+            case LevelAdvancement.LA_PF_FAST: limit = res.getIntArray(R.array.levelProgression_fast); break;
+            case LevelAdvancement.LA_PF_MEDIUM: limit = res.getIntArray(R.array.levelProgression_medium); break;
+            case LevelAdvancement.LA_PF_SLOW: limit = res.getIntArray(R.array.levelProgression_slow); break;
+            default: return 0;
+        }
+        return limit[level - 2];
     }
 
     // Events for all Firebase Analytics events I want to track to help me monitor userbase health more accurately.
@@ -164,5 +219,25 @@ public abstract class MaxUtils {
     /**/public static final String FA_PARAM_MONSTERS = "currentEnemies"; // String[]
 
     // Used with FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS
-    /**/public static final String FA_PARAM_SEARCH_MATCH_COUNT = "matchedEnemies"; // int
+    /**/public static final String FA_PARAM_SEARCH_RESULTS = "matchedEnemies"; // String[]
+
+    // Master clicks on the 'trigger readied action' / interrupt control.
+    public static final String FA_EVENT_READIED_ACTION_TRIGGERED = "readiedActionTriggered";
+
+    // A character with a readied action can act normally - its action was lost.
+    public static final String FA_EVENT_READIED_ACTION_TICKED = "readiedUseless";
+    /**/public static final String FA_PARAM_READIED_ACTION_RENEWED = "renewed"; // boolean, if false -> cancelled, default is false
+
+    public static final String FA_EVENT_BATTLE_STOP = "battleStop";
+    /**/public static final String FA_PARAM_BATTLE_DISCARDED = "battleDiscarded"; // boolean, if true -> discarded, default is false
+
+    // Always generated when the user dismisses the shuffle init dialog from client.
+    public static final String FA_EVENT_CLIENT_SHUFFLE_ORDER = "clientOrderShuffle";
+    /**/public static final String FA_PARAM_SHUFFLED_MOVEMENT = "relative"; // int
+    /**/public static final String FA_PARAM_SHUFFLE_CANCELLED = "cancelled"; // bool
+
+    // Always generated when the user dismisses the prepared action dialog from client
+    public static final String FA_EVENT_CLIENT_READY_ACTION = "clientReadiedActionRequest";
+    /**/public static final String FA_PARAM_READY_ACTION_DESC_LEN = "descLen";
+    /**/public static final String FA_PARAM_READY_ACTION_CANCELLED = "descLen";
 }

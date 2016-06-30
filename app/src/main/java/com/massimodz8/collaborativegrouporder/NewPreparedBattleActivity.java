@@ -60,16 +60,17 @@ public class NewPreparedBattleActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if(SpawnMonsterActivity.found != null && SpawnMonsterActivity.found.size() != 0) {
+        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+        if(search.spawn != null && search.spawn.size() != 0) {
             int was = mobs.size();
-            for (Network.ActorState actor : SpawnMonsterActivity.found) {
+            for (Network.ActorState actor : search.spawn) {
                 actor.peerKey = id++;
                 mobs.add(actor);
             }
             RecyclerView rv = (RecyclerView) findViewById(R.id.npba_list);
-            rv.getAdapter().notifyItemRangeInserted(was, SpawnMonsterActivity.found.size());
-            SpawnMonsterActivity.found = null;
+            rv.getAdapter().notifyItemRangeInserted(was, search.spawn.size());
         }
+        search.clear();
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -115,6 +116,9 @@ public class NewPreparedBattleActivity extends AppCompatActivity {
 
                     @Override
                     protected void onPostExecute(Exception e) {
+                        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+                        if(null != search) search.shutdown();
+                        RunningServiceHandles.getInstance().search = null;
                         setResult(RESULT_OK);
                         finish();
                     }

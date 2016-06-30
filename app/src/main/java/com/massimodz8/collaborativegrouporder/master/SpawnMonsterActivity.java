@@ -2,7 +2,6 @@ package com.massimodz8.collaborativegrouporder.master;
 
 import android.app.SearchManager;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +25,7 @@ import com.massimodz8.collaborativegrouporder.MonsterVH;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
+import com.massimodz8.collaborativegrouporder.SpawnHelper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
@@ -34,6 +34,7 @@ import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -42,11 +43,9 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class SpawnMonsterActivity extends AppCompatActivity {
-    private @UserOf PartyJoinOrder game;
     private @UserOf InternalStateService.Data data;
 
     public static boolean includePreparedBattles = true;
-    public static ArrayList<Network.ActorState> found;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,137 +55,20 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         final ActionBar sab = getSupportActionBar();
         if(null != sab) sab.setDisplayHomeAsUpEnabled(true);
-        game = RunningServiceHandles.getInstance().play;
         data = RunningServiceHandles.getInstance().state.data; // this should be no trouble but comes handy
 
-        // Get the intent, verify the action and get the query
-        Intent intent = getIntent();
-        if(!Intent.ACTION_SEARCH.equals(intent.getAction())) return;
-        final String query = intent.getStringExtra(SearchManager.QUERY).trim();
-
-        // Match what .spawn adds to name in case of collisions. This is currently the name followed by parameters.
-        Pattern simplifier = Pattern.compile("\\s\\(\\d*\\)");
-        FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(this);
-        Bundle info = new Bundle();
-        info.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
-        info.putStringArrayList(MaxUtils.FA_PARAM_MONSTERS, mobNames(simplifier));
-        surveyor.logEvent(FirebaseAnalytics.Event.SEARCH, info);
+        list = (RecyclerView) findViewById(R.id.sma_matchedList);
+        final MyMatchLister adapter = new MyMatchLister();
+        list.addItemDecoration(new PreSeparatorDecorator(list, SpawnMonsterActivity.this) {
+            @Override
+            protected boolean isEligible(int position) { return position != 0; }
+        });
+        list.setAdapter(adapter);
+        list.setVisibility(View.VISIBLE);
 
         SpawnableAdventuringActorVH.intCrFormat = getString(R.string.mVH_challangeRatio_integral);
         SpawnableAdventuringActorVH.ratioCrFormat = getString(R.string.mVH_challangeRatio_fraction);
-
-        new AsyncTask<Void, Void, Void>() {
-            final ArrayList<MatchedEntry> matched = new ArrayList<>();
-            final ArrayList<String[]> names = new ArrayList<>();
-            final String lcq = query.toLowerCase();
-            final IdentityHashMap<Network.ActorState, MonsterData.Monster> definitions = new IdentityHashMap<>();
-
-
-            @Override
-            protected Void doInBackground(Void... params) {
-                final IdentityHashMap<String, String> tolower = new IdentityHashMap<>();
-                if(includePreparedBattles) {
-                    for (PreparedEncounters.Battle battle : data.customBattles.battles) {
-                        String lc = battle.desc.toLowerCase();
-                        if(lc.startsWith(lcq)) {
-                            MatchedEntry build = new MatchedEntry();
-                            build.battle = battle;
-                            matched.add(build);
-
-                        }
-                    }
-                    for (PreparedEncounters.Battle battle : data.customBattles.battles) {
-                        String lc = battle.desc.toLowerCase();
-                        if(lc.indexOf(lcq) >= 1) {
-                            MatchedEntry build = new MatchedEntry();
-                            build.battle = battle;
-                            matched.add(build);
-                        }
-                    }
-                }
-                lowerify(tolower, data.monsters);
-                lowerify(tolower, data.customMonsters);
-                matchStarting(tolower, data.customMonsters);
-                matchStarting(tolower, data.monsters);
-                matchContaining(tolower, data.customMonsters);
-                matchContaining(tolower, data.monsters);
-                return null;
-            }
-
-            private void matchStarting(IdentityHashMap<String, String> tolower, MonsterData.MonsterBook book) {
-                for (MonsterData.MonsterBook.Entry entry : book.entries) {
-                    boolean matched = false;
-                    if(anyStarts(entry.main.header.name, lcq, tolower)) {
-                        final MatchedEntry built = new MatchedEntry();
-                        built.mob = actorState(entry.main, entry.main.header.name[0]);
-                        this.matched.add(built);
-                        names.add(entry.main.header.name);
-                        definitions.put(built.mob, entry.main);
-                        matched = true;
-                    }
-                    for (MonsterData.Monster variation : entry.variations) {
-                        if(matched || anyStarts(variation.header.name, lcq, tolower)) {
-                            final MatchedEntry built = new MatchedEntry();
-                            built.mob = actorState(variation, entry.main.header.name[0]);
-                            this.matched.add(built);
-                            names.add(completeVariationNames(entry.main.header.name, variation.header.name));
-                            definitions.put(built.mob, variation);
-                        }
-                    }
-                }
-            }
-
-            private void matchContaining(IdentityHashMap<String, String> tolower, MonsterData.MonsterBook book) {
-                for (MonsterData.MonsterBook.Entry entry : book.entries) {
-                    boolean matched = false;
-                    if(anyContains(entry.main.header.name, lcq, 1, tolower)) {
-                        final MatchedEntry built = new MatchedEntry();
-                        built.mob = actorState(entry.main, entry.main.header.name[0]);
-                        this.matched.add(built);
-                        names.add(entry.main.header.name);
-                        definitions.put(built.mob, entry.main);
-                        matched = true;
-                    }
-                    for (MonsterData.Monster variation : entry.variations) {
-                        if(matched || anyContains(variation.header.name, lcq, 1, tolower)) {
-                            final MatchedEntry built = new MatchedEntry();
-                            built.mob = actorState(variation, entry.main.header.name[0]);
-                            this.matched.add(built);
-                            names.add(completeVariationNames(entry.main.header.name, variation.header.name));
-                            definitions.put(built.mob, variation);
-                        }
-                    }
-                }
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                SpawnMonsterActivity.this.ids = new IdentityHashMap<>();
-                int count = 0;
-                for (MatchedEntry as : matched) ids.put(as, count++);
-                SpawnMonsterActivity.this.matched = matched;
-                SpawnMonsterActivity.this.definitions = definitions;
-                MaxUtils.beginDelayedTransition(SpawnMonsterActivity.this);
-                list = (RecyclerView) findViewById(R.id.sma_matchedList);
-                final MyMatchLister adapter = new MyMatchLister();
-                list.addItemDecoration(new PreSeparatorDecorator(list, SpawnMonsterActivity.this) {
-                    @Override
-                    protected boolean isEligible(int position) { return position != 0; }
-                });
-                list.setAdapter(adapter);
-                list.setVisibility(View.VISIBLE);
-                MaxUtils.setVisibility(SpawnMonsterActivity.this, View.GONE, R.id.sma_progress);
-                final TextView status = (TextView) findViewById(R.id.sma_status);
-                if(this.matched.size() == 1) status.setText(R.string.sma_status_matchedSingle);
-                else status.setText(String.format(getString(R.string.sma_status_matchedMultiple), this.matched.size()));
-
-                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(SpawnMonsterActivity.this);
-                Bundle info = new Bundle();
-                info.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
-                info.putInt(MaxUtils.FA_PARAM_SEARCH_MATCH_COUNT, matched.size());
-                surveyor.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, info);
-            }
-        }.execute();
+        SpawnableAdventuringActorVH.akaFormat = getString(R.string.sma_alternateNameFormat);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setVisibility(View.INVISIBLE);
@@ -194,23 +76,108 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HashMap<String, Integer> nameColl = new HashMap<>();
-                if(found == null) found = new ArrayList<>();
-                for (Map.Entry<Network.ActorState, Integer> entry : mobCount.entrySet()) spawn(nameColl, entry.getKey(), entry.getValue());
-                for (Map.Entry<PreparedEncounters.Battle, Integer> entry : battleCount.entrySet()) {
+                final SpawnHelper search = RunningServiceHandles.getInstance().search;
+                search.spawn = new ArrayList<>();
+                for (Map.Entry<MonsterData.Monster, Integer> entry : search.mobCount.entrySet()) {
+                    spawn(entry.getKey(), entry.getValue());
+                }
+                for (Map.Entry<PreparedEncounters.Battle, Integer> entry : search.battleCount.entrySet()) {
                     Integer count = entry.getValue();
                     if(count == null || count < 1) continue;
-                    for (Network.ActorState fighter : entry.getKey().actors) spawn(nameColl, fighter, count);
+                    for (Network.ActorState fighter : entry.getKey().actors) {
+                        spawn(fighter, count);
+                    }
                 }
+                // My state is no more needed. Getting the rid of everything is done on BattleActivity result,
+                // which also manages 'back'.
                 finish();
             }
         });
     }
 
-    private ArrayList<String> mobNames(Pattern simplifier) {
-        SessionHelper session = game.session;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        data = RunningServiceHandles.getInstance().state.data; // this should be no trouble but comes handy
+        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+        final Runnable onCompleted = new Runnable() {
+            @Override
+            public void run() {
+                search.currentQuery = null;
+                matched.addAll(search.customs);
+                for (SpawnHelper.MatchedEntry[] arr : search.parMatches) {
+                    if(arr == null) continue;
+                    Collections.addAll(matched, arr);
+                }
+                MaxUtils.setVisibility(SpawnMonsterActivity.this, View.GONE, R.id.sma_progress);
+                final TextView status = (TextView) findViewById(R.id.sma_status);
+                if(matched.size() == 1) status.setText(R.string.sma_status_matchedSingle);
+                else status.setText(String.format(getString(R.string.sma_status_matchedMultiple), matched.size()));
+
+                localId = new IdentityHashMap<>(matched.size());
+                int temp = 0;
+                for (SpawnHelper.MatchedEntry el : matched) localId.put(el, temp++);
+                if(search.battleCount == null) {
+                    search.battleCount = new IdentityHashMap<>(matched.size());
+                    search.mobCount = new IdentityHashMap<>(matched.size());
+
+                    final String query = getIntent().getStringExtra(SearchManager.QUERY).trim();
+                    FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(SpawnMonsterActivity.this);
+                    Bundle info = new Bundle();
+                    info.putString(FirebaseAnalytics.Param.SEARCH_TERM, query);
+                    info.putStringArrayList(MaxUtils.FA_PARAM_SEARCH_RESULTS, mobNames(matched));
+                    surveyor.logEvent(FirebaseAnalytics.Event.VIEW_SEARCH_RESULTS, info);
+                }
+                list.getAdapter().notifyDataSetChanged();
+            }
+        };
+        search.whenReady(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = getIntent();
+                if (!Intent.ACTION_SEARCH.equals(intent.getAction())) return;
+                final String trimmed = intent.getStringExtra(SearchManager.QUERY).trim();
+                final String query = trimmed.toLowerCase();
+                if(search.currentQuery != null && search.currentQuery.equals(query)) { // we have already completed and produced results!
+                    onCompleted.run();
+                    return;
+                }
+                search.beginSearch(query, includePreparedBattles, onCompleted);
+
+                Pattern simplifier = Pattern.compile("\\s\\(\\d*\\)");
+                FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(SpawnMonsterActivity.this);
+                Bundle info = new Bundle();
+                info.putString(FirebaseAnalytics.Param.SEARCH_TERM, trimmed);
+                final PartyJoinOrder play = RunningServiceHandles.getInstance().play;
+                if(play != null) info.putStringArrayList(MaxUtils.FA_PARAM_MONSTERS, mobNames(play.session.temporaries, simplifier));
+                // preparing battles is less interesting for me, less performance path, searching new battles is the critical path
+                surveyor.logEvent(FirebaseAnalytics.Event.SEARCH, info);
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+        search.whenReady(null);
+        search.beginSearch(null, false, null);
+    }
+
+    private ArrayList<String> mobNames(ArrayList<SpawnHelper.MatchedEntry> matched) {
+        ArrayList<String> res = new ArrayList<>(64);
+        for (SpawnHelper.MatchedEntry el : matched) {
+            MaxUtils.hasher.reset();
+            final String name = el.mob != null? getPreferredName(el.mob) : el.battle.desc;
+            final String prefix = el.mob != null? "M:" : String.format(Locale.ENGLISH, "PE(%1$d):", el.battle.actors.length);
+            res.add(prefix + Base64.encodeToString(MaxUtils.hasher.digest(name.getBytes()), Base64.DEFAULT));
+        }
+        return res;
+    }
+
+    private static ArrayList<String> mobNames(ArrayList<Network.ActorState> mobs, Pattern simplifier) {
         int count = 0;
-        for (Network.ActorState as : session.temporaries) {
+        for (Network.ActorState as : mobs) {
             if(as.type != Network.ActorState.T_MOB) continue;
             count++;
         }
@@ -219,7 +186,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         // I cannot just store them. So what I'm doing: I remove everything I might have added to disambiguate,
         // I remove digits, (), punctuation and then hash it. Same hash, same thing. But! I cannot store those either as
         // bundles have arrays of strings but not arrays of arrays... meh! I just send everything Base64 and be done.
-        for (Network.ActorState as : session.temporaries) {
+        for (Network.ActorState as : mobs) {
             if(as.type != Network.ActorState.T_MOB) continue;
             String cleared = simplifier.matcher(as.name).replaceAll("");
             MaxUtils.hasher.reset();
@@ -228,36 +195,47 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         return res;
     }
 
-    private void spawn(HashMap<String, Integer> nameColl, Network.ActorState actorState, Integer count) {
-        if(count == null) return; // impossible
-        if(count < 1) return;
-        final MonsterData.Monster def = definitions.get(actorState);
-        final String presentation = def != null? getPreferredName(def) : actorState.name;
-        byte[] ugly = new byte[actorState.getSerializedSize()];
+
+    private void spawn(MonsterData.Monster mob, int count) {
+        if(count < 1) return; // malfunction, but just ignore
+        String presentation = getPreferredName(mob);
+        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+        final HashMap<String, Integer> index = search.nextMobIndex;
+        for(int loop = 0; loop < count; loop++) {
+            final Integer next = index.get(presentation);
+            if (next != null) {
+                index.put(presentation, next + 1);
+                presentation = String.format(Locale.getDefault(), getString(R.string.sma_monsterNameSpawnNote), presentation, next);
+            } else index.put(presentation, 1);
+            final Network.ActorState as = actorState(mob, presentation);
+            search.spawn.add(as);
+        }
+    }
+
+
+    private void spawn(Network.ActorState original, int count) {
+        if(count < 1) return; // malfunction, but just ignore
+        String presentation = original.name;
+        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+        final HashMap<String, Integer> index = search.nextMobIndex;
+
+        byte[] ugly = new byte[original.getSerializedSize()];
         CodedOutputByteBufferNano out = CodedOutputByteBufferNano.newInstance(ugly);
         try {
-            actorState.writeTo(out);
+           original.writeTo(out);
         } catch (IOException e) {
-            // Can this happen? I don't think so!
+        // Can this happen? I don't think so!
             return;
         }
-        CodedInputByteBufferNano original = CodedInputByteBufferNano.newInstance(ugly);
-        for(int spawn = 0; spawn < count; spawn++) {
-            Network.ActorState copy = new Network.ActorState();
-            try {
-                copy.mergeFrom(original);
-            } catch (IOException e) {
-                // Can this happen? I don't think so!
-                return;
-            }
-            original.resetSizeCounter();
-            String display = presentation;
-            Integer previously = nameColl.get(presentation);
-            if(previously == null) previously = 0;
-            else display = String.format(Locale.getDefault(), getString(R.string.sma_monsterNameSpawnNote), display, previously);
-            copy.name = display;
-            found.add(copy);
-            nameColl.put(presentation, previously + 1);
+        CodedInputByteBufferNano serialized = CodedInputByteBufferNano.newInstance(ugly);
+        for(int loop = 0; loop < count; loop++) {
+            final Integer next = index.get(presentation);
+            if (next != null) {
+                index.put(presentation, next + 1);
+                presentation = String.format(Locale.getDefault(), getString(R.string.sma_monsterNameSpawnNote), presentation, next);
+            } else index.put(presentation, 1);
+            final Network.ActorState as = actorState(serialized, presentation);
+            search.spawn.add(as);
         }
     }
 
@@ -344,25 +322,6 @@ public class SpawnMonsterActivity extends AppCompatActivity {
     }
 
 
-    private IdentityHashMap<Network.ActorState, Integer> mobCount = new IdentityHashMap<>();
-    private IdentityHashMap<Network.ActorState, MonsterData.Monster> definitions = new IdentityHashMap<>();
-    private IdentityHashMap<PreparedEncounters.Battle, Integer> battleCount = new IdentityHashMap<>();
-
-
-    private static boolean anyStarts(String[] arr, String prefix, IdentityHashMap<String, String> tolower) {
-        for (String s : arr) {
-            if(tolower.get(s).startsWith(prefix)) return true;
-        }
-        return false;
-    }
-
-    private static boolean anyContains(String[] arr, String prefix, int minIndex, IdentityHashMap<String, String> tolower) {
-        for (String s : arr) {
-            if(tolower.get(s).indexOf(prefix) >= minIndex) return true;
-        }
-        return false;
-    }
-
     private static String[] completeVariationNames(String[] main, String[] modi) {
         if(modi.length == 0) return main;
         String[] all = new String[main.length + modi.length];
@@ -384,7 +343,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 if(mob == inner) return entry.main.header.name[0];
             }
         }
-        for (MonsterData.MonsterBook.Entry entry : data.monsters.entries) {
+        for (MonsterData.MonsterBook.Entry entry : data.customMonsters.entries) {
             if(mob == entry.main) return entry.main.header.name[0];
             for (MonsterData.Monster inner : entry.variations) {
                 if(mob == inner) return entry.main.header.name[0];
@@ -393,14 +352,6 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         return "!! Not found !!"; // impossible
     }
 
-    private static void lowerify(IdentityHashMap<String, String> result, MonsterData.MonsterBook book) {
-        for (MonsterData.MonsterBook.Entry entry : book.entries) {
-            for (String s : entry.main.header.name) result.put(s, s.toLowerCase());
-            for (MonsterData.Monster variation : entry.variations) {
-                for (String s : variation.header.name) result.put(s, s.toLowerCase());
-            }
-        }
-    }
 
     private static Network.ActorState actorState(MonsterData.Monster def, String name) {
         Network.ActorState build = new Network.ActorState();
@@ -408,20 +359,33 @@ public class SpawnMonsterActivity extends AppCompatActivity {
         build.peerKey = -1; // <-- watch out for the peerkey!
         build.name = name;
         build.currentHP = build.maxHP = 666; // todo generate(mob.defense.hp)
-        build.initiativeBonus = def.header.initiative;  // todo select conditional initiatives.
+        build.initiativeBonus = def.header.initiative;
         build.cr = new Network.ActorState.ChallangeRatio();
         build.cr.numerator = def.header.cr.numerator;
         build.cr.denominator = def.header.cr.denominator;
         return build;
     }
 
+    /// We need to copy the original object anyway!
+    private static Network.ActorState actorState(CodedInputByteBufferNano ori, String name) {
+        Network.ActorState as = new Network.ActorState();
+        try {
+            as.mergeFrom(ori);
+        } catch (IOException e) {
+            // impossible in this context
+        }
+        as.name = name;
+        return as;
+    }
+
     private void countFightersAndToggleFab(int positionChanged) {
         int count = 0;
-        for (Map.Entry<Network.ActorState, Integer> el : mobCount.entrySet()) {
+        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+        for (Map.Entry<MonsterData.Monster, Integer> el : search.mobCount.entrySet()) {
             final Integer v = el.getValue();
             if(v != null && v > 0) count += v;
         }
-        for (Map.Entry<PreparedEncounters.Battle, Integer> el : battleCount.entrySet()) {
+        for (Map.Entry<PreparedEncounters.Battle, Integer> el : search.battleCount.entrySet()) {
             final Integer v = el.getValue();
             if (v != null && v > 0) count += v;
         }
@@ -448,16 +412,18 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 return new SpawnableAdventuringActorVH(getLayoutInflater(), parent) {
                     @Override
                     public void onClick(View v) {
-                        if (actor == null) return; // impossible by context
-                        Integer myCount = mobCount.get(actor);
-                        if (myCount != null) mobCount.put(actor, -myCount);
-                        else mobCount.put(actor, 1);
+                        if (mob == null) return; // impossible by context
+                        final IdentityHashMap<MonsterData.Monster, Integer> mobCount = RunningServiceHandles.getInstance().search.mobCount;
+                        Integer myCount = mobCount.get(mob);
+                        if (myCount != null) mobCount.put(mob, -myCount);
+                        else mobCount.put(mob, 1);
                         countFightersAndToggleFab(list.getChildAdapterPosition(itemView));
                     }
 
                     @Override
                     protected String selectedText() {
-                        final Integer count = mobCount.get(actor);
+                        final IdentityHashMap<MonsterData.Monster, Integer> mobCount = RunningServiceHandles.getInstance().search.mobCount;
+                        final Integer count = mobCount.get(mob);
                         if(count == null || count < 1) return null;
                         return String.format(Locale.getDefault(), getString(R.string.mVH_spawnCountFeedback), count);
                     }
@@ -468,6 +434,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     // Almost copypasted from SAAVH.onClick above!
                     if (battle == null) return; // impossible by context
+                    final IdentityHashMap<PreparedEncounters.Battle, Integer> battleCount = RunningServiceHandles.getInstance().search.battleCount;
                     Integer myCount = battleCount.get(battle);
                     if (myCount != null) battleCount.put(battle, -myCount);
                     else battleCount.put(battle, 1);
@@ -476,7 +443,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
 
                 @Override
                 protected String selectedText() {
-                    final Integer count = battleCount.get(battle);
+                    final Integer count = RunningServiceHandles.getInstance().search.battleCount.get(battle);
                     if(count == null || count < 1) return null;
                     return getString(R.string.sma_battleWillFight);
                 }
@@ -485,10 +452,10 @@ public class SpawnMonsterActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            final MatchedEntry src = matched.get(position);
+            final SpawnHelper.MatchedEntry src = matched.get(position);
             if(holder instanceof SpawnableAdventuringActorVH) {
                 SpawnableAdventuringActorVH real = (SpawnableAdventuringActorVH)holder;
-                real.bindData(src.mob);
+                real.bindData(src.mob, src.name);
             }
             if(holder instanceof PreparedBattleVH) {
                 PreparedBattleVH real = (PreparedBattleVH)holder;
@@ -498,19 +465,14 @@ public class SpawnMonsterActivity extends AppCompatActivity {
 
         @Override
         public long getItemId(int position) {
-            Integer id = ids.get(matched.get(position));
+            Integer id = localId.get(matched.get(position));
             return id == null? RecyclerView.NO_ID : id;
         }
 
         private static final int MONSTER = 1;
         private static final int BATTLE = 2;
     }
-
-    static class MatchedEntry {
-        Network.ActorState mob;
-        PreparedEncounters.Battle battle;
-    }
-    private ArrayList<MatchedEntry> matched;
-    private IdentityHashMap<MatchedEntry, Integer> ids;
+    private final ArrayList<SpawnHelper.MatchedEntry> matched = new ArrayList<>();
     private RecyclerView list;
+    public IdentityHashMap<SpawnHelper.MatchedEntry, Integer> localId = new IdentityHashMap<>(); // keeps track of lister ids in case in the future I swipe them away
 }

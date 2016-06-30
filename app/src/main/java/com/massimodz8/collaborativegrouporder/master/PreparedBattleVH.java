@@ -16,6 +16,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.IdentityHashMap;
+import java.util.Locale;
 
 /**
  * Created by Massimo on 17/05/2016.
@@ -55,7 +56,10 @@ public abstract class PreparedBattleVH extends RecyclerView.ViewHolder implement
                     PreparedBattleVH.this.onClick(v);
                 }
             };
-            built.bindData(actor);
+            if(actor.cr.denominator == 1) built.cr.setText(String.format(Locale.getDefault(), SpawnableAdventuringActorVH.intCrFormat, actor.cr.numerator));
+            else built.cr.setText(String.format(Locale.getDefault(), SpawnableAdventuringActorVH.ratioCrFormat, actor.cr.numerator, actor.cr.denominator));
+            built.battleCount.setVisibility(View.GONE);
+            built.name.setText(actor.name);
             actors.add(built);
             container.addView(built.itemView);
         }

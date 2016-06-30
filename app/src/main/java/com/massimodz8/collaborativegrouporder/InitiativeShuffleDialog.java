@@ -1,6 +1,7 @@
 package com.massimodz8.collaborativegrouporder;
 
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.massimodz8.collaborativegrouporder.master.AdventuringActorControlsVH;
 import com.massimodz8.collaborativegrouporder.master.AdventuringActorWithControlsAdapter;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
@@ -33,12 +35,25 @@ public class InitiativeShuffleDialog {
         this.actor = actor;
     }
     public void show(@NonNull final AppCompatActivity activity, @NonNull final OnApplyCallback confirmed) {
+        final FirebaseAnalytics surveyor = FirebaseAnalytics.getInstance(activity);
+        final Bundle bundle = new Bundle();
+        final int orindex = actor;
         final AlertDialog dlg = new AlertDialog.Builder(activity, R.style.AppDialogStyle)
                 .setView(R.layout.dialog_shuffle_initiative_order)
                 .setPositiveButton(activity.getString(R.string.isd_apply), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         confirmed.newOrder(actor);
+                        bundle.putInt(MaxUtils.FA_PARAM_SHUFFLED_MOVEMENT, actor - orindex);
+                        surveyor.logEvent(MaxUtils.FA_EVENT_CLIENT_SHUFFLE_ORDER, bundle);
+                    }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        bundle.putInt(MaxUtils.FA_PARAM_SHUFFLED_MOVEMENT, 0);
+                        bundle.putBoolean(MaxUtils.FA_PARAM_SHUFFLE_CANCELLED, true);
+                        surveyor.logEvent(MaxUtils.FA_EVENT_CLIENT_SHUFFLE_ORDER, bundle);
                     }
                 })
                 .show();

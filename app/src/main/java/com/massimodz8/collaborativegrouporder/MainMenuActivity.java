@@ -47,7 +47,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Locale;
 
 public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final int NETWORK_VERSION = 1;
@@ -89,7 +88,14 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         InternalStateService state = RunningServiceHandles.getInstance().state;
         if(state != null) {
             if(dataStatusCallback != null) state.data.onStatusChanged.remove(dataStatusCallback);
-            if(state.notification == null) stopService(new Intent(this, InternalStateService.class));
+            if(state.notification == null) {
+                final SpawnHelper search = RunningServiceHandles.getInstance().search;
+                if(null != search) {
+                    search.shutdown();
+                    RunningServiceHandles.getInstance().search = null;
+                }
+                stopService(new Intent(this, InternalStateService.class));
+            }
         }
         super.onDestroy();
     }
@@ -172,6 +178,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 break;
             }
             case R.id.mma_preparedBattles: {
+                final RunningServiceHandles handles = RunningServiceHandles.getInstance();
+                if(handles.search == null) handles.search = new SpawnHelper();
                 startActivity(new Intent(this, PreparedBattlesActivity.class));
                 break;
             }
@@ -179,9 +187,6 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     private void startNewSessionActivity(StartData.PartyOwnerData.Group activeParty, ServerSocket activeLanding, Pumper.MessagePumpingThread[] activeConnections, Session.Suspended activeStats) {
-        String easygoing = String.format(Locale.ENGLISH, "name: %1$s, published: %2$d, charCount=%3$d, devCount=%4$d, created=%5$d. Measure userbase health.",
-                activeParty.name, System.currentTimeMillis(),
-                activeParty.party.length + activeParty.npcs.length, activeParty.devices.length, activeParty.created.seconds);
         MaxUtils.hasher.reset();
         JoinVerificator keyMaster = null;
         if(activeParty.devices.length > 0) keyMaster = new JoinVerificator(activeParty.devices, MaxUtils.hasher);
@@ -216,7 +221,19 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
 
 
     private void startGoAdventuringActivity(@NonNull StartData.PartyClientData.Group activeParty, @Nullable Pumper.MessagePumpingThread serverConn) {
-        RunningServiceHandles.getInstance().joinGame = new JoinGame(activeParty, serverConn, (NsdManager) getSystemService(Context.NSD_SERVICE));
+        final NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
+        if (nsd == null) {
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setMessage(R.string.both_noDiscoveryManager)
+                    .show();
+            return;
+        }
+        InternalStateService state = RunningServiceHandles.getInstance().state;
+        Notification build = state.buildNotification(getString(R.string.jsa_title), null);
+        NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);
+        state.notification = build;
+        RunningServiceHandles.getInstance().joinGame = new JoinGame(activeParty, serverConn, nsd);
         startActivityForResult(new Intent(this, JoinSessionActivity.class), REQUEST_PULL_CHAR_LIST);
     }
 
@@ -258,7 +275,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             }
             case REQUEST_PULL_CHAR_LIST: {
                 if(resultCode == RESULT_OK) {
-                    handles.bindChars = new PcAssignmentState(handles.joinGame.result.worker, handles.joinGame.party, handles.joinGame.result.first);
+                    handles.bindChars = new PcAssignmentState(handles.joinGame.result.worker, handles.joinGame.party, handles.joinGame.result.levelAdvancement, handles.joinGame.result.first);
                     startActivityForResult(new Intent(this, CharSelectionActivity.class), REQUEST_BIND_CHARACTERS);
                 }
                 else handles.state.baseNotification();
@@ -266,8 +283,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 handles.joinGame = null;
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                if(resultCode == RESULT_OK) {
-                    handles.clientPlay = new Adventure();
+                boolean keep = false;
+                if(resultCode == RESULT_OK && handles.bindChars.playChars != null && handles.bindChars.playChars.length > 0) {
+                    keep = true;
+                    handles.clientPlay = new Adventure(handles.bindChars.party, handles.bindChars.advancement);
                     ActorOverviewActivity.prepare(
                             handles.bindChars.playChars,
                             handles.bindChars.server);
@@ -278,8 +297,14 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     if(man != null) man.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, updated);
                     handles.state.notification = updated;
                 }
-                else handles.state.baseNotification();
-                handles.bindChars.shutdown(resultCode == RESULT_OK);
+                else {
+                    if(handles.bindChars.playChars == null || handles.bindChars.playChars.length == 0) {
+                        new SuccessiveSnackbars(findViewById(R.id.activityRoot), Snackbar.LENGTH_LONG, this,
+                                R.string.mma_noPlayingCharsAssigned, R.string.mma_nothingToDoInParty).show();
+                    }
+                    handles.state.baseNotification();
+                }
+                handles.bindChars.shutdown(keep);
                 handles.bindChars = null;
             } break;
             case REQUEST_JOIN_FORMING: {
@@ -336,8 +361,9 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     }
 
     private void freeRoaming(boolean sendAssembled) {
-        startActivityForResult(new Intent(this, FreeRoamingActivity.class), REQUEST_PLAY);
         final RunningServiceHandles handles = RunningServiceHandles.getInstance();
+        if(handles.search == null) handles.search = new SpawnHelper();
+        startActivityForResult(new Intent(this, FreeRoamingActivity.class), REQUEST_PLAY);
         Notification build = handles.state.buildNotification(handles.play.getPartyOwnerData().name, getString(R.string.fra_title));
         NotificationManager serv = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if(serv != null) serv.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, build);

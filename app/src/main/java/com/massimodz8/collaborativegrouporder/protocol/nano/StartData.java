@@ -160,6 +160,9 @@ public interface StartData {
       // optional string sessionFile = 7;
       public java.lang.String sessionFile;
 
+      // optional .LevelAdvancement advancementPace = 8;
+      public int advancementPace;
+
       public Group() {
         clear();
       }
@@ -172,6 +175,7 @@ public interface StartData {
         imageFile = "";
         created = null;
         sessionFile = "";
+        advancementPace = com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED;
         cachedSize = -1;
         return this;
       }
@@ -214,6 +218,9 @@ public interface StartData {
         }
         if (!this.sessionFile.equals("")) {
           output.writeString(7, this.sessionFile);
+        }
+        if (this.advancementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
+          output.writeInt32(8, this.advancementPace);
         }
         super.writeTo(output);
       }
@@ -263,6 +270,10 @@ public interface StartData {
         if (!this.sessionFile.equals("")) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
               .computeStringSize(7, this.sessionFile);
+        }
+        if (this.advancementPace != com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(8, this.advancementPace);
         }
         return size;
       }
@@ -359,6 +370,18 @@ public interface StartData {
             }
             case 58: {
               this.sessionFile = input.readString();
+              break;
+            }
+            case 64: {
+              int value = input.readInt32();
+              switch (value) {
+                case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_UNSPECIFIED:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_FAST:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_MEDIUM:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement.LA_PF_SLOW:
+                  this.advancementPace = value;
+                  break;
+              }
               break;
             }
           }
@@ -519,16 +542,13 @@ public interface StartData {
     // optional string name = 1;
     public java.lang.String name;
 
-    // optional uint32 level = 2;
-    public int level;
-
-    // optional uint32 experience = 3;
+    // optional uint32 experience = 2;
     public int experience;
 
-    // optional string avatarFile = 4;
+    // optional string avatarFile = 3;
     public java.lang.String avatarFile;
 
-    // repeated .ActorStatistics stats = 5;
+    // repeated .ActorStatistics stats = 4;
     public com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics[] stats;
 
     public ActorDefinition() {
@@ -537,7 +557,6 @@ public interface StartData {
 
     public ActorDefinition clear() {
       name = "";
-      level = 0;
       experience = 0;
       avatarFile = "";
       stats = com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics.emptyArray();
@@ -551,20 +570,17 @@ public interface StartData {
       if (!this.name.equals("")) {
         output.writeString(1, this.name);
       }
-      if (this.level != 0) {
-        output.writeUInt32(2, this.level);
-      }
       if (this.experience != 0) {
-        output.writeUInt32(3, this.experience);
+        output.writeUInt32(2, this.experience);
       }
       if (!this.avatarFile.equals("")) {
-        output.writeString(4, this.avatarFile);
+        output.writeString(3, this.avatarFile);
       }
       if (this.stats != null && this.stats.length > 0) {
         for (int i = 0; i < this.stats.length; i++) {
           com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics element = this.stats[i];
           if (element != null) {
-            output.writeMessage(5, element);
+            output.writeMessage(4, element);
           }
         }
       }
@@ -578,24 +594,20 @@ public interface StartData {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeStringSize(1, this.name);
       }
-      if (this.level != 0) {
-        size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(2, this.level);
-      }
       if (this.experience != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeUInt32Size(3, this.experience);
+            .computeUInt32Size(2, this.experience);
       }
       if (!this.avatarFile.equals("")) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeStringSize(4, this.avatarFile);
+            .computeStringSize(3, this.avatarFile);
       }
       if (this.stats != null && this.stats.length > 0) {
         for (int i = 0; i < this.stats.length; i++) {
           com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics element = this.stats[i];
           if (element != null) {
             size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeMessageSize(5, element);
+              .computeMessageSize(4, element);
           }
         }
       }
@@ -622,20 +634,16 @@ public interface StartData {
             break;
           }
           case 16: {
-            this.level = input.readUInt32();
-            break;
-          }
-          case 24: {
             this.experience = input.readUInt32();
             break;
           }
-          case 34: {
+          case 26: {
             this.avatarFile = input.readString();
             break;
           }
-          case 42: {
+          case 34: {
             int arrayLength = com.google.protobuf.nano.WireFormatNano
-                .getRepeatedFieldArrayLength(input, 42);
+                .getRepeatedFieldArrayLength(input, 34);
             int i = this.stats == null ? 0 : this.stats.length;
             com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics[] newArray =
                 new com.massimodz8.collaborativegrouporder.protocol.nano.StartData.ActorStatistics[i + arrayLength];
@@ -692,6 +700,9 @@ public interface StartData {
     // optional int32 healthPoints = 2;
     public int healthPoints;
 
+    // optional .LevelClass career = 3;
+    public com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.LevelClass career;
+
     public ActorStatistics() {
       clear();
     }
@@ -699,6 +710,7 @@ public interface StartData {
     public ActorStatistics clear() {
       initBonus = 0;
       healthPoints = 0;
+      career = null;
       cachedSize = -1;
       return this;
     }
@@ -711,6 +723,9 @@ public interface StartData {
       }
       if (this.healthPoints != 0) {
         output.writeInt32(2, this.healthPoints);
+      }
+      if (this.career != null) {
+        output.writeMessage(3, this.career);
       }
       super.writeTo(output);
     }
@@ -725,6 +740,10 @@ public interface StartData {
       if (this.healthPoints != 0) {
         size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeInt32Size(2, this.healthPoints);
+      }
+      if (this.career != null) {
+        size += com.google.protobuf.nano.CodedOutputByteBufferNano
+          .computeMessageSize(3, this.career);
       }
       return size;
     }
@@ -750,6 +769,13 @@ public interface StartData {
           }
           case 16: {
             this.healthPoints = input.readInt32();
+            break;
+          }
+          case 26: {
+            if (this.career == null) {
+              this.career = new com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass.LevelClass();
+            }
+            input.readMessage(this.career);
             break;
           }
         }

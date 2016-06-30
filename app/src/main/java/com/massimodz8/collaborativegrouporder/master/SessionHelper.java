@@ -72,6 +72,9 @@ public abstract class SessionHelper {
         }
     }
 
+    // Used when distributing XP awards, peerkeys
+    public ArrayList<Integer> levelup = new ArrayList<>();
+
 
     SessionHelper(Session.Suspended stats, ArrayList<Network.ActorState> existByDef) {
         this.stats = stats;

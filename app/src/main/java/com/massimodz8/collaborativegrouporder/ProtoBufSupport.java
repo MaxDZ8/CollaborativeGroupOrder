@@ -2,7 +2,9 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
+import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
 
 import java.util.HashMap;
 
@@ -255,6 +257,163 @@ public abstract class ProtobufSupport {
         return match;
     }
 
+    public static String knownClassToString(int protobufEnum, Context ctx) {
+        if(null == knownClass) {
+            knownClass = new HashMap<>();
+            knownClass.put(RPGClass.KC_INVALID, ctx.getString(R.string.knownClass_invalid));
+            knownClass.put(RPGClass.KC_PF_CORE_BARBARIAN, ctx.getString(R.string.knownClass_barbarian));
+            knownClass.put(RPGClass.KC_PF_CORE_BARD, ctx.getString(R.string.knownClass_bard));
+            knownClass.put(RPGClass.KC_PF_CORE_CLERIC, ctx.getString(R.string.knownClass_cleric));
+            knownClass.put(RPGClass.KC_PF_CORE_DRUID, ctx.getString(R.string.knownClass_druid));
+            knownClass.put(RPGClass.KC_PF_CORE_FIGHTER, ctx.getString(R.string.knownClass_fighter));
+            knownClass.put(RPGClass.KC_PF_CORE_MONK, ctx.getString(R.string.knownClass_monk));
+            knownClass.put(RPGClass.KC_PF_CORE_PALADIN, ctx.getString(R.string.knownClass_paladin));
+            knownClass.put(RPGClass.KC_PF_CORE_RANGER, ctx.getString(R.string.knownClass_ranger));
+            knownClass.put(RPGClass.KC_PF_CORE_ROGUE, ctx.getString(R.string.knownClass_rogue));
+            knownClass.put(RPGClass.KC_PF_CORE_SORCERER, ctx.getString(R.string.knownClass_sorcerer));
+            knownClass.put(RPGClass.KC_PF_CORE_WIZARD, ctx.getString(R.string.knownClass_wizard));
+            knownClass.put(RPGClass.KC_BASE_ALCHEMIST, ctx.getString(R.string.knownClass_alchemist));
+            knownClass.put(RPGClass.KC_BASE_CAVALIER, ctx.getString(R.string.knownClass_cavalier));
+            knownClass.put(RPGClass.KC_BASE_GUNSLINGER, ctx.getString(R.string.knownClass_gunslinger));
+            knownClass.put(RPGClass.KC_BASE_INQUISITOR, ctx.getString(R.string.knownClass_inquisitor));
+            knownClass.put(RPGClass.KC_BASE_MAGUS, ctx.getString(R.string.knownClass_magus));
+            knownClass.put(RPGClass.KC_BASE_ORACLE, ctx.getString(R.string.knownClass_oracle));
+            knownClass.put(RPGClass.KC_BASE_SUMMONER, ctx.getString(R.string.knownClass_summoner));
+            knownClass.put(RPGClass.KC_BASE_VIGILANTE, ctx.getString(R.string.knownClass_vigilante));
+            knownClass.put(RPGClass.KC_BASE_WITCH, ctx.getString(R.string.knownClass_witch));
+            knownClass.put(RPGClass.KC_ALT_ANTIPALADIN, ctx.getString(R.string.knownClass_antipaladin));
+            knownClass.put(RPGClass.KC_ALT_NINJA, ctx.getString(R.string.knownClass_ninja));
+            knownClass.put(RPGClass.KC_ALT_SAMURAI, ctx.getString(R.string.knownClass_samurai));
+            knownClass.put(RPGClass.KC_HYB_ARCHANIST, ctx.getString(R.string.knownClass_archanist));
+            knownClass.put(RPGClass.KC_HYB_BLOODRAGER, ctx.getString(R.string.knownClass_bloodrager));
+            knownClass.put(RPGClass.KC_HYB_BRAWLER, ctx.getString(R.string.knownClass_brawler));
+            knownClass.put(RPGClass.KC_HYB_HUNTER, ctx.getString(R.string.knownClass_hunter));
+            knownClass.put(RPGClass.KC_HYB_INVESTIGATOR, ctx.getString(R.string.knownClass_investigator));
+            knownClass.put(RPGClass.KC_HYB_SHAMAN, ctx.getString(R.string.knownClass_shaman));
+            knownClass.put(RPGClass.KC_HYB_SKALD, ctx.getString(R.string.knownClass_skald));
+            knownClass.put(RPGClass.KC_HYB_SLAYER, ctx.getString(R.string.knownClass_slayer));
+            knownClass.put(RPGClass.KG_HYB_SWASHBUCKLER, ctx.getString(R.string.knownClass_swashbuckler));
+            knownClass.put(RPGClass.KC_HYB_WARPRIEST, ctx.getString(R.string.knownClass_warpriest));
+            knownClass.put(RPGClass.KC_UNC_BARBARIAN, ctx.getString(R.string.knownClass_unchainedBarbarian));
+            knownClass.put(RPGClass.KC_UNC_MONK, ctx.getString(R.string.knownClass_unchainedMonk));
+            knownClass.put(RPGClass.KC_UNC_ROGUE, ctx.getString(R.string.knownClass_unchainedRogue));
+            knownClass.put(RPGClass.KC_UNC_SUMMONER, ctx.getString(R.string.knownClass_unchainedSummoner));
+            knownClass.put(RPGClass.KC_OCC_KINETICIST, ctx.getString(R.string.knownClass_kineticist));
+            knownClass.put(RPGClass.KC_OCC_MEDIUM, ctx.getString(R.string.knownClass_medium));
+            knownClass.put(RPGClass.KC_OCC_MESMERIST, ctx.getString(R.string.knownClass_mesmerist));
+            knownClass.put(RPGClass.KC_OCC_OCCULTIST, ctx.getString(R.string.knownClass_occultist));
+            knownClass.put(RPGClass.KC_OCC_PSYCHIC, ctx.getString(R.string.knownClass_psychic));
+            knownClass.put(RPGClass.KC_OCC_SPIRITUALIST, ctx.getString(R.string.knownClass_spiritualist));
+            knownClass.put(RPGClass.KC_PRES_ADV_BATTLE_HERALD, ctx.getString(R.string.knownClass_battleHerald));
+            knownClass.put(RPGClass.KC_PRES_ADV_HOLY_VINDICATOR, ctx.getString(R.string.knownClass_holyVindicator));
+            knownClass.put(RPGClass.KC_PRES_ADV_HORIZON_WALKER, ctx.getString(R.string.knownClass_horizonWalker));
+            knownClass.put(RPGClass.KC_PRES_ADV_CHYMIST, ctx.getString(R.string.knownClass_chymist));
+            knownClass.put(RPGClass.KC_PRES_ADV_SPY, ctx.getString(R.string.knownClass_spy));
+            knownClass.put(RPGClass.KC_PRES_ADV_WARDEN, ctx.getString(R.string.knownClass_warden));
+            knownClass.put(RPGClass.KC_PRES_ADV_RAGE_PROPHET, ctx.getString(R.string.knownClass_rageProphet));
+            knownClass.put(RPGClass.KC_PRES_ADV_STALWART_DEFENDER, ctx.getString(R.string.knownClass_stalwartDefender));
+            knownClass.put(RPGClass.KC_PRES_CORE_ARCHER, ctx.getString(R.string.knownClass_archer));
+            knownClass.put(RPGClass.KC_PRES_CORE_TRICKSTER, ctx.getString(R.string.knownClass_trickster));
+            knownClass.put(RPGClass.KC_PRES_CORE_ASSASSIN, ctx.getString(R.string.knownClass_assassin));
+            knownClass.put(RPGClass.KC_PRES_CORE_DRAGON_DISCIPLE, ctx.getString(R.string.knownClass_dragonDisciple));
+            knownClass.put(RPGClass.KC_PRES_CORE_DUELIST, ctx.getString(R.string.knownClass_duelist));
+            knownClass.put(RPGClass.KC_PRES_CORE_ELDRITCH_KNIGHT, ctx.getString(R.string.knownClass_eldritchKnight));
+            knownClass.put(RPGClass.KC_PRES_CORE_LOREMASTER, ctx.getString(R.string.knownClass_loremaster));
+            knownClass.put(RPGClass.KC_PRES_CORE_MYSTIC_THEURGE, ctx.getString(R.string.knownClass_mysticTheurge));
+            knownClass.put(RPGClass.KC_PRES_CORE_PF_CHRONICLER, ctx.getString(R.string.knownClass_chronicler));
+            knownClass.put(RPGClass.KC_PRES_CORE_SHADOWDANCER, ctx.getString(R.string.knownClass_shadowdancer));
+            knownClass.put(RPGClass.KC_PRES_OPZ_AGENT_OF_THE_GRAVE, ctx.getString(R.string.knownClass_agentOfTheGrave));
+            knownClass.put(RPGClass.KC_PRES_OPZ_ARCANE_SAVANT, ctx.getString(R.string.knownClass_arcaneSavant));
+            knownClass.put(RPGClass.KC_PRES_OPZ_BLOODMAGE, ctx.getString(R.string.knownClass_bloodMage));
+            knownClass.put(RPGClass.KC_PRES_OPZ_BRIGHTNESS_SEEKER, ctx.getString(R.string.knownClass_brightnessSeeker));
+            knownClass.put(RPGClass.KC_PRES_OPZ_BROTHER_OF_THE_SEAL, ctx.getString(R.string.knownClass_brotherOfTheSeal));
+            knownClass.put(RPGClass.KC_PRES_OPZ_CELESTIAL_KNIGHT, ctx.getString(R.string.knownClass_celestialKnight));
+            knownClass.put(RPGClass.KC_PRES_OPZ_CHAMPION_OF_THE_ENLIGHTENED, ctx.getString(R.string.knownClass_championOfTheEnlighted));
+            knownClass.put(RPGClass.KC_PRES_OPZ_CHEVALIER, ctx.getString(R.string.knownClass_chevalier));
+            knownClass.put(RPGClass.KC_PRES_OPZ_COASTAL_PRIRATE, ctx.getString(R.string.knownClass_coastalPirate));
+            knownClass.put(RPGClass.KC_PRES_OPZ_COLLEGIATE_ARCANIST, ctx.getString(R.string.knownClass_collegiateArcanist));
+            knownClass.put(RPGClass.KC_PRES_OPZ_CRIMSON_ASSASSIN, ctx.getString(R.string.knownClass_crimsonAssassin));
+            knownClass.put(RPGClass.KC_PRES_OPZ_CYPHERMAGE, ctx.getString(R.string.knownClass_cyphermage));
+            knownClass.put(RPGClass.KC_PRES_OPZ_DAIVRAT, ctx.getString(R.string.knownClass_daivrat));
+            knownClass.put(RPGClass.KC_PRES_OPZ_DARK_DELVER, ctx.getString(R.string.knownClass_darkDelver));
+            knownClass.put(RPGClass.KC_PRES_OPZ_DARKFIRE_ADEPT, ctx.getString(R.string.knownClass_darkfireAdept));
+            knownClass.put(RPGClass.KC_PRES_OPZ_DEEP_SEA_PIRATE, ctx.getString(R.string.knownClass_deepSeaPirate));
+            knownClass.put(RPGClass.KC_PRES_OPZ_DEMONIAC, ctx.getString(R.string.knownClass_demoniac));
+            knownClass.put(RPGClass.KC_PRES_OPZ_DIABOLIST, ctx.getString(R.string.knownClass_diabolist));
+            knownClass.put(RPGClass.KC_PRES_OPZ_DISSIDENT_OF_DAWN, ctx.getString(R.string.knownClass_dissidentOfDawn));
+            knownClass.put(RPGClass.KC_PRES_OPZ_DIVINE_ASSESSOR, ctx.getString(R.string.knownClass_divineAssessor));
+            knownClass.put(RPGClass.KC_PRES_OPZ_DIVINE_SCION, ctx.getString(R.string.knownClass_divineScion));
+            knownClass.put(RPGClass.KC_PRES_OPZ_ENVOY_OF_BALANCE, ctx.getString(R.string.knownClass_envoyOfBalance));
+            knownClass.put(RPGClass.KC_PRES_OPZ_EVANGELIST, ctx.getString(R.string.knownClass_evangelist));
+            knownClass.put(RPGClass.KC_PRES_OPZ_EXALTED, ctx.getString(R.string.knownClass_exalted));
+            knownClass.put(RPGClass.KC_PRES_OPZ_FALSE_PRIEST, ctx.getString(R.string.knownClass_falsePriest));
+            knownClass.put(RPGClass.KC_PRES_OPZ_FIELD_AGENT, ctx.getString(R.string.knownClass_fieldAgent));
+            knownClass.put(RPGClass.KC_PRES_OPZ_FURIOUS_GUARDIAN, ctx.getString(R.string.knownClass_furiousGuardian));
+            knownClass.put(RPGClass.KC_PRES_OPZ_GENIE_BINDER, ctx.getString(R.string.knownClass_genieBinder));
+            knownClass.put(RPGClass.KC_PRES_OPZ_GOLDEN_LEGIONNAIRE, ctx.getString(R.string.knownClass_goldenLegionnaire));
+            knownClass.put(RPGClass.KC_PRES_OPZ_GRAND_MARSHAL, ctx.getString(R.string.knownClass_grandMarshal));
+            knownClass.put(RPGClass.KC_PRES_OPZ_GRAY_WARDEN, ctx.getString(R.string.knownClass_grayWarden));
+            knownClass.put(RPGClass.KC_PRES_OPZ_GREEN_FAITH_ACOLYTE, ctx.getString(R.string.knownClass_greenFaithAcolyte));
+            knownClass.put(RPGClass.KC_PRES_OPZ_GROUP_LEADER, ctx.getString(R.string.knownClass_groupLeader));
+            knownClass.put(RPGClass.KC_PRES_OPZ_GUILD_AGENT, ctx.getString(R.string.knownClass_guildAgent));
+            knownClass.put(RPGClass.KC_PRES_OPZ_GUILD_POISONER, ctx.getString(R.string.knownClass_poisoner));
+            knownClass.put(RPGClass.KC_PRES_OPZ_HALFLING_OPPORTUNIST, ctx.getString(R.string.knownClass_halflingOpportunist));
+            knownClass.put(RPGClass.KC_PRES_OPZ_HARROWER, ctx.getString(R.string.knownClass_harrower));
+            knownClass.put(RPGClass.KC_PRES_OPZ_HELL_KNIGHT_COMMANDER, ctx.getString(R.string.knownClass_hellKnightCommander));
+            knownClass.put(RPGClass.KC_PRES_OPZ_HELL_KNIGHT_ENFORCER, ctx.getString(R.string.knownClass_hellKnightEnforcer));
+            knownClass.put(RPGClass.KC_PRES_OPZ_INHERITORS_CRUSADER, ctx.getString(R.string.knownClass_inheritorsCrusader));
+            knownClass.put(RPGClass.KC_PRES_OPZ_JUSTICIAR, ctx.getString(R.string.knownClass_justiciar));
+            knownClass.put(RPGClass.KC_PRES_OPZ_LANTERN_BEARER, ctx.getString(R.string.knownClass_lanternBearer));
+            knownClass.put(RPGClass.KC_PRES_OPZ_LIBERATOR, ctx.getString(R.string.knownClass_liberator));
+            knownClass.put(RPGClass.KC_PRES_OPZ_LION_BLADE, ctx.getString(R.string.knownClass_lionBlade));
+            knownClass.put(RPGClass.KC_PRES_OPZ_LIVING_MONOLITH, ctx.getString(R.string.knownClass_livingMonolith));
+            knownClass.put(RPGClass.KC_PRES_OPZ_LOW_TEMPLAR, ctx.getString(R.string.knownClass_lowTemplar));
+            knownClass.put(RPGClass.KC_PRES_OPZ_MAGE_OF_THE_THIRD_EYE, ctx.getString(R.string.knownClass_mageOfTheThirdEye));
+            knownClass.put(RPGClass.KC_PRES_OPZ_MAMMOTH_RIDER, ctx.getString(R.string.knownClass_mammothRider));
+            knownClass.put(RPGClass.KC_PRES_OPZ_MASTER_OF_STORMS, ctx.getString(R.string.knownClass_masterOfStorms));
+            knownClass.put(RPGClass.KC_PRES_OPZ_MYSTERY_CULTIST, ctx.getString(R.string.knownClass_mysteryCultist));
+            knownClass.put(RPGClass.KC_PRES_OPZ_NATURAL_ALCHEMIST, ctx.getString(R.string.knownClass_naturalAlchemist));
+            knownClass.put(RPGClass.KC_PRES_OPZ_NOBLE_SCION, ctx.getString(R.string.knownClass_nobleScion));
+            knownClass.put(RPGClass.KC_PRES_OPZ_PAIN_TASTER, ctx.getString(R.string.knownClass_painTaster));
+            knownClass.put(RPGClass.KC_PRES_OPZ_PIT_FIGHTER, ctx.getString(R.string.knownClass_pitFighter));
+            knownClass.put(RPGClass.KC_PRES_OPZ_PLANES_WALKER, ctx.getString(R.string.knownClass_planesWalker));
+            knownClass.put(RPGClass.KC_PRES_OPZ_PURITY_LEGION_ENFORCER, ctx.getString(R.string.knownClass_purityLegionEnforcer));
+            knownClass.put(RPGClass.KC_PRES_OPZ_SANCTIFIED_PROPHET, ctx.getString(R.string.knownClass_sanctifiedProphet));
+            knownClass.put(RPGClass.KC_PRES_OPZ_SENTINEL, ctx.getString(R.string.knownClass_sentinel));
+            knownClass.put(RPGClass.KC_PRES_OPZ_SLEEPLESS_DETECTIVE, ctx.getString(R.string.knownClass_sleeplessDetective));
+            knownClass.put(RPGClass.KC_PRES_OPZ_SOUL_WARDEN, ctx.getString(R.string.knownClass_soulWarden));
+            knownClass.put(RPGClass.KC_PRES_OPZ_SOULEATER, ctx.getString(R.string.knownClass_souleater));
+            knownClass.put(RPGClass.KC_PRES_OPZ_SPHEREWALKER, ctx.getString(R.string.knownClass_spherewalker));
+            knownClass.put(RPGClass.KC_PRES_OPZ_STEEL_FALCON, ctx.getString(R.string.knownClass_steelFalcon));
+            knownClass.put(RPGClass.KC_PRES_OPZ_STUDENT_OF_WAR, ctx.getString(R.string.knownClass_studentOfWar));
+            knownClass.put(RPGClass.KC_PRES_OPZ_SUN_SEEKER, ctx.getString(R.string.knownClass_sunSeeker));
+            knownClass.put(RPGClass.KC_PRES_OPZ_SWORDLORD, ctx.getString(R.string.knownClass_swordlord));
+            knownClass.put(RPGClass.KC_PRES_OPZ_TATTOED_MYSTIC, ctx.getString(R.string.knownClass_tattoedMystic));
+            knownClass.put(RPGClass.KC_PRES_OPZ_TECHNOMANCER, ctx.getString(R.string.knownClass_technomancer));
+            knownClass.put(RPGClass.KC_PRES_OPZ_UMBRAL_AGENT, ctx.getString(R.string.knownClass_umbralAgent));
+            knownClass.put(RPGClass.KC_PRES_OPZ_VEILED_ILLUSIONIST, ctx.getString(R.string.knownClass_veiledIllusionist));
+            knownClass.put(RPGClass.KC_PRES_OPZ_WINTER_WITCH, ctx.getString(R.string.knownClass_winterWitch));
+            knownClass.put(RPGClass.KC_NPC_ADEPT, ctx.getString(R.string.knownClass_npc_adept));
+            knownClass.put(RPGClass.KC_NPC_ARISTOCRAT, ctx.getString(R.string.knownClass_npc_aristocrat));
+            knownClass.put(RPGClass.KC_NPC_COMMONER, ctx.getString(R.string.knownClass_npc_commoner));
+            knownClass.put(RPGClass.KC_NPC_EXPERT, ctx.getString(R.string.knownClass_npc_expert));
+            knownClass.put(RPGClass.KC_NPC_WARRIOR, ctx.getString(R.string.knownClass_npc_warrior));
+        }
+        final String match = knownClass.get(protobufEnum);
+        return match == null? knownClass.get(RPGClass.KC_INVALID) : match;
+    }
+
+    public static String levelAdvToString(int protobufEnum, Context ctx) {
+        // So little! We switch this.
+        switch(protobufEnum) {
+            case LevelAdvancement.LA_PF_FAST: return ctx.getString(R.string.levelAdv_fast);
+            case LevelAdvancement.LA_PF_MEDIUM: return ctx.getString(R.string.levelAdv_medium);
+            case LevelAdvancement.LA_PF_SLOW: return ctx.getString(R.string.levelAdv_slow);
+        }
+        return ctx.getString(R.string.levelAdv_invalid);
+    }
+
     private static HashMap<Integer, String> monRace, monSize, monType;
+    private static HashMap<Integer, String> knownClass;
     private static HashMap<Integer, String> align;
 }

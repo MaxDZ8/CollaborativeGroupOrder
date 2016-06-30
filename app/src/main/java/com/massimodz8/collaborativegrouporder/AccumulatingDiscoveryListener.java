@@ -112,7 +112,7 @@ public class AccumulatingDiscoveryListener implements NsdManager.DiscoveryListen
         callback = onTick;
         checker = new Timer("network publisher status check");
         checker.schedule(new TimerTask() {
-            int prevStatus =IDLE;
+            int prevStatus = IDLE;
             @Override
             public void run() {
                     int old = prevStatus;

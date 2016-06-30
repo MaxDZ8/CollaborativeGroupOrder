@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -32,9 +33,11 @@ import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.InternalStateService;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
+import com.massimodz8.collaborativegrouporder.ProtobufSupport;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
+import com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
@@ -139,7 +142,6 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     @Override
     protected void onResume() {
         super.onResume();
-        if(room.getBuildingPartyName() != null && room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) publishGroup();
 
         final TextInputLayout namein = (TextInputLayout) findViewById(R.id.npdsa_partyName);
         EditText sure = namein.getEditText();
@@ -151,8 +153,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
 
         if(room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
             sure.setText(room.generatedParty.name);
-            sure.clearFocus();
             sure.setEnabled(false);
+            sure.clearFocus();
+            advancementButtonLabel();
         }
         final TextView status = (TextView) findViewById(R.id.npdsa_status);
         room.onNewPublishStatus = new PublishAcceptHelper.NewPublishStatusCallback() {
@@ -211,6 +214,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 }
             }
         };
+        if(room.newPartyName != null && room.advancementPace != LevelAdvancement.LA_UNSPECIFIED) publishGroup();
     }
 
     @Override
@@ -379,14 +383,14 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
     }
 
     private void publishGroup() {
-        if(room.getPublishStatus() != PartyCreator.PUBLISHER_IDLE) return; // unlikely, as I disable trigger
+        if(room.building != null || room.getPublishStatus() != PartyCreator.PUBLISHER_IDLE) return; // unlikely, as I disable trigger
         final TextInputLayout til = (TextInputLayout) findViewById(R.id.npdsa_partyName);
         final EditText view = til.getEditText();
         if(view == null) return; // impossible
-        final String groupName = view.getText().toString().trim();
-        ArrayList<StartData.PartyOwnerData.Group> collisions = room.beginBuilding(groupName, getString(R.string.npdsa_unknownDeviceName));
-        if (groupName.isEmpty() || null != collisions) {
-            int msg = groupName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
+        room.newPartyName = view.getText().toString().trim();
+        ArrayList<StartData.PartyOwnerData.Group> collisions = room.beginBuilding(getString(R.string.npdsa_unknownDeviceName));
+        if (room.newPartyName.isEmpty() || null != collisions) {
+            int msg = room.newPartyName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setTitle(R.string.npdsa_badParty_title)
                     .setCancelable(false)
@@ -421,7 +425,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                     .show();
             return;
         }
-        room.beginPublishing(nsd, groupName, PartyCreator.PARTY_FORMING_SERVICE_TYPE);
+        room.beginPublishing(nsd, room.newPartyName, PartyCreator.PARTY_FORMING_SERVICE_TYPE);
         MaxUtils.beginDelayedTransition(this);
         view.setEnabled(false);
 
@@ -429,7 +433,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         final int resid = room.mode == PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING?
                 R.string.npdsa_notifyContentAdd :
                 R.string.npdsa_notifyContentNew;
-        Notification notification = state.buildNotification(groupName, getString(resid));
+        Notification notification = state.buildNotification(room.newPartyName, getString(resid));
         NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         nm.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, notification);
         state.notification = notification;
@@ -441,12 +445,46 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         findViewById(R.id.npdsa_deviceList).setVisibility(View.VISIBLE);
         Snackbar.make(findViewById(R.id.activityRoot), R.string.npdsa_waitingToTalk, Snackbar.LENGTH_SHORT).show();
         view.setEnabled(false);
+        findViewById(R.id.npdsa_levelAdvBtn).setEnabled(false);
+    }
+
+
+    public void setLevelAdv_callback(View unused) {
+        final int[] la = {
+                LevelAdvancement.LA_PF_FAST,
+                LevelAdvancement.LA_PF_MEDIUM,
+                LevelAdvancement.LA_PF_SLOW
+        };
+        final String[] name = {
+                getString(R.string.levelAdv_fast),
+                getString(R.string.levelAdv_medium),
+                getString(R.string.levelAdv_slow)
+        };
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.npdsa_levelAdv_dlgTitle)
+                .setSingleChoiceItems(name, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        room.advancementPace = la[which];
+                        advancementButtonLabel();
+                        dialog.dismiss();
+                        publishGroup();
+                    }
+                })
+                .show();
+    }
+
+    private void advancementButtonLabel() {
+        String adv = ProtobufSupport.levelAdvToString(room.advancementPace, this);
+        MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
+        ((Button)findViewById(R.id.npdsa_levelAdvBtn)).setText(String.format(getString(R.string.npdsa_levelAdvBtn_setFormat), adv));
     }
 
     // TextView.OnEditorActionListener vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        publishGroup();
+        if(room.advancementPace != LevelAdvancement.LA_UNSPECIFIED) publishGroup();
+        else setLevelAdv_callback(null);
         return true;
     }
     // TextView.OnEditorActionListener ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

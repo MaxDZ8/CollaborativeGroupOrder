@@ -15,8 +15,11 @@ public class PartyInfo {
      */
     public String[] options;
 
-    public PartyInfo(int version, String name) {
+    public final int advancementPace;
+
+    public PartyInfo(int version, String name, int advancementPace) {
         this.version = version;
         this.name = name;
+        this.advancementPace = advancementPace;
     }
 }

@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.Vector;
 
 /**
@@ -36,7 +36,7 @@ import java.util.Vector;
  * internally and being this designed to work with PartyJoinOrderService, it accumulates changes
  * leaving Activity (not guaranteed to exist at the time it's generated) to probe for results.
  */
-public abstract class PcAssignmentHelper {
+public class PcAssignmentHelper {
     public final StartData.PartyOwnerData.Group party;
 
     public interface OnBoundPcCallback {
@@ -47,37 +47,16 @@ public abstract class PcAssignmentHelper {
     public PcAssignmentHelper(StartData.PartyOwnerData.Group party, @Nullable JoinVerificator verifier) {
         this.party = party;
         this.verifier = verifier;
-        assignment = new ArrayList<>(party.party.length);
-        for (StartData.ActorDefinition ignored : party.party) assignment.add(null);
+        assignment = new int[party.party.length];
+        int initially = verifier != null? PlayingDevice.INVALID_ID : PlayingDevice.LOCAL_ID;
+        Arrays.fill(assignment, initially);
         if(verifier != null) mailman.start();
-        else {
-            for(int loop = 0; loop < assignment.size(); loop++) assignment.set(loop, LOCAL_BINDING);
-        }
-    }
-
-    public void pump(MessageChannel newConn) {
-        peers.add(new PlayingDevice(newConn));
-        netPump.pump(newConn);
-    }
-
-
-    public void pump(Pumper.MessagePumpingThread worker) {
-        peers.add(new PlayingDevice(worker.getSource()));
-        netPump.pump(worker);
-    }
-
-    public int getNumIdentifiedClients() {
-        int count = 0;
-        for (PlayingDevice client : peers) {
-            if(client.pipe != null & !client.isAnonymous()) count++;
-        }
-        return count;
     }
 
     public ArrayList<StartData.ActorDefinition> getUnboundedPcs() {
         ArrayList<StartData.ActorDefinition> list = new ArrayList<>();
         for(int loop = 0; loop < party.party.length; loop++) {
-            if(assignment.get(loop) != null) continue;
+            if(assignment[loop] != PlayingDevice.INVALID_ID) continue;
             list.add(party.party[loop]);
         }
         return list;
@@ -86,7 +65,7 @@ public abstract class PcAssignmentHelper {
     public int getNumUnboundedPcs() {
         int count = 0;
         for(int loop = 0; loop < party.party.length; loop++) {
-            if(assignment.get(loop) != null) continue;
+            if(assignment[loop] != PlayingDevice.INVALID_ID) continue;
             count++;
         }
         return count;
@@ -98,9 +77,9 @@ public abstract class PcAssignmentHelper {
             if(actor == party.party[match]) break;
         }
         if(match == party.party.length) return;
-        final Integer ownerIndex = assignment.get(match);
-        if(ownerIndex != null && ownerIndex == LOCAL_BINDING) return;
-        assignment.set(match, LOCAL_BINDING);
+        final int ownerIndex = assignment[match];
+        if(ownerIndex == PlayingDevice.LOCAL_ID) return;
+        assignment[match] = PlayingDevice.LOCAL_ID;
         Network.CharacterOwnership rebound = new Network.CharacterOwnership();
         rebound.type = Network.CharacterOwnership.BOUND;
         rebound.ticket = nextValidRequest;
@@ -114,10 +93,11 @@ public abstract class PcAssignmentHelper {
     }
 
     public MessageChannel getMessageChannelByPeerKey(int id) {
-        if(id < assignment.size()) {
-            final Integer ownerIndex = assignment.get(id);
-            if(ownerIndex == null || ownerIndex == LOCAL_BINDING) return null;
-            return peers.get(ownerIndex).pipe;
+        if(id >= assignment.length) return null;
+        final int ownerIndex = assignment[id];
+        if(ownerIndex == PlayingDevice.LOCAL_ID || ownerIndex == PlayingDevice.INVALID_ID) return null;
+        for (PlayingDevice dev : peers) {
+            if(dev.keyIndex == ownerIndex) return dev.pipe;
         }
         return null;
     }
@@ -145,7 +125,7 @@ public abstract class PcAssignmentHelper {
 
     private final SecureRandom randomizer = new SecureRandom();
     private final JoinVerificator verifier;
-    ArrayList<Integer> assignment;
+    final int[] assignment;
     private int nextValidRequest;
     private Handler handler = new MyHandler(this);
     Pumper netPump = new Pumper(handler, MSG_DISCONNECTED, MSG_DETACHED)
@@ -187,16 +167,15 @@ public abstract class PcAssignmentHelper {
         public int keyIndex = ANON; /// if isRemote, index of the matched device key --> bound to remote, otherwise check specials
         public Vector<Exception> errors = new Vector<>();
         public boolean movedToBattlePumper; // if this is set, device is already moved to battle pumper, somewhere else.
-        public @ActorId int activeActor; // peerKey > 0 of active actor, otherwise -1
 
         /// Using null will create this in 'disconnected' mode. Does not make sense to me but w/e.
-        public PlayingDevice(@Nullable MessageChannel pipe) {
-            this.pipe = pipe;
-        }
+        public PlayingDevice(@Nullable MessageChannel pipe) { this.pipe = pipe; }
 
         public boolean isAnonymous() { return keyIndex == ANON; }
 
         private static final int ANON = -1;
+        public static final int INVALID_ID = -1;
+        public static final int LOCAL_ID = -2;
     }
 
 
@@ -243,7 +222,6 @@ public abstract class PcAssignmentHelper {
 
     /// Caution. This currently must match PartyCreationService.closeGroup
     public static final int DOORMAT_BYTES = 32;
-    public static final int LOCAL_BINDING = -1;
 
     private synchronized byte[] random(int count) {
         if(count < 0) count = -count;
@@ -259,23 +237,15 @@ public abstract class PcAssignmentHelper {
         return null;
     }
 
-    private PlayingDevice getDeviceByKeyIndex(int index) {
-        for (PlayingDevice check : peers) {
-            if(check.keyIndex == index) return check;
-        }
-        return null;
-    }
-
-    protected abstract StartData.ActorDefinition getActorData(int unique);
-
     private void disconnected(final MessageChannel goner) {
         PlayingDevice dev = getDevice(goner);
         if(null == dev) return; // impossible
 
-        netPump.forget(goner);
+        final Pumper.MessagePumpingThread worker = netPump.move(goner);
         new Thread() {
             @Override
             public void run() {
+                worker.interrupt();
                 try {
                     goner.socket.close();
                 } catch (IOException e) {
@@ -297,6 +267,7 @@ public abstract class PcAssignmentHelper {
         send.name = party.name;
         send.version = MainMenuActivity.NETWORK_VERSION;
         send.doormat = dev.doormat;
+        send.advancementPace = party.advancementPace;
         mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.GROUP_INFO, send, null));
     }
 
@@ -312,10 +283,11 @@ public abstract class PcAssignmentHelper {
             // Most likely using an absolete key -> kicked from party!
             // Very odd but why not? Better to just ignore and disconnect the guy.
             peers.remove(dev);
-            netPump.forget(origin);
+            final Pumper.MessagePumpingThread goner = netPump.move(origin);
             new Thread() {
                 @Override
                 public void run() {
+                    goner.interrupt();
                     try {
                         origin.socket.close();
                     } catch (IOException e) {
@@ -340,8 +312,8 @@ public abstract class PcAssignmentHelper {
         if(dev.pipe != null) mailman.out.add(new SendRequest(dev.pipe, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, stream, null));
         // Also send a notification for each character which is already assigned to someone else.
         final ArrayList<Integer> bound = new ArrayList<>(party.party.length);
-        for(int loop = 0; loop < assignment.size(); loop++) {
-            if(assignment.get(loop) != null) bound.add(loop);
+        for(int loop = 0; loop < assignment.length; loop++) {
+            if(assignment[loop] != PlayingDevice.INVALID_ID) bound.add(loop);
         }
         final Network.CharacterOwnership[] initial = new Network.CharacterOwnership[bound.size()];
         for (int loop = 0; loop < initial.length; loop++) {
@@ -360,8 +332,8 @@ public abstract class PcAssignmentHelper {
         res.initiativeBonus = currently.initBonus;
         res.healthPoints = currently.healthPoints;
         res.experience = actor.experience;
-        res.level = actor.level;
         res.peerKey = id;
+        res.career = actor.stats[0].career;
         return res;
     }
 
@@ -375,22 +347,28 @@ public abstract class PcAssignmentHelper {
             if(requester.pipe != null)  mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
             return;
         }
-        Integer currKeyIndex = assignment.get(payload.character);
-        if(currKeyIndex != null && currKeyIndex == LOCAL_BINDING) { // bound to me, silently rejected as mapping to me is a very strong action
+        int current = assignment[payload.character];
+        if(current == PlayingDevice.LOCAL_ID) { // bound to me, silently rejected as mapping to me is a very strong action
             payload.type = Network.CharacterOwnership.REJECTED;
             if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
             return;
         }
         // taking ownership from AVAIL is silently accepted as common.
         // same for giving ownership away, cannot force someone to play
-        final PlayingDevice currOwner = currKeyIndex != null ? getDeviceByKeyIndex(currKeyIndex) : null;
-        if(currKeyIndex == null || currOwner == requester) {
-            Integer newMapping = currKeyIndex == null? requester.keyIndex : null;
-            assignment.set(payload.character, newMapping);
+        PlayingDevice currOwner = null;
+        for (PlayingDevice dev : peers) {
+            if(dev.keyIndex == current) {
+                currOwner = dev;
+                break;
+            }
+        }
+        if(current == PlayingDevice.INVALID_ID || currOwner == requester) {
+            int newMapping = current == PlayingDevice.INVALID_ID? requester.keyIndex : PlayingDevice.INVALID_ID;
+            assignment[payload.character] = newMapping;
             payload.type = Network.CharacterOwnership.ACCEPTED;
             payload.ticket = ++nextValidRequest;
             if(requester.pipe != null) mailman.out.add(new SendRequest(requester.pipe, ProtoBufferEnum.CHARACTER_OWNERSHIP, payload, null));
-            int type = newMapping == null? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
+            int type = newMapping == PlayingDevice.INVALID_ID? Network.CharacterOwnership.AVAIL : Network.CharacterOwnership.BOUND;
             sendAvailability(type, payload.character, origin, nextValidRequest);
             if(unboundPcAdapter != null) unboundPcAdapter.notifyDataSetChanged();
             if(authDeviceAdapter != null) authDeviceAdapter.notifyDataSetChanged();
@@ -437,6 +415,7 @@ public abstract class PcAssignmentHelper {
         AuthDeviceAdapter(@NonNull AuthDeviceHolderFactoryBinder<VH> factory, @NonNull PcAssignmentHelper owner) {
             this.factory = factory;
             this.owner = owner;
+            setHasStableIds(true);
         }
 
         @Override
@@ -458,10 +437,8 @@ public abstract class PcAssignmentHelper {
             }
             if(null == dev) return; // impossible
             ArrayList<Integer> charList = null;
-            for (int loop = 0; loop < owner.assignment.size(); loop++) {
-                Integer match = owner.assignment.get(loop);
-                if(null == match || match == LOCAL_BINDING) continue;
-                if(dev == owner.getDeviceByKeyIndex(match)) {
+            for (int loop = 0; loop < owner.assignment.length; loop++) {
+                if(dev.keyIndex == owner.assignment[loop]) {
                     if(charList == null) charList = new ArrayList<>();
                     charList.add(loop);
                 }
@@ -477,6 +454,16 @@ public abstract class PcAssignmentHelper {
                 count++;
             }
             return count;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            for (PlayingDevice dev : owner.peers) {
+                if(dev.isAnonymous()) continue;
+                if(position == 0) return dev.keyIndex;
+                position--;
+            }
+            return RecyclerView.NO_ID;
         }
     }
     public AuthDeviceAdapter authDeviceAdapter;
@@ -507,8 +494,8 @@ public abstract class PcAssignmentHelper {
 
         @Override
         public long getItemId(int position) {
-            for(int scan = 0; scan < owner.assignment.size(); scan++) {
-                if(null != owner.assignment.get(scan)) continue;
+            for(int scan = 0; scan < owner.assignment.length; scan++) {
+                if(PlayingDevice.INVALID_ID != owner.assignment[scan]) continue;
                 if(0 == position) return scan;
                 position--;
             }
@@ -518,8 +505,8 @@ public abstract class PcAssignmentHelper {
         @Override
         public void onBindViewHolder(VH holder, int position) {
             int slot;
-            for(slot = 0; slot < owner.assignment.size(); slot++) {
-                if(null != owner.assignment.get(slot)) continue;
+            for(slot = 0; slot < owner.assignment.length; slot++) {
+                if(PlayingDevice.INVALID_ID != owner.assignment[slot]) continue;
                 if(0 == position) break;
                 position--;
             }
@@ -529,8 +516,8 @@ public abstract class PcAssignmentHelper {
         @Override
         public int getItemCount() {
             int count = 0;
-            for (Integer dev : owner.assignment) {
-                if(null == dev) count++;
+            for (int dev : owner.assignment) {
+                if(PlayingDevice.INVALID_ID == dev) count++;
             }
             return count;
         }

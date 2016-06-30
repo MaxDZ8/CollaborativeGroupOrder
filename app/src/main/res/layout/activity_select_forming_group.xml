@@ -8,6 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".client.SelectFormingGroupActivity"
+    android:id="@+id/activityRoot"
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
@@ -17,7 +18,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@string/sfga_lookingForParties"
         android:id="@+id/sfga_lookingForGroups"
-        android:visibility="gone"
+        android:visibility="visible"
         android:gravity="center_horizontal" />
 
     <ProgressBar
@@ -27,7 +28,7 @@
         android:id="@+id/selectFormingGroupActivity_progressBar"
         android:indeterminate="true"
         android:indeterminateOnly="false"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/selectFormingGroupActivity_groupList"
@@ -44,23 +45,6 @@
         android:text="@string/sfga_confirmInstructions"
         android:id="@+id/sfga_confirmInstructions"
         android:gravity="center_horizontal"
-        android:visibility="gone" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@string/sfga_explicitConnectionInstructions"
-        android:id="@+id/sfga_explicitConnectionInstructions"
-        android:visibility="gone"
-        android:gravity="center_horizontal" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sfga_startExplicitConnection"
-        android:id="@+id/selectFormingGroupActivity_startExplicitConnection"
-        android:onClick="startExplicitConnectionActivity_callback"
         android:visibility="gone" />
 
 </LinearLayout>

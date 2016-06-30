@@ -1,20 +1,17 @@
-package com.massimodz8.collaborativegrouporder.master;
+package com.massimodz8.collaborativegrouporder;
 
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-
-import java.io.IOException;
 
 /**
  * Created by Massimo on 20/06/2016.
  * Wait until receiving a certain amount of messages, then call the provided function.
  */
-class LatchingHandler extends Handler {
-    final Runnable ticker;
+public class LatchingHandler extends Handler {
+    public final Runnable ticker;
 
-    LatchingHandler(int expect, @NonNull Runnable latched) {
+    public LatchingHandler(int expect, @NonNull Runnable latched) {
         this.expect = expect;
         this.latched = latched;
         ticker = new Runnable() {

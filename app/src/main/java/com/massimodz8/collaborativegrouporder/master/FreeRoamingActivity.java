@@ -21,17 +21,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.google.protobuf.nano.Timestamp;
 import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
+import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
+import com.massimodz8.collaborativegrouporder.LatchingHandler;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
+import com.massimodz8.collaborativegrouporder.MyDialogsFactory;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.SendRequest;
+import com.massimodz8.collaborativegrouporder.SpawnHelper;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
@@ -138,6 +143,11 @@ public class FreeRoamingActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         lister.playState = game.session;
+        game = RunningServiceHandles.getInstance().play;
+        levelupCallback = game.onActorLeveled.put(new Runnable() {
+            @Override
+            public void run() { charUpgrade(); }
+        });
         refresh();
     }
 
@@ -149,6 +159,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 attemptBattleStart();
             }
         };
+        charUpgrade();
         Session.Suspended stats = game.session.stats;
         HashMap<Integer, Network.ActorState> remember = new HashMap<>(); // deserialized id -> real structure with new id.
         for (Network.ActorState real : game.session.existByDef) remember.put(real.peerKey, real);
@@ -189,7 +200,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 battle.interrupted.push(remember.get(orig).peerKey);
             }
             game.pushBattleOrder();
-            for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
+            for(int id = 0; id < game.assignmentHelper.assignment.length; id++) game.pushKnownActorState(id);
             // Note: this is an extra. We cannot use INITIATIVE roll to signal battle start so...
             Network.TurnControl notifyRound = new Network.TurnControl();
             notifyRound.type = Network.TurnControl.T_BATTLE_ROUND;
@@ -220,24 +231,30 @@ public class FreeRoamingActivity extends AppCompatActivity {
             game.session.restoreNotified = true;
         }
         int numActors = lister.getItemCount();
-        if(SpawnMonsterActivity.found != null && SpawnMonsterActivity.found.size() > 0) {
-            for (Network.ActorState got : SpawnMonsterActivity.found) {
+        final SpawnHelper search = RunningServiceHandles.getInstance().search;
+        if(search.spawn != null && search.spawn.size() > 0) {
+            for (Network.ActorState got : search.spawn) {
                 got.peerKey = game.nextActorId++;
                 game.session.add(got);
                 game.session.willFight(got.peerKey, true);
             }
-            lister.notifyItemRangeInserted(numActors, SpawnMonsterActivity.found.size());
-            SpawnMonsterActivity.found = null;
+            lister.notifyItemRangeInserted(numActors, search.spawn.size());
         }
+        search.clear();
         findViewById(R.id.fab).setVisibility(game.session.battleState == null? View.VISIBLE : View.GONE);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if(game != null) game.onRollReceived = null;
+        if(game != null) {
+            game.onRollReceived = null;
+            game.onActorLeveled.remove(levelupCallback);
+        }
         if(waiting != null) waiting.dlg.dismiss();
     }
+
+    int levelupCallback;
 
 
     @Override
@@ -336,7 +353,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         });
         game.session.battleState = new BattleHelper(order);
         game.pushBattleOrder();
-        for(int id = 0; id < game.assignmentHelper.assignment.size(); id++) game.pushKnownActorState(id);
+        for(int id = 0; id < game.assignmentHelper.assignment.length; id++) game.pushKnownActorState(id);
 
         game.session.initiatives = null;
         startActivityForResult(new Intent(this, BattleActivity.class), REQUEST_BATTLE);
@@ -358,6 +375,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
             case REQUEST_BATTLE: {
                 switch(resultCode) {
                     case BattleActivity.RESULT_OK_AWARD: {
+                        game.session.levelup = new ArrayList<>();
                         startActivityForResult(new Intent(this, AwardExperienceActivity.class), REQUEST_AWARD_EXPERIENCE);
                         break;
                     }
@@ -579,5 +597,127 @@ public class FreeRoamingActivity extends AppCompatActivity {
             }
             refresh();
         }
+    }
+
+    private void charUpgrade() {
+        final HashMap<Integer, Network.PlayingCharacterDefinition> tickets = game.upgradeTickets;
+        if(tickets.isEmpty()) return;
+        Network.PlayingCharacterDefinition match = null;
+        for (Map.Entry<Integer, Network.PlayingCharacterDefinition> el : tickets.entrySet()) {
+            int peerkey = el.getValue().peerKey;
+            if(peerkey >= game.assignmentHelper.assignment.length) continue;
+            if(game.assignmentHelper.assignment[peerkey] == PcAssignmentHelper.PlayingDevice.LOCAL_ID) {
+                match = el.getValue();
+                break;
+            }
+        }
+        if(null != match) {
+            final int key = match.redefine, peerKey = match.peerKey;
+            final BuildingPlayingCharacter currently = new BuildingPlayingCharacter();
+            final StartData.ActorDefinition nominal = game.getPartyOwnerData().party[match.peerKey];
+            currently.name = nominal.name;
+            currently.initiativeBonus = nominal.stats[0].initBonus;
+            currently.fullHealth = nominal.stats[0].healthPoints;
+            currently.experience = match.experience;
+            MyDialogsFactory.showActorDefinitionInput(this, new MyDialogsFactory.ActorProposal() {
+                @Override
+                public void onInputCompleted(BuildingPlayingCharacter pc) {
+                    tickets.remove(key);
+                    // upgrade my runtime state.
+                    final Network.ActorState as = game.session.getActorById(peerKey);
+                    as.initiativeBonus = pc.initiativeBonus;
+                    as.maxHP = pc.fullHealth;
+                    // Syncing with reuse... is this smart or ugly?
+                    onActivityResult(REQUEST_AWARD_EXPERIENCE, RESULT_OK, null);
+                    final Runnable call = game.onActorLeveled.get();
+                    if (null != call) call.run();
+                }
+            }, currently, game.getPartyOwnerData().advancementPace);
+            return;
+        }
+        // Ok, let's scan again and deal with remotely assigned actors this time.
+        for (Map.Entry<Integer, Network.PlayingCharacterDefinition> el : tickets.entrySet()) {
+            int peerKey = el.getValue().peerKey;
+            if(peerKey >= game.assignmentHelper.assignment.length) continue;
+            if(game.assignmentHelper.assignment[peerKey] == PcAssignmentHelper.PlayingDevice.LOCAL_ID) continue;
+            if(game.assignmentHelper.assignment[peerKey] == PcAssignmentHelper.PlayingDevice.INVALID_ID) continue;
+            Network.PlayingCharacterDefinition prop = el.getValue();
+            if(null != prop && prop.name != null) { // null name marks 'not received yet'
+                match = prop;
+                break;
+            }
+        }
+        if(null == match) return; // what? This should be impossible at this point
+        final BuildingPlayingCharacter currently = new BuildingPlayingCharacter();
+        final StartData.ActorDefinition nominal = game.getPartyOwnerData().party[match.peerKey];
+        currently.name = nominal.name;
+        currently.initiativeBonus = nominal.stats[0].initBonus;
+        currently.fullHealth = nominal.stats[0].healthPoints;
+        currently.experience = match.experience;
+        final BuildingPlayingCharacter proposed = new BuildingPlayingCharacter();
+        proposed.name = match.name;
+        proposed.initiativeBonus = match.initiativeBonus;
+        proposed.fullHealth = match.healthPoints;
+        proposed.experience = match.experience;
+        byte[] buff = new byte[Math.max(nominal.stats[0].career.getSerializedSize(), match.career.getSerializedSize())];
+        try {
+            nominal.stats[0].career.writeTo(CodedOutputByteBufferNano.newInstance(buff));
+            currently.lastLevelClass.mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+            match.career.writeTo(CodedOutputByteBufferNano.newInstance(buff));
+            proposed.lastLevelClass.mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+        } catch (IOException e) {
+            // impossible in this context
+        }
+        final Network.PlayingCharacterDefinition fixed = match;
+        MyDialogsFactory.showActorComparison(this, currently, proposed, new MyDialogsFactory.ApprovalListener() {
+            @Override
+            public void approval(boolean status) {
+                MessageChannel dst = game.assignmentHelper.getMessageChannelByPeerKey(fixed.peerKey);
+                if(null != dst) {
+                    Network.GroupFormed msg = new Network.GroupFormed();
+                    msg.peerKey = fixed.peerKey;
+                    msg.accepted = status;
+                    game.assignmentHelper.mailman.out.add(new SendRequest(dst, ProtoBufferEnum.GROUP_FORMED, msg, null));
+                }
+                if(status) {
+                    tickets.remove(fixed.redefine);
+                    final StartData.ActorDefinition modify;
+                    if(fixed.peerKey < game.getPartyOwnerData().party.length) modify = game.getPartyOwnerData().party[fixed.peerKey];
+                    else modify = game.getPartyOwnerData().npcs[fixed.peerKey];
+                    StartData.ActorStatistics[] prev = modify.stats;
+                    modify.stats = new StartData.ActorStatistics[prev.length + 1];
+                    System.arraycopy(prev, 0, modify.stats, 1, prev.length);
+                    final byte[] buff = new byte[prev[0].getSerializedSize()];
+                    CodedOutputByteBufferNano out = CodedOutputByteBufferNano.newInstance(buff);
+                    try {
+                        prev[0].writeTo(out);
+                    } catch (IOException e) {
+                        // impossible in this context
+                    }
+                    modify.stats[0] = new StartData.ActorStatistics();
+                    try {
+                        modify.stats[0].mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+                    } catch (IOException e) {
+                        // impossible in this context
+                    }
+                    modify.stats[0].healthPoints = proposed.fullHealth;
+                    modify.stats[0].initBonus = proposed.initiativeBonus;
+                    modify.experience = proposed.experience;
+                    modify.name = proposed.name;
+                    Network.ActorState live = game.session.getActorById(fixed.peerKey);
+                    live.maxHP = proposed.fullHealth;
+                    live.initiativeBonus = proposed.initiativeBonus;
+                    live.experience = proposed.experience;
+                    live.name = proposed.name;
+                    // Syncing with reuse... is this smart or ugly?
+                    onActivityResult(REQUEST_AWARD_EXPERIENCE, RESULT_OK, null);
+                }
+                else {
+                    fixed.name = null;
+                }
+                final Runnable call = game.onActorLeveled.get();
+                if (null != call) call.run();
+            }
+        });
     }
 }

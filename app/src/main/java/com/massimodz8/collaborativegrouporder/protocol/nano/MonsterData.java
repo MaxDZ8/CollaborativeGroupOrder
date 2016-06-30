@@ -520,12 +520,8 @@ public interface MonsterData {
 
     // enum TagType
     public static final int TT_INVALID = 0;
-    public static final int TT_SUBTYPE = 1;
     public static final int TT_AUGMENTING = 2;
-    public static final int TT_RACE = 3;
-    public static final int TT_EXTRA_TEMPLATE = 4;
-    public static final int TT_CONDITIONAL_INITIATIVE = 5;
-    public static final int TT_EXTRA_METADATA = 6;
+    public static final int TT_EXTRA_METADATA = 5;
 
     // enum KnownTemplate
     public static final int KT_INVALID = 0;
@@ -574,6 +570,15 @@ public interface MonsterData {
       // repeated .collaborativeGroupOrder.Monster.Tag tags = 8;
       public com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.Tag[] tags;
 
+      // optional .collaborativeGroupOrder.Race race = 9;
+      public int race;
+
+      // repeated .collaborativeGroupOrder.MonsterType subTypes = 10;
+      public int[] subTypes;
+
+      // repeated .collaborativeGroupOrder.ExtraTemplate extraTemplates = 11;
+      public int[] extraTemplates;
+
       public Header() {
         clear();
       }
@@ -587,6 +592,9 @@ public interface MonsterData {
         initiative = 0;
         example = "";
         tags = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.Tag.emptyArray();
+        race = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_RACE;
+        subTypes = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
+        extraTemplates = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
         cachedSize = -1;
         return this;
       }
@@ -628,6 +636,19 @@ public interface MonsterData {
             if (element != null) {
               output.writeMessage(8, element);
             }
+          }
+        }
+        if (this.race != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_RACE) {
+          output.writeInt32(9, this.race);
+        }
+        if (this.subTypes != null && this.subTypes.length > 0) {
+          for (int i = 0; i < this.subTypes.length; i++) {
+            output.writeInt32(10, this.subTypes[i]);
+          }
+        }
+        if (this.extraTemplates != null && this.extraTemplates.length > 0) {
+          for (int i = 0; i < this.extraTemplates.length; i++) {
+            output.writeInt32(11, this.extraTemplates[i]);
           }
         }
         super.writeTo(output);
@@ -688,6 +709,30 @@ public interface MonsterData {
                 .computeMessageSize(8, element);
             }
           }
+        }
+        if (this.race != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_RACE) {
+          size += com.google.protobuf.nano.CodedOutputByteBufferNano
+            .computeInt32Size(9, this.race);
+        }
+        if (this.subTypes != null && this.subTypes.length > 0) {
+          int dataSize = 0;
+          for (int i = 0; i < this.subTypes.length; i++) {
+            int element = this.subTypes[i];
+            dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+                .computeInt32SizeNoTag(element);
+          }
+          size += dataSize;
+          size += 1 * this.subTypes.length;
+        }
+        if (this.extraTemplates != null && this.extraTemplates.length > 0) {
+          int dataSize = 0;
+          for (int i = 0; i < this.extraTemplates.length; i++) {
+            int element = this.extraTemplates[i];
+            dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
+                .computeInt32SizeNoTag(element);
+          }
+          size += dataSize;
+          size += 1 * this.extraTemplates.length;
         }
         return size;
       }
@@ -989,6 +1034,541 @@ public interface MonsterData {
               this.tags = newArray;
               break;
             }
+            case 72: {
+              int value = input.readInt32();
+              switch (value) {
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_RACE:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DWARF:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ELF:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GNOME:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HALF_ORC:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HALFLING:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HUMAN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.AASIMAR:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CATFOLK:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DHAMPIR:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DROW:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.FETCHLING:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GOBLIN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HOBGOBLIN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.IFRIT:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.KOBOLD:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ORC:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OREAD:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.RATFOLK:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SYLPH:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.TENGU:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.TIEFLING:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.UNDINE:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GNOLL:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.LIZARDFOLK:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MONKEY_GOBLIN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SKINWALKER:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.TRIAXIAN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ANDROID:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GATHLAIN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GHORAN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.KASATHA:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.LASHUNTA:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHABTI:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SYRINX:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.WYRWOOD:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.WYVARAN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CENTAUR:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OGRE:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHOBHAD:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.TROX:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DRIDER:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GARGOYLE:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CHANGELING:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DUERGAR:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GILLMEN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GRIPPLI:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.KITSUNE:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MERFOLK:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.NAGAJI:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SAMSARAN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.STRIX:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SULI:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SVIRFNEBLIN:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.VANARA:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.VISHKANYA:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.WAYANG:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.AQUATIC_ELF:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ASTMOI:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CALIGNI:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DEEP_ONE_HYBRID:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GANZI:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.KURU:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MANAVRI:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ORANG__PENDAK:
+                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.REPTOID:
+                  this.race = value;
+                  break;
+              }
+              break;
+            }
+            case 80: {
+              int length = com.google.protobuf.nano.WireFormatNano
+                  .getRepeatedFieldArrayLength(input, 80);
+              int[] validValues = new int[length];
+              int validCount = 0;
+              for (int i = 0; i < length; i++) {
+                if (i != 0) { // tag for first value already consumed.
+                  input.readTag();
+                }
+                int value = input.readInt32();
+                switch (value) {
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ABERRATION:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ANIMAL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CONSTRUCT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DRAGON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.FEY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HUMANOID:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MAGICAL_BEAST:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MONSTROUS_HUMANOID:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OOZE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OUTSIDER:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.PLANT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.UNDEAD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.VERMIN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ACID:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ADLET:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AEON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AGATHION:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AIR:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AMPHIBIOUS:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ANGEL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AQUATIC:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ARCHON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ASURA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AZATA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_BEHEMOTH:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_BOGGARD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CATFOLK:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CHAOTIC:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CHARAU__KA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CLOCKWORK:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_COLD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_COLOSSUS:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DAEMON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DARK_FOLK:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEEP_ONE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEMODAND:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEMON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DERRO:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEVIL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DIV:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DWARF:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EARTH:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELECTRICITY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELEMENTAL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELF:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EVIL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EXTRAPLANAR:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FEYBLOOD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FIRE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GIANT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GNOLL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GNOME:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOBLIN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOBLINOID:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GODSPAWN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOOD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GRAVITY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GREAT_OLD_ONE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HALFLING:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HERALD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HORDE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HUMAN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HUMANOID:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_INCORPOREAL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_INEVITABLE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KAIJU:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KAMI:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KASATHA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KITSUNE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KUAH__LIJ:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KYTON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_LAWFUL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_LESHY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_MYTHIC:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_NATIVE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_NIGHTSHADE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_OGREN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_OGRILLON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ONI:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ORC:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PROTEAN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PSYCHOPOMP:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_QLIPPOTH:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_RAKSHASA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_RATFOLK:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_REPTILIAN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ROBOT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SAMSARAN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SASQUATCH:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SHAPECHANGER:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SKULK:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_STORMWARDEN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SWARM:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TABAXI:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TENGU:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TIME:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TROOP:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_UDAEUS:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_UNBREATHING:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VANARA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VAPOR:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VISHKANYA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_WATER:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_WAYANG:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FUNGUS:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PSIONIC:
+                    validValues[validCount++] = value;
+                    break;
+                }
+              }
+              if (validCount != 0) {
+                int i = this.subTypes == null ? 0 : this.subTypes.length;
+                if (i == 0 && validCount == validValues.length) {
+                  this.subTypes = validValues;
+                } else {
+                  int[] newArray = new int[i + validCount];
+                  if (i != 0) {
+                    java.lang.System.arraycopy(this.subTypes, 0, newArray, 0, i);
+                  }
+                  java.lang.System.arraycopy(validValues, 0, newArray, i, validCount);
+                  this.subTypes = newArray;
+                }
+              }
+              break;
+            }
+            case 82: {
+              int bytes = input.readRawVarint32();
+              int limit = input.pushLimit(bytes);
+              // First pass to compute array length.
+              int arrayLength = 0;
+              int startPos = input.getPosition();
+              while (input.getBytesUntilLimit() > 0) {
+                switch (input.readInt32()) {
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ABERRATION:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ANIMAL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CONSTRUCT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DRAGON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.FEY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HUMANOID:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MAGICAL_BEAST:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MONSTROUS_HUMANOID:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OOZE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OUTSIDER:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.PLANT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.UNDEAD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.VERMIN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ACID:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ADLET:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AEON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AGATHION:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AIR:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AMPHIBIOUS:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ANGEL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AQUATIC:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ARCHON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ASURA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AZATA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_BEHEMOTH:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_BOGGARD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CATFOLK:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CHAOTIC:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CHARAU__KA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CLOCKWORK:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_COLD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_COLOSSUS:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DAEMON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DARK_FOLK:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEEP_ONE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEMODAND:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEMON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DERRO:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEVIL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DIV:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DWARF:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EARTH:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELECTRICITY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELEMENTAL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELF:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EVIL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EXTRAPLANAR:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FEYBLOOD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FIRE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GIANT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GNOLL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GNOME:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOBLIN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOBLINOID:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GODSPAWN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOOD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GRAVITY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GREAT_OLD_ONE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HALFLING:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HERALD:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HORDE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HUMAN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HUMANOID:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_INCORPOREAL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_INEVITABLE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KAIJU:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KAMI:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KASATHA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KITSUNE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KUAH__LIJ:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KYTON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_LAWFUL:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_LESHY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_MYTHIC:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_NATIVE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_NIGHTSHADE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_OGREN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_OGRILLON:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ONI:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ORC:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PROTEAN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PSYCHOPOMP:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_QLIPPOTH:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_RAKSHASA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_RATFOLK:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_REPTILIAN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ROBOT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SAMSARAN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SASQUATCH:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SHAPECHANGER:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SKULK:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_STORMWARDEN:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SWARM:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TABAXI:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TENGU:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TIME:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TROOP:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_UDAEUS:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_UNBREATHING:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VANARA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VAPOR:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VISHKANYA:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_WATER:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_WAYANG:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FUNGUS:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PSIONIC:
+                    arrayLength++;
+                    break;
+                }
+              }
+              if (arrayLength != 0) {
+                input.rewindToPosition(startPos);
+                int i = this.subTypes == null ? 0 : this.subTypes.length;
+                int[] newArray = new int[i + arrayLength];
+                if (i != 0) {
+                  java.lang.System.arraycopy(this.subTypes, 0, newArray, 0, i);
+                }
+                while (input.getBytesUntilLimit() > 0) {
+                  int value = input.readInt32();
+                  switch (value) {
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ABERRATION:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ANIMAL:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CONSTRUCT:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DRAGON:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.FEY:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HUMANOID:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MAGICAL_BEAST:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MONSTROUS_HUMANOID:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OOZE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OUTSIDER:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.PLANT:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.UNDEAD:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.VERMIN:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ACID:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ADLET:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AEON:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AGATHION:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AIR:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AMPHIBIOUS:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ANGEL:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AQUATIC:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ARCHON:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ASURA:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AZATA:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_BEHEMOTH:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_BOGGARD:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CATFOLK:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CHAOTIC:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CHARAU__KA:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CLOCKWORK:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_COLD:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_COLOSSUS:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DAEMON:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DARK_FOLK:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEEP_ONE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEMODAND:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEMON:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DERRO:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEVIL:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DIV:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DWARF:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EARTH:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELECTRICITY:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELEMENTAL:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELF:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EVIL:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EXTRAPLANAR:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FEYBLOOD:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FIRE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GIANT:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GNOLL:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GNOME:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOBLIN:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOBLINOID:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GODSPAWN:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOOD:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GRAVITY:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GREAT_OLD_ONE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HALFLING:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HERALD:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HORDE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HUMAN:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HUMANOID:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_INCORPOREAL:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_INEVITABLE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KAIJU:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KAMI:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KASATHA:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KITSUNE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KUAH__LIJ:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KYTON:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_LAWFUL:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_LESHY:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_MYTHIC:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_NATIVE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_NIGHTSHADE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_OGREN:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_OGRILLON:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ONI:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ORC:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PROTEAN:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PSYCHOPOMP:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_QLIPPOTH:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_RAKSHASA:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_RATFOLK:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_REPTILIAN:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ROBOT:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SAMSARAN:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SASQUATCH:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SHAPECHANGER:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SKULK:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_STORMWARDEN:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SWARM:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TABAXI:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TENGU:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TIME:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TROOP:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_UDAEUS:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_UNBREATHING:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VANARA:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VAPOR:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VISHKANYA:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_WATER:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_WAYANG:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FUNGUS:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PSIONIC:
+                      newArray[i++] = value;
+                      break;
+                  }
+                }
+                this.subTypes = newArray;
+              }
+              input.popLimit(limit);
+              break;
+            }
+            case 88: {
+              int length = com.google.protobuf.nano.WireFormatNano
+                  .getRepeatedFieldArrayLength(input, 88);
+              int[] validValues = new int[length];
+              int validCount = 0;
+              for (int i = 0; i < length; i++) {
+                if (i != 0) { // tag for first value already consumed.
+                  input.readTag();
+                }
+                int value = input.readInt32();
+                switch (value) {
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ADVANCED:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GIANT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MIGHTY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHRINE__BLESSED:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.NOCTURNAL:
+                    validValues[validCount++] = value;
+                    break;
+                }
+              }
+              if (validCount != 0) {
+                int i = this.extraTemplates == null ? 0 : this.extraTemplates.length;
+                if (i == 0 && validCount == validValues.length) {
+                  this.extraTemplates = validValues;
+                } else {
+                  int[] newArray = new int[i + validCount];
+                  if (i != 0) {
+                    java.lang.System.arraycopy(this.extraTemplates, 0, newArray, 0, i);
+                  }
+                  java.lang.System.arraycopy(validValues, 0, newArray, i, validCount);
+                  this.extraTemplates = newArray;
+                }
+              }
+              break;
+            }
+            case 90: {
+              int bytes = input.readRawVarint32();
+              int limit = input.pushLimit(bytes);
+              // First pass to compute array length.
+              int arrayLength = 0;
+              int startPos = input.getPosition();
+              while (input.getBytesUntilLimit() > 0) {
+                switch (input.readInt32()) {
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ADVANCED:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GIANT:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MIGHTY:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHRINE__BLESSED:
+                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.NOCTURNAL:
+                    arrayLength++;
+                    break;
+                }
+              }
+              if (arrayLength != 0) {
+                input.rewindToPosition(startPos);
+                int i = this.extraTemplates == null ? 0 : this.extraTemplates.length;
+                int[] newArray = new int[i + arrayLength];
+                if (i != 0) {
+                  java.lang.System.arraycopy(this.extraTemplates, 0, newArray, 0, i);
+                }
+                while (input.getBytesUntilLimit() > 0) {
+                  int value = input.readInt32();
+                  switch (value) {
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ADVANCED:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GIANT:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MIGHTY:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHRINE__BLESSED:
+                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.NOCTURNAL:
+                      newArray[i++] = value;
+                      break;
+                  }
+                }
+                this.extraTemplates = newArray;
+              }
+              input.popLimit(limit);
+              break;
+            }
           }
         }
       }
@@ -1124,20 +1704,8 @@ public interface MonsterData {
       // optional .collaborativeGroupOrder.Monster.TagType type = 1;
       public int type;
 
-      // optional .collaborativeGroupOrder.MonsterType subtype = 2;
-      public int subtype;
-
       // optional .collaborativeGroupOrder.MonsterType augmenting = 3;
       public int augmenting;
-
-      // optional .collaborativeGroupOrder.Race race = 4;
-      public int race;
-
-      // optional .collaborativeGroupOrder.ExtraTemplate extraTemplate = 5;
-      public int extraTemplate;
-
-      // optional .collaborativeGroupOrder.Monster.ConditionalInitiative ctxInit = 6;
-      public com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative ctxInit;
 
       // optional .collaborativeGroupOrder.Monster.MetaData note = 7;
       public com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.MetaData note;
@@ -1148,11 +1716,7 @@ public interface MonsterData {
 
       public Tag clear() {
         type = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_INVALID;
-        subtype = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE;
         augmenting = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE;
-        race = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_RACE;
-        extraTemplate = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE;
-        ctxInit = null;
         note = null;
         cachedSize = -1;
         return this;
@@ -1164,20 +1728,8 @@ public interface MonsterData {
         if (this.type != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_INVALID) {
           output.writeInt32(1, this.type);
         }
-        if (this.subtype != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE) {
-          output.writeInt32(2, this.subtype);
-        }
         if (this.augmenting != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE) {
           output.writeInt32(3, this.augmenting);
-        }
-        if (this.race != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_RACE) {
-          output.writeInt32(4, this.race);
-        }
-        if (this.extraTemplate != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE) {
-          output.writeInt32(5, this.extraTemplate);
-        }
-        if (this.ctxInit != null) {
-          output.writeMessage(6, this.ctxInit);
         }
         if (this.note != null) {
           output.writeMessage(7, this.note);
@@ -1192,25 +1744,9 @@ public interface MonsterData {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeInt32Size(1, this.type);
         }
-        if (this.subtype != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeInt32Size(2, this.subtype);
-        }
         if (this.augmenting != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
             .computeInt32Size(3, this.augmenting);
-        }
-        if (this.race != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_RACE) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeInt32Size(4, this.race);
-        }
-        if (this.extraTemplate != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeInt32Size(5, this.extraTemplate);
-        }
-        if (this.ctxInit != null) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeMessageSize(6, this.ctxInit);
         }
         if (this.note != null) {
           size += com.google.protobuf.nano.CodedOutputByteBufferNano
@@ -1238,128 +1774,9 @@ public interface MonsterData {
               int value = input.readInt32();
               switch (value) {
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_INVALID:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_SUBTYPE:
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_AUGMENTING:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_RACE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_EXTRA_TEMPLATE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_CONDITIONAL_INITIATIVE:
                 case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.TT_EXTRA_METADATA:
                   this.type = value;
-                  break;
-              }
-              break;
-            }
-            case 16: {
-              int value = input.readInt32();
-              switch (value) {
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_MONSTER_TYPE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ABERRATION:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ANIMAL:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CONSTRUCT:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DRAGON:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.FEY:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HUMANOID:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MAGICAL_BEAST:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MONSTROUS_HUMANOID:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OOZE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OUTSIDER:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.PLANT:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.UNDEAD:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.VERMIN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ACID:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ADLET:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AEON:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AGATHION:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AIR:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AMPHIBIOUS:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ANGEL:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AQUATIC:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ARCHON:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ASURA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_AZATA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_BEHEMOTH:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_BOGGARD:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CATFOLK:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CHAOTIC:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CHARAU__KA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_CLOCKWORK:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_COLD:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_COLOSSUS:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DAEMON:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DARK_FOLK:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEEP_ONE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEMODAND:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEMON:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DERRO:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DEVIL:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DIV:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_DWARF:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EARTH:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELECTRICITY:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELEMENTAL:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ELF:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EVIL:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_EXTRAPLANAR:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FEYBLOOD:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FIRE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GIANT:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GNOLL:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GNOME:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOBLIN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOBLINOID:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GODSPAWN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GOOD:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GRAVITY:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_GREAT_OLD_ONE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HALFLING:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HERALD:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HORDE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HUMAN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_HUMANOID:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_INCORPOREAL:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_INEVITABLE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KAIJU:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KAMI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KASATHA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KITSUNE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KUAH__LIJ:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_KYTON:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_LAWFUL:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_LESHY:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_MYTHIC:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_NATIVE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_NIGHTSHADE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_OGREN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_OGRILLON:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ONI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ORC:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PROTEAN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PSYCHOPOMP:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_QLIPPOTH:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_RAKSHASA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_RATFOLK:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_REPTILIAN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_ROBOT:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SAMSARAN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SASQUATCH:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SHAPECHANGER:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SKULK:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_STORMWARDEN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_SWARM:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TABAXI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TENGU:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TIME:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_TROOP:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_UDAEUS:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_UNBREATHING:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VANARA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VAPOR:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_VISHKANYA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_WATER:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_WAYANG:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_FUNGUS:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SUB_PSIONIC:
-                  this.subtype = value;
                   break;
               }
               break;
@@ -1479,101 +1896,6 @@ public interface MonsterData {
               }
               break;
             }
-            case 32: {
-              int value = input.readInt32();
-              switch (value) {
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_RACE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DWARF:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ELF:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GNOME:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HALF_ORC:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HALFLING:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HUMAN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.AASIMAR:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CATFOLK:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DHAMPIR:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DROW:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.FETCHLING:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GOBLIN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.HOBGOBLIN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.IFRIT:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.KOBOLD:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ORC:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OREAD:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.RATFOLK:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SYLPH:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.TENGU:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.TIEFLING:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.UNDINE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GNOLL:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.LIZARDFOLK:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MONKEY_GOBLIN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SKINWALKER:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.TRIAXIAN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ANDROID:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GATHLAIN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GHORAN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.KASATHA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.LASHUNTA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHABTI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SYRINX:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.WYRWOOD:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.WYVARAN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CENTAUR:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.OGRE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHOBHAD:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.TROX:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DRIDER:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GARGOYLE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CHANGELING:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DUERGAR:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GILLMEN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GRIPPLI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.KITSUNE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MERFOLK:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.NAGAJI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SAMSARAN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.STRIX:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SULI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SVIRFNEBLIN:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.VANARA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.VISHKANYA:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.WAYANG:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.AQUATIC_ELF:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ASTMOI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.CALIGNI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.DEEP_ONE_HYBRID:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GANZI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.KURU:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MANAVRI:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ORANG__PENDAK:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.REPTOID:
-                  this.race = value;
-                  break;
-              }
-              break;
-            }
-            case 40: {
-              int value = input.readInt32();
-              switch (value) {
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.INVALID_TEMPLATE:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.ADVANCED:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.GIANT:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.MIGHTY:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.SHRINE__BLESSED:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.NOCTURNAL:
-                  this.extraTemplate = value;
-                  break;
-              }
-              break;
-            }
-            case 50: {
-              if (this.ctxInit == null) {
-                this.ctxInit = new com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative();
-              }
-              input.readMessage(this.ctxInit);
-              break;
-            }
             case 58: {
               if (this.note == null) {
                 this.note = new com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.MetaData();
@@ -1594,205 +1916,6 @@ public interface MonsterData {
               com.google.protobuf.nano.CodedInputByteBufferNano input)
           throws java.io.IOException {
         return new Tag().mergeFrom(input);
-      }
-    }
-
-    public static final class ConditionalInitiative extends
-        com.google.protobuf.nano.MessageNano {
-
-      // enum Condition
-      public static final int CONDITION_INVALID = 0;
-      public static final int ACTION_CLIMB = 1;
-
-      // enum ExprToken
-      public static final int TOKEN_INVALID = 0;
-      public static final int TREE = 1;
-
-      private static volatile ConditionalInitiative[] _emptyArray;
-      public static ConditionalInitiative[] emptyArray() {
-        // Lazily initializes the empty array
-        if (_emptyArray == null) {
-          synchronized (
-              com.google.protobuf.nano.InternalNano.LAZY_INIT_LOCK) {
-            if (_emptyArray == null) {
-              _emptyArray = new ConditionalInitiative[0];
-            }
-          }
-        }
-        return _emptyArray;
-      }
-
-      // optional int32 init = 1;
-      public int init;
-
-      // optional .collaborativeGroupOrder.Monster.ConditionalInitiative.Condition when = 2;
-      public int when;
-
-      // repeated .collaborativeGroupOrder.Monster.ConditionalInitiative.ExprToken params = 3;
-      public int[] params;
-
-      public ConditionalInitiative() {
-        clear();
-      }
-
-      public ConditionalInitiative clear() {
-        init = 0;
-        when = com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.CONDITION_INVALID;
-        params = com.google.protobuf.nano.WireFormatNano.EMPTY_INT_ARRAY;
-        cachedSize = -1;
-        return this;
-      }
-
-      @Override
-      public void writeTo(com.google.protobuf.nano.CodedOutputByteBufferNano output)
-          throws java.io.IOException {
-        if (this.init != 0) {
-          output.writeInt32(1, this.init);
-        }
-        if (this.when != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.CONDITION_INVALID) {
-          output.writeInt32(2, this.when);
-        }
-        if (this.params != null && this.params.length > 0) {
-          for (int i = 0; i < this.params.length; i++) {
-            output.writeInt32(3, this.params[i]);
-          }
-        }
-        super.writeTo(output);
-      }
-
-      @Override
-      protected int computeSerializedSize() {
-        int size = super.computeSerializedSize();
-        if (this.init != 0) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-              .computeInt32Size(1, this.init);
-        }
-        if (this.when != com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.CONDITION_INVALID) {
-          size += com.google.protobuf.nano.CodedOutputByteBufferNano
-            .computeInt32Size(2, this.when);
-        }
-        if (this.params != null && this.params.length > 0) {
-          int dataSize = 0;
-          for (int i = 0; i < this.params.length; i++) {
-            int element = this.params[i];
-            dataSize += com.google.protobuf.nano.CodedOutputByteBufferNano
-                .computeInt32SizeNoTag(element);
-          }
-          size += dataSize;
-          size += 1 * this.params.length;
-        }
-        return size;
-      }
-
-      @Override
-      public ConditionalInitiative mergeFrom(
-              com.google.protobuf.nano.CodedInputByteBufferNano input)
-          throws java.io.IOException {
-        while (true) {
-          int tag = input.readTag();
-          switch (tag) {
-            case 0:
-              return this;
-            default: {
-              if (!com.google.protobuf.nano.WireFormatNano.parseUnknownField(input, tag)) {
-                return this;
-              }
-              break;
-            }
-            case 8: {
-              this.init = input.readInt32();
-              break;
-            }
-            case 16: {
-              int value = input.readInt32();
-              switch (value) {
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.CONDITION_INVALID:
-                case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.ACTION_CLIMB:
-                  this.when = value;
-                  break;
-              }
-              break;
-            }
-            case 24: {
-              int length = com.google.protobuf.nano.WireFormatNano
-                  .getRepeatedFieldArrayLength(input, 24);
-              int[] validValues = new int[length];
-              int validCount = 0;
-              for (int i = 0; i < length; i++) {
-                if (i != 0) { // tag for first value already consumed.
-                  input.readTag();
-                }
-                int value = input.readInt32();
-                switch (value) {
-                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TOKEN_INVALID:
-                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TREE:
-                    validValues[validCount++] = value;
-                    break;
-                }
-              }
-              if (validCount != 0) {
-                int i = this.params == null ? 0 : this.params.length;
-                if (i == 0 && validCount == validValues.length) {
-                  this.params = validValues;
-                } else {
-                  int[] newArray = new int[i + validCount];
-                  if (i != 0) {
-                    java.lang.System.arraycopy(this.params, 0, newArray, 0, i);
-                  }
-                  java.lang.System.arraycopy(validValues, 0, newArray, i, validCount);
-                  this.params = newArray;
-                }
-              }
-              break;
-            }
-            case 26: {
-              int bytes = input.readRawVarint32();
-              int limit = input.pushLimit(bytes);
-              // First pass to compute array length.
-              int arrayLength = 0;
-              int startPos = input.getPosition();
-              while (input.getBytesUntilLimit() > 0) {
-                switch (input.readInt32()) {
-                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TOKEN_INVALID:
-                  case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TREE:
-                    arrayLength++;
-                    break;
-                }
-              }
-              if (arrayLength != 0) {
-                input.rewindToPosition(startPos);
-                int i = this.params == null ? 0 : this.params.length;
-                int[] newArray = new int[i + arrayLength];
-                if (i != 0) {
-                  java.lang.System.arraycopy(this.params, 0, newArray, 0, i);
-                }
-                while (input.getBytesUntilLimit() > 0) {
-                  int value = input.readInt32();
-                  switch (value) {
-                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TOKEN_INVALID:
-                    case com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData.Monster.ConditionalInitiative.TREE:
-                      newArray[i++] = value;
-                      break;
-                  }
-                }
-                this.params = newArray;
-              }
-              input.popLimit(limit);
-              break;
-            }
-          }
-        }
-      }
-
-      public static ConditionalInitiative parseFrom(byte[] data)
-          throws com.google.protobuf.nano.InvalidProtocolBufferNanoException {
-        return com.google.protobuf.nano.MessageNano.mergeFrom(new ConditionalInitiative(), data);
-      }
-
-      public static ConditionalInitiative parseFrom(
-              com.google.protobuf.nano.CodedInputByteBufferNano input)
-          throws java.io.IOException {
-        return new ConditionalInitiative().mergeFrom(input);
       }
     }
 

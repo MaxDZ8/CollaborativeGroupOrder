@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.massimodz8.collaborativegrouporder.InitiativeScore;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyActorRoundActivity;
@@ -66,6 +67,7 @@ public class BattleActivity extends AppCompatActivity {
                         // This could also send session terminate directly but I don't.
                         // It's easier for everyone if I send 'close session' only when not fighting.
                         finish();
+                        FirebaseAnalytics.getInstance(BattleActivity.this).logEvent(MaxUtils.FA_EVENT_BATTLE_STOP, null);
                     }
                 })
                 .setNegativeButton(R.string.generic_discard, new DialogInterface.OnClickListener() {
@@ -79,6 +81,9 @@ public class BattleActivity extends AppCompatActivity {
                             game.assignmentHelper.mailman.out.add(new SendRequest(client.pipe, ProtoBufferEnum.TURN_CONTROL, msg, null));
                         }
                         finish();
+                        Bundle bundle = new Bundle();
+                        bundle.putBoolean(MaxUtils.FA_PARAM_BATTLE_DISCARDED, true);
+                        FirebaseAnalytics.getInstance(BattleActivity.this).logEvent(MaxUtils.FA_EVENT_BATTLE_STOP, bundle);
                     }
                 })
                 .show();
@@ -255,10 +260,16 @@ public class BattleActivity extends AppCompatActivity {
             if(battle.moveCurrentToSlot(newPos, true)) game.pushBattleOrder();
             // This is not necessary, we really go with the interruptor and start back from there.
             //battle.actorCompleted(true);
-            if(target.actor.peerKey < game.assignmentHelper.assignment.size()) { // chance it could be remote
-                Integer index = game.assignmentHelper.assignment.get(target.actor.peerKey);
-                if(index != null && index != PcAssignmentHelper.LOCAL_BINDING && target.actor.peerKey != game.session.lastActivated) {
-                    final MessageChannel pipe = game.assignmentHelper.peers.get(index).pipe;
+            if(target.actor.peerKey < game.assignmentHelper.assignment.length) { // chance it could be remote
+                int index = game.assignmentHelper.assignment[target.actor.peerKey];
+                if(index != PcAssignmentHelper.PlayingDevice.INVALID_ID && index != PcAssignmentHelper.PlayingDevice.LOCAL_ID && target.actor.peerKey != game.session.lastActivated) {
+                    MessageChannel pipe = null;
+                    for (PcAssignmentHelper.PlayingDevice dev : game.assignmentHelper.peers) {
+                        if(dev.keyIndex == index) {
+                            pipe = dev.pipe;
+                            break;
+                        }
+                    }
                     Network.TurnControl activation = new Network.TurnControl();
                     activation.type = Network.TurnControl.T_PREPARED_TRIGGERED;
                     activation.peerKey = target.actor.peerKey;
@@ -269,6 +280,7 @@ public class BattleActivity extends AppCompatActivity {
             }
             lister.notifyDataSetChanged();
             activateNewActorLocal();
+            FirebaseAnalytics.getInstance(BattleActivity.this).logEvent(MaxUtils.FA_EVENT_READIED_ACTION_TRIGGERED, null);
         }
     }
 
@@ -373,6 +385,8 @@ public class BattleActivity extends AppCompatActivity {
             return;
         }
         final int currentSlot = currSlot;
+        final FirebaseAnalytics survey = FirebaseAnalytics.getInstance(this);
+        final Bundle info = new Bundle();
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setMessage(String.format(getString(R.string.ba_dlg_gotPreparedAction), actor.name))
                 .setPositiveButton(R.string.ba_dlg_gotPreparedAction_renew, new DialogInterface.OnClickListener() {
@@ -380,6 +394,8 @@ public class BattleActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         // Renewing is super cool - the dude will just not act and we're nice with it.
                         actionCompleted(true);
+                        info.putBoolean(MaxUtils.FA_PARAM_READIED_ACTION_RENEWED, true);
+                        survey.logEvent(MaxUtils.FA_EVENT_READIED_ACTION_TICKED, info);
                     }
                 }).setNegativeButton(getString(R.string.ba_dlg_gotPreparedAction_discard), new DialogInterface.OnClickListener() {
             @Override
@@ -403,6 +419,7 @@ public class BattleActivity extends AppCompatActivity {
                             game.session.lastActivated = actor.peerKey;
                         }
                         activateNewActorLocal();
+                        survey.logEvent(MaxUtils.FA_EVENT_READIED_ACTION_TICKED, info);
                     }
                 }).setCancelable(false)
                 .show();
@@ -410,9 +427,9 @@ public class BattleActivity extends AppCompatActivity {
 
     private void activateNewActorLocal() {        // If played here open detail screen. Otherwise, send your-turn message.
         int active = game.session.battleState.currentActor;
-        if(active < game.assignmentHelper.assignment.size()) {
-            Integer own = game.assignmentHelper.assignment.get(active);
-            if(own != null && own != PcAssignmentHelper.LOCAL_BINDING) {
+        if(active < game.assignmentHelper.assignment.length) {
+            int own = game.assignmentHelper.assignment[active];
+            if(own != PcAssignmentHelper.PlayingDevice.INVALID_ID && own != PcAssignmentHelper.PlayingDevice.LOCAL_ID) {
                 Snackbar.make(findViewById(R.id.activityRoot), R.string.ba_actorByPlayerSnack, Snackbar.LENGTH_SHORT).show();
                 return;
             }

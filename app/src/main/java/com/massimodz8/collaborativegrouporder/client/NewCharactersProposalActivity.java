@@ -3,7 +3,6 @@ package com.massimodz8.collaborativegrouporder.client;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +12,7 @@ import android.view.ViewGroup;
 
 import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
+import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PCViewHolder;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
 import com.massimodz8.collaborativegrouporder.R;
@@ -191,18 +191,10 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         public PCViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             return new PCViewHolder(getLayoutInflater().inflate(R.layout.vh_playing_character_definition_input, parent, false)) {
                 @Override
-                protected String getString(@StringRes int resid) { return NewCharactersProposalActivity.this.getString(resid); }
-                @Override
                 public void action() {
                     // PlayingCharacterListAdapter.SEND: {
                     final MessageChannel channel = state.party.channel;
-                    Network.PlayingCharacterDefinition wire = new Network.PlayingCharacterDefinition();
-                    wire.name = who.name;
-                    wire.initiativeBonus = who.initiativeBonus;
-                    wire.healthPoints = who.fullHealth;
-                    wire.experience = who.experience;
-                    wire.peerKey = who.unique;
-                    wire.level = who.level;
+                    Network.PlayingCharacterDefinition wire = MaxUtils.makePlayingCharacterDefinition(who);
                     state.sender.out.add(new SendRequest(channel, ProtoBufferEnum.PLAYING_CHARACTER_DEFINITION, wire, null));
                     who.status = BuildingPlayingCharacter.STATUS_SENT;
                     refresh();
@@ -211,7 +203,9 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(PCViewHolder holder, int position) { holder.bind(state.characters.get(position)); }
+        public void onBindViewHolder(PCViewHolder holder, int position) {
+            BuildingPlayingCharacter pc = state.characters.get(position);
+            holder.bind(pc, pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED && pc.status != BuildingPlayingCharacter.STATUS_SENT); }
 
         @Override
         public int getItemCount() { return state.characters.size(); }

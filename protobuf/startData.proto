@@ -1,6 +1,8 @@
 syntax = "proto3";
 option java_package = "com.massimodz8.collaborativegrouporder.protocol";
 import "google/protobuf/timestamp.proto";
+import "LevelAdvancement.proto";
+import "RPGClass.proto";
 
 // This is more or less 'static' stuff you would write in your character sheet.
 // That is, if you are the server. For the client it's just simple cryptographic key.
@@ -26,6 +28,7 @@ message PartyOwnerData {
         string imageFile = 5; // group images are cool as well, used for the service notification.
         google.protobuf.Timestamp created = 6;
         string sessionFile = 7; // the session file is created even before this party is saved
+        LevelAdvancement advancementPace = 8;
         
         // Note: there's no "current group state" anymore, store them somewhere else
     }
@@ -37,10 +40,9 @@ message PartyOwnerData {
 // It's the stuff you would write using a pen in the character sheet. Temporary effects and per-battle data not there.
 message ActorDefinition {
     string name = 1;
-    uint32 level = 2;
-    uint32 experience = 3;
-    string avatarFile = 4;
-    repeated ActorStatistics stats = 5; // at least 1 or error. stats[0] is character level, stats[1] is level-1 etc... character history
+    uint32 experience = 2;
+    string avatarFile = 3;
+    repeated ActorStatistics stats = 4; // at least 1 or error. stats[0] is character level, stats[1] is level-1 etc... character history
 }
 
 
@@ -48,6 +50,7 @@ message ActorDefinition {
 message ActorStatistics {
     uint32 initBonus = 1;
     int32 healthPoints = 2; // Group.usually -> full health, otherwise current health
+    LevelClass career = 3;
 }
 
 

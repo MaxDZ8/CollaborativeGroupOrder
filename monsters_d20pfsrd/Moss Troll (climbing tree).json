@@ -1,7 +1,7 @@
 {
     "head": {
         "name": [
-            "Moss Troll"
+            "Moss Troll (climbing tree)"
         ],
         "cr": "3",
         "alignment": [
@@ -9,7 +9,7 @@
         ],
         "size": "Large",
         "type": "humanoid",
-        "init": 4,
+        "init": 8,
         "tags": [
             "giant",
             "shapechanger"
