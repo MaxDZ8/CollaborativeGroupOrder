@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.content.Context;
 
+import com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
 
@@ -258,7 +259,8 @@ public abstract class ProtobufSupport {
 
     public static String knownClassToString(int protobufEnum, Context ctx) {
         if(null == knownClass) {
-            knownClass = new HashMap<>();knownClass.put(RPGClass.KC_INVALID, ctx.getString(R.string.knownClass_invalid));
+            knownClass = new HashMap<>();
+            knownClass.put(RPGClass.KC_INVALID, ctx.getString(R.string.knownClass_invalid));
             knownClass.put(RPGClass.KC_PF_CORE_BARBARIAN, ctx.getString(R.string.knownClass_barbarian));
             knownClass.put(RPGClass.KC_PF_CORE_BARD, ctx.getString(R.string.knownClass_bard));
             knownClass.put(RPGClass.KC_PF_CORE_CLERIC, ctx.getString(R.string.knownClass_cleric));
@@ -397,8 +399,18 @@ public abstract class ProtobufSupport {
             knownClass.put(RPGClass.KC_NPC_EXPERT, ctx.getString(R.string.knownClass_npc_expert));
             knownClass.put(RPGClass.KC_NPC_WARRIOR, ctx.getString(R.string.knownClass_npc_warrior));
         }
-        final String match = monSize.get(protobufEnum);
+        final String match = knownClass.get(protobufEnum);
         return match == null? knownClass.get(RPGClass.KC_INVALID) : match;
+    }
+
+    public static String levelAdvToString(int protobufEnum, Context ctx) {
+        // So little! We switch this.
+        switch(protobufEnum) {
+            case LevelAdvancement.LA_PF_FAST: return ctx.getString(R.string.levelAdv_fast);
+            case LevelAdvancement.LA_PF_MEDIUM: return ctx.getString(R.string.levelAdv_medium);
+            case LevelAdvancement.LA_PF_SLOW: return ctx.getString(R.string.levelAdv_slow);
+        }
+        return ctx.getString(R.string.levelAdv_invalid);
     }
 
     private static HashMap<Integer, String> monRace, monSize, monType;

@@ -333,6 +333,7 @@ public class PcAssignmentHelper {
         res.healthPoints = currently.healthPoints;
         res.experience = actor.experience;
         res.peerKey = id;
+        res.career = actor.stats[0].career;
         return res;
     }
 

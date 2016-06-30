@@ -254,6 +254,8 @@ public class PartyPickActivity extends AppCompatActivity {
                 RunningServiceHandles.getInstance().create = creator;
                 creator.generatedParty = activeParty;
                 creator.mode = PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING;
+                creator.newPartyName = activeParty.name;
+                creator.advancementPace = activeParty.advancementPace;
                 startActivityForResult(new Intent(PartyPickActivity.this, NewPartyDeviceSelectionActivity.class), REQUEST_ADD_STUFF);
                 return true;
             }

@@ -16,8 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.protobuf.nano.CodedInputByteBufferNano;
+import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
 import java.io.IOException;
@@ -133,6 +136,14 @@ public abstract class MaxUtils {
         wire.healthPoints = proposal.fullHealth;
         wire.experience = proposal.experience;
         wire.peerKey = proposal.unique;
+        final byte[] buff = new byte[proposal.lastLevelClass.getSerializedSize()];
+        wire.career = new RPGClass.LevelClass();
+        try {
+            proposal.lastLevelClass.writeTo(CodedOutputByteBufferNano.newInstance(buff));
+            wire.career.mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+        } catch (IOException e) {
+            // impossible in this context
+        }
         return wire;
     }
 

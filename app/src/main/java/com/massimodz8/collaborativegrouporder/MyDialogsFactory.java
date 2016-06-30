@@ -3,7 +3,6 @@ package com.massimodz8.collaborativegrouporder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.Button;
@@ -38,11 +37,6 @@ public abstract class MyDialogsFactory {
         final BuildingPlayingCharacter pc = currently == null? new BuildingPlayingCharacter() : currently;
         final PCViewHolder helper = new PCViewHolder(dlg.findViewById(R.id.vhRoot)) {
             @Override
-            protected String getString(@StringRes int resid) {
-                return ctx.getString(resid);
-            }
-
-            @Override
             protected void action() {
                 dlg.dismiss();
                 pc.status = BuildingPlayingCharacter.STATUS_ACCEPTED;
@@ -50,9 +44,9 @@ public abstract class MyDialogsFactory {
             }
         };
         pc.status = BuildingPlayingCharacter.STATUS_BUILDING;
-        helper.bind(pc);
-        dlg.findViewById(R.id.vhPCDI_tilExperience).setVisibility(View.GONE);
+        helper.bind(pc, true);
         if(currently != null) {
+            dlg.findViewById(R.id.vhPCDI_tilExperience).setVisibility(View.GONE);
             ((Button)helper.itemView.findViewById(R.id.vhPCDI_makeNewChar)).setText(R.string.fra_updateChar);
             dlg.setCancelable(false);
             final TextView view = (TextView) dlg.findViewById(R.id.vhPCDI_newLevel);
@@ -86,19 +80,14 @@ public abstract class MyDialogsFactory {
                 .show();
         final PCViewHolder helper = new PCViewHolder(dlg.findViewById(R.id.vhRoot)) {
             @Override
-            protected String getString(@StringRes int resid) {
-                return ctx.getString(resid);
-            }
-
-            @Override
             protected void action() { /* not used */ }
         };
         ToggleButton toggle = (ToggleButton) dlg.findViewById(R.id.dlgLCC_toggle);
         toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) helper.bind(proposed);
-                else helper.bind(origin);
+                if(isChecked) helper.bind(proposed, false);
+                else helper.bind(origin, false);
                 helper.itemView.findViewById(R.id.vhPCDI_tilExperience).setVisibility(View.GONE);
                 MaxUtils.setVisibility(View.GONE,
                         helper.itemView.findViewById(R.id.vhPCDI_accepted),

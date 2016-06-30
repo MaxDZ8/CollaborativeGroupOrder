@@ -480,6 +480,14 @@ public class PartyCreator extends PublishAcceptHelper {
         };
         built.stats[0].initBonus = pc.initiativeBonus;
         built.stats[0].healthPoints = pc.fullHealth;
+        final byte[] buff = new byte[pc.lastLevelClass.getSerializedSize()];
+        built.stats[0].career = new RPGClass.LevelClass();
+        try {
+            pc.lastLevelClass.writeTo(CodedOutputByteBufferNano.newInstance(buff));
+            built.stats[0].career.mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+        } catch (IOException e) {
+            // impossible in this context
+        }
         return built;
     }
 

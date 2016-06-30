@@ -31,12 +31,14 @@
     <string name="client_connectionAttempt">Explicit connection</string>
 
     <string name="both_noDiscoveryManager">Looks like Network Service Discovery is unavailable. This functionality is required.</string>
+    <string name="both_ui_customClassSpinnerLabel">Custom class</string>
 
     <string name="vhCA_healthPoints">Health points</string>
     <string name="vhCA_initBonus">Initiative modifier</string>
     <string name="vhCA_experience">Experience</string>
     <string name="vhCA_acceptedCharacter">Character accepted.</string>
     <string name="vhCA_level">Level</string>
+    <string name="vhCA_levelClass">Last class:</string>
 
     <string name="pcVH_badName">Must have a name.</string>
 
@@ -155,11 +157,13 @@
     <string name="npdsa_notifyContentNew">Forming new party.</string>
     <string name="npdsa_notifyContentAdd">Adding to existing party.</string>
     <string name="npdsa_levelAdvBtn">Set level advancement</string>
-    <string name="npdsa_levelAdv_fast">fast</string>
-    <string name="npdsa_levelAdv_medium">medium</string>
-    <string name="npdsa_levelAdv_slow">slow</string>
-    <string name="npdsa_levelAdv_dlgTitle">Level advancement speed</string>
     <string name="npdsa_levelAdvBtn_setFormat">Levelling: %1$s</string>
+    <string name="npdsa_levelAdv_dlgTitle">Level advancement speed</string>
+
+    <string name="levelAdv_fast">fast</string>
+    <string name="levelAdv_medium">medium</string>
+    <string name="levelAdv_slow">slow</string>
+    <string name="levelAdv_invalid">!!invalid level progression!!</string>
 
     <string name="ncaa_title">Approve PCs</string>
     <string name="ncaa_definingPCs">Players are defining characters.</string>
@@ -244,6 +248,7 @@
     <string name="ga_noPcsOnDevice">No playing characters on this device.</string>
     <string name="ga_dlg_errorWhileFormingGroup_title">Whoops!</string>
     <string name="ga_dlg_errorWhileFormingGroup_msg">Something went wrong while giving out data. This is very wrong and state is now likely inconsistent. Please report this issue.</string>
+    <string name="ga_charLevelSingleClass">Level %1$d %2$s</string>
 
     <string name="dialog_explicitConnectionInfo_title">Connection informations</string>
     <string name="card_character_classesAndLevels">Classes and levels</string>
@@ -271,7 +276,7 @@
 
     <string name="csa_title">Character selection</string>
     <string name="csa_hpMax">HP max: %1$d</string>
-    <string name="csa_level">Level: %1$d</string>
+    <string name="csa_levelAndLastClass">Level: %1$d (last class: %2$s)</string>
     <string name="csa_xp">XP: %1$d</string>
     <string name="csa_oneCharSomewhere">One character played on another device.</string>
     <string name="csa_pluralCharsSomewhere">%1$d characters played elsewhere.</string>
@@ -810,8 +815,10 @@
     <string name="vhPCDI_maxHealthHint">Max HP</string>
     <string name="vhPCDI_initiativeHint">Initiative modifier</string>
     <string name="vhPCDI_experienceHint">Current XP</string>
+    <string name="vhPCDI_customClassHint">Custom class</string>
     <string name="vhPCDI_add">Make Character</string>
     <string name="vhPCDI_accepted">Accepted!</string>
+    <string name="vhPCDI_classLabel">Class taken this level</string>
 	
     <string name="cardPDS_title">Member devices</string>
     <string name="cardPDS_moreInfo">Those devices have a key to join game.\nNeed to add a device? Hit the menu ︙</string>
@@ -974,5 +981,6 @@
     <string name="knownClass_npc_commoner">commoner (npc)</string>
     <string name="knownClass_npc_expert">expert (npc)</string>
     <string name="knownClass_npc_warrior">warrior (npc)</string>
+    <string name="ctx_both_ui_badCustomClassName">Invalid custom class name.</string>
 
 </resources>

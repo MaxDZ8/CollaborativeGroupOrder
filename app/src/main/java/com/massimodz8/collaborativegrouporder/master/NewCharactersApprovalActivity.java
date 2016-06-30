@@ -21,8 +21,10 @@ import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.MyDialogsFactory;
 import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
+import com.massimodz8.collaborativegrouporder.ProtobufSupport;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
+import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
@@ -94,6 +96,8 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 vh.initBonus.setText(String.valueOf(proposal.initiativeBonus));
                 vh.xp.setText(String.valueOf(proposal.experience));
                 vh.level.setText(String.valueOf(MaxUtils.level(getResources(), room.building.advancementPace, proposal.experience)));
+                RPGClass.LevelClass taken = proposal.lastLevelClass;
+                vh.lastClass.setText(taken.present.isEmpty()? ProtobufSupport.knownClassToString(taken.known, vh.itemView.getContext()) : taken.present);
                 vh.unique = proposal.unique;
                 vh.accepted.setVisibility(proposal.status == BuildingPlayingCharacter.STATUS_ACCEPTED? View.VISIBLE : View.GONE);
             }
@@ -259,7 +263,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     }
 
     private class PcApprovalVh extends RecyclerView.ViewHolder implements View.OnClickListener {
-        final TextView name, level, xp, hp, initBonus;
+        final TextView name, level, xp, hp, initBonus, lastClass;
         final View accepted;
         int unique;
 
@@ -271,6 +275,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
             hp = (TextView) v.findViewById(R.id.vhCA_hp);
             initBonus = (TextView) v.findViewById(R.id.vhCA_initBonus);
             accepted = v.findViewById(R.id.vhCA_accepted);
+            lastClass = (TextView) v.findViewById(R.id.vhCA_levelClass);
             v.setOnClickListener(this);
         }
 

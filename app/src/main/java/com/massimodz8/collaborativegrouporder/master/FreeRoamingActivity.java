@@ -659,6 +659,15 @@ public class FreeRoamingActivity extends AppCompatActivity {
         proposed.initiativeBonus = match.initiativeBonus;
         proposed.fullHealth = match.healthPoints;
         proposed.experience = match.experience;
+        byte[] buff = new byte[Math.max(nominal.stats[0].career.getSerializedSize(), match.career.getSerializedSize())];
+        try {
+            nominal.stats[0].career.writeTo(CodedOutputByteBufferNano.newInstance(buff));
+            currently.lastLevelClass.mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+            match.career.writeTo(CodedOutputByteBufferNano.newInstance(buff));
+            proposed.lastLevelClass.mergeFrom(CodedInputByteBufferNano.newInstance(buff));
+        } catch (IOException e) {
+            // impossible in this context
+        }
         final Network.PlayingCharacterDefinition fixed = match;
         MyDialogsFactory.showActorComparison(this, currently, proposed, new MyDialogsFactory.ApprovalListener() {
             @Override

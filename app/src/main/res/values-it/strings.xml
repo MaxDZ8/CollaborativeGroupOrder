@@ -70,7 +70,7 @@
     <string name="csa_charOwnershipRequestToSomeoneElse">Il personaggio \"%1$s\" sarà giocato su un altro dispositivo.</string>
     <string name="csa_charOwnershipToSomeoneUnsolicited">Il personaggio \"%1$s\" ti è stato portato via.</string>
     <string name="csa_hpMax">PF max: %1$d</string>
-    <string name="csa_level">Livello: %1$d</string>
+    <string name="csa_levelAndLastClass">Livello: %1$d (ultima classe %2$s)</string>
     <string name="csa_noDefinitiveCharactersHere">Il gruppo sta giocando ma non hai ricevuto alcun personaggio! Niente da fare.</string>
     <string name="csa_noDefinitiveCharactersHereDlgDone">Menu principale</string>
     <string name="csa_oneCharSomewhere">Un personaggio giocato su un altro dispositivo.</string>
