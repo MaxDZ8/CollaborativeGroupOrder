@@ -10,6 +10,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.protobuf.nano.CodedInputByteBufferNano;
+import com.google.protobuf.nano.CodedOutputByteBufferNano;
 import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.AsyncLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
@@ -20,6 +22,7 @@ import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
+import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
@@ -45,6 +48,9 @@ public class PartyCreator extends PublishAcceptHelper {
     public StartData.PartyOwnerData.Group generatedParty;
     public Session.Suspended generatedStat;
     public int mode = MODE_MAKE_NEW_PARTY;
+
+    public String newPartyName;
+    public int advancementPace;
 
     public interface OnTalkingDeviceCountListener {
         void currentlyTalking(int count);
@@ -241,19 +247,39 @@ public class PartyCreator extends PublishAcceptHelper {
             @Override
             protected void appendNewEntry(StartData.PartyOwnerData loaded) {
                 if(mode == MODE_ADD_NEW_DEVICES_TO_EXISTING) { // everything is already there but I must generate the new keys.
-                    int devCount = 0;
+                    int devCount = 0, pcCount = 0;
                     for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
                         if(dev.kicked || !dev.groupMember) continue;
                         devCount++; // save all devices, even if they don't have proposed a pg
+                        for (BuildingPlayingCharacter pc : dev.chars) {
+                            if(pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED) continue;
+                            pcCount++;
+                        }
                     }
-                    int previously = generatedParty.devices.length;
-                    StartData.PartyOwnerData.DeviceInfo[] longer = Arrays.copyOf(generatedParty.devices, previously + devCount);
-                    System.arraycopy(generatedParty.devices, 0, longer, 0, previously);
-                    devCount = previously;
-                    for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
-                        longer[devCount++] = from(dev);
+                    {
+                        int previously = generatedParty.devices.length;
+                        StartData.PartyOwnerData.DeviceInfo[] longer = Arrays.copyOf(generatedParty.devices, previously + devCount);
+                        System.arraycopy(generatedParty.devices, 0, longer, 0, previously);
+                        devCount = previously;
+                        for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                            longer[devCount++] = from(dev);
+                        }
+                        generatedParty.devices = longer;
                     }
-                    generatedParty.devices = longer;
+                    {
+                        int previously = generatedParty.devices.length;
+                        StartData.ActorDefinition[] longer = Arrays.copyOf(generatedParty.party, previously + pcCount);
+                        pcCount = previously;
+                        for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                            if(dev.kicked || !dev.groupMember) continue;
+                            devCount++; // save all devices, even if they don't have proposed a pg
+                            for (BuildingPlayingCharacter pc : dev.chars) {
+                                if(pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED) continue;
+                                longer[pcCount++] = from(pc);
+                            }
+                        }
+                        generatedParty.party = longer;
+                    }
                     return;
                 }
                 StartData.PartyOwnerData.Group[] longer = new StartData.PartyOwnerData.Group[loaded.everything.length + 1];
@@ -358,8 +384,6 @@ public class PartyCreator extends PublishAcceptHelper {
 
 
     PartyDefinitionHelper building;
-    String newPartyName;
-    int advancementPace;
 
     private RecyclerView.Adapter clientDeviceAdapter;
 
