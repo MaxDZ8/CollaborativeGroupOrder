@@ -15,9 +15,9 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   inkscape:export-filename="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\src\main\res\mipmap-xxxhdpi\ic_launcher.png"
-   inkscape:export-xdpi="360"
-   inkscape:export-ydpi="360"
+   inkscape:export-filename="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\src\main\res\mipmap-mdpi\ic_launcher.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90"
    sodipodi:docname="ic_launcher_standard.svg">
   <defs
      id="defs4">
@@ -374,19 +374,19 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="7.9999995"
-     inkscape:cx="17.458364"
-     inkscape:cy="26.294047"
+     inkscape:zoom="5.6568539"
+     inkscape:cx="35.295249"
+     inkscape:cy="24.292621"
      inkscape:document-units="px"
      inkscape:current-layer="g3401"
      showgrid="true"
      inkscape:snap-global="true"
      inkscape:snap-grids="true"
-     inkscape:window-width="1680"
-     inkscape:window-height="987"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
+     inkscape:window-width="893"
+     inkscape:window-height="757"
+     inkscape:window-x="277"
+     inkscape:window-y="92"
+     inkscape:window-maximized="0"
      inkscape:snap-midpoints="false"
      showguides="true"
      inkscape:snap-nodes="true"
@@ -537,7 +537,7 @@
        width="38"
        height="38"
        x="5"
-       y="9.3520021" />
+       y="8.3520021" />
   </g>
   <g
      inkscape:label="Two"
@@ -574,12 +574,14 @@
        y="0"
        x="0" />
     <rect
-       y="5"
+       y="4"
        x="5"
        height="38"
        width="38"
        id="rect3411"
-       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#01579b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
+       style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#01579b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
+       ry="1"
+       rx="1" />
     <rect
        style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#03a9f4;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
        id="rect3413"
@@ -588,7 +590,7 @@
        x="70"
        y="12.5" />
     <rect
-       y="14"
+       y="13"
        x="5"
        height="20"
        width="38"
@@ -596,7 +598,7 @@
        style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:1;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:#e1f5fe;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate" />
     <path
        style="fill:#00ff00;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 24,6 -7,7 14,0"
+       d="m 24,5 -7,7 14,0"
        id="path3425"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="ccc" />
@@ -604,20 +606,8 @@
        sodipodi:nodetypes="ccc"
        inkscape:connector-curvature="0"
        id="path3429"
-       d="m 24,42 7,-7 -14,0"
+       d="m 24,41 7,-7 -14,0"
        style="fill:#00ff00;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    <path
-       sodipodi:nodetypes="ccc"
-       inkscape:connector-curvature="0"
-       id="path4251"
-       d="m 24,6 -7,7 14,0"
-       style="fill:#00ff00;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    <path
-       style="fill:#00ff00;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 24,42 7,-7 -14,0"
-       id="path4253"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="ccc" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -636,14 +626,16 @@
      inkscape:groupmode="layer"
      id="layer10"
      inkscape:label="38dp keylineSquare"
-     sodipodi:insensitive="true"
-     style="display:none">
+     style="display:none"
+     sodipodi:insensitive="true">
     <rect
        style="color:#000000;clip-rule:nonzero;display:inline;overflow:visible;visibility:visible;opacity:0.6;isolation:auto;mix-blend-mode:normal;color-interpolation:sRGB;color-interpolation-filters:linearRGB;solid-color:#000000;solid-opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:0.1, 0.1;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none;color-rendering:auto;image-rendering:auto;shape-rendering:auto;text-rendering:auto;enable-background:accumulate"
        id="rect4313"
        width="38"
        height="38"
        x="5"
-       y="5" />
+       y="5"
+       ry="1"
+       rx="1" />
   </g>
 </svg>
