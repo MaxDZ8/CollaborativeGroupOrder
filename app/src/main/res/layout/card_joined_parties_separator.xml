@@ -18,7 +18,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_joined_party"
+            android:src="@drawable/ic_joined_party_white_48dp"
             android:layout_margin="8sp"
             android:layout_centerVertical="true"
             android:contentDescription="@string/cardJPS_iconDesc"

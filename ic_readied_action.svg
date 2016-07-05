@@ -9,11 +9,11 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="1275.5906"
-   height="1275.5906"
+   width="24"
+   height="24"
    id="svg3000"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
+   inkscape:version="0.91 r13725"
    sodipodi:docname="ic_readied_action.svg"
    inkscape:export-filename="C:\Users\Massimo\AndroidStudioProjects\CollaborativeGroupOrder\app\src\main\res\mipmap-xxxhdpi\ic_readied_action_white_24dp.png"
    inkscape:export-xdpi="6.7733331"
@@ -27,9 +27,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.42683933"
-     inkscape:cx="1039.507"
-     inkscape:cy="635.52315"
+     inkscape:zoom="19.316543"
+     inkscape:cx="23.784405"
+     inkscape:cy="11.443541"
      inkscape:document-units="cm"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -38,11 +38,11 @@
      inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
-     units="cm"
+     units="px"
      inkscape:snap-global="true"
      inkscape:snap-nodes="true"
      inkscape:snap-bbox="true"
-     inkscape:snap-grids="true"
+     inkscape:snap-grids="false"
      inkscape:object-nodes="true">
     <inkscape:grid
        type="xygrid"
@@ -72,7 +72,8 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Polygon"
-     style="display:none">
+     style="display:none"
+     transform="translate(0,-1251.5906)">
     <path
        transform="matrix(1.0157448,0,0,1.0680173,635.41558,639.11586)"
        d="M 595.36795,-1.236468 434.36713,139.13675 482.11022,347.33497 269.34852,366.26538 185.59765,562.76396 2.3427997,453.0208 -180.91205,562.76396 l -83.75087,-196.49858 -212.7617,-18.93041 47.74309,-208.19823 -161.00081,-140.373208 161.00081,-140.373212 -47.74309,-208.19822 212.7617,-18.93041 83.75087,-196.49859 183.2548539,109.74317 183.2548461,-109.74317 83.75087,196.49859 212.7617,18.93041 -47.74309,208.19822 z"
@@ -87,18 +88,19 @@
        sodipodi:cx="2.3428018"
        sodipodi:sides="10"
        id="path2988"
-       style="color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:70.86614227;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:70.86614227;marker:none;enable-background:accumulate"
        sodipodi:type="star" />
   </g>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,223.25578)"><path
-   style="opacity:1;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:70.86614227000001200;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-   d="M 451.65625 35.4375 L 366.59375 245.3125 L 150.46875 265.5 L 198.96875 487.875 L 35.4375 637.78125 L 198.96875 787.71875 L 150.46875 1010.0625 L 366.59375 1030.2812 L 451.65625 1240.1562 L 637.78125 1122.9375 L 823.9375 1240.1562 L 909 1030.2812 L 1125.125 1010.0625 L 1076.625 787.71875 L 1240.1562 637.78125 L 1076.625 487.875 L 1125.125 265.5 L 909 245.3125 L 823.9375 35.4375 L 637.78125 152.65625 L 451.65625 35.4375 z M 425.1875 354.34375 L 549.21875 354.34375 L 549.21875 921.25 L 425.1875 921.25 L 425.1875 354.34375 z M 726.375 354.34375 L 850.40625 354.34375 L 850.40625 921.25 L 726.375 921.25 L 726.375 354.34375 z "
-   transform="translate(0,-223.25578)"
-   id="path3040" />
+     transform="translate(0,-1028.3348)"><path
+   style="fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+   d="M 8.6015625 1 L 7.046875 4.8320312 L 3.1015625 5.2011719 L 3.9863281 9.2617188 L 1 12 L 3.9863281 14.738281 L 3.1015625 18.798828 L 7.046875 19.167969 L 8.6015625 23 L 12 20.859375 L 15.398438 23 L 16.953125 19.167969 L 20.898438 18.798828 L 20.013672 14.738281 L 23 12 L 20.013672 9.2617188 L 20.898438 5.2011719 L 16.953125 4.8320312 L 15.398438 1 L 12 3.140625 L 8.6015625 1 z M 8.1171875 6.8242188 L 10.382812 6.8242188 L 10.382812 17.175781 L 8.1171875 17.175781 L 8.1171875 6.8242188 z M 13.617188 6.8242188 L 15.882812 6.8242188 L 15.882812 17.175781 L 13.617188 17.175781 L 13.617188 6.8242188 z "
+   transform="translate(0,1028.3348)"
+   id="path3337" />
+
 
 
 &quot;

@@ -31,7 +31,7 @@
         android:id="@+id/mma_newParty"
         android:onClick="startCreateParty_callback"
         android:enabled="false"
-        android:drawableLeft="@mipmap/ic_owned_party"/>
+        android:drawableLeft="@drawable/ic_owned_party_white_48dp"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -40,7 +40,7 @@
         android:id="@+id/mma_joinParty"
         android:onClick="startJoinGroupActivity_callback"
         android:enabled="false"
-        android:drawableLeft="@mipmap/ic_joined_party"/>
+        android:drawableLeft="@drawable/ic_joined_party_white_48dp"/>
 
     <Button
         android:layout_width="wrap_content"
