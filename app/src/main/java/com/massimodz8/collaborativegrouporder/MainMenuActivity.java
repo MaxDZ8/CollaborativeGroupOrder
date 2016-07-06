@@ -298,7 +298,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     handles.state.notification = updated;
                 }
                 else {
-                    if(handles.bindChars.playChars == null || handles.bindChars.playChars.length == 0) {
+                    if(handles.bindChars.playChars == null || handles.bindChars.playChars.length == 0 && resultCode == RESULT_OK) {
                         new SuccessiveSnackbars(findViewById(R.id.activityRoot), Snackbar.LENGTH_LONG, this,
                                 R.string.mma_noPlayingCharsAssigned, R.string.mma_nothingToDoInParty).show();
                     }

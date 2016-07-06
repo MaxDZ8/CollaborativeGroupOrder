@@ -268,12 +268,11 @@ public class PartyCreator extends PublishAcceptHelper {
                 generatedParty.devices = longer;
             }
             {
-                int previously = generatedParty.devices.length;
+                int previously = generatedParty.party.length;
                 StartData.ActorDefinition[] longer = Arrays.copyOf(generatedParty.party, previously + pcCount);
                 pcCount = previously;
                 for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
                     if(dev.kicked || !dev.groupMember) continue;
-                    devCount++; // save all devices, even if they don't have proposed a pg
                     for (BuildingPlayingCharacter pc : dev.chars) {
                         if(pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED) continue;
                         longer[pcCount++] = from(pc);
