@@ -1,19 +1,19 @@
 package com.massimodz8.collaborativegrouporder.master;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.google.protobuf.nano.CodedOutputByteBufferNano;
-import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
-import com.massimodz8.collaborativegrouporder.AsyncLoadUpdateTask;
+import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PersistentDataUtils;
@@ -242,71 +242,67 @@ public class PartyCreator extends PublishAcceptHelper {
         }
     }
 
-    public AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> saveParty(final @NonNull Activity activity, @NonNull AsyncLoadUpdateTask.Callbacks cb) {
-        return new AsyncActivityLoadUpdateTask<StartData.PartyOwnerData>(PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, "groupList-", activity, cb) {
-            @Override
-            protected void appendNewEntry(StartData.PartyOwnerData loaded) {
-                if(mode == MODE_ADD_NEW_DEVICES_TO_EXISTING) { // everything is already there but I must generate the new keys.
-                    int devCount = 0, pcCount = 0;
-                    for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
-                        if(dev.kicked || !dev.groupMember) continue;
-                        devCount++; // save all devices, even if they don't have proposed a pg
-                        for (BuildingPlayingCharacter pc : dev.chars) {
-                            if(pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED) continue;
-                            pcCount++;
-                        }
-                    }
-                    {
-                        int previously = generatedParty.devices.length;
-                        StartData.PartyOwnerData.DeviceInfo[] longer = Arrays.copyOf(generatedParty.devices, previously + devCount);
-                        System.arraycopy(generatedParty.devices, 0, longer, 0, previously);
-                        devCount = previously;
-                        for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
-                            longer[devCount++] = from(dev);
-                        }
-                        generatedParty.devices = longer;
-                    }
-                    {
-                        int previously = generatedParty.devices.length;
-                        StartData.ActorDefinition[] longer = Arrays.copyOf(generatedParty.party, previously + pcCount);
-                        pcCount = previously;
-                        for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
-                            if(dev.kicked || !dev.groupMember) continue;
-                            devCount++; // save all devices, even if they don't have proposed a pg
-                            for (BuildingPlayingCharacter pc : dev.chars) {
-                                if(pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED) continue;
-                                longer[pcCount++] = from(pc);
-                            }
-                        }
-                        generatedParty.party = longer;
-                    }
-                    return;
+    interface SaveCompleteListener {
+        void done(@Nullable Exception error);
+    }
+
+    AsyncRenamingStore<StartData.PartyOwnerData> startSave(ArrayList<StartData.PartyOwnerData.Group> everything, final AppCompatActivity act, final @NonNull SaveCompleteListener onComplete) {
+        if(mode == MODE_ADD_NEW_DEVICES_TO_EXISTING) { // everything is already there but I must generate the new keys.
+            int devCount = 0, pcCount = 0;
+            for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                if(dev.kicked || !dev.groupMember) continue;
+                devCount++; // save all devices, even if they don't have proposed a pg
+                for (BuildingPlayingCharacter pc : dev.chars) {
+                    if(pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED) continue;
+                    pcCount++;
                 }
-                StartData.PartyOwnerData.Group[] longer = new StartData.PartyOwnerData.Group[loaded.everything.length + 1];
-                System.arraycopy(loaded.everything, 0, longer, 0, loaded.everything.length);
-                if(null == generatedParty) generatedParty = makeGroup(activity.getFilesDir());
-                longer[loaded.everything.length] = generatedParty;
-                loaded.everything = longer;
+            }
+            {
+                int previously = generatedParty.devices.length;
+                StartData.PartyOwnerData.DeviceInfo[] longer = Arrays.copyOf(generatedParty.devices, previously + devCount);
+                System.arraycopy(generatedParty.devices, 0, longer, 0, previously);
+                devCount = previously;
+                for (PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                    longer[devCount++] = from(dev);
+                }
+                generatedParty.devices = longer;
+            }
+            {
+                int previously = generatedParty.devices.length;
+                StartData.ActorDefinition[] longer = Arrays.copyOf(generatedParty.party, previously + pcCount);
+                pcCount = previously;
+                for(PartyDefinitionHelper.DeviceStatus dev : building.clients) {
+                    if(dev.kicked || !dev.groupMember) continue;
+                    devCount++; // save all devices, even if they don't have proposed a pg
+                    for (BuildingPlayingCharacter pc : dev.chars) {
+                        if(pc.status != BuildingPlayingCharacter.STATUS_ACCEPTED) continue;
+                        longer[pcCount++] = from(pc);
+                    }
+                }
+                generatedParty.party = longer;
+            }
+        }
+        else {
+            generatedParty = new StartData.PartyOwnerData.Group();
+            generatedStat = new Session.Suspended();
+            everything.add(generatedParty);
+        }
+
+        return new AsyncRenamingStore<StartData.PartyOwnerData>(act.getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_GROUP_DATA_FILE_NAME, PersistentDataUtils.makePartyOwnerData(everything)) {
+            @Override
+            protected String getString(@StringRes int res) {
+                return act.getString(res);
             }
 
             @Override
-            protected void setVersion(StartData.PartyOwnerData result) {
-                result.version = PersistentDataUtils.OWNER_DATA_VERSION;
+            protected Exception doInBackground(Void... params) {
+                if (MODE_ADD_NEW_DEVICES_TO_EXISTING != mode) RunningServiceHandles.getInstance().create.makeGroup(generatedParty, act.getFilesDir());
+                return super.doInBackground(params);
             }
 
             @Override
-            protected void upgrade(PersistentDataUtils helper, StartData.PartyOwnerData result) {
-                helper.upgrade(result);
-            }
-
-            @Override
-            protected ArrayList<String> validateLoadedDefinitions(PersistentDataUtils helper, StartData.PartyOwnerData result) {
-                return helper.validateLoadedDefinitions(result);
-            }
-
-            @Override
-            protected StartData.PartyOwnerData allocate() {
-                return new StartData.PartyOwnerData();
+            protected void onPostExecute(Exception e) {
+                onComplete.done(e);
             }
         };
     }
@@ -446,8 +442,7 @@ public class PartyCreator extends PublishAcceptHelper {
     }
 
 
-    private StartData.PartyOwnerData.Group makeGroup(File filesDir) {
-        StartData.PartyOwnerData.Group ret = new StartData.PartyOwnerData.Group();
+    void makeGroup(@NonNull StartData.PartyOwnerData.Group ret, File filesDir) {
         ret.created = new com.google.protobuf.nano.Timestamp();
         ret.created.seconds = System.currentTimeMillis() / 1000;
         ret.sessionFile = PersistentDataUtils.makeInitialSession(new Date(ret.created.seconds * 1000), filesDir, building.name);
@@ -485,7 +480,6 @@ public class PartyCreator extends PublishAcceptHelper {
             }
         }
         for (BuildingPlayingCharacter loc : building.localChars) ret.party[count++] = from(loc);
-        return ret;
     }
 
     private static StartData.PartyOwnerData.DeviceInfo from(PartyDefinitionHelper.DeviceStatus dev) {

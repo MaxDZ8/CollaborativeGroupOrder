@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.HoriSwipeOnlyTouchCallback;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
@@ -25,7 +25,6 @@ import com.massimodz8.collaborativegrouporder.ProtobufSupport;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.protocol.nano.RPGClass;
-import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
 
@@ -133,9 +132,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                                 status.setText(R.string.ncaa_savingPleaseWait);
                                 findViewById(R.id.ncaa_list).setEnabled(false);
                                 item.setEnabled(false);
-                                final AsyncActivityLoadUpdateTask<StartData.PartyOwnerData> temp = room.saveParty(NewCharactersApprovalActivity.this, new StoreDoneCallbacks(item));
-                                temp.execute();
-                                saving = temp;
+                                startSaving(item);
                             }
                         }).show();
                 break;
@@ -151,6 +148,63 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
             }
         }
         return false;
+    }
+
+    private void startSaving(final MenuItem item) {
+        final ArrayList<StartData.PartyOwnerData.Group> everything = new ArrayList<>(RunningServiceHandles.getInstance().state.data.groupDefs);
+        saving = room.startSave(everything, NewCharactersApprovalActivity.this, new PartyCreator.SaveCompleteListener() {
+            @Override
+            public void done(@Nullable Exception e) {
+                saving = null;
+                item.setEnabled(true);
+                if (null != e) {
+                    new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
+                            .setTitle(R.string.generic_IOError)
+                            .setMessage(e.getLocalizedMessage())
+                            .show();
+                    return;
+                }
+                if(room.mode != PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) RunningServiceHandles.getInstance().state.data.groupDefs.add(room.generatedParty);
+                int negative = room.mode != PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING? R.string.dataLoadUpdate_finished_newDataSaved_mainMenu : R.string.dataLoadUpdate_finished_newDataSaved_partyPick;
+                if(room.generatedParty.party.length != 0 && room.generatedParty.devices.length != 0) {
+                    new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
+                            .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
+                            .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.ncaa_newDataSaved_done, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(true, new SendCompleteCallback(true));
+                                    sending = temp;
+                                    temp.execute();
+                                }
+                            })
+                            .setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(false, new SendCompleteCallback(false));
+                                    sending = temp;
+                                    temp.execute();
+                                }
+                            })
+                            .show();
+                } else {
+                    new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
+                            .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
+                            .setMessage(R.string.dataLoadUpdate_newEmptyGroupSaved_msg)
+                            .setCancelable(false)
+                            .setNegativeButton(negative, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(false, new SendCompleteCallback(false));
+                                    sending = temp;
+                                    temp.execute();
+                                }
+                            })
+                            .show();
+                }
+            }
+        });
     }
 
     @Override
@@ -169,81 +223,6 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
     }
 
     AsyncTask saving, sending;
-
-    private class StoreDoneCallbacks extends AsyncActivityLoadUpdateTask.ActivityCallbacks {
-        public StoreDoneCallbacks(MenuItem item) {
-            super(NewCharactersApprovalActivity.this);
-            target = item;
-        }
-
-        private final MenuItem target;
-
-        @Override
-        public void onFailedExistingLoad(@NonNull ArrayList<String> errors) {
-            saving = null;
-            target.setEnabled(true);
-            super.onFailedExistingLoad(errors);
-        }
-
-        @Override
-        public void onFailedSave(@NonNull Exception wrong) {
-            saving = null;
-            target.setEnabled(true);
-            super.onFailedSave(wrong);
-        }
-
-        @Override
-        public void onCompletedSuccessfully() {
-            saving = null;
-            target.setEnabled(true);
-            int negative;
-            if(room.mode != PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING) {
-                ArrayList<StartData.PartyOwnerData.Group> defs = RunningServiceHandles.getInstance().state.data.groupDefs;
-                defs.add(room.generatedParty);
-                room.generatedStat = new Session.Suspended();
-                negative = R.string.dataLoadUpdate_finished_newDataSaved_mainMenu;
-            }
-            else negative = R.string.dataLoadUpdate_finished_newDataSaved_partyPick;
-            if(room.generatedParty.party.length != 0 && room.generatedParty.devices.length != 0) {
-                new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
-                        .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
-                        .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
-                        .setCancelable(false)
-                        .setPositiveButton(R.string.ncaa_newDataSaved_done, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(true, new SendCompleteCallback(true));
-                                sending = temp;
-                                temp.execute();
-                            }
-                        })
-                        .setNegativeButton(negative, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(false, new SendCompleteCallback(false));
-                                sending = temp;
-                                temp.execute();
-                            }
-                        })
-                        .show();
-            }
-            else {
-                new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
-                        .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
-                        .setMessage(R.string.dataLoadUpdate_newEmptyGroupSaved_msg)
-                        .setCancelable(false)
-                        .setNegativeButton(negative, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                final AsyncTask<Void, Void, Void> temp = room.sendPartyCompleteMessages(false, new SendCompleteCallback(false));
-                                sending = temp;
-                                temp.execute();
-                            }
-                        })
-                        .show();
-            }
-        }
-    }
 
     private class SendCompleteCallback implements Runnable {
         private final boolean goAdventuring;

@@ -1,8 +1,8 @@
 package com.massimodz8.collaborativegrouporder.client;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
+import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.MaxUtils;
 import com.massimodz8.collaborativegrouporder.PCViewHolder;
@@ -116,63 +116,57 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         }
         if(!state.done || !state.detached || state.party.salt == null) return; // wait some more. A bit of a waste but that's milliseconds, not relevant for UI
         if(state.saving == null) {
-            final UpdateCallback callback = new UpdateCallback(this);
-            state.saving = new AsyncActivityLoadUpdateTask<StartData.PartyClientData>(PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME, "keyList-", self, callback) {
+            ArrayList<StartData.PartyClientData.Group> longer = new ArrayList<>(RunningServiceHandles.getInstance().state.data.groupKeys);
+            final StartData.PartyClientData.Group gen = new StartData.PartyClientData.Group();
+            gen.key = state.party.salt;
+            gen.name = state.party.group.name;
+            gen.received = new com.google.protobuf.nano.Timestamp();
+            gen.received.seconds = System.currentTimeMillis() / 1000;
+            //gen.sessionFile = PersistentDataUtils.makeInitialSession(new Date(), self.getFilesDir(), gen.name); // nope! Working thread!
+            longer.add(gen);
+            state.saving = new AsyncRenamingStore<StartData.PartyClientData>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_KEY_FILE_NAME, PersistentDataUtils.makePartyClientData(longer)) {
                 @Override
-                protected void appendNewEntry(StartData.PartyClientData loaded) {
-                    StartData.PartyClientData.Group[] longer = new StartData.PartyClientData.Group[loaded.everything.length + 1];
-                    System.arraycopy(loaded.everything, 0, longer, 0, loaded.everything.length);
-                    StartData.PartyClientData.Group gen = new StartData.PartyClientData.Group();
-                    gen.key = state.party.salt;
-                    gen.name = state.party.group.name;
-                    gen.received = new com.google.protobuf.nano.Timestamp();
-                    gen.received.seconds = System.currentTimeMillis() / 1000;
-                    gen.sessionFile = PersistentDataUtils.makeInitialSession(new Date(), self.getFilesDir(), gen.name);
-                    longer[loaded.everything.length] = gen;
-                    loaded.everything =  longer;
-                    callback.saved = gen;
+                protected String getString(@StringRes int res) {
+                    return NewCharactersProposalActivity.this.getString(res);
                 }
+
                 @Override
-                protected void setVersion(StartData.PartyClientData result) { result.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION; }
+                protected Exception doInBackground(Void... params) {
+                    gen.sessionFile = PersistentDataUtils.makeInitialSession(new Date(), getFilesDir(), gen.name); // nope! Working thread!
+                    return super.doInBackground(params);
+                }
+
                 @Override
-                protected void upgrade(PersistentDataUtils helper, StartData.PartyClientData result) { helper.upgrade(result); }
-                @Override
-                protected ArrayList<String> validateLoadedDefinitions(PersistentDataUtils helper, StartData.PartyClientData result) { return helper.validateLoadedDefinitions(result); }
-                @Override
-                protected StartData.PartyClientData allocate() { return new StartData.PartyClientData(); }
+                protected void onPostExecute(Exception e) {
+                    state.saving = null;
+                    if(e != null) {
+                        new AlertDialog.Builder(NewCharactersProposalActivity.this, R.style.AppDialogStyle)
+                                .setTitle(R.string.generic_IOError)
+                                .setMessage(e.getLocalizedMessage())
+                                .show();
+                        return;
+                    }
+                    final RunningServiceHandles handles = RunningServiceHandles.getInstance();
+                    handles.state.data.groupKeys.add(gen);
+                    handles.newChars.resParty = gen;
+                    final boolean goAdventuring = handles.newChars.master != null;
+                    String extra = ' ' + getString(R.string.ncpa_goingAdventuring);
+                    String msg = String.format(getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");
+                    int label = goAdventuring ? R.string.ncpa_goAdventuring : R.string.ncpa_newDataSaved_done;
+                    new AlertDialog.Builder(NewCharactersProposalActivity.this, R.style.AppDialogStyle)
+                            .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
+                            .setMessage(msg)
+                            .setCancelable(false)
+                            .setPositiveButton(label, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    setResult(RESULT_OK);
+                                    finish();
+                                }
+                            })
+                            .show();
+                }
             };
-            state.saving.execute();
-        }
-    }
-
-    private static class UpdateCallback extends AsyncActivityLoadUpdateTask.ActivityCallbacks {
-        public StartData.PartyClientData.Group saved;
-
-        public UpdateCallback(Activity owner) {
-            super(owner);
-        }
-
-        @Override
-        public void onCompletedSuccessfully() {
-            final RunningServiceHandles handles = RunningServiceHandles.getInstance();
-            handles.state.data.groupKeys.add(saved);
-            handles.newChars.resParty = saved;
-            final boolean goAdventuring = handles.newChars.master != null;
-            String extra = ' ' + owner.getString(R.string.ncpa_goingAdventuring);
-            String msg = String.format(owner.getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");
-            int label = goAdventuring ? R.string.ncpa_goAdventuring : R.string.ncpa_newDataSaved_done;
-            new AlertDialog.Builder(owner, R.style.AppDialogStyle)
-                    .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
-                    .setMessage(msg)
-                    .setCancelable(false)
-                    .setPositiveButton(label, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            owner.setResult(RESULT_OK);
-                            owner.finish();
-                        }
-                    })
-                    .show();
         }
     }
 
