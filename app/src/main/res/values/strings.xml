@@ -147,7 +147,7 @@
     <string name="npdsa_menu_hiddenDevices">Manage hidden devices</string>
     <string name="npdsaAM_setName">Set name</string>
     <string name="npdsaAM_setCharBudget">Set characters budget</string>
-    <string name="npdsa_tapHint">Tap devices to let them in the party.</string>
+    <string name="npdsa_tapHint">Tap devices to remove them from party.</string>
     <string name="npdsa_longTapHint">Long tap device for options</string>
     <string name="npdsa_notifyContentNew">Forming new party.</string>
     <string name="npdsa_notifyContentAdd">Adding to existing party.</string>

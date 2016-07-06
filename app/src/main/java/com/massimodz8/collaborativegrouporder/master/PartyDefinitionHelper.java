@@ -267,7 +267,7 @@ public abstract class PartyDefinitionHelper {
         public final MessageChannel source;
         public String lastMessage; // if null still not talking
         public int charBudget;
-        public boolean groupMember;
+        public boolean groupMember = true;
         public boolean kicked;
         public ArrayList<BuildingPlayingCharacter> chars = new ArrayList<>(); // if contains something we have been promoted
         public Date nextMessage;
