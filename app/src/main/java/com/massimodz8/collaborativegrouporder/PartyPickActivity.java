@@ -140,8 +140,8 @@ public class PartyPickActivity extends AppCompatActivity {
             RecyclerView rv = ownedFragments.get(activeParty).actorList;
             if (rv != null) rv.getAdapter().notifyDataSetChanged();
         }
-        handles.create.shutdown();
-        handles.create = null;
+        // Nope! Leave it to main menu activity!
+        //handles.create.shutdown();
         boolean goAdventuring = data != null && data.getBooleanExtra(NewCharactersApprovalActivity.RESULT_EXTRA_GO_ADVENTURING, false);
         if(goAdventuring && activeParty != null) new SelectionListener(this, activeParty).onClick(null);
     }

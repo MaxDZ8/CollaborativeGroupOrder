@@ -264,11 +264,17 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     Session.Suspended activeStats = activeParty != null ? handles.pick.sessionData.get(activeParty) : null;
                     if (activeParty instanceof StartData.PartyOwnerData.Group) {
                         StartData.PartyOwnerData.Group real = (StartData.PartyOwnerData.Group) activeParty;
-                        startNewSessionActivity(real, null, null, activeStats);
+                        final ServerSocket landing = null != handles.create? handles.create.getLanding(true) : null;
+                        Pumper.MessagePumpingThread[] clients = null != handles.create ? handles.create.moveClients() : null;
+                        startNewSessionActivity(real, landing, clients, activeStats);
                     } else if (activeParty instanceof StartData.PartyClientData.Group) {
                         StartData.PartyClientData.Group real = (StartData.PartyClientData.Group) activeParty;
                         startGoAdventuringActivity(real, null);
                     }
+                }
+                if(null != handles.create) {
+                    handles.create.shutdown();
+                    handles.create = null;
                 }
                 handles.pick = null;
                 break;
@@ -298,7 +304,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     handles.state.notification = updated;
                 }
                 else {
-                    if(handles.bindChars.playChars == null || handles.bindChars.playChars.length == 0 && resultCode == RESULT_OK) {
+                    if((handles.bindChars.playChars == null || handles.bindChars.playChars.length == 0) && resultCode == RESULT_OK) {
                         new SuccessiveSnackbars(findViewById(R.id.activityRoot), Snackbar.LENGTH_LONG, this,
                                 R.string.mma_noPlayingCharsAssigned, R.string.mma_nothingToDoInParty).show();
                     }
