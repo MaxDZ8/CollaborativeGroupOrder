@@ -141,6 +141,7 @@ public abstract class PartyDefinitionHelper {
         int prevCount = countTalkingDevices();
         owner.charBudget -= ev.msg.text.length();
         owner.nextMessage = new Date(new Date().getTime() + PEER_MESSAGE_INTERVAL_MS);
+        if(null == owner.lastMessage) owner.groupMember = true; // promote automatically
         owner.lastMessage = ev.msg.text;
         onMessageChanged(owner);
         int now = countTalkingDevices();
@@ -267,7 +268,7 @@ public abstract class PartyDefinitionHelper {
         public final MessageChannel source;
         public String lastMessage; // if null still not talking
         public int charBudget;
-        public boolean groupMember = true;
+        public boolean groupMember;
         public boolean kicked;
         public ArrayList<BuildingPlayingCharacter> chars = new ArrayList<>(); // if contains something we have been promoted
         public Date nextMessage;
