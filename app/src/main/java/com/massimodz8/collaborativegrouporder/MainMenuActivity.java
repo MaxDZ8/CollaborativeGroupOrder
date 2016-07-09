@@ -295,10 +295,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                                 R.string.mma_noPlayingCharsAssigned, R.string.mma_nothingToDoInParty).show();
                     }
                     else {
-                        handles.clientPlay = new Adventure(handles.bindChars.party, handles.bindChars.advancement);
-                        ActorOverviewActivity.prepare(
-                                handles.bindChars.playChars,
-                                handles.bindChars.moveWorker());
+                        handles.clientPlay = new Adventure(handles.bindChars.party, handles.bindChars.advancement, handles.bindChars.playChars, handles.bindChars.moveWorker());
                         startActivityForResult(new Intent(this, ActorOverviewActivity.class), REQUEST_CLIENT_PLAY);
 
                         Notification updated = handles.state.buildNotification(handles.bindChars.party.name, getString(R.string.mma_notificationDesc));
