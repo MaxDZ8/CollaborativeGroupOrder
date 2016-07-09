@@ -278,6 +278,8 @@
     <string name="csa_charOwnershipChangeRefused">Your ownership change request for \"%1$s\" was refused.</string>
     <string name="csa_charOwnershipToSomeoneUnsolicited">Character \"%1$s\" taken away.</string>
     <string name="csa_charOwnershipRequestToSomeoneElse">Character \"%1$s\" will be played on another device.</string>
+    <string name="csa_noDefinitiveCharactersHere">The party is now playing, but looks like you have been given no characters! Nothing to do.</string>
+    <string name="csa_noDefinitiveCharactersHereDlgDone">Main menu</string>
 
     <string name="vhCSAS_assigned">Assigned to this device</string>
     <string name="vhCSAS_assignedInstructions">You can swipe those away to give up a character. They will not be deleted.</string>
@@ -788,7 +790,7 @@
     <string name="aa_copyright">©2015–2016 Massimo Del Zotto, all rights reserved.</string>
     <string name="aa_thankyouGoogleForIcons">Makes use of some icons from the material design google group.\nhttps://design.google.com/icons/</string>
     <string name="aa_ogl">This app is meant to be compliant to Open Game License.</string>
-    <string name="aa_contact">For question, suggestions, venting and bugreports see you on the official subreddit:\nhttps://www.reddit.com/r/app_cgo</string>
+    <string name="aa_contact">For questions, suggestions, venting and bugreports see you on the official subreddit:\nhttps://www.reddit.com/r/app_cgo</string>
     <string name="aa_versionFormat">Version: %1$s</string>
     <string name="aa_commitFormat" translatable="false">Patchlevel: %1$s</string>
     <string name="aa_lastUpdated">Last updated: %1$s</string>
