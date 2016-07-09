@@ -182,6 +182,7 @@ public class GatheringActivity extends AppCompatActivity {
                 yours.type = Network.PhaseControl.T_DEFINITIVE_CHAR_ASSIGNMENT;
                 final StartData.ActorDefinition[] playingChars = room.assignmentHelper.party.party;
                 for (PcAssignmentHelper.PlayingDevice known : room.assignmentHelper.peers) {
+                    if(known.isAnonymous()) continue;
                     if(known.pipe == null) continue; // not very likely but possible if connection has just gone down!
                     int count = 0;
                     for(int index = 0; index < playingChars.length; index++) {

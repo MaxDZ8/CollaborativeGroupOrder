@@ -264,11 +264,17 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     Session.Suspended activeStats = activeParty != null ? handles.pick.sessionData.get(activeParty) : null;
                     if (activeParty instanceof StartData.PartyOwnerData.Group) {
                         StartData.PartyOwnerData.Group real = (StartData.PartyOwnerData.Group) activeParty;
-                        startNewSessionActivity(real, null, null, activeStats);
+                        final ServerSocket landing = null != handles.create? handles.create.getLanding(true) : null;
+                        Pumper.MessagePumpingThread[] clients = null != handles.create ? handles.create.moveClients() : null;
+                        startNewSessionActivity(real, landing, clients, activeStats);
                     } else if (activeParty instanceof StartData.PartyClientData.Group) {
                         StartData.PartyClientData.Group real = (StartData.PartyClientData.Group) activeParty;
                         startGoAdventuringActivity(real, null);
                     }
+                }
+                if(null != handles.create) {
+                    handles.create.shutdown();
+                    handles.create = null;
                 }
                 handles.pick = null;
                 break;
@@ -283,28 +289,24 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 handles.joinGame = null;
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                boolean keep = false;
-                if(resultCode == RESULT_OK && handles.bindChars.playChars != null && handles.bindChars.playChars.length > 0) {
-                    keep = true;
-                    handles.clientPlay = new Adventure(handles.bindChars.party, handles.bindChars.advancement);
-                    ActorOverviewActivity.prepare(
-                            handles.bindChars.playChars,
-                            handles.bindChars.server);
-                    startActivityForResult(new Intent(this, ActorOverviewActivity.class), REQUEST_CLIENT_PLAY);
-
-                    Notification updated = handles.state.buildNotification(handles.bindChars.party.name, getString(R.string.mma_notificationDesc));
-                    NotificationManager man = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    if(man != null) man.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, updated);
-                    handles.state.notification = updated;
-                }
-                else {
+                if(resultCode == RESULT_OK) {
                     if(handles.bindChars.playChars == null || handles.bindChars.playChars.length == 0) {
                         new SuccessiveSnackbars(findViewById(R.id.activityRoot), Snackbar.LENGTH_LONG, this,
                                 R.string.mma_noPlayingCharsAssigned, R.string.mma_nothingToDoInParty).show();
                     }
-                    handles.state.baseNotification();
+                    else {
+                        handles.clientPlay = new Adventure(handles.bindChars.party, handles.bindChars.advancement, handles.bindChars.playChars, handles.bindChars.moveWorker());
+                        startActivityForResult(new Intent(this, ActorOverviewActivity.class), REQUEST_CLIENT_PLAY);
+
+                        Notification updated = handles.state.buildNotification(handles.bindChars.party.name, getString(R.string.mma_notificationDesc));
+                        NotificationManager man = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        if (man != null)
+                            man.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, updated);
+                        handles.state.notification = updated;
+                    }
                 }
-                handles.bindChars.shutdown(keep);
+                handles.state.baseNotification();
+                handles.bindChars.shutdown();
                 handles.bindChars = null;
             } break;
             case REQUEST_JOIN_FORMING: {

@@ -3,7 +3,7 @@ package com.massimodz8.collaborativegrouporder.client;
 import android.os.Handler;
 import android.os.Message;
 
-import com.massimodz8.collaborativegrouporder.AsyncActivityLoadUpdateTask;
+import com.massimodz8.collaborativegrouporder.AsyncRenamingStore;
 import com.massimodz8.collaborativegrouporder.BuildingPlayingCharacter;
 import com.massimodz8.collaborativegrouporder.Mailman;
 import com.massimodz8.collaborativegrouporder.PseudoStack;
@@ -31,7 +31,7 @@ public class CharacterProposals {
     boolean disconnected;
     boolean detached;
     boolean done;
-    public AsyncActivityLoadUpdateTask<StartData.PartyClientData> saving;
+    public AsyncRenamingStore<StartData.PartyClientData> saving;
 
     final Handler handler = new MyHandler(this);
     final Pumper pump = new Pumper(handler, MSG_SOCKET_DISCONNECTED, MSG_PUMPER_DETACHED)

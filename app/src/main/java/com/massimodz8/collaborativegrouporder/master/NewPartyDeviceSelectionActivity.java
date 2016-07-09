@@ -36,6 +36,7 @@ import com.massimodz8.collaborativegrouporder.PreSeparatorDecorator;
 import com.massimodz8.collaborativegrouporder.ProtobufSupport;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
+import com.massimodz8.collaborativegrouporder.SuccessiveSnackbars;
 import com.massimodz8.collaborativegrouporder.networkio.MessageChannel;
 import com.massimodz8.collaborativegrouporder.protocol.nano.LevelAdvancement;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
@@ -202,13 +203,9 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 previously[0] = count;
                 if(previously[1] == 0) {
                     final View root = findViewById(R.id.activityRoot);
-                    Snackbar.make(root, R.string.npdsa_tapHint, Snackbar.LENGTH_SHORT)
-                            .setCallback(new Snackbar.Callback() {
-                                @Override
-                                public void onDismissed(Snackbar snackbar, int event) {
-                                    Snackbar.make(root, R.string.npdsa_longTapHint, Snackbar.LENGTH_SHORT).show();
-                                }
-                            })
+                    new SuccessiveSnackbars(root, Snackbar.LENGTH_SHORT, NewPartyDeviceSelectionActivity.this,
+                            R.string.npdsa_tapHint,
+                            R.string.npdsa_longTapHint)
                             .show();
                     previously[1] = 1;
                 }

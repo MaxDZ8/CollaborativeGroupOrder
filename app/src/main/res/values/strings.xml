@@ -45,7 +45,6 @@
     <string name="card_group_options">Options: </string>
     <string name="card_joinableGroup_lengthMaxDivisor" translatable="false"> / </string>
 
-    <string name="persistentStorage_cannotReadGroupList">File exists but cannot be read. This is unlikely to happen by accident so you\'re better check your system is fine.</string>
     <string name="persistentStorage_archiveTooBig">Data archive exceeds maximum size.</string>
     <string name="persistentStorage_groupDataVersionZero">party version 0 should have never been saved.</string>
     <string name="persistentStorage_groupNameClash">party %1$d clashes with %2$d, both are named \"%3$s\".</string>
@@ -78,15 +77,11 @@
     <string name="persistentStorage_invalidCurrentActor">Invalid current actor.</string>
     <string name="persistentStorage_badLevelAdvancementPace">: level advancement unspecified.</string>
 
-    <string name="dataLoadUpdate_badGroupInfoFromStorage">Failed to load already existing data. New data will not be saved to preserve previous contents. Details: %1$s</string>
     <string name="dataLoadUpdate_newGroupSaved_title">Success!</string>
     <string name="dataLoadUpdate_newGroupSaved_msg">Party saved to internal storage. Do you want to go adventuring right away?</string>
     <string name="dataLoadUpdate_newEmptyGroupSaved_msg">Empty party saved to internal storage. We\'re going back to main menu now.</string>
     <string name="dataLoadUpdate_finished_newDataSaved_mainMenu">Main menu</string>
     <string name="dataLoadUpdate_finished_newDataSaved_partyPick">Party pick</string>
-    <string name="dataLoadUpdate_couldNotStoreNewData">Could not store new party data. Error: %1$s</string>
-    <string name="dataLoadUpdate_failedPreviousDataDelete">failed to delete previous contents, new data will be discarded to maintain the old.</string>
-    <string name="dataLoadUpdate_failedNewDataRenamePreviousDestroyed">Failed to rename new data to override old. Old data storage has been destroyed but data itself is preserved.</string>
 
     <string name="sfga_title">Joining a new party</string>
     <string name="sfga_lookingForParties">Searching for parties. Found parties will appear below.</string>
@@ -152,7 +147,7 @@
     <string name="npdsa_menu_hiddenDevices">Manage hidden devices</string>
     <string name="npdsaAM_setName">Set name</string>
     <string name="npdsaAM_setCharBudget">Set characters budget</string>
-    <string name="npdsa_tapHint">Tap devices to let them in the party.</string>
+    <string name="npdsa_tapHint">Tap devices to remove them from party.</string>
     <string name="npdsa_longTapHint">Long tap device for options</string>
     <string name="npdsa_notifyContentNew">Forming new party.</string>
     <string name="npdsa_notifyContentAdd">Adding to existing party.</string>
@@ -283,8 +278,6 @@
     <string name="csa_charOwnershipChangeRefused">Your ownership change request for \"%1$s\" was refused.</string>
     <string name="csa_charOwnershipToSomeoneUnsolicited">Character \"%1$s\" taken away.</string>
     <string name="csa_charOwnershipRequestToSomeoneElse">Character \"%1$s\" will be played on another device.</string>
-    <string name="csa_noDefinitiveCharactersHere">The party is now playing, but looks like you have been given no characters! Nothing to do.</string>
-    <string name="csa_noDefinitiveCharactersHereDlgDone">Main menu</string>
 
     <string name="vhCSAS_assigned">Assigned to this device</string>
     <string name="vhCSAS_assignedInstructions">You can swipe those away to give up a character. They will not be deleted.</string>

@@ -93,6 +93,6 @@
         android:layout_column="0"
         android:layout_columnSpan="4"
         android:text="@string/mVH_tappedFeedback"
-        android:drawableRight="@mipmap/ic_start_battle"
+        android:drawableRight="@drawable/ic_start_battle_white_24dp"
         android:layout_gravity="right" />
 </GridLayout>

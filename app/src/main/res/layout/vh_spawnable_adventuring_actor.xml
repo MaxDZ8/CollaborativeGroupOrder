@@ -30,7 +30,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:id="@+id/vhSAA_spawnCount"
         android:layout_gravity="left"
-        android:drawableLeft="@mipmap/ic_start_battle"
-        android:drawableRight="@mipmap/ic_start_battle" />
+        android:drawableLeft="@drawable/ic_start_battle_white_24dp"
+        android:drawableRight="@drawable/ic_start_battle_white_24dp" />
 
 </LinearLayout>

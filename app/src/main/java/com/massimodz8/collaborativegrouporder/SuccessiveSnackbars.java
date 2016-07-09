@@ -21,14 +21,14 @@ public class SuccessiveSnackbars extends Snackbar.Callback {
     final String[] messages;
     int next = 0;
 
-    SuccessiveSnackbars(@NonNull View root, final int duration, @NonNull Context resolver, @StringRes int... messages) {
+    public SuccessiveSnackbars(@NonNull View root, final int duration, @NonNull Context resolver, @StringRes int... messages) {
         this.root = new WeakReference<>(root);
         this.duration = duration;
         this.messages = new String[messages.length];
         for(int loop = 0; loop < messages.length; loop++) this.messages[loop] = resolver.getString(messages[loop]);
     }
 
-    SuccessiveSnackbars(@NonNull View root, final int duration, String... messages) {
+    public SuccessiveSnackbars(@NonNull View root, final int duration, String... messages) {
         this.root = new WeakReference<>(root);
         this.duration = duration;
         this.messages = messages;

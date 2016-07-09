@@ -141,6 +141,7 @@ public abstract class PartyDefinitionHelper {
         int prevCount = countTalkingDevices();
         owner.charBudget -= ev.msg.text.length();
         owner.nextMessage = new Date(new Date().getTime() + PEER_MESSAGE_INTERVAL_MS);
+        if(null == owner.lastMessage) owner.groupMember = true; // promote automatically
         owner.lastMessage = ev.msg.text;
         onMessageChanged(owner);
         int now = countTalkingDevices();

@@ -31,7 +31,7 @@ import java.util.Map;
 public class Adventure {
     public final StartData.PartyClientData.Group party;
     public final int advancementPace;
-    @ActorId int[] playedHere; // actors played here, added automatically to this.actors after flushed
+    final @ActorId int[] playedHere; // actors played here, added automatically to this.actors after flushed
     public HashMap<Integer, ActorWithKnownOrder> actors = new HashMap<>(); // ID -> struct, flushed every time a new battle starts
     public ArrayList<String> errors;
 
@@ -45,7 +45,7 @@ public class Adventure {
     final ArrayDeque<Network.Roll> rollRequests = new ArrayDeque<>();
     public int round = ROUND_NOT_FIGHTING; // 0 = waiting other players roll 1+ fighting
     public final Mailman mailman = new Mailman();
-    public MessageChannel pipe;
+    final public MessageChannel pipe;
     int ended = S_PLAYING; // set by wire using Network.PhaseControl with .type = T_SESSION_ENDED
 
     public static final int ROUND_NOT_FIGHTING = -1;
@@ -68,10 +68,14 @@ public class Adventure {
         public int xpReceived;
     }
 
-    public Adventure(StartData.PartyClientData.Group party, int advancementPace) {
+    public Adventure(StartData.PartyClientData.Group party, int advancementPace, int[] playedHere, Pumper.MessagePumpingThread master) {
         this.party = party;
         this.advancementPace = advancementPace;
-        mailman.start(); }
+        this.playedHere = playedHere;
+        this.pipe = master.getSource();
+        netPump.pump(master);
+        mailman.start();
+    }
 
     private Handler handler = new MyHandler(this);
     Pumper netPump = new Pumper(handler, MSG_DISCONNECT, MSG_DETACH)

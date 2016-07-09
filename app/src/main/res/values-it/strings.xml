@@ -485,7 +485,7 @@
     <string name="npdsa_notifyContentNew">Formazione nuovo gruppo</string>
     <string name="npdsa_sealing_title">Finalizzazione gruppo</string>
     <string name="npdsa_singleDeviceParty">Il gruppo conta un solo dispositivo.</string>
-    <string name="npdsa_tapHint">Tocca i dispositivi per inserirli nel gruppo.</string>
+    <string name="npdsa_tapHint">Tocca i dispositivi per rimuoverli dal gruppo.</string>
     <string name="npdsa_title">Selezione dispositivi</string>
     <string name="npdsa_unknownDeviceName">Dispositivo %1$s sconosciuto</string>
     <string name="npdsa_waitingPartyName">Attendo un nome gruppo.</string>

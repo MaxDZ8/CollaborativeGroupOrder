@@ -191,11 +191,10 @@ public class PcAssignmentState {
         return null;
     }
 
-    public void shutdown(boolean keepServerPipe) {
+    public void shutdown() {
         sender.out.add(new SendRequest());
         sender.interrupt();
         final Pumper.MessagePumpingThread[] goner = netPump.move();
-        if(!keepServerPipe) {
             new Thread() {
                 @Override
                 public void run() {
@@ -211,6 +210,9 @@ public class PcAssignmentState {
                 }
             }.start();
         }
+
+    public Pumper.MessagePumpingThread moveWorker() {
+        return netPump.move(server.getSource());
     }
 
     private void addChar(Network.PlayingCharacterDefinition newDef) {

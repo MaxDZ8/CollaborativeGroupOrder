@@ -55,17 +55,6 @@ import java.util.Map;
 public class ActorOverviewActivity extends AppCompatActivity {
     private @UserOf Adventure ticker;
 
-    // Before starting this activity, make sure to populate its connection parameters and friends.
-    // Those will be cleared as soon as the activity goes onCreate and then never reused again.
-    // onCreate assumes those non-null. Just call prepare(...)
-    private static Pumper.MessagePumpingThread serverWorker; // in
-    private static int[] actorKeys; // in, server ids of actors to manage here
-
-    public static void prepare(int[] actorKeys_, Pumper.MessagePumpingThread serverWorker_) {
-        actorKeys = actorKeys_;
-        serverWorker = serverWorker_;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -242,14 +231,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
             @Override
             public void run() { mangleLevelUpTickets(); }
         });
-        if(serverWorker != null) { // Initialize service and start pumping.
-            serverPipe = serverWorker.getSource();
-            ticker.playedHere = actorKeys;
-            ticker.pipe = serverWorker.getSource();
-            ticker.netPump.pump(serverWorker);
-            serverWorker = null;
-            actorKeys = null;
-        }
         ticker.onActorUpdated.get().run();
         ticker.onRollRequestPushed.get().run();
         ticker.onCurrentActorChanged.get().run();
@@ -308,7 +289,6 @@ public class ActorOverviewActivity extends AppCompatActivity {
     }
 
     private RollInitiativeDialog rollDialog;
-    private MessageChannel serverPipe;
     private RecyclerView.Adapter lister = new MyActorAdapter();
 
     private class MyActorAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -452,7 +432,7 @@ public class ActorOverviewActivity extends AppCompatActivity {
             reply.result = ready.result;
             reply.unique = ready.unique;
             reply.peerKey = ready.peerKey;
-            ticker.mailman.out.add(new SendRequest(serverPipe, ProtoBufferEnum.ROLL, reply, null));
+            ticker.mailman.out.add(new SendRequest(ticker.pipe, ProtoBufferEnum.ROLL, reply, null));
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             rollDialog.dlg.dismiss();
             rollDialog = null;
