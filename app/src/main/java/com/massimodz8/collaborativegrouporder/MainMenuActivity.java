@@ -289,28 +289,27 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 handles.joinGame = null;
             } break;
             case REQUEST_BIND_CHARACTERS: {
-                boolean keep = false;
-                if(resultCode == RESULT_OK && handles.bindChars.playChars != null && handles.bindChars.playChars.length > 0) {
-                    keep = true;
-                    handles.clientPlay = new Adventure(handles.bindChars.party, handles.bindChars.advancement);
-                    ActorOverviewActivity.prepare(
-                            handles.bindChars.playChars,
-                            handles.bindChars.server);
-                    startActivityForResult(new Intent(this, ActorOverviewActivity.class), REQUEST_CLIENT_PLAY);
-
-                    Notification updated = handles.state.buildNotification(handles.bindChars.party.name, getString(R.string.mma_notificationDesc));
-                    NotificationManager man = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-                    if(man != null) man.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, updated);
-                    handles.state.notification = updated;
-                }
-                else {
-                    if((handles.bindChars.playChars == null || handles.bindChars.playChars.length == 0) && resultCode == RESULT_OK) {
+                if(resultCode == RESULT_OK) {
+                    if(handles.bindChars.playChars == null || handles.bindChars.playChars.length == 0) {
                         new SuccessiveSnackbars(findViewById(R.id.activityRoot), Snackbar.LENGTH_LONG, this,
                                 R.string.mma_noPlayingCharsAssigned, R.string.mma_nothingToDoInParty).show();
                     }
-                    handles.state.baseNotification();
+                    else {
+                        handles.clientPlay = new Adventure(handles.bindChars.party, handles.bindChars.advancement);
+                        ActorOverviewActivity.prepare(
+                                handles.bindChars.playChars,
+                                handles.bindChars.moveWorker());
+                        startActivityForResult(new Intent(this, ActorOverviewActivity.class), REQUEST_CLIENT_PLAY);
+
+                        Notification updated = handles.state.buildNotification(handles.bindChars.party.name, getString(R.string.mma_notificationDesc));
+                        NotificationManager man = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                        if (man != null)
+                            man.notify(InternalStateService.INTERNAL_STATE_NOTIFICATION_ID, updated);
+                        handles.state.notification = updated;
+                    }
                 }
-                handles.bindChars.shutdown(keep);
+                handles.state.baseNotification();
+                handles.bindChars.shutdown();
                 handles.bindChars = null;
             } break;
             case REQUEST_JOIN_FORMING: {

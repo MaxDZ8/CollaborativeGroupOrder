@@ -278,8 +278,6 @@
     <string name="csa_charOwnershipChangeRefused">Your ownership change request for \"%1$s\" was refused.</string>
     <string name="csa_charOwnershipToSomeoneUnsolicited">Character \"%1$s\" taken away.</string>
     <string name="csa_charOwnershipRequestToSomeoneElse">Character \"%1$s\" will be played on another device.</string>
-    <string name="csa_noDefinitiveCharactersHere">The party is now playing, but looks like you have been given no characters! Nothing to do.</string>
-    <string name="csa_noDefinitiveCharactersHereDlgDone">Main menu</string>
 
     <string name="vhCSAS_assigned">Assigned to this device</string>
     <string name="vhCSAS_assignedInstructions">You can swipe those away to give up a character. They will not be deleted.</string>
