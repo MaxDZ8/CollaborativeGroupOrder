@@ -216,7 +216,7 @@
     <string name="ppa_menu_addDevice">Add device</string>
     <string name="ppa_inconsistentSessionDataDlgMsg">Errors detected in session data. In the future I might be able to fix this but for the time being there\'s nothing I can do. To protect the data, I will now take you back to main menu.</string>
     <string name="ppa_backMainMenuDlgPosBtn">Give up and go main menu</string>
-    <string name="ppa_noInputStream">Failed to get input stream.</string>	
+    <string name="ppa_noInputStream">Failed to get input stream.</string>
     <string name="ppa_neverPlayed">never</string>
     <string name="ppa_status_battle">fighting</string>
     <string name="ppa_status_adventure">adventuring</string>
@@ -652,7 +652,8 @@
     <string name="aea_winnersCountAll">Everyone selected.</string>
     <string name="aea_winnersAward">%1$d XP each</string>
     <string name="aea_noBackDlgMessage">If you go back, you will throw away XPs. The proper way to do that is to consume all monsters.</string>
-    <string name="aea_dlgLevelUp">Level up!</string><string name="aea_levelUpCharList_singular">%1$s reached next level.</string>
+    <string name="aea_dlgLevelUp">Level up!</string>
+    <string name="aea_levelUpCharList_singular">%1$s reached next level.</string>
     <string name="aea_levelUpCharList_concatenatePlural">%1$s, %2$s</string>
     <string name="aea_levelUpCharList_concatenateLast">%1$s and %2$s reached next level!</string>
 
@@ -808,7 +809,7 @@
     <string name="vhPCDI_add">Make Character</string>
     <string name="vhPCDI_accepted">Accepted!</string>
     <string name="vhPCDI_classLabel">Class taken this level</string>
-	
+
     <string name="cardPDS_title">Member devices</string>
     <string name="cardPDS_moreInfo">Those devices have a key to join game.\nNeed to add a device? Hit the menu ︙</string>
 
@@ -828,7 +829,7 @@
     <string name="dlgNSDTroubleshoot_outro">Still not working? I want to make this work! Please get in touch with support and we\'ll sort it out!\ncollaborativegrouporder@gmail.com\nhttps://www.reddit.com/r/app_cgo\nIn the meanwhile you can also go back and try an <i>explicit connection</i>, you will find it in the menu options.</string>
 
     <string name="dlgML_moreInstructions">Players will now have a chance to modify their characters. You will be presented those new proposals in adventuring mode for your approval.</string>
-	
+
     <string name="dlgLCC_prev">Previously</string>
     <string name="dlgLCC_new">New</string>
 
