@@ -2,6 +2,7 @@ package com.massimodz8.collaborativegrouporder;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -111,13 +112,15 @@ public class InternalStateService extends Service {
     }
 
     public Notification buildNotification(@NonNull String title, @Nullable String message) {
+        final Intent intent = new Intent(this, RestoreFromNotificationActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         final android.support.v4.app.NotificationCompat.Builder help = new NotificationCompat.Builder(this)
                 .setOngoing(true)
                 .setWhen(System.currentTimeMillis())
                 .setShowWhen(true)
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.ic_notify_icon)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
+                .setContentIntent(PendingIntent.getActivity(this, 0, intent, 0));
         if(message != null) help.setContentText(message);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             help.setCategory(Notification.CATEGORY_SERVICE);
