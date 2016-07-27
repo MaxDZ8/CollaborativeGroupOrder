@@ -126,6 +126,9 @@
     <string name="mma_emptyHint_3">Player? Try\n%1$s</string>
     <string name="mma_noPlayingCharsAssigned">No playing characters given to you.</string>
     <string name="mma_nothingToDoInParty">I\'ll just stop there.</string>
+    <string name="mma_newVersionDialogTitle">New version!</string>
+    <string name="mma_newVersionDialogMessage">Welcome to %1$s!\nCan I take you a minute to show the news?</string>
+    <string name="mma_newVersionDialogPositive">Tell me more</string>
 
     <string name="npdsa_title">Device selection</string>
     <string name="npdsa_badParty_title">Bad party name</string>
@@ -972,5 +975,15 @@
     <string name="knownClass_npc_expert">expert (npc)</string>
     <string name="knownClass_npc_warrior">warrior (npc)</string>
     <string name="ctx_both_ui_badCustomClassName">Invalid custom class name.</string>
+
+    <string name="nvda_title">New in this version</string>
+    <string name="nvda_0_title">Fixed Bug #27\nTouching notification does nothing.</string>
+    <string name="nvda_0_desc">Touching the notification icon will now restore the app in case you were interrupted by a phone call or needed to check out a rule on the internet.</string>
+    <string name="nvda_1_title">New version overview</string>
+    <string name="nvda_1_desc">What you see now. Every time the app updates, you\'ll be given the chance to view details.</string>
+    <string name="nvda_2_title">Internal tweaks</string>
+    <string name="nvda_2_desc">Switched to updated libraries. Initiated transition to more compact visualizations. Hopefully this makes APK smaller and lighter on memory.</string>
+    <string name="nvda_rateBtn"><![CDATA[Rate & review app]]></string>
+    <string name="nvda_btnDesc">Do you like the changes? Did you expect something more? Let us know!</string>
 
 </resources>

@@ -16,6 +16,7 @@ import android.support.v7.app.NotificationCompat;
 
 import com.google.protobuf.nano.CodedInputByteBufferNano;
 import com.massimodz8.collaborativegrouporder.master.PcAssignmentHelper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.InitData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.MonsterData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.PreparedEncounters;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
@@ -142,6 +143,7 @@ public class InternalStateService extends Service {
     //
     //----------------------------------------------------------------------------------------------
     public final Data data = new Data();
+    public InitData.Launch launchInfo; // special
 
     private class AsyncLoadAll extends AsyncTask<Void, Void, Exception> {
         StartData.PartyOwnerData owned;
@@ -149,6 +151,7 @@ public class InternalStateService extends Service {
         MonsterData.MonsterBook monsterBook;
         MonsterData.MonsterBook customMobs;
         PreparedEncounters.Collection custBattles;
+        InitData.Launch launch;
 
         final PersistentDataUtils loader = new PersistentDataUtils(PcAssignmentHelper.DOORMAT_BYTES) {
             @Override
@@ -169,6 +172,10 @@ public class InternalStateService extends Service {
             File srck = new File(mainDataDir, PersistentDataUtils.DEFAULT_KEY_FILE_NAME);
             if(srck.exists()) loader.mergeExistingGroupData(pullk, srck);
             else pullk.version = PersistentDataUtils.CLIENT_DATA_WRITE_VERSION;
+
+            InitData.Launch launch = new InitData.Launch();
+            File launchFile = new File(mainDataDir, PersistentDataUtils.DEFAULT_LAUNCH_DATA_FILE_NAME);
+            if(launchFile.exists()) loader.mergeExistingGroupData(launch, launchFile);
 
             MonsterData.MonsterBook pullMon = new MonsterData.MonsterBook();
             final byte[] loadBuff = new byte[128 * 1024];
@@ -214,6 +221,7 @@ public class InternalStateService extends Service {
             monsterBook = pullMon;
             customMobs = custBook;
             custBattles = allBattles;
+            this.launch = launch;
 
             return null;
         }
@@ -241,6 +249,7 @@ public class InternalStateService extends Service {
             data.customBattles = custBattles;
             data.groupDefs = new ArrayList<>();
             data.groupKeys = new ArrayList<>();
+            launchInfo = launch;
             Collections.addAll(data.groupDefs, owned.everything);
             Collections.addAll(data.groupKeys, joined.everything);
             Runnable runnable = data.onStatusChanged.get();

@@ -260,7 +260,14 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".RestoreFromNotificationActivity"></activity>
+        <activity android:name=".RestoreFromNotificationActivity" />
+        <activity android:name=".NewVersionDetailsActivity"
+            android:parentActivityName=".MainMenuActivity"
+            android:label="@string/nvda_title">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainMenuActivity" />
+        </activity>
     </application>
 
 </manifest>
