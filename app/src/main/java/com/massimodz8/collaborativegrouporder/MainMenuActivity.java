@@ -419,7 +419,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             } catch (PackageManager.NameNotFoundException e) {
                 return; // impossible!
             }
-            if(state.launchInfo.lastLaunched != pack.versionCode) {
+            if(state.launchInfo != null && state.launchInfo.lastLaunched != pack.versionCode) {
                 state.launchInfo.lastLaunched = pack.versionCode;
                 new AsyncRenamingStore<InitData.Launch>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_LAUNCH_DATA_FILE_NAME, state.launchInfo) {
                     @Override
