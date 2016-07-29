@@ -1,0 +1,9 @@
+syntax = "proto3";
+option java_package = "com.massimodz8.collaborativegrouporder.protocol";
+
+// This protobuf is very simple, app init data for the time being has a single role:
+// decide if we need to show a WhatsNewActivity or not.
+// It is all data regarding the app itself, even before data is considered.
+message Launch {
+    uint32 lastLaunched = 1; // APK incremental code, show activity if older than current
+}

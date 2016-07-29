@@ -104,6 +104,7 @@ public class SpawnMonsterActivity extends AppCompatActivity {
             @Override
             public void run() {
                 search.currentQuery = null;
+                if(!matched.isEmpty()) return; // this is the case if user stopped the activity and went back there by hitting the notification or restoring manually
                 matched.addAll(search.customs);
                 for (SpawnHelper.MatchedEntry[] arr : search.parMatches) {
                     if(arr == null) continue;

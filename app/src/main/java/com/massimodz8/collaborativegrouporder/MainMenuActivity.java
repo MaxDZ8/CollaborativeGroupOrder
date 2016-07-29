@@ -7,11 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.nsd.NsdManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +43,7 @@ import com.massimodz8.collaborativegrouporder.master.NewPartyDeviceSelectionActi
 import com.massimodz8.collaborativegrouporder.master.PartyCreator;
 import com.massimodz8.collaborativegrouporder.master.PartyJoinOrder;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
+import com.massimodz8.collaborativegrouporder.protocol.nano.InitData;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Session;
 import com.massimodz8.collaborativegrouporder.protocol.nano.StartData;
 
@@ -406,6 +410,39 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                         String.format(getString(R.string.mma_emptyHint_3), ((Button)findViewById(R.id.mma_joinParty)).getText().toString()))
                         .show();
             }
+
+
+            final PackageManager pman = getPackageManager();
+            final PackageInfo pack;
+            try {
+                pack = pman.getPackageInfo(getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                return; // impossible!
+            }
+            if(state.launchInfo != null && state.launchInfo.lastLaunched != pack.versionCode) {
+                state.launchInfo.lastLaunched = pack.versionCode;
+                new AsyncRenamingStore<InitData.Launch>(getFilesDir(), PersistentDataUtils.MAIN_DATA_SUBDIR, PersistentDataUtils.DEFAULT_LAUNCH_DATA_FILE_NAME, state.launchInfo) {
+                    @Override
+                    protected String getString(@StringRes int res) {
+                        return MainMenuActivity.this.getString(res);
+                    }
+                    // What if it fails? I don't care, it's not very important for the time being.
+                };
+                new AlertDialog.Builder(MainMenuActivity.this, R.style.AppDialogStyle)
+                        .setIcon(R.mipmap.ic_launcher)
+                        .setTitle(getString(R.string.mma_newVersionDialogTitle))
+                        .setMessage(String.format(getString(R.string.mma_newVersionDialogMessage), pack.versionName))
+                        .setPositiveButton(getString(R.string.mma_newVersionDialogPositive), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivity(new Intent(MainMenuActivity.this, NewVersionDetailsActivity.class));
+                            }
+                        })
+                        .show();
+
+            }
+            state.launchInfo = null;
+
         }
     };
 

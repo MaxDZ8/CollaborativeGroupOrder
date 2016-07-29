@@ -29,7 +29,7 @@ import android.view.View;
 public abstract class PreSeparatorDecorator extends RecyclerView.ItemDecoration {
     public PreSeparatorDecorator(RecyclerView container, Context ctx, int thickness) {
         this.container = container;
-        int color = new ResourcesCompat().getColor(ctx.getResources(), R.color.listSeparator, ctx.getTheme());
+        int color = ResourcesCompat.getColor(ctx.getResources(), R.color.listSeparator, ctx.getTheme());
         this.thickness = thickness;
         paint = new Paint();
         paint.setColor(color);

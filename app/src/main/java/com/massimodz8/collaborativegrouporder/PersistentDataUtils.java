@@ -46,6 +46,7 @@ public abstract class PersistentDataUtils {
     public static final String USER_CUSTOM_DATA_SUBDIR = "custom"; // monsters, prepared encounters etc
     public static final String CUSTOM_MOBS_FILE_NAME = "userMonsters";
     public static final String CUSTOM_ENCOUNTERS_FILE_NAME = "userEncounters";
+    public static final String DEFAULT_LAUNCH_DATA_FILE_NAME = "appLaunchData";
 
 
     /**
