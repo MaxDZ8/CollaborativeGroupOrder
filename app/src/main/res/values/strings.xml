@@ -977,13 +977,8 @@
     <string name="ctx_both_ui_badCustomClassName">Invalid custom class name.</string>
 
     <string name="nvda_title">New in this version</string>
-    <string name="nvda_0_title">Fixed Bug #27\nTouching notification does nothing.</string>
-    <string name="nvda_0_desc">Touching the notification icon will now restore the app in case you were interrupted by a phone call or needed to check out a rule on the internet.</string>
-    <string name="nvda_1_title">New version overview</string>
-    <string name="nvda_1_desc">What you see now. Every time the app updates, you\'ll be given the chance to view details.</string>
-    <string name="nvda_2_title">Internal tweaks</string>
-    <string name="nvda_2_desc">Switched to updated libraries. Initiated transition to more compact visualizations. Hopefully this makes APK smaller and lighter on memory.</string>
+    <string name="nvda_0_title">Back to previous version libraries.</string>
+    <string name="nvda_0_desc">A bug in Android support libraries (216010, 214360) forced me to roll back to previous version as no workaround is known workaround has been found.</string>
     <string name="nvda_rateBtn"><![CDATA[Rate & review app]]></string>
     <string name="nvda_btnDesc">Do you like the changes? Did you expect something more? Let us know!</string>
-
 </resources>

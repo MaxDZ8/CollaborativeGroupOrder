@@ -759,12 +759,8 @@
     <string name="mma_newVersionDialogMessage">Benvenuto nella %1$s! Posso prenderti un minuto per mostrarti le novità?</string>
     <string name="mma_newVersionDialogPositive">Dimmi di più</string>
     <string name="mma_newVersionDialogTitle">Nuova versione!</string>
-    <string name="nvda_0_desc">Toccare la notifica ora ripristina l\'app, comodo se siete stati interrotti da una telefonata o avete controllato una regola su internet.</string>
-    <string name="nvda_0_title">Risolto Bug #27\nToccare la notifica non fa nulla.</string>
-    <string name="nvda_1_desc">Ciò che vedi ora. Ogni volta che l\'app si aggiorna ti sarà data occasione di vedere i dettagli.</string>
-    <string name="nvda_1_title">Panoramica della nuova versione</string>
-    <string name="nvda_2_desc">Aggiornate le librerie. Iniziata transizione a visualizzazioni più compatte. Si spera questo renda l\'APK più piccolo da scaricare e da eseguire!</string>
-    <string name="nvda_2_title">Miglioramenti interni</string>
+    <string name="nvda_0_title">Di nuovo con le precedenti librerie.</string>
+    <string name="nvda_0_desc">A causa di un bug nelle librerie di supporto Android (216010, 214360) sono stato costretto a tornare indietro visto che non è nota alcuna altra soluzione.</string>
     <string name="nvda_btnDesc">Ti piacciono le novità? Ti aspettavi qualcosa di più? Faccelo sapere!</string>
     <string name="nvda_rateBtn"><![CDATA[Vota & commenta l\'app]]></string>
     <string name="nvda_title">Novità in questa versione</string>
