@@ -981,4 +981,6 @@
     <string name="nvda_0_desc">A bug in Android support libraries (216010, 214360) forced me to roll back to previous version as no workaround is known workaround has been found.</string>
     <string name="nvda_rateBtn"><![CDATA[Rate & review app]]></string>
     <string name="nvda_btnDesc">Do you like the changes? Did you expect something more? Let us know!</string>
+    <string name="mma_nullWifiManager">Cannot inspect wifi settings. I will keep executing but some features might be broken.</string>
+    <string name="wfia_title">Networking quirks!</string>
 </resources>

@@ -5,11 +5,13 @@
     <uses-permission
         android:name="android.permission.VIBRATE"
         android:required="true" />
+    <uses-permission
+        android:name="android.permission.ACCESS_WIFI_STATE"
+        android:required="true" />
+    <!-- to access WifiManager, check wifi network being used -->
+
 
     <!--
-    <uses-permission
-        android:required="true"
-        android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission
         android:required="true"
         android:name="android.permission.CHANGE_WIFI_STATE"/>
@@ -261,9 +263,18 @@
             android:exported="false" />
 
         <activity android:name=".RestoreFromNotificationActivity" />
-        <activity android:name=".NewVersionDetailsActivity"
-            android:parentActivityName=".MainMenuActivity"
-            android:label="@string/nvda_title">
+        <activity
+            android:name=".NewVersionDetailsActivity"
+            android:label="@string/nvda_title"
+            android:parentActivityName=".MainMenuActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainMenuActivity" />
+        </activity>
+        <activity
+            android:name=".WiFiInstructionsActivity"
+            android:label="@string/wfia_title"
+            android:parentActivityName=".MainMenuActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainMenuActivity" />

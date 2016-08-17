@@ -10,6 +10,9 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.nsd.NsdManager;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -51,6 +54,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class MainMenuActivity extends AppCompatActivity implements ServiceConnection {
     public static final int NETWORK_VERSION = 1;
@@ -60,7 +64,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        if(MaxUtils.hasher == null) { // first run
+        if (MaxUtils.hasher == null) { // first run
             try {
                 MaxUtils.hasher = MessageDigest.getInstance("SHA-256");
             } catch (NoSuchAlgorithmException e) {
@@ -77,6 +81,32 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                         .show();
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(MaxUtils.hasher == null) return; // do nothing in this case, required premise
+
+        WifiManager wifi = (WifiManager)getSystemService(WIFI_SERVICE);
+        if(null == wifi) {
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_warning_white_24px)
+                    .setMessage(R.string.mma_nullWifiManager)
+                    .show();
+        }
+        else {
+            WifiInfo cinfo = wifi.getConnectionInfo();
+            List<WifiConfiguration> networks = wifi.getConfiguredNetworks(); // null when disabled
+            int active = 0;
+            final int limit = null != networks? networks.size() : 0;
+            for(int check = 0; check < limit; check++) {
+                final WifiConfiguration net = networks.get(check);
+                if(net.status == WifiConfiguration.Status.CURRENT) active++;
+            }
+            if(!wifi.isWifiEnabled() || null == cinfo || active != 1) startActivity(new Intent(this, WiFiInstructionsActivity.class));
+        }
+
         Intent launch = new Intent(this, InternalStateService.class);
         startService(launch);
         if(!bindService(launch, this, 0)) {
