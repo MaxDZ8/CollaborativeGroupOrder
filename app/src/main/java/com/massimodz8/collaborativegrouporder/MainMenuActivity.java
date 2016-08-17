@@ -73,8 +73,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                                 finish();
                             }
                         })
+                        .setIcon(R.drawable.ic_error_white_24dp)
                         .show();
-                return;
             }
         }
         Intent launch = new Intent(this, InternalStateService.class);
@@ -83,6 +83,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             stopService(launch);
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.mma_failedNewSessionServiceBind)
+                    .setIcon(R.drawable.ic_error_white_24dp)
                     .show();
         }
     }
@@ -162,6 +163,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if (nsd == null) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.both_noDiscoveryManager)
+                    .setIcon(R.drawable.ic_error_white_24dp)
                     .show();
             return;
         }
@@ -205,6 +207,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             } catch (IOException e) {
                 new AlertDialog.Builder(this, R.style.AppDialogStyle)
                         .setMessage(R.string.master_badServerSocket)
+                        .setIcon(R.drawable.ic_error_white_24dp)
                         .show();
                 return;
             }
@@ -229,6 +232,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         if (nsd == null) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.both_noDiscoveryManager)
+                    .setIcon(R.drawable.ic_error_white_24dp)
                     .show();
             return;
         }
@@ -400,6 +404,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 new AlertDialog.Builder(MainMenuActivity.this)
                         .setTitle(R.string.generic_initError)
                         .setMessage(R.string.mma_badDataLoadMsg)
+                        .setIcon(R.drawable.ic_warning_white_24px)
                         .show();
             }
 
@@ -461,6 +466,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
     // ServiceConnection vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
+        MaxUtils.setEnabled(this, true, R.id.mma_joinParty, R.id.mma_newParty);
+
         InternalStateService state = RunningServiceHandles.getInstance().state = ((InternalStateService.LocalBinder) service).getConcreteService();
         dataStatusCallback = state.data.onStatusChanged.put(guiRefreshDataChanged);
         unbindService(this);
