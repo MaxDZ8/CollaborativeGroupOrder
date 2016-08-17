@@ -18,7 +18,7 @@
     <string name="generic_help">Help</string>
     <string name="generic_ok">OK</string>
 
-    <string name="master_publishing">Ready. Your friends can connect.</string>
+    <string name="master_publishing">Publishing to network %1$s.</string>
     <string name="master_failedPublish">Could not publish party to wi-fi. Your friends can still connect but only using explicit connections.</string>
     <string name="master_menu_showConnectionInfos">Connection infos</string>
     <string name="master_carefulDlgMessage">Looks like someone is connected. If you continue, I will have to stop communicating.\n\nDo you want to go back to main menu?</string>
@@ -163,6 +163,7 @@
     <string name="npdsa_levelAdvBtn">Set level advancement</string>
     <string name="npdsa_levelAdvBtn_setFormat">Levelling: %1$s</string>
     <string name="npdsa_levelAdv_dlgTitle">Level advancement speed</string>
+    <string name="npdsa_noCurrentNetwork_placeholderName">wireless network</string>
 
     <string name="levelAdv_fast">fast</string>
     <string name="levelAdv_medium">medium</string>
@@ -1010,4 +1011,5 @@
     <string name="wfia_solutions_s4_tetheringButton">Open tethering options</string>
     <string name="wfia_noWifiOptions">Something went very wrong, your system is missing wifi settings!\nI cannot help you in any way at this point.</string>
     <string name="wfia_noTetheringOptions">Something went very wrong, your system is missing tethering settings!\nI cannot help you in any way at this point.</string>
+    <string name="npdsa_noWifiManager">Unable to get the Wi-Fi manager. I don\'t know where I could be publishing but I\'ll keep going.</string>
 </resources>

@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.nsd.NsdManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -164,8 +166,11 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             public void onNewPublishStatus(int now) {
                 switch(now) {
                     case PublishAcceptHelper.PUBLISHER_PUBLISHING: {
+                        WifiManager wifi = (WifiManager) getSystemService(WIFI_SERVICE);  // guaranteed non-null here, but let's be more flexible for future wi-fi direct/bluetooth stuff
+                        WifiInfo cinfo = null == wifi? null : wifi.getConnectionInfo();
+                        String netName = null == cinfo? getString(R.string.npdsa_noCurrentNetwork_placeholderName) : cinfo.getSSID();
                         MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
-                        status.setText(R.string.master_publishing);
+                        status.setText(String.format(getString(R.string.master_publishing), netName));
                         findViewById(R.id.npdsa_partyName).setEnabled(true);
                     } break;
                     case PublishAcceptHelper.PUBLISHER_START_FAILED: {
@@ -400,6 +405,13 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                     })
                     .show();
             return;
+        }
+        WifiManager wifi = (WifiManager) getSystemService(WIFI_SERVICE);
+        if(null == wifi || null == wifi.getConnectionInfo()) {
+            new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setMessage(R.string.npdsa_noWifiManager)
+                    .setIcon(R.drawable.ic_warning_white_24px)
+                    .show();
         }
         NsdManager nsd = (NsdManager) getSystemService(Context.NSD_SERVICE);
         if (nsd == null) {

@@ -188,7 +188,7 @@
     <string name="master_failedPublish">Non posso pubblicare il gruppo sulla rete Wi-Fi. I tuoi amici dovranno usare le connessioni esplicite.</string>
     <string name="master_giveUpAndGoBack">Lascia perdere e torna indietro</string>
     <string name="master_menu_showConnectionInfos">Info connessione</string>
-    <string name="master_publishing">Pronto. I tuoi amici possono connettersi.</string>
+    <string name="master_publishing">Pubblicato sulla rete %1$s.</string>
     <string name="mma_customMonstersButton">Mostri personalizzati…</string>
     <string name="generic_initError">Errore d\'inizializzazione</string>
     <string name="mma_endedSessionByebye">Il Master ha chiuso la sessione! Alla prossima!</string>
