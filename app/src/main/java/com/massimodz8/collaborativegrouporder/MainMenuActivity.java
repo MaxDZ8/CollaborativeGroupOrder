@@ -83,6 +83,8 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
         }
     }
 
+    public static boolean networkTroubleshootShown = false;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -95,7 +97,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     .setMessage(R.string.mma_nullWifiManager)
                     .show();
         }
-        else {
+        else if(!networkTroubleshootShown){
             WifiInfo cinfo = wifi.getConnectionInfo();
             List<WifiConfiguration> networks = wifi.getConfiguredNetworks(); // null when disabled
             int active = 0;
@@ -104,7 +106,10 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                 final WifiConfiguration net = networks.get(check);
                 if(net.status == WifiConfiguration.Status.CURRENT) active++;
             }
-            if(!wifi.isWifiEnabled() || null == cinfo || active != 1) startActivity(new Intent(this, WiFiInstructionsActivity.class));
+            if(!wifi.isWifiEnabled() || null == cinfo || active < 1) {
+                startActivity(new Intent(this, WiFiInstructionsActivity.class));
+                networkTroubleshootShown = true;
+            }
         }
 
         Intent launch = new Intent(this, InternalStateService.class);
