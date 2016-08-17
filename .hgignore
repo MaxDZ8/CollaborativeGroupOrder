@@ -37,3 +37,4 @@ app/build/generated/source/r
 app/build/generated
 app/build/outputs
 *.apk
+.gradle/2.14.1
