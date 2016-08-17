@@ -2,6 +2,9 @@ package com.massimodz8.collaborativegrouporder.client;
 
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.Snackbar;
@@ -28,10 +31,14 @@ import com.massimodz8.collaborativegrouporder.PartyInfo;
 import com.massimodz8.collaborativegrouporder.R;
 import com.massimodz8.collaborativegrouporder.RunningServiceHandles;
 import com.massimodz8.collaborativegrouporder.SendRequest;
+import com.massimodz8.collaborativegrouporder.WiFiInstructionsActivity;
 import com.massimodz8.collaborativegrouporder.networkio.ProtoBufferEnum;
 import com.massimodz8.collaborativegrouporder.networkio.Pumper;
 import com.massimodz8.collaborativegrouporder.protocol.nano.Network;
 import com.massimodz8.collaborativegrouporder.protocol.nano.UserOf;
+
+import java.util.List;
+import java.util.Locale;
 
 public class SelectFormingGroupActivity extends AppCompatActivity {
     private @UserOf PartySelection state;
@@ -53,6 +60,33 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             }
         });
         temp.show();
+
+        WifiManager wifi = (WifiManager)getSystemService(WIFI_SERVICE);
+        TextView scanning = (TextView) findViewById(R.id.sfga_networkListing);
+        if(null == wifi) scanning.setText(R.string.sfga_badWifiManager);
+        else {
+            WifiInfo cinfo = wifi.getConnectionInfo();
+            List<WifiConfiguration> networks = wifi.getConfiguredNetworks(); // null when disabled
+            int active = 0;
+            final int limit = null != networks ? networks.size() : 0;
+            for (int check = 0; check < limit; check++) {
+                final WifiConfiguration net = networks.get(check);
+                if (net.status == WifiConfiguration.Status.CURRENT) active++;
+            }
+            if (!wifi.isWifiEnabled()) scanning.setText(R.string.sfga_disabledWifi);
+            else if(null == cinfo || active < 1) scanning.setText(R.string.sfga_noDefaultWifi);
+            else {
+                StringBuilder app = new StringBuilder();
+                for (WifiConfiguration net : networks) {
+                    if(net.status != WifiConfiguration.Status.CURRENT) continue;
+                    String defString = net.networkId == cinfo.getNetworkId()? getString(R.string.sfga_defaultWifiTag) : "";
+                    if(app.length() != 0) app.append('\n');
+                    app.append(String.format(Locale.getDefault(), getString(R.string.sfga_scanNetworkFormat), net.SSID, net.networkId, defString));
+                    // net.BSSID access point MAC address
+                }
+                scanning.setText(app.toString());
+            }
+        }
     }
 
     @Override
@@ -239,7 +273,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
         findViewById(R.id.selectFormingGroupActivity_groupList).setVisibility(state.candidates.isEmpty() ? View.INVISIBLE : View.VISIBLE);
         findViewById(R.id.sfga_confirmInstructions).setVisibility(talked == 0? View.GONE : View.VISIBLE);
 
-        findViewById(R.id.sfga_lookingForGroups).setVisibility(discovering && state.candidates.size() == 0? View.VISIBLE : View.GONE);
+        findViewById(R.id.sfga_waitBelowResults).setVisibility(discovering && state.candidates.size() == 0? View.VISIBLE : View.GONE);
         ((RecyclerView) findViewById(R.id.selectFormingGroupActivity_groupList)).getAdapter().notifyDataSetChanged();
     }
 
