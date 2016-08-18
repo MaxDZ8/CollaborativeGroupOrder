@@ -167,10 +167,10 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             public void onNewPublishStatus(int now) {
                 switch(now) {
                     case PublishAcceptHelper.PUBLISHER_PUBLISHING: {
+                        MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
                         WifiManager wifi = (WifiManager) getSystemService(WIFI_SERVICE);  // guaranteed non-null here, but let's be more flexible for future wi-fi direct/bluetooth stuff
                         WifiInfo cinfo = null == wifi? null : wifi.getConnectionInfo();
                         String netName = null == cinfo? getString(R.string.npdsa_noCurrentNetwork_placeholderName) : cinfo.getSSID();
-                        MaxUtils.beginDelayedTransition(NewPartyDeviceSelectionActivity.this);
                         status.setText(String.format(getString(R.string.master_publishing), netName));
                         findViewById(R.id.npdsa_partyName).setEnabled(true);
                     } break;

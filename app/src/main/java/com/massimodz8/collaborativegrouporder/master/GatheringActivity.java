@@ -1,5 +1,7 @@
 package com.massimodz8.collaborativegrouporder.master;
 
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -67,7 +69,10 @@ public class GatheringActivity extends AppCompatActivity {
                         break;
                     }
                     case PublishedService.STATUS_PUBLISHING:
-                        dst.setText(R.string.master_publishing);
+                        WifiManager wifi = (WifiManager) getSystemService(WIFI_SERVICE);  // guaranteed non-null here, but let's be more flexible for future wi-fi direct/bluetooth stuff
+                        WifiInfo cinfo = null == wifi? null : wifi.getConnectionInfo();
+                        String netName = null == cinfo? getString(R.string.npdsa_noCurrentNetwork_placeholderName) : cinfo.getSSID();
+                        dst.setText(String.format(getString(R.string.master_publishing), netName));
                         break;
                     case PublishedService.STATUS_STOP_FAILED:
                         dst.setText(R.string.ga_publishingStopFailed);
