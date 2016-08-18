@@ -90,6 +90,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         if(state.rejected.size() > 0) { // easiest: just notify and retry
             if(dialog != null) return;
             dialog = new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_info_white_24dp)
                     .setMessage(String.format(getString(R.string.ncpa_characterRejectedRetryMessage), state.rejected.get(state.rejected.size() - 1).name))
                     .setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
@@ -106,6 +107,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
         if(state.disconnected) {
             if(dialog != null) return; // already signaling
             dialog = new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_error_white_24dp)
                     .setMessage(R.string.ncpa_lostConnection)
                     .setPositiveButton(R.string.ncpa_lostConnection_backToMain, new DialogInterface.OnClickListener() {
                         @Override
@@ -141,6 +143,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
                     state.saving = null;
                     if(e != null) {
                         new AlertDialog.Builder(NewCharactersProposalActivity.this, R.style.AppDialogStyle)
+                                .setIcon(R.drawable.ic_error_white_24dp)
                                 .setTitle(R.string.generic_IOError)
                                 .setMessage(e.getLocalizedMessage())
                                 .show();
@@ -154,6 +157,7 @@ public class NewCharactersProposalActivity extends AppCompatActivity {
                     String msg = String.format(getString(R.string.ncpa_creationCompleted), goAdventuring ? extra : "");
                     int label = goAdventuring ? R.string.ncpa_goAdventuring : R.string.ncpa_newDataSaved_done;
                     new AlertDialog.Builder(NewCharactersProposalActivity.this, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_info_white_24dp)
                             .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
                             .setMessage(msg)
                             .setCancelable(false)

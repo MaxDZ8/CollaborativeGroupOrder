@@ -103,6 +103,7 @@ public class JoinSessionActivity extends AppCompatActivity {
         handles.connectionAttempt = null;
         if(ginfo.forming) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_info_white_24dp)
                     .setMessage(R.string.jsa_connectedToForming)
                     .show();
             worker.interrupt();
@@ -110,6 +111,7 @@ public class JoinSessionActivity extends AppCompatActivity {
         }
         if(!ginfo.name.equals(handles.joinGame.party.name)) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_warning_white_24px)
                     .setMessage(String.format(getString(R.string.jsa_connectedDifferentName), ginfo.name))
                     .setPositiveButton(R.string.jsa_connectedAttemptJoin, new DialogInterface.OnClickListener() {
                         @Override

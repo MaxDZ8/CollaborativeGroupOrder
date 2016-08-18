@@ -20,7 +20,9 @@ public abstract class HiddenDeviceManagementDialog {
     public final AlertDialog dialog;
 
     public HiddenDeviceManagementDialog(final AppCompatActivity ctx, final ArrayList<PartyDefinitionHelper.DeviceStatus> kicked) {
-        dialog = new AlertDialog.Builder(ctx, R.style.AppDialogStyle).show();
+        dialog = new AlertDialog.Builder(ctx, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
+                .show();
         dialog.setContentView(R.layout.dialog_manage_hidden_devices);
         RecyclerView rv = (RecyclerView) dialog.findViewById(R.id.dlgMHD_list);
         new PreSeparatorDecorator(rv, ctx) {

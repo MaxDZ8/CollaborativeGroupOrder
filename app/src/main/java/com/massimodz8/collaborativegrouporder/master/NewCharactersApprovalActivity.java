@@ -122,6 +122,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case R.id.ncaa_menu_save: {
                 new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                        .setIcon(R.drawable.ic_info_white_24dp)
                         .setTitle(R.string.ncaa_save_title)
                         .setMessage(R.string.ncaa_save_msg)
                         .setPositiveButton(R.string.ncaa_done, new DialogInterface.OnClickListener() {
@@ -159,6 +160,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 item.setEnabled(true);
                 if (null != e) {
                     new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_error_white_24dp)
                             .setTitle(R.string.generic_IOError)
                             .setMessage(e.getLocalizedMessage())
                             .show();
@@ -168,6 +170,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                 int negative = room.mode != PartyCreator.MODE_ADD_NEW_DEVICES_TO_EXISTING? R.string.dataLoadUpdate_finished_newDataSaved_mainMenu : R.string.dataLoadUpdate_finished_newDataSaved_partyPick;
                 if(room.generatedParty.party.length != 0 && room.generatedParty.devices.length != 0) {
                     new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_info_white_24dp)
                             .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
                             .setMessage(R.string.dataLoadUpdate_newGroupSaved_msg)
                             .setCancelable(false)
@@ -190,6 +193,7 @@ public class NewCharactersApprovalActivity extends AppCompatActivity {
                             .show();
                 } else {
                     new AlertDialog.Builder(NewCharactersApprovalActivity.this, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_info_white_24dp)
                             .setTitle(R.string.dataLoadUpdate_newGroupSaved_title)
                             .setMessage(R.string.dataLoadUpdate_newEmptyGroupSaved_msg)
                             .setCancelable(false)

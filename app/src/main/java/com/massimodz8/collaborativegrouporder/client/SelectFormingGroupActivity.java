@@ -96,6 +96,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             @Override
             public void onDisconnected(GroupState gs) {
                 new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
+                        .setIcon(R.drawable.ic_error_white_24dp)
                         .setMessage(String.format(getString(R.string.sfga_lostConnection), gs.group.name, gs.disconnected.getLocalizedMessage()))
                         .show();
             }
@@ -185,12 +186,14 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
                     final CharSequence msg = message.getText();
                     if(msg.length() == 0) {
                         new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
+                                .setIcon(R.drawable.ic_warning_white_24px)
                                 .setMessage(R.string.sfga_emptyMessageForbidden)
                                 .show();
                         return false;
                     }
                     if(msg.length() > source.charBudget) {
                         new AlertDialog.Builder(SelectFormingGroupActivity.this, R.style.AppDialogStyle)
+                                .setIcon(R.drawable.ic_warning_white_24px)
                                 .setMessage(R.string.sfga_messageTooLong)
                                 .show();
                         return false;
@@ -290,6 +293,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             if(!probed.forming) {
                 pumper.interrupt();
                 new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                        .setIcon(R.drawable.ic_error_white_24dp)
                         .setMessage(R.string.sfga_connectedNotForming)
                         .show();
                 return;
@@ -297,6 +301,7 @@ public class SelectFormingGroupActivity extends AppCompatActivity {
             if(probed.doormat.length != 0) {
                 pumper.interrupt();
                 new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                        .setIcon(R.drawable.ic_error_white_24dp)
                         .setMessage(getString(R.string.sfga_connectedGotDoormat))
                         .show();
                 return;

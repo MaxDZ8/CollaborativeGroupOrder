@@ -61,6 +61,7 @@ public class GatheringActivity extends AppCompatActivity {
                         int err = room.getPublishError();
                         dst.setText(R.string.ga_publisherFailedStart);
                         new AlertDialog.Builder(GatheringActivity.this, R.style.AppDialogStyle)
+                                .setIcon(R.drawable.ic_error_white_24dp)
                                 .setMessage(String.format(getString(R.string.ga_failedServiceRegistration), MaxUtils.NsdManagerErrorToString(err, GatheringActivity.this)))
                                 .show();
                         break;
@@ -166,6 +167,7 @@ public class GatheringActivity extends AppCompatActivity {
                     : String.format(getString(R.string.ga_someCharsNotBound), free.size());
             String message = getString(R.string.ga_unboundCharsDlgMsg);
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_error_white_24dp)
                     .setMessage(String.format(message, firstLine))
                     .show();
             return;
@@ -230,6 +232,7 @@ public class GatheringActivity extends AppCompatActivity {
                     return;
                 }
                 new AlertDialog.Builder(GatheringActivity.this, R.style.AppDialogStyle)
+                        .setIcon(R.drawable.ic_error_white_24dp)
                         .setTitle(R.string.ga_dlg_errorWhileFormingGroup_title)
                         .setMessage(R.string.ga_dlg_errorWhileFormingGroup_msg)
                         .show();

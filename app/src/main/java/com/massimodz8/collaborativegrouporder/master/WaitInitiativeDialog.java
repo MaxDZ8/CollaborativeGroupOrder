@@ -28,6 +28,7 @@ public class WaitInitiativeDialog {
     }
     public WaitInitiativeDialog show(@NonNull final AppCompatActivity activity) {
         dlg = new AlertDialog.Builder(activity, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setView(R.layout.dialog_wait_initiative_rolls)
                 .show();
         lister = new RecyclerView.Adapter<AdventuringActorControlsVH>() {

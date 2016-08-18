@@ -56,8 +56,9 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
             port = Integer.parseInt(inetPort.getText().toString());
             if(port < 1024 || port > 65535) throw new NumberFormatException(); // take it easy
         } catch(NumberFormatException e) {
-            AlertDialog.Builder build = new AlertDialog.Builder(this, R.style.AppDialogStyle);
-            build.setMessage(R.string.eca_badPort);
+            AlertDialog.Builder build = new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_error_white_24dp)
+                    .setMessage(R.string.eca_badPort);
             build.show();
             inetPort.requestFocus();
             return;
@@ -90,6 +91,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 case ConnectionAttempt.HANDSHAKE_FAILED_HOST: {
                     findViewById(R.id.eca_inetAddr).requestFocus();
                     new AlertDialog.Builder(this)
+                            .setIcon(R.drawable.ic_error_white_24dp)
                             .setMessage(R.string.eca_badHost)
                             .show();
                 } break;
@@ -97,6 +99,7 @@ public class ExplicitConnectionActivity extends AppCompatActivity {
                 case ConnectionAttempt.HANDSHAKE_FAILED_SEND: {
                     final int res = state.connecting.status == ConnectionAttempt.HANDSHAKE_FAILED_OPEN? R.string.generic_connFailedWithError : R.string.eca_failedHello;
                     new AlertDialog.Builder(this)
+                            .setIcon(R.drawable.ic_error_white_24dp)
                             .setTitle(R.string.generic_IOError)
                             .setMessage(String.format(getString(res), state.connecting.error.getLocalizedMessage()))
                             .show();

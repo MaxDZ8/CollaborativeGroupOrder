@@ -76,6 +76,7 @@ public class CharSelectionActivity extends AppCompatActivity {
                 if(state.playChars == null) return; // we didn't get the definitive assignment yet.
                 if(state.playChars.length == 0) {
                     new AlertDialog.Builder(CharSelectionActivity.this, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_info_white_24dp)
                             .setMessage(getString(R.string.csa_noDefinitiveCharactersHere))
                             .setCancelable(false)
                             .setPositiveButton(getString(R.string.csa_noDefinitiveCharactersHereDlgDone), new DialogInterface.OnClickListener() {

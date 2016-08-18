@@ -103,6 +103,7 @@ public class PartyPickActivity extends AppCompatActivity {
 
                 if(!helper.sessionErrors.isEmpty()) {
                     new AlertDialog.Builder(PartyPickActivity.this, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_error_white_24dp)
                             .setMessage(R.string.ppa_inconsistentSessionDataDlgMsg)
                             .setCancelable(false)
                             .setPositiveButton(R.string.ppa_backMainMenuDlgPosBtn, new DialogInterface.OnClickListener() {
@@ -226,6 +227,7 @@ public class PartyPickActivity extends AppCompatActivity {
                     }
                 };
                 new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                        .setIcon(R.drawable.ic_info_white_24dp)
                         .setTitle(R.string.ppa_menu_restoreDeleted)
                         .setAdapter(la, icl).show();
                 return true;
@@ -278,6 +280,7 @@ public class PartyPickActivity extends AppCompatActivity {
         if(backToPartyList) showPartyList(true);
         else if(null != pending || null != loading) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_info_white_24dp)
                     .setMessage(R.string.ppa_cannotLetYouGoWhileWriting)
                     .show();
         }
@@ -294,6 +297,7 @@ public class PartyPickActivity extends AppCompatActivity {
         }
         else if(null != pending || null != loading) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_warning_white_24px)
                     .setMessage(R.string.ppa_cannotLetYouGoWhileWriting)
                     .show();
         }
@@ -841,7 +845,7 @@ public class PartyPickActivity extends AppCompatActivity {
             if(owned != null) {
                 if(owned.party.length == 0) {
                     new AlertDialog.Builder(target, R.style.AppDialogStyle)
-                            .setIcon(R.drawable.ic_warning_white_24px)
+                            .setIcon(R.drawable.ic_error_white_24dp)
                             .setMessage(target.getString(R.string.ppa_noCharactersInParty))
                             .show();
                     return;
@@ -904,6 +908,7 @@ public class PartyPickActivity extends AppCompatActivity {
             parent.modPending = false;
             if(null != e) {
                 new AlertDialog.Builder(parent, R.style.AppDialogStyle)
+                        .setIcon(R.drawable.ic_error_white_24dp)
                         .setMessage(e.getLocalizedMessage())
                         .show();
                 if(null != undo) undo.run();

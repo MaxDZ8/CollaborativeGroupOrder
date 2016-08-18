@@ -39,6 +39,7 @@ public class InitiativeShuffleDialog {
         final Bundle bundle = new Bundle();
         final int orindex = actor;
         final AlertDialog dlg = new AlertDialog.Builder(activity, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setView(R.layout.dialog_shuffle_initiative_order)
                 .setPositiveButton(activity.getString(R.string.isd_apply), new DialogInterface.OnClickListener() {
                     @Override

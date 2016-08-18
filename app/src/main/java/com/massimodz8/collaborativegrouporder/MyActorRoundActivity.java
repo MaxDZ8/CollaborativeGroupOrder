@@ -133,6 +133,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
             return;
         }
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setTitle(R.string.generic_nopeDlgTitle)
                 .setMessage(R.string.mara_noBackDlgMessage)
                 .setPositiveButton(R.string.mara_next_title, new DialogInterface.OnClickListener() {
@@ -146,6 +147,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         if(client == null) return super.onSupportNavigateUp();
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setTitle(R.string.generic_nopeDlgTitle)
                 .setMessage(R.string.mara_noBackDlgMessage)
                 .setPositiveButton(R.string.mara_next_title, new DialogInterface.OnClickListener() {
@@ -224,6 +226,7 @@ public class MyActorRoundActivity extends AppCompatActivity {
                 final FirebaseAnalytics survey = FirebaseAnalytics.getInstance(this);
                 final Bundle info = new Bundle();
                 final AlertDialog dlg = new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                        .setIcon(R.drawable.ic_info_white_24dp)
                         .setView(R.layout.dialog_ready_action_proposal)
                         .setOnDismissListener(new DialogInterface.OnDismissListener() {
                             @Override

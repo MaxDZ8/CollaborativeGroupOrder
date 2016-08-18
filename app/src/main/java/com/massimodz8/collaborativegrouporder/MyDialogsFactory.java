@@ -21,7 +21,9 @@ public abstract class MyDialogsFactory {
     public static void showNetworkDiscoveryTroubleshoot(Context ctx, boolean forming) {
         String title = ctx.getString(forming? R.string.dlgNSDTroubleshoot_h2_title_forming : R.string.dlgNSDTroubleshoot_h2_title_gathering);
         String msg = ctx.getString(forming? R.string.dlgNSDTroubleshoot_h2_msg_forming : R.string.dlgNSDTroubleshoot_h2_msg_gathering);
-        final AlertDialog temp = new AlertDialog.Builder(ctx, R.style.AppDialogStyle).setView(R.layout.dialog_nsd_troubleshoot).show();
+        final AlertDialog temp = new AlertDialog.Builder(ctx, R.style.AppDialogStyle).setView(R.layout.dialog_nsd_troubleshoot)
+                .setIcon(R.drawable.ic_info_white_24dp)
+                .show();
         ((TextView)temp.findViewById(R.id.dlgNSDTroubleshoot_h2_title)).setText(title);
         ((TextView)temp.findViewById(R.id.dlgNSDTroubleshoot_h2_msg)).setText(msg);
     }
@@ -31,6 +33,7 @@ public abstract class MyDialogsFactory {
     }
     public static AlertDialog showActorDefinitionInput(final Context ctx, final ActorProposal onInputCompleted, @Nullable BuildingPlayingCharacter currently, final int advancementPace) {
         final AlertDialog dlg = new AlertDialog.Builder(ctx, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setTitle(currently == null? R.string.ncaa_genCharTitle : R.string.aea_dlgLevelUp)
                 .setView(R.layout.vh_playing_character_definition_input)
                 .show();
@@ -62,6 +65,7 @@ public abstract class MyDialogsFactory {
     public static AlertDialog showActorComparison(final Context ctx, final BuildingPlayingCharacter origin, final BuildingPlayingCharacter proposed,
                                                   final ApprovalListener callback) {
         AlertDialog dlg = new AlertDialog.Builder(ctx, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setTitle(R.string.fra_approveLevelUp)
                 .setView(R.layout.dialog_leveled_character_compare)
                 .setPositiveButton(R.string.fra_approveDlgActionPositive, new DialogInterface.OnClickListener() {

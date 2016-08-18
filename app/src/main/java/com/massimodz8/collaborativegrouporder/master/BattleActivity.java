@@ -53,6 +53,7 @@ public class BattleActivity extends AppCompatActivity {
         final Network.TurnControl msg = new Network.TurnControl();
         msg.type = Network.TurnControl.T_BATTLE_ENDED;
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.ba_backDlgMessage)
                 .setPositiveButton(R.string.ba_backDlgPositive, new DialogInterface.OnClickListener() {
@@ -327,6 +328,7 @@ public class BattleActivity extends AppCompatActivity {
         switch(item.getItemId()) {
             case R.id.ba_menu_endBattle: {
                 new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                        .setIcon(R.drawable.ic_info_white_24dp)
                         .setTitle(R.string.ba_endBattleDlg_title)
                         .setMessage(R.string.ba_endBattleDlg_msg)
                         .setPositiveButton(R.string.ba_endBattleDlg_positive, new DialogInterface.OnClickListener() {
@@ -388,6 +390,7 @@ public class BattleActivity extends AppCompatActivity {
         final FirebaseAnalytics survey = FirebaseAnalytics.getInstance(this);
         final Bundle info = new Bundle();
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setMessage(String.format(getString(R.string.ba_dlg_gotPreparedAction), actor.name))
                 .setPositiveButton(R.string.ba_dlg_gotPreparedAction_renew, new DialogInterface.OnClickListener() {
                     @Override

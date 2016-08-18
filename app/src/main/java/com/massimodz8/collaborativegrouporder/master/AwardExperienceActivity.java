@@ -104,6 +104,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
                 }
                 final AlertDialog dlg = new AlertDialog.Builder(AwardExperienceActivity.this, R.style.AppDialogStyle)
                         .setView(R.layout.dialog_master_levelup)
+                        .setIcon(R.drawable.ic_info_white_24dp)
                         .setPositiveButton(R.string.generic_ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -205,6 +206,7 @@ public class AwardExperienceActivity extends AppCompatActivity {
 
     private void confirmDiscardFinish() {
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_warning_white_24px)
                 .setTitle(R.string.generic_carefulDlgTitle)
                 .setMessage(R.string.aea_noBackDlgMessage)
                 .setPositiveButton(R.string.generic_discard, new DialogInterface.OnClickListener() {

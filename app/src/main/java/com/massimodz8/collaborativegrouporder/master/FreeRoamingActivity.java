@@ -89,6 +89,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 else if(count + pgCount == 1) Snackbar.make(findViewById(R.id.activityRoot), R.string.fra_noBattle_oneActor, Snackbar.LENGTH_LONG).show();
                 else if(count + pgCount != game.session.getNumActors()) {
                     new AlertDialog.Builder(FreeRoamingActivity.this, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_info_white_24dp)
                             .setMessage(getString(R.string.fra_dlgMsg_missingChars))
                             .setPositiveButton(getString(R.string.fra_dlgActionIgnoreMissingCharacters), new DialogInterface.OnClickListener() {
                                 @Override
@@ -404,6 +405,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                         protected void onPostExecute(Exception e) {
                             if(e == null) return; // that's not even worth noticing, user takes for granted.
                             new AlertDialog.Builder(FreeRoamingActivity.this, R.style.AppDialogStyle)
+                                    .setIcon(R.drawable.ic_info_white_24dp)
                                     .setTitle(R.string.generic_IOError)
                                     .setMessage(e.getLocalizedMessage())
                                     .show();
@@ -422,6 +424,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
         final PartyJoinOrder game = RunningServiceHandles.getInstance().play;
         if(!confirmed && !game.assignmentHelper.peers.isEmpty()) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_info_white_24dp)
                     .setTitle(R.string.generic_carefulDlgTitle)
                     .setMessage(R.string.fra_exitDlgMsg)
                     .setPositiveButton(R.string.fra_exitButtonConfirm, new DialogInterface.OnClickListener() {
@@ -465,6 +468,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
             for(int loop = 0; loop < game.session.getNumActors(); loop++) game.session.getActor(loop).writeTo(out);
         } catch (IOException e) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_error_white_24dp)
                     .setTitle(R.string.generic_IOError)
                     .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
                     .show();
@@ -578,6 +582,7 @@ public class FreeRoamingActivity extends AppCompatActivity {
                 return;
             }
             new AlertDialog.Builder(FreeRoamingActivity.this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_error_white_24dp)
                     .setTitle(R.string.generic_IOError)
                     .setMessage(String.format(getString(R.string.fra_dlgIOErrorSerializingSession_impossible), e.getLocalizedMessage()))
                     .show();

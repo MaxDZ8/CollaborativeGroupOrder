@@ -194,6 +194,7 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
         xpAward = null;
         refresh();
         new AlertDialog.Builder(NewCustomMonsterActivity.this, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setTitle(R.string.ncma_crDlg_title)
                 .setSingleChoiceItems(crStrings(20), -1, new DialogInterface.OnClickListener() {
                     @Override
@@ -212,6 +213,7 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
         size = null;
         refresh();
         new AlertDialog.Builder(NewCustomMonsterActivity.this, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
             .setTitle(R.string.ncma_sizeDlg_title)
             .setSingleChoiceItems(ss, -1, new DialogInterface.OnClickListener() {
                 @Override
@@ -230,6 +232,7 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
         type = null;
         refresh();
         new AlertDialog.Builder(NewCustomMonsterActivity.this, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setTitle(R.string.ncma_sizeDlg_title)
                 .setSingleChoiceItems(ts, -1, new DialogInterface.OnClickListener() {
                     @Override
@@ -248,6 +251,7 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
         race = null;
         refresh();
         new AlertDialog.Builder(NewCustomMonsterActivity.this, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setTitle(R.string.ncma_sizeDlg_title)
                 .setSingleChoiceItems(rs, -1, new DialogInterface.OnClickListener() {
                     @Override
@@ -268,6 +272,7 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
         for (int el : alignEnum) alignStrings[init++] = ProtobufSupport.monsterAlignmentToString(el, false, this);
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
                 .setTitle(R.string.ncma_alignDlg_title)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setMultiChoiceItems(alignStrings, alignFlags, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
@@ -289,6 +294,7 @@ public class NewCustomMonsterActivity extends AppCompatActivity {
         int init = 0;
         for(int el : tagEnum) tagStrings[init++] = ProtobufSupport.monsterTypeToString(el, false, this);
         new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setTitle(R.string.ncma_tagDlg_title)
                 .setMultiChoiceItems(tagStrings, tagFlags, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override

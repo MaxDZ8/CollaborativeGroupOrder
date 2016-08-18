@@ -23,6 +23,7 @@ public class RollInitiativeDialog {
     public RollInitiativeDialog(Network.ActorState actor, final Network.Roll request, final Runnable onEntered, @NonNull final AppCompatActivity activity) {
         this.request = request;
         dlg = new AlertDialog.Builder(activity, R.style.AppDialogStyle)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setView(R.layout.dialog_roll_initiative)
                 .setCancelable(false)
                 .setPositiveButton(activity.getString(R.string.rid_done), new DialogInterface.OnClickListener() {
