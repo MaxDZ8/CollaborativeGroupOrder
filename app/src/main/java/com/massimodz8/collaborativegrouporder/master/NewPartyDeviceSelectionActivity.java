@@ -103,6 +103,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                             .setTitle(R.string.npdsa_sealing_title)
                             .setMessage(use)
                             .setPositiveButton(R.string.npdsa_goDefinePC, sealer)
+                            .setIcon(R.drawable.ic_info_white_24dp)
                             .show();
 
                 }
@@ -367,6 +368,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                         return;
                     }
                     new AlertDialog.Builder(NewPartyDeviceSelectionActivity.this, R.style.AppDialogStyle)
+                            .setIcon(R.drawable.ic_warning_white_24px)
                             .setMessage(R.string.npdsa_failedKeySendDlgMsg)
                             .setPositiveButton(R.string.npdsa_carryOnDlgAction, new DialogInterface.OnClickListener() {
                                 @Override
@@ -394,6 +396,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         if (room.newPartyName.isEmpty() || null != collisions) {
             int msg = room.newPartyName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_error_white_24dp)
                     .setTitle(R.string.npdsa_badParty_title)
                     .setCancelable(false)
                     .setMessage(msg)
@@ -417,6 +420,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         if (nsd == null) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setMessage(R.string.both_noDiscoveryManager)
+                    .setIcon(R.drawable.ic_error_white_24dp)
                     .show();
             return;
         }
@@ -424,6 +428,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
             room.startListening(null);
         } catch (IOException e) {
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
+                    .setIcon(R.drawable.ic_error_white_24dp)
                     .setMessage(R.string.master_badServerSocket)
                     .setPositiveButton(R.string.master_giveUpAndGoBack, new DialogInterface.OnClickListener() {
                         @Override
@@ -470,6 +475,7 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
                 getString(R.string.levelAdv_slow)
         };
         new AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_info_white_24dp)
                 .setTitle(R.string.npdsa_levelAdv_dlgTitle)
                 .setSingleChoiceItems(name, -1, new DialogInterface.OnClickListener() {
                     @Override
