@@ -238,10 +238,20 @@ public class InternalStateService extends Service {
             }
             if(PersistentDataUtils.OWNER_DATA_VERSION != owned.version) upgrade(owned);
             if(PersistentDataUtils.CLIENT_DATA_WRITE_VERSION != joined.version) upgrade(joined);
-            final ArrayList<String> errors = loader.validateLoadedDefinitions(owned);
+            ArrayList<String> errors = loader.validateLoadedDefinitions(owned);
             if(null != errors) {
                 if(data.error == null) data.error = new ArrayList<>();
                 data.error.addAll(errors);
+                Runnable runnable = data.onStatusChanged.get();
+                if(runnable != null) runnable.run();
+                return;
+            }
+            errors = loader.validateLoadedDefinitions(joined);
+            if(null != errors) {
+                if(data.error == null) data.error = new ArrayList<>();
+                data.error.addAll(errors);
+                Runnable runnable = data.onStatusChanged.get();
+                if(runnable != null) runnable.run();
                 return;
             }
             data.monsters = monsterBook;
