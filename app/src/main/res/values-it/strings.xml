@@ -465,7 +465,7 @@
     <string name="npdsaAM_setCharBudget">Imposta budget caratteri</string>
     <string name="npdsaAM_setName">Imposta nome</string>
     <string name="npdsa_badParty_msg_alreadyThere">Esiste già un gruppo con questo nome. I nomi devono essere unici.</string>
-    <string name="npdsa_badParty_msg_emptyName">Ogni gruppo necessita di un nome.\nI tuoi amici devono sapere a che gruppo connettersi e ho bisogno di un nome per salvare i dati del gruppo in modo da poterli ritrovare!</string>
+    <string name="npdsa_badParty_msg_emptyName">Ogni gruppo necessita di un nome che conti almeno 3 caratteri.\nI tuoi amici devono sapere a che gruppo connettersi e ho bisogno di un nome per salvare i dati del gruppo in modo da poterli ritrovare!</string>
     <string name="npdsa_badParty_retry">Modifica nome gruppo</string>
     <string name="npdsa_badParty_title">Nome gruppo non valido</string>
     <string name="npdsa_carryOnDlgAction">Continua lo stesso</string>

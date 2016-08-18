@@ -393,8 +393,8 @@ public class NewPartyDeviceSelectionActivity extends AppCompatActivity implement
         if(view == null) return; // impossible
         room.newPartyName = view.getText().toString().trim();
         ArrayList<StartData.PartyOwnerData.Group> collisions = room.beginBuilding(getString(R.string.npdsa_unknownDeviceName));
-        if (room.newPartyName.isEmpty() || null != collisions) {
-            int msg = room.newPartyName.isEmpty() ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
+        if (room.newPartyName.length() < 3 || null != collisions) {
+            int msg = room.newPartyName.length() < 3 ? R.string.npdsa_badParty_msg_emptyName : R.string.npdsa_badParty_msg_alreadyThere;
             new AlertDialog.Builder(this, R.style.AppDialogStyle)
                     .setIcon(R.drawable.ic_error_white_24dp)
                     .setTitle(R.string.npdsa_badParty_title)

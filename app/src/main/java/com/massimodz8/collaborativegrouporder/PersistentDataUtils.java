@@ -165,6 +165,7 @@ public abstract class PersistentDataUtils {
         final int start = errors.size();
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
+        else if(group.name.length() < 3) errors.add(premise + getString(R.string.persistentStorage_partyNameTooShort));
         if(group.created == null || group.created.nanos != 0 || group.created.seconds == 0) errors.add(premise + getString(R.string.persistentStorage_badCreationTimestamp));
         if(group.sessionFile == null || group.sessionFile.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_badSessionFile));
         if(group.advancementPace == LevelAdvancement.LA_UNSPECIFIED) errors.add(premise + getString(R.string.persistentStorage_badLevelAdvancementPace));
@@ -184,6 +185,7 @@ public abstract class PersistentDataUtils {
         final int start = errors.size();
         final String premise = String.format(getString(R.string.persistentStorage_errorReport_premise), index, group.name.isEmpty() ? "" : String.format("(%1$s)", group.name));
         if(group.name.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_missingName));
+        else if(group.name.length() < 3) errors.add(premise + getString(R.string.persistentStorage_partyNameTooShort));
         if(group.key.length < 1) errors.add(premise + getString(R.string.persistentStorage_missingKey));
         if(group.received == null || group.received.nanos != 0 || group.received.seconds == 0) errors.add(premise + getString(R.string.persistentStorage_badCreationTimestamp));
         if(group.sessionFile == null || group.sessionFile.isEmpty()) errors.add(premise + getString(R.string.persistentStorage_badSessionFile));
