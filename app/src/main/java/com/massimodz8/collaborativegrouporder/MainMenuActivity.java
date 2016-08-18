@@ -97,7 +97,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
                     .setMessage(R.string.mma_nullWifiManager)
                     .show();
         }
-        else if(!networkTroubleshootShown){
+        else if(!networkTroubleshootShown) {
             WifiInfo cinfo = wifi.getConnectionInfo();
             List<WifiConfiguration> networks = wifi.getConfiguredNetworks(); // null when disabled
             int active = 0;
@@ -109,6 +109,7 @@ public class MainMenuActivity extends AppCompatActivity implements ServiceConnec
             if(!wifi.isWifiEnabled() || null == cinfo || active < 1) {
                 startActivity(new Intent(this, WiFiInstructionsActivity.class));
                 networkTroubleshootShown = true;
+                return; // if this Activity gets shut down we might miss the 'end loading' callback so stop there and retry!
             }
         }
 
