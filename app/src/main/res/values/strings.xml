@@ -164,6 +164,7 @@
     <string name="npdsa_levelAdvBtn_setFormat">Levelling: %1$s</string>
     <string name="npdsa_levelAdv_dlgTitle">Level advancement speed</string>
     <string name="npdsa_noCurrentNetwork_placeholderName">wireless network</string>
+    <string name="npdsa_noWifiManager">Unable to get the Wi-Fi manager. I don\'t know where I could be publishing but I\'ll keep going.</string>
 
     <string name="levelAdv_fast">fast</string>
     <string name="levelAdv_medium">medium</string>
@@ -429,7 +430,7 @@
     <string name="mobs_subType_aeon">aeon</string>
     <string name="mobs_subType_agathion">agathion</string>
     <string name="mobs_subType_air">air</string>
-    <string name="mobs_subType_amphibious">amphibious</string>
+    <string name="mobs_subType_amphibious" translatable="false">amphibious</string>
     <string name="mobs_subType_angel">angel</string>
     <string name="mobs_subType_aquatic">aquatic</string>
     <string name="mobs_subType_archon">archon</string>
@@ -988,15 +989,15 @@
     <string name="nvda_0_desc">A bug in Android support libraries (216010, 214360) forced me to roll back to previous version as no workaround is known workaround has been found.</string>
     <string name="nvda_rateBtn"><![CDATA[Rate & review app]]></string>
     <string name="nvda_btnDesc">Do you like the changes? Did you expect something more? Let us know!</string>
-    <string name="mma_nullWifiManager">Cannot inspect wifi settings. I will keep executing but some features might be broken.</string>
+    <string name="mma_nullWifiManager">Cannot inspect Wi-Fi settings. I will keep executing but some features might be broken.</string>
 
     <string name="wfia_title">Networking quirks!</string>
     <string name="wfia_introSectionTitle">Read carefully</string>
-    <string name="wfia_introSection0">This app manages initiative order for you and all your friends.\nTo do so, all devices must be somehow connected through Wi-Fi so they can exchange data to each other. This way, every player can manage his/her character(s) and throw dice while all play together in the same game!</string>
+    <string name="wfia_introSection0">This app manages initiative order for you and all your friends.\nTo do so, all devices must be somehow connected through Wi-Fi so they can exchange data. This way, every player can manage his/her character(s) and throw dice while all play together in the same game!</string>
     <string name="wfia_networkBubbleHint">A network to bind them all!</string>
     <string name="wfia_problemDescriptionSection_title">What is the problem?</string>
     <string name="wfia_problemDescriptionSection_noWiFiMsg">I cannot find an active Wi-Fi network. All devices must be part of the same Wi-Fi.</string>
-    <string name="wifia_section1_noWifiDetectedDetails">Detail: it is possible to set up a network so devices from different Wi-Fi talk to each other. This might be sufficient in some cases but often results in limited functionality.</string>
+    <string name="wifia_section1_noWifiDetectedDetails">Detail: it is possible to set up a network so devices from different Wi-Fi talk to each other. In some cases this is sufficient while in others it results in limited functionality.</string>
     <string name="wfia_section2_Title">Solutions, solutions!</string>
     <string name="wfia_solutions_s1_title">1) Talk to your friends!</string>
     <string name="wfia_solutions_s1_desc">The group gets out of this together. You can try solving it on your own but everyone must agree or you might get in the wrong network!</string>
@@ -1009,7 +1010,6 @@
     <string name="wfia_solutions_s2_descDetail">Caveat: because of how Android works, the internet must be reachable from the Wi-Fi you\'re going to connect to.</string>
     <string name="wfia_solutions_s3_wifiButton">Open Wi-Fi options</string>
     <string name="wfia_solutions_s4_tetheringButton">Open tethering options</string>
-    <string name="wfia_noWifiOptions">Something went very wrong, your system is missing wifi settings!\nI cannot help you in any way at this point.</string>
+    <string name="wfia_noWifiOptions">Something went very wrong, your system is missing Wi-Fi settings!\nI cannot help you in any way at this point.</string>
     <string name="wfia_noTetheringOptions">Something went very wrong, your system is missing tethering settings!\nI cannot help you in any way at this point.</string>
-    <string name="npdsa_noWifiManager">Unable to get the Wi-Fi manager. I don\'t know where I could be publishing but I\'ll keep going.</string>
 </resources>
