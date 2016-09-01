@@ -758,8 +758,8 @@
     <string name="mma_newVersionDialogMessage">Benvenuto nella %1$s! Posso prenderti un minuto per mostrarti le novità?</string>
     <string name="mma_newVersionDialogPositive">Dimmi di più</string>
     <string name="mma_newVersionDialogTitle">Nuova versione!</string>
-    <string name="nvda_0_title">Di nuovo con le precedenti librerie.</string>
-    <string name="nvda_0_desc">A causa di un bug nelle librerie di supporto Android (216010, 214360) sono stato costretto a tornare indietro visto che non è nota alcuna altra soluzione.</string>
+    <string name="nvda_0_title">Aiuto la configurazione del Wi-Fi.</string>
+    <string name="nvda_0_desc">Il programma ora tenta d\'esaminare lo stato del Wi-Fi e proporre due possibili soluzioni. Come sempre sarà da preferire una o l\'altra a seconda che siate giocatore o master.</string>
     <string name="nvda_btnDesc">Ti piacciono le novità? Ti aspettavi qualcosa di più? Faccelo sapere!</string>
     <string name="nvda_rateBtn"><![CDATA[Vota & commenta l\'app]]></string>
     <string name="nvda_title">Novità in questa versione</string>
@@ -773,7 +773,7 @@
     <string name="sfga_noDefaultWifi">Non esiste una rete Wi-Fi di default.</string>
     <string name="sfga_scanNetworkFormat">Esploro %1$s, ID %2$d%3$s</string>
     <string name="sfga_whatsGoingOn">Esploro la rete %1$s</string>
-    <string name="wfia_introSection0">Questa app gestisce l\'ordine d\'iniziativa per te e tutti i tuoi amici.\nPerchè sia possibile, tutti i dispositivi devono essere in qualche modo connessi in rete in modo che possano scambiare dati.  In questo modo, ogni giocatore potrà gestire il proprio personaggio e tirare i dadi mentre il gioco resta coerente per tutti!</string>
+    <string name="wfia_introSection0">Questa app gestisce l\'ordine d\'iniziativa per te e tutti i tuoi amici.\nPerché sia possibile, tutti i dispositivi devono essere in qualche modo connessi in rete in modo che possano scambiare dati.  In questo modo, ogni giocatore potrà gestire il proprio personaggio e tirare i dadi mentre il gioco resta coerente per tutti!</string>
     <string name="wfia_introSectionTitle">Leggi bene</string>
     <string name="wfia_networkBubbleHint">Una rete per domarli!</string>
     <string name="wfia_noTetheringOptions">Qualcosa è andato molto storto, il tuo sistema non ha le impostazioni di tethering!\nNon posso aiutarti in alcun modo a questo punto.</string>
@@ -794,4 +794,9 @@
     <string name="wfia_solutions_s4_title">4) Abilita tethering</string>
     <string name="wfia_title">Problemini di rete!</string>
     <string name="wifia_section1_noWifiDetectedDetails">Dettaglio: si può creare una rete che permette a dispositivi da Wi-Fi diversi di parlarsi. A volte questo e sufficiente ma in altri casi porta a funzionalità limitate.</string>
+    <string name="nvda_1_desc">Più che altro per darti migliori informazioni sullo stato del Wi-Fi.</string>
+    <string name="nvda_1_title">Miglioramenti IU</string>
+    <string name="nvda_2_desc">Per prevenire un caso limite che potrebbe portare a perdita di dati i nomi dei gruppi devono essere ora lunghi almeno 3 caratteri.</string>
+    <string name="nvda_2_title">Nuova restrizione riguardo al nome del party.</string>
+    <string name="persistentStorage_partyNameTooShort">: il nome è troppo corto.</string>
 </resources>

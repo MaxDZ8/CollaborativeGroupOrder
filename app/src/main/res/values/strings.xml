@@ -430,7 +430,7 @@
     <string name="mobs_subType_aeon">aeon</string>
     <string name="mobs_subType_agathion">agathion</string>
     <string name="mobs_subType_air">air</string>
-    <string name="mobs_subType_amphibious" translatable="false">amphibious</string>
+    <string name="mobs_subType_amphibious">amphibious</string>
     <string name="mobs_subType_angel">angel</string>
     <string name="mobs_subType_aquatic">aquatic</string>
     <string name="mobs_subType_archon">archon</string>
@@ -985,10 +985,14 @@
     <string name="ctx_both_ui_badCustomClassName">Invalid custom class name.</string>
 
     <string name="nvda_title">New in this version</string>
-    <string name="nvda_0_title">Back to previous version libraries.</string>
-    <string name="nvda_0_desc">A bug in Android support libraries (216010, 214360) forced me to roll back to previous version as no workaround is known workaround has been found.</string>
+    <string name="nvda_0_title">Helping Wi-Fi configuration.</string>
+    <string name="nvda_0_desc">The program will now attempt to inspect Wi-Fi state and propose a couple of possible solutions. As usual, whatever you go with one or the other depends on whatever you\'re a player or a master.</string>
     <string name="nvda_rateBtn"><![CDATA[Rate & review app]]></string>
     <string name="nvda_btnDesc">Do you like the changes? Did you expect something more? Let us know!</string>
+    <string name="nvda_1_title">UI tweaks</string>
+    <string name="nvda_1_desc">Mostly related to giving you better information about Wi-Fi state and such.</string>
+    <string name="nvda_2_title">New restriction on party name</string>
+    <string name="nvda_2_desc">To prevent an edge-case which could imply data loss party names are now required to be at least 3 characters long.</string>
     <string name="mma_nullWifiManager">Cannot inspect Wi-Fi settings. I will keep executing but some features might be broken.</string>
 
     <string name="wfia_title">Networking quirks!</string>

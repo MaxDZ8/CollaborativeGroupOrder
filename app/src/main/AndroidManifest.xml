@@ -8,7 +8,9 @@
     <uses-permission
         android:name="android.permission.ACCESS_WIFI_STATE"
         android:required="true" />
-    <!-- to access WifiManager, check wifi network being used -->
+    <!--^ to access WifiManager, check wifi network being used -->
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+    <!--^ make it available on chromebooks -->
 
 
     <!--
