@@ -27,3 +27,6 @@ Project CGO was different. The GM was only a central point of arbitration but ev
 It also doubled as monster database and XP tracker ok.
 
 So, think about it. If you happen to know something similar, I'd like to see it too.
+
+# A last update (28 Aug 2020)
+I've neglected the 'archive' button long enough. Today I removed an old branch name related to slavery. I think this is an excellent occasion to hit that button as well.
